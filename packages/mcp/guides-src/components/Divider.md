@@ -8,7 +8,7 @@
 
 ## pitfalls
 
-- Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — TitleGroup + spacing 토큰이 우선.
+- Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — Heading + spacing 토큰이 우선.
 - List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.
 - orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임.
 

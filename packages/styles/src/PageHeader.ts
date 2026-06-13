@@ -1,5 +1,5 @@
 /* Auto-generated from packages/react/src/PageHeader.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, fontWeight, spacing, transition, typeScale } from "@nudge-design/tokens";
+import { cv, fontFamily, spacing, transition } from "@nudge-design/tokens";
 
 const PH_CLASS = "nds-page-header";
 const PH_TOP_CLASS = `${PH_CLASS}__top`;
@@ -7,8 +7,6 @@ const PH_BREADCRUMB_CLASS = `${PH_CLASS}__breadcrumb`;
 const PH_BACK_CLASS = `${PH_CLASS}__back`;
 const PH_MAIN_CLASS = `${PH_CLASS}__main`;
 const PH_TITLE_AREA_CLASS = `${PH_CLASS}__title-area`;
-const PH_TITLE_CLASS = `${PH_CLASS}__title`;
-const PH_SUBTITLE_CLASS = `${PH_CLASS}__subtitle`;
 const PH_ACTIONS_CLASS = `${PH_CLASS}__actions`;
 const PH_TABS_CLASS = `${PH_CLASS}__tabs`;
 
@@ -71,27 +69,11 @@ export const phStyles = `
     gap: var(--semantic-gap-loose);
   }
 
+  /* 제목/부제 자체는 Heading(level=h2 as=h1) 합성 — 폰트·gap·색은 Heading SSOT.
+     여기서는 __main 안에서의 폭(flex)만 책임진다. */
   :where(.${PH_TITLE_AREA_CLASS}) {
     flex: 1;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--semantic-gap-tight);
-  }
-
-  :where(.${PH_TITLE_CLASS}) {
-    font-size: ${typeScale.headline2.fontSize}px;
-    line-height: ${typeScale.headline2.lineHeight}px;
-    font-weight: ${fontWeight.bold};
-    color: ${cv.textRole.normal};
-    margin: 0;
-  }
-
-  :where(.${PH_SUBTITLE_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.textRole.subtle};
-    margin: 0;
   }
 
   :where(.${PH_ACTIONS_CLASS}) {

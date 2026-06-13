@@ -33,6 +33,15 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
+  "nds-agreement": {
+    "observedAttributes": [
+      "all-label",
+      "items",
+      "value",
+      "view-label"
+    ],
+    "enums": {}
+  },
   "nds-amount-input": {
     "observedAttributes": [
       "error",
@@ -630,9 +639,17 @@ export const COMPONENT_ATTRS = {
     "observedAttributes": [
       "description",
       "min-height",
+      "status",
       "title"
     ],
-    "enums": {}
+    "enums": {
+      "status": [
+        "empty",
+        "success",
+        "error",
+        "info"
+      ]
+    }
   },
   "nds-expandable-text": {
     "observedAttributes": [
@@ -747,6 +764,12 @@ export const COMPONENT_ATTRS = {
         "static"
       ]
     }
+  },
+  "nds-heading": {
+    "observedAttributes": [
+      "level"
+    ],
+    "enums": {}
   },
   "nds-icon-button": {
     "observedAttributes": [
@@ -1455,12 +1478,6 @@ export const COMPONENT_ATTRS = {
         "horizontal"
       ]
     }
-  },
-  "nds-title-group": {
-    "observedAttributes": [
-      "level"
-    ],
-    "enums": {}
   },
   "nds-toast": {
     "observedAttributes": [

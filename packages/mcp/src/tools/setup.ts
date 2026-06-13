@@ -607,7 +607,7 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
       <section class="mockup-screen" data-device="mobile" data-label="홈">
         <nds-brand-header brand="${brand}" surface="mobile"></nds-brand-header>
         <main style="flex: 1; padding: var(--semantic-inset-screen);">
-          <nds-title-group level="h1" title="안녕하세요" subtitle="첫 번째 목업입니다"></nds-title-group>
+          <nds-heading level="h1" title="안녕하세요" description="첫 번째 목업입니다"></nds-heading>
           <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
             <nds-button color="primary" variant="solid" data-action="request-counseling">상담 신청하기</nds-button>
             <nds-button color="neutral" variant="outlined" data-action="show-details">자세히 보기</nds-button>
@@ -620,7 +620,7 @@ function htmlIndexTemplate(brandAttr: string, brandSlug?: string): string {
       <section class="mockup-screen" data-device="webview" data-label="상세">
         <nds-brand-header brand="${brand}" surface="webview"></nds-brand-header>
         <main style="flex: 1; padding: var(--semantic-inset-screen);">
-          <nds-title-group level="h1" title="상담 상세" subtitle="두 번째 화면입니다"></nds-title-group>
+          <nds-heading level="h1" title="상담 상세" description="두 번째 화면입니다"></nds-heading>
           <div style="display: flex; flex-direction: column; gap: var(--semantic-gap-md); margin-top: var(--semantic-gap-lg);">
             <nds-button color="primary" variant="solid" data-action="complete-request">신청 완료하기</nds-button>
           </div>

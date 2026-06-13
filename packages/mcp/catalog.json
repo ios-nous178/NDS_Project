@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T13:25:39.221Z",
+  "generatedAt": "2026-06-13T14:32:32.902Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -250,6 +250,59 @@
       ]
     },
     {
+      "name": "Agreement",
+      "props": [
+        {
+          "name": "items",
+          "optional": false,
+          "type": "AgreementItemData[]"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "defaultValue",
+          "optional": true,
+          "type": "string[]"
+        },
+        {
+          "name": "onValueChange",
+          "optional": true,
+          "type": "(value: string[]) => void"
+        },
+        {
+          "name": "allLabel",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "viewLabel",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Agreement.d.ts",
+      "htmlTag": "nds-agreement",
+      "htmlObservedAttrs": [
+        "all-label",
+        "items",
+        "value",
+        "view-label"
+      ]
+    },
+    {
       "name": "AmountInput",
       "props": [
         {
@@ -324,6 +377,18 @@
         "placeholder",
         "disabled"
       ]
+    },
+    {
+      "name": "Article",
+      "props": [
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Article.d.ts",
+      "htmlTag": "nds-article"
     },
     {
       "name": "Asset",
@@ -2787,6 +2852,17 @@
           "type": "React.ReactNode"
         },
         {
+          "name": "status",
+          "optional": true,
+          "type": "EmptyStateStatus",
+          "allowedValues": [
+            "empty",
+            "success",
+            "error",
+            "info"
+          ]
+        },
+        {
           "name": "title",
           "optional": true,
           "type": "string"
@@ -2827,6 +2903,7 @@
       "htmlObservedAttrs": [
         "description",
         "min-height",
+        "status",
         "title",
         "action",
         "hide-icon"
@@ -3336,6 +3413,39 @@
         "position",
         "variant",
         "header-title"
+      ]
+    },
+    {
+      "name": "Heading",
+      "props": [
+        {
+          "name": "level",
+          "optional": false,
+          "type": "HeadingLevel"
+        },
+        {
+          "name": "as",
+          "optional": true,
+          "type": "HeadingLevel"
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Heading.d.ts",
+      "htmlTag": "nds-heading",
+      "htmlObservedAttrs": [
+        "level",
+        "title",
+        "description",
+        "as"
       ]
     },
     {
@@ -6708,33 +6818,6 @@
         "min",
         "max",
         "presets"
-      ]
-    },
-    {
-      "name": "TitleGroup",
-      "props": [
-        {
-          "name": "level",
-          "optional": false,
-          "type": "TitleGroupLevel"
-        },
-        {
-          "name": "title",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "subtitle",
-          "optional": true,
-          "type": "React.ReactNode"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/TitleGroup.d.ts",
-      "htmlTag": "nds-title-group",
-      "htmlObservedAttrs": [
-        "level",
-        "title",
-        "subtitle"
       ]
     },
     {
@@ -13636,7 +13719,13 @@
     "nds-action-chip",
     "nds-add-button",
     "nds-address-picker",
+    "nds-agreement",
     "nds-amount-input",
+    "nds-article",
+    "nds-article-actions",
+    "nds-article-attachments",
+    "nds-article-body",
+    "nds-article-header",
     "nds-attachment-item",
     "nds-audio-player",
     "nds-autocomplete",
@@ -13704,6 +13793,7 @@
     "nds-header-menu-item",
     "nds-header-nav-bar",
     "nds-header-search",
+    "nds-heading",
     "nds-icon-button",
     "nds-image-cropper",
     "nds-image-upload",
@@ -13767,7 +13857,6 @@
     "nds-textarea",
     "nds-time-picker",
     "nds-timeline",
-    "nds-title-group",
     "nds-toast",
     "nds-toggle",
     "nds-tooltip",
@@ -13822,6 +13911,16 @@
       ]
     },
     {
+      "tag": "nds-agreement",
+      "attrs": {},
+      "observedAttrs": [
+        "all-label",
+        "items",
+        "value",
+        "view-label"
+      ]
+    },
+    {
       "tag": "nds-amount-input",
       "attrs": {},
       "observedAttrs": [
@@ -13838,6 +13937,11 @@
         "placeholder",
         "disabled"
       ]
+    },
+    {
+      "tag": "nds-article",
+      "attrs": {},
+      "observedAttrs": []
     },
     {
       "tag": "nds-attachment-item",
@@ -14352,6 +14456,7 @@
       "observedAttrs": [
         "description",
         "min-height",
+        "status",
         "title",
         "action",
         "hide-icon"
@@ -14460,6 +14565,16 @@
         "position",
         "variant",
         "header-title"
+      ]
+    },
+    {
+      "tag": "nds-heading",
+      "attrs": {},
+      "observedAttrs": [
+        "level",
+        "title",
+        "description",
+        "as"
       ]
     },
     {
@@ -15232,15 +15347,6 @@
         "direction",
         "items",
         "mode"
-      ]
-    },
-    {
-      "tag": "nds-title-group",
-      "attrs": {},
-      "observedAttrs": [
-        "level",
-        "title",
-        "subtitle"
       ]
     },
     {

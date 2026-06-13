@@ -26,14 +26,15 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
+// 제목/부제는 nds-heading(level=h2 as=h1) 합성 — 정의 보장을 위해 side-effect import.
+import "./nds-heading.js";
+
 const PH_CLASS = "nds-page-header";
 const PH_TOP_CLASS = `${PH_CLASS}__top`;
 const PH_BREADCRUMB_CLASS = `${PH_CLASS}__breadcrumb`;
 const PH_BACK_CLASS = `${PH_CLASS}__back`;
 const PH_MAIN_CLASS = `${PH_CLASS}__main`;
 const PH_TITLE_AREA_CLASS = `${PH_CLASS}__title-area`;
-const PH_TITLE_CLASS = `${PH_CLASS}__title`;
-const PH_SUBTITLE_CLASS = `${PH_CLASS}__subtitle`;
 const PH_ACTIONS_CLASS = `${PH_CLASS}__actions`;
 const PH_BOTTOM_CLASS = `${PH_CLASS}__tabs`;
 
@@ -59,8 +60,7 @@ export class NdsPageHeader extends NdsElement {
   private _topRow: HTMLDivElement | null = null;
   private _backBtn: HTMLButtonElement | null = null;
   private _breadcrumbWrap: HTMLDivElement | null = null;
-  private _titleEl: HTMLHeadingElement | null = null;
-  private _subtitleEl: HTMLParagraphElement | null = null;
+  private _titleGroupEl: HTMLElement | null = null;
   private _actionsWrap: HTMLDivElement | null = null;
   private _bottomWrap: HTMLDivElement | null = null;
 
@@ -114,13 +114,12 @@ export class NdsPageHeader extends NdsElement {
     const titleArea = document.createElement("div");
     titleArea.className = PH_TITLE_AREA_CLASS;
 
-    const titleEl = document.createElement("h1");
-    titleEl.className = PH_TITLE_CLASS;
+    // 시각은 h2 스케일(폰트·gap = Heading SSOT), 시맨틱은 페이지 랜드마크 h1.
+    const titleGroupEl = document.createElement("nds-heading");
+    titleGroupEl.setAttribute("level", "h2");
+    titleGroupEl.setAttribute("as", "h1");
 
-    const subtitleEl = document.createElement("p");
-    subtitleEl.className = PH_SUBTITLE_CLASS;
-
-    titleArea.append(titleEl, subtitleEl);
+    titleArea.append(titleGroupEl);
 
     const actionsWrap = document.createElement("div");
     actionsWrap.className = PH_ACTIONS_CLASS;
@@ -139,8 +138,7 @@ export class NdsPageHeader extends NdsElement {
     this._topRow = topRow;
     this._backBtn = backBtn;
     this._breadcrumbWrap = breadcrumbWrap;
-    this._titleEl = titleEl;
-    this._subtitleEl = subtitleEl;
+    this._titleGroupEl = titleGroupEl;
     this._actionsWrap = actionsWrap;
     this._bottomWrap = bottomWrap;
   }
@@ -151,8 +149,7 @@ export class NdsPageHeader extends NdsElement {
       !this._topRow ||
       !this._backBtn ||
       !this._breadcrumbWrap ||
-      !this._titleEl ||
-      !this._subtitleEl ||
+      !this._titleGroupEl ||
       !this._actionsWrap ||
       !this._bottomWrap
     ) {
@@ -170,13 +167,9 @@ export class NdsPageHeader extends NdsElement {
 
     this._root.dataset.bordered = bordered ? "true" : "false";
 
-    this._titleEl.textContent = title;
-    if (subtitle) {
-      this._subtitleEl.textContent = subtitle;
-      this._subtitleEl.style.display = "";
-    } else {
-      this._subtitleEl.style.display = "none";
-    }
+    this._titleGroupEl.setAttribute("title", title);
+    if (subtitle) this._titleGroupEl.setAttribute("description", subtitle);
+    else this._titleGroupEl.removeAttribute("description");
 
     this._backBtn.style.display = showBack ? "" : "none";
     this._breadcrumbWrap.style.display = hasBreadcrumb ? "" : "none";

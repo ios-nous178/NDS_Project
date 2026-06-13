@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Heading } from "./Heading.js";
+
 /* ─── Constants ─── */
 
 const PH_CLASS = "nds-page-header";
@@ -8,8 +10,6 @@ const PH_BREADCRUMB_CLASS = `${PH_CLASS}__breadcrumb`;
 const PH_BACK_CLASS = `${PH_CLASS}__back`;
 const PH_MAIN_CLASS = `${PH_CLASS}__main`;
 const PH_TITLE_AREA_CLASS = `${PH_CLASS}__title-area`;
-const PH_TITLE_CLASS = `${PH_CLASS}__title`;
-const PH_SUBTITLE_CLASS = `${PH_CLASS}__subtitle`;
 const PH_ACTIONS_CLASS = `${PH_CLASS}__actions`;
 const PH_TABS_CLASS = `${PH_CLASS}__tabs`;
 
@@ -75,10 +75,14 @@ export const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
           </div>
         )}
         <div className={PH_MAIN_CLASS}>
-          <div className={PH_TITLE_AREA_CLASS}>
-            <h1 className={PH_TITLE_CLASS}>{title}</h1>
-            {subtitle && <p className={PH_SUBTITLE_CLASS}>{subtitle}</p>}
-          </div>
+          {/* 시각은 h2 스케일(폰트·gap = Heading SSOT), 시맨틱은 페이지 랜드마크 h1 */}
+          <Heading
+            className={PH_TITLE_AREA_CLASS}
+            level="h2"
+            as="h1"
+            title={title}
+            description={subtitle}
+          />
           {actions && <div className={PH_ACTIONS_CLASS}>{actions}</div>}
         </div>
         {bottom && <div className={PH_TABS_CLASS}>{bottom}</div>}

@@ -105,6 +105,26 @@
         "dont": "<!-- results 를 string 으로 그대로 박음 — JSON 배열이어야 렌더 가능 -->\n<nds-address-picker results=\"결과 없음\"></nds-address-picker>"
       }
     },
+    "Agreement": {
+      "name": "Agreement",
+      "summary": "약관 동의 — 전체동의(master) + 필수/선택 약관 항목 cascade. 전체동의 클릭은 활성 항목 전체를 on/off, 항목 선택 비율에 따라 전체동의가 checked / indeterminate / unchecked 를 **자동** 표시한다. 온보딩·회원가입의 약관 동의 영역 전용. value 는 **동의된 항목 value 배열**.",
+      "pitfalls": [
+        "약관 본문/링크 URL 은 앱 데이터 — DS 는 셸만 제공한다. 항목 `viewHref` 로 \"보기\" 링크를 외부 약관 페이지에 연결(없으면 `onView` 핸들러).",
+        "`required` 는 \"필수\" 배지만 표시 — **제출 가능 여부(필수 전부 체크)는 앱이 value 로 판정**한다. 컴포넌트는 필수 미동의를 막지 않는다.",
+        "cascade 기준은 **활성(비-disabled) 항목** — disabled 항목은 전체동의 토글/상태 계산에서 제외된다.",
+        "계층(시/도▸시군구)·검색이 필요하면 Agreement 가 아니라 CheckboxTree. Agreement 는 평면 1-depth 약관 전용.",
+        "일반 다중선택 체크박스 그룹은 CheckboxGroup — Agreement 는 \"전체동의 + 필수/선택 배지 + 보기 링크\" 약관 시멘틱이 붙은 경우만.",
+        "전체동의 구분선은 `divider`(기본 노출). 전체동의 행을 숨기려면 flat API 에서 `allLabel={null}`(html `all-label=\"none\"`)."
+      ],
+      "recommended": [
+        "필수 약관은 `required` → \"필수\" 배지(brand 색), 선택 약관은 자동 \"선택\" 배지(subtle)",
+        "제출 버튼 활성 조건은 앱에서 `items.filter(i=>i.required).every(i=>value.includes(i.value))` 로 계산"
+      ],
+      "examplesHtml": {
+        "do": "<nds-agreement all-label=\"전체 동의\" value='[]'\n  items='[{\"value\":\"tos\",\"label\":\"(필수) 이용약관 동의\",\"required\":true,\"viewHref\":\"/tos\"},\n          {\"value\":\"privacy\",\"label\":\"(필수) 개인정보 처리방침 동의\",\"required\":true,\"viewHref\":\"/privacy\"},\n          {\"value\":\"mkt\",\"label\":\"(선택) 마케팅 정보 수신 동의\",\"required\":false}]'></nds-agreement>\n<script>el.addEventListener(\"nds-agreement-change\", e => setAgreed(e.detail.value));</script>",
+        "dont": "<!-- 계층/검색이 필요한 지역 선택을 Agreement 로 — CheckboxTree 가 맞음 -->\n<nds-agreement items='[{\"value\":\"seoul\",\"label\":\"서울\",\"children\":[]}]'></nds-agreement>"
+      }
+    },
     "AmountInput": {
       "name": "AmountInput",
       "summary": "큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프.",
@@ -121,6 +141,26 @@
       "examplesHtml": {
         "do": "<nds-amount-input value=\"10000\" prefix=\"₩\" unit=\"원\" label=\"후원 금액\"\n  presets='[{\"label\":\"+1만\",\"amount\":10000},{\"label\":\"+5만\",\"amount\":50000}]'></nds-amount-input>\n<script>el.addEventListener(\"amount-change\", e => setAmount(e.detail.value));</script>",
         "dont": "<!-- 값에 통화기호와 쉼표 직접 박음 — number 파싱이 깨짐 -->\n<nds-amount-input value=\"₩10,000\"></nds-amount-input>"
+      }
+    },
+    "Article": {
+      "name": "Article",
+      "summary": "게시글/공지/FAQ **상세 보기** 셸. 제목·메타(Header) + 본문(Body=ContentViewer) + 첨부(Attachments) + 액션(Actions)을 묶는 레이아웃 compound. 좋아요 카운트·권한·작성자 데이터 등 **앱 로직은 0** — 모두 슬롯에 주입한다.",
+      "pitfalls": [
+        "**목록/피드의 게시글 \"카드\"는 Article 이 아니다** — Card(Header/Title/Subtitle/Meta/Thumbnail) + ListItem 조합 패턴. Article 은 **상세 한 건** 전용.",
+        "본문은 `Article.Body` 의 `html` prop → 내부에서 ContentViewer 로 sanitize 렌더(태그 allowlist). raw `<div dangerouslySetInnerHTML>` 직접 쓰지 말 것. 신뢰된 본문이면 `sanitize={false}`.",
+        "좋아요/공유/신고 버튼은 `Article.Actions` 에 LikeButton 등을 주입 — Article 은 카운트/토글 상태를 갖지 않는다(앱이 관리).",
+        "첨부는 `Article.Attachments` 안에 AttachmentItem 을 넣는다 — 첨부 다운로드 로직은 앱.",
+        "html 은 container + subpart 엘리먼트(`<nds-article>`/`<nds-article-header|body|attachments|actions>`)로 미러 — 본문엔 `<nds-content-viewer>` 를 넣는다."
+      ],
+      "recommended": [
+        "제목 heading 레벨은 화면 위계에 맞춰 `level`(기본 2)",
+        "메타 행은 \"작성자 · 날짜 · 조회수\" 순, caption 색(subtle)",
+        "Actions 는 1차 액션(좋아요) 좌측, 보조(공유/신고) 우측 정렬은 앱에서 배치"
+      ],
+      "examplesHtml": {
+        "do": "<nds-article>\n  <nds-article-header>\n    <h2 class=\"nds-article__title\">6월 정기 점검 안내</h2>\n    <div class=\"nds-article__meta\">운영팀 · 2026.06.13 · 조회 1,204</div>\n  </nds-article-header>\n  <nds-article-body><nds-content-viewer html=\"<p>점검 시간은…</p>\"></nds-content-viewer></nds-article-body>\n  <nds-article-actions><nds-like-button count=\"12\"></nds-like-button></nds-article-actions>\n</nds-article>",
+        "dont": "<!-- 목록의 게시글 카드를 Article 로 — Card + ListItem 조합이 맞음 -->\n<nds-article><h3>게시글 제목</h3><span>요약…</span></nds-article>"
       }
     },
     "Asset": {
@@ -1164,7 +1204,7 @@
       "name": "Divider",
       "summary": "섹션 사이의 시각적 분리선. 카드 안 내부 분할에 남발하지 말고, 한 화면당 의미 있는 분리에만 사용.",
       "pitfalls": [
-        "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — TitleGroup + spacing 토큰이 우선.",
+        "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — Heading + spacing 토큰이 우선.",
         "List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.",
         "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임."
       ],
@@ -1202,15 +1242,21 @@
     },
     "EmptyState": {
       "name": "EmptyState",
-      "summary": "데이터/검색 결과/기록 없음 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 추천 보기)을 제안.",
+      "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다.",
       "pitfalls": [
         "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음.",
-        "EmptyState 를 페이지 전체 height 로 채우면 안 — 영역 안에서만 표시, footer / nav 가 가려지지 않도록.",
-        "에러 상황(네트워크 / 권한)에 EmptyState 를 재활용 — 시그널이 약함. ErrorState / Banner 사용."
+        "인라인 placeholder ↔ 풀페이지 결과 화면의 차이는 `status` 가 아니라 `minHeight` 로 조절한다. 빈 리스트는 작게(예: 200), 결제 성공·404 결과 화면은 `minHeight=\"60vh\"` 처럼 크게. **같은 컴포넌트, altitude 만 다름.**",
+        "에러/성공 결과에는 반드시 `status=\"error|success\"` — 색·기본 글리프가 시멘틱하게 바뀐다. status 없이 중립 빈상태로 에러를 표현하면 시그널이 약함.",
+        "인라인 placeholder 를 footer/nav 위로 풀스크린 채우지 말 것 — 영역 안 placeholder 면 `minHeight` 를 작게 둔다(풀페이지는 결과 화면 전용).",
+        "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 브랜드 일러스트가 있으면 `icon` 으로 주입."
+      ],
+      "recommended": [
+        "status: 빈 리스트/검색결과 `empty`(기본·중립), 결제·제출 성공 `success`, 404·실패 `error`, 안내·점검중 `info`",
+        "결과 화면(풀페이지)은 `minHeight=\"60vh\"` + `action` 에 1차 CTA(홈으로/다시 시도)"
       ],
       "examplesHtml": {
-        "do": "<nds-empty-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-empty-state>\n<script>el.addEventListener(\"empty-state-action\", () => navigate(\"/journal/new\"));</script>",
-        "dont": "<!-- title 만 있고 다음 액션 없음 — 사용자가 막힘 -->\n<nds-empty-state title=\"결과 없음\"></nds-empty-state>"
+        "do": "<!-- 인라인 빈 상태 -->\n<nds-empty-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-empty-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-empty-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\" action=\"홈으로\"></nds-empty-state>",
+        "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-empty-state title=\"페이지를 찾을 수 없어요\"></nds-empty-state>"
       }
     },
     "ExpandableText": {
@@ -1564,6 +1610,29 @@
       "examplesHtml": {
         "do": "<nds-header variant=\"solid\" position=\"fixed\" elevated>\n  <nds-header-main-bar>\n    <nds-header-logo>NudgeEAP</nds-header-logo>\n    <nds-header-actions>\n      <nds-icon-button aria-label=\"알림\"><svg>…</svg></nds-icon-button>\n    </nds-header-actions>\n  </nds-header-main-bar>\n</nds-header>",
         "dont": "<!-- raw <header> 에 인라인 스타일로 흉내 — 토큰/elevated 그림자가 안 들어감 -->\n<header style=\"position:fixed;background:#fff\">…</header>"
+      }
+    },
+    "Heading": {
+      "name": "Heading",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=859-5614",
+      "summary": "헤딩 + 보조 설명(description) 표준 블록. level (h1~h5) 만 결정하면 헤딩 폰트와 Gap/Title 토큰이 자동 적용 — Figma TitleGapGuide 859:5614 (6 페이지 58건 실측) 기반. description 을 생략하면 순수 헤딩으로 동작한다.",
+      "pitfalls": [
+        "헤딩 + 설명 묶음에는 직접 <h{n}> + <p> + margin-top 으로 짜지 말 것. level↔gap 미스매치(h4 에 12px gap 등) 가 생기는 가장 흔한 안티패턴.",
+        "h4/h5 가 '★ 가장 자주' — 카드 헤딩(h4 · gap 6) / 서브 헤딩(h5 · gap 8). h1~h3 은 페이지 단위 hero / 큰 섹션 / 페이지 헤더.",
+        "description 폰트도 level 에 묶여 자동 결정: h1~h3 = Body3(14px), h4~h5 = Caption1(13px). 다른 사이즈가 필요하면 Heading 을 쓰지 말고 raw 헤딩으로.",
+        "위계가 같은 자리에서는 같은 level 유지. h4 카드 헤딩들 사이에 h2 가 끼면 시각적 위계 망가짐.",
+        "Card / PageHeader 안에 Heading 을 중첩해서 쓰는 패턴이 정상. 단, PageHeader 가 이미 title 슬롯을 가진 경우엔 PageHeader 의 title 을 우선 사용(PageHeader 가 내부에서 Heading 으로 합성한다).",
+        "`as` 는 비주얼은 level 그대로 두고 DOM 헤딩 태그만 바꿀 때만. 예: 페이지 랜드마크가 h1 이어야 하는데 폰트는 h2 스케일 → level='h2' as='h1'. 평소엔 쓰지 말 것 — level 과 태그가 어긋나면 접근성 위계가 흐트러진다."
+      ],
+      "recommended": [
+        "카드 헤딩 (★ 가장 자주): <Heading level='h4' title='바로 상담하기' description='급한 문제는 5분 내 바로 상담' />",
+        "서브 헤딩 (★ 가장 자주): <Heading level='h5' title='오늘의 루틴' description='...' />",
+        "Hero 영역: <Heading level='h1' title='마음까지 건강한 업무환경' description='...' />",
+        "단독 헤딩: description 생략 — 헤딩 + Gap 만 토큰화하고 싶을 때."
+      ],
+      "examplesHtml": {
+        "do": "<nds-heading level=\"h2\" title=\"이번 주 미션\" description=\"작은 변화부터 시작해요\"></nds-heading>",
+        "dont": "<!-- level 누락 -> 기본값이 적용돼 페이지 위계가 무너짐 -->\n<nds-heading title=\"…\"></nds-heading>"
       }
     },
     "IconButton": {
@@ -2139,9 +2208,10 @@
     },
     "PageHeader": {
       "name": "PageHeader",
-      "summary": "페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 + 하단 탭 슬롯. AppBar(글로벌 네비)와 분리.",
+      "summary": "페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 + 하단 탭 슬롯. AppBar(글로벌 네비)와 분리. 제목/부제는 내부에서 Heading(level=h2, as=h1)으로 합성 — 폰트·gap·색이 Heading SSOT 를 따른다.",
       "pitfalls": [
         "글로벌 네비는 AppBar. PageHeader는 각 페이지 안의 타이틀 영역.",
+        "제목 블록은 Heading 합성이라 폰트·제목↔부제 gap·색을 PageHeader 쪽에서 따로 박지 말 것. 위계 스케일을 바꿔야 하면 Heading 토큰(Figma 859:5614)에서.",
         "onBack 지정 시 좌측 ← 자동 노출 — 직접 IconButton 추가하지 말 것 (이중 노출).",
         "bottom 슬롯은 헤더 padding 외곽까지 음수 마진으로 펼쳐짐. Tabs를 그 안에서 padding 직접 줄 때 0/24/0 등으로 미세 조정.",
         "bordered=true는 스크롤되는 본문과 헤더를 분리할 때만 사용. 분리감이 필요 없으면 false."
@@ -3109,28 +3179,6 @@
       "examplesHtml": {
         "do": "<!-- 이벤트 로그 -->\n<nds-timeline mode=\"activity\" items='[\n  {\"key\":\"1\",\"date\":\"2026.05.25\",\"title\":\"상담 예약 완료\",\"status\":\"completed\",\"statusLabel\":\"완료\"},\n  {\"key\":\"2\",\"date\":\"2026.05.28\",\"title\":\"자가검사\",\"status\":\"ongoing\",\"statusLabel\":\"진행 중\"}\n]'></nds-timeline>\n<!-- 단계 트래커 -->\n<nds-timeline mode=\"tracker\" current=\"1\" direction=\"horizontal\" items='[\n  {\"key\":\"r\",\"title\":\"접수\",\"date\":\"05/20\"},\n  {\"key\":\"p\",\"title\":\"처리 중\"},\n  {\"key\":\"d\",\"title\":\"완료\"}\n]'></nds-timeline>",
         "dont": "<!-- 슬롯 자식(nds-timeline-item)·steps 속성은 폐기 — items 배열 + mode 사용 -->\n<nds-timeline><nds-timeline-item title=\"…\"></nds-timeline-item></nds-timeline>"
-      }
-    },
-    "TitleGroup": {
-      "name": "TitleGroup",
-      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=859-5614",
-      "summary": "헤딩 + 서브타이틀 표준 블록. level (h1~h5) 만 결정하면 헤딩 폰트와 Gap/Title 토큰이 자동 적용 — Figma TitleGapGuide 859:5614 (6 페이지 58건 실측) 기반.",
-      "pitfalls": [
-        "헤딩 + 서브타이틀 묶음에는 직접 <h{n}> + <p> + margin-top 으로 짜지 말 것. level↔gap 미스매치(h4 에 12px gap 등) 가 생기는 가장 흔한 안티패턴.",
-        "h4/h5 가 '★ 가장 자주' — 카드 헤딩(h4 · gap 6) / 서브 헤딩(h5 · gap 8). h1~h3 은 페이지 단위 hero / 큰 섹션 / 페이지 헤더.",
-        "서브타이틀 폰트도 level 에 묶여 자동 결정: h1~h3 = Body3(14px), h4~h5 = Caption1(13px). 다른 사이즈가 필요하면 TitleGroup 을 쓰지 말고 raw 헤딩으로.",
-        "위계가 같은 자리에서는 같은 level 유지. h4 카드 헤딩들 사이에 h2 가 끼면 시각적 위계 망가짐.",
-        "Card / PageHeader 안에 TitleGroup 을 중첩해서 쓰는 패턴이 정상. 단, PageHeader 가 이미 title 슬롯을 가진 경우엔 PageHeader 의 title 을 우선 사용."
-      ],
-      "recommended": [
-        "카드 헤딩 (★ 가장 자주): <TitleGroup level='h4' title='바로 상담하기' subtitle='급한 문제는 5분 내 바로 상담' />",
-        "서브 헤딩 (★ 가장 자주): <TitleGroup level='h5' title='오늘의 루틴' subtitle='...' />",
-        "Hero 영역: <TitleGroup level='h1' title='마음까지 건강한 업무환경' subtitle='...' />",
-        "단독 헤딩: subtitle 생략 — 헤딩 + Gap 만 토큰화하고 싶을 때."
-      ],
-      "examplesHtml": {
-        "do": "<nds-title-group level=\"h2\" title=\"이번 주 미션\" subtitle=\"작은 변화부터 시작해요\"></nds-title-group>",
-        "dont": "<!-- level 누락 -> 기본값이 적용돼 페이지 위계가 무너짐 -->\n<nds-title-group title=\"…\"></nds-title-group>"
       }
     },
     "Toast": {

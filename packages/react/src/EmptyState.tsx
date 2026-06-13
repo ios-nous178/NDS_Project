@@ -13,19 +13,34 @@ const EMPTY_ACTION_CLASS = `${EMPTY_CLASS}__action`;
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
+/* ─── Status (시멘틱) ─── */
+
+/**
+ * 화면 상태 시멘틱. 기본 아이콘 글리프와 아이콘 색을 구동한다.
+ * - `empty` — 빈 리스트/테이블 placeholder (중립색, 기본값)
+ * - `success` / `error` / `info` — 결과 화면(결제 성공·404·권한 없음 등)
+ *
+ * 인라인 placeholder ↔ 풀페이지 결과 화면의 차이는 `status` 가 아니라 `minHeight` 로
+ * 조절한다(인라인은 작게, 결과 화면은 `"60vh"` 등 크게). 같은 anatomy 를 altitude 만 달리 쓴다.
+ */
+export type EmptyStateStatus = "empty" | "success" | "error" | "info";
+
 /* ─── Compound: Root ─── */
 
 export interface EmptyStateRootProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 최소 높이 (number: px, string: CSS 값) */
   minHeight?: number | string;
+  /** 화면 상태 시멘틱 — 아이콘 색을 구동 @default "empty" */
+  status?: EmptyStateStatus;
   /** 빈 상태 내부 콘텐츠 (Icon, Title, Description, Action 등) */
   children: React.ReactNode;
 }
 
 export const EmptyStateRoot: React.FC<EmptyStateRootProps> = React.memo(
-  ({ minHeight, children, className, style, ...rest }) => (
+  ({ minHeight, status = "empty", children, className, style, ...rest }) => (
     <div
       data-slot="root"
+      data-status={status}
       className={cx(EMPTY_ROOT_CLASS, className)}
       style={{
         ...(minHeight !== undefined &&
@@ -123,15 +138,17 @@ export interface EmptyStateSlotProps {
 }
 
 export interface EmptyStateProps {
-  /** 아이콘 또는 이미지 */
+  /** 아이콘 또는 이미지 (생략 시 `status` 기본 글리프) */
   icon?: React.ReactNode;
+  /** 화면 상태 시멘틱 — 기본 아이콘 글리프 + 아이콘 색 @default "empty" */
+  status?: EmptyStateStatus;
   /** 제목 */
   title?: string;
   /** 설명 문구 */
   description?: string;
   /** 하단 액션 (버튼 등) */
   action?: React.ReactNode;
-  /** 최소 높이 */
+  /** 최소 높이 (인라인 placeholder 는 작게, 결과 화면은 `"60vh"` 등 크게) */
   minHeight?: number | string;
   /** 루트 className */
   className?: string;
@@ -148,16 +165,45 @@ const renderMultiline = (text: string): React.ReactNode =>
     return acc;
   }, []);
 
-const DefaultEmptyIcon: React.FC = () => (
-  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
-    <path d="M22 32H42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M32 22V42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
+/* status 별 기본 글리프 — 모두 currentColor (색은 data-status 가 CSS 로 구동) */
+const STATUS_ICONS: Record<EmptyStateStatus, React.ReactNode> = {
+  empty: (
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
+      <path d="M22 32H42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path d="M32 22V42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  ),
+  success: (
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M21 33l8 8 14-16"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  error: (
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="2" />
+      <path d="M24 24l16 16M40 24L24 40" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  ),
+  info: (
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="currentColor" strokeWidth="2" />
+      <circle cx="32" cy="21" r="2.4" fill="currentColor" />
+      <path d="M32 29v16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  ),
+};
 
 const EmptyStateComponent: React.FC<EmptyStateProps> = ({
   icon,
+  status = "empty",
   title,
   description,
   action,
@@ -168,11 +214,12 @@ const EmptyStateComponent: React.FC<EmptyStateProps> = ({
 }) => (
   <EmptyStateRoot
     minHeight={minHeight}
+    status={status}
     className={cx(slotProps?.root?.className, className)}
     style={{ ...slotProps?.root?.style, ...style }}
   >
     <EmptyStateIcon className={slotProps?.icon?.className} style={slotProps?.icon?.style}>
-      {icon ?? <DefaultEmptyIcon />}
+      {icon ?? STATUS_ICONS[status]}
     </EmptyStateIcon>
     {title && (
       <EmptyStateTitle className={slotProps?.title?.className} style={slotProps?.title?.style}>
