@@ -1034,25 +1034,6 @@
         "dont": "<!-- disabled 와 removable 동시 사용 — 누가 X 버튼을 누를 수 있는지 모호 -->\n<nds-chip disabled removable>태그</nds-chip>\n<!-- interactive 없이 클릭 핸들러만 — 키보드 포커스가 안 잡힘 -->\n<nds-chip onclick=\"…\">필터</nds-chip>"
       }
     },
-    "CoachMark": {
-      "name": "CoachMark",
-      "summary": "온보딩 dim 툴팁. 특정 DOM 영역을 강조 + 단계별 안내. Tooltip과 분리(가벼운 hover용).",
-      "pitfalls": [
-        "단순 hover 설명용은 Tooltip을 쓸 것. CoachMark는 화면 전체 dim + 강제 가이드.",
-        "target은 selector(string) 또는 element-getter 함수. 마운트 시점에 DOM에 존재해야 함.",
-        "스크롤 필요한 위치를 가리키면 사전에 scrollIntoView 직접 호출 — CoachMark가 자동 스크롤 안 함.",
-        "한 화면에 매번 띄우지 말 것 — 첫 진입/새 기능 출시 등 명시적 트리거에만."
-      ],
-      "recommended": [
-        "첫 진입: steps 3-5개, 마지막 단계 후 onClose에서 localStorage 플래그 저장",
-        "단일 안내: hideSkip + steps 1개",
-        "도움말 재생: ref로 외부에서 step 제어"
-      ],
-      "examplesHtml": {
-        "do": "<nds-coach-mark open step=\"0\"\n  steps='[{\"title\":\"여기서 시작\",\"description\":\"홈 탭에서 검사를 시작하세요\"}]'\n  finish-label=\"완료\" skip-label=\"건너뛰기\"></nds-coach-mark>",
-        "dont": "<!-- steps 가 1개인데 skip 노출 + finish-label 누락 — UX 가 어색 -->\n<nds-coach-mark open steps='[{\"title\":\"…\"}]'></nds-coach-mark>"
-      }
-    },
     "CommentItem": {
       "name": "CommentItem",
       "summary": "댓글 한 건. 작성자/시간/본문 + 좋아요/답글 슬롯 + 답글 트리(replies). 본문 줄바꿈 자동 보존.",
@@ -1464,7 +1445,7 @@
         "캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)",
         "FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.",
         "글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.",
-        "라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker/PinPad/SignaturePad)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용."
+        "라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용."
       ],
       "examplesHtml": {
         "do": "<!-- 모바일/일반 폼 -->\n<nds-form-field label=\"이름\" helper=\"실명을 입력해주세요\" html-for=\"name-input\" required>\n  <nds-input id=\"name-input\" name=\"name\"></nds-input>\n</nds-form-field>\n\n<!-- 캐시워크 포 비즈니스 admin: label 좌측 + compact + admin density -->\n<nds-form-field label=\"Label\" label-position=\"left\" density=\"admin\" html-for=\"admin-name\">\n  <nds-input id=\"admin-name\" size=\"compact\" placeholder=\"값을 입력하세요\"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label=\"기간\" label-position=\"left\" density=\"admin\">\n  <nds-input-group>\n    <nds-select placeholder=\"년\"></nds-select>\n    <nds-select placeholder=\"월\"></nds-select>\n    <nds-select placeholder=\"일\"></nds-select>\n  </nds-input-group>\n</nds-form-field>",
@@ -1663,23 +1644,6 @@
         "dont": "<!-- aria-label 없는 아이콘 단독 버튼: 스크린리더가 \"button\" 만 읽음 -->\n<nds-icon-button size=\"md\"><svg>…</svg></nds-icon-button>\n<!-- raw <button> 으로 아이콘 버튼 흉내. 토큰/사이즈 룰 적용 안 됨 -->\n<button class=\"icon-btn\"><svg>…</svg></button>"
       }
     },
-    "ImageCropper": {
-      "name": "ImageCropper",
-      "summary": "이미지 자르기 (circle/square). 드래그+줌, ref.toDataURL()로 PNG 추출.",
-      "pitfalls": [
-        "외부 이미지(https) 자르기는 CORS 헤더 필요 — 서버 응답에 Access-Control-Allow-Origin 없으면 dataURL이 비어나옴.",
-        "outputSize는 보통 200-400 — 너무 작으면 화질 저하.",
-        "CSS transform 기반 변환이라 매우 큰 이미지(>4000px)는 모바일에서 끊길 수 있음."
-      ],
-      "recommended": [
-        "프로필 사진: shape='circle' outputSize=200",
-        "커버: shape='square' size=320"
-      ],
-      "examplesHtml": {
-        "do": "<nds-image-cropper src=\"/photo.jpg\" shape=\"circle\" output-size=\"512x512\"\n  label=\"프로필 사진 자르기\"></nds-image-cropper>\n<script>\n// 적용 버튼에서 직접 호출:\nconst dataUrl = await document.querySelector(\"nds-image-cropper\").toDataURL();\n</script>",
-        "dont": "<!-- src 없이 즉시 노출 — 빈 영역만 보임 -->\n<nds-image-cropper shape=\"circle\"></nds-image-cropper>"
-      }
-    },
     "ImageUpload": {
       "name": "ImageUpload",
       "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3078-617",
@@ -1805,23 +1769,6 @@
       "examplesHtml": {
         "do": "<nds-form-field label=\"기간\" label-position=\"left\" density=\"admin\">\n  <nds-input-group>\n    <nds-select placeholder=\"년\"></nds-select>\n    <nds-select placeholder=\"월\"></nds-select>\n    <nds-select placeholder=\"일\"></nds-select>\n  </nds-input-group>\n</nds-form-field>",
         "dont": "<!-- FormField 없이 단독 — label 끊김 -->\n<nds-input-group><nds-input></nds-input><nds-input></nds-input></nds-input-group>\n<!-- child 너비를 px 로 — stretch 효과 깨짐 -->\n<nds-input-group><nds-input style=\"width:200px\"></nds-input></nds-input-group>"
-      }
-    },
-    "Lightbox": {
-      "name": "Lightbox",
-      "summary": "이미지 풀스크린 확대 모달. 키보드(Esc/←/→) + 좌우 버튼 + 카운터 + 캡션.",
-      "pitfalls": [
-        "body.overflow 잠금이 자동 처리. 외부에서 또 잠그지 말 것.",
-        "이미지 1장이면 좌우 네비 자동 숨김 — 외부에서 조건 분기 불필요.",
-        "src는 미리 로드된 이미지 권장 — 큰 원본 이미지 직접 띄우면 첫 진입 지연."
-      ],
-      "recommended": [
-        "갤러리: 썸네일 그리드 + onClick으로 idx 설정 + open",
-        "단일: 이미지 1장 + caption로 컨텍스트 제공"
-      ],
-      "examplesHtml": {
-        "do": "<nds-lightbox open index=\"0\"\n  images='[{\"src\":\"/p1.jpg\",\"alt\":\"사진 1\",\"caption\":\"…\"},{\"src\":\"/p2.jpg\",\"alt\":\"사진 2\"}]'></nds-lightbox>\n<script>el.addEventListener(\"lightbox-close\", () => el.removeAttribute(\"open\"));</script>",
-        "dont": "<!-- alt 누락 — 이미지 의미 전달 실패 -->\n<nds-lightbox open images='[{\"src\":\"/p.jpg\"}]'></nds-lightbox>"
       }
     },
     "LikeButton": {
@@ -2282,24 +2229,6 @@
         "dont": "<!-- 다이얼 코드(+82) 를 country-code 로 — ISO 코드 사용 -->\n<nds-phone-input country-code=\"+82\"></nds-phone-input>"
       }
     },
-    "PinPad": {
-      "name": "PinPad",
-      "summary": "PIN 키패드. 점 인디케이터 + 숫자 그리드. SMS 인증은 VerificationCodeInput, 일반 입력은 Input.",
-      "pitfalls": [
-        "shuffleSeed를 매 렌더 새로 계산하면 키 배치 흔들림 — useMemo로 진입 시점에 고정.",
-        "onComplete는 길이 도달 시 1회. 실패 시 value=''로 리셋해야 다시 입력 가능.",
-        "VerificationCodeInput과 혼동 금지 — PIN은 사용자 비밀, OTP는 외부에서 받는 인증번호."
-      ],
-      "recommended": [
-        "앱 진입 PIN: length=6 (기본)",
-        "간편 결제: length=4",
-        "보안 키패드: shuffle + 진입 시점 시드"
-      ],
-      "examplesHtml": {
-        "do": "<nds-pin-pad pin-length=\"6\" label=\"인증 번호 입력\" shuffle></nds-pin-pad>\n<script>el.addEventListener(\"nds-pin-complete\", e => verify(e.detail.value));</script>",
-        "dont": "<!-- OTP / SMS 인증을 PinPad 로 — VerificationCodeInput 가 맞음 (자동 채움 / 붙여넣기) -->\n<nds-pin-pad pin-length=\"6\" label=\"SMS 인증\"></nds-pin-pad>"
-      }
-    },
     "PopularPosts": {
       "name": "PopularPosts",
       "figmaNodeUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=148-68",
@@ -2517,23 +2446,6 @@
         "dont": "<!-- 결정적이지 않은 작업(=언제 끝날지 모름)에 진행률 -->\n<nds-progress-bar value=\"32\"></nds-progress-bar> <!-- 차라리 spinner 사용 -->"
       }
     },
-    "PullToRefresh": {
-      "name": "PullToRefresh",
-      "summary": "모바일 풀 투 리프레시. 화면 최상단에서 당기면 onRefresh, Promise 종료 자동 처리.",
-      "pitfalls": [
-        "scrollTop > 0이면 트리거 X — 항상 최상단에서만 동작 (의도적).",
-        "데스크톱에서 패턴이 어색 — 모바일 우선 화면에만.",
-        "threshold가 너무 작으면 일반 스크롤도 잘못 인식. 64-96 권장."
-      ],
-      "recommended": [
-        "리스트 새로고침: onRefresh={async () => { await refetch(); }}",
-        "라벨 커스텀: pullLabel='당겨서 일기 동기화'"
-      ],
-      "examplesHtml": {
-        "do": "<nds-pull-to-refresh threshold=\"80\">\n  <div slot=\"default\">스크롤 콘텐츠…</div>\n</nds-pull-to-refresh>\n<script>\nel.addEventListener(\"refresh\", async () => {\n  await reload();\n  el.endRefresh();\n});\n</script>",
-        "dont": "<!-- endRefresh() 호출 안 함 — 스피너가 영원히 돌아감 -->\n<nds-pull-to-refresh><div slot=\"default\">…</div></nds-pull-to-refresh>"
-      }
-    },
     "QuickActionGrid": {
       "name": "QuickActionGrid",
       "summary": "홈 빠른 액션 그리드. 4-6칸 아이콘+라벨, 배지 지원. 4칸이 기본 균형.",
@@ -2664,23 +2576,6 @@
         "로그인 후: `<RunmileWebHeader menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />` — 자체 로고로 바꾸려면 `logoSrc={...}` 추가.",
         "HTML 목업(vanilla): `<nds-brand-header brand='runmile' surface='web' active-key='race'>` — base nds-header + nds-header-menu-item 손수 조립 금지 (BrandHeader 가이드). 모바일 bar 는 surface='mobile'."
       ]
-    },
-    "ScoreGauge": {
-      "name": "ScoreGauge",
-      "summary": "점수 시각화 (반원 게이지). 4단계(normal/mild/moderate/severe) 색 자동 매핑.",
-      "pitfalls": [
-        "단계 경계는 검사마다 다름. segments prop으로 직접 넘겨 결과 해석을 통일.",
-        "needle은 transform: rotate로 회전. CSS transform 충돌 환경(예: 부모 transform)에선 어긋날 수 있어 wrapper 별도 권장.",
-        "showLegend는 4개라 모바일 가로폭 부족하면 줄 바뀜 — 카드 안에선 false 권장.",
-        "max를 점수 합과 동일하게 — \"100 만점\"으로 정규화하지 말 것 (해석 매트릭스가 어긋남)."
-      ],
-      "recommended": [
-        "PHQ-9: <ScoreGauge value={score} max={27} segments={[{level:\"normal\",label:\"정상\",from:0,to:5}, {level:\"mild\",label:\"경증\",from:5,to:10}, ...]} />"
-      ],
-      "examplesHtml": {
-        "do": "<nds-score-gauge value=\"22\" max=\"27\"\n  segments='[\n    {\"level\":\"normal\",\"label\":\"정상\",\"from\":0,\"to\":9},\n    {\"level\":\"mild\",\"label\":\"경미\",\"from\":10,\"to\":18},\n    {\"level\":\"moderate\",\"label\":\"중간\",\"from\":19,\"to\":27}\n  ]'\n  show-label show-legend value-suffix=\"점\"></nds-score-gauge>",
-        "dont": "<!-- segments 의 level 이 정의된 enum 외 값 — 색이 fallback -->\n<nds-score-gauge value=\"5\" segments='[{\"level\":\"good\",\"from\":0,\"to\":10}]'></nds-score-gauge>"
-      }
     },
     "SearchInput": {
       "name": "SearchInput",
@@ -2861,23 +2756,6 @@
       "examplesHtml": {
         "do": "<!-- 권장: items 를 자식 <script type=\"application/json\" slot=\"items\"> 로 넣는다 — 속성이 아니라 텍스트라 따옴표 이스케이프 함정이 아예 없고 단일파일 빌드에도 안전 -->\n<nds-sidebar active-key=\"home\" width=\"240\" title=\"NudgeEAP\">\n  <script type=\"application/json\" slot=\"items\">\n  [{\"key\":\"home\",\"label\":\"홈\",\"icon\":\"<svg ...>...</svg>\"},{\"key\":\"chat\",\"label\":\"상담\",\"icon\":\"<svg ...>...</svg>\"}]\n  </script>\n</nds-sidebar>\n<!-- 속성 형태도 가능: items='[{\"key\":\"home\",...}]' — 단, 구조용 따옴표는 bare 로 두고 SVG 내부 따옴표만 \\\" 로 이스케이프(구조 따옴표를 \\\" 로 만들면 파싱 실패→메뉴 통째 유실). icon = find_icon({name}) inline SVG 그대로(이름 넣으면 텍스트로 흘러나옴) -->\n<script>el.addEventListener(\"item-click\", e => navigate(e.detail.key));</script>",
         "dont": "<!-- 사내 백오피스(=antd 영역)에서 nds-sidebar 사용 — 백오피스는 antd Layout.Sider. -->\n<!-- ★ 단, 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 정반대 — nds-sidebar 가 정답이다. 아래 pitfalls 참고 -->\n<nds-sidebar items='...'></nds-sidebar>"
-      }
-    },
-    "SignaturePad": {
-      "name": "SignaturePad",
-      "summary": "전자 서명 캔버스. 동의서/가입 서명 추출. ref(SignaturePadHandle)로 clear/toDataURL/isEmpty.",
-      "pitfalls": [
-        "onChange로 매 stroke 추출하면 큰 base64가 잦은 리렌더 — ref로 제출 시점에만 toDataURL() 호출 권장.",
-        "빈 캔버스의 toDataURL()은 null 반환. 서명 검증에 사용.",
-        "터치 디바이스에서 wrap의 touch-action: none 필수 (스크롤 방해 방지) — 컴포넌트 내장."
-      ],
-      "recommended": [
-        "동의서: ref + Button onClick에서 isEmpty() 체크 후 toDataURL 제출",
-        "읽기 전용 표시: disabled (이미 그려진 dataURL은 별도 <img>로 표시)"
-      ],
-      "examplesHtml": {
-        "do": "<nds-signature-pad label=\"여기에 서명해주세요\" height=\"200\" pen-width=\"2\"></nds-signature-pad>\n<script>\n// 제출 시:\nconst dataUrl = await document.querySelector(\"nds-signature-pad\").toDataURL();\n</script>",
-        "dont": "<!-- 짧은 동의 체크에 SignaturePad — 과한 UI. nds-checkbox 가 맞음 -->\n<nds-signature-pad label=\"약관 동의\"></nds-signature-pad>"
       }
     },
     "Skeleton": {
@@ -3354,14 +3232,14 @@
     },
     "VerificationCodeInput": {
       "name": "VerificationCodeInput",
-      "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(타이머 CountdownTimer 는 코드 입력 우측에 겹쳐 배치, 확인 버튼은 InputGroup 의 같은 행). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input. 자리별 PIN 은 PinPad.)",
+      "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(타이머 CountdownTimer 는 코드 입력 우측에 겹쳐 배치, 확인 버튼은 InputGroup 의 같은 행). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input.)",
       "pitfalls": [
         "이 컴포넌트는 코드 필드만 — 타이머/재전송/확인 버튼은 FormField(헬퍼) + InputGroup(코드 입력 + 버튼) + CountdownTimer 합성으로 붙인다(내장 타이머 없음).",
         "value는 숫자 string. length만큼 채워지면 onComplete(react)/code-complete(html) 발화 — 그 안에서 자동 제출하면 UX 좋음.",
         "입력은 숫자만 허용(영문/특수문자 자동 필터). 영숫자 OTP가 필요하면 maxLength 늘린 일반 Input 검토.",
         "autoComplete=\"one-time-code\" 가 단일 input 에 적용 — iOS/Android SMS 자동 추출 동작.",
-        "자리별 세그먼트 UI(자리당 박스)가 아님 — length 는 maxLength 로만 작동. 점 인디케이터식 PIN 은 PinPad.",
-        "**자리별 박스(6칸 세그먼트) 는 모바일/네이티브 앱 패턴** — 웹/데스크톱에서는 이 단일 필드가 표준이다(붙여넣기·자동완성·접근성이 자연 동작). 네이티브 앱의 6칸 OTP 화면을 웹 목업으로 그대로 옮겨 자리별 박스를 raw <input> 으로 만들지 말 것. 자리별 PIN 점 인디케이터가 필요하면 PinPad."
+        "자리별 세그먼트 UI(자리당 박스)가 아님 — length 는 maxLength 로만 작동.",
+        "**자리별 박스(6칸 세그먼트) 는 모바일/네이티브 앱 패턴** — 웹/데스크톱에서는 이 단일 필드가 표준이다(붙여넣기·자동완성·접근성이 자연 동작). 네이티브 앱의 6칸 OTP 화면을 웹 목업으로 그대로 옮겨 자리별 박스를 raw <input> 으로 만들지 말 것."
       ],
       "recommended": [
         "회원가입/로그인 SMS 인증: FormField(helper) > InputGroup(align=start) 에 VerificationCodeInput length=6 autoFocus + 확인 Button, 타이머(CountdownTimer)는 코드 입력 우측에 겹쳐 배치 · onComplete 로 자동 검증.",
@@ -3390,40 +3268,6 @@
       "examplesHtml": {
         "do": "<nds-video-player src=\"/intro.mp4\" poster=\"/cover.jpg\"\n  title=\"첫 회기 안내\" duration-label=\"3:42\" muted></nds-video-player>",
         "dont": "<!-- aspect-ratio 형식 위반 (CSS aspect-ratio 형식: \"16 / 9\") -->\n<nds-video-player src=\"/v.mp4\" aspect-ratio=\"16:9\"></nds-video-player>"
-      }
-    },
-    "VoiceRecorder": {
-      "name": "VoiceRecorder",
-      "summary": "음성 메모 녹음 UI. 큰 녹음 버튼 + 타이머 + 펄스 인디케이터. 마이크 접근/저장은 외부 처리.",
-      "pitfalls": [
-        "seconds는 외부 timer로 갱신 — 컴포넌트는 시간 측정 안 함 (테스트 가능성).",
-        "녹음 시작 시 navigator.mediaDevices.getUserMedia 등 마이크 권한 처리는 onStateChange 안에서.",
-        "maxSeconds 도달 시 자동 onComplete + state='idle' — 직접 stop 처리할 필요 없음."
-      ],
-      "recommended": [
-        "감정 일기 음성: maxSeconds=300 (5분), onComplete에서 파일 업로드",
-        "챗 음성 메시지: maxSeconds=60"
-      ],
-      "examplesHtml": {
-        "do": "<nds-voice-recorder state=\"idle\" seconds=\"0\" max-seconds=\"180\"></nds-voice-recorder>\n<script>\n// host 가 timer 와 state 를 controlled 로 관리:\nel.addEventListener(\"state-change\", e => { el.setAttribute(\"state\", e.detail.state); /* setInterval 로 seconds */ });\nel.addEventListener(\"complete\", e => save(e.detail.seconds));\n</script>",
-        "dont": "<!-- seconds 를 자체 증가시키지 않음 — host 가 timer 책임 -->\n<nds-voice-recorder state=\"recording\" seconds=\"0\"></nds-voice-recorder>  <!-- 영원히 0 -->"
-      }
-    },
-    "WaveformPlayer": {
-      "name": "WaveformPlayer",
-      "summary": "음성 메시지 재생 (파형 시각화). AudioPlayer가 트랙바 형태라면 WaveformPlayer는 컴팩트 메시지용.",
-      "pitfalls": [
-        "peaks 미지정 시 src 기반 의사 랜덤 — 정확한 파형이 필요하면 서버 메타데이터로 전달.",
-        "긴 콘텐츠(>5분)는 AudioPlayer가 더 적합.",
-        "막대 개수(bars)는 32-48 권장. 너무 많으면 모바일에서 막대가 1px 미만으로 줄어듦."
-      ],
-      "recommended": [
-        "채팅 음성 메시지: 기본 사용",
-        "내 메시지: color=primary, 상대 메시지: color='#666'"
-      ],
-      "examplesHtml": {
-        "do": "<nds-waveform-player src=\"/voice.mp3\" bars=\"36\"\n  peaks=\"[0.3,0.5,0.7,0.4,0.6,0.8]\"></nds-waveform-player>",
-        "dont": "<!-- raw <audio controls> 로 음성 메모 표시 — 파형/색/진행도 토큰 미적용 -->\n<audio controls src=\"/voice.mp3\"></audio>"
       }
     }
   },

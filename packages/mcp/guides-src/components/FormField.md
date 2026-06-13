@@ -29,7 +29,7 @@ Input / Textarea / Select 같은 form control 의 label / helper / error / count
 - 캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)
 - FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.
 - 글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.
-- 라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker/PinPad/SignaturePad)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용.
+- 라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용.
 
 ## examplesHtml.do
 

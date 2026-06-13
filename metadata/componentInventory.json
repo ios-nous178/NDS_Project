@@ -330,30 +330,6 @@
     "notes": "ISO code(KR/US/...)로 state 관리. countries prop으로 국가 커스텀."
   },
   {
-    "name": "SignaturePad",
-    "category": "입력",
-    "status": "implemented",
-    "description": "전자 서명 캔버스. ref로 clear/toDataURL/isEmpty 제어, PNG dataURL 추출",
-    "storybookTitle": "Components/Inputs/SignaturePad",
-    "docsPath": "/components/signature-pad",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "EAP 가입 동의서, 상담 시작 동의, 의료/법적 동의 서명",
-    "notes": "터치 디바이스 호환. ref로 제출 시점에만 dataURL 추출 권장."
-  },
-  {
-    "name": "CoachMark",
-    "category": "오버레이",
-    "status": "implemented",
-    "description": "온보딩 dim 툴팁. 특정 영역 강조 + 단계별 안내, placement 4방향",
-    "storybookTitle": "Components/Overlay/CoachMark",
-    "docsPath": "/components/coach-mark",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "첫 진입 온보딩, 새 기능 출시 안내, 도움말 재생",
-    "notes": "Tooltip과 분리 (가벼운 hover용). selector 또는 element-getter로 target 지정."
-  },
-  {
     "name": "Sparkline",
     "category": "일반",
     "status": "implemented",
@@ -426,18 +402,6 @@
     "notes": "기본 stacked(이메일 초대형). 해시태그는 variant=inline + prefix=#. 이메일은 pattern 으로 형식 검증."
   },
   {
-    "name": "Lightbox",
-    "category": "오버레이",
-    "status": "implemented",
-    "description": "이미지 풀스크린 확대 모달. 키보드 네비, 좌우 버튼, 카운터, 캡션",
-    "storybookTitle": "Components/Overlay/Lightbox",
-    "docsPath": "/components/lightbox",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "일기 사진 확대, 콘텐츠 이미지 갤러리, 검사 결과 이미지",
-    "notes": "body 스크롤 잠금 자동. 1장이면 네비 자동 숨김."
-  },
-  {
     "name": "AvatarGroup",
     "category": "일반",
     "status": "implemented",
@@ -450,18 +414,6 @@
     "notes": "Avatar 단독은 그대로 사용. AvatarGroup은 N명 ≥ 2 케이스."
   },
   {
-    "name": "VoiceRecorder",
-    "category": "일반",
-    "status": "implemented",
-    "description": "음성 메모 녹음 UI. 큰 버튼 + 타이머 + 펄스 인디케이터, maxSeconds 자동 종료",
-    "storybookTitle": "Components/Display/VoiceRecorder",
-    "docsPath": "/components/voice-recorder",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "감정 일기 음성 모드, 챗 음성 메시지, 상담 음성 메모",
-    "notes": "마이크 접근/저장은 외부 처리. seconds는 외부 timer로 갱신."
-  },
-  {
     "name": "CountdownTimer",
     "category": "피드백",
     "status": "implemented",
@@ -472,18 +424,6 @@
     "figmaNodeId": "",
     "usageSummary": "인증 만료, 라이브 시작까지, 챌린지/미션 마감",
     "notes": "endsAt은 useMemo로 고정. onComplete는 1회만 호출."
-  },
-  {
-    "name": "PinPad",
-    "category": "입력",
-    "status": "implemented",
-    "description": "PIN 키패드. 점 인디케이터 + 숫자 그리드, 셔플 옵션, 에러 흔들림",
-    "storybookTitle": "Components/Inputs/PinPad",
-    "docsPath": "/components/pin-pad",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "앱 진입 PIN, 간편 결제 비밀번호, 보안 키패드",
-    "notes": "VerificationCodeInput과 분리. shuffleSeed는 useMemo로 고정."
   },
   {
     "name": "TimePicker",
@@ -508,30 +448,6 @@
     "figmaNodeId": "",
     "usageSummary": "회원가입 주소, 배송 주소, 방문 상담 주소",
     "notes": "검색 자체는 외부 API. value = 주소 + 상세 한 묶음."
-  },
-  {
-    "name": "ImageCropper",
-    "category": "입력",
-    "status": "implemented",
-    "description": "이미지 자르기 (원형/사각형). 드래그+줌, ref.toDataURL() PNG 추출",
-    "storybookTitle": "Components/Inputs/ImageCropper",
-    "docsPath": "/components/image-cropper",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "프로필 사진 등록, 커버 이미지 자르기",
-    "notes": "외부 이미지는 CORS 필요. outputSize 200~400 권장."
-  },
-  {
-    "name": "PullToRefresh",
-    "category": "레이아웃",
-    "status": "implemented",
-    "description": "모바일 풀 투 리프레시. 최상단 당기면 onRefresh, Promise 자동 처리",
-    "storybookTitle": "Components/Layout/PullToRefresh",
-    "docsPath": "/components/pull-to-refresh",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "일기/콘텐츠 리스트 새로고침, 모바일 화면",
-    "notes": "최상단(scrollTop=0)에서만 트리거. 모바일 우선."
   },
   {
     "name": "AppBar",
@@ -608,18 +524,6 @@
     "notes": "값 조절은 NumberStepper. Stepper는 단계 시각화 전용(폼 관리는 MultiStepForm). variant=bar 가 구 StepProgress(캐포비 어드민 가로 막대)를 대체."
   },
   {
-    "name": "WaveformPlayer",
-    "category": "일반",
-    "status": "implemented",
-    "description": "음성 메시지 파형 플레이어. peaks 사전계산 또는 의사 랜덤, 클릭 시 시킹",
-    "storybookTitle": "Components/Display/WaveformPlayer",
-    "docsPath": "/components/waveform-player",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "채팅 음성 메시지, 짧은 음성 메모 재생",
-    "notes": "AudioPlayer(트랙바)와 분리된 컴팩트 메시지 형태."
-  },
-  {
     "name": "CommentItem",
     "category": "일반",
     "status": "implemented",
@@ -653,7 +557,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "아이콘 버튼 설명, 약자/용어 보조 설명, 라벨 보조 설명",
-    "notes": "모바일에서는 트리거가 제한적이므로 중요 정보를 Tooltip에만 두지 않는다. 상세 안내는 CoachMark."
+    "notes": "모바일에서는 트리거가 제한적이므로 중요 정보를 Tooltip에만 두지 않는다."
   },
   {
     "name": "ConfirmTooltip",
@@ -824,7 +728,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "휴대폰/이메일 인증, 2FA, EAP 가입 인증",
-    "notes": "간편 비밀번호는 PinPad. VerificationCodeInput은 6자리 인증코드."
+    "notes": "VerificationCodeInput은 6자리 인증코드."
   },
   {
     "name": "DatePicker",
@@ -1077,19 +981,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "비대면 상담 채팅, AI 챗봇 대화, 그룹 채팅",
-    "notes": "입력은 ChatComposer. WaveformPlayer를 본문 슬롯으로 사용해 음성 메시지 가능."
-  },
-  {
-    "name": "ScoreGauge",
-    "category": "데이터",
-    "status": "implemented",
-    "description": "점수를 반원 게이지로 시각화. 4단계 색 자동 매핑(정상~위기)",
-    "storybookTitle": "Components/Data/ScoreGauge",
-    "docsPath": "/components/score-gauge",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "검사 결과 점수 강조, 대시보드 핵심 지표, 챌린지 점수",
-    "notes": "CircularProgress(단순 비율)와 분리. 임상 단계 색이 의미를 가진다."
+    "notes": "입력은 ChatComposer."
   },
   {
     "name": "AudioPlayer",
@@ -1101,7 +993,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "명상 콘텐츠, 이완 가이드, 상담 녹취 재생",
-    "notes": "WaveformPlayer(짧은 음성 메시지)와 분리된 트랙바 형태."
+    "notes": "재생바·시간 표시가 있는 트랙바 형태의 오디오 플레이어."
   },
   {
     "name": "AttachmentItem",
