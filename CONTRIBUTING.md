@@ -89,7 +89,7 @@ CI 실패의 최다 원인은 **생성물 커밋 누락**입니다. 게이트(`c
 3. **앱 비즈니스 로직 없음** — 데이터 fetch/도메인 규칙이 들어가면 앱 컴포넌트
 4. **react + html 미러 동시 제공**(단면 제공은 baseline 에 사유 박제)
 
-전문은 [CLAUDE.md](CLAUDE.md) "DS 편입 기준(admission)".
+전문은 [CLAUDE.md](CLAUDE.md) "DS 편입 기준(admission)". 편입·폐기·브랜드·품질을 아우르는 운영 규칙 전체는 [GOVERNANCE.md](GOVERNANCE.md).
 
 ---
 

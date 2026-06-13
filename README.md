@@ -2,7 +2,7 @@
 
 5개 브랜드(**Trost · Geniet · NudgeEAP · CashwalkBiz · Runmile**)가 공유하는 디자인 토큰, React 컴포넌트, 바닐라 웹컴포넌트, 아이콘, Storybook, 문서를 관리하는 모노레포입니다.
 
-> **처음 오셨나요?** → [ONBOARDING.md](ONBOARDING.md) (역할별 시작) · [ARCHITECTURE.md](ARCHITECTURE.md) (구조·패키지 그래프) · [GLOSSARY.md](GLOSSARY.md) (용어) · [CONTRIBUTING.md](CONTRIBUTING.md) (기여 플로우)
+> **처음 오셨나요?** → [ONBOARDING.md](ONBOARDING.md) (역할별 시작) · [ARCHITECTURE.md](ARCHITECTURE.md) (구조·패키지 그래프) · [GLOSSARY.md](GLOSSARY.md) (용어) · [CONTRIBUTING.md](CONTRIBUTING.md) (기여 플로우) · [GOVERNANCE.md](GOVERNANCE.md) (운영·확장·개선 규칙)
 
 ## 배포 사이트
 
