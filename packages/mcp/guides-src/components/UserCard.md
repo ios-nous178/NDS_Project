@@ -4,7 +4,7 @@
 
 ## summary
 
-범용 프로필 미니카드. row/stacked, verified, action 슬롯. CounselorCard(EAP 특화)와 분리.
+**⚠ Deprecated — Card 합성으로 대체하세요.** 순수 슬롯 배치라 NudgeEAP Card 가이드의 "프로필 카드" 조합(`Card.Avatar` + `Card.Title` + `Card.Subtitle`(handle) + `Card.Description`(bio) + `Card.Metadata` + `Card.Cta`)으로 동일하게 표현됩니다. 다음 major 에서 제거 예정. 범용 프로필 미니카드(row/stacked, verified, action 슬롯) 기능 자체는 유지됩니다.
 
 ## pitfalls
 

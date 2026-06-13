@@ -63,6 +63,11 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Component ─── */
 
+/**
+ * @deprecated Card 합성으로 대체하세요 — NudgeEAP Card 가이드의 "프로필 카드" 조합
+ * (`Card.Avatar` + `Card.Title` + `Card.Subtitle`(handle) + `Card.Description`(bio) + `Card.Metadata` + `Card.Cta`).
+ * UserCard 는 순수 슬롯 배치라 Card 합성으로 동일하게 표현되며, 다음 major 에서 제거 예정입니다.
+ */
 export const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
   (
     {

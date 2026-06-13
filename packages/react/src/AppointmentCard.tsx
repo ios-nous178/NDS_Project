@@ -116,6 +116,11 @@ const KO_WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 /* ─── Component ─── */
 
+/**
+ * @deprecated DS 편입 기준 위반 — 날짜 파생(ISO → 월/일/요일)과 status·mode 상태머신 같은 **앱 로직**을
+ * 컴포넌트가 소유합니다. 예약 화면은 DS 가 아니라 앱 레이어 컴포넌트로 두고(날짜 파생/상태 매핑을 앱이 소유),
+ * 시각 표현은 `Card` 합성으로 구성하세요. AppointmentCard 는 다음 major 에서 제거 예정입니다.
+ */
 export const AppointmentCard = React.forwardRef<HTMLDivElement, AppointmentCardProps>(
   (
     {

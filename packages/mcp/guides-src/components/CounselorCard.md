@@ -4,7 +4,7 @@
 
 ## summary
 
-상담사 프로필 카드. 이름/자격/평점/태그/소개/예약 CTA. 1-2열 그리드에 잘 어울림.
+**⚠ Deprecated — Card 합성으로 대체하세요.** `Card.stories` 의 CompoundCounselorCard 가 동일 카드를 순수 Card 합성으로 렌더합니다 (`Card.Avatar` + `Card.Title`(이름) + `Card.Subtitle`(자격) + `Card.Meta`(별점) + `Card.Chips`(태그) + `Card.Description`(소개) + `Card.Cta`(예약)). 도메인 로직이 없어 Card 로 표현되며 다음 major 에서 제거 예정. 상담사 프로필 카드 — 이름/자격/평점/태그/소개/예약 CTA.
 
 ## pitfalls
 

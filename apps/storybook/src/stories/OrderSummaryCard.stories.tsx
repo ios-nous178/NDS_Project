@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { OrderSummaryCard, Button } from "@nudge-design/react";
 
 const meta: Meta<typeof OrderSummaryCard> = {
-  title: "Components/Domain/OrderSummaryCard",
+  title: "Components/Data/OrderSummaryCard",
   component: OrderSummaryCard,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -339,7 +339,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "내 예약 리스트, 홈 다음 일정, 상담사 페이지 다음 세션",
-    "notes": "CounselorCard(상담사 선택용)와 분리. 잡힌 일정 표시 전용."
+    "notes": "⚠ deprecated → 앱 레이어로 이관 권장(날짜파생+상태머신 = 앱 로직). 시각은 Card 합성. 다음 major 제거 예정. 잡힌 일정 표시 전용."
   },
   {
     "name": "ChatComposer",
@@ -1161,7 +1161,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "팔로우 리스트, 그룹 멤버, 추천 친구, 작성자 프로필",
-    "notes": "CounselorCard(EAP 특화)와 분리된 일반 사용자용."
+    "notes": "⚠ deprecated → Card 합성(프로필 카드: Avatar+Title+Subtitle+Description+Metadata+Cta). 다음 major 제거 예정. CounselorCard(EAP 특화)와 분리된 일반 사용자용."
   },
   {
     "name": "ProductCard",
@@ -1177,15 +1177,15 @@
   },
   {
     "name": "OrderSummaryCard",
-    "category": "도메인",
+    "category": "데이터",
     "status": "implemented",
-    "description": "주문/예약 요약 카드. 라벨:값 행 + 합계 + CTA 슬롯, emphasis 강조",
-    "storybookTitle": "Components/Domain/OrderSummaryCard",
+    "description": "범용 요약 카드. 라벨:값 행 + 강조 합계 + CTA 슬롯, emphasis 강조 (커머스 전용 아님)",
+    "storybookTitle": "Components/Data/OrderSummaryCard",
     "docsPath": "/components/order-summary-card",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "결제 직전, 상담 예약 확인, 신청서 검토",
-    "notes": "할인은 emphasis='discount'. EAP 무료는 emphasis='info'."
+    "usageSummary": "결제 직전, 상담 예약 확인, 신청서 검토, 구독 요약 — 키-값 원장+합계 패턴 전반",
+    "notes": "de-domain: 도메인 무관 범용 요약. 할인은 emphasis='discount', 안내는 'info'. 추후 SummaryCard 별칭 후보."
   },
   {
     "name": "CounselorCard",
@@ -1197,7 +1197,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "상담사 검색·선택, 추천 상담사 캐러셀, 마이 페이지 단골 상담사",
-    "notes": "UserCard(일반 사용자용)와 분리. EAP 도메인 특화 — 자격/평점 슬롯 포함."
+    "notes": "⚠ deprecated → Card 합성(Card.stories CompoundCounselorCard 참고). 다음 major 제거 예정. EAP 도메인 특화 — 자격/평점 슬롯."
   },
   {
     "name": "ChatBubble",
