@@ -153,7 +153,15 @@ background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv
 
 **확장(YAGNI)** — "브랜드 X 가 *이 컴포넌트의* info 만 글로벌과 다르게"(예: Banner info ≠ Snackbar info)는 ③(글로벌)으론 안 된다. 그땐 ②를 `var(--nds-snackbar-info-bg, var(--semantic-bg-status-info))` 로 **한 겹 끼우면** 컴포넌트-per-variant 슬롯이 생긴다. **단 실제 요구가 생기기 전엔 만들지 않는다** — 4 variant × N prop × M 컴포넌트로 슬롯 폭발 금지. 캐포비는 ①만 필요하므로 지금은 ①+②③ 만 구현.
 
-**여전히 예외** — "요소 추가/숨김"(예: Input 캐포비 에러 아이콘 `::before` 의 content+mask)은 색·값이 아니라 마크업 차이라 토큰화 불가 → `[data-brand]` 구조적 예외 유지(위 참조).
+**예외(진짜 구조)** — *요소 자체의 추가/숨김*(예: 모달 가운데정렬용 spacer 숨김, 없던 행/요소 추가)은 토큰화 불가 → `[data-brand]` 유지. 단 **아이콘 "모양" 교체**(캐포비 에러 아이콘·DatePicker 캘린더 글리프)는 구조처럼 보여도 `mask-image` 의 SVG URL 을 `--nds-{c}-icon` 슬롯에 담으면 토큰화 가능 (custom property 는 mask URL 값을 담음, 색은 `currentColor`=토큰) → 아래 숙제 참조.
+
+#### brand 분기 마이그레이션 — 잔여 숙제 (점진)
+
+슬롯-합성으로 Snackbar·FormSection·Toggle·SelectedItemsPanel·TagInput·Pagination 의 색/radius 분기 이전 완료. 남은 `[data-brand]`:
+
+- **HelperText 프리미티브 통합 (★)** — Input·Textarea·Select·FormField 가 캐포비 에러 아이콘 `::before`(circle-i mask)를 **4중 중복**한다(별점 3중중복과 같은 클래스). 입력류 공용 `HelperText` 프리미티브(상태 `default`/`info`/`success`/`error`/`disabled` + 자동 검증 아이콘)로 통합 → 헬퍼텍스트·아이콘을 한 곳에서 렌더, 입력 컴포넌트는 `<HelperText status>` 만 합성. 색은 이미 `cv.input.helpertext*`(default/success/error/disabled), 에러 아이콘은 `--nds-helper-error-icon` mask 토큰(브랜드가 모양 override).
+- **브랜드 아이콘 스왑 → `--nds-{c}-icon` mask 토큰** — DatePicker 캘린더 글리프처럼 "브랜드가 아이콘 모양만 바꾸는" `[data-brand]` 는 mask-image URL 슬롯으로 이전(컴포넌트가 브랜드 모름). 위 HelperText 에러 아이콘과 같은 패턴.
+- **Modal·Popup** — `[data-brand]` 대부분 **배치/구조**(가운데 spacer 숨김·좌측 정렬·gap·typography·size) = 예외 유지가 정답. 순수 색(footer 취소버튼 bg/border/text)만 슬롯化 대상. confirm CTA 는 이미 confirmCta 토큰.
 
 ### 가이드 · 패턴 · 원칙만 추가
 
