@@ -40,14 +40,19 @@ const [filters, setFilters] = useState<string[]>([]);
 
 ## Props
 
-| Prop            | 타입                       | 기본값  | 설명                              |
-| --------------- | -------------------------- | ------- | --------------------------------- |
-| `options`       | `FilterOption[]`           | —       | 옵션 목록                         |
-| `value`         | `string[]`                 | —       | 활성 키 배열                      |
-| `onValueChange` | `(v: string[]) => void`    | —       | 변경 콜백                         |
-| `single`        | `boolean`                  | `false` | 단일 선택 (다시 누르면 해제)      |
-| `showReset`     | `boolean`                  | 자동    | 초기화 버튼 표시 (활성 1개+ 자동) |
-| `resetLabel`    | `string`                   | `"초기화"` | 초기화 라벨                  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `options` *(필수)* | `FilterOption[]` | — | 옵션 목록 |
+| `value` *(필수)* | `string[]` | — | 활성 키 배열 |
+| `onValueChange` *(필수)* | `(value: string[]) => void` | — | 변경 콜백 |
+| `single` | `boolean` | `false` | 단일 선택 (한 번에 하나만, 다시 클릭 시 해제) |
+| `showReset` | `boolean` | — | 초기화 버튼 표시 (활성 1개 이상일 때 자동 노출) |
+| `resetLabel` | `string` | `"초기화"` | 초기화 라벨 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `FilterOption`
 

@@ -42,17 +42,24 @@ import { MediaThumbnail } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입                                          | 기본값   | 설명                                  |
-| ------------- | --------------------------------------------- | -------- | ------------------------------------- |
-| `src`         | `string`                                      | —        | 이미지 URL                            |
-| `alt`         | `string`                                      | —        | 대체 텍스트 (장식이면 `""`)            |
-| `aspectRatio` | `string \| number`                            | —        | 종횡비 (`"16/9"`, `"1/1"`, `1.5` …)   |
-| `width`       | `number \| string`                            | —        | 너비 (CSS 값)                         |
-| `fit`         | `"cover" \| "contain"`                        | `"cover"` | object-fit                            |
-| `rounded`     | `"none" \| "sm" \| "md" \| "lg" \| "pill"`    | `"md"`   | 모서리 둥글기                         |
-| `fallbackSrc` | `string`                                      | —        | 로드 실패 시 대체 src 1회 시도        |
-| `placeholder` | `ReactNode`                                   | 기본 아이콘 | 로딩/에러 시 자리 표시                |
-| `lazy`        | `boolean`                                     | `true`   | loading="lazy"                        |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `src` *(필수)* | `string` | — | 이미지 src |
+| `alt` *(필수)* | `string` | — | 대체 텍스트 (필수, 장식용이면 빈 문자열) |
+| `aspectRatio` | `string \| number` | — | 종횡비 (예: "16/9", "4/3", "1/1", 또는 숫자) |
+| `width` | `number \| string` | — | width (CSS 값) |
+| `fit` | `MediaFit` | `"cover"` | object-fit |
+| `rounded` | `MediaRounded` | `"md"` | 모서리 둥글기 |
+| `fallbackSrc` | `string` | — | 로드 실패 시 시도할 fallback src |
+| `placeholder` | `ReactNode` | — | 로딩/에러 시 자리 표시 (기본: 이미지 아이콘) |
+| `lazy` | `boolean` | `true` | lazy loading (기본 true) |
+| `className` | `string` | — | 루트 className |
+| `rootStyle` | `CSSProperties` | — | 루트 style 추가 |
+
+<!-- AUTO-GEN:props:END -->
 
 `<img>`의 다른 prop들 (`onLoad`, `onError`, `srcSet` 등)도 그대로 전달 가능.
 

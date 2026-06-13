@@ -54,12 +54,17 @@ import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-design/react";
 
 ## Props
 
-| Prop         | 타입         | 기본값  | 설명                                     |
-| ------------ | ------------ | ------- | ---------------------------------------- |
-| `title`      | `ReactNode`  | —       | 제목                                     |
-| `subtitle`   | `ReactNode`  | —       | 서브타이틀                               |
-| `onBack`     | `() => void` | —       | 좌측 ← 버튼 콜백 (지정 시 자동 노출)     |
-| `breadcrumb` | `ReactNode`  | —       | 좌측 상단 브레드크럼                     |
-| `actions`    | `ReactNode`  | —       | 우측 상단 액션 버튼들                    |
-| `bottom`     | `ReactNode`  | —       | 헤더 하단 영역 (탭/필터 등)              |
-| `bordered`   | `boolean`    | `false` | 하단 보더 표시 (스크롤 분리감)           |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `title` *(필수)* | `ReactNode` | — | 제목 |
+| `subtitle` | `ReactNode` | — | 서브타이틀 (제목 아래) |
+| `onBack` | `() => void` | — | 좌측 뒤로가기 콜백 (지정 시 ← 버튼 노출) |
+| `breadcrumb` | `ReactNode` | — | 좌측 상단 브레드크럼 (Breadcrumb 컴포넌트 등) |
+| `actions` | `ReactNode` | — | 우측 액션 (Button/IconButton 등) |
+| `bottom` | `ReactNode` | — | 헤더 하단에 붙는 탭/필터 영역 |
+| `bordered` | `boolean` | `false` | 보더 표시 (스크롤 분리) |
+
+<!-- AUTO-GEN:props:END -->

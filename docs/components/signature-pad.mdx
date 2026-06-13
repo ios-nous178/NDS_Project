@@ -42,16 +42,21 @@ const ref = useRef<SignaturePadHandle>(null);
 
 ## Props
 
-| Prop           | 타입                              | 기본값              | 설명                          |
-| -------------- | --------------------------------- | ------------------- | ----------------------------- |
-| `label`        | `ReactNode`                       | —                   | 라벨                          |
-| `placeholder`  | `string`                          | `"여기에 서명해주세요"` | 빈 캔버스 텍스트          |
-| `height`       | `number`                          | `180`               | 캔버스 높이 px                |
-| `penColor`     | `string`                          | `"#1A1A1A"`         | 펜 색상                       |
-| `penWidth`     | `number`                          | `2.4`               | 펜 두께                       |
-| `onChange`     | `(url: string \| null) => void`   | —                   | 변경 콜백 (PointerUp 시점)    |
-| `disabled`     | `boolean`                         | `false`             | 비활성화 (읽기 전용)          |
-| `hideControls` | `boolean`                         | `false`             | "지우기" 버튼 숨김            |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | — | 라벨 (위) |
+| `placeholder` | `string` | `"여기에 서명해주세요"` | 서명 영역이 비어 있을 때 표시할 텍스트 |
+| `height` | `number` | `180` | 캔버스 높이 px (기본 180) |
+| `penColor` | `string` | `"#111111"` | 펜 색상 |
+| `penWidth` | `number` | `2.4` | 펜 두께 |
+| `onChange` | `(dataUrl: string \| null) => void` | — | 변경 콜백 (그릴 때마다 dataURL 또는 null 비어있을 때) |
+| `disabled` | `boolean` | `false` | 비활성화 (읽기 전용) |
+| `hideControls` | `boolean` | `false` | 컨트롤 숨김 |
+
+<!-- AUTO-GEN:props:END -->
 
 ## Imperative Handle
 

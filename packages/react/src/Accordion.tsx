@@ -54,6 +54,7 @@ export interface AccordionProps extends React.HTMLAttributes<HTMLDivElement> {
   defaultValue?: string | string[];
   /** 값 변경 콜백 */
   onValueChange?: (value: string | string[]) => void;
+  /** 아코디언 아이템들 (Accordion.Item) */
   children: React.ReactNode;
 }
 

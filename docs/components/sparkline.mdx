@@ -41,14 +41,19 @@ import { Sparkline } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입                          | 기본값         | 설명                              |
-| -------------- | ----------------------------- | -------------- | --------------------------------- |
-| `data`         | `number[]`                    | —              | 숫자 배열                         |
-| `kind`         | `"line" \| "area" \| "bar"`   | `"line"`       | 표시 종류                         |
-| `color`        | `string`                      | `primary.main` | 라인/영역/바 색상                 |
-| `width`        | `number`                      | `120`          | 가로 px                           |
-| `height`       | `number`                      | `36`           | 세로 px                           |
-| `strokeWidth`  | `number`                      | `2`            | 라인 두께                         |
-| `showBaseline` | `boolean`                     | `false`        | 0 기준선 표시                     |
-| `showLastDot`  | `boolean`                     | `true`         | 마지막 점 강조 (line/area)        |
-| `aria-label`   | `string`                      | `"추세 차트"`   | 접근성 라벨                       |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `data` *(필수)* | `number[]` | — | 데이터 (숫자 배열) |
+| `kind` | `SparklineKind` | `"line"` | 표시 종류 |
+| `color` | `string` | — | 색상 (기본 primary) |
+| `width` | `number` | `120` | width px |
+| `height` | `number` | `36` | height px |
+| `strokeWidth` | `number` | `2` | 두께 (line 전용) |
+| `showBaseline` | `boolean` | `false` | 0/baseline 표시 |
+| `showLastDot` | `boolean` | `true` | 마지막 값 점 표시 (line/area) |
+| `aria-label` | `string` | — | 접근성 라벨 |
+
+<!-- AUTO-GEN:props:END -->

@@ -62,19 +62,32 @@ const [date, setDate] = useState<Date | undefined>();
 
 ## Props
 
-| Prop              | 타입                       | 기본값       | 설명                                       |
-| ----------------- | -------------------------- | ------------ | ------------------------------------------ |
-| `value`           | `Date`                     | —            | 선택된 날짜                                |
-| `onChange`        | `(value: Date) => void`    | —            | 변경 콜백 (필수)                           |
-| `minDate`         | `Date`                     | —            | 선택 가능한 최소 날짜 (포함)               |
-| `maxDate`         | `Date`                     | —            | 선택 가능한 최대 날짜 (포함)               |
-| `placeholder`     | `string`                   | `"날짜 선택"` | 미선택 상태의 트리거 텍스트                |
-| `disabled`        | `boolean`                  | `false`      | 비활성화                                   |
-| `error`           | `boolean`                  | `false`      | 에러 상태 (테두리 색 변경)                 |
-| `fullWidth`       | `boolean`                  | `false`      | 트리거 너비를 100%로                       |
-| `className`       | `string`                   | —            | 루트 className                             |
-| `portalContainer` | `HTMLElement \| null`      | —            | 포털 컨테이너 (미지정 시 `document.body`)  |
-| `formatValue`     | `(d: Date) => string`      | `YYYY.MM.DD` | 트리거 표시용 포맷 함수                    |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` | `Date` | — | 선택된 날짜 |
+| `onChange` *(필수)* | `(value: Date) => void` | — | 변경 콜백 |
+| `minDate` | `Date` | — | 선택 가능한 최소 날짜 (포함) |
+| `maxDate` | `Date` | — | 선택 가능한 최대 날짜 (포함) |
+| `placeholder` | `string` | `"YYYY-MM-DD"` | placeholder 텍스트 (기본 `"YYYY-MM-DD"`) |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `status` | `"default" \| "error" \| "warning"` | `"default"` | 상태 표시. `error` prop 이 true 면 error 가 우선된다. |
+| `allowClear` | `boolean` | `false` | 값이 있을 때 clear 버튼 노출 |
+| `onClear` | `() => void` | — | clear 버튼 클릭 콜백 |
+| `disabledDate` | `(date: Date) => boolean` | — | 선택 불가 날짜 판정. minDate/maxDate 이후 추가 제약으로 적용된다. |
+| `disabledDates` | `Date[]` | — | 선택 불가 날짜 목록. HTML disabled-dates attribute 와 같은 용도. |
+| `open` | `boolean` | — | 팝오버 열림 제어 |
+| `defaultOpen` | `boolean` | `false` | 비제어 초기 열림 상태 |
+| `onOpenChange` | `(open: boolean) => void` | — | 팝오버 열림 변경 콜백 |
+| `fullWidth` | `boolean` | `false` | 트리거 너비 100% |
+| `className` | `string` | — | 트리거 className |
+| `portalContainer` | `HTMLElement \| null` | — | 포털 컨테이너 |
+| `formatValue` | `(d: Date) => string` | — | 날짜 포맷 함수 (트리거 표시용, 기본: ISO `"YYYY-MM-DD"` — 캐포비 admin / 일반 ISO 정합) |
+
+<!-- AUTO-GEN:props:END -->
 
 ---
 

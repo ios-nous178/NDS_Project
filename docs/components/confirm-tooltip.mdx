@@ -47,16 +47,21 @@ import { ConfirmTooltip } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입                                       | 기본값   | 설명                                                  |
-| -------------- | ------------------------------------------ | -------- | ----------------------------------------------------- |
-| `title`        | `ReactNode`                                | —        | 확인 질문 제목                                        |
-| `description`  | `ReactNode`                                | —        | 보조 설명 본문 (선택)                                 |
-| `open`         | `boolean`                                  | `false`  | 말풍선 표시 여부 (controlled)                         |
-| `placement`    | `"top" \| "bottom" \| "left" \| "right"`   | `"top"`  | 말풍선 위치 (anchor 기준)                             |
-| `actions`      | `"dual" \| "single"`                       | `"dual"` | 버튼 구성 — dual(취소+확인) / single(확인만)          |
-| `bodyWidth`    | `number \| string`                         | `280`    | 본문/액션 영역 너비 (number → px)                     |
-| `confirmLabel` | `string`                                   | `"확인"` | 확인 버튼 라벨 (검정 CTA)                             |
-| `cancelLabel`  | `string`                                   | `"취소"` | 취소 버튼 라벨 (`actions="dual"` 일 때만)             |
-| `onConfirm`    | `() => void`                               | —        | 확인 버튼 클릭                                        |
-| `onCancel`     | `() => void`                               | —        | 취소 버튼 클릭                                        |
-| `children`     | `ReactNode`                                | —        | 트리거 요소 — 말풍선이 anchor 되는 기준               |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `title` *(필수)* | `ReactNode` | — | 확인 질문 제목 (예: "연결을 해제하시겠습니까?") |
+| `description` | `ReactNode` | — | 보조 설명 본문 |
+| `open` | `boolean` | `false` | 말풍선 표시 여부 (controlled) |
+| `placement` | `ConfirmTooltipPlacement` | `"top"` | 말풍선 위치 (anchor 기준). 기본 top — 본문이 위, tail 이 아래를 가리킴 |
+| `actions` | `ConfirmTooltipActions` | `"dual"` | 버튼 구성 — dual(취소+확인) \| single(확인만) |
+| `bodyWidth` | `number \| string` | — | 본문/액션 영역 너비 (기본 280). number → px. CSS 슬롯 --nds-confirm-tooltip-body-width 로 적용 |
+| `confirmLabel` | `string` | `"확인"` | 확인 버튼 라벨 (검정 CTA) |
+| `cancelLabel` | `string` | `"취소"` | 취소 버튼 라벨 (actions="dual" 일 때만) |
+| `onConfirm` | `() => void` | — | 확인 버튼 클릭 |
+| `onCancel` | `() => void` | — | 취소 버튼 클릭 |
+| `children` *(필수)* | `ReactNode` | — | 트리거 요소 — 이 요소를 기준으로 말풍선이 anchor 됨 |
+
+<!-- AUTO-GEN:props:END -->

@@ -36,11 +36,16 @@ import { WaveformPlayer } from "@nudge-design/react";
 
 ## Props
 
-| Prop       | 타입         | 기본값  | 설명                              |
-| ---------- | ------------ | ------- | --------------------------------- |
-| `src`      | `string`     | —       | 오디오 URL                        |
-| `peaks`    | `number[]`   | 자동    | 파형 진폭 (0~1)                   |
-| `bars`     | `number`     | `36`    | 막대 개수 (peaks 미지정 시)       |
-| `color`    | `string`     | primary | 사용자 보이스 컬러                |
-| `duration` | `number`     | 자동    | 표시 길이(초). 미지정 시 metadata |
-| `autoPlay` | `boolean`    | `false` | 자동 재생                         |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `src` *(필수)* | `string` | — | 오디오 src |
+| `peaks` | `number[]` | — | 미리 계산된 파형 진폭 (0~1, 보통 32~64개). 미지정 시 의사 랜덤 |
+| `bars` | `number` | `36` | 막대 개수 (peaks 미지정 시) |
+| `color` | `string` | — | 사용자 보이스 컬러 |
+| `duration` | `number` | — | 재생 시간 길이(초). 미지정 시 metadata에서 자동 |
+| `autoPlay` | `boolean` | `false` | 시작 자동 재생 |
+
+<!-- AUTO-GEN:props:END -->

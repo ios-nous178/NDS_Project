@@ -48,17 +48,22 @@ import { CoachMark } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입                                              | 기본값        | 설명                                  |
-| -------------- | ------------------------------------------------- | ------------- | ------------------------------------- |
-| `open`         | `boolean`                                         | —             | 활성 여부                             |
-| `steps`        | `CoachMarkStep[]`                                 | —             | 단계 배열                             |
-| `step`         | `number`                                          | —             | 현재 인덱스 (controlled, 선택)        |
-| `onStepChange` | `(i: number) => void`                             | —             | 단계 변경 콜백                        |
-| `onClose`      | `() => void`                                      | —             | 닫기 (skip 또는 마지막 완료)          |
-| `finishLabel`  | `string`                                          | `"완료"`      | 마지막 단계 버튼                      |
-| `nextLabel`    | `string`                                          | `"다음"`      | 다음 단계 버튼                        |
-| `skipLabel`    | `string`                                          | `"건너뛰기"`  | Skip 버튼                             |
-| `hideSkip`     | `boolean`                                         | `false`       | Skip 버튼 숨김                        |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `open` *(필수)* | `boolean` | — | 활성 여부 |
+| `steps` *(필수)* | `CoachMarkStep[]` | — | 단계 목록 |
+| `step` | `number` | — | 현재 단계 인덱스 (controlled). 미지정 시 내부 관리 |
+| `onStepChange` | `(index: number) => void` | — | 단계 변경 콜백 |
+| `onClose` | `() => void` | — | 닫기 콜백 (Skip 또는 마지막 단계 완료 시) |
+| `finishLabel` | `string` | `"완료"` | 마지막 버튼 라벨 (기본 "완료") |
+| `nextLabel` | `string` | `"다음"` | 다음 버튼 라벨 (기본 "다음") |
+| `skipLabel` | `string` | `"건너뛰기"` | Skip 버튼 라벨 (기본 "건너뛰기") |
+| `hideSkip` | `boolean` | `false` | Skip 버튼 숨김 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `CoachMarkStep`
 

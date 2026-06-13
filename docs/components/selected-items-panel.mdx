@@ -95,6 +95,23 @@ import { SelectedItemsPanel } from "@nudge-design/react";
 
 ## Props
 
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `title` *(필수)* | `ReactNode` | — | 패널 타이틀 (예: "선택한 지역") |
+| `count` | `number` | — | 타이틀 옆 강조 개수 — 숫자면 `{count}{countSuffix}` 로 브랜드색 표시 |
+| `countSuffix` | `string` | `"개"` | 개수 접미사 (기본 "개") |
+| `showActions` | `boolean` | `true` | 헤더 액션 노출 (기본 true) |
+| `onAdd` | `() => void` | — | "추가 선택" 클릭 |
+| `onClear` | `() => void` | — | "선택 해제" 클릭 |
+| `addLabel` | `ReactNode` | `"추가 선택"` | 추가 액션 라벨 (기본 "추가 선택") |
+| `clearLabel` | `ReactNode` | `"선택 해제"` | 해제 액션 라벨 (기본 "선택 해제") |
+| `children` | `ReactNode` | — | 본문 슬롯 — 선택 항목 리스트(SelectedItemRow) / 폼 / 테이블 등 |
+
+<!-- AUTO-GEN:props:END -->
+
 ### SelectedItemsPanel
 
 | Prop          | 타입             | 기본값        | 설명                                                              |

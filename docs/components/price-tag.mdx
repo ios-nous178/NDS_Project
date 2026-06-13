@@ -38,13 +38,18 @@ import { PriceTag } from "@nudge-design/react";
 
 ## Props
 
-| Prop               | 타입                       | 기본값  | 설명                              |
-| ------------------ | -------------------------- | ------- | --------------------------------- |
-| `amount`           | `number \| string`         | —       | 현재 가격                         |
-| `originalAmount`   | `number`                   | —       | 원가 (취소선 + 할인율 자동)       |
-| `unit`             | `string`                   | `"원"`  | 통화 suffix                       |
-| `prefix`           | `string`                   | —       | 통화 prefix (예: `$`)             |
-| `size`             | `"sm" \| "md" \| "lg"`     | `"md"`  | 크기                              |
-| `discountPosition` | `"before" \| "none"`       | `"before"` | 할인율 위치                  |
-| `formatThousands`  | `boolean`                  | `true`  | 천 단위 콤마 자동                 |
-| `freeLabel`        | `string`                   | `"무료"` | 0원일 때 라벨                  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `amount` *(필수)* | `number \| string` | — | 현재 가격 (숫자 또는 이미 포맷된 문자열) |
+| `originalAmount` | `number` | — | 원가 (할인 전 가격). 지정 시 취소선 + 할인율 자동 |
+| `unit` | `string` | `"원"` | 통화 단위 (기본 "원") |
+| `prefix` | `string` | — | 통화 prefix (예: "$"). suffix(`unit`)와 함께 쓰면 "$1,000원"이 됨 |
+| `size` | `PriceTagSize` | `"md"` | 크기 |
+| `discountPosition` | `"before" \| "none"` | `"before"` | 할인율 표시 위치 (기본 amount 앞) |
+| `formatThousands` | `boolean` | `true` | 천 단위 콤마 자동 (기본 true) |
+| `freeLabel` | `string` | `"무료"` | 무료 (0원) 라벨 |
+
+<!-- AUTO-GEN:props:END -->

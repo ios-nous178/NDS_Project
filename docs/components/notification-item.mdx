@@ -37,12 +37,17 @@ import { NotificationItem } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입                                                            | 기본값  | 설명                              |
-| ------------- | --------------------------------------------------------------- | ------- | --------------------------------- |
-| `kind`        | `"info" \| "success" \| "warning" \| "error" \| "system"`       | `"info"` | 종류 (아이콘 색)                |
-| `icon`        | `ReactNode`                                                     | kind별 자동 | 좌측 아이콘 오버라이드        |
-| `title`       | `ReactNode`                                                     | —       | 제목                              |
-| `description` | `ReactNode`                                                     | —       | 본문 (2줄 클램프)                 |
-| `time`        | `ReactNode`                                                     | —       | 시간 라벨                         |
-| `unread`      | `boolean`                                                       | `false` | 미읽음 (배경 색 + 좌측 점)       |
-| `onClick`     | `() => void`                                                    | —       | 클릭 콜백 (디테일 진입)           |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `kind` | `NotificationKind` | `"info"` | 종류 (아이콘 색 자동) |
+| `icon` | `ReactNode` | — | 좌측 아이콘 (이모지/Icon). 미지정 시 kind별 기본 |
+| `title` *(필수)* | `ReactNode` | — | 제목 |
+| `description` | `ReactNode` | — | 본문/설명 |
+| `time` | `ReactNode` | — | 시간 라벨 (예: "방금 전", "3분 전", "오후 3:42") |
+| `unread` | `boolean` | `false` | 미읽음 여부 (좌측 점) |
+| `onClick` | `() => void` | — | 클릭 콜백 |
+
+<!-- AUTO-GEN:props:END -->

@@ -39,10 +39,15 @@ const [page, setPage] = useState(1);
 
 ## Props
 
-| Prop           | 타입                     | 기본값 | 설명                     |
-| -------------- | ------------------------ | ------ | ------------------------ |
-| `page`         | `number`                 | —      | 현재 페이지 (1부터)      |
-| `totalPages`   | `number`                 | —      | 전체 페이지 수           |
-| `siblings`     | `number`                 | `1`    | 현재 페이지 좌우 표시 수 |
-| `onPageChange` | `(page: number) => void` | —      | 페이지 변경 콜백         |
-| `showArrows`   | `boolean`                | `true` | 이전/다음 화살표         |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `page` *(필수)* | `number` | — | 현재 페이지 (1부터 시작) |
+| `totalPages` *(필수)* | `number` | — | 전체 페이지 수 |
+| `siblings` | `number` | `1` | 현재 페이지 좌우에 표시할 형제 페이지 수 |
+| `onPageChange` *(필수)* | `(page: number) => void` | — | 페이지 변경 콜백 |
+| `showArrows` | `boolean` | `true` | 이전/다음 화살표 표시 |
+
+<!-- AUTO-GEN:props:END -->

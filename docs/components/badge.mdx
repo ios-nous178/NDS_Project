@@ -131,15 +131,19 @@ Figma `Color` 축. 의미에 맞는 컬러를 사용하세요.
 
 ## Props
 
-| Prop             | 타입             | 기본값      | 설명                                       |
-| ---------------- | ---------------- | ----------- | ------------------------------------------ |
-| `variant`        | `BadgeVariant`   | `"fill"`    | Figma Style (`fill` / `ghost` / `line`)    |
-| `color`          | `BadgeColor`     | `"neutral"` | Figma Color                                |
-| `size`           | `BadgeSize`      | `"md"`      | 사이즈 (`sm` / `md` / `lg`)                |
-| `labelClassName` | `string`         | —           | 라벨 span에 추가할 className               |
-| `slotProps`      | `BadgeSlotProps` | —           | 내부 슬롯별 props 전달                     |
-| `className`      | `string`         | —           | 루트 요소 className                        |
-| `style`          | `CSSProperties`  | —           | 루트 요소 인라인 스타일                    |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `BadgeVariant` | `"fill"` | 시각적 스타일 (Figma "Style") |
+| `color` | `BadgeColor` | `"neutral"` | 의미 컬러 (Figma "Color") |
+| `size` | `BadgeSize` | `"md"` | 크기 |
+| `shape` | `BadgeShape` | `"default"` | 모서리 모양 (Figma "Shape"): default=size별 라운드 사각(동적 상태값) · pill=완전 둥근(정적 식별 태그) |
+| `labelClassName` | `string` | — | 라벨 래퍼에 추가할 클래스 |
+| `slotProps` | `BadgeSlotProps` | — | 내부 슬롯별 props 전달 |
+
+<!-- AUTO-GEN:props:END -->
 
 **BadgeVariant**: `"fill"` | `"ghost"` | `"line"`
 **BadgeColor**: `"brand"` | `"neutral"` | `"success"` | `"error"` | `"caution"` | `"info"`

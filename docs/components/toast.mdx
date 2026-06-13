@@ -178,3 +178,20 @@ Toast.show("메시지");
 ## 구조 메모
 
 `Toast`의 queue, dismiss, duration 규칙은 core contract로 유지하고, viewport를 어디에 렌더링할지는 web layer로 분리합니다. 기본값은 `document.body`지만, 필요하면 `portalContainer`로 렌더링 위치를 주입할 수 있습니다.
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `position` | `ToastPosition` | `"bottom"` | 기본 위치 |
+| `duration` | `number` | `3000` | 기본 지속 시간 (ms) |
+| `maxCount` | `number` | `1 (가이드: 동시에 1개만 노출 — 새 토스트가 기존을 대체)` | 최대 동시 표시 개수 |
+| `portalContainer` | `HTMLElement \| null` | — | 토스트가 렌더링될 포털 컨테이너 |
+| `children` *(필수)* | `ReactNode` | — | 앱 콘텐츠 (하위에서 useToast 사용 가능) |
+
+<!-- AUTO-GEN:props:END -->

@@ -312,3 +312,25 @@ Storybook에서 아래 시나리오를 별도 story로 유지합니다.
 - 키보드: Enter / Space로 탭 전환, ←/→로 인접 탭 이동, Home / End로 처음/마지막 이동
 - `tabIndex` 관리: 활성 탭만 0, 나머지 -1 (roving tabindex)
 - `disabled` 트리거는 `aria-disabled="true"` + 포커스 불가
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `items` *(필수)* | `TabItem[]` | — | 탭 아이템 목록 |
+| `activeKey` *(필수)* | `string` | — | 현재 활성 탭 키 |
+| `onTabChange` *(필수)* | `(key: string) => void` | — | 탭 변경 콜백 |
+| `variant` | `TabsVariant` | `"line"` | 스타일 변형 (`line` \| `chip` \| `segment`). 기본 `line` |
+| `size` | `TabsSize` | `"pc"` | 사이즈 (Mobile / PC). 기본 `pc` |
+| `tone` | `TabsTone` | `"neutral"` | 톤 (활성 강조 색). 기본 `neutral` |
+| `fullWidth` | `boolean` | `true` | 전체 너비 |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 style |
+| `slotProps` | `TabsSlotProps` | — | 슬롯 프롭 |
+
+<!-- AUTO-GEN:props:END -->

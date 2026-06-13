@@ -39,14 +39,28 @@ import { ProductCard, PriceTag } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입         | 기본값  | 설명                              |
-| -------------- | ------------ | ------- | --------------------------------- |
-| `thumbnail`    | `string`     | —       | 썸네일 이미지 URL                 |
-| `thumbnailAlt` | `string`     | —       | alt                               |
-| `badge`        | `ReactNode`  | —       | 좌상단 뱃지 (NEW/BEST/-30%)       |
-| `title`        | `ReactNode`  | —       | 상품 제목 (2줄 클램프)            |
-| `description`  | `ReactNode`  | —       | 보조 설명 (브랜드/카테고리)       |
-| `price`        | `ReactNode`  | —       | 가격 슬롯 (PriceTag 권장)         |
-| `footer`       | `ReactNode`  | —       | 푸터 (별점/리뷰수)                |
-| `soldOut`      | `boolean`    | `false` | 품절 오버레이                     |
-| `onClick`      | `() => void` | —       | 카드 클릭 (디테일 진입)           |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `size` | `ProductCardSize` | `"sm"` | 사이즈 — `sm`: 140w(모바일), `md`: 236w(데스크탑). 기본 `sm` |
+| `thumbnail` | `string` | — | 썸네일 이미지 URL |
+| `thumbnailAlt` | `string` | `""` | 썸네일 alt |
+| `badge` | `ReactNode` | — | 좌상단 텍스트 뱃지 (예: "NEW", "BEST"). `soldOut`/`rankingNumber` 와 동시 노출 금지 |
+| `rankingNumber` | `number` | — | 좌상단 랭킹 배지 (1~N). 캐시딜 랭킹용. `badge` 보다 우선 — 동시 지정 시 ranking 만 노출 |
+| `title` *(필수)* | `ReactNode` | — | 상품 제목 — 2줄 ellipsis |
+| `originalPrice` | `number` | — | 원가 (취소선) — 할인 전 가격. `price` 보다 위에 노출 |
+| `discountPercent` | `number` | — | 할인율 (예: 31 → "31%"). 0/undefined 면 숨김 |
+| `price` *(필수)* | `number` | — | 가격 (KRW 단위 숫자). 자동으로 천단위 콤마 포맷 |
+| `currency` | `ReactNode` | `"원"` | 가격 단위 (기본: "원") |
+| `reward` | `ProductCardReward` | — | 적립 칩 — 캐시딜 포인트 아이콘 + 금액 + "적립" |
+| `freeShipping` | `boolean` | — | 무료배송 칩 |
+| `pointDiscount` | `boolean` | — | "포인트할인" 외곽선 칩 (모바일 캐시딜 패턴) |
+| `buyersCount` | `number` | — | 구매자 수 — 자동 포맷. 10,000 이상은 "9,999+명" 으로 truncate |
+| `rating` | `number` | — | 별점 (0~5) |
+| `reviewCount` | `number` | — | 리뷰 수 — rating 우측 "(1,208)" 노출. rating 없으면 무시 |
+| `soldOut` | `boolean` | `false` | 품절 표시 (썸네일 위 오버레이) |
+| `onClick` | `() => void` | — | 카드 클릭 |
+
+<!-- AUTO-GEN:props:END -->

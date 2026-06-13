@@ -140,17 +140,22 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 
 ## Props
 
-| Prop       | 타입            | 기본값       | 설명                                |
-| ---------- | --------------- | ------------ | ----------------------------------- |
-| `label`    | `string`        | —            | 라벨 텍스트                         |
-| `variant`  | `ChipVariant`   | `"outlined"` | Figma Style (fill/outlined/ghost)   |
-| `color`    | `ChipColor`     | `"brand"`    | Figma Color                         |
-| `size`     | `ChipSize`      | `"md"`       | 사이즈 (`sm` / `md`)                |
-| `selected` | `boolean`       | `false`      | 선택 상태 (`onClick`이 있으면 `aria-pressed` 반영) |
-| `disabled` | `boolean`       | `false`      | 비활성화                            |
-| `onClick`  | `() => void`    | —            | 클릭 콜백 (있으면 interactive)      |
-| `onRemove` | `() => void`    | —            | 삭제 콜백 (있으면 삭제 버튼 표시)   |
-| `icon`     | `ReactNode`     | —            | 좌측 아이콘                         |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `label` *(필수)* | `string` | — | 라벨 텍스트 |
+| `variant` | `ChipVariant` | `"outlined"` | 시각적 스타일 (Figma "Style") |
+| `color` | `ChipColor` | `"brand"` | 의미 컬러 (Figma "Color") |
+| `size` | `ChipSize` | `"md"` | 크기 |
+| `selected` | `boolean` | `false` | 선택 상태. onClick과 함께 쓰면 aria-pressed로 노출된다. |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `onClick` | `() => void` | — | 클릭 콜백 |
+| `onRemove` | `() => void` | — | 삭제 콜백 |
+| `icon` | `ReactNode` | — | 좌측 아이콘 |
+
+<!-- AUTO-GEN:props:END -->
 
 **ChipVariant**: `"fill"` | `"outlined"` | `"ghost"`
 **ChipColor**: `"brand"` | `"neutral"` | `"success"` | `"error"` | `"caution"`

@@ -39,15 +39,20 @@ import { ReviewCard, LikeButton } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입         | 기본값  | 설명                              |
-| ------------- | ------------ | ------- | --------------------------------- |
-| `avatar`      | `ReactNode`  | —       | 작성자 아바타                     |
-| `author`      | `ReactNode`  | —       | 작성자 이름                       |
-| `meta`        | `ReactNode`  | —       | 보조 메타 (날짜/인증 등)          |
-| `rating`      | `number`     | —       | 별점 0~5 (0.5 단위)               |
-| `ratingLabel` | `ReactNode`  | —       | 별점 옆 라벨 (예: "4.5")          |
-| `title`       | `ReactNode`  | —       | 본문 제목 (선택)                  |
-| `body`        | `ReactNode`  | —       | 본문                              |
-| `tags`        | `string[]`   | —       | 해시태그                          |
-| `footer`      | `ReactNode`  | —       | 푸터 슬롯 (좋아요 등)             |
-| `verified`    | `boolean`    | `false` | 인증 후기 ✓ 마크                  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `avatar` | `ReactNode` | — | 작성자 아바타 |
+| `author` *(필수)* | `ReactNode` | — | 작성자 이름 |
+| `meta` | `ReactNode` | — | 보조 메타 (작성일, 인증 뱃지 등) |
+| `rating` *(필수)* | `number` | — | 별점 (0~5, 0.5 단위) |
+| `ratingLabel` | `ReactNode` | — | 별점 옆 라벨 (예: "5.0", "★ 4.7") |
+| `title` | `ReactNode` | — | 제목 (선택) |
+| `body` *(필수)* | `ReactNode` | — | 본문 |
+| `tags` | `string[]` | — | 태그 (장점/카테고리 등) |
+| `footer` | `ReactNode` | — | 푸터 슬롯 (좋아요 버튼 등) |
+| `verified` | `boolean` | `false` | 검증된 후기 마크 (작성자 이름 옆에 자동 표시) |
+
+<!-- AUTO-GEN:props:END -->

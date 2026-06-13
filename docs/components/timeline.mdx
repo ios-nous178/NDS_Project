@@ -113,12 +113,17 @@ import { Timeline } from "@nudge-design/react";
 
 ## Props
 
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
 | Prop | 타입 | 기본값 | 설명 |
-| ----------- | ------------------------------ | ------------ | ------------------------------------------------------------ |
-| `items` | `TimelineItem[]` | — | 항목 목록 |
-| `mode` | `"activity" \| "tracker"` | `"activity"` | 표시 모드 |
-| `direction` | `"vertical" \| "horizontal"` | `"vertical"` | 방향 (horizontal은 tracker 모드에서만 의미) |
+| --- | --- | --- | --- |
+| `items` *(필수)* | `TimelineItem[]` | — | 항목 목록 |
+| `mode` | `TimelineMode` | `"activity"` | 표시 모드 (기본 activity) |
+| `direction` | `TimelineDirection` | `"vertical"` | 방향 (기본 vertical — horizontal 은 tracker 모드에서 의미) |
 | `current` | `number` | `0` | tracker 모드: 현재 진행 인덱스 (0-based). 이전=done, 같음=current, 이후=todo |
+
+<!-- AUTO-GEN:props:END -->
 
 `<ol>` HTML 속성을 모두 지원합니다.
 

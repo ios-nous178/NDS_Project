@@ -40,18 +40,23 @@ import { AttachmentItem } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입                                                              | 기본값   | 설명                                       |
-| -------------- | ----------------------------------------------------------------- | -------- | ------------------------------------------ |
-| `name`         | `string`                                                          | —        | 파일 이름                                  |
-| `size`         | `number`                                                          | —        | 파일 크기 (bytes)                          |
-| `fileType`     | `"pdf"\|"image"\|"video"\|"audio"\|"document"\|"archive"\|"other"` | 확장자 추론 | 미지정 시 name에서 자동                    |
-| `status`       | `"uploading" \| "done" \| "error"`                                | `"done"` | 상태                                       |
-| `progress`     | `number`                                                          | —        | 0~100, status="uploading"                  |
-| `href`         | `string`                                                          | —        | 다운로드 링크 (있으면 `<a download>`)      |
-| `onDownload`   | `() => void`                                                      | —        | 다운로드 버튼 클릭                         |
-| `onRemove`     | `() => void`                                                      | —        | 제거 버튼 표시 + 클릭                      |
-| `errorMessage` | `ReactNode`                                                       | —        | error 상태에서 표시                        |
-| `icon`         | `ReactNode`                                                       | 자동     | 좌측 아이콘 커스터마이즈                   |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `name` *(필수)* | `string` | — | 파일 이름 |
+| `size` | `number` | — | 파일 크기 (bytes) |
+| `fileType` | `AttachmentFileType` | — | 파일 종류 — 미지정 시 name 확장자에서 추론 |
+| `status` | `AttachmentStatus` | `"done"` | 상태 |
+| `progress` | `number` | — | 업로드 진행률 (0~100). status="uploading"에서 사용 |
+| `href` | `string` | — | 다운로드 링크 (제공 시 download 버튼) |
+| `onDownload` | `() => void` | — | 다운로드 버튼 클릭 (href 대신/추가) |
+| `onRemove` | `() => void` | — | 제거 버튼 클릭 (제공 시 표시) |
+| `errorMessage` | `ReactNode` | — | 에러 메시지 (status="error"에서 표시) |
+| `icon` | `ReactNode` | — | 좌측 아이콘 커스터마이즈 |
+
+<!-- AUTO-GEN:props:END -->
 
 ## 가이드
 

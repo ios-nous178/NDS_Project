@@ -69,22 +69,28 @@ function ProductForm() {
 
 ## Props
 
-| Prop            | 타입                                                            | 기본값                          | 설명                                                            |
-| --------------- | --------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------- |
-| `state`         | `"empty" \| "uploaded" \| "error"`                              | `"empty"`                       | 현재 시각 상태                                                  |
-| `imageUrl`      | `string`                                                        | —                               | `state="uploaded"` 일 때 표시할 이미지 URL                      |
-| `imageAlt`      | `string`                                                        | `""`                            | preview 이미지 alt                                              |
-| `accept`        | `string`                                                        | `"image/*"`                     | `<input type="file">` 의 accept                                 |
-| `multiple`      | `boolean`                                                       | `false`                         | 다중 선택 허용                                                  |
-| `onFileSelect`  | `(files: FileList) => void`                                     | —                               | 파일 선택 콜백                                                  |
-| `onUploadClick` | `() => void`                                                    | —                               | 업로드 버튼 클릭 콜백 (file picker 트리거 전 후크)              |
-| `onRemove`      | `() => void`                                                    | —                               | 우상단 X 버튼 — uploaded 상태에서만 표시                        |
-| `uploadLabel`   | `ReactNode`                                                     | `"이미지 업로드"`               | 업로드 버튼 라벨                                                |
-| `sizeHint`      | `ReactNode`                                                     | `"사이즈 : 200*200 px 권장"`    | 사이즈 안내 텍스트                                              |
-| `helperText`    | `ReactNode`                                                     | `"이미지를 업로드해 주세요."`   | empty/uploaded helper 텍스트                                    |
-| `errorText`     | `ReactNode`                                                     | `"이미지를 등록해 주세요."`     | error helper 텍스트 (아이콘 자동 부착)                          |
-| `className`     | `string`                                                        | —                               | 추가 className                                                  |
-| `style`         | `CSSProperties`                                                 | —                               | 추가 style                                                      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `state` | `ImageUploadState` | `"empty"` | 현재 상태. uploaded 일 때 imageUrl 사용 |
+| `imageUrl` | `string` | — | 업로드된 이미지 URL (uploaded 상태) |
+| `imageAlt` | `string` | `""` | 이미지 alt 텍스트 |
+| `accept` | `string` | `"image/*"` | `<input type="file">` 의 accept (기본 "image/*") |
+| `multiple` | `boolean` | `false` | 다중 선택 허용 (기본 false) |
+| `autoPreview` | `boolean` | `false` | 선택한 파일을 컴포넌트가 직접 미리보기로 띄운다 (uncontrolled). true 면 `imageUrl`/`state` 를 넘기지 않아도 파일 선택 시 첫 이미지를 `URL.createObjectURL` 로 즉시 preview 에 렌더하고, X 버튼으로 해제한다. objectURL revoke·언마운트 정리도 내부에서 처리. `imageUrl` 을 직접 넘기면(controlled) 그 값이 우선하고 자동 미리보기는 비활성된다. (기본 false) |
+| `onFileSelect` | `(files: FileList) => void` | — | 파일 선택 콜백 — 사용자가 파일 picker 로 파일을 선택하면 호출 |
+| `onUploadClick` | `() => void` | — | 업로드 버튼 클릭 콜백 — onFileSelect 와 별개로 추가 작업이 필요할 때 |
+| `onRemove` | `() => void` | — | 우상단 X 버튼 클릭 콜백 (uploaded 상태에서만 표시) |
+| `uploadLabel` | `ReactNode` | `"이미지 업로드"` | 업로드 버튼 라벨 (기본: "이미지 업로드") |
+| `sizeHint` | `ReactNode` | `"사이즈 : 200*200 px 권장"` | 사이즈 안내 (기본: "사이즈 : 200*200 px 권장") |
+| `helperText` | `ReactNode` | `"이미지를 업로드해 주세요."` | Empty/Uploaded 의 helper 텍스트 (기본: "이미지를 업로드해 주세요.") |
+| `errorText` | `ReactNode` | `"이미지를 등록해 주세요."` | Error 의 helper 텍스트 (기본: "이미지를 등록해 주세요.") |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 인라인 스타일 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### 디자인 토큰
 

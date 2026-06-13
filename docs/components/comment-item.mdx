@@ -42,16 +42,21 @@ import { CommentItem, Avatar, Badge, LikeButton } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입         | 기본값  | 설명                              |
-| ------------- | ------------ | ------- | --------------------------------- |
-| `avatar`      | `ReactNode`  | —       | 작성자 아바타                     |
-| `author`      | `ReactNode`  | —       | 작성자 이름                       |
-| `authorBadge` | `ReactNode`  | —       | 작성자 뱃지 (작성자/상담사 등)    |
-| `time`        | `ReactNode`  | —       | 시간 라벨                         |
-| `text`        | `ReactNode`  | —       | 본문                              |
-| `likeAction`  | `ReactNode`  | —       | 좋아요 슬롯 (LikeButton 등)       |
-| `onReply`     | `() => void` | —       | 답글 클릭 (지정 시 답글 버튼 노출) |
-| `replyLabel`  | `string`     | `"답글"` | 답글 버튼 라벨                  |
-| `more`        | `ReactNode`  | —       | 우상단 더보기 메뉴 슬롯           |
-| `replies`     | `ReactNode`  | —       | 답글 영역 (자식 CommentItem)      |
-| `isReply`     | `boolean`    | `false` | 답글 들여쓰기                     |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `avatar` | `ReactNode` | — | 작성자 아바타 (Avatar 컴포넌트 등) |
+| `author` *(필수)* | `ReactNode` | — | 작성자 이름 |
+| `authorBadge` | `ReactNode` | — | 작성자 뱃지 (예: 작성자 본인, 상담사) |
+| `time` | `ReactNode` | — | 시간 라벨 |
+| `text` *(필수)* | `ReactNode` | — | 본문 |
+| `likeAction` | `ReactNode` | — | 좋아요 버튼 (LikeButton 등) |
+| `onReply` | `() => void` | — | 답글 버튼 클릭 콜백 (지정 시 답글 버튼 노출) |
+| `replyLabel` | `string` | `"답글"` | 답글 버튼 라벨 |
+| `more` | `ReactNode` | — | 더보기 메뉴 (DropdownMenu 등) |
+| `replies` | `ReactNode` | — | 답글 영역 (자식 CommentItem 묶음). 들여쓰기 자동 |
+| `isReply` | `boolean` | `false` | 답글일 때 시각적 들여쓰기 (자동 false) |
+
+<!-- AUTO-GEN:props:END -->

@@ -65,18 +65,23 @@ function Sidebar() {
 
 ## Props
 
-| Prop            | 타입                                              | 기본값                 | 설명                                                  |
-| --------------- | ------------------------------------------------- | ---------------------- | ----------------------------------------------------- |
-| `title`         | `ReactNode`                                       | `"커뮤니티 BEST 인기글"` | 모듈 제목                                             |
-| `tabs`          | `PopularPostsTab[]`                               | —                      | 탭 목록 (비우면 탭 영역 숨김, 5개 이하 권장)          |
-| `activeTabKey`  | `string`                                          | —                      | 활성 탭 키                                            |
-| `onTabChange`   | `(key: string) => void`                           | —                      | 탭 변경 콜백                                          |
-| `items`         | `PopularPostsItem[]`                              | **required**           | 인기글 목록 (최대 10개 권장)                          |
-| `onItemClick`   | `(item, rank: number) => void`                    | —                      | 행 클릭 콜백                                          |
-| `onMoreClick`   | `() => void`                                      | —                      | 더보기 클릭 콜백. 지정 시에만 더보기 노출             |
-| `moreLabel`     | `ReactNode`                                       | `"더보기"`             | 더보기 버튼 라벨                                      |
-| `className`     | `string`                                          | —                      | 추가 className                                        |
-| `style`         | `CSSProperties`                                   | —                      | 추가 style                                            |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | `"커뮤니티 BEST 인기글"` | 모듈 제목 (기본: "커뮤니티 BEST 인기글") |
+| `onMoreClick` | `() => void` | — | "더보기" 클릭 콜백. 지정 시에만 더보기 영역 노출 |
+| `moreLabel` | `ReactNode` | `"더보기"` | "더보기" 라벨 (기본: "더보기") |
+| `tabs` | `PopularPostsTab[]` | — | 탭 목록 (5개 권장). 비우면 탭 영역 숨김 |
+| `activeTabKey` | `string` | — | 활성 탭 키 |
+| `onTabChange` | `(key: string) => void` | — | 탭 변경 콜백 |
+| `items` *(필수)* | `PopularPostsItem[]` | — | 인기글 목록 (최대 10개 권장 — 초과분은 시각적으로 잘리지 않지만 가이드는 10개) |
+| `onItemClick` | `(item: PopularPostsItem, rank: number) => void` | — | 행 클릭 콜백 |
+| `className` | `string` | — | 추가 className |
+| `style` | `CSSProperties` | — | 추가 style |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `PopularPostsTab`
 

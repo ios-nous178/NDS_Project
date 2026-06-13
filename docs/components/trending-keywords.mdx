@@ -53,14 +53,19 @@ import { TrendingKeywords } from "@nudge-design/react";
 
 ## Props
 
-| Prop             | 타입                                       | 기본값         | 설명                              |
-| ---------------- | ------------------------------------------ | -------------- | --------------------------------- |
-| `items`          | `TrendingKeywordItem[]`                    | —              | 인기 검색어 목록                  |
-| `title`          | `string`                                   | `"인기 검색어"` | 드롭다운 제목                     |
-| `timestamp`      | `string`                                   | —              | 기준 시간 텍스트 (예: "09:00 기준") |
-| `autoplayDelay`  | `number`                                   | `2000`         | 자동 슬라이드 간격 (ms)           |
-| `onKeywordClick` | `(item: TrendingKeywordItem) => void`      | —              | 키워드 클릭 콜백                  |
-| `className`      | `string`                                   | —              | 루트 className                    |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `items` *(필수)* | `TrendingKeywordItem[]` | — | 인기 검색어 목록 |
+| `title` | `string` | `"인기 검색어"` | 드롭다운 제목 (기본: "인기 검색어") |
+| `timestamp` | `string` | — | 기준 시간 텍스트 (예: "09:00 기준") |
+| `autoplayDelay` | `number` | `2000` | 자동 슬라이드 간격 (ms, 기본: 2000) |
+| `onKeywordClick` | `(item: TrendingKeywordItem) => void` | — | 키워드 클릭 시 콜백 |
+| `className` | `string` | — | 추가 className |
+
+<!-- AUTO-GEN:props:END -->
 
 ### TrendingKeywordItem
 

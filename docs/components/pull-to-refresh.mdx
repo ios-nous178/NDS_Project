@@ -34,12 +34,17 @@ import { PullToRefresh } from "@nudge-design/react";
 
 ## Props
 
-| Prop              | 타입                              | 기본값             | 설명                              |
-| ----------------- | --------------------------------- | ------------------ | --------------------------------- |
-| `onRefresh`       | `() => void \| Promise<void>`     | —                  | 새로고침 콜백                     |
-| `children`        | `ReactNode`                       | —                  | 콘텐츠                            |
-| `threshold`       | `number`                          | `64`               | 트리거 임계값 px                  |
-| `pullLabel`       | `string`                          | `"당겨서 새로고침"` | 끌어내림 라벨                  |
-| `releaseLabel`    | `string`                          | `"놓으면 새로고침"` | 놓으면 라벨                    |
-| `refreshingLabel` | `string`                          | `"새로고침 중..."`  | 새로고침 중 라벨                |
-| `disabled`        | `boolean`                         | `false`            | 비활성화                          |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `onRefresh` *(필수)* | `() => void \| Promise<void>` | — | 새로고침 콜백 (Promise 반환 시 자동 종료) |
+| `children` *(필수)* | `ReactNode` | — | 콘텐츠 |
+| `threshold` | `number` | `64` | 트리거 임계값 (px) |
+| `pullLabel` | `string` | `"당겨서 새로고침"` | 끌어내림 라벨 |
+| `releaseLabel` | `string` | `"놓으면 새로고침"` | 놓으면 새로고침 라벨 |
+| `refreshingLabel` | `string` | `"새로고침 중..."` | 새로고침 중 라벨 |
+| `disabled` | `boolean` | `false` | 비활성화 (스크롤 중 등) |
+
+<!-- AUTO-GEN:props:END -->

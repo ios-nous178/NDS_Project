@@ -211,3 +211,27 @@ div [data-slot="root"]
 - `type="search"`로 시맨틱 역할 명시
 - `ref` 전달 지원
 - Enter 키로 검색 실행 지원
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `label` | `string` | — | 라벨 텍스트 |
+| `helperText` | `string` | — | 도움 텍스트 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `errorMessage` | `string` | — | 에러 메시지 (helperText 대신 표시) |
+| `variant` | `SearchInputVariant` | `"outlined"` | 스타일 변형 |
+| `clearable` | `boolean` | `true` | 클리어 버튼 자동 표시 (값이 있을 때) |
+| `onClear` | `() => void` | — | 클리어 시 콜백 |
+| `showSearchButton` | `boolean` | `true` | 검색 버튼 표시 |
+| `onSearch` | `() => void` | — | 검색 버튼 클릭 콜백 |
+| `searchIcon` | `ReactNode` | — | 검색 아이콘을 커스텀 노드로 대체 |
+| `fullWidth` | `boolean` | `true` | 컴포넌트 너비 |
+| `slotProps` | `SearchInputSlotProps` | — | 슬롯 프롭 |
+
+<!-- AUTO-GEN:props:END -->

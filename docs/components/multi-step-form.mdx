@@ -62,17 +62,22 @@ const { next, current, total } = useMultiStepForm();
 
 ## Props
 
-| Prop              | 타입                                | 기본값        | 설명                                |
-| ----------------- | ----------------------------------- | ------------- | ----------------------------------- |
-| `steps`           | `MultiStepFormStep[]`               | —             | 단계 목록                           |
-| `current`         | `number`                            | —             | 현재 인덱스 (controlled, 선택)      |
-| `onCurrentChange` | `(i: number) => void`               | —             | 단계 변경 콜백                      |
-| `onSubmit`        | `() => void \| Promise<void>`       | —             | 마지막 단계 제출                    |
-| `indicator`       | `"progress" \| "steps" \| "none"`   | `"progress"`  | 진행 표시 종류                      |
-| `nextLabel`       | `string`                            | `"다음"`      | 다음 버튼                           |
-| `prevLabel`       | `string`                            | `"이전"`      | 이전 버튼                           |
-| `submitLabel`     | `string`                            | `"완료"`      | 마지막 단계 버튼                    |
-| `submitting`      | `boolean`                           | `false`       | 제출 중 (다음 버튼 비활성)          |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `steps` *(필수)* | `MultiStepFormStep[]` | — | 단계 목록 |
+| `current` | `number` | — | 현재 단계 (controlled) |
+| `onCurrentChange` | `(index: number) => void` | — | 단계 변경 콜백 |
+| `onSubmit` | `() => void \| Promise<void>` | — | 마지막 단계에서 제출 콜백 |
+| `indicator` | `MultiStepFormIndicator` | `"progress"` | 인디케이터 종류 |
+| `nextLabel` | `string` | `"다음"` | 다음 버튼 라벨 |
+| `prevLabel` | `string` | `"이전"` | 이전 버튼 라벨 |
+| `submitLabel` | `string` | `"완료"` | 제출 버튼 라벨 (마지막 단계) |
+| `submitting` | `boolean` | `false` | 제출 진행 중 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `MultiStepFormStep`
 

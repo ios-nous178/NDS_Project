@@ -84,17 +84,22 @@ import { CheckboxGroup } from "@nudge-design/react";
 
 ## Props
 
-| Prop             | 타입                            | 기본값       | 설명                                                                  |
-| ---------------- | ------------------------------- | ------------ | --------------------------------------------------------------------- |
-| `layout`         | `"vertical" \| "horizontal"`    | `"vertical"` | 방향 (레이아웃 모드 / 데이터 모드 공통)                               |
-| `gap`            | `number`                        | —            | 아이템 간격(px)                                                       |
-| `items`          | `CheckboxGroupItem[]`           | —            | 옵션 목록 — 주면 `value`/`onValueChange`로 선택을 관리하는 데이터 모드 |
-| `value`          | `string[]`                      | —            | 선택된 값 (controlled)                                                |
-| `onValueChange`  | `(value: string[]) => void`     | —            | 선택 변경 콜백 — `items` 순서로 정렬된 값 배열                        |
-| `selectAll`      | `boolean`                       | `false`      | 전체선택 행 노출 — 자식 선택 비율로 checked/indeterminate/unchecked 자동 파생 |
-| `selectAllLabel` | `ReactNode`                     | `"전체 선택"` | 전체선택 라벨                                                          |
-| `expandable`     | `boolean`                       | `true`       | `detail` 펼침 토글 노출 (`detail` 있는 항목 한정)                     |
-| `children`       | `ReactNode`                     | —            | 직접 조립한 `<Checkbox>`들 (`items` 미지정 시)                        |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `layout` | `CheckboxGroupLayout` | `"vertical"` | 방향 (레이아웃 모드 / 데이터 모드 공통) |
+| `gap` | `number` | — | 아이템 간격(px) |
+| `items` | `CheckboxGroupItem[]` | — | 옵션 목록 — 주면 value/onValueChange 로 선택 상태를 관리하는 데이터 모드 |
+| `value` | `string[]` | — | 선택된 값 (controlled) |
+| `onValueChange` | `(value: string[]) => void` | — | 선택 변경 콜백 — items 순서로 정렬된 값 배열 |
+| `selectAll` | `boolean` | `false` | 전체선택 행 노출 — 자식 선택 비율로 checked/indeterminate/unchecked 자동 파생 |
+| `selectAllLabel` | `ReactNode` | `"전체 선택"` | 전체선택 라벨 |
+| `expandable` | `boolean` | `true (detail 있는 항목 한정)` | detail 펼침 토글 노출 |
+| `children` | `ReactNode` | — | 직접 조립한 &lt;Checkbox> 들 (items 미지정 시) |
+
+<!-- AUTO-GEN:props:END -->
 
 `onChange`·`children`을 제외한 `<div>` HTML 속성을 모두 지원합니다.
 

@@ -76,13 +76,16 @@ const [selectedAds, setSelectedAds] = useState<string[]>([]);
 
 ## Props
 
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `options` | `MultiSelectOption[]` | — | 옵션 목록 |
-| `value` | `string[]` | — | 적용(commit)된 선택 값 |
-| `onValueChange` | `(value: string[]) => void` | — | 적용 시 콜백 (적용 버튼 클릭 시에만 발화) |
+| `options` *(필수)* | `MultiSelectOption[]` | — | 옵션 목록 |
+| `value` *(필수)* | `string[]` | — | 적용(commit)된 선택 값 |
+| `onValueChange` *(필수)* | `(value: string[]) => void` | — | 적용 시 콜백 (적용 버튼 클릭 시에만 발화) |
 | `placeholder` | `string` | `"선택"` | 트리거 placeholder (선택 없음일 때) |
-| `formatSummary` | `(count: number, total: number) => string` | `(n) => ${n}개 선택` | 트리거 요약 텍스트 포맷터 |
+| `formatSummary` | `(count: number, total: number) => string` | `(n) => '${n}개 선택'` | 트리거 요약 텍스트 포맷터 |
 | `searchable` | `boolean` | `true` | 검색창 노출 |
 | `searchPlaceholder` | `string` | `"검색"` | 검색 placeholder |
 | `selectAllLabel` | `string` | `"전체선택 / 해제"` | 전체선택/해제 버튼 라벨 |
@@ -93,7 +96,9 @@ const [selectedAds, setSelectedAds] = useState<string[]>([]);
 | `disabled` | `boolean` | `false` | 비활성화 |
 | `fullWidth` | `boolean` | `true` | 트리거 100% 폭 |
 | `className` | `string` | — | 루트 className |
-| `style` | `React.CSSProperties` | — | 루트 style |
+| `style` | `CSSProperties` | — | 루트 style |
+
+<!-- AUTO-GEN:props:END -->
 
 ### MultiSelectOption
 

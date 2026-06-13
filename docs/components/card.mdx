@@ -152,3 +152,37 @@ Counselor Card는 도메인 의존성이 높으므로 `Card` 프리미티브 위
   </Card.Body>
 </Card>
 ```
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `CardVariant` | `"outlined"` | 스타일 변형 |
+| `clickable` | `boolean` | `false` | 클릭 가능 여부 |
+| `thumbnail` | `ReactNode` | — | 썸네일 콘텐츠 (이미지 등) — Figma 기본 160px 고정 height |
+| `thumbnailHeight` | `number` | — | 썸네일 고정 height (px). 기본 160. thumbnailRatio 가 있으면 무시 |
+| `thumbnailRatio` | `string` | — | 썸네일 비율 (지정하면 height 무시하고 비율로 렌더) |
+| `avatar` | `ReactNode` | — | 아바타 콘텐츠 (40px circle 슬롯) |
+| `chips` | `ReactNode` | — | Chip / Badge 그룹 (가로 정렬) |
+| `title` | `string` | — | 제목 |
+| `description` | `string` | — | 설명 (Figma: description, Caption 1, subtle). subtitle 도 동일 슬롯. |
+| `subtitle` | `string` | — | **(deprecated)** description 사용 권장 — 같은 슬롯에 렌더됨 |
+| `metadata` | `string` | — | 메타 텍스트 (Caption 2, muted) — Title/Description 아래 단독 줄 |
+| `meta` | `ReactNode` | — | **(deprecated)** metadata (string) 또는 자유로운 ReactNode 가 필요하면 그대로 사용 |
+| `children` | `ReactNode` | — | 자유 본문 콘텐츠 (text-content 와 divider 사이에 렌더) |
+| `divider` | `boolean` | — | 구분선 표시 여부 (CTA / footerText 위에 가로선) |
+| `cta` | `ReactNode` | — | CTA 슬롯 (버튼 등 액션 영역) |
+| `footerText` | `string` | — | Footer 텍스트 (Caption 2, muted) |
+| `footer` | `ReactNode` | — | **(deprecated)** footer ReactNode — cta 슬롯에 렌더됨 (cta 가 없을 때만) |
+| `footerNoBorder` | `boolean` | `false` | **(deprecated)** divider=false 와 동일 |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 인라인 스타일 |
+| `onClick` | `MouseEventHandler<HTMLDivElement>` | — | 카드 클릭 핸들러 (지정 시 clickable 자동 활성) |
+| `slotProps` | `CardSlotProps` | — | 슬롯별 props 전달 (thumbnail/avatar/title/body/cta 등) |
+
+<!-- AUTO-GEN:props:END -->

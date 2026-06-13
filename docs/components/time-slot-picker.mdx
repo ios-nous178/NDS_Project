@@ -67,16 +67,20 @@ const [slot, setSlot] = useState<string>();
 
 ## Props
 
-| Prop            | 타입                            | 기본값                                | 설명                                |
-| --------------- | ------------------------------- | ------------------------------------- | ----------------------------------- |
-| `slots`         | `TimeSlot[]`                    | —                                     | 평면 슬롯 목록                      |
-| `groups`        | `TimeSlotGroup[]`               | —                                     | 그룹화된 슬롯 (groups가 있으면 우선) |
-| `value`         | `string`                        | —                                     | 선택된 슬롯 값                      |
-| `onValueChange` | `(value: string) => void`       | —                                     | 변경 콜백                           |
-| `columns`       | `number`                        | `4`                                   | 한 줄당 슬롯 개수                   |
-| `disabled`      | `boolean`                       | `false`                               | 전체 비활성화                       |
-| `emptyText`     | `ReactNode`                     | `"예약 가능한 시간이 없습니다"`       | 빈 상태 메시지                      |
-| `className`     | `string`                        | —                                     | 루트 className                      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `slots` | `TimeSlot[]` | — | 단일 슬롯 목록 (또는 groups 사용) |
+| `groups` | `TimeSlotGroup[]` | — | 그룹화된 슬롯 (오전/오후 등) |
+| `value` | `string` | — | 선택된 값 |
+| `onValueChange` *(필수)* | `(value: string) => void` | — | 변경 콜백 |
+| `columns` | `number` | `4` | 한 줄에 표시할 슬롯 개수 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `emptyText` | `ReactNode` | `"예약 가능한 시간이 없습니다"` | 빈 상태 메시지 (slots/groups 모두 비어있을 때) |
+
+<!-- AUTO-GEN:props:END -->
 
 `<div>` HTML 속성을 모두 지원합니다 (`onChange` 제외).
 

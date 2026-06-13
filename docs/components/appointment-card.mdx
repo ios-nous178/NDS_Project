@@ -51,17 +51,22 @@ import { AppointmentCard } from "@nudge-design/react";
 
 ## Props
 
-| Prop        | 타입                                                                       | 기본값        | 설명                            |
-| ----------- | -------------------------------------------------------------------------- | ------------- | ------------------------------- |
-| `date`      | `string`                                                                   | —             | `YYYY-MM-DD`                    |
-| `startTime` | `string`                                                                   | —             | `HH:mm`                         |
-| `endTime`   | `string`                                                                   | —             | `HH:mm` (선택)                  |
-| `title`     | `ReactNode`                                                                | —             | 제목 (상담사 이름 등)           |
-| `mode`      | `"video" \| "phone" \| "chat" \| "in-person"`                              | —             | 상담 방식                       |
-| `location`  | `ReactNode`                                                                | —             | 장소 (in-person 모드)           |
-| `status`    | `"scheduled" \| "confirmed" \| "in-progress" \| "completed" \| "canceled"` | `"scheduled"` | 상태 (배지 색상 자동)           |
-| `actions`   | `AppointmentAction[]`                                                      | —             | 우측 하단 버튼들                |
-| `onClick`   | `() => void`                                                               | —             | 카드 전체 클릭 (상세 진입)      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `date` *(필수)* | `string` | — | ISO 날짜 (YYYY-MM-DD) |
+| `startTime` *(필수)* | `string` | — | 시작 시간 (HH:mm) |
+| `endTime` | `string` | — | 종료 시간 (HH:mm, 선택) |
+| `title` *(필수)* | `ReactNode` | — | 상담사/세션 제목 |
+| `mode` | `AppointmentMode` | — | 상담 방식 |
+| `location` | `ReactNode` | — | 장소 (in-person 모드일 때) 또는 보조 정보 |
+| `status` | `AppointmentStatus` | `"scheduled"` | 상태 |
+| `actions` | `AppointmentAction[]` | — | 카드 우측 하단 액션 |
+| `onClick` | `() => void` | — | 카드 자체 클릭 (디테일 진입) |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `AppointmentAction`
 

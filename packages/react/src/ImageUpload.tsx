@@ -38,7 +38,9 @@ export interface ImageUploadProps {
   helperText?: React.ReactNode;
   /** Error 의 helper 텍스트 (기본: "이미지를 등록해 주세요.") */
   errorText?: React.ReactNode;
+  /** 루트 className */
   className?: string;
+  /** 루트 인라인 스타일 */
   style?: React.CSSProperties;
 }
 

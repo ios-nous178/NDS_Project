@@ -76,6 +76,21 @@ import { DropdownMenu } from "@nudge-design/react";
 
 ## Props
 
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `children` *(필수)* | `ReactElement` | — | 트리거 요소 (forwardRef + onClick 지원해야 함). cloneElement로 ref와 onClick이 주입됨 |
+| `items` | `DropdownMenuItem[]` | — | 단일 아이템 목록 (groups 또는 items 둘 중 하나 사용) |
+| `groups` | `DropdownMenuGroup[]` | — | 그룹화된 아이템 (label로 섹션 구분) |
+| `align` | `DropdownAlign` | `"start"` | 정렬 (트리거 기준) |
+| `minWidth` | `number` | — | 패널 최소 너비 (px) |
+| `portalContainer` | `HTMLElement \| null` | — | 포털 컨테이너 (미지정 시 document.body) |
+| `panelClassName` | `string` | — | 패널 className |
+
+<!-- AUTO-GEN:props:END -->
+
 ### DropdownMenu
 
 | Prop              | 타입                       | 기본값     | 설명                                              |

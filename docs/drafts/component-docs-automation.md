@@ -62,3 +62,42 @@ packages/mcp/guides-src/components/*.md ──────┘        (gates.mjs 
   가이드 작성이 선행 조건이 되며, 이는 오히려 가이드 공백을 막는 순기능.
 - 이행 라운드(역이식)가 119파일 분량의 일회성 비용 — 자동 diff 로 "가이드에 없는 문단"만 추리면
   실제 검토량은 크지 않다.
+
+---
+
+## 5. 구현 완료 (2026-06-13) — `scripts/generate-component-docs.mjs`
+
+제안을 구현하면서 **전면 재생성 대신 마커 주입**으로 설계를 정제했다. 이유: 기존 mdx 의 손으로 쓴
+prose·Playground·예제(특히 8개 인터랙티브 문서)를 guides-src 로 역이식하면 **guides-src(외부 MCP
+소비자가 받는 AI용 SSOT)가 사람용 문서 prose 로 오염**된다. 대신 진실의 출처를 제자리에 둔다:
+
+- **코드 → Props 표** (타입·기본값·JSDoc 설명) — 유일한 드리프트 클래스. 자동 생성.
+- **guides-src → 판단**(사용 정책·함정) — AI 가 MCP 로 받는 그대로.
+- **mdx → 사람 prose·예제** — 중복이 없으니 드리프트도 없다. 손대지 않고 보존.
+
+생성기는 각 mdx 의 `## Props` 표만 `<!-- AUTO-GEN:props:START/END -->` 마커 사이에 주입한다.
+표 바깥(가이드·예제·타입 별칭 노트·접근성)은 전부 그대로 남는다.
+
+**결과:**
+
+| 지표                                       | 값                                             |
+| ------------------------------------------ | ---------------------------------------------- |
+| Props 표 자동 생성 컴포넌트                | **107** (mappable 전부)                        |
+| 자동 생성된 prop 행                        | **1,561**                                      |
+| JSDoc 설명 누락 prop                       | **0** (구현 전 7건 → 소스 JSDoc 보강으로 해소) |
+| 자동화 제외(카탈로그·브랜드셸·별칭 페이지) | 11 (react 단일 컴포넌트 아님)                  |
+
+**추출 방식:** `typescript`(5.9.3, 이미 설치됨) 컴파일러 API 로 `<Title>Props` 인터페이스의 직접
+선언 prop 을 파싱(상속된 HTML 속성 제외 — 기존 mdx 관례와 동일). 기본값은 JSDoc `@default` 우선,
+없으면 구현부 구조분해(`({ variant = "solid" })`)에서 원시 리터럴을 수집. ts-morph 불필요.
+
+**게이트:** `scripts/gates.mjs` 에 `component-docs`(buildFree·ssot) 1건 추가 → check-ssot(CI)·
+`pnpm fix`·precommit 에 자동 편입. 소스 타입/JSDoc 을 고치고 표를 재생성 안 하면 CI 가 차단한다.
+`pnpm generate:component-docs`(쓰기) / `pnpm lint:component-docs`(검사) / `pnpm report:component-docs`(현황).
+
+**남은 일(후속 라운드):**
+
+- 11개 compound 문서(Modal/Select/Input 등)에는 파일 끝에 Props 참조 섹션을 새로 덧붙였다 —
+  배치를 본문 흐름에 맞게 다듬을 여지.
+- CSS 변수 표·`data-slot` 트리도 같은 마커 방식으로 코드에서 생성 가능(현재 Button 등 일부만 수기).
+- 인터랙티브 Playground(8건)는 의도적으로 수기 유지 — 자동화 대상 아님.

@@ -40,13 +40,18 @@ const [idx, setIdx] = useState(0);
 
 ## Props
 
-| Prop            | 타입                       | 기본값  | 설명                              |
-| --------------- | -------------------------- | ------- | --------------------------------- |
-| `open`          | `boolean`                  | —       | 열림 여부                         |
-| `images`        | `LightboxImage[]`          | —       | 이미지 목록                       |
-| `index`         | `number`                   | —       | 현재 인덱스 (controlled, 선택)    |
-| `onIndexChange` | `(i: number) => void`      | —       | 인덱스 변경 콜백                  |
-| `onClose`       | `() => void`               | —       | 닫기 콜백                         |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `open` *(필수)* | `boolean` | — | 열림 여부 |
+| `images` *(필수)* | `LightboxImage[]` | — | 이미지 목록 |
+| `index` | `number` | — | 시작 인덱스 (controlled용) |
+| `onIndexChange` | `(i: number) => void` | — | 인덱스 변경 콜백 |
+| `onClose` *(필수)* | `() => void` | — | 닫기 콜백 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `LightboxImage`
 

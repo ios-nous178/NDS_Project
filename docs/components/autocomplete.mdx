@@ -54,21 +54,26 @@ const filtered = useMemo(
 
 ## Props
 
-| Prop             | 타입                                    | 기본값       | 설명                                |
-| ---------------- | --------------------------------------- | ------------ | ----------------------------------- |
-| `value`          | `string`                                | —            | 입력값 (controlled)                 |
-| `onValueChange`  | `(v: string) => void`                   | —            | 입력 변경 콜백                      |
-| `options`        | `AutocompleteOption[]`                  | —            | 추천 옵션 (외부 필터링 결과)        |
-| `onSelect`       | `(opt: AutocompleteOption) => void`     | —            | 옵션 선택 콜백                      |
-| `loading`        | `boolean`                               | `false`      | 로딩 상태 표시                      |
-| `emptyMessage`   | `ReactNode`                             | `"결과가 없어요"` | 빈 상태 메시지                 |
-| `minQueryLength` | `number`                                | `1`          | 드롭다운 표시 최소 입력 길이        |
-| `highlight`      | `boolean`                               | `true`       | 매칭 텍스트 하이라이트              |
-| `label`          | `ReactNode`                             | —            | 입력 라벨                           |
-| `placeholder`    | `string`                                | —            | 자리표시자                          |
-| `disabled`       | `boolean`                               | `false`      | 비활성화                            |
-| `error`          | `boolean`                               | `false`      | 에러 보더                           |
-| `fullWidth`      | `boolean`                               | `false`      | 가로 가득                           |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` *(필수)* | `string` | — | 입력값 (controlled) |
+| `onValueChange` *(필수)* | `(value: string) => void` | — | 입력값 변경 콜백 |
+| `options` *(필수)* | `AutocompleteOption[]` | — | 추천 옵션 목록. value 입력에 맞춰 외부에서 필터링해 전달 |
+| `onSelect` | `(option: AutocompleteOption) => void` | — | 옵션 선택 콜백 |
+| `loading` | `boolean` | `false` | 로딩 상태 |
+| `emptyMessage` | `ReactNode` | `"결과가 없어요"` | 결과 없음 메시지 |
+| `minQueryLength` | `number` | `1` | 최소 입력 길이 (이 길이 미만일 때는 드롭다운 안 보임) |
+| `highlight` | `boolean` | `true` | 매칭 텍스트 하이라이트 |
+| `label` | `ReactNode` | — | 라벨 |
+| `placeholder` | `string` | — | 자리표시자 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `fullWidth` | `boolean` | `false` | 가로 가득 채우기 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `AutocompleteOption`
 

@@ -101,17 +101,25 @@ import { FieldActionRow } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입                      | 기본값      | 설명                                  |
-| -------------- | ------------------------- | ----------- | ------------------------------------- |
-| `field`        | `ReactNode`               | —           | 입력 필드 (input 또는 Input 컴포넌트) |
-| `action`       | `ReactNode`               | —           | 액션 버튼                             |
-| `actionTone`   | `"outline" \| "solid"`    | `"outline"` | 버튼 스타일                           |
-| `timer`        | `ReactNode`               | —           | 타이머 표시 (입력 필드 우측)          |
-| `timerExpired` | `boolean`                 | `false`     | 타이머 만료 상태                      |
-| `error`        | `boolean`                 | `false`     | 에러 상태                             |
-| `helperText`   | `string`                  | —           | 도움/에러 텍스트                      |
-| `success`      | `boolean`                 | `false`     | 성공 상태                             |
-| `slotProps`    | `FieldActionRowSlotProps` | —           | 슬롯 프롭                             |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | — | 필드 라벨 (옵션). 주면 입력+버튼 한 줄 **위**에 라벨이 렌더된다 — 라벨이 필요한 인증 row (예: 캐포비 본인인증의 "휴대폰 번호" + [인증번호 받기])는 라벨을 손으로 한 줄에 욱여넣지 말고 이 prop 으로 넘긴다(라벨은 위, 입력+버튼은 한 줄 인라인으로 컴포넌트가 정렬한다). |
+| `field` *(필수)* | `ReactNode` | — | 입력 필드 (Input 또는 native input) |
+| `action` | `ReactNode` | — | 액션 버튼 (옵션). 생략하면 "필드(+타이머)만" 한 줄 — 인라인 버튼 없이 코드 입력 + 우측 타이머만 두는 레이아웃(예: 캐포비 본인인증의 별도 full-width 재전송 버튼 + 타이머만 있는 코드 입력). |
+| `actionTone` | `"outline" \| "solid"` | `"outline"` | 버튼 톤 |
+| `timer` | `ReactNode` | — | 타이머 표시 |
+| `timerExpired` | `boolean` | `false` | 타이머 만료 상태 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `helperText` | `string` | — | 도움/에러/성공 텍스트 |
+| `success` | `boolean` | `false` | 성공 상태 |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 style |
+| `slotProps` | `FieldActionRowSlotProps` | — | 슬롯 프롭 |
+
+<!-- AUTO-GEN:props:END -->
 
 ---
 

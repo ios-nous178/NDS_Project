@@ -57,13 +57,15 @@ import { DownloadIcon, EditIcon, InfoIcon } from "@nudge-design/icons";
 
 상속: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "children">` (즉 `onClick`, `disabled`, `aria-*` 등 모두 사용 가능)
 
-| Prop        | 타입            | 기본값  | 설명                              |
-| ----------- | --------------- | ------- | --------------------------------- |
-| `icon`      | `ReactNode`     | —       | 좌측 아이콘 (14px box 권장)       |
-| `label`     | `ReactNode`     | **required** | 라벨 텍스트                  |
-| `className` | `string`        | —       | 추가 className                    |
-| `disabled`  | `boolean`       | —       | 비활성화                          |
-| `onClick`   | `() => void`    | —       | 클릭 핸들러                       |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `icon` | `ReactNode` | — | 좌측 아이콘 (14px box 권장) |
+| `label` *(필수)* | `ReactNode` | — | 라벨 텍스트 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### 디자인 토큰
 

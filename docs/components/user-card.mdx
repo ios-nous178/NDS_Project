@@ -41,14 +41,19 @@ import { UserCard, Avatar, Button } from "@nudge-design/react";
 
 ## Props
 
-| Prop       | 타입                        | 기본값  | 설명                              |
-| ---------- | --------------------------- | ------- | --------------------------------- |
-| `avatar`   | `ReactNode`                 | —       | 아바타                            |
-| `name`     | `ReactNode`                 | —       | 사용자 이름                       |
-| `handle`   | `ReactNode`                 | —       | 핸들/직책 (이름 아래 작은 글씨)   |
-| `bio`      | `ReactNode`                 | —       | 한 줄 소개 (2줄 클램프)           |
-| `meta`     | `ReactNode`                 | —       | 메타 (팔로워/게시물 수 등)        |
-| `action`   | `ReactNode`                 | —       | 우측 액션 슬롯 (버튼)             |
-| `verified` | `boolean`                   | `false` | ✓ 인증 마크                       |
-| `layout`   | `"row" \| "stacked"`        | `"row"` | 레이아웃                          |
-| `onClick`  | `() => void`                | —       | 카드 전체 클릭                    |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `avatar` | `ReactNode` | — | 아바타 (Avatar 컴포넌트 등) |
+| `name` *(필수)* | `ReactNode` | — | 사용자 이름 |
+| `handle` | `ReactNode` | — | 핸들 / 직책 / |
+| `bio` | `ReactNode` | — | 한 줄 소개 |
+| `meta` | `ReactNode` | — | 메타 정보 (팔로워 수 등) |
+| `action` | `ReactNode` | — | 우측 액션 (팔로우 버튼/메시지) |
+| `verified` | `boolean` | `false` | 인증 마크 (이름 옆 ✓) |
+| `layout` | `UserCardLayout` | `"row"` | 레이아웃 (가로 / 세로) |
+| `onClick` | `() => void` | — | 카드 클릭 (프로필 진입) |
+
+<!-- AUTO-GEN:props:END -->

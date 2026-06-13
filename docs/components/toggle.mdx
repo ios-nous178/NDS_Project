@@ -26,10 +26,19 @@ const [enabled, setEnabled] = useState(false);
 
 ## Props
 
-| Prop              | 타입                         | 기본값  | 설명                        |
-| ----------------- | ---------------------------- | ------- | --------------------------- |
-| `checked`         | `boolean`                    | `false` | 토글 상태                   |
-| `onCheckedChange` | `(checked: boolean) => void` | —       | 변경 콜백                   |
-| `label`           | `ReactNode`                  | —       | 라벨 텍스트                 |
-| `size`            | `"sm" \| "md"`               | `"md"`  | 크기 (md: 44x24, sm: 36x20) |
-| `disabled`        | `boolean`                    | `false` | 비활성화                    |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `checked` | `boolean` | `false` | 토글 상태 |
+| `onCheckedChange` | `(checked: boolean) => void` | — | 변경 콜백 |
+| `label` | `ReactNode` | — | 트랙 **밖**(우측)에 붙는 라벨 |
+| `onLabel` | `ReactNode` | — | 트랙 **안**에 표시되는 켜짐 라벨 (예: "노출"). onLabel/offLabel 중 하나라도 주면 "라벨 내장 status 토글" 변형으로 렌더(폭 auto · 큰 썸). 상태/노출 토글에 사용. |
+| `offLabel` | `ReactNode` | — | 트랙 안에 표시되는 꺼짐 라벨 (예: "미노출"). |
+| `tone` | `ToggleTone` | `"brand"` | 켜짐 트랙 색. brand(기본·브랜드색) \| success(초록 — 노출/활성 status). |
+| `size` | `ToggleSize` | `"md"` | 크기 (라벨 내장 변형에서는 무시 — 고정 30/25). |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `className` | `string` | — | 루트 className |
+
+<!-- AUTO-GEN:props:END -->

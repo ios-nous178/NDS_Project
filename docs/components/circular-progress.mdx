@@ -41,15 +41,20 @@ import { CircularProgress } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입         | 기본값       | 설명                                |
-| ------------- | ------------ | ------------ | ----------------------------------- |
-| `value`       | `number`     | —            | 현재 값                             |
-| `max`         | `number`     | `100`        | 최댓값                              |
-| `size`        | `number`     | `80`         | 정사각 px                           |
-| `thickness`   | `number`     | 자동 (`size/12`) | 링 두께                         |
-| `color`       | `string`     | `primary`    | 채움 색                             |
-| `trackColor`  | `string`     | `bg.coolGray`| 트랙 색                             |
-| `label`       | `ReactNode`  | `"{percent}%"` | 가운데 라벨                       |
-| `caption`     | `ReactNode`  | —            | 라벨 아래 보조 텍스트               |
-| `hideLabel`   | `boolean`    | `false`      | 라벨 영역 숨김 (작은 인디케이터용)  |
-| `aria-label`  | `string`     | `"진행도"`    | 접근성 라벨                         |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` *(필수)* | `number` | — | 현재 값 |
+| `max` | `number` | `100` | 최댓값 |
+| `size` | `number` | `80` | 크기 px (정사각). 기본 80 |
+| `thickness` | `number` | — | 트랙/링 두께 |
+| `color` | `string` | — | 채움 색 (기본 primary) |
+| `trackColor` | `string` | — | 트랙 색 |
+| `label` | `ReactNode` | — | 가운데 라벨 (기본 "&#123;percent&#125;%") |
+| `caption` | `ReactNode` | — | 라벨 아래 캡션 |
+| `hideLabel` | `boolean` | `false` | 라벨 숨김 |
+| `aria-label` | `string` | — | 접근성 라벨 |
+
+<!-- AUTO-GEN:props:END -->

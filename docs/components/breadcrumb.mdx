@@ -35,8 +35,13 @@ import { Breadcrumb } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입                       | 기본값        | 설명                    |
-| ------------- | -------------------------- | ------------- | ----------------------- |
-| `items`       | `BreadcrumbItem[]`         | —             | `{ label, href? }` 목록 |
-| `separator`   | `ReactNode`                | `›` (chevron) | 구분자                  |
-| `onItemClick` | `(item, index, e) => void` | —             | 아이템 클릭 핸들러      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `items` *(필수)* | `BreadcrumbItem[]` | — | 브레드크럼 아이템 목록 |
+| `separator` | `ReactNode` | — | 구분자 커스터마이즈 |
+| `onItemClick` | `(item: BreadcrumbItem, index: number, e: MouseEvent) => void` | — | 아이템 클릭 핸들러 (SPA 라우터 연동) |
+
+<!-- AUTO-GEN:props:END -->

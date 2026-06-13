@@ -41,13 +41,18 @@ const [pin, setPin] = useState("");
 
 ## Props
 
-| Prop          | 타입                       | 기본값  | 설명                              |
-| ------------- | -------------------------- | ------- | --------------------------------- |
-| `value`       | `string`                   | —       | 입력값 (숫자 문자열)              |
-| `onValueChange` | `(v: string) => void`    | —       | 변경 콜백                         |
-| `length`      | `number`                   | `6`     | PIN 길이                          |
-| `onComplete`  | `(v: string) => void`      | —       | 길이 도달 시 콜백                 |
-| `label`       | `ReactNode`                | —       | 상단 라벨                         |
-| `shuffle`     | `boolean`                  | `false` | 키 배치 셔플 (보안)               |
-| `shuffleSeed` | `number`                   | `1`     | 셔플 시드 (동일 시드 = 동일 배치) |
-| `error`       | `boolean`                  | `false` | 에러 (점 흔들림)                  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` *(필수)* | `string` | — | 입력값 (숫자 문자열) |
+| `onValueChange` *(필수)* | `(value: string) => void` | — | 변경 콜백 |
+| `length` | `number` | `6` | PIN 길이 (기본 6) |
+| `onComplete` | `(value: string) => void` | — | 모두 입력됐을 때 콜백 |
+| `label` | `ReactNode` | — | 라벨 |
+| `shuffle` | `boolean` | `false` | 키 배치 셔플 (보안 향상) |
+| `shuffleSeed` | `number` | `1` | 키 배치 시드 (shuffle 활성 시 동일 시드면 동일 배치) |
+| `error` | `boolean` | `false` | 에러 상태 (점이 흔들리는 효과) |
+
+<!-- AUTO-GEN:props:END -->

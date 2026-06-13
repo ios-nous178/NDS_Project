@@ -47,12 +47,17 @@ useEffect(() => {
 
 ## Props
 
-| Prop             | 타입                                          | 기본값                       | 설명                          |
-| ---------------- | --------------------------------------------- | ---------------------------- | ----------------------------- |
-| `state`          | `"idle" \| "recording" \| "paused"`           | —                            | 녹음 상태 (controlled)        |
-| `onStateChange`  | `(s: VoiceRecorderState) => void`             | —                            | 상태 변경 콜백                |
-| `seconds`        | `number`                                      | —                            | 진행 시간 (초)                |
-| `maxSeconds`     | `number`                                      | —                            | 최대 녹음 시간                |
-| `onComplete`     | `(sec: number) => void`                       | —                            | 녹음 종료 시 콜백             |
-| `idleLabel`      | `string`                                      | `"버튼을 눌러 녹음을 시작하세요"` | 대기 라벨               |
-| `recordingLabel` | `string`                                      | `"녹음 중"`                  | 녹음 중 라벨                  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `state` *(필수)* | `VoiceRecorderState` | — | 현재 상태 (controlled) |
+| `onStateChange` *(필수)* | `(state: VoiceRecorderState) => void` | — | 상태 변경 콜백 |
+| `seconds` *(필수)* | `number` | — | 진행 시간 (초) — 외부 timer로 갱신 |
+| `maxSeconds` | `number` | — | 최대 녹음 시간 (초) |
+| `onComplete` | `(seconds: number) => void` | — | 녹음 완료 시 (사용자 stop 직후) |
+| `idleLabel` | `string` | `"버튼을 눌러 녹음을 시작하세요"` | 라벨 (idle 상태에서 표시) |
+| `recordingLabel` | `string` | `"녹음 중"` | 녹음 중 라벨 |
+
+<!-- AUTO-GEN:props:END -->

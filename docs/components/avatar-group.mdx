@@ -36,12 +36,18 @@ import { AvatarGroup } from "@nudge-design/react";
 
 ## Props
 
-| Prop      | 타입                                            | 기본값  | 설명                              |
-| --------- | ----------------------------------------------- | ------- | --------------------------------- |
-| `items`   | `AvatarGroupItem[]`                             | —       | 아바타 목록                       |
-| `max`     | `number`                                        | `4`     | 표시 최대 개수 (초과는 +N)        |
-| `size`    | `"xs" \| "sm" \| "md" \| "lg" \| "xl"`          | `"md"`  | Avatar 크기                       |
-| `overlap` | `number`                                        | size별 자동 | 겹침 정도 px                  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `items` *(필수)* | `AvatarGroupItem[]` | — | 아바타 목록 |
+| `max` | `number` | `4` | 표시할 최대 개수 (초과분은 +N) |
+| `size` | `AvatarSize` | `"md"` | 크기 |
+| `shape` | `AvatarShape` | `"circle"` | 아바타 모양 (기본 circle) — 그룹 내 전 아바타에 적용 |
+| `overlap` | `number` | — | 겹침 정도 px (size별 기본값 자동) |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `AvatarGroupItem`
 

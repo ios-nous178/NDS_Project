@@ -141,6 +141,15 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "component-docs",
+    label: "컴포넌트 Props 표 (docs/components/*.mdx ← react Props 인터페이스)",
+    check: ["node", "scripts/generate-component-docs.mjs", "--check"],
+    fix: ["node", "scripts/generate-component-docs.mjs"],
+    watch: ["packages/react/src/", "docs/components/", "scripts/component-docs-baseline.json"],
+    buildFree: true, // packages/react/src/*.tsx 소스를 직접 파싱 — dist 불필요
+    ssot: true,
+  },
+  {
     id: "semantic-tokens-doc",
     label: "시멘틱 토큰 카탈로그 문서 (docs/semantic-tokens.mdx)",
     check: ["node", "scripts/generate-semantic-tokens-doc.mjs", "--check"],

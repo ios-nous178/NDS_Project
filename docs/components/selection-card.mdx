@@ -71,3 +71,23 @@ import { MockupBoldSunIcon } from "@nudge-design/icons";
 | `icon`          | `ReactNode`  | —       | 좌측 큰 아이콘 (인디케이터와 별개)  |
 | `disabled`      | `boolean`    | `false` | 비활성화                            |
 | `showIndicator` | `boolean`    | `true`  | 라디오/체크 인디케이터 표시         |
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `mode` | `SelectionCardMode` | `"single"` | 단일 vs 다중 선택 |
+| `value` | `string` | — | 단일 모드: 선택된 value |
+| `values` | `string[]` | — | 다중 모드: 선택된 value 배열 |
+| `onValueChange` | `(value: string) => void` | — | 단일 모드 변경 콜백 |
+| `onValuesChange` | `(values: string[]) => void` | — | 다중 모드 변경 콜백 |
+| `layout` | `SelectionCardLayout` | `"vertical"` | 카드 배치 |
+| `name` | `string` | — | 동일 라디오 그룹 식별 (단일 모드) |
+| `children` *(필수)* | `ReactNode` | — | 카드들 |
+
+<!-- AUTO-GEN:props:END -->

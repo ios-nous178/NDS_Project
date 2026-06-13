@@ -36,17 +36,22 @@ const [time, setTime] = useState(0);
 
 ## Props
 
-| Prop             | 타입                             | 기본값 | 설명                                |
-| ---------------- | -------------------------------- | ------ | ----------------------------------- |
-| `title`          | `ReactNode`                      | —      | 제목                                |
-| `subtitle`       | `ReactNode`                      | —      | 부제                                |
-| `playing`        | `boolean`                        | —      | 재생 중 여부                        |
-| `onPlayPause`    | `(next: boolean) => void`        | —      | 재생/일시정지 토글                  |
-| `currentTime`    | `number`                         | —      | 현재 위치 (초)                      |
-| `duration`       | `number`                         | —      | 총 길이 (초)                        |
-| `onSeek`         | `(time: number) => void`         | —      | 시크 콜백 (없으면 슬라이더 disabled) |
-| `onSkipBack`     | `() => void`                     | —      | 이전 트랙 (제공 시 표시)            |
-| `onSkipForward`  | `() => void`                     | —      | 다음 트랙 (제공 시 표시)            |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | — | 제목 (예: "마음을 편안하게 하는 명상") |
+| `subtitle` | `ReactNode` | — | 부제 (예: "10분 가이드") |
+| `playing` *(필수)* | `boolean` | — | 재생 중 여부 |
+| `onPlayPause` *(필수)* | `(next: boolean) => void` | — | 재생/일시정지 토글 |
+| `currentTime` *(필수)* | `number` | — | 현재 재생 위치 (초) |
+| `duration` *(필수)* | `number` | — | 총 길이 (초) |
+| `onSeek` | `(time: number) => void` | — | 시크 콜백 (초 단위) |
+| `onSkipBack` | `() => void` | — | 이전 트랙 (제공 시 표시) |
+| `onSkipForward` | `() => void` | — | 다음 트랙 (제공 시 표시) |
+
+<!-- AUTO-GEN:props:END -->
 
 ## 가이드
 

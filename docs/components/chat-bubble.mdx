@@ -36,15 +36,20 @@ import { ChatBubble } from "@nudge-design/react";
 
 ## Props
 
-| Prop        | 타입                                                 | 기본값      | 설명                                     |
-| ----------- | ---------------------------------------------------- | ----------- | ---------------------------------------- |
-| `role`      | `"me" \| "them"`                                     | —           | 발신자                                   |
-| `children`  | `ReactNode`                                          | —           | 메시지 본문                              |
-| `time`      | `ReactNode`                                          | —           | 시간 (single/last에서만 노출)            |
-| `name`      | `string`                                             | —           | 발신자 이름 (them, first에서만)          |
-| `avatarSrc` | `string`                                             | —           | 프로필 이미지 (them만)                   |
-| `group`     | `"single" \| "first" \| "middle" \| "last"`          | `"single"`  | 그룹 내 위치 (코너 처리)                |
-| `read`      | `boolean`                                            | —           | 읽음 표시 (me)                           |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `role` *(필수)* | `ChatRole` | — | 발신자 |
+| `children` *(필수)* | `ReactNode` | — | 메시지 본문 (텍스트 또는 ReactNode) |
+| `time` | `ReactNode` | — | 시간 (예: "오후 3:24") |
+| `name` | `string` | — | 발신자 이름 (them 측에서 그룹 첫 메시지에 표시) |
+| `avatarSrc` | `string` | — | 프로필 이미지 (them 측 아바타) |
+| `group` | `ChatGroupPosition` | `"single"` | 그룹 내 위치 — 코너 처리에 사용 |
+| `read` | `boolean` | — | 읽음 표시 (me 측) |
+
+<!-- AUTO-GEN:props:END -->
 
 ## 가이드
 

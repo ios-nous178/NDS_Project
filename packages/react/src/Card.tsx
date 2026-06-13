@@ -368,9 +368,13 @@ export interface CardProps {
   footer?: React.ReactNode;
   /** @deprecated divider=false 와 동일 */
   footerNoBorder?: boolean;
+  /** 루트 className */
   className?: string;
+  /** 루트 인라인 스타일 */
   style?: React.CSSProperties;
+  /** 카드 클릭 핸들러 (지정 시 clickable 자동 활성) */
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+  /** 슬롯별 props 전달 (thumbnail/avatar/title/body/cta 등) */
   slotProps?: CardSlotProps;
 }
 

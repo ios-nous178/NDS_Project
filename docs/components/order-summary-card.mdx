@@ -36,13 +36,18 @@ import { OrderSummaryCard, Button } from "@nudge-design/react";
 
 ## Props
 
-| Prop         | 타입                  | 기본값          | 설명                          |
-| ------------ | --------------------- | --------------- | ----------------------------- |
-| `title`      | `ReactNode`           | `"결제 정보"`   | 카드 제목                     |
-| `rows`       | `OrderSummaryRow[]`   | —               | 라벨:값 행                    |
-| `totalLabel` | `ReactNode`           | `"총 결제금액"` | 합계 라벨                     |
-| `total`      | `ReactNode`           | —               | 합계 값                       |
-| `footer`     | `ReactNode`           | —               | 푸터 (CTA 등)                 |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `title` | `ReactNode` | `"결제 정보"` | 카드 제목 |
+| `rows` *(필수)* | `OrderSummaryRow[]` | — | 항목 목록 (라벨:값) |
+| `totalLabel` | `ReactNode` | `"총 결제금액"` | 합계 라벨 |
+| `total` *(필수)* | `ReactNode` | — | 합계 값 (PriceTag 권장) |
+| `footer` | `ReactNode` | — | 푸터 슬롯 (CTA 버튼 등) |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `OrderSummaryRow`
 

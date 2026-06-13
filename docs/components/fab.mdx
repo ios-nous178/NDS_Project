@@ -46,15 +46,20 @@ import { PlusIcon } from "@nudge-design/icons";
 
 ## Props
 
-| Prop         | 타입                                                                  | 기본값           | 설명                                |
-| ------------ | --------------------------------------------------------------------- | ---------------- | ----------------------------------- |
-| `icon`       | `ReactNode`                                                           | —                | 아이콘 (필수)                       |
-| `label`      | `ReactNode`                                                           | —                | 라벨 (있으면 Extended FAB)          |
-| `color`      | `"primary" \| "secondary" \| "neutral"`                               | `"primary"`      | 색상                                |
-| `size`       | `"md" \| "lg"`                                                        | `"md"`           | 크기 (48 / 56)                      |
-| `position`   | `"bottom-right" \| "bottom-left" \| "bottom-center" \| "static"`      | `"bottom-right"` | 화면 고정 위치. static = 부모 흐름  |
-| `offset`     | `number`                                                              | `16`             | 가장자리 offset (px)                |
-| `aria-label` | `string`                                                              | —                | label이 없을 때 필수                |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `icon` *(필수)* | `ReactNode` | — | 좌측 아이콘 (필수) |
+| `label` | `ReactNode` | — | 라벨 (있으면 extended FAB) |
+| `color` | `FABColor` | `"primary"` | 색상 |
+| `size` | `FABSize` | `"md"` | 크기 |
+| `position` | `FABPosition` | `"bottom-right"` | 화면 고정 위치. static이면 부모 흐름 안에 배치 |
+| `offset` | `number` | — | 화면 안전 영역 보정용 offset (position이 fixed일 때) |
+| `aria-label` | `string` | — | aria-label (라벨이 없을 때 필수) |
+
+<!-- AUTO-GEN:props:END -->
 
 ## CSS 변수
 

@@ -47,16 +47,21 @@ import { Snackbar } from "@nudge-design/react";
 
 ## Props
 
-| Prop          | 타입                                              | 기본값  | 설명                              |
-| ------------- | ------------------------------------------------- | ------- | --------------------------------- |
-| `variant`     | `"info" \| "success" \| "warning" \| "error"`     | —       | 시맨틱 톤. 미지정 시 어두운 배경  |
-| `title`       | `ReactNode`                                       | —       | 본문                              |
-| `description` | `ReactNode`                                       | —       | 보조 설명                         |
-| `icon`        | `ReactNode`                                       | 자동    | 좌측 아이콘 (variant 기본을 덮어씀) |
-| `actionLabel` | `string`                                          | —       | 우측 액션 버튼 라벨               |
-| `onAction`    | `() => void`                                      | —       | 액션 콜백                         |
-| `closable`    | `boolean`                                         | `false` | 닫기 버튼 표시                    |
-| `onClose`     | `() => void`                                      | —       | 닫기 콜백                         |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `SnackbarVariant` | — | 종류 |
+| `icon` | `ReactNode` | — | 좌측 아이콘 (variant 기본 아이콘 대신 커스텀) |
+| `title` | `ReactNode` | — | 제목/본문 |
+| `description` | `ReactNode` | — | 설명 (제목 아래 작은 글씨) |
+| `actionLabel` | `string` | — | 우측 액션 버튼 라벨 |
+| `onAction` | `() => void` | — | 액션 버튼 클릭 콜백 |
+| `closable` | `boolean` | `false` | 닫기 버튼 표시 |
+| `onClose` | `() => void` | — | 닫기 콜백 |
+
+<!-- AUTO-GEN:props:END -->
 
 ## CSS 변수
 

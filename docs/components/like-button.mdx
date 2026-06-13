@@ -47,11 +47,16 @@ const [count, setCount] = useState(12);
 
 ## Props
 
-| Prop          | 타입                         | 기본값  | 설명                              |
-| ------------- | ---------------------------- | ------- | --------------------------------- |
-| `liked`       | `boolean`                    | —       | 좋아요 상태                       |
-| `onChange`    | `(liked: boolean) => void`   | —       | 토글 콜백                         |
-| `count`       | `number`                     | —       | 카운트                            |
-| `size`        | `"sm" \| "md" \| "lg"`       | `"md"`  | 크기                              |
-| `hideCount`   | `boolean`                    | `false` | 카운트 숨김                       |
-| `activeColor` | `string`                     | error.main | 활성 색 (CSS color/var)        |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `liked` *(필수)* | `boolean` | — | 좋아요 상태 |
+| `onChange` *(필수)* | `(liked: boolean) => void` | — | 변경 콜백 |
+| `count` | `number` | — | 좋아요 카운트 |
+| `size` | `LikeButtonSize` | `"md"` | 크기 |
+| `hideCount` | `boolean` | `false` | 카운트 숨김 (아이콘만) |
+| `activeColor` | `string` | — | 활성화 색 (기본 빨강) |
+
+<!-- AUTO-GEN:props:END -->

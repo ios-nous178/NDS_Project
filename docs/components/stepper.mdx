@@ -73,11 +73,16 @@ import { Stepper } from "@nudge-design/react";
 
 ## Props
 
-| Prop      | 타입                       | 기본값       | 설명                                |
-| --------- | -------------------------- | ------------ | ----------------------------------- |
-| `steps`   | `StepItem[]`               | —            | 스텝 목록                           |
-| `current` | `number`                   | —            | 현재 스텝 인덱스 (0-based)          |
-| `variant` | `"numbered" \| "dots" \| "bar"` | `"numbered"` | 표시 변형 (`bar`=어드민 가로 막대) |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `steps` *(필수)* | `StepItem[]` | — | 스텝 목록 |
+| `current` *(필수)* | `number` | — | 현재 스텝 인덱스 (0-based) |
+| `variant` | `StepperVariant` | `"numbered"` | 표시 변형 |
+
+<!-- AUTO-GEN:props:END -->
 
 `<ol>` HTML 속성을 모두 지원합니다.
 

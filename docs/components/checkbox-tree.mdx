@@ -97,19 +97,24 @@ function Example() {
 
 ## Props
 
-| Prop                | 타입                            | 기본값                  | 설명                                              |
-| ------------------- | ------------------------------- | ----------------------- | ------------------------------------------------- |
-| `nodes`             | `CheckboxTreeNode[]`            | —                       | 트리 노드 (시/도 ▸ 시/군/구 등 계층)              |
-| `value`             | `string[]`                     | —                       | 선택된 leaf 값 목록 (controlled)                  |
-| `onValueChange`     | `(value: string[]) => void`    | —                       | 선택 변경 콜백 — 트리 순서로 정렬된 leaf 값 배열  |
-| `searchable`        | `boolean`                      | `true`                  | 검색창 노출                                       |
-| `searchPlaceholder` | `string`                       | `"검색"`                | 검색 placeholder                                  |
-| `showSelectAll`     | `boolean`                      | `true`                  | 전체선택 행 노출                                  |
-| `selectAllLabel`    | `string`                       | `"전체 선택"`           | 전체선택 라벨                                     |
-| `defaultExpanded`   | `string[]`                     | —                       | 초기 펼침 부모 값 (uncontrolled)                  |
-| `emptyMessage`      | `string`                       | `"검색 결과가 없습니다."` | 검색 결과 없음 메시지                           |
-| `className`         | `string`                       | —                       | 루트 className                                    |
-| `style`             | `React.CSSProperties`          | —                       | 루트 style                                        |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `nodes` *(필수)* | `CheckboxTreeNode[]` | — | 트리 노드 (시/도 ▸ 시/군/구 등 계층) |
+| `value` *(필수)* | `string[]` | — | 선택된 leaf 값 목록 (controlled) |
+| `onValueChange` *(필수)* | `(value: string[]) => void` | — | 선택 변경 콜백 — 트리 순서로 정렬된 leaf 값 배열 |
+| `searchable` | `boolean` | `true` | 검색창 노출 |
+| `searchPlaceholder` | `string` | `"검색"` | 검색 placeholder |
+| `showSelectAll` | `boolean` | `true` | 전체선택 행 노출 |
+| `selectAllLabel` | `string` | `"전체 선택"` | 전체선택 라벨 |
+| `defaultExpanded` | `string[]` | — | 초기 펼침 부모 값 (uncontrolled) |
+| `emptyMessage` | `string` | `"검색 결과가 없습니다."` | 검색 결과 없음 메시지 |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 style |
+
+<!-- AUTO-GEN:props:END -->
 
 ### CheckboxTreeNode
 

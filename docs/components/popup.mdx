@@ -323,3 +323,29 @@ div [data-slot="root"]
 - 열릴 때 첫 번째 버튼에 자동 포커스
 - 닫힐 때 이전 포커스 요소로 복귀
 - body 스크롤 자동 잠금
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `open` *(필수)* | `boolean` | — | 팝업 표시 여부 |
+| `onClose` | `() => void` | — | 닫기 콜백 |
+| `title` | `string` | — | 팝업 타이틀 (없으면 Description만 표시) |
+| `description` | `ReactNode` | — | 팝업 설명 (React 노드 가능 — 줄바꿈 등) |
+| `confirmText` | `string` | `"확인"` | 확인 버튼 텍스트 |
+| `onConfirm` | `() => void` | — | 확인 콜백 |
+| `cancelText` | `string` | `"취소"` | 취소 버튼 텍스트 |
+| `onCancel` | `() => void` | — | 취소 콜백 (제공하면 Cancel 버튼 표시) |
+| `actionsLayout` | `ActionsLayout` | — | 버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split). `split`\|`end`. |
+| `isMaskClose` | `boolean` | `true` | 오버레이 클릭으로 닫기 |
+| `maxWidth` | `number` | — | 최대 너비 |
+| `className` | `string` | — | 추가 클래스 |
+| `style` | `CSSProperties` | — | 추가 스타일 |
+| `slotProps` | `PopupSlotProps` | — | 슬롯 프롭 |
+
+<!-- AUTO-GEN:props:END -->

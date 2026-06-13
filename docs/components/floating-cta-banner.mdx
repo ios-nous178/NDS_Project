@@ -58,19 +58,24 @@ import { FloatingCtaBanner } from "@nudge-design/react";
 
 ## Props
 
-| Prop           | 타입                                | 기본값      | 설명                                                                                                                          |
-| -------------- | ----------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `caption`      | `ReactNode`                         | **required** | 보조 캡션 (예: "찾는 음식이 없으신가요?")                                                                                     |
-| `ctaText`      | `ReactNode`                         | **required** | 강조 CTA 텍스트 (예: "음식 직접 등록하러 가기")                                                                               |
-| `leadingIcon`  | `ReactNode`                         | —           | 좌측 아이콘/일러스트 (PC 48 / Mobile 32 권장)                                                                                 |
-| `onClick`      | `() => void`                        | —           | 클릭 콜백 (전체 배너가 button)                                                                                                |
-| `size`         | `"pc" \| "mobile"`                  | `"pc"`      | 사이즈 토큰                                                                                                                   |
-| `floating`     | `boolean`                           | `true`      | `true`: `position: fixed` 로 하단 중앙 고정. `false`: 인라인 배치 — 부모 컨테이너에 맞춰 표시                                  |
-| `showArrow`    | `boolean`                           | `true`      | 우측 화살표 표시 여부                                                                                                         |
-| `bottomOffset` | `number`                            | PC 32 / Mobile 16 | floating 모드의 하단 offset(px)                                                                                               |
-| `ariaLabel`    | `string`                            | `ctaText`   | aria-label (미지정 시 `ctaText` 사용)                                                                                         |
-| `className`    | `string`                            | —           | 추가 className                                                                                                                |
-| `style`        | `CSSProperties`                     | —           | 추가 style (floating 모드의 position 관련 값은 internal 이 우선)                                                              |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `caption` *(필수)* | `ReactNode` | — | 보조 캡션 ("찾는 음식이 없으신가요?") |
+| `ctaText` *(필수)* | `ReactNode` | — | 강조 CTA 텍스트 ("음식 직접 등록하러 가기") |
+| `leadingIcon` | `ReactNode` | — | 좌측 일러스트/아이콘 노드. PC 48 / Mobile 32 권장 |
+| `onClick` | `() => void` | — | 클릭 콜백 (전체 배너가 button 으로 동작) |
+| `size` | `FloatingCtaBannerSize` | `"pc"` | 사이즈 토큰. 기본 "pc" |
+| `floating` | `boolean` | `true` | 화면 하단 floating(sticky) 모드. - `true` (기본): `position: fixed` 로 화면 하단 중앙 고정. - `false`: 인라인 배치 — 부모 컨테이너에 맞춰 표시. |
+| `showArrow` | `boolean` | `true` | 우측 화살표 표시 여부 (기본 true) |
+| `bottomOffset` | `number` | — | floating bottom offset (px). 기본: PC 32 / Mobile 16 |
+| `ariaLabel` | `string` | — | aria-label (기본: ctaText 사용) |
+| `className` | `string` | — | 추가 className |
+| `style` | `CSSProperties` | — | 추가 style (floating 모드일 때 position 관련 prop 은 internal 이 우선) |
+
+<!-- AUTO-GEN:props:END -->
 
 ### 디자인 토큰
 

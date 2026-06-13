@@ -32,10 +32,15 @@ const [active, setActive] = useState(false);
 
 ## Props
 
-| Prop         | 타입         | 기본값  | 설명                              |
-| ------------ | ------------ | ------- | --------------------------------- |
-| `active`     | `boolean`    | —       | 활성화 (true가 되는 순간 발사)    |
-| `onComplete` | `() => void` | —       | 애니메이션 종료 콜백              |
-| `colors`     | `string[]`   | 6색     | 색상 팔레트                       |
-| `count`      | `number`     | `80`    | 입자 수                           |
-| `duration`   | `number`     | `2200`  | 지속 시간 ms                      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `active` *(필수)* | `boolean` | — | 활성화 여부 (true가 되는 순간 한 번 발사) |
+| `onComplete` | `() => void` | — | 종료 콜백 (애니메이션 끝났을 때) |
+| `colors` | `string[]` | — | 색상 팔레트 |
+| `count` | `number` | `80` | 발사할 입자 수 (기본 80) |
+| `duration` | `number` | `2200` | 지속 시간(ms, 기본 2200) |
+
+<!-- AUTO-GEN:props:END -->

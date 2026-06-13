@@ -36,12 +36,18 @@ const expiry = useMemo(() => Date.now() + 3 * 60 * 1000, []);
 
 ## Props
 
-| Prop          | 타입                                  | 기본값      | 설명                              |
-| ------------- | ------------------------------------- | ----------- | --------------------------------- |
-| `endsAt`      | `string \| number \| Date`            | —           | 종료 시각 (ISO/timestamp/Date)    |
-| `format`      | `"mm:ss" \| "hh:mm:ss" \| "remaining"` | `"mm:ss"`   | 표시 포맷                         |
-| `onComplete`  | `() => void`                          | —           | 0초 도달 시 (1회)                 |
-| `onTick`      | `(ms: number) => void`                | —           | 매초 콜백                         |
-| `urgentColor` | `boolean`                             | `true`      | 10초 이하일 때 빨강 강조          |
-| `label`       | `ReactNode`                           | —           | 시간 옆 라벨                      |
-| `expiredText` | `ReactNode`                           | `"만료됨"`  | 만료 시 표시                      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `endsAt` *(필수)* | `string \| number \| Date` | — | 종료 시각 (ISO string 또는 Date 또는 ms timestamp) |
+| `format` | `CountdownFormat` | `"mm:ss"` | 표시 포맷 |
+| `onComplete` | `() => void` | — | 0초 도달 시 콜백 |
+| `onTick` | `(ms: number) => void` | — | 1초마다 발생하는 콜백 (남은 ms) |
+| `urgentColor` | `boolean` | `true` | 임박(10초 이하) 시 빨간색 강조 |
+| `tone` | `"default" \| "brand"` | `"default"` | 색 톤 — `"default"`(텍스트 기본색) \| `"brand"`(브랜드 액센트 — 캐포비=오렌지 #FD9B02). 진행 중 타이머를 브랜드색으로 강조하는 인증 입력 등에 사용. urgent(≤10s)는 톤과 무관하게 빨강 우선. |
+| `label` | `ReactNode` | — | 라벨 (시간 옆) |
+| `expiredText` | `ReactNode` | `"만료됨"` | 시간이 0 이하일 때 표시할 노드 |
+
+<!-- AUTO-GEN:props:END -->

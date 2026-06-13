@@ -38,17 +38,22 @@ import { MediaCard, Avatar } from "@nudge-design/react";
 
 ## Props
 
-| Prop                | 타입         | 기본값  | 설명                                                          |
-| ------------------- | ------------ | ------- | ------------------------------------------------------------- |
-| `image`             | `ReactNode`  | —       | 상단 미디어 (`<img>` / `<video>` / placeholder)               |
-| `imageOverlay`      | `ReactNode`  | —       | 미디어 우하단 라벨 (예: `"999+"`, `"02:13"`)                  |
-| `imageAspectRatio`  | `string`     | `4 / 3` | CSS `aspect-ratio` 문법. 영상 `16 / 9`, 정사각 `1 / 1`        |
-| `eyebrow`           | `ReactNode`  | —       | 제목 위 보조 라벨 (브랜드 / 카테고리 / 회차 등)               |
-| `title`             | `ReactNode`  | —       | 제목 (자동 2줄 클램프)                                        |
-| `body`              | `ReactNode`  | —       | 본문 (자동 2줄 클램프)                                        |
-| `rating`            | `number`     | —       | 0~5. 지정 시 푸터 영역에 별 5개 자동 렌더 (0.25 단위 반올림)  |
-| `footer`            | `ReactNode`  | —       | 푸터 슬롯 — 작성자·메타·CTA 등 자유 조립                      |
-| `onCardClick`       | `() => void` | —       | 카드 전체 클릭 (`role="button"` + Enter/Space 핸들링 자동)    |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `image` *(필수)* | `ReactNode` | — | 상단 미디어 (img/video/Placeholder ReactNode) |
+| `imageOverlay` | `ReactNode` | — | 미디어 우하단 오버레이 (예: "999+", "재생시간 02:13") |
+| `imageAspectRatio` | `string` | `"4 / 3"` | 미디어 영역 가로:세로 (CSS aspect-ratio 문법, 기본 "4 / 3") |
+| `eyebrow` | `ReactNode` | — | 제목 위 보조 라벨 (브랜드 / 카테고리 / 회차 등) |
+| `title` *(필수)* | `ReactNode` | — | 제목 |
+| `body` | `ReactNode` | — | 본문 (2줄 클램프) |
+| `rating` | `number` | — | 별점 (0~5). 지정하면 푸터 영역에 별 5개 렌더. |
+| `footer` | `ReactNode` | — | 푸터 슬롯 (작성자·메타·CTA 등 자유 조합) |
+| `onCardClick` | `() => void` | — | 카드 전체 클릭 핸들러 (지정 시 hover 상태/role/tabIndex 활성화) |
+
+<!-- AUTO-GEN:props:END -->
 
 ## 레이아웃 패턴
 

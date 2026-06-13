@@ -46,18 +46,23 @@ const [phone, setPhone] = useState("");
 
 ## Props
 
-| Prop              | 타입                       | 기본값  | 설명                          |
-| ----------------- | -------------------------- | ------- | ----------------------------- |
-| `countryCode`     | `string`                   | —       | ISO code (KR, US, JP, ...)    |
-| `onCountryChange` | `(code: string) => void`   | —       | 국가 변경 콜백                |
-| `value`           | `string`                   | —       | 번호 (국가코드 제외)          |
-| `onValueChange`   | `(v: string) => void`      | —       | 번호 변경 콜백                |
-| `label`           | `ReactNode`                | —       | 라벨                          |
-| `helperText`      | `ReactNode`                | —       | 헬퍼 / 에러 메시지            |
-| `error`           | `boolean`                  | `false` | 에러 보더                     |
-| `countries`       | `PhoneCountry[]`           | KR/US/JP/CN/GB | 가능한 국가 목록      |
-| `fullWidth`       | `boolean`                  | `false` | 가로 가득                     |
-| `disabled`        | `boolean`                  | `false` | 비활성화                      |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `countryCode` *(필수)* | `string` | — | 국가 코드 |
+| `onCountryChange` *(필수)* | `(code: string) => void` | — | 국가 코드 변경 콜백 |
+| `value` *(필수)* | `string` | — | 번호 (숫자만, 국가코드 제외). autoFormat 켜져 있으면 화면에는 하이픈이 자동으로 붙고 이 값/콜백은 항상 숫자만 다룹니다 (예: "01012345678"). |
+| `onValueChange` *(필수)* | `(value: string) => void` | — | 번호 변경 콜백 — autoFormat 시 숫자만 전달 |
+| `autoFormat` | `boolean` | `true 끄면 입력값을 그대로 emit (포맷 미적용).` | 입력 시 하이픈 자동 삽입 (KR/+82 모바일 3-4-4). |
+| `label` | `ReactNode` | — | 라벨 |
+| `helperText` | `ReactNode` | — | 헬퍼 텍스트 |
+| `error` | `boolean` | `false` | 에러 |
+| `countries` | `PhoneCountry[]` | — | 가능한 국가 목록 (기본 KR/US/JP/CN/GB) |
+| `fullWidth` | `boolean` | `false` | 가로 가득 |
+
+<!-- AUTO-GEN:props:END -->
 
 ### `PhoneCountry`
 

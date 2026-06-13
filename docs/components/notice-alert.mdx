@@ -97,12 +97,17 @@ import { NoticeAlert } from "@nudge-design/react";
 
 ## Props
 
-| Prop      | 타입                          | 기본값   | 설명                                                                                       |
-| --------- | ----------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `variant` | `NoticeAlertVariant`          | `"info"` | 메시지 의미·톤 결정. `"info" \| "notice" \| "caution" \| "success" \| "error"`             |
-| `message` | `ReactNode`                   | —        | 본문 텍스트. 여러 줄 허용. (`children` 으로도 전달 가능)                                    |
-| `icon`    | `ReactNode \| false`          | —        | 좌측 status 아이콘 override. 미지정=variant 기본, `false`=숨김, ReactNode=커스텀(20×20 권장) |
-| `children`| `ReactNode`                   | —        | `message` 대신 본문 전달 가능                                                               |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `variant` | `NoticeAlertVariant` | `"info"` | 메시지 의미·톤 결정 |
+| `message` | `ReactNode` | — | 본문 텍스트. 여러 줄 허용. (children 으로도 전달 가능) |
+| `icon` | `ReactNode \| false` | — | 좌측 상태 아이콘 override. - 미지정: variant 별 기본 아이콘 (info 는 아이콘 없음) - `false`: 아이콘 강제 숨김 - ReactNode: 커스텀 아이콘 (20×20 권장) |
+| `children` | `ReactNode` | — | message 대신 children 으로 본문 전달 가능 |
+
+<!-- AUTO-GEN:props:END -->
 
 `children` 을 제외한 `<div>` HTML 속성(`HTMLAttributes<HTMLDivElement>`)을 모두 지원합니다. `message` 와 `children` 이 모두 있으면 `message` 가 우선합니다.
 

@@ -35,18 +35,24 @@ import { Slider } from "@nudge-design/react";
 
 ## Props
 
-| Prop            | 타입                                 | 기본값  | 설명                  |
-| --------------- | ------------------------------------ | ------- | --------------------- |
-| `value`         | `number`                             | —       | 현재 값               |
-| `onValueChange` | `(value: number) => void`            | —       | 변경 콜백             |
-| `min`           | `number`                             | `0`     | 최소값                |
-| `max`           | `number`                             | `100`   | 최대값                |
-| `step`          | `number`                             | `1`     | 단계                  |
-| `startLabel`    | `ReactNode`                          | —       | 좌측 끝 라벨          |
-| `endLabel`      | `ReactNode`                          | —       | 우측 끝 라벨          |
-| `showValue`     | `boolean`                            | `false` | 현재 값 표시          |
-| `formatValue`   | `(value: number) => ReactNode`       | —       | 값 표시 포맷터        |
-| `disabled`      | `boolean`                            | `false` | 비활성화              |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` *(필수)* | `number` | — | 현재 값 |
+| `onValueChange` *(필수)* | `(value: number) => void` | — | 변경 콜백 |
+| `min` | `number` | `0` | 최소값 |
+| `max` | `number` | `100` | 최대값 |
+| `step` | `number` | `1` | 단계 |
+| `startLabel` | `ReactNode` | — | 좌측 끝 라벨 (예: "약함") |
+| `endLabel` | `ReactNode` | — | 우측 끝 라벨 (예: "강함") |
+| `showValue` | `boolean` | `false` | 현재 값 표시 (값/단위 등) |
+| `formatValue` | `(value: number) => ReactNode` | — | 값 표시 포맷 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `className` | `string` | — | 루트 className |
+
+<!-- AUTO-GEN:props:END -->
 
 ## 가이드
 

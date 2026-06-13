@@ -202,3 +202,33 @@ const options = [
 ## 구조 메모
 
 `Select`의 선택 상태와 option 계약은 core contract로 보고, portal 렌더링과 바깥 클릭 감지, 스크롤 닫힘 같은 동작은 web layer로 분리해 관리합니다. 필요하면 `portalContainer`를 주입해 렌더링 위치를 바꿀 수 있습니다.
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `options` *(필수)* | `SelectItem[]` | — | 옵션 목록 |
+| `value` | `string` | — | 선택된 값 |
+| `onValueChange` *(필수)* | `(value: string) => void` | — | 값 변경 콜백 |
+| `label` | `string` | — | 라벨 텍스트 |
+| `placeholder` | `string` | `"선택"` | 플레이스홀더 |
+| `helperText` | `string` | — | 도움 텍스트 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `errorMessage` | `string` | — | 에러 메시지 |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `fullWidth` | `boolean` | `true` | 전체 너비 |
+| `fieldWidth` | `FieldWidth` | — | 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%). 지정 시 `fullWidth` 보다 우선. Filter Dropdown 은 `sm`(200), 폼 내부는 `md`(304) 권장. |
+| `searchable` | `boolean` | `false` | 드롭다운 상단에 검색 인풋을 노출해 옵션을 label 로 필터(Ant `showSearch` 모델). 값은 여전히 options 중에서만 선택된다 — 자유 입력이 필요하면 Autocomplete 사용. 옵션이 많을 때(대략 10개 초과) 권장. |
+| `searchPlaceholder` | `string` | `"검색" (searchable 일 때만)` | 검색 인풋 placeholder |
+| `emptyMessage` | `ReactNode` | `"검색 결과가 없어요" (searchable 일 때만). html 'empty-message' 는 문자열만.` | 검색 결과 0건 메시지 |
+| `portalContainer` | `HTMLElement \| null` | — | 드롭다운 포털 컨테이너 |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 style |
+| `slotProps` | `SelectSlotProps` | — | 슬롯 프롭 |
+
+<!-- AUTO-GEN:props:END -->

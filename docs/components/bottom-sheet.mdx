@@ -244,3 +244,29 @@ div [data-slot="root"]  [data-closing]
 - ESC 키로 닫기
 - 열릴 때 body scroll 잠금 (`overflow: hidden`)
 - 닫힐 때 이전 scroll 상태 복원
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `open` *(필수)* | `boolean` | — | 열림 상태 |
+| `onClose` | `() => void` | — | 닫기 콜백 |
+| `closable` | `boolean` | `false` | 닫기 버튼 표시 |
+| `mask` | `boolean` | `true` | 오버레이 표시 |
+| `isMaskClose` | `boolean` | `true` | 오버레이 클릭 시 닫기 |
+| `showHandle` | `boolean` | `true` | 드래그 핸들 표시 |
+| `title` | `string` | — | 타이틀 텍스트 |
+| `children` *(필수)* | `ReactNode` | — | 본문 콘텐츠 |
+| `footer` | `ReactNode` | — | 푸터 콘텐츠 |
+| `maxWidth` | `number` | `664` | 최대 너비 |
+| `maxHeight` | `string` | `"85vh"` | 최대 높이 |
+| `className` | `string` | — | 루트 className |
+| `style` | `CSSProperties` | — | 루트 style |
+| `slotProps` | `BottomSheetSlotProps` | — | 슬롯 프롭 |
+
+<!-- AUTO-GEN:props:END -->

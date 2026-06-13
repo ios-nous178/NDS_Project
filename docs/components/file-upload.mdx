@@ -34,18 +34,23 @@ const [err, setErr] = useState<string>();
 
 ## Props
 
-| Prop            | 타입                                                 | 기본값  | 설명                                  |
-| --------------- | ---------------------------------------------------- | ------- | ------------------------------------- |
-| `value`         | `File[]`                                             | —       | 현재 파일 목록 (제어 컴포넌트)        |
-| `onValueChange` | `(files: File[]) => void`                            | —       | 변경 콜백 (성공 파일만)               |
-| `accept`        | `string`                                             | —       | accept 속성 (`"image/*"` 등)          |
-| `multiple`      | `boolean`                                            | `false` | 다중 선택                             |
-| `maxSize`       | `number`                                             | —       | 파일당 최대 크기 (bytes)              |
-| `onReject`      | `(files: File[], reason: "size" \| "accept") => void` | —       | 거부 콜백                             |
-| `disabled`      | `boolean`                                            | `false` | 비활성화                              |
-| `hint`          | `ReactNode`                                          | 기본    | 본문 텍스트                           |
-| `description`   | `ReactNode`                                          | —       | 보조 텍스트                           |
-| `errorMessage`  | `ReactNode`                                          | —       | 에러 메시지 (지속 표시)               |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `value` *(필수)* | `File[]` | — | 현재 파일 목록 (제어 컴포넌트) |
+| `onValueChange` *(필수)* | `(files: File[]) => void` | — | 변경 콜백 |
+| `accept` | `string` | — | accept (예: "image/*", ".pdf,.png") |
+| `multiple` | `boolean` | `false` | 다중 선택 |
+| `maxSize` | `number` | — | 파일당 최대 크기 (bytes) — 초과 시 거부 + onError |
+| `onReject` | `(files: File[], reason: "size" \| "accept") => void` | — | 거부 콜백 (maxSize/accept 미일치) |
+| `disabled` | `boolean` | `false` | 비활성화 |
+| `hint` | `ReactNode` | — | 본문 텍스트 (기본: "파일을 끌어다 놓거나 클릭해서 선택하세요") |
+| `description` | `ReactNode` | — | 보조 텍스트 (예: "PDF, JPG, PNG · 최대 10MB") |
+| `errorMessage` | `ReactNode` | — | 에러 메시지 (지속 표시) |
+
+<!-- AUTO-GEN:props:END -->
 
 ## 가이드
 

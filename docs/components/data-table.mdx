@@ -45,19 +45,30 @@ const columns: DataTableColumn<Med>[] = [
 
 ## Props
 
-| Prop            | 타입                                                                  | 기본값      | 설명                          |
-| --------------- | --------------------------------------------------------------------- | ----------- | ----------------------------- |
-| `columns`       | `DataTableColumn<T>[]`                                                | —           | 컬럼 정의                     |
-| `data`          | `T[]`                                                                 | —           | 행 데이터                     |
-| `rowKey`        | `(row, idx) => string`                                                | —           | 행 키 추출                    |
-| `onRowClick`    | `(row, idx) => void`                                                  | —           | 행 클릭                       |
-| `sortKey`       | `string`                                                              | —           | 현재 정렬 컬럼 키             |
-| `sortDirection` | `"asc" \| "desc"`                                                     | —           | 정렬 방향                     |
-| `onSort`        | `(key, direction) => void`                                            | —           | 정렬 변경                     |
-| `emptyMessage`  | `ReactNode`                                                           | 기본 메시지 | 빈 상태                       |
-| `loading`       | `boolean`                                                             | `false`     | 로딩 표시                     |
-| `size`          | `"sm" \| "md"`                                                        | `"md"`      | 셀 패딩                       |
-| `responsive`    | `"scroll" \| "cards"`                                                 | `"scroll"`  | 모바일 처리 — cards는 ≤640px  |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `columns` *(필수)* | `DataTableColumn<T>[]` | — | 컬럼 정의 |
+| `data` *(필수)* | `T[]` | — | 데이터 행 |
+| `rowKey` *(필수)* | `(row: T, rowIndex: number) => string` | — | key 추출 |
+| `onRowClick` | `(row: T, rowIndex: number) => void` | — | 행 클릭 |
+| `sortKey` | `string` | — | 정렬 키 |
+| `sortDirection` | `SortDirection` | — | 정렬 방향 |
+| `onSort` | `(key: string, direction: SortDirection) => void` | — | 정렬 변경 콜백 |
+| `emptyMessage` | `ReactNode` | `"표시할 항목이 없어요"` | 빈 상태 메시지 |
+| `loading` | `boolean` | `false` | 로딩 표시 |
+| `size` | `"sm" \| "md"` | `"md"` | 셀 padding 크기 |
+| `responsive` | `"scroll" \| "cards"` | `"scroll"` | 모바일에서 처리 방식 — scroll: 가로 스크롤 / cards: 카드로 변환 |
+| `getSubRows` | `(row: T) => T[] \| undefined` | — | 자식 행 추출 — 반환 배열이 있으면 그 행은 펼침 가능(트리/중첩 행). ⚠️ 사용 시 rowKey 는 인덱스가 아니라 행 고유값(예: row.id)으로 안정적이어야 함. |
+| `expanderColumnKey` | `string` | — | 펼침 토글을 놓을 컬럼 key (기본: 첫 컬럼) |
+| `expandedKeys` | `string[]` | — | 펼쳐진 행 key 집합 (controlled) |
+| `defaultExpandedKeys` | `string[]` | — | 초기 펼침 key (uncontrolled) |
+| `onExpandedChange` | `(keys: string[]) => void` | — | 펼침 변경 콜백 |
+| `className` | `string` | — | className |
+
+<!-- AUTO-GEN:props:END -->
 
 `DataTableColumn<T> = { key, title, width?, align?, sortable?, render?, cardLabel?, hideOnCard? }`
 

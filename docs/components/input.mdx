@@ -336,3 +336,35 @@ div [data-slot="root"]
 - `<label>`과 `<input>`이 `htmlFor`/`id`로 자동 연결
 - 클리어 버튼에 `aria-label="입력 삭제"` 내장
 - `ref` 전달 지원
+
+---
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `label` | `string` | — | 라벨 텍스트 |
+| `helperText` | `string` | — | 도움 텍스트 |
+| `error` | `boolean` | `false` | 에러 상태 |
+| `errorMessage` | `string` | — | 에러 메시지 (helperText 대신 표시) |
+| `complete` | `boolean` | `false` | 입력 완료(검증 통과) 상태 |
+| `successMessage` | `string` | — | 성공 메시지 (helperText 대신 표시, primary 색상) |
+| `helpers` | `InputHelperItem[]` | — | 여러 헬퍼 항목을 row 로 노출 (Figma multi-helper 패턴). errorMessage/successMessage 가 우선이며, 둘 다 없을 때 적용된다. |
+| `helperIcon` | `ReactNode` | — | helper 텍스트 앞에 표시할 16x16 아이콘 |
+| `clearable` | `boolean` | `false` | 클리어 버튼 표시 여부 |
+| `onClear` | `() => void` | — | 클리어 시 콜백 |
+| `showCount` | `boolean` | `false` | `maxLength` 와 함께 우측에 "현재/최대" 글자수 카운터를 노출 (예: 24/25). Figma 캐포비 캠페인 이름 입력(3782:19709) 정합. Textarea 의 카운터와 동일 톤. |
+| `passwordToggle` | `boolean` | — | `type="password"` 일 때 우측 눈 아이콘으로 표시/숨김 토글을 노출. **기본 자동 노출**. `passwordToggle={false}` 로 끌 수 있다 (type 이 password 가 아니면 무시). |
+| `suffix` | `ReactNode` | — | 우측 addon (버튼 등) |
+| `prefix` | `ReactNode` | — | 좌측 addon (아이콘 등) |
+| `fullWidth` | `boolean` | `true` | 컴포넌트 너비 |
+| `fieldWidth` | `FieldWidth` | — | 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%). 지정 시 `fullWidth` 보다 우선. 폼 내부 일반 입력은 `md`(304), 모달 메인 입력은 `lg`(400) 권장. |
+| `size` | `InputSize` | `"default"` | 입력 필드 높이 변형 |
+| `slotProps` | `InputSlotProps` | — | 슬롯 프롭 |
+| `wrapperClassName` | `string` | — | 래퍼 클래스 |
+| `wrapperStyle` | `CSSProperties` | — | 래퍼 스타일 |
+
+<!-- AUTO-GEN:props:END -->

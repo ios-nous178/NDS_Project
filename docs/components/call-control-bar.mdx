@@ -45,14 +45,19 @@ import { CallControlBar } from "@nudge-design/react";
 
 ## Props
 
-| Prop              | 타입                         | 기본값  | 설명                                |
-| ----------------- | ---------------------------- | ------- | ----------------------------------- |
-| `muted`           | `boolean`                    | —       | 음소거 상태                         |
-| `onMutedChange`   | `(b: boolean) => void`       | —       | 음소거 토글                         |
-| `cameraOn`        | `boolean`                    | —       | 카메라 ON                           |
-| `onCameraChange`  | `(b: boolean) => void`       | —       | 카메라 토글 (지정 시 버튼 노출)     |
-| `speakerOn`       | `boolean`                    | —       | 스피커 ON                           |
-| `onSpeakerChange` | `(b: boolean) => void`       | —       | 스피커 토글 (지정 시 버튼 노출)     |
-| `onEnd`           | `() => void`                 | —       | 종료 콜백                           |
-| `duration`        | `ReactNode`                  | —       | 통화 시간 표시 (mm:ss)              |
-| `extra`           | `ReactNode`                  | —       | 좌측 추가 버튼 (채팅 전환 등)       |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `muted` *(필수)* | `boolean` | — | 음소거 상태 |
+| `onMutedChange` *(필수)* | `(muted: boolean) => void` | — | 음소거 토글 |
+| `cameraOn` | `boolean` | — | 카메라 사용 여부 (화상 통화 시) |
+| `onCameraChange` | `(on: boolean) => void` | — | 카메라 토글 (지정 시 카메라 버튼 노출) |
+| `speakerOn` | `boolean` | — | 스피커 ON |
+| `onSpeakerChange` | `(on: boolean) => void` | — | 스피커 토글 (지정 시 스피커 버튼 노출) |
+| `onEnd` *(필수)* | `() => void` | — | 종료 콜백 |
+| `duration` | `ReactNode` | — | 통화 시간 (mm:ss 또는 ReactNode). 표시 영역 |
+| `extra` | `ReactNode` | — | 추가 컨트롤 버튼 (좌측 끝, 채팅 등) |
+
+<!-- AUTO-GEN:props:END -->

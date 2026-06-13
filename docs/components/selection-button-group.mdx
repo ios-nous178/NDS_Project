@@ -92,13 +92,18 @@ const [value, setValue] = useState("always");
 
 ## Props
 
-| Prop            | 타입                              | 기본값  | 설명                                                                   |
-| --------------- | --------------------------------- | ------- | ---------------------------------------------------------------------- |
-| `options`       | `SelectionButtonOption<T>[]`      | —       | 옵션 목록 (단일 선택, 권장 2~3개)                                      |
-| `value`         | `T`                               | —       | 선택된 값                                                              |
-| `onValueChange` | `(value: T) => void`              | —       | 값 변경 콜백 (이미 선택된 값/비활성 옵션 클릭 시 호출되지 않음)        |
-| `fullWidth`     | `boolean`                         | `false` | 컨테이너 전체 너비를 옵션 수만큼 균등 분할 (false면 콘텐츠에 hug)      |
-| `disabled`      | `boolean`                         | `false` | 그룹 전체 비활성화                                                     |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `options` *(필수)* | `SelectionButtonOption<T>[]` | — | 옵션 목록 (단일 선택, 권장 2~3개) |
+| `value` *(필수)* | `T` | — | 선택된 값 |
+| `onValueChange` *(필수)* | `(value: T) => void` | — | 값 변경 콜백 |
+| `fullWidth` | `boolean` | `false` | 컨테이너 전체 너비를 옵션 수만큼 균등 분할. (기본값에서도 그룹 내 옵션은 가장 넓은 옵션 기준 **등폭** 이다 — fullWidth 는 그룹을 콘텐츠에 hug 시킬지(false) 컨테이너 100% 로 늘릴지(true)만 결정.) |
+| `disabled` | `boolean` | `false` | 전체 비활성화 |
+
+<!-- AUTO-GEN:props:END -->
 
 `onChange`를 제외한 `<div>` HTML 속성을 모두 지원합니다.
 

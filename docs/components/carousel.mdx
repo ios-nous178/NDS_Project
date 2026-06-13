@@ -51,17 +51,22 @@ import { Carousel } from "@nudge-design/react";
 
 ## Props
 
-| Prop                  | 타입                              | 기본값   | 설명                            |
-| --------------------- | --------------------------------- | -------- | ------------------------------- |
-| `children`            | `ReactNode`                       | —        | 각 자식이 한 슬라이드           |
-| `activeIndex`         | `number`                          | —        | 활성 인덱스 (controlled)        |
-| `onActiveIndexChange` | `(i: number) => void`             | —        | 인덱스 변경 콜백                |
-| `autoplay`            | `number`                          | —        | 자동 재생 ms. 미지정 시 비활성  |
-| `step`                | `number`                          | `1`      | 한 번에 이동하는 슬라이드 수    |
-| `indicator`           | `"dots" \| "counter" \| "none"`   | `"dots"` | 인디케이터 종류                 |
-| `showArrows`          | `boolean`                         | `true`   | 좌우 화살표 (호버 시 노출)      |
-| `gap`                 | `number`                          | `0`      | 슬라이드 사이 간격 px           |
-| `loop`                | `boolean`                         | `false`  | 마지막 → 처음 순환              |
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `children` *(필수)* | `ReactNode` | — | 슬라이드 콘텐츠 |
+| `activeIndex` | `number` | — | 활성 인덱스 (controlled) |
+| `onActiveIndexChange` | `(index: number) => void` | — | 활성 인덱스 변경 콜백 |
+| `autoplay` | `number` | — | 자동 재생 ms 단위. undefined면 비활성 |
+| `step` | `number` | `1` | 한 번에 이동하는 슬라이드 수 (보통 1) |
+| `indicator` | `CarouselIndicator` | `"dots"` | 인디케이터 표시 종류 |
+| `showArrows` | `boolean` | `true` | 좌우 화살표 표시 (마우스 호버 시) |
+| `gap` | `number` | `0` | 슬라이드 사이 간격 px |
+| `loop` | `boolean` | `false` | 루프 (마지막에서 다음 → 첫번째로) |
+
+<!-- AUTO-GEN:props:END -->
 
 ## CSS 변수
 
