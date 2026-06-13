@@ -7,6 +7,8 @@ import type { Transform } from "jscodeshift";
 import buttonT, { parser } from "./button.js";
 import inputT from "./input.js";
 import badgeT from "./badge.js";
+import chipT from "./chip.js";
+import textareaT from "./textarea.js";
 
 const dir = dirname(fileURLToPath(import.meta.url));
 const fx = (f: string) => readFileSync(join(dir, "__testfixtures__", f), "utf8");
@@ -22,6 +24,8 @@ const CASES: Array<{ name: string; t: Transform }> = [
   { name: "button", t: buttonT },
   { name: "input", t: inputT },
   { name: "badge", t: badgeT },
+  { name: "chip", t: chipT },
+  { name: "textarea", t: textareaT },
 ];
 
 describe("transforms — fixture 회귀(input→output)", () => {
@@ -41,4 +45,8 @@ describe("보수성 — 애매하면 건드리지 않음(undefined)", () => {
     expect(run(inputT, `const X = () => <input type="text" size={20} />;`)).toBeUndefined());
   it("badge: badge 베이스 없으면 skip", () =>
     expect(run(badgeT, `const X = () => <span className="label">x</span>;`)).toBeUndefined());
+  it("chip: 표현식 자식 skip", () =>
+    expect(run(chipT, `const X = () => <span className="chip">{name}</span>;`)).toBeUndefined());
+  it("textarea: 자식(텍스트) 있으면 skip", () =>
+    expect(run(textareaT, `const X = () => <textarea>hi</textarea>;`)).toBeUndefined());
 });

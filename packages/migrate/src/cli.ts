@@ -11,8 +11,10 @@ import type { Transform } from "jscodeshift";
 import buttonT, { parser } from "./transforms/button.js";
 import inputT from "./transforms/input.js";
 import badgeT from "./transforms/badge.js";
+import chipT from "./transforms/chip.js";
+import textareaT from "./transforms/textarea.js";
 
-const TRANSFORMS: Transform[] = [buttonT, inputT, badgeT];
+const TRANSFORMS: Transform[] = [buttonT, inputT, badgeT, chipT, textareaT];
 
 const files = process.argv.slice(2).filter((a) => !a.startsWith("-"));
 if (files.length === 0) {
