@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FloatingCtaBanner } from "@nudge-design/react";
-import { PlusIcon } from "@nudge-design/icons";
+import { MockupLinearData2Icon } from "@nudge-design/icons/multicolor";
 import React from "react";
 
 const meta: Meta<typeof FloatingCtaBanner> = {
@@ -38,11 +38,16 @@ export const Overview: Story = {
       <FloatingCtaBanner
         caption="찾는 항목이 없나요?"
         ctaText="직접 추가하기"
-        leadingIcon={<PlusIcon size={20} />}
+        leadingIcon={<MockupLinearData2Icon size={32} />}
         size="mobile"
         floating={false}
       />
-      <FloatingCtaBanner caption="더 빠르게 시작하세요" ctaText="지금 신청하기" size="mobile" floating={false} />
+      <FloatingCtaBanner
+        caption="더 빠르게 시작하세요"
+        ctaText="지금 신청하기"
+        size="mobile"
+        floating={false}
+      />
       <FloatingCtaBanner
         caption="더 알아보기"
         ctaText="자세히 보기"
@@ -61,7 +66,7 @@ export const Default: Story = {
   args: {
     caption: "찾는 항목이 없나요?",
     ctaText: "직접 추가하기",
-    leadingIcon: <PlusIcon size={20} />,
+    leadingIcon: <MockupLinearData2Icon size={32} />,
     size: "pc",
     floating: false,
   },
@@ -72,7 +77,7 @@ export const Mobile: Story = {
   args: {
     caption: "찾는 항목이 없나요?",
     ctaText: "직접 추가하기",
-    leadingIcon: <PlusIcon size={20} />,
+    leadingIcon: <MockupLinearData2Icon size={32} />,
     size: "mobile",
     floating: false,
   },
@@ -80,7 +85,13 @@ export const Mobile: Story = {
 
 export const NoArrow: Story = {
   name: "State/No Arrow",
-  args: { caption: "더 알아보기", ctaText: "자세히 보기", size: "pc", floating: false, showArrow: false },
+  args: {
+    caption: "더 알아보기",
+    ctaText: "자세히 보기",
+    size: "pc",
+    floating: false,
+    showArrow: false,
+  },
 };
 
 export const NoIcon: Story = {
@@ -127,7 +138,7 @@ function FloatingShowcase() {
       <FloatingCtaBanner
         caption="찾는 항목이 없나요?"
         ctaText="직접 추가하기"
-        leadingIcon={<PlusIcon size={20} />}
+        leadingIcon={<MockupLinearData2Icon size={32} />}
         size="mobile"
         floating
         style={{ position: "absolute" }}

@@ -62,6 +62,16 @@ export const floatingCtaBannerStyles = `
     min-width: 288px;
   }
 
+  /* 아이콘 없을 때 — 좌측 패딩이 아이콘 기준(작게)으로 남아 pill 모서리에 텍스트가 붙으므로
+     좌우를 대칭으로 넓혀 균형을 맞춘다(pc 28 / mobile 20). */
+  :where(.${FCB_ROOT_CLASS}[data-size="pc"][data-has-icon="false"]) {
+    padding: 14px ${spacing[28]}px;
+  }
+
+  :where(.${FCB_ROOT_CLASS}[data-size="mobile"][data-has-icon="false"]) {
+    padding: ${spacing[12]}px ${spacing[20]}px;
+  }
+
   :where(.${FCB_ROOT_CLASS}[data-floating="true"]) {
     position: fixed;
     left: 50%;

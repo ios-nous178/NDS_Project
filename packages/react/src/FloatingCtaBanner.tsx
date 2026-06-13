@@ -76,6 +76,7 @@ export function FloatingCtaBanner({
       data-slot="root"
       data-size={size}
       data-floating={floating ? "true" : "false"}
+      data-has-icon={leadingIcon ? "true" : "false"}
       aria-label={ariaLabel ?? (typeof ctaText === "string" ? ctaText : undefined)}
       className={cx(FCB_ROOT_CLASS, className)}
       style={{ ...floatingStyle, ...style }}

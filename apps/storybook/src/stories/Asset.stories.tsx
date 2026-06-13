@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Asset } from "@nudge-design/react";
+import type { CSSProperties } from "react";
+import { Asset, Badge, OnlineIndicator } from "@nudge-design/react";
 import { CalendarIcon, CounselIcon } from "@nudge-design/icons/mono";
 import { GenietPlayIcon, TrostMentalDepressionIcon } from "@nudge-design/icons/multicolor";
 
@@ -21,17 +22,31 @@ type Story = StoryObj<typeof Asset>;
 
 const SAMPLE = "https://i.pravatar.cc/150?img=3";
 
+// 캐시워크 마스코트 — 투명 PNG 를 연노랑(#FEF3C7) 정사각 캔버스에 합성해 구운 이미지.
+// apps/storybook/public/asset-sample-mascot.png (360×360, 배경 baked) — staticDirs:["../public"] 로 이 경로 로드.
+// 정사각이라 circle/rounded 어느 프레임에도 cover 로 꽉 찬다. --nds-asset-bg 는 동일색 fallback(로드 실패 대비).
+const MASCOT = "/asset-sample-mascot.png";
+const MASCOT_BG = "#FEF3C7"; // 이미지에 구운 연노랑과 동일 색 (스토리 데모용 — DS 토큰 아님)
+
 export const Playground: Story = {
   args: {
     shape: "circle",
-    size: "lg",
-    content: { type: "image", src: SAMPLE, alt: "사용자" },
+    size: "xl",
+    scaleType: "cover",
+    content: { type: "image", src: MASCOT, alt: "캐시워크 마스코트" },
   },
+  render: (args) => <Asset {...args} style={{ "--nds-asset-bg": MASCOT_BG } as CSSProperties} />,
 };
 
 export const ContentImage: Story = {
   name: "Variant/Content 이미지",
-  args: { size: "lg", content: { type: "image", src: SAMPLE, alt: "프로필" } },
+  args: {
+    size: "xl",
+    shape: "rounded",
+    scaleType: "cover",
+    content: { type: "image", src: MASCOT, alt: "캐시워크 마스코트" },
+  },
+  render: (args) => <Asset {...args} style={{ "--nds-asset-bg": MASCOT_BG } as CSSProperties} />,
 };
 
 export const ContentIcon: Story = {
@@ -88,30 +103,13 @@ export const Sizes: Story = {
   ),
 };
 
-export const UnionOverlap: Story = {
-  name: "Variant/Union Overlap (AvatarGroup 대체)",
-  render: () => (
-    <div style={{ display: "flex" }}>
-      <Asset
-        size="md"
-        overlap={12}
-        content={{ type: "image", src: "https://i.pravatar.cc/150?img=4", alt: "A" }}
-      />
-      <Asset
-        size="md"
-        overlap={12}
-        content={{ type: "image", src: "https://i.pravatar.cc/150?img=5", alt: "B" }}
-      />
-      <Asset
-        size="md"
-        overlap={12}
-        content={{ type: "image", src: "https://i.pravatar.cc/150?img=6", alt: "C" }}
-      />
-      <Asset size="md" content={{ type: "initial", name: "+5" }} />
-    </div>
-  ),
-};
-
+/**
+ * 여러 아바타를 겹쳐 쌓는 "그룹" UI 는 `AvatarGroup`(items/max/자동 +N) 을 쓰세요.
+ * Asset 의 `overlap` 은 그 위에서 단일 Asset 의 우측 음수 마진을 제어하는 저수준 prop 입니다.
+ *
+ * acc 슬롯에는 raw hex inline-style 로 점/뱃지를 손수 그리지 말고 DS 컴포넌트를 넣습니다 —
+ * presence 점은 OnlineIndicator, count/상태 뱃지는 Badge.
+ */
 export const UnionAcc: Story = {
   name: "Variant/Union Accessory (status dot)",
   tags: ["gallery"],
@@ -121,14 +119,10 @@ export const UnionAcc: Story = {
         size="lg"
         content={{ type: "image", src: SAMPLE, alt: "온라인" }}
         acc={
-          <span
-            style={{
-              width: 12,
-              height: 12,
-              borderRadius: "50%",
-              background: "#22c55e",
-              border: "2px solid white",
-            }}
+          <OnlineIndicator
+            status="online"
+            size={12}
+            style={{ "--nds-presence-ring": "#fff" } as CSSProperties}
           />
         }
       />
@@ -137,19 +131,9 @@ export const UnionAcc: Story = {
         shape="rounded"
         content={{ type: "icon", icon: <CounselIcon /> }}
         acc={
-          <span
-            style={{
-              minWidth: 18,
-              height: 18,
-              padding: "0 6px",
-              borderRadius: 9,
-              background: "#ef4444",
-              color: "white",
-              fontSize: 11,
-            }}
-          >
+          <Badge variant="fill" color="error" shape="pill" size="sm">
             3
-          </span>
+          </Badge>
         }
       />
     </div>
