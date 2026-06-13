@@ -145,14 +145,15 @@ export class NdsFormField extends NdsElement {
       if (error) {
         const errorSpan = document.createElement("span");
         errorSpan.dataset.slot = "error";
-        errorSpan.className = FF_ERROR_CLASS;
+        errorSpan.dataset.error = "true";
+        errorSpan.className = `${FF_ERROR_CLASS} nds-helper-text`;
         errorSpan.setAttribute("role", "alert");
         errorSpan.textContent = error;
         footerDiv.appendChild(errorSpan);
       } else if (helper) {
         const helperSpan = document.createElement("span");
         helperSpan.dataset.slot = "helper";
-        helperSpan.className = FF_HELPER_CLASS;
+        helperSpan.className = `${FF_HELPER_CLASS} nds-helper-text`;
         helperSpan.textContent = helper;
         footerDiv.appendChild(helperSpan);
       } else {

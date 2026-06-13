@@ -136,11 +136,21 @@ export const FormField: React.FC<FormFieldProps> = ({
         {showFooter && (
           <div data-slot="footer" className={FF_FOOTER_CLASS}>
             {error !== undefined ? (
-              <span data-slot="error" id={errorId} role="alert" className={FF_ERROR_CLASS}>
+              <span
+                data-slot="error"
+                data-error="true"
+                id={errorId}
+                role="alert"
+                className={cx(FF_ERROR_CLASS, "nds-helper-text")}
+              >
                 {error}
               </span>
             ) : helper !== undefined ? (
-              <span data-slot="helper" id={helperId} className={FF_HELPER_CLASS}>
+              <span
+                data-slot="helper"
+                id={helperId}
+                className={cx(FF_HELPER_CLASS, "nds-helper-text")}
+              >
                 {helper}
               </span>
             ) : (

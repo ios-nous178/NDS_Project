@@ -561,7 +561,7 @@ export const SelectHelper: React.FC<SelectHelperProps> = ({
       id={helperId}
       data-slot="helper"
       data-error={error ? "true" : "false"}
-      className={cx(SELECT_HELPER_CLASS, className)}
+      className={cx(SELECT_HELPER_CLASS, "nds-helper-text", className)}
       {...rest}
     >
       {children}

@@ -179,50 +179,11 @@ export const inputStyles = `
     height: ${sizing.icon.default}px;
   }
 
-  /* Helper text color — Figma Section_Input (294:12) Input/HelperText/* 토큰 사용.
-   *   default  = #999999 (Text/Muted/Default — 일반 도움말)
-   *   success  = var(--semantic-text-brand-default) (Text/Brand/Default — 폼 검증 통과)
-   *   error    = #F13F00 (Text/Status/Error — 폼 오류)
-   *   disabled = #C7C7C7 (Text/Disabled/Default — 비활성)
-   * 일반 success(녹색, Banner/Toast 용)과 구분되도록 brand 톤으로 분리. */
-  :where(.${INPUT_HELPER_CLASS}) {
-    display: inline-flex;
-    align-items: center;
-    gap: ${spacing[6]}px;
-    font-size: ${typeScale.caption2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.input.helpertextDefault};
-  }
-
-  :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
-    color: ${cv.input.helpertextError};
-  }
-
-  :where(.${INPUT_HELPER_CLASS}[data-variant="success"]) {
-    color: ${cv.input.helpertextSuccess};
-  }
-
-  :where(.${INPUT_HELPER_CLASS}[data-variant="disabled"]),
+  /* helper 폰트·색·아이콘(__icon)·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text
+   * (HelperText.ts) 가 소유한다 — helper element 에 nds-helper-text 클래스가 함께 붙는다.
+   * 여기엔 Input 고유 규칙만 남긴다: 전체 입력 disabled 시 helper 회색 전파(variant 무관). */
   :where(.${INPUT_ROOT_CLASS}[data-disabled="true"]) :where(.${INPUT_HELPER_CLASS}) {
     color: ${cv.input.helpertextDisabled};
-  }
-
-  /* Helper icon 은 부모 helper 의 color 를 currentColor 로 상속받는다 —
-   * variant 별 (default/success/error) 색을 자동 따라가므로 여기서 color 지정 X. */
-  :where(.${INPUT_HELPER_CLASS}__icon) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 16px;
-    height: 16px;
-    color: inherit;
-  }
-
-  :where(.${INPUT_HELPER_CLASS}__icon svg) {
-    width: 16px;
-    height: 16px;
   }
 
   /* Figma 명세: HelpText 1 ↔ HelpText 2 row, 항목 간 gap 12.
@@ -233,21 +194,5 @@ export const inputStyles = `
     align-items: flex-start;
     column-gap: ${spacing[12]}px;
     row-gap: ${spacing[4]}px;
-  }
-
-  /* 캐포비(cashwalk-biz) admin 전용 — 에러 헬퍼 앞 빨간 경고 아이콘(Figma 04ic/report/red). 다른 브랜드 미노출. */
-  [data-brand="cashwalk-biz"] :where(.${INPUT_HELPER_CLASS}[data-variant="error"]) {
-    display: flex;
-    align-items: center;
-    gap: var(--semantic-gap-tight);
-  }
-  [data-brand="cashwalk-biz"] :where(.${INPUT_HELPER_CLASS}[data-variant="error"])::before {
-    content: "";
-    flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
-    background-color: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E") center / contain no-repeat;
   }
 `;

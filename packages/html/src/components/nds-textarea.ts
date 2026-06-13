@@ -223,7 +223,7 @@ export class NdsTextarea extends NdsElement {
     }
     if (!this._helper) {
       this._helper = document.createElement("span");
-      this._helper.className = TA_HELPER_CLASS;
+      this._helper.className = `${TA_HELPER_CLASS} nds-helper-text`;
       this._helper.dataset.slot = "helper";
     }
     // footer 의 첫 요소로 — count 보다 앞에 둔다(count 는 margin-left:auto 로 우측).

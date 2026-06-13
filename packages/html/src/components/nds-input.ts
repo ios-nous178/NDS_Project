@@ -330,7 +330,7 @@ export class NdsInput extends NdsElement {
     }
     if (!this._helper) {
       this._helper = document.createElement("span");
-      this._helper.className = "nds-input__helper";
+      this._helper.className = "nds-input__helper nds-helper-text";
       this._helper.dataset.slot = "helper";
       this._root.appendChild(this._helper);
     }

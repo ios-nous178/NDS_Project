@@ -145,7 +145,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
                 data-slot="helper"
                 data-error={error ? "true" : "false"}
                 id={helperId}
-                className={TA_HELPER_CLASS}
+                className={cx(TA_HELPER_CLASS, "nds-helper-text")}
               >
                 {helperText}
               </span>

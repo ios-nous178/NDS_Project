@@ -406,7 +406,7 @@ export class NdsSelect extends NdsElement {
     }
     if (!this._helper) {
       this._helper = document.createElement("span");
-      this._helper.className = HELPER_CLASS;
+      this._helper.className = `${HELPER_CLASS} nds-helper-text`;
       this._helper.dataset.slot = "helper";
       this._root.appendChild(this._helper);
     }

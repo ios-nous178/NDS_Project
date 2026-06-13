@@ -16,6 +16,8 @@ const INPUT_PASSWORD_TOGGLE_CLASS = `${INPUT_CLASS}__password-toggle`;
 const INPUT_HELPER_CLASS = `${INPUT_CLASS}__helper`;
 const INPUT_HELPER_GROUP_CLASS = `${INPUT_CLASS}__helper-group`;
 const INPUT_COUNT_CLASS = `${INPUT_CLASS}__count`;
+/** 입력류 공용 헬퍼텍스트 클래스 (폰트·색·아이콘·캐포비 에러아이콘 SSOT — @nudge-design/styles HelperText.ts) */
+const HELPER_TEXT_CLASS = "nds-helper-text";
 
 export type InputSize = "default" | "field" | "compact";
 
@@ -409,12 +411,12 @@ export const InputHelper: React.FC<InputHelperProps> = ({
       id={helperId}
       data-slot="helper"
       data-variant={resolvedVariant}
-      className={cx(INPUT_HELPER_CLASS, className)}
+      className={cx(INPUT_HELPER_CLASS, HELPER_TEXT_CLASS, className)}
       role={isError ? "alert" : undefined}
       {...rest}
     >
       {icon && (
-        <span data-slot="helper-icon" className={`${INPUT_HELPER_CLASS}__icon`}>
+        <span data-slot="helper-icon" className={`${HELPER_TEXT_CLASS}__icon`}>
           {icon}
         </span>
       )}

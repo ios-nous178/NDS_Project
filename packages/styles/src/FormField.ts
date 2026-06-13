@@ -85,7 +85,7 @@ export const formFieldStyles = `
    * density="admin" — 캐포비 Cashwalk for Business 어드민 폼 표준
    *   · FormField 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871)
    *   · label Subtitle1 16/24
-   *   · helper Body2 14/20
+   *   · helper/error 는 공용 .nds-helper-text 12px(caption2) — admin 도 base 와 동일(Figma 정합)
    *   · label↔control gap 16, control 내부 input↔helper gap 8
    * ────────────────────────────────────────────────────────────── */
   :where(.${FF_ROOT_CLASS}[data-density="admin"]) {
@@ -104,13 +104,9 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}[data-density="admin"]) > .${FF_CONTROL_CLASS} {
     gap: ${spacing[8]}px;
   }
-  :where(.${FF_ROOT_CLASS}[data-density="admin"]) :where(.${FF_HELPER_CLASS}),
-  :where(.${FF_ROOT_CLASS}[data-density="admin"]) :where(.${FF_ERROR_CLASS}),
-  :where(.${FF_ROOT_CLASS}[data-density="admin"]) :where(.${FF_COUNTER_CLASS}) {
-    /* Figma Body2/Regular 14/20 ≡ DS typeScale.body3 */
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-  }
+  /* admin 도 helper/error 폰트는 공용 .nds-helper-text 12px 를 그대로 따른다(Figma 정합).
+   * (구버전엔 여기 helper/error/counter 14px override 가 있었으나 source-order 로 죽어
+   *  실제 13px 였고, Figma 가 12px 라 제거 — base 12px 로 통일.) */
 
   :where(.${FF_FOOTER_CLASS}) {
     display: flex;
@@ -119,18 +115,12 @@ export const formFieldStyles = `
     gap: var(--semantic-gap-default);
   }
 
-  :where(.${FF_HELPER_CLASS}) {
-    flex: 1 1 auto;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.input.helpertextDefault};
-  }
-
+  /* helper/error 의 폰트·색·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text
+   * (HelperText.ts) 소유 — 두 element 에 nds-helper-text 클래스가 함께 붙는다.
+   * (error span 은 always-error 라 data-error="true" 로 신호.) 여기엔 footer 레이아웃만. */
+  :where(.${FF_HELPER_CLASS}),
   :where(.${FF_ERROR_CLASS}) {
     flex: 1 1 auto;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.textRole.statusError};
   }
 
   :where(.${FF_COUNTER_CLASS}) {
@@ -141,19 +131,4 @@ export const formFieldStyles = `
     text-align: right;
   }
 
-  /* 캐포비(cashwalk-biz) admin 전용 — 에러 메시지 앞 빨간 경고 아이콘(Figma 04ic/report/red). 다른 브랜드 미노출. */
-  [data-brand="cashwalk-biz"] :where(.${FF_ERROR_CLASS}) {
-    display: flex;
-    align-items: center;
-    gap: var(--semantic-gap-tight);
-  }
-  [data-brand="cashwalk-biz"] :where(.${FF_ERROR_CLASS})::before {
-    content: "";
-    flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
-    background-color: currentColor;
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E") center / contain no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E") center / contain no-repeat;
-  }
 `;
