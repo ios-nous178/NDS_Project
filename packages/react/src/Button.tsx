@@ -106,14 +106,15 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     // Figma: Solid/Primary (eap-button-bg-*)
     solid: {
       enabled: {
-        background: cv.surface.brand,
+        // Figma Solid/Primary = --semantic-button-bg-default (브랜드 buttonBg override). bg-brand 직참조 금지.
+        background: cv.button.bgDefault,
         text: cv.button.textDefault,
         border: cv.borderRole.brand,
       },
       disabled: {
         // Figma --semantic-button-bg-disabled = #9CA2AE.
         background: cv.button.bgDisabled,
-        text: cv.surface.default,
+        text: cv.textRole.inverse,
         border: cv.button.bgDisabled,
       },
       hover: {

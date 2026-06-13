@@ -26,7 +26,7 @@ export const verificationCodeStyles = `
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.surface.default});
+    background: var(--nds-input-background, ${cv.input.bg});
     box-sizing: border-box;
     font-family: ${fontFamily.web};
     transition: border-color ${transition.default};
@@ -37,7 +37,7 @@ export const verificationCodeStyles = `
   :where(.${VC_ROOT_CLASS}:focus-within) { border-color: ${cv.input.borderFocus}; }
   :where(.${VC_ROOT_CLASS}[data-error="true"]) { border-color: ${cv.input.borderError}; }
   :where(.${VC_ROOT_CLASS}[data-disabled="true"]) {
-    background: ${cv.surface.subtle};
+    background: ${cv.input.bgDisabled};
     pointer-events: none;
   }
 

@@ -47,7 +47,7 @@ export const searchInputStyles = `
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-search-input-border-color, var(--nds-input-border-color, ${cv.input.borderDefault}));
     border-radius: var(--nds-search-input-radius, var(--nds-input-radius, ${radius.md}px));
-    background: var(--nds-search-input-background, var(--nds-input-background, ${cv.surface.default}));
+    background: var(--nds-search-input-background, var(--nds-input-background, ${cv.input.bg}));
     box-sizing: border-box;
     transition:
       border-color ${transition.default},

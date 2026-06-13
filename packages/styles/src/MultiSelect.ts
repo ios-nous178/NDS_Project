@@ -49,7 +49,7 @@ export const multiSelectStyles = `
     padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.input.borderDefault};
     border-radius: var(--nds-select-radius, ${radius.md}px);
-    background: ${cv.surface.default};
+    background: ${cv.input.bg};
     cursor: pointer;
     font-family: inherit;
     box-sizing: border-box;
@@ -58,7 +58,7 @@ export const multiSelectStyles = `
   :where(.${MS_TRIGGER_CLASS}[data-open="true"]) { border-color: ${cv.input.borderFocus}; }
   :where(.${MS_TRIGGER_CLASS}[data-error="true"]) { border-color: ${cv.input.borderError}; }
   :where(.${MS_TRIGGER_CLASS}[data-disabled="true"]) {
-    background: ${cv.surface.disabled};
+    background: ${cv.input.bgDisabled};
     cursor: not-allowed;
     opacity: 0.6;
   }

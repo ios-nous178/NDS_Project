@@ -51,7 +51,7 @@ export const datePickerStyles = `
     padding: 0 var(--nds-datepicker-padding-x, var(--semantic-inset-card));
     border: 1px solid ${cv.input.borderDefault};
     border-radius: var(--nds-datepicker-radius, ${radius.md}px);
-    background: ${cv.surface.default};
+    background: ${cv.input.bg};
     cursor: pointer;
     font-family: inherit;
     font-size: var(--nds-datepicker-font-size, ${typeScale.body3.fontSize}px);
@@ -74,7 +74,7 @@ export const datePickerStyles = `
   }
 
   :where(.${DP_TRIGGER_CLASS}:disabled) {
-    background: ${cv.surface.disabled};
+    background: ${cv.input.bgDisabled};
     color: ${cv.textRole.muted};
     cursor: not-allowed;
   }

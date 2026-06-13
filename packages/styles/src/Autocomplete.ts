@@ -47,7 +47,7 @@ export const autocompleteStyles = `
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.surface.default});
+    background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;

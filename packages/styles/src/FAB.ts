@@ -12,7 +12,7 @@ export const fabStyles = `
     padding: 0 var(--nds-fab-padding, 0);
     border: none;
     border-radius: 9999px;
-    background: var(--nds-fab-bg, ${cv.surface.brand});
+    background: var(--nds-fab-bg, ${cv.button.bgDefault});
     color: var(--nds-fab-fg, ${cv.button.textDefault});
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), 0 2px 4px rgba(0, 0, 0, 0.08);
     cursor: pointer;

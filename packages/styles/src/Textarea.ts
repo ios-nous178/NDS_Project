@@ -43,7 +43,7 @@ export const textareaStyles = `
     padding: var(--semantic-inset-input) var(--nds-textarea-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-textarea-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-textarea-radius, ${radius.md}px);
-    background: var(--nds-textarea-background, ${cv.surface.default});
+    background: var(--nds-textarea-background, ${cv.input.bg});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -59,7 +59,7 @@ export const textareaStyles = `
   }
 
   :where(.${TA_WRAPPER_CLASS}[data-disabled="true"]) {
-    background: ${cv.surface.subtle};
+    background: ${cv.input.bgDisabled};
     cursor: default;
   }
 

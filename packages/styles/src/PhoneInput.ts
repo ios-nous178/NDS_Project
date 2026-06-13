@@ -63,9 +63,9 @@ export const phoneInputStyles = `
     gap: ${spacing[6]}px;
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
-    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.surface.default});
+    background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
@@ -174,9 +174,9 @@ export const phoneInputStyles = `
     min-width: 0;
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: 1px solid var(--nds-input-border-color, ${cv.borderRole.normal});
+    border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.surface.default});
+    background: var(--nds-input-background, ${cv.input.bg});
     outline: none;
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
@@ -191,7 +191,7 @@ export const phoneInputStyles = `
   :where(.${PI_INPUT_CLASS}::placeholder) { color: ${cv.input.placeholder}; }
 
   :where(.${PI_INPUT_CLASS}:disabled) {
-    background: ${cv.surface.subtle};
+    background: ${cv.input.bgDisabled};
     color: ${cv.textRole.muted};
     cursor: default;
   }

@@ -43,7 +43,7 @@ export const aiStyles = `
     padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: ${cv.surface.default};
+    background: ${cv.input.bg};
     transition: border-color ${transition.default};
   }
   :where(.${AI_FIELD_CLASS}:focus-within) { border-color: ${cv.input.borderFocus}; }

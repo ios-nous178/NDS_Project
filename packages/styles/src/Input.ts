@@ -43,10 +43,11 @@ export const inputStyles = `
   }
 
   :where(.${INPUT_LABEL_CLASS}) {
-    font-size: ${typeScale.caption2.fontSize}px;
+    /* Figma Section_Input(1399-143/1413-478): label 13px(caption1) · Text/Strong(#111) */
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.textRole.normal};
+    line-height: ${typeScale.caption1.lineHeight}px;
+    color: ${cv.textRole.strong};
   }
 
   :where(.${INPUT_WRAPPER_CLASS}) {
@@ -59,7 +60,7 @@ export const inputStyles = `
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: var(--nds-input-background, ${cv.surface.default});
+    background: var(--nds-input-background, ${cv.input.bg});
     box-sizing: border-box;
     transition:
       border-color ${transition.default},
@@ -79,7 +80,7 @@ export const inputStyles = `
   }
 
   :where(.${INPUT_WRAPPER_CLASS}[data-disabled="true"]) {
-    background: ${cv.surface.subtle};
+    background: ${cv.input.bgDisabled};
     cursor: default;
   }
 

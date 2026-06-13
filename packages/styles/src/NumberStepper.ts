@@ -61,7 +61,7 @@ export const numberStepperStyles = `
     text-align: center;
     border: 1px solid ${cv.input.borderDefault};
     border-radius: ${radius.md}px;
-    background: ${cv.surface.default};
+    background: ${cv.input.bg};
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: var(--nds-stepper-font, 15px);

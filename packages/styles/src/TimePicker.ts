@@ -55,7 +55,7 @@ export const tpStyles = `
     padding: 0 ${spacing[8]}px 0 var(--semantic-inset-card);
     border: 1px solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: ${cv.surface.default};
+    background: ${cv.input.bg};
     transition: border-color ${transition.default};
     box-sizing: border-box;
   }

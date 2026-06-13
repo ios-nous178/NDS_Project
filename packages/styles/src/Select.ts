@@ -53,7 +53,7 @@ export const selectStyles = `
     padding: 0 var(--semantic-inset-input);
     border: 1px solid var(--nds-select-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-select-radius, ${radius.md}px);
-    background: var(--nds-select-background, ${cv.surface.default});
+    background: var(--nds-select-background, ${cv.input.bg});
     cursor: pointer;
     font-family: inherit;
     box-sizing: border-box;
@@ -69,7 +69,7 @@ export const selectStyles = `
   }
 
   :where(.${SELECT_TRIGGER_CLASS}[data-disabled="true"]) {
-    background: ${cv.surface.disabled};
+    background: ${cv.input.bgDisabled};
     cursor: not-allowed;
     opacity: 0.6;
   }
