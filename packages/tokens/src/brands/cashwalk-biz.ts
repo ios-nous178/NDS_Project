@@ -297,5 +297,17 @@ export const cashwalkBizTheme: BrandTheme = {
       trackActiveBg: "var(--semantic-icon-status-success)",
       labelActiveColor: "var(--semantic-text-inverse-default)",
     },
+    // SelectedItemRow — admin gray/200 fill + radius 10 (삭제 글리프는 styles [data-brand] 유지).
+    "selected-item-row": {
+      bg: "var(--semantic-border-normal-default)",
+      radius: 10,
+    },
+    // TagInput — add 버튼 neutral(Secondary tone 부재) + stacked 태그 gray fill/radius 10 (삭제 글리프 styles [data-brand]).
+    "tag-input": {
+      addBg: "var(--semantic-button-bg-neutral-default)",
+      addColor: "var(--semantic-button-text-neutral-solid)",
+      stackedBg: "var(--semantic-border-normal-default)",
+      stackedRadius: 10,
+    },
   },
 };

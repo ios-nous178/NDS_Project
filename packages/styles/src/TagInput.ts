@@ -88,16 +88,11 @@ export const tiStyles = `
     justify-content: center;
     border: none;
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    background: ${cv.button.bgSecondary};
-    color: ${cv.button.textSecondary};
+    /* 캐포비는 Secondary tone 부재 → 검정 neutral 로 통일(브랜드 슬롯 override). 타 브랜드 base secondary. */
+    background: var(--nds-tag-input-add-bg, ${cv.button.bgSecondary});
+    color: var(--nds-tag-input-add-color, ${cv.button.textSecondary});
     cursor: pointer;
     transition: background-color ${transition.default}, opacity ${transition.default};
-  }
-  /* 캐포비: tone=Primary+Neutral 뿐(Secondary 없음) → 검정 추가버튼을 neutral 로 통일
-     (Modal/Popup/ConfirmTooltip 과 동일). 타 브랜드는 base secondary 유지. :disabled 가 뒤에서 이김. */
-  :where([data-brand="cashwalk-biz"] .${TI_ADD_CLASS}) {
-    background: ${cv.button.bgNeutral};
-    color: ${cv.button.textNeutralSolid};
   }
   :where(.${TI_ADD_CLASS}:disabled) {
     background: ${cv.surface.disabled};
@@ -115,7 +110,8 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_TAG_CLASS}) {
     height: 32px;
     padding: 0 ${spacing[6]}px 0 var(--semantic-inset-input);
-    background: ${cv.surface.subtle};
+    background: var(--nds-tag-input-stacked-bg, ${cv.surface.subtle});
+    border-radius: var(--nds-tag-input-stacked-radius, 9999px);
     color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
   }
@@ -128,14 +124,9 @@ export const tiStyles = `
     background: ${cv.iconRole.normal};
   }
 
-  /* ─── 캐포비(cashwalk-biz) stacked 태그 — SelectedItemRow 와 동일 트리트먼트(Figma 3001:18463) ───
-     gray/200(#eee) fill · radius 10(pill→라운드 사각) · 삭제 = 원형 serchdelete. text #333 는
-     base(textRole.normal) 그대로. 삭제는 솔리드 원형 X(svg) 대신 ::before serchdelete mask 로 swap
-     — 색 gray(iconRole.normal) → hover red(statusError), SelectedItemRow 와 동일. */
-  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_TAG_CLASS}) {
-    background: ${cv.borderRole.normal};
-    border-radius: 10px;
-  }
+  /* ─── 캐포비(cashwalk-biz) stacked 태그 삭제 글리프 — SelectedItemRow 와 동일(Figma 3001:18463) ───
+     솔리드 원형 X(svg) 숨기고 ::before serchdelete mask 로 swap (요소 교체=구조적 → [data-brand] 유지).
+     색 gray(iconRole.normal)→hover red(statusError). gray fill·radius 10 은 브랜드 슬롯(components.tag-input)으로 이전. */
   :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) {
     background: transparent;
     color: ${cv.iconRole.normal};

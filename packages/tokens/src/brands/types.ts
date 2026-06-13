@@ -422,6 +422,18 @@ export interface ComponentOverrides {
   };
   /** FormSection admin 카드 radius (`--nds-form-section-radius`). base lg(12) → 캐포비 16. */
   "form-section"?: { radius?: ComponentValue };
+  /** SelectedItemRow admin 행 — gray fill + radius (`--nds-selected-item-row-bg/radius`). 삭제 글리프는 styles [data-brand]. */
+  "selected-item-row"?: { bg?: ComponentValue; radius?: ComponentValue };
+  /**
+   * TagInput admin — add 버튼 색(Secondary 부재→neutral) + stacked 태그 gray fill/radius.
+   * `--nds-tag-input-add-bg/add-color` · `--nds-tag-input-stacked-bg/stacked-radius`. 삭제 글리프는 styles [data-brand].
+   */
+  "tag-input"?: {
+    addBg?: ComponentValue;
+    addColor?: ComponentValue;
+    stackedBg?: ComponentValue;
+    stackedRadius?: ComponentValue;
+  };
 }
 
 /** 브랜드 테마 전체 정의 */

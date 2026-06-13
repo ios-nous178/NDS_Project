@@ -148,8 +148,8 @@ export const selectedItemsPanelStyles = `
     width: 100%;
     box-sizing: border-box;
     padding: ${spacing[8]}px ${spacing[12]}px ${spacing[8]}px ${spacing[16]}px;
-    background: ${cv.surface.section};
-    border-radius: ${radius.lg}px;
+    background: var(--nds-selected-item-row-bg, ${cv.surface.section});
+    border-radius: var(--nds-selected-item-row-radius, ${radius.lg}px);
     font-family: ${fontFamily.web};
   }
 
@@ -190,16 +190,9 @@ export const selectedItemsPanelStyles = `
     height: 20px;
   }
 
-  /* ─── 캐포비(cashwalk-biz) SelectedItemRow — Figma 3001:18463 ───
-     gray/200(#eee) fill · radius 10 · 삭제 글리프 = 원형 CashwalkBizSearchDeleteIcon(serchdelete).
-     #eee 는 캐포비 neutral/200 = Border/Normal 토큰(캐포비 광역 중립 톤). radius 10 은 표준 토큰
-     공백(md8/lg12 사이)이라 브랜드 전용 px. 삭제는 민자 X(svg) 를 숨기고 ::before 에 serchdelete
-     를 mask 로 swap — 색 의미(iconRole.normal → hover statusError)는 base 그대로 상속한다. */
-  :where([data-brand="cashwalk-biz"] .${ROW_CLASS}),
-  :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_CLASS}) {
-    background: ${cv.borderRole.normal};
-    border-radius: 10px;
-  }
+  /* ─── 캐포비(cashwalk-biz) SelectedItemRow 삭제 글리프 — Figma 3001:18463 ───
+     민자 X(svg) 숨기고 ::before 에 원형 serchdelete 아이콘을 mask 로 swap (요소 교체=구조적 → [data-brand] 유지).
+     gray/200 fill·radius 10 은 브랜드 슬롯(components.selected-item-row)으로 이전. 색(currentColor→hover statusError)은 base 상속. */
   :where([data-brand="cashwalk-biz"] .${ROW_REMOVE_CLASS}) svg,
   :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS}) svg {
     display: none;

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T08:14:13.076Z",
+  "generatedAt": "2026-06-13T08:34:04.104Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11759,6 +11759,22 @@
       ]
     },
     {
+      "name": "--nds-selected-item-row-bg",
+      "value": "var(--semantic-border-normal-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-selected-item-row-radius",
+      "value": "10px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
       "name": "--nds-snackbar-bg",
       "value": "var(--semantic-bg-surface-default)",
       "group": "nds",
@@ -11937,6 +11953,38 @@
     {
       "name": "--nds-tabs-line-tab-height",
       "value": "48px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-tag-input-add-bg",
+      "value": "var(--semantic-button-bg-neutral-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-tag-input-add-color",
+      "value": "var(--semantic-button-text-neutral-solid)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-tag-input-stacked-bg",
+      "value": "var(--semantic-border-normal-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-tag-input-stacked-radius",
+      "value": "10px",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
