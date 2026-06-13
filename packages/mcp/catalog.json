@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T07:07:50.589Z",
+  "generatedAt": "2026-06-13T08:04:19.272Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11745,6 +11745,70 @@
     {
       "name": "--nds-select-radius",
       "value": "var(--nds-input-radius)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-bg",
+      "value": "var(--semantic-bg-surface-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-border",
+      "value": "var(--semantic-border-subtle-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-close-color",
+      "value": "var(--semantic-icon-normal-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-close-opacity",
+      "value": "1",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-icon-size",
+      "value": "24px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-shadow",
+      "value": "0 2px 6px rgba(0, 0, 0, 0.12)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-title-font-size",
+      "value": "14px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-title-line-height",
+      "value": "20px",
       "group": "nds",
       "brands": [
         "cashwalk-biz"

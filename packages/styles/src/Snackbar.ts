@@ -1,6 +1,5 @@
 /* Auto-generated from packages/react/src/Snackbar.tsx during the @nudge-design/styles split. */
 import {
-  cv,
   fontFamily,
   fontWeight,
   radius,
@@ -20,45 +19,42 @@ const SB_ACTION_CLASS = `${SB_CLASS}__action`;
 const SB_CLOSE_CLASS = `${SB_CLASS}__close`;
 
 export const snackbarStyles = `
+  /* 색 합성: ① --nds-snackbar-bg (브랜드 서피스 override) > ② --nds-snackbar-variant-bg (variant) > ③ 기본.
+   * variant 룰은 background 를 직접 박지 않고 ②슬롯만 set → 캐포비가 ①로 전 variant 를 흰카드로 덮을 수 있다.
+   * (CLAUDE.md '색은 슬롯에 넣고 우선순위로 합성' 참조.) */
   :where(.${SB_CLASS}) {
     display: inline-flex;
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
     border-radius: var(--nds-snackbar-radius, ${radius.md}px);
-    background: var(--nds-snackbar-bg, var(--semantic-bg-section-default));
+    background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, var(--semantic-bg-section-default)));
     color: var(--nds-snackbar-fg, var(--semantic-text-normal-default));
     border: 1px solid var(--nds-snackbar-border, transparent);
+    box-shadow: var(--nds-snackbar-shadow, none);
     font-family: ${fontFamily.web};
     width: var(--nds-snackbar-width, auto);
     max-width: 480px;
     box-sizing: border-box;
   }
 
-  /* variant 색은 CSS(data-variant)가 결정 — 인라인 style 로 박지 않아야 브랜드 카드 cascade 가 덮을 수 있다. */
+  /* variant 색 = ②슬롯에 글로벌 시멘틱 status 토큰을 넣는다(브랜드는 --semantic-*-status-* 로 커스텀).
+   * 아이콘 색은 variant 정체성이라 브랜드 override 와 무관하게 항상 variant 색을 유지. */
   :where(.${SB_CLASS}[data-variant="info"]) {
-    background: var(--semantic-bg-status-info);
-    color: var(--semantic-text-normal-default);
+    --nds-snackbar-variant-bg: var(--semantic-bg-status-info);
     --nds-snackbar-icon: var(--semantic-icon-brand-default);
-    border: 0;
   }
   :where(.${SB_CLASS}[data-variant="success"]) {
-    background: var(--semantic-bg-status-success);
-    color: var(--semantic-text-normal-default);
+    --nds-snackbar-variant-bg: var(--semantic-bg-status-success);
     --nds-snackbar-icon: var(--semantic-icon-status-success);
-    border: 0;
   }
   :where(.${SB_CLASS}[data-variant="warning"]) {
-    background: var(--semantic-bg-status-caution);
-    color: var(--semantic-text-normal-default);
+    --nds-snackbar-variant-bg: var(--semantic-bg-status-caution);
     --nds-snackbar-icon: var(--semantic-text-status-caution);
-    border: 0;
   }
   :where(.${SB_CLASS}[data-variant="error"]) {
-    background: var(--semantic-bg-status-error);
-    color: var(--semantic-text-normal-default);
+    --nds-snackbar-variant-bg: var(--semantic-bg-status-error);
     --nds-snackbar-icon: var(--semantic-icon-status-error);
-    border: 0;
   }
 
   :where(.${SB_CLASS}[data-has-desc="true"]) {
@@ -67,8 +63,8 @@ export const snackbarStyles = `
 
   :where(.${SB_ICON_CLASS}) {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: var(--nds-snackbar-icon-size, 20px);
+    height: var(--nds-snackbar-icon-size, 20px);
     color: var(--nds-snackbar-icon, currentColor);
     display: inline-flex;
     align-items: center;
@@ -88,8 +84,8 @@ export const snackbarStyles = `
   }
 
   :where(.${SB_TITLE_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: var(--nds-snackbar-title-font-size, ${typeScale.body3.fontSize}px);
+    line-height: var(--nds-snackbar-title-line-height, ${typeScale.body3.lineHeight}px);
     font-weight: ${fontWeight.bold};
     margin: 0;
   }
@@ -146,13 +142,13 @@ export const snackbarStyles = `
     height: 24px;
     border: none;
     background: transparent;
-    color: inherit;
+    color: var(--nds-snackbar-close-color, inherit);
     cursor: pointer;
     border-radius: 9999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.7;
+    opacity: var(--nds-snackbar-close-opacity, 0.7);
     transition: opacity ${transition.default}, background-color ${transition.default};
   }
 
@@ -190,31 +186,5 @@ export const snackbarStyles = `
   @keyframes nds-snackbar-exit {
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(8px); }
-  }
-
-  /* ── 캐포비(cashwalk-biz) Snackbar — 흰 카드 (Figma 3001:51644) ──
-     base/variant 는 옅은 틴트 카드지만, 캐포비 admin 은 모든 state 가
-     '흰 배경 + 그림자 카드(radius 8) + 좌측 status 칩 아이콘(색만 state 별) + 검정 메시지'.
-     data-brand="cashwalk-biz" cascade 가 variant 배경을 덮는다(아이콘 색은 유지). */
-  :where([data-brand="cashwalk-biz"] .${SB_CLASS}) {
-    background: ${cv.surface.default};
-    color: ${cv.textRole.normal};
-    border: 1px solid ${cv.borderRole.subtle};
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  }
-  :where([data-brand="cashwalk-biz"] .${SB_TITLE_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
-  }
-  /* status 칩 아이콘은 24×24. 색은 --nds-snackbar-icon(variant 별 status 색)을 그대로 받는다. */
-  :where([data-brand="cashwalk-biz"] .${SB_ICON_CLASS}) {
-    width: 24px;
-    height: 24px;
-  }
-  /* 닫기 X 는 회색(검정 메시지와 구분). */
-  :where([data-brand="cashwalk-biz"] .${SB_CLOSE_CLASS}) {
-    color: ${cv.iconRole.normal};
-    opacity: 1;
   }
 `;

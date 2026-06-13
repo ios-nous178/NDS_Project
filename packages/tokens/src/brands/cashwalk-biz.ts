@@ -278,5 +278,17 @@ export const cashwalkBizTheme: BrandTheme = {
     // 캐포비 리치 툴팁의 compact 타이포는 styles/Tooltip.ts 의 [data-brand] 블록이 담당.
     // BottomSheet — 가이드 명시 top radius 20px (storybook brand-themes.ts 에서 SSOT 회수).
     "bottom-sheet": { radius: 20 },
+    // Snackbar — 캐포비 admin: variant 무시 흰카드(그림자) + 큰 타이틀/아이콘 + 회색 닫기 (Figma 3001:51644).
+    // ① --nds-snackbar-bg 가 variant bg 를 덮고 아이콘 색만 variant 유지. (styles/Snackbar.ts 의 [data-brand] 블록 제거 대체)
+    snackbar: {
+      bg: "var(--semantic-bg-surface-default)",
+      border: "var(--semantic-border-subtle-default)",
+      shadow: "0 2px 6px rgba(0, 0, 0, 0.12)",
+      titleFontSize: 14, // Body2 (base Body3 13)
+      titleLineHeight: 20,
+      iconSize: 24, // base 20
+      closeColor: "var(--semantic-icon-normal-default)",
+      closeOpacity: "1",
+    },
   },
 };

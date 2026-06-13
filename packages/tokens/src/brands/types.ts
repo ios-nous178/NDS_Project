@@ -403,6 +403,21 @@ export interface ComponentOverrides {
    * :root 로 기본값을 emit — 브랜드 :root override 여지. (캐포비는 Toast 자체가 banned.)
    */
   toast?: { bg?: ComponentValue; shadow?: ComponentValue };
+  /**
+   * Snackbar — 캐포비 admin 의 'variant 무시 흰카드' 서피스 + 큰 타이틀/아이콘/회색 닫기.
+   * `--nds-snackbar-bg`(① 서피스 override)가 variant bg(② `--nds-snackbar-variant-bg`)를 덮어
+   * 전 variant 흰카드가 되고, 아이콘 색만 variant 유지. 다른 브랜드는 미설정 → variant 틴트 카드(fallback).
+   */
+  snackbar?: {
+    bg?: ComponentValue;
+    border?: ComponentValue;
+    shadow?: ComponentValue;
+    titleFontSize?: ComponentValue;
+    titleLineHeight?: ComponentValue;
+    iconSize?: ComponentValue;
+    closeColor?: ComponentValue;
+    closeOpacity?: ComponentValue;
+  };
 }
 
 /** 브랜드 테마 전체 정의 */
