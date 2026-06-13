@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   Button,
-  CountdownTimer,
   FormField,
   InputGroup,
   VerificationCodeInput,
@@ -96,15 +95,14 @@ export const InVerificationForm: Story = {
   render: () => {
     const [v, setV] = useState("");
     // 인증행 합성: FormField(라벨/헬퍼) > InputGroup(코드 입력 + 확인 버튼).
-    // 타이머는 코드 입력 우측에 겹쳐 배치 (pattern: cashwalk-biz-verification).
-    const endsAt = useMemo(() => Date.now() + 3 * 60 * 1000, []);
+    // 남은시간 타이머는 앱이 합성하는 인라인 요소(DS 컴포넌트 아님) — 코드 입력 우측에 겹쳐 배치.
     return (
       <Frame>
         <FormField helper="문자로 전송된 인증번호를 입력해주세요">
           <InputGroup align="start">
             <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
               <VerificationCodeInput value={v} onValueChange={setV} autoFocus />
-              <CountdownTimer endsAt={endsAt} expiredText="00:00" style={timerInField} />
+              <span style={timerInField}>03:00</span>
             </div>
             <Button color="primary" size="field">
               확인
@@ -122,7 +120,6 @@ export const CashbizVerification: Story = {
   globals: { brand: "cashwalk-biz" },
   render: () => {
     const [code, setCode] = useState("");
-    const endsAt = useMemo(() => Date.now() + 10 * 60 * 1000, []);
     return (
       <div
         style={{
@@ -137,13 +134,8 @@ export const CashbizVerification: Story = {
         </Button>
         <div style={{ position: "relative" }}>
           <VerificationCodeInput value={code} onValueChange={setCode} length={6} autoFocus />
-          <CountdownTimer
-            endsAt={endsAt}
-            format="mm:ss"
-            tone="brand"
-            expiredText="00:00"
-            style={timerInField}
-          />
+          {/* 남은시간 타이머: 앱이 합성하는 인라인 요소(브랜드색). DS 컴포넌트 아님. */}
+          <span style={{ ...timerInField, color: "#FD9B02" }}>09:59</span>
         </div>
         <Button color="primary" fullWidth>
           다음

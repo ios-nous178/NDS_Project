@@ -1091,25 +1091,6 @@
         "dont": "<!-- 사용자 입력 HTML 을 no-sanitize 로 그대로 — XSS 위험 -->\n<nds-content-viewer no-sanitize html=\"…사용자 HTML…\"></nds-content-viewer>"
       }
     },
-    "CountdownTimer": {
-      "name": "CountdownTimer",
-      "summary": "종료 시각까지 자동 카운트다운. 1초 단위 갱신, 10초 이하 빨강 강조, mm:ss/hh:mm:ss/remaining 포맷. **tone=\"brand\"** 면 진행 중 시간을 브랜드 액센트색(캐포비=오렌지 #FD9B02)으로 — 인증 입력의 타이머처럼 강조할 때. (urgent ≤10s 빨강은 tone 과 무관하게 우선.)",
-      "pitfalls": [
-        "endsAt을 매 렌더 새로 계산하면 카운트가 흔들림 — useMemo로 고정.",
-        "onComplete는 0초 도달 시 1회만. 재시작은 endsAt을 새로 set.",
-        "remaining 포맷은 자연어 — 정확한 카운트가 필요하면 mm:ss/hh:mm:ss.",
-        "기본 색은 텍스트 기본(회색계). 캐포비 본인인증 코드 입력의 오렌지 타이머처럼 강조하려면 tone=\"brand\" (react `tone=\"brand\"` / html `tone=\"brand\"`). 인증 코드 입력 우측에 겹쳐 배치할 때도 컴포넌트 자체 색이 기본 회색이라, 캐포비 오렌지로 보이려면 반드시 tone=\"brand\" 를 줘야 한다."
-      ],
-      "recommended": [
-        "인증 만료: useMemo로 expiry 고정 + onComplete로 재발송",
-        "라이브 시작: format='remaining' (자연어)",
-        "마감 카운트: 임박 시 빨강 강조 자동"
-      ],
-      "examplesHtml": {
-        "do": "<nds-countdown-timer ends-at=\"2026-12-31T23:59:59+09:00\"\n  label=\"이벤트 종료까지\" expired-text=\"이벤트가 종료되었어요\"></nds-countdown-timer>",
-        "dont": "<!-- ends-at 이 과거값이고 expired-text 누락 — '0초' 가 영원히 표시됨 -->\n<nds-countdown-timer ends-at=\"2020-01-01T00:00:00Z\"></nds-countdown-timer>"
-      }
-    },
     "DSHighlight": {
       "name": "DSHighlight",
       "summary": "DS 적용 영역을 시각적으로 강조하는 dev-only 디버깅 컴포넌트. production 빌드에서 자동 제거.",
@@ -3232,9 +3213,9 @@
     },
     "VerificationCodeInput": {
       "name": "VerificationCodeInput",
-      "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(타이머 CountdownTimer 는 코드 입력 우측에 겹쳐 배치, 확인 버튼은 InputGroup 의 같은 행). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input.)",
+      "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(남은시간 타이머는 앱이 합성하는 인라인 요소로 코드 입력 우측에 겹쳐 배치, 확인 버튼은 InputGroup 의 같은 행). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input.)",
       "pitfalls": [
-        "이 컴포넌트는 코드 필드만 — 타이머/재전송/확인 버튼은 FormField(헬퍼) + InputGroup(코드 입력 + 버튼) + CountdownTimer 합성으로 붙인다(내장 타이머 없음).",
+        "이 컴포넌트는 코드 필드만 — 타이머/재전송/확인 버튼은 FormField(헬퍼) + InputGroup(코드 입력 + 버튼) + 인라인 타이머(앱이 합성하는 요소)로 붙인다(내장 타이머 없음). 남은시간 카운트다운은 DS 컴포넌트가 아니라 앱 합성 패턴이다.",
         "value는 숫자 string. length만큼 채워지면 onComplete(react)/code-complete(html) 발화 — 그 안에서 자동 제출하면 UX 좋음.",
         "입력은 숫자만 허용(영문/특수문자 자동 필터). 영숫자 OTP가 필요하면 maxLength 늘린 일반 Input 검토.",
         "autoComplete=\"one-time-code\" 가 단일 input 에 적용 — iOS/Android SMS 자동 추출 동작.",
@@ -3242,12 +3223,12 @@
         "**자리별 박스(6칸 세그먼트) 는 모바일/네이티브 앱 패턴** — 웹/데스크톱에서는 이 단일 필드가 표준이다(붙여넣기·자동완성·접근성이 자연 동작). 네이티브 앱의 6칸 OTP 화면을 웹 목업으로 그대로 옮겨 자리별 박스를 raw <input> 으로 만들지 말 것."
       ],
       "recommended": [
-        "회원가입/로그인 SMS 인증: FormField(helper) > InputGroup(align=start) 에 VerificationCodeInput length=6 autoFocus + 확인 Button, 타이머(CountdownTimer)는 코드 입력 우측에 겹쳐 배치 · onComplete 로 자동 검증.",
+        "회원가입/로그인 SMS 인증: FormField(helper) > InputGroup(align=start) 에 VerificationCodeInput length=6 autoFocus + 확인 Button, 타이머(앱 합성 인라인 요소)는 코드 입력 우측에 겹쳐 배치 · onComplete 로 자동 검증.",
         "재전송: 타이머 만료 시 InputGroup 의 버튼을 '재전송'으로 토글 → 클릭에서 재발송.",
         "에러 시 error prop + Toast. 자동 clear 는 호출부에서 결정(전체 clear가 보통 안전)."
       ],
       "examplesHtml": {
-        "do": "<!-- 레시피A · 인라인 확인 버튼형: 코드 입력 + 확인 버튼을 FormField > InputGroup 으로, 타이머는 코드 입력 우측에 겹쳐 배치.\n     버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color=\"neutral\"(secondary 아님). -->\n<nds-form-field helper=\"문자로 전송된 인증번호를 입력해주세요\">\n  <nds-input-group align=\"start\">\n    <nds-verification-code-input length=\"6\" auto-focus></nds-verification-code-input>\n    <nds-button color=\"neutral\" size=\"field\">확인</nds-button>\n  </nds-input-group>\n</nds-form-field>\n\n<!-- 레시피B · 캐포비 본인인증형(pattern:cashwalk-biz-verification): 전송/재전송은 별도 full-width 검정 버튼,\n     코드 입력엔 인라인 버튼 없이 타이머(CountdownTimer tone=\"brand\")만, 확정은 하단 [다음](primary full-width). -->\n<nds-button color=\"neutral\" full-width>인증번호 재전송</nds-button>\n<nds-verification-code-input length=\"6\" auto-focus></nds-verification-code-input>\n<nds-countdown-timer ends-at=\"2026-06-08T12:03:00Z\" format=\"mm:ss\" tone=\"brand\"></nds-countdown-timer>\n<!-- …다른 폼 필드… -->\n<nds-button color=\"primary\" full-width>다음</nds-button>\n<script>\n  document.querySelector(\"nds-verification-code-input\").addEventListener(\"code-complete\", e => verify(e.detail.value));\n</script>",
+        "do": "<!-- 레시피A · 인라인 확인 버튼형: 코드 입력 + 확인 버튼을 FormField > InputGroup 으로, 타이머는 코드 입력 우측에 겹쳐 배치.\n     버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color=\"neutral\"(secondary 아님). -->\n<nds-form-field helper=\"문자로 전송된 인증번호를 입력해주세요\">\n  <nds-input-group align=\"start\">\n    <nds-verification-code-input length=\"6\" auto-focus></nds-verification-code-input>\n    <nds-button color=\"neutral\" size=\"field\">확인</nds-button>\n  </nds-input-group>\n</nds-form-field>\n\n<!-- 레시피B · 캐포비 본인인증형(pattern:cashwalk-biz-verification): 전송/재전송은 별도 full-width 검정 버튼,\n     코드 입력엔 인라인 버튼 없이 타이머(앱 합성 인라인 요소, 브랜드색 #FD9B02)만, 확정은 하단 [다음](primary full-width). -->\n<nds-button color=\"neutral\" full-width>인증번호 재전송</nds-button>\n<nds-verification-code-input length=\"6\" auto-focus></nds-verification-code-input>\n<!-- 남은시간 타이머는 앱이 합성하는 인라인 요소(브랜드색). DS 컴포넌트 아님 — 앱에서 setInterval 로 갱신. -->\n<span style=\"color:#FD9B02;font-variant-numeric:tabular-nums;\">03:00</span>\n<!-- …다른 폼 필드… -->\n<nds-button color=\"primary\" full-width>다음</nds-button>\n<script>\n  document.querySelector(\"nds-verification-code-input\").addEventListener(\"code-complete\", e => verify(e.detail.value));\n</script>",
         "dont": "<!-- 자리별 박스를 raw <input> 6개로 흉내 — 붙여넣기/자동완성/접근성 손실. 단일 nds-verification-code-input 사용 -->\n<input maxlength=\"1\"/><input maxlength=\"1\"/>…"
       }
     },
@@ -4139,7 +4120,7 @@
         "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
         "**03 Primary CTA (단일 액션 화면)**: 로그인·찾기처럼 액션이 **하나뿐**인 화면은 Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득) — `<nds-button full-width>`. 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개. ⚠️ **모달 단일버튼(우측 hug)과 혼동 금지** — 단일 액션 온보딩 CTA 는 full-width 가 하드 계약(validator `onboarding-cta-not-fullwidth` error). 모달 단일버튼은 반대로 hug 우측정렬. (`pattern:cashwalk-biz-button`)",
         "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼/Stepper 존재를 감지해 full-width 강제를 면제). **제출(다음) Primary 버튼도 카드 안에 넣지 말 것** — 카드 안 Primary solid 는 `onboarding-multistep-cta-inside-card` error(이전버튼을 텍스트 링크로 두고 제출을 카드 안 full-width 로 박는 회귀 차단). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — `Stepper` 가 있으면 validator 가 멀티스텝으로 인식한다.",
-        "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = VerificationCodeInput + 우측 인라인 타이머(CountdownTimer)**(인라인 확인 버튼 없음). 타이머는 `CountdownTimer tone=\"brand\"`(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
+        "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = VerificationCodeInput + 우측 인라인 타이머**(인라인 확인 버튼 없음). 남은시간 타이머는 DS 컴포넌트가 아니라 앱이 합성하는 인라인 요소(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
         "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
         "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",
         "**Validate**: ① 멀티스텝(이전/다음·제출) → 상단 진행 `Stepper`(component:Stepper) + 카드 아래 분리 Footer Nav(위 03b). ② Form 필드 > 5 → `pattern:cashwalk-biz-page-form` 전환 검토. ③ 외부 인증(SMS/Email) 필요 → **본인 인증 Section(위 03c)** 추가. ④ 이용약관 동의 필요 → Form 위에 CheckboxGroup 추가."

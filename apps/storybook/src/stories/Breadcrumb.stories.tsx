@@ -49,6 +49,6 @@ export const CustomSeparator: Story = {
       { label: "카테고리", href: "/category" },
       { label: "상세" },
     ],
-    separator: "/",
+    separator: ">",
   },
 };

@@ -528,6 +528,7 @@ export const ShapePillMatrix: Story = {
 
 export const ShapeComparison: Story = {
   name: "Variant/Default vs Pill",
+  tags: ["gallery"],
   parameters: {
     docs: {
       description: {

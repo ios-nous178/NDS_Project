@@ -35,10 +35,10 @@ export const AllStates: Story = {
     <div
       style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
     >
-      <Radio checked={false} onCheckedChange={() => undefined} label="Default (Unselected)" />
-      <Radio checked onCheckedChange={() => undefined} label="Selected" />
-      <Radio checked={false} disabled label="Disabled (Unselected)" />
-      <Radio checked disabled label="Disabled (Selected)" />
+      <Radio checked onCheckedChange={() => undefined} label="이메일로 받기" />
+      <Radio checked={false} onCheckedChange={() => undefined} label="SMS로 받기" />
+      <Radio checked disabled label="알림 끄기" />
+      <Radio checked={false} disabled label="음성 안내" />
     </div>
   ),
 };

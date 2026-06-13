@@ -21,6 +21,7 @@ function CommentLike({ count = 0, size = "sm" }: { count?: number; size?: "sm" |
 }
 
 export const Playground: Story = {
+  tags: ["gallery"],
   render: () => (
     <div style={{ width: 480 }}>
       <CommentItem
@@ -77,7 +78,6 @@ export const WithBadgeAndReplies: Story = {
 };
 
 export const SimpleList: Story = {
-  tags: ["gallery"],
   name: "Recipe/간단 리스트",
   render: () => (
     <div style={{ width: 480, display: "flex", flexDirection: "column" }}>

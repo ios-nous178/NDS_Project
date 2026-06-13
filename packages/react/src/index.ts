@@ -89,7 +89,6 @@ export * from "./QuickActionGrid.js";
 export * from "./QuickMenu.js";
 export * from "./TagInput.js";
 export * from "./AvatarGroup.js";
-export * from "./CountdownTimer.js";
 export * from "./TimePicker.js";
 export * from "./AddressPicker.js";
 export * from "./CommentItem.js";

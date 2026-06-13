@@ -61,12 +61,8 @@ function CounterExample() {
   const max = 200;
   return (
     <div style={{ width: 480 }}>
-      <FormField
-        label="자기 소개"
-        optional
-        helper="상담사에게 전달할 내용을 적어주세요"
-        counter={`${text.length} / ${max}`}
-      >
+      <FormField label="자기 소개" optional helper="상담사에게 전달할 내용을 적어주세요">
+        {/* 카운터는 Textarea 자체 기능(maxLength)만 사용 — FormField counter 중복 제거 */}
         <Textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={max} rows={4} />
       </FormField>
     </div>

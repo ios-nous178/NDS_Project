@@ -25,7 +25,7 @@ export const Activity: Story = {
   tags: ["gallery"],
   name: "Variant/이벤트 로그 (activity)",
   render: () => (
-    <div style={{ maxWidth: 360 }}>
+    <div style={{ maxWidth: 480, whiteSpace: "nowrap" }}>
       <Timeline
         mode="activity"
         items={[

@@ -113,7 +113,7 @@ test("nds-verification-code-input 을 쓰면 위반 아님", () => {
     <nds-brand-logo brand="cashwalk-biz"></nds-brand-logo>
     <nds-form-field>
       <nds-verification-code-input length="6"></nds-verification-code-input>
-      <nds-countdown-timer></nds-countdown-timer>
+      <span class="timer">03:00</span>
     </nds-form-field>`);
   assert.equal(has(html, "verification-manual-assembly"), undefined);
 });

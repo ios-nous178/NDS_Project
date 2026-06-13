@@ -20,7 +20,6 @@ type Story = StoryObj<typeof Skeleton>;
 export const Playground: Story = {};
 
 export const Rectangular: Story = {
-  tags: ["gallery"],
   name: "Variant/Rectangular",
   args: { variant: "rectangular", width: 300, height: 160 },
 };

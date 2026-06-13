@@ -49,7 +49,8 @@ export interface VerificationCodeInputProps extends Omit<
  *   <InputGroup align="start">
  *     <div style={{ position: "relative", flex: 1 }}>
  *       <VerificationCodeInput value={code} onValueChange={setCode} onComplete={verify} />
- *       <CountdownTimer endsAt={endsAt} style={timerInField} />
+ *       // 남은시간 타이머는 앱이 합성하는 인라인 요소 (DS 컴포넌트 아님)
+ *       <span style={timerInField}>{remaining}</span>
  *     </div>
  *     <Button color="secondary" size="field">확인</Button>
  *   </InputGroup>

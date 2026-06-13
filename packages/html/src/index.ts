@@ -178,8 +178,6 @@ export {
 
 export { NdsChart } from "./components/nds-chart.js";
 
-export { NdsCountdownTimer } from "./components/nds-countdown-timer.js";
-export type { CountdownFormat } from "./components/nds-countdown-timer.js";
 
 export { NdsExpandableText } from "./components/nds-expandable-text.js";
 

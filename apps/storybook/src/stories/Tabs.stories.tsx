@@ -111,6 +111,7 @@ function PlatformLabel({ text }: { text: string }) {
 function GalleryPreviewDemo() {
   const [lineKey, setLineKey] = useState("home");
   const [chipKey, setChipKey] = useState("all");
+  const [segmentKey, setSegmentKey] = useState("week");
   return (
     <div
       style={{
@@ -143,6 +144,17 @@ function GalleryPreviewDemo() {
           { key: "all", title: "전체" },
           { key: "recent", title: "최근" },
           { key: "saved", title: "저장됨" },
+        ]}
+      />
+      <Tabs
+        variant="segment"
+        size="mobile"
+        activeKey={segmentKey}
+        onTabChange={setSegmentKey}
+        items={[
+          { key: "day", title: "일간" },
+          { key: "week", title: "주간" },
+          { key: "month", title: "월간" },
         ]}
       />
     </div>

@@ -30,11 +30,13 @@ export const selectStyles = `
   :where(.${SELECT_ROOT_CLASS}) {
     display: flex;
     flex-direction: column;
-    gap: var(--nds-select-label-gap, var(--semantic-gap-comfortable));
+    gap: var(--nds-select-label-gap, ${spacing[8]}px);
     width: var(--nds-select-width, 100%);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
+  /* label↔input 12(=gap 8 + 4), input↔helper 8 — Input 과 동일 (헬퍼 간격 과다 보정) */
+  :where(.${SELECT_LABEL_CLASS}) { margin-bottom: var(--semantic-gap-tight); }
 
   :where(.${SELECT_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;

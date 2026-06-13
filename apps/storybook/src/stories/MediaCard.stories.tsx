@@ -76,7 +76,12 @@ export const WithImageOverlay: Story = {
   render: () => (
     <div style={{ width: 280 }}>
       <MediaCard
-        image={img("media-overlay")}
+        image={
+          <img
+            src="https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=320&h=240&fit=crop"
+            alt=""
+          />
+        }
         imageOverlay="999+"
         title="비빔밥 모음전"
         body="아침 다이어트 식단으로 자주 먹어요. 잡내가 거의 없고 담백해서 부담 없이 먹기 좋아요."
