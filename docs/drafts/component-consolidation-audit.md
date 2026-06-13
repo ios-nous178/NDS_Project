@@ -102,3 +102,46 @@ deprecate 가 확정되면 노드 확보 대신 baseline 에서 사유를 "depre
 
 컴포넌트 prop 표면의 deprecated 정리(Card 의 subtitle/meta/footer/footerNoBorder 등 prop-level
 `@deprecated` 4건)는 통합과 별개의 청소 항목으로, major 전에 일괄 제거 라운드를 잡으면 된다.
+
+---
+
+## 7. 실행 기록 (2026-06-13) — 카드류 제외, 나머지 통합
+
+사용자 지시: **카드 5종은 유지**, 나머지는 통합 진행.
+
+### 7.1 Calendar ↔ DateRangePicker — 그리드 코어 통일 (구현 완료)
+
+2절의 원래 제안("Calendar 에 `mode="range"` 추가 → DateRangePicker 를 Calendar 합성으로 재구현")은
+**코드를 열어보니 부적합**으로 판명났다. 실제 구조:
+
+- `DateRangePicker`(541줄)·`DatePicker`(412줄)는 이미 **공유 엔진 `internal/dateCore.ts`**
+  (`buildMonthGrid`·`isSameDay`·`isBetweenDays` 등, Date 기반)을 쓰는 popover·듀얼팬·range·키보드
+  네비·프리셋 컴포넌트.
+- `Calendar`(269줄)만 **자체 `buildGrid`/`toIsoDate`(문자열 기반)** 를 따로 구현한 인라인 단일선택 뷰.
+
+즉 진짜 중복은 "Calendar 가 그리드 로직을 따로 구현"한 것이고, 옳은 해소는 DRP 를 Calendar 로
+욱여넣는 게 아니라(아키텍처 불일치 — 인라인 단일선택 ↔ popover range, DRP 의 검증된 a11y/키보드를
+재작성하는 큰 리스크) **Calendar 를 공유 `dateCore` 위로 올리는 것**이다.
+
+실행:
+
+- `dateCore.buildMonthGrid(viewDate, weekStartsOn = 0)` 로 일반화 — 주 시작 요일 파라미터 추가
+  (기본 0 = 일요일, 기존 1-인자 호출부 DatePicker/DRP 와 호환).
+- `Calendar` 를 `buildMonthGrid` + `formatYMD` 로 이행 — 자체 `buildGrid`/`toIsoDate`/`pad2`/`DayCell`
+  제거(269→232줄, 그리드 중복 45줄 삭제). **공개 API(value/onChange ISO·markers·weekStartsOn·month)
+  무변경**.
+- 검증: Calendar/DatePicker/DateRangePicker 스토리 테스트 14건 통과 · 그리드 출력 동등성 실행 검증
+  (weekStartsOn 0·1 × 윤년/연말 경계) · mirror parity·typecheck 통과.
+
+결과: 세 날짜 컴포넌트가 **단일 월-그리드 엔진**을 공유한다 — 그리드·요일·outside 규칙이 한 곳.
+full 컴포넌트 병합(DRP→Calendar)은 아키텍처상 비권장으로 종결.
+
+### 7.2 TextButton ↔ Button — 보류 유지 (6.1 재확인)
+
+TextButton 은 자체 Figma 노드(171:8550/171:8538)·자체 가이드를 가진 독립 디자인 엔티티.
+코드만 합치면 figma↔code 매핑이 깨진다 — 디자인 쪽에서 Button 세트로 합칠 결정이 설 때만 실행.
+이번 라운드 통합 대상 아님(6.1 결론 유지).
+
+### 7.3 가이드 공백 (FormSection · SelectionButton) — 별도 트랙에서 해소
+
+3절의 가이드 없는 2건은 통합이 아니라 문서 공백 → guides-src 작성으로 처리.

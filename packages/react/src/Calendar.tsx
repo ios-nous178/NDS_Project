@@ -1,9 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
 
+import { buildMonthGrid, formatYMD } from "./internal/dateCore.js";
+
 /*
  * Calendar 는 마커/도트를 가진 독립 인라인 월 뷰다. DatePicker 와 grid 가 비슷하지만
  * 별개 컴포넌트로 유지한다(의도된 분리 — DatePicker.tsx 상단 주석 참고). 날짜를 폼에서
  * 고르는 용도는 Calendar 가 아니라 DatePicker 를 쓴다.
+ *
+ * 월-그리드·ISO 포맷은 자체 구현하지 않고 공유 엔진(internal/dateCore)을 쓴다 —
+ * DatePicker/DateRangePicker 와 동일한 buildMonthGrid 를 공유해 그리드/요일 규칙이 한 곳에 모인다.
  */
 
 /* ─── Constants ─── */
@@ -55,11 +60,6 @@ export interface CalendarProps extends Omit<React.HTMLAttributes<HTMLDivElement>
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
 
-const pad2 = (n: number) => (n < 10 ? `0${n}` : `${n}`);
-
-const toIsoDate = (year: number, month: number, day: number) =>
-  `${year}-${pad2(month + 1)}-${pad2(day)}`;
-
 const parseMonth = (input: string | Date | undefined): { year: number; month: number } => {
   if (input instanceof Date) {
     return { year: input.getFullYear(), month: input.getMonth() };
@@ -70,45 +70,6 @@ const parseMonth = (input: string | Date | undefined): { year: number; month: nu
   }
   const now = new Date();
   return { year: now.getFullYear(), month: now.getMonth() };
-};
-
-interface DayCell {
-  iso: string;
-  day: number;
-  outside: boolean;
-}
-
-const buildGrid = (year: number, month: number, weekStartsOn: 0 | 1): DayCell[] => {
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const offset = (firstDay - weekStartsOn + 7) % 7;
-  const cells: DayCell[] = [];
-
-  // 이전 달 채우기
-  for (let i = offset - 1; i >= 0; i--) {
-    const d = new Date(year, month, -i);
-    cells.push({
-      iso: toIsoDate(d.getFullYear(), d.getMonth(), d.getDate()),
-      day: d.getDate(),
-      outside: true,
-    });
-  }
-  // 이번 달
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({ iso: toIsoDate(year, month, d), day: d, outside: false });
-  }
-  // 다음 달 채우기 (총 42칸 = 6주)
-  while (cells.length % 7 !== 0 || cells.length < 42) {
-    const idx = cells.length - offset - daysInMonth + 1;
-    const d = new Date(year, month + 1, idx);
-    cells.push({
-      iso: toIsoDate(d.getFullYear(), d.getMonth(), d.getDate()),
-      day: d.getDate(),
-      outside: true,
-    });
-    if (cells.length >= 42) break;
-  }
-  return cells;
 };
 
 /* ─── Component ─── */
@@ -134,12 +95,12 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
     const isControlled = month !== undefined;
     const { year, month: m } = isControlled ? initial : internal;
 
-    const todayIso = useMemo(() => {
-      const t = new Date();
-      return toIsoDate(t.getFullYear(), t.getMonth(), t.getDate());
-    }, []);
+    const todayIso = useMemo(() => formatYMD(new Date()), []);
 
-    const cells = useMemo(() => buildGrid(year, m, weekStartsOn), [year, m, weekStartsOn]);
+    const cells = useMemo(
+      () => buildMonthGrid(new Date(year, m, 1), weekStartsOn),
+      [year, m, weekStartsOn],
+    );
 
     const markerMap = useMemo(() => {
       const map = new Map<string, string | undefined>();
@@ -150,7 +111,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
     const setMonth = useCallback(
       (delta: number) => {
         const next = new Date(year, m + delta, 1);
-        const ym = `${next.getFullYear()}-${pad2(next.getMonth() + 1)}`;
+        const ym = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`;
         if (!isControlled) {
           setInternal({ year: next.getFullYear(), month: next.getMonth() });
         }
@@ -224,28 +185,30 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
             ))}
           </div>
           <div role="rowgroup" className={CL_DAYS_CLASS}>
-            {cells.map((c) => {
-              const disabled = isDateDisabled?.(c.iso) ?? false;
-              const selected = value === c.iso;
-              const isToday = c.iso === todayIso;
-              const markerColor = markerMap.get(c.iso);
-              const hasMarker = markerMap.has(c.iso);
+            {cells.map((cellDate) => {
+              const iso = formatYMD(cellDate);
+              const outside = cellDate.getMonth() !== m;
+              const disabled = isDateDisabled?.(iso) ?? false;
+              const selected = value === iso;
+              const isToday = iso === todayIso;
+              const markerColor = markerMap.get(iso);
+              const hasMarker = markerMap.has(iso);
               return (
                 <button
-                  key={c.iso}
+                  key={iso}
                   type="button"
                   role="gridcell"
                   data-slot="day"
-                  data-outside={c.outside ? "true" : "false"}
+                  data-outside={outside ? "true" : "false"}
                   data-today={isToday ? "true" : "false"}
                   data-selected={selected ? "true" : "false"}
                   className={CL_DAY_CLASS}
                   disabled={disabled}
                   aria-pressed={selected}
-                  aria-label={c.iso}
-                  onClick={() => onChange?.(c.iso)}
+                  aria-label={iso}
+                  onClick={() => onChange?.(iso)}
                 >
-                  <span className={CL_DAY_LABEL_CLASS}>{c.day}</span>
+                  <span className={CL_DAY_LABEL_CLASS}>{cellDate.getDate()}</span>
                   {hasMarker && (
                     <span
                       className={CL_DAY_DOT_CLASS}

@@ -43,11 +43,16 @@ export const formatYMD = (d: Date) =>
 
 export const toDateKey = formatYMD;
 
-export function buildMonthGrid(viewDate: Date): Date[] {
+/**
+ * 한 달치 6주(42칸) 그리드를 만든다. 모든 날짜 컴포넌트(Calendar/DatePicker/DateRangePicker)가
+ * 공유하는 단일 월-그리드 엔진. `weekStartsOn` 으로 주 시작 요일을 정한다(0=일, 1=월).
+ * 기본값 0 은 기존 호출부(일요일 시작)와 호환된다.
+ */
+export function buildMonthGrid(viewDate: Date, weekStartsOn: 0 | 1 = 0): Date[] {
   const first = startOfMonth(viewDate);
-  const startWeekday = first.getDay();
+  const offset = (first.getDay() - weekStartsOn + 7) % 7;
   const gridStart = new Date(first);
-  gridStart.setDate(first.getDate() - startWeekday);
+  gridStart.setDate(first.getDate() - offset);
   return Array.from({ length: 42 }, (_, i) => {
     const d = new Date(gridStart);
     d.setDate(gridStart.getDate() + i);

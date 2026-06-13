@@ -1536,6 +1536,26 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label=\"이름\" htmlFor=\"x\"><nds-input id=\"x\"></nds-input></nds-form-field>\n<!-- label-position=\"left\" 인데 default size — 라벨이 input 중앙과 안 맞음 -->\n<nds-form-field label=\"Label\" label-position=\"left\"><nds-input></nds-input></nds-form-field>\n<!-- admin 인데 부모에 gap 박음 — 이중 간격 -->\n<div style=\"display:flex;flex-direction:column;gap:24px\">\n  <nds-form-field density=\"admin\">...</nds-form-field>\n  <nds-form-field density=\"admin\">...</nds-form-field>\n</div>\n<!-- 수기 flex 로 row 다중 input — InputGroup 써야 함 -->\n<nds-form-field label=\"기간\"><div style=\"display:flex;gap:12px\"><nds-input/><nds-input/></div></nds-form-field>"
     }
   },
+  "FormSection": {
+    "name": "FormSection",
+    "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3466-17405",
+    "summary": "제목(+옵션 설명) + 보더 카드로 여러 `FormField` 를 묶는 폼 그룹 컨테이너. 캐시워크 for Business 어드민 폼 표준 — 카드 좌우 패딩은 FormSection 이, 행 간 세로 리듬(py-24)은 `FormField density=\"admin\"` 이 만든다.",
+    "pitfalls": [
+      "**`FormField density=\"admin\"` 과 짝으로 쓴다** — 카드 좌우 패딩은 FormSection, 행 세로 리듬은 admin FormField 담당. 일반(`density` 미지정) FormField 를 넣으면 어드민 카드의 세로 리듬이 깨진다.",
+      "캐포비 어드민 전용 톤 — 일반 서비스(Trost/Geniet/NudgeEAP/Runmile) 모바일·웹 폼에 쓰면 보더 카드가 과하다. 그쪽은 FormField 를 바로 쌓는다.",
+      "**색·radius 를 hex 로 박지 말 것** — 흰 배경·1px subtle 보더·radius 는 `data-brand=\"cashwalk-biz\"` cascade 로 자동 매핑된다.",
+      "`title` 은 섹션 머리글(Headline3 24 Bold) — **페이지 제목으로 쓰지 말 것**. 페이지 제목은 PageHeader.",
+      "카드 한 장 = 의미상 한 그룹(기본 정보 / 결제 정보 …). 관련 없는 필드를 한 FormSection 에 몰지 말고 섹션을 나눈다."
+    ],
+    "recommended": [
+      "캐포비 어드민 등록/수정 폼: 의미 그룹마다 FormSection 한 장, 안에 admin FormField 행을 쌓기",
+      "그룹 머리말이 필요하면 `description` 으로 보조 설명 (1줄 권장)"
+    ],
+    "examplesHtml": {
+      "do": "<nds-form-section title=\"기본 정보\" description=\"회원에게 표시되는 정보입니다\">\n  <nds-form-field density=\"admin\" label=\"이름\"><input slot=\"control\" /></nds-form-field>\n  <nds-form-field density=\"admin\" label=\"연락처\"><input slot=\"control\" /></nds-form-field>\n</nds-form-section>",
+      "dont": "<!-- 일반 FormField 를 admin 카드에 — 세로 리듬(py-24)이 안 맞음. density=\"admin\" 사용 -->\n<nds-form-section title=\"기본 정보\">\n  <nds-form-field label=\"이름\"><input slot=\"control\" /></nds-form-field>\n</nds-form-section>"
+    }
+  },
   "GenietAppBar": {
     "name": "GenietAppBar",
     "_htmlStatus": "no-html-equivalent",
@@ -2838,6 +2858,28 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "examplesHtml": {
       "do": "<nds-selected-items-panel panel-title=\"선택한 항목\" count=\"2\">\n  <nds-selected-item-row>카테고리 &gt; 멤버 A</nds-selected-item-row>\n  <nds-selected-item-row>카테고리 &gt; 멤버 B</nds-selected-item-row>\n</nds-selected-items-panel>\n<script>\n  el.addEventListener(\"nds-selected-items-add\", openPicker);\n  el.addEventListener(\"nds-selected-items-clear\", clearAll);\n  el.addEventListener(\"nds-selected-item-remove\", e => e.target.remove());\n  el.addEventListener(\"nds-region-remove\", e => e.target.remove());\n</script>",
       "dont": "<!-- count 를 직접 헤더 텍스트에 박지 말 것 — count 속성이 브랜드색 강조를 담당 -->\n<nds-selected-items-panel panel-title=\"선택한 항목 2개\"></nds-selected-items-panel>"
+    }
+  },
+  "SelectionButton": {
+    "name": "SelectionButton",
+    "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
+    "summary": "단일 선택 버튼 한 개 (브랜드색 아웃라인 + selected 시 brand-subtle 채움). 보통 `SelectionButtonGroup` 으로 묶지만, 토글 1개·커스텀 레이아웃이면 단독으로 쓴다. 그룹과 동일한 `nds-selection-button-group__item` 비주얼 SSOT 를 공유 — 5개 브랜드 시멘틱 cascade 자동 대응.",
+    "pitfalls": [
+      "**2개 이상을 손으로 나열하면 `SelectionButtonGroup` 을 쓸 것** — Group 은 `value`/`options` 단일 진실, radiogroup 롤, 화살표 키 네비, 등폭 자동 정렬을 제공한다. SelectionButton 을 여러 개 직접 깔면 이 중 아무것도 안 붙고 `role=\"radio\"` 만 컨텍스트 없이 남는다.",
+      "단독 SelectionButton 은 의미상 **토글 1개** — 상호배타 옵션 묶음이 아니다. 묶음이면 Group.",
+      "선택은 외부 제어 — `selected` 로 상태를 받고 `onClick`(HTML 은 네이티브 click)으로 변경 처리. 컴포넌트 내부에 선택 상태가 없다.",
+      "**선택색을 hex 로 박지 말 것** — selected 는 `--semantic-bg-brand-subtle` / `--semantic-border-brand-default` cascade 로 5개 브랜드 자동 대응.",
+      "필터/태그 토글과 혼동 금지 — 그건 [[Chip]](선택표시 = 브랜드 채움). SelectionButton 은 폼 안 단일선택 옵션이다.",
+      "그룹 안에서는 등폭(100%), 단독일 때는 콘텐츠 hug — width 를 손으로 박지 말 것."
+    ],
+    "recommended": [
+      "폼 안 상호배타 옵션 2~3개 → `SelectionButtonGroup`(이 버튼이 그 item)",
+      "단독 토글 1개·커스텀 그리드 배치 → SelectionButton 직접 사용",
+      "라벨+설명+아이콘이 필요한 카드형 선택 → SelectionCard"
+    ],
+    "examplesHtml": {
+      "do": "<!-- 단독 토글 1개 -->\n<nds-selection-button selected>알림 받기</nds-selection-button>\n<script>el.addEventListener(\"click\", () => toggle());</script>",
+      "dont": "<!-- 상호배타 옵션을 SelectionButton 으로 손수 나열 — role/키보드/등폭 없음. Group 을 쓸 것 -->\n<nds-selection-button>항상</nds-selection-button>\n<nds-selection-button>특정 시간만</nds-selection-button>\n<nds-selection-button>특정 요일만</nds-selection-button>"
     }
   },
   "SelectionButtonGroup": {
