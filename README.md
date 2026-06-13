@@ -1,6 +1,8 @@
 # Nudge Design System
 
-트로스트 / 지니어트 / NudgeEAP의 디자인 토큰, React 컴포넌트, 아이콘, Storybook, 문서를 관리하는 모노레포입니다.
+5개 브랜드(**Trost · Geniet · NudgeEAP · CashwalkBiz · Runmile**)가 공유하는 디자인 토큰, React 컴포넌트, 바닐라 웹컴포넌트, 아이콘, Storybook, 문서를 관리하는 모노레포입니다.
+
+> **처음 오셨나요?** → [ONBOARDING.md](ONBOARDING.md) (역할별 시작) · [ARCHITECTURE.md](ARCHITECTURE.md) (구조·패키지 그래프) · [GLOSSARY.md](GLOSSARY.md) (용어) · [CONTRIBUTING.md](CONTRIBUTING.md) (기여 플로우) · [GOVERNANCE.md](GOVERNANCE.md) (운영·확장·개선 규칙)
 
 ## 배포 사이트
 
@@ -12,12 +14,20 @@
 
 ## Packages
 
-| 패키지                          | 설명                                                                     |
-| ------------------------------- | ------------------------------------------------------------------------ |
-| `@nudge-design/tokens`          | 색상, 타이포그래피, spacing, radius 토큰. TS export + CSS 변수 파일 생성 |
-| `@nudge-design/react`           | React 컴포넌트 120종 (Button, Card, Modal, Tabs, Toast, Avatar 등)       |
-| `@nudge-design/icons`           | Figma 기준 84종 아이콘. `currentColor` 기반, `size`/`color` prop 지원    |
-| `@nudge-design/tailwind-preset` | 토큰 기반 Tailwind theme preset                                          |
+각 패키지의 상세는 해당 `README.md`, 의존 그래프·빌드 순서는 [ARCHITECTURE.md](ARCHITECTURE.md) 참고.
+
+| 패키지 | 배포 | 설명 |
+| --- | --- | --- |
+| [`@nudge-design/tokens`](packages/tokens) | npm | 색·타이포·spacing·radius·motion 토큰 (TS export + CSS 변수) |
+| [`@nudge-design/icons`](packages/icons) | npm | Figma 기준 SVG 아이콘. `currentColor` + `size`/`color` prop |
+| [`@nudge-design/assets`](packages/assets) | npm | 브랜드 로고 등 자산 SSOT (브랜드 스왑 인터페이스) |
+| [`@nudge-design/styles`](packages/styles) | npm | react·html 공용 CSS 번들 (토큰 참조) |
+| [`@nudge-design/react`](packages/react) | npm | React 컴포넌트 (~111종) — Props 의 SSOT |
+| [`@nudge-design/html`](packages/html) | npm | 바닐라 웹컴포넌트(`nds-*`) — react 미러 |
+| [`@nudge-design/tailwind-preset`](packages/tailwind-preset) | npm | 토큰 기반 Tailwind theme preset |
+| [`@nudge-design/mcp`](packages/mcp) | MCPB | 외부 소비자에게 가이드·게이트를 강제하는 SSOT 서버 |
+| [`@nudge-design/mockup-core`](packages/mockup-core) | 내부 | 목업 빌드/검증 코어 (MCP·데스크탑 공용) |
+| [`@nudge-design/catalog`](packages/catalog) | 내부 | docs·Storybook 공용 카탈로그 UI |
 
 ## 프로젝트 구조
 
@@ -27,11 +37,14 @@ flowchart TB
     direction LR
     TK["@nudge-design/tokens"]
     IC["@nudge-design/icons"]
+    AS["@nudge-design/assets"]
+    ST["@nudge-design/styles"]
     RC["@nudge-design/react"]
+    HT["@nudge-design/html"]
     TW["@nudge-design/tailwind-preset"]
   end
 
-  BR["brands/*<br/>CSS 변수 오버라이드<br/>(trost · geniet · nudge-eap)"]
+  BR["brands/*<br/>토큰 값 오버라이드<br/>(trost · geniet · nudge-eap · cashwalk-biz · runmile)"]
 
   subgraph APPS["apps/ (내부 검수 · 배포)"]
     direction LR
@@ -43,35 +56,43 @@ flowchart TB
   MCP["@nudge-design/mcp<br/>외부 소비자 SSOT<br/>(가이드 · 게이트)"]
   EXT["외부 mockup / 프로덕트 앱"]
 
-  TK --> RC
-  IC --> RC
+  TK --> ST
   TK --> TW
+  TK & IC & AS & ST --> RC
+  TK & IC & AS & ST --> HT
 
-  TK & RC & IC & TW --> SB
-  TK & RC & IC & TW --> DC
+  RC & HT & TW --> SB
+  RC & HT & TW --> DC
   BR --> SB
   BR --> DC
   SB & DC --> WS
 
   TK & RC & IC --> MCP
 
-  TK & RC & IC & TW & BR --> EXT
+  RC & HT & IC & TW & BR --> EXT
   MCP -->|CLAUDE.md 강제| EXT
 ```
 
-> 화살표는 import / 제공 방향. `brands/*`는 CSS 변수 오버라이드 레이어로 같은 시멘틱 변수에 다른 값을 주입하고, `@nudge-design/mcp`는 토큰·컴포넌트·아이콘 카탈로그 + 사용 규칙을 외부 소비자에게 강제하는 SSOT 입니다.
+> 화살표는 import / 제공 방향. `brands/*`는 토큰 값 오버라이드 레이어로 같은 시멘틱 변수에 다른 값을 주입하고, `@nudge-design/mcp`는 토큰·컴포넌트·아이콘 카탈로그 + 사용 규칙을 외부 소비자에게 강제하는 SSOT 입니다. **전체 10개 패키지 그래프·빌드 순서는 [ARCHITECTURE.md](ARCHITECTURE.md).**
 
 ```text
 NudgeEAPDesignSystem
 ├─ apps
 │  ├─ docs              # Docusaurus 문서 사이트
 │  ├─ storybook         # Storybook (컴포넌트 + 브랜드 목업)
-│  └─ web-server        # 배포용 서버 (랜딩 + docs + storybook)
+│  ├─ web-server        # 배포용 서버 (랜딩 + docs + storybook)
+│  └─ desktop           # 데스크탑 카탈로그
 ├─ packages
-│  ├─ tokens            # 디자인 토큰
-│  ├─ react             # React 컴포넌트
-│  ├─ icons             # 아이콘
-│  └─ tailwind-preset   # Tailwind preset
+│  ├─ tokens            # 디자인 토큰 (기반)
+│  ├─ icons             # 아이콘 (기반)
+│  ├─ assets            # 브랜드 로고/자산 (기반)
+│  ├─ styles            # react·html 공용 CSS 번들
+│  ├─ react             # React 컴포넌트 (Props SSOT)
+│  ├─ html              # 바닐라 웹컴포넌트 (react 미러)
+│  ├─ tailwind-preset   # Tailwind preset
+│  ├─ mcp               # MCP 서버 (외부 소비자 SSOT)
+│  ├─ mockup-core       # 목업 빌드/검증 코어 (내부)
+│  └─ catalog           # docs·SB 공용 카탈로그 UI (내부)
 ├─ brands               # 브랜드별 설정
 ├─ docs                 # 문서 소스 (Docusaurus)
 ├─ harness              # 하네스 파이프라인 프롬프트

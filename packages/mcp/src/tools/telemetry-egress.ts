@@ -24,6 +24,8 @@ import type { ToolArgs, ToolAfterCallContext } from "./registry.js";
 const POST_TIMEOUT_MS = 3000;
 /** 프롬프트 원문 egress 상한 — 비정상 대용량 컷(로컬 캡 12k 와 정렬). */
 const MAX_PROMPT_CHARS = 12_000;
+/** userRequest(유일하게 캡 없던 자유텍스트) egress 상한 — 민감정보 노출 축소. 서버 redact 와 이중 방어. */
+const MAX_USER_REQUEST_CHARS = 2_000;
 
 type LookupCatalog = "component" | "icon" | "token";
 
@@ -256,7 +258,7 @@ function projectLookup(
   const exact = strField(args.name);
   const query = strField(args.query);
   const obj = asObject(result);
-  const userRequest = strField(args.userRequest);
+  const userRequest = strField(args.userRequest)?.slice(0, MAX_USER_REQUEST_CHARS);
   const brand = strField(args.brand);
   const meta = { ...(userRequest ? { userRequest } : {}), ...(brand ? { brand } : {}) };
 
@@ -321,7 +323,7 @@ function projectTokenLookup(tool: string, args: ToolArgs, result: unknown): Comp
   const results = resultsArray(obj, result);
   const resolved = results.length > 0;
   const top = asObject(results[0]);
-  const userRequest = strField(args.userRequest);
+  const userRequest = strField(args.userRequest)?.slice(0, MAX_USER_REQUEST_CHARS);
   return [
     {
       kind: "component-lookup",

@@ -1,0 +1,54 @@
+name: Learning Report
+
+# DS Learning 루프 주간 리포트 (GOVERNANCE.md Track B3).
+# mcp_events 텔레메트리 → 분석 뷰(0002) → 주간 리포트(검증 룰 위반·조회 미스·가이드 수요·
+# 피드백·품질 추세)를 슬랙으로 알리고 artifact 로 보존한다.
+# release-debt.yml 과 동일하게: 알림 전용, 절대 실패하지 않음, 아무것도 변경하지 않는다.
+# SUPABASE_SERVICE_KEY 가 없으면 스크립트가 스스로 skip(exit 0) → 무해.
+
+on:
+  schedule:
+    - cron: "0 0 * * 1" # 매주 월 09:00 KST
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Generate learning report
+        run: node scripts/learning-report.mjs
+        # 의존성 없음(Node 내장 fetch). 자격증명 없으면 스크립트가 skip.
+
+      - name: Upload report artifact
+        if: hashFiles('learning-report.md') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-report
+          path: learning-report.md
+          retention-days: 90
+
+      - name: Notify Slack
+        if: hashFiles('learning-report.md') != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_CHANNEL_ID != ''
+        run: |
+          set -euo pipefail
+          # Slack 메시지 길이 한계 → 앞부분만, 전문은 Actions artifact 안내.
+          HEAD=$(head -c 3200 learning-report.md)
+          TEXT="${HEAD}
+
+          … 전문은 이 실행의 *learning-report* artifact 참고: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          jq -Rs --arg ch "$SLACK_CHANNEL_ID" '{channel:$ch, text:., unfurl_links:false}' <<<"$TEXT" \
+            | curl -sf -X POST https://slack.com/api/chat.postMessage \
+                -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+                -H 'Content-Type: application/json; charset=utf-8' \
+                --data @- > /dev/null || echo "::warning::Slack 전송 실패 — 무시(알림 전용)"

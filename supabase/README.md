@@ -57,3 +57,17 @@ curl -s "https://<ref>.supabase.co/rest/v1/mcp_events?select=*" -H "apikey: $ANO
 ```
 
 대시보드(`apps/web-server`)의 읽기 API 를 Supabase 조회로 바꾸는 건 후속 작업 — 수집과 표시는 분리한다.
+
+## Learning 분석 레이어 (0002)
+
+`migrations/0002_learning_views.sql` 가 `mcp_events` 위에 주간 분석 뷰 5종을 얹는다 — "측정 → 개선" 루프의 분석 단계 (GOVERNANCE.md Track B3). `db push` 가 0001 과 함께 적용한다.
+
+| 뷰 | 신호 | 라우팅 |
+| --- | --- | --- |
+| `learning_validation_rules_weekly` | 자주 깨지는 검증 룰(severity 가중) + model-guard 히트 0 | 게이트/가이드 강화 · 룰 폐기 |
+| `learning_lookup_misses_weekly` | 조회 미스(환각/공백) | 가이드/별칭 · 신규 편입 |
+| `learning_guide_demand_weekly` | 없는 가이드 토픽 수요 | 가이드 작성 |
+| `learning_feedback_recent` | 유저 피드백(2k) | category 별 백로그 |
+| `learning_quality_weekly` | 코드/LLM 품질 추세 | 회귀 점검 |
+
+Studio 에서 바로 조회하거나, `scripts/learning-report.mjs`(주간 마크다운 리포트) + `.github/workflows/learning-report.yml`(주 1회 슬랙+artifact)로 자동화한다. 리포트 읽기는 RLS 때문에 **service_role 키** 필요 → CI secret `SUPABASE_URL` / `SUPABASE_SERVICE_KEY`.
