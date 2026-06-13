@@ -25,9 +25,9 @@ const supabase = createClient(
 const MAX_BODY_BYTES = 256 * 1024;
 const MAX_ROWS_PER_ENVELOPE = 200;
 /** 원문 필드 — 어떤 깊이에서든 drop (메타데이터만 정책의 서버측 강제). */
-const RAW_CONTENT_KEYS = new Set(["content", "text", "html", "prd", "raw", "messages"]);
-/** 원문 정책에서 제외할 소형 텍스트 필드 (이벤트 의미상 필요). */
-const RAW_CONTENT_ALLOW: Record<string, number> = { text: 2000 }; // feedback.text 만 2k 까지 허용
+const RAW_CONTENT_KEYS = new Set(["content", "text", "html", "prd", "raw", "messages", "userRequest"]);
+/** 원문 정책에서 제외할 소형 텍스트 필드 (이벤트 의미상 필요) — 키별 길이 컷. */
+const RAW_CONTENT_ALLOW: Record<string, number> = { text: 2000, userRequest: 2000 }; // feedback.text · find_* userRequest 만 2k 까지 허용
 
 type Json = Record<string, unknown>;
 
