@@ -25,6 +25,23 @@ const meta: Meta<BottomSheetProps> = {
 export default meta;
 type Story = StoryObj<BottomSheetProps>;
 
+/* ─── Overview ─── 첫 화면 = 열린 바텀시트(클릭 불필요). 갤러리 프리뷰로도 재사용(정적 인라인). */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ position: "relative", width: 220, height: 160, border: "1px solid #ECECEC", borderRadius: 12, background: "#FAFAFA", overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", fontSize: 11, color: "#888" }}>본문 영역</div>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(17,17,17,0.32)" }} aria-hidden />
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, background: "#fff", borderTopLeftRadius: 12, borderTopRightRadius: 12, padding: "10px 14px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ width: 32, height: 4, borderRadius: 9999, background: "#D8D8D8", alignSelf: "center", marginBottom: 4 }} aria-hidden />
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#111" }}>필터</div>
+        <div style={{ fontSize: 11, lineHeight: 1.55, color: "#666" }}>옵션을 선택하세요.</div>
+      </div>
+    </div>
+  ),
+};
+
 /* ─── Default (Flat API) ─── */
 
 function FlatExample() {
@@ -74,7 +91,6 @@ function FlatExample() {
 
 export const Default: Story = {
   name: "State/Default",
-  tags: ["gallery"],
   render: () => <FlatExample />,
 };
 
@@ -550,7 +566,6 @@ export const TwoButtonFooter: Story = {
 
 export const ShareSheet: Story = {
   name: "Recipe/Share Sheet (SNS 공유)",
-  tags: ["gallery"],
   render: () => <ShareSheetExample />,
 };
 

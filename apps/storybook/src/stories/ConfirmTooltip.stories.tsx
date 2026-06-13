@@ -42,6 +42,22 @@ const meta: Meta<typeof ConfirmTooltip> = {
 export default meta;
 type Story = StoryObj<typeof ConfirmTooltip>;
 
+/* ─── Overview ─── 첫 화면 = 열린 확인 툴팁(클릭 불필요). 실제 nds-confirm-tooltip__* 클래스로 정적 렌더. */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div className="nds-confirm-tooltip__content" data-slot="content" style={{ position: "static", margin: "0 auto" }}>
+      <p className="nds-confirm-tooltip__title" data-slot="title">연결을 해제할까요?</p>
+      <p className="nds-confirm-tooltip__desc" data-slot="description" style={{ width: 200 }}>해제하면 다시 연결해야 합니다.</p>
+      <div className="nds-confirm-tooltip__actions" data-slot="actions" data-actions="dual" style={{ width: 200 }}>
+        <button type="button" className="nds-confirm-tooltip__btn nds-confirm-tooltip__btn--cancel">취소</button>
+        <button type="button" className="nds-confirm-tooltip__btn nds-confirm-tooltip__btn--confirm">해제</button>
+      </div>
+    </div>
+  ),
+};
+
 /* ─── 1. Playground (controlled — 트리거 클릭으로 토글) ─── */
 
 const PlaygroundDemo: React.FC<React.ComponentProps<typeof ConfirmTooltip>> = (args) => {
@@ -67,7 +83,6 @@ export const Playground: Story = {
 /* ─── 2. Actions=Dual (취소 + 해제) ─── */
 
 export const Dual: Story = {
-  tags: ["gallery"],
   name: "Variant/Dual (취소+해제)",
   args: { actions: "dual", open: true },
   render: (args) => (

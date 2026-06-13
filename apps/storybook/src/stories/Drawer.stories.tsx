@@ -28,6 +28,27 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
+/* ─── Overview ─── 첫 화면 = 열린 드로어(클릭 불필요). 갤러리 프리뷰로도 재사용(정적 인라인). */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ position: "relative", width: 240, height: 170, border: "1px solid #ECECEC", borderRadius: 12, background: "#FAFAFA", overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", fontSize: 11, color: "#888" }}>본문</div>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(17,17,17,0.32)" }} aria-hidden />
+      <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 150, background: "#fff", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#111" }}>필터</span>
+          <span aria-hidden style={{ color: "#888" }}>✕</span>
+        </div>
+        {["정렬 기준", "카테고리", "기간"].map((r) => (
+          <div key={r} style={{ fontSize: 12, color: "#666", padding: "6px 0", borderBottom: "1px solid #F0F0F0" }}>{r}</div>
+        ))}
+      </div>
+    </div>
+  ),
+};
+
 function RightExample() {
   const [open, setOpen] = useState(false);
   return (
@@ -156,8 +177,7 @@ function LargeExample() {
   );
 }
 
-export const Right: Story = {
-  tags: ["gallery"], name: "오른쪽 (상세)", render: () => <RightExample /> };
+export const Right: Story = { name: "오른쪽 (상세)", render: () => <RightExample /> };
 export const LeftNav: Story = { name: "왼쪽 (네비게이션)", render: () => <LeftNavExample /> };
 export const Filter: Story = { name: "필터 패널", render: () => <FilterExample /> };
 export const Large: Story = { name: "Large 사이즈", render: () => <LargeExample /> };
