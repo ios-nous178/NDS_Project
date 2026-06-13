@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T13:25:39.221Z",
+  "generatedAt": "2026-06-13T14:40:03.727Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1873,67 +1873,6 @@
       ]
     },
     {
-      "name": "CoachMark",
-      "props": [
-        {
-          "name": "open",
-          "optional": false,
-          "type": "boolean"
-        },
-        {
-          "name": "steps",
-          "optional": false,
-          "type": "CoachMarkStep[]"
-        },
-        {
-          "name": "step",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onStepChange",
-          "optional": true,
-          "type": "(index: number) => void"
-        },
-        {
-          "name": "onClose",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "finishLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "nextLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "skipLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "hideSkip",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/CoachMark.d.ts",
-      "htmlTag": "nds-coach-mark",
-      "htmlObservedAttrs": [
-        "finish-label",
-        "hide-skip",
-        "next-label",
-        "open",
-        "skip-label",
-        "step",
-        "steps"
-      ]
-    },
-    {
       "name": "CommentItem",
       "props": [
         {
@@ -3380,54 +3319,6 @@
       ]
     },
     {
-      "name": "ImageCropper",
-      "props": [
-        {
-          "name": "src",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "shape",
-          "optional": true,
-          "type": "\"circle\" | \"square\"",
-          "allowedValues": [
-            "circle",
-            "square"
-          ]
-        },
-        {
-          "name": "size",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "outputSize",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "label",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "onZoomChange",
-          "optional": true,
-          "type": "(zoom: number) => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/ImageCropper.d.ts",
-      "htmlTag": "nds-image-cropper",
-      "htmlObservedAttrs": [
-        "output-size",
-        "shape",
-        "size",
-        "src",
-        "label"
-      ]
-    },
-    {
       "name": "ImageUpload",
       "props": [
         {
@@ -3694,43 +3585,6 @@
       "htmlObservedAttrs": [
         "align",
         "gap"
-      ]
-    },
-    {
-      "name": "Lightbox",
-      "props": [
-        {
-          "name": "open",
-          "optional": false,
-          "type": "boolean"
-        },
-        {
-          "name": "images",
-          "optional": false,
-          "type": "LightboxImage[]"
-        },
-        {
-          "name": "index",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onIndexChange",
-          "optional": true,
-          "type": "(i: number) => void"
-        },
-        {
-          "name": "onClose",
-          "optional": false,
-          "type": "() => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/Lightbox.d.ts",
-      "htmlTag": "nds-lightbox",
-      "htmlObservedAttrs": [
-        "images",
-        "index",
-        "open"
       ]
     },
     {
@@ -4615,61 +4469,6 @@
       ]
     },
     {
-      "name": "PinPad",
-      "props": [
-        {
-          "name": "value",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "onValueChange",
-          "optional": false,
-          "type": "(value: string) => void"
-        },
-        {
-          "name": "length",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onComplete",
-          "optional": true,
-          "type": "(value: string) => void"
-        },
-        {
-          "name": "label",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "shuffle",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "shuffleSeed",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "error",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/PinPad.d.ts",
-      "htmlTag": "nds-pin-pad",
-      "htmlObservedAttrs": [
-        "value",
-        "pin-length",
-        "label",
-        "shuffle",
-        "shuffle-seed",
-        "error"
-      ]
-    },
-    {
       "name": "PopularPosts",
       "props": [
         {
@@ -5039,55 +4838,6 @@
       ]
     },
     {
-      "name": "PullToRefresh",
-      "props": [
-        {
-          "name": "onRefresh",
-          "optional": false,
-          "type": "() => void | Promise<void>"
-        },
-        {
-          "name": "children",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "threshold",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "pullLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "releaseLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "refreshingLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/PullToRefresh.d.ts",
-      "htmlTag": "nds-pull-to-refresh",
-      "htmlObservedAttrs": [
-        "disabled",
-        "pull-label",
-        "refreshing-label",
-        "release-label",
-        "threshold"
-      ]
-    },
-    {
       "name": "QuickActionGrid",
       "props": [
         {
@@ -5261,46 +5011,6 @@
         "rating-label",
         "card-title",
         "body"
-      ]
-    },
-    {
-      "name": "ScoreGauge",
-      "props": [
-        {
-          "name": "value",
-          "optional": false,
-          "type": "number"
-        },
-        {
-          "name": "max",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "segments",
-          "optional": true,
-          "type": "GaugeSegment[]"
-        },
-        {
-          "name": "showLabel",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "showLegend",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/ScoreGauge.d.ts",
-      "htmlTag": "nds-score-gauge",
-      "htmlObservedAttrs": [
-        "max",
-        "segments",
-        "show-label",
-        "show-legend",
-        "value",
-        "value-suffix"
       ]
     },
     {
@@ -5797,62 +5507,6 @@
         "account",
         "footer-actions",
         "full-height"
-      ]
-    },
-    {
-      "name": "SignaturePad",
-      "props": [
-        {
-          "name": "label",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "placeholder",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "height",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "penColor",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "penWidth",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onChange",
-          "optional": true,
-          "type": "(dataUrl: string | null) => void"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "hideControls",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/SignaturePad.d.ts",
-      "htmlTag": "nds-signature-pad",
-      "htmlObservedAttrs": [
-        "disabled",
-        "height",
-        "hide-controls",
-        "pen-color",
-        "pen-width",
-        "placeholder",
-        "label"
       ]
     },
     {
@@ -7077,105 +6731,6 @@
         "loop",
         "native-controls",
         "aspect-ratio"
-      ]
-    },
-    {
-      "name": "VoiceRecorder",
-      "props": [
-        {
-          "name": "state",
-          "optional": false,
-          "type": "VoiceRecorderState",
-          "allowedValues": [
-            "idle",
-            "recording",
-            "paused"
-          ]
-        },
-        {
-          "name": "onStateChange",
-          "optional": false,
-          "type": "(state: VoiceRecorderState) => void"
-        },
-        {
-          "name": "seconds",
-          "optional": false,
-          "type": "number"
-        },
-        {
-          "name": "maxSeconds",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "onComplete",
-          "optional": true,
-          "type": "(seconds: number) => void"
-        },
-        {
-          "name": "idleLabel",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "recordingLabel",
-          "optional": true,
-          "type": "string"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/VoiceRecorder.d.ts",
-      "htmlTag": "nds-voice-recorder",
-      "htmlObservedAttrs": [
-        "idle-label",
-        "max-seconds",
-        "recording-label",
-        "seconds",
-        "state"
-      ]
-    },
-    {
-      "name": "WaveformPlayer",
-      "props": [
-        {
-          "name": "src",
-          "optional": false,
-          "type": "string"
-        },
-        {
-          "name": "peaks",
-          "optional": true,
-          "type": "number[]"
-        },
-        {
-          "name": "bars",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "color",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "duration",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "autoPlay",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/WaveformPlayer.d.ts",
-      "htmlTag": "nds-waveform-player",
-      "htmlObservedAttrs": [
-        "src",
-        "peaks",
-        "bars",
-        "color",
-        "duration",
-        "autoplay"
       ]
     }
   ],
@@ -13667,7 +13222,6 @@
     "nds-checkbox-group",
     "nds-checkbox-tree",
     "nds-chip",
-    "nds-coach-mark",
     "nds-comment-item",
     "nds-confirm-tooltip",
     "nds-content-viewer",
@@ -13705,12 +13259,10 @@
     "nds-header-nav-bar",
     "nds-header-search",
     "nds-icon-button",
-    "nds-image-cropper",
     "nds-image-upload",
     "nds-input",
     "nds-input-group",
     "nds-inspector",
-    "nds-lightbox",
     "nds-like-button",
     "nds-likert-scale",
     "nds-list",
@@ -13725,19 +13277,16 @@
     "nds-page-header",
     "nds-pagination",
     "nds-phone-input",
-    "nds-pin-pad",
     "nds-popular-posts",
     "nds-popup",
     "nds-price-tag",
     "nds-product-card",
     "nds-progress-bar",
-    "nds-pull-to-refresh",
     "nds-quick-action-grid",
     "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
     "nds-review-card",
-    "nds-score-gauge",
     "nds-search-input",
     "nds-select",
     "nds-select-option",
@@ -13748,7 +13297,6 @@
     "nds-selection-card",
     "nds-selection-card-item",
     "nds-sidebar",
-    "nds-signature-pad",
     "nds-skeleton",
     "nds-slider",
     "nds-snackbar",
@@ -13774,9 +13322,7 @@
     "nds-trending-keywords",
     "nds-validation-chip",
     "nds-verification-code-input",
-    "nds-video-player",
-    "nds-voice-recorder",
-    "nds-waveform-player"
+    "nds-video-player"
   ],
   "ndsHtmlElements": [
     {
@@ -14177,19 +13723,6 @@
       ]
     },
     {
-      "tag": "nds-coach-mark",
-      "attrs": {},
-      "observedAttrs": [
-        "finish-label",
-        "hide-skip",
-        "next-label",
-        "open",
-        "skip-label",
-        "step",
-        "steps"
-      ]
-    },
-    {
       "tag": "nds-comment-item",
       "attrs": {},
       "observedAttrs": [
@@ -14479,17 +14012,6 @@
       ]
     },
     {
-      "tag": "nds-image-cropper",
-      "attrs": {},
-      "observedAttrs": [
-        "output-size",
-        "shape",
-        "size",
-        "src",
-        "label"
-      ]
-    },
-    {
       "tag": "nds-image-upload",
       "attrs": {},
       "observedAttrs": [
@@ -14545,15 +14067,6 @@
       "observedAttrs": [
         "default-enabled",
         "no-outline"
-      ]
-    },
-    {
-      "tag": "nds-lightbox",
-      "attrs": {},
-      "observedAttrs": [
-        "images",
-        "index",
-        "open"
       ]
     },
     {
@@ -14734,18 +14247,6 @@
       ]
     },
     {
-      "tag": "nds-pin-pad",
-      "attrs": {},
-      "observedAttrs": [
-        "value",
-        "pin-length",
-        "label",
-        "shuffle",
-        "shuffle-seed",
-        "error"
-      ]
-    },
-    {
       "tag": "nds-popular-posts",
       "attrs": {},
       "observedAttrs": [
@@ -14822,17 +14323,6 @@
       ]
     },
     {
-      "tag": "nds-pull-to-refresh",
-      "attrs": {},
-      "observedAttrs": [
-        "disabled",
-        "pull-label",
-        "refreshing-label",
-        "release-label",
-        "threshold"
-      ]
-    },
-    {
       "tag": "nds-quick-action-grid",
       "attrs": {},
       "observedAttrs": [
@@ -14874,18 +14364,6 @@
         "rating-label",
         "card-title",
         "body"
-      ]
-    },
-    {
-      "tag": "nds-score-gauge",
-      "attrs": {},
-      "observedAttrs": [
-        "max",
-        "segments",
-        "show-label",
-        "show-legend",
-        "value",
-        "value-suffix"
       ]
     },
     {
@@ -14989,19 +14467,6 @@
         "account",
         "footer-actions",
         "full-height"
-      ]
-    },
-    {
-      "tag": "nds-signature-pad",
-      "attrs": {},
-      "observedAttrs": [
-        "disabled",
-        "height",
-        "hide-controls",
-        "pen-color",
-        "pen-width",
-        "placeholder",
-        "label"
       ]
     },
     {
@@ -15323,29 +14788,6 @@
         "loop",
         "native-controls",
         "aspect-ratio"
-      ]
-    },
-    {
-      "tag": "nds-voice-recorder",
-      "attrs": {},
-      "observedAttrs": [
-        "idle-label",
-        "max-seconds",
-        "recording-label",
-        "seconds",
-        "state"
-      ]
-    },
-    {
-      "tag": "nds-waveform-player",
-      "attrs": {},
-      "observedAttrs": [
-        "src",
-        "peaks",
-        "bars",
-        "color",
-        "duration",
-        "autoplay"
       ]
     }
   ]

@@ -39,7 +39,7 @@ export interface VerificationCodeInputProps extends Omit<
  * VerificationCodeInput — SMS/이메일 인증번호 입력 (웹용 단일 필드).
  *
  * 자리별 박스가 아니라 base Input 과 동일한 **단일 박스** 한 줄에 숫자 코드를 입력한다.
- * 붙여넣기·자동완성(`one-time-code`) 지원. (자리별 세그먼트 PIN 은 PinPad 를 쓴다.)
+ * 붙여넣기·자동완성(`one-time-code`) 지원.
  *
  * 이 컴포넌트는 **코드 입력 필드만** 책임진다. 타이머·재전송·확인 버튼이 함께 있는
  * 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(타이머는 코드 입력 우측에 겹쳐 배치):

@@ -231,8 +231,6 @@ export type { LikeButtonSize } from "./components/nds-like-button.js";
 
 export { NdsMediaCard } from "./components/nds-media-card.js";
 
-export { NdsScoreGauge } from "./components/nds-score-gauge.js";
-export type { GaugeLevel } from "./components/nds-score-gauge.js";
 
 export { NdsSelectionCard, NdsSelectionCardItem } from "./components/nds-selection-card.js";
 export type { SelectionCardMode, SelectionCardLayout } from "./components/nds-selection-card.js";
@@ -243,7 +241,6 @@ export { NdsFilterBar } from "./components/nds-filter-bar.js";
 
 export { NdsPhoneInput } from "./components/nds-phone-input.js";
 
-export { NdsPinPad } from "./components/nds-pin-pad.js";
 
 export { NdsProductCard } from "./components/nds-product-card.js";
 export type { ProductCardSize } from "./components/nds-product-card.js";
@@ -276,32 +273,24 @@ export type { DSHighlightMode } from "./components/nds-ds-highlight.js";
 
 export { NdsFileUpload } from "./components/nds-file-upload.js";
 
-export { NdsImageCropper } from "./components/nds-image-cropper.js";
 
 export { NdsImageUpload } from "./components/nds-image-upload.js";
 
-export { NdsLightbox } from "./components/nds-lightbox.js";
 
 export { NdsMultiStepForm } from "./components/nds-multi-step-form.js";
 
-export { NdsPullToRefresh } from "./components/nds-pull-to-refresh.js";
 
 export { NdsSidebar } from "./components/nds-sidebar.js";
 
-export { NdsSignaturePad } from "./components/nds-signature-pad.js";
 
 export { NdsVideoPlayer } from "./components/nds-video-player.js";
 
-export { NdsVoiceRecorder } from "./components/nds-voice-recorder.js";
 
-export { NdsWaveformPlayer } from "./components/nds-waveform-player.js";
 
 export { NdsInspector } from "./components/nds-inspector.js";
 
 // react↔html export parity 복원 — 이 컴포넌트들은 runtime.ts 에는 등록돼 있으나
 // index 배럴에서 빠져 있었다(NdsStepper 회귀와 동일 계열).
-export { NdsCoachMark } from "./components/nds-coach-mark.js";
-export type { CoachMarkPlacement } from "./components/nds-coach-mark.js";
 
 export { NdsEmptyState } from "./components/nds-empty-state.js";
 

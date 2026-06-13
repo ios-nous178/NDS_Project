@@ -415,18 +415,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-coach-mark": {
-    "observedAttributes": [
-      "finish-label",
-      "hide-skip",
-      "next-label",
-      "open",
-      "skip-label",
-      "step",
-      "steps"
-    ],
-    "enums": {}
-  },
   "nds-comment-item": {
     "observedAttributes": [
       "is-reply",
@@ -762,20 +750,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-image-cropper": {
-    "observedAttributes": [
-      "output-size",
-      "shape",
-      "size",
-      "src"
-    ],
-    "enums": {
-      "shape": [
-        "circle",
-        "square"
-      ]
-    }
-  },
   "nds-image-upload": {
     "observedAttributes": [
       "accept",
@@ -833,14 +807,6 @@ export const COMPONENT_ATTRS = {
         "start"
       ]
     }
-  },
-  "nds-lightbox": {
-    "observedAttributes": [
-      "images",
-      "index",
-      "open"
-    ],
-    "enums": {}
   },
   "nds-like-button": {
     "observedAttributes": [
@@ -1007,16 +973,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-pin-pad": {
-    "observedAttributes": [
-      "error",
-      "length",
-      "shuffle",
-      "shuffle-seed",
-      "value"
-    ],
-    "enums": {}
-  },
   "nds-popular-posts": {
     "observedAttributes": [
       "active-tab-key",
@@ -1088,16 +1044,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-pull-to-refresh": {
-    "observedAttributes": [
-      "disabled",
-      "pull-label",
-      "refreshing-label",
-      "release-label",
-      "threshold"
-    ],
-    "enums": {}
-  },
   "nds-quick-action-grid": {
     "observedAttributes": [
       "actions",
@@ -1126,16 +1072,6 @@ export const COMPONENT_ATTRS = {
       "rating",
       "tags",
       "verified"
-    ],
-    "enums": {}
-  },
-  "nds-score-gauge": {
-    "observedAttributes": [
-      "max",
-      "segments",
-      "show-label",
-      "show-legend",
-      "value"
     ],
     "enums": {}
   },
@@ -1230,17 +1166,6 @@ export const COMPONENT_ATTRS = {
       "logo",
       "user",
       "width"
-    ],
-    "enums": {}
-  },
-  "nds-signature-pad": {
-    "observedAttributes": [
-      "disabled",
-      "height",
-      "hide-controls",
-      "pen-color",
-      "pen-width",
-      "placeholder"
     ],
     "enums": {}
   },
@@ -1545,33 +1470,6 @@ export const COMPONENT_ATTRS = {
       "muted",
       "native-controls",
       "poster",
-      "src"
-    ],
-    "enums": {}
-  },
-  "nds-voice-recorder": {
-    "observedAttributes": [
-      "idle-label",
-      "max-seconds",
-      "recording-label",
-      "seconds",
-      "state"
-    ],
-    "enums": {
-      "state": [
-        "idle",
-        "recording",
-        "paused"
-      ]
-    }
-  },
-  "nds-waveform-player": {
-    "observedAttributes": [
-      "auto-play",
-      "bars",
-      "color",
-      "duration",
-      "peaks",
       "src"
     ],
     "enums": {}
