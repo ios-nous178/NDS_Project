@@ -156,6 +156,9 @@ importers:
       '@easyops-cn/docusaurus-search-local':
         specifier: ^0.55.1
         version: 0.55.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.24)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.25.12))(@docusaurus/theme-common@3.10.1(@docusaurus/plugin-content-docs@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.24)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(esbuild@0.25.12))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@18.3.1))(@rspack/core@1.7.11)(@swc/core@1.15.24)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3))(@swc/core@1.15.24)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mdx-js/react@3.1.1(@types/react@19.2.14)(react@18.3.1))(@rspack/core@1.7.11)(@swc/core@1.15.24)(esbuild@0.25.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
+      '@nudge-design/catalog':
+        specifier: workspace:*
+        version: link:../../packages/catalog
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../../packages/icons
@@ -180,6 +183,9 @@ importers:
       '@nudge-design/assets':
         specifier: workspace:*
         version: link:../../packages/assets
+      '@nudge-design/catalog':
+        specifier: workspace:*
+        version: link:../../packages/catalog
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../../packages/icons
@@ -271,6 +277,31 @@ importers:
 
   packages/assets:
     devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/catalog:
+    dependencies:
+      '@nudge-design/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@nudge-design/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+    devDependencies:
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.28
+      '@types/react-dom':
+        specifier: ^18.0.0
+        version: 18.3.7(@types/react@18.3.28)
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.0.0
+        version: 18.3.1(react@18.3.1)
       typescript:
         specifier: ^5.7.0
         version: 5.9.3

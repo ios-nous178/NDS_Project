@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nudge-design/assets": "workspace:*",
+    "@nudge-design/catalog": "workspace:*",
     "@nudge-design/icons": "workspace:*",
     "@nudge-design/react": "workspace:*",
     "@nudge-design/tailwind-preset": "workspace:*",

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { BRANDS, BRAND_LABEL, reactStatus, htmlStatus } from "./coverage-logic.mjs";
 
 /**
  * Brand × Component Coverage manifest builder.
@@ -21,15 +22,9 @@ const reactSrcDir = path.join(rootDir, "packages", "react", "src");
 const reactIndexPath = path.join(reactSrcDir, "index.ts");
 const htmlIndexPath = path.join(rootDir, "packages", "html", "src", "index.ts");
 
-export const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz", "runmile"];
-
-export const BRAND_LABEL = {
-  trost: "Trost",
-  geniet: "Geniet",
-  "nudge-eap": "NudgeEAP",
-  "cashwalk-biz": "CashwalkBiz",
-  runmile: "Runmile",
-};
+// 브랜드 상수·셀 판정 로직의 SSOT 는 coverage-logic.mjs (node-free, 스토리도 공유).
+// 기존 소비처(generate-brand-coverage.mjs)가 이 모듈에서 import 하던 심볼을 그대로 재노출한다.
+export { BRANDS, BRAND_LABEL, reactStatus, htmlStatus };
 
 async function readReactExports() {
   const src = await fs.readFile(reactIndexPath, "utf8");
@@ -72,24 +67,7 @@ async function readBrandChrome() {
   return out;
 }
 
-/**
- * 셀 판정 — 일반 컴포넌트는 react/html index 기반, brandChrome 행은 브랜드 chrome 폴더 기반.
- * Storybook 과 docs generator 가 같은 함수 결과를 쓰도록 한 곳에 둔다.
- */
-export function reactStatus(c, brand, { reactExports, brandChrome }) {
-  if (!c.nds) return "missing";
-  const codeExists = c.brandChrome
-    ? (brandChrome[brand]?.has(c.nds) ?? false)
-    : reactExports.has(c.nds);
-  if (!codeExists) return "missing";
-  return c.figmaByBrand?.[brand] ? "synced" : "code";
-}
-
-export function htmlStatus(c, brand, { htmlExports }) {
-  if (!c.nds) return "missing";
-  if (!htmlExports.has(c.nds)) return "missing";
-  return c.figmaByBrand?.[brand] ? "synced" : "code";
-}
+// reactStatus / htmlStatus 셀 판정은 coverage-logic.mjs 로 이동(위에서 re-export).
 
 /** 메모리상 manifest 객체 (Set 포함). docs generator 가 직접 소비. */
 export async function buildManifest() {

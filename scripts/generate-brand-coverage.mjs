@@ -9,6 +9,7 @@ import {
   reactStatus,
   serializeManifest,
 } from "./coverage-manifest.mjs";
+import { summarize } from "./coverage-logic.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,22 +35,10 @@ function htmlCell(c, brand) {
   return glyph(htmlStatus(c, brand, manifest));
 }
 
-function hasBrandFigma(c, brand) {
-  return Boolean(c.figmaByBrand?.[brand]);
-}
-
-/** 통계 — 일반 컴포넌트는 react/html exports, brandChrome 행은 브랜드 chrome union 기준. */
-const total = data.components.length;
-const mapped = data.components.filter((c) => c.nds).length;
-const gaps = data.components.filter((c) => !c.nds).length;
-const reactCovered = data.components.filter((c) => {
-  if (!c.nds) return false;
-  if (c.brandChrome) return BRANDS.some((b) => manifest.brandChrome[b]?.has(c.nds));
-  return manifest.reactExports.has(c.nds);
-}).length;
-const htmlCovered = data.components.filter((c) => c.nds && manifest.htmlExports.has(c.nds)).length;
-const figmaPerBrand = Object.fromEntries(
-  BRANDS.map((b) => [b, data.components.filter((c) => hasBrandFigma(c, b)).length]),
+/** 통계 — coverage-logic.summarize 가 SSOT. brandChrome 행은 어느 브랜드든 chrome 폴더에 있으면 React 커버. */
+const { total, mapped, gaps, reactCovered, htmlCovered, figmaPerBrand } = summarize(
+  data.components,
+  manifest,
 );
 
 /** 카테고리별 그룹핑 */

@@ -2761,21 +2761,6 @@ function Catalog() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <div style={catalogNote}>
-        <p style={catalogNoteTitle}>Floating UI 구분</p>
-        <div style={catalogNoteGrid}>
-          <p style={catalogNoteItem}>
-            <strong>Modal</strong>은 응답이 필요한 큰 흐름, <strong>Popup</strong>은 짧은
-            확인/거부용입니다.
-          </p>
-          <p style={catalogNoteItem}>
-            <strong>Toast</strong>는 인터랙션 없이 자동 사라지는 일시 메시지,{" "}
-            <strong>Snackbar</strong>는 액션/되돌리기·닫기가 붙는 카드형 알림(캐포비 흰 카드
-            포함)입니다.
-          </p>
-        </div>
-      </div>
-
       <div style={controlsRow}>
         <input
           type="search"
@@ -2850,37 +2835,6 @@ const controlsRow: React.CSSProperties = {
   position: "sticky",
   top: 0,
   zIndex: 5,
-};
-
-const catalogNote: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
-  padding: "14px 16px",
-  border: "1px solid #E5E7EB",
-  borderRadius: 10,
-  background: "#F8FAFC",
-};
-
-const catalogNoteTitle: React.CSSProperties = {
-  margin: 0,
-  fontSize: 12,
-  fontWeight: 800,
-  color: "#111827",
-  letterSpacing: "-0.01em",
-};
-
-const catalogNoteGrid: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  gap: 12,
-};
-
-const catalogNoteItem: React.CSSProperties = {
-  margin: 0,
-  fontSize: 12,
-  lineHeight: 1.55,
-  color: "#475569",
 };
 
 const searchInput: React.CSSProperties = {

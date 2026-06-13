@@ -1,19 +1,20 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import * as Icons from "@nudge-design/icons";
+import { IconCatalog } from "@nudge-design/catalog";
+import iconCatalog from "../../../../metadata/iconCatalog.json";
 
-const ICON_ENTRIES: Array<{
-  name: string;
-  Component: React.FC<{ size?: number; color?: string }>;
-}> = Object.entries(Icons)
-  .filter(([name]) => name.endsWith("Icon"))
-  .map(([name, Component]) => ({
-    name,
-    Component: Component as React.FC<{ size?: number; color?: string }>,
-  }));
-
-const meta: Meta = {
+/**
+ * Foundations/Icons — 전체 아이콘 카탈로그.
+ *
+ * 분류·그리드·검색·복사 로직은 docs `/components/icons` 와 **단일 공유 컴포넌트**
+ * (`@nudge-design/catalog` 의 `IconCatalog`)를 쓴다. 데이터(브랜드 prefix 분류·kebab·
+ * CashwalkBiz 카테고리)는 `metadata/iconCatalog.json` SSOT 에서 온다.
+ * storybook 관례: 컴포넌트명 복사(copyMode="name").
+ */
+const meta: Meta<typeof IconCatalog> = {
   title: "Foundations/Icons",
+  component: IconCatalog,
   parameters: {
     layout: "padded",
     docs: {
@@ -21,277 +22,37 @@ const meta: Meta = {
         component: [
           "> **Figma Iconography(379:490) 정합 완료** — 모든 아이콘은 24×24 viewBox / currentColor 규약으로 통일되어 있습니다.",
           "",
-          `총 **${ICON_ENTRIES.length}개** 아이콘. 클릭하면 컴포넌트 이름이 클립보드에 복사됩니다.`,
+          `총 **${iconCatalog.icons.length}개** 아이콘. 클릭하면 컴포넌트 이름이 클립보드에 복사됩니다.`,
           "",
-          "브랜드별 아이콘은 prefix 로 구분됩니다 — prefix 없는 base 셋은 **NudgeEAP**, `CashwalkBiz*` / `Geniet*` / `Trost*` 는 각 브랜드 전용, `Mockup*` (Bold/Linear) 는 mockup 전용 IconSax 셋입니다.",
+          "브랜드별 아이콘은 prefix 로 구분됩니다 — prefix 없는 base 셋은 **NudgeEAP**, `CashwalkBiz*` / `Geniet*` / `Trost*` / `Runmile*` 는 각 브랜드 전용, `Mockup*` (Bold/Linear) 는 mockup 전용 IconSax 셋입니다.",
           "",
           "패키지: `@nudge-design/icons` · 카테고리·사용 가이드는 [Docs · Icons](/components/icons)를 참고하세요.",
+          "",
+          "분류/그리드/검색/복사는 docs `/components/icons` 와 동일한 공유 컴포넌트(`@nudge-design/catalog`)를 쓰고, 데이터는 `metadata/iconCatalog.json` SSOT 입니다.",
         ].join("\n"),
       },
     },
   },
+  args: {
+    data: iconCatalog,
+    mode: "all",
+    copyMode: "name",
+    iconSize: 24,
+  },
 };
-
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof IconCatalog>;
 
-function copyToClipboard(text: string) {
-  if (typeof navigator !== "undefined" && navigator.clipboard) {
-    navigator.clipboard.writeText(text).catch(() => {});
-  }
-}
-
-function IconCard({
-  name,
-  Component,
-  size,
-  color,
-  bg,
-}: {
-  name: string;
-  Component: React.FC<{ size?: number; color?: string }>;
-  size: number;
-  color: string;
-  bg: string;
-}) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        copyToClipboard(name);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1200);
-      }}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "var(--semantic-gap-default)",
-        padding: "var(--semantic-inset-card) var(--semantic-inset-chip)",
-        border: "1px solid #ECECEC",
-        borderRadius: 8,
-        background: bg,
-        cursor: "pointer",
-        font: "inherit",
-        position: "relative",
-      }}
-      title={`Click to copy: ${name}`}
-    >
-      <span style={{ color, display: "inline-flex" }}>
-        <Component size={size} />
-      </span>
-      <span
-        style={{
-          fontSize: 11,
-          color: "#555",
-          fontFamily: "ui-monospace, SFMono-Regular, monospace",
-          textAlign: "center",
-          wordBreak: "break-all",
-          lineHeight: 1.4,
-        }}
-      >
-        {name}
-      </span>
-      {copied && (
-        <span
-          style={{
-            position: "absolute",
-            top: 6,
-            right: 6,
-            fontSize: 10,
-            background: "#111",
-            color: "#fff",
-            borderRadius: 4,
-            padding: "2px 6px",
-          }}
-        >
-          copied
-        </span>
-      )}
-    </button>
-  );
-}
-
-type BrandFilter = "all" | "nudge-eap" | "cashwalk-biz" | "geniet" | "trost" | "mockup";
-
-// 컴포넌트 이름 prefix → 어느 브랜드 그룹에 속하는지.
-// 'nudge-eap' 은 prefix 가 없는 base DS 아이콘 (NudgeEAP brand 의 default set).
-// 'mockup' 은 MockupBold / MockupLinear 등 Mockup* prefix 전체 (IconSax 셋).
-function brandOf(componentName: string): Exclude<BrandFilter, "all"> {
-  if (componentName.startsWith("CashwalkBiz")) return "cashwalk-biz";
-  if (componentName.startsWith("Geniet")) return "geniet";
-  if (componentName.startsWith("Trost")) return "trost";
-  if (componentName.startsWith("Mockup")) return "mockup";
-  return "nudge-eap";
-}
-
-function Catalog({ size, color, bg }: { size: number; color: string; bg: string }) {
-  const [query, setQuery] = useState("");
-  const [brand, setBrand] = useState<BrandFilter>("all");
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return ICON_ENTRIES.filter((entry) => {
-      if (brand !== "all" && brandOf(entry.name) !== brand) return false;
-      if (!q) return true;
-      return entry.name.toLowerCase().includes(q);
-    });
-  }, [query, brand]);
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
-      <div
-        style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-comfortable)" }}
-      >
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="아이콘 이름으로 검색 (예: search, arrow, home)"
-          style={{
-            flex: 1,
-            height: 40,
-            padding: "0 var(--semantic-inset-input)",
-            border: "1px solid #D8D8D8",
-            borderRadius: 8,
-            fontSize: 14,
-            outline: "none",
-            fontFamily: "inherit",
-          }}
-        />
-        <span style={{ fontSize: 12, color: "#888" }}>
-          {filtered.length} / {ICON_ENTRIES.length}
-        </span>
-      </div>
-      <BrandChips value={brand} onChange={setBrand} entries={ICON_ENTRIES} />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-          gap: "var(--semantic-gap-comfortable)",
-        }}
-      >
-        {filtered.map(({ name, Component }) => (
-          <IconCard
-            key={name}
-            name={name}
-            Component={Component}
-            size={size}
-            color={color}
-            bg={bg}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function BrandChips({
-  value,
-  onChange,
-  entries,
-}: {
-  value: BrandFilter;
-  onChange: (v: BrandFilter) => void;
-  entries: typeof ICON_ENTRIES;
-}) {
-  // 각 그룹별 카운트 — 활성 칩에 작게 표시.
-  const counts = useMemo(() => {
-    const c: Record<BrandFilter, number> = {
-      all: entries.length,
-      "nudge-eap": 0,
-      "cashwalk-biz": 0,
-      geniet: 0,
-      trost: 0,
-      mockup: 0,
-    };
-    for (const e of entries) c[brandOf(e.name)]++;
-    return c;
-  }, [entries]);
-
-  const options: { v: BrandFilter; label: string }[] = [
-    { v: "all", label: "All" },
-    { v: "nudge-eap", label: "NudgeEAP" },
-    { v: "cashwalk-biz", label: "CashwalkBiz" },
-    { v: "geniet", label: "Geniet" },
-    { v: "trost", label: "Trost" },
-    { v: "mockup", label: "Mockup (IconSax)" },
-  ];
-
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-      {options.map((o) => {
-        const active = value === o.v;
-        return (
-          <button
-            key={o.v}
-            type="button"
-            onClick={() => onChange(o.v)}
-            style={{
-              padding: "6px 12px",
-              fontSize: 12,
-              fontWeight: 600,
-              borderRadius: 999,
-              border: "1px solid #D8D8D8",
-              background: active ? "#111111" : "#FFFFFF",
-              color: active ? "#FFFFFF" : "#333",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            {o.label}
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 500,
-                opacity: 0.75,
-              }}
-            >
-              {counts[o.v]}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-export const All: Story = {
-  name: "Spec/All Icons",
-  render: () => (
-    <Catalog size={24} color="var(--semantic-icon-strong-default, #111111)" bg="#FFFFFF" />
-  ),
-};
+export const All: Story = { name: "All" };
 
 export const Size20: Story = {
-  name: "Spec/Size 20 (Button)",
-  parameters: {
-    docs: {
-      description: {
-        story: "버튼(xl/lg/md/sm/field) 내부 아이콘 사이즈인 20px로 렌더링한 카탈로그.",
-      },
-    },
-  },
-  render: () => (
-    <Catalog size={20} color="var(--semantic-icon-strong-default, #111111)" bg="#FFFFFF" />
-  ),
+  name: "Size 20",
+  args: { iconSize: 20 },
 };
 
 export const OnDarkSurface: Story = {
-  name: "Spec/On Dark Surface",
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "어두운 배경에서 `currentColor` 흰색으로 렌더링. AppBar 등 다크 헤더 컨텍스트 검증용.",
-      },
-    },
-  },
-  render: () => <Catalog size={24} color="#FFFFFF" bg="#1F1F1F" />,
+  name: "On Dark Surface",
+  args: { surface: "dark" },
 };
 
 export const UsageExamples: Story = {

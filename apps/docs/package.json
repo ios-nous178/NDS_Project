@@ -20,6 +20,7 @@
     "@docusaurus/theme-common": "^3.10.1",
     "@docusaurus/theme-live-codeblock": "latest",
     "@easyops-cn/docusaurus-search-local": "^0.55.1",
+    "@nudge-design/catalog": "workspace:*",
     "@nudge-design/icons": "workspace:*",
     "@nudge-design/react": "workspace:*",
     "@nudge-design/tokens": "workspace:*",

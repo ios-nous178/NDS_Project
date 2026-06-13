@@ -3,6 +3,17 @@ import type { Meta, StoryObj } from "@storybook/react";
 import inventory from "../../../../metadata/componentInventory.json";
 import tdsData from "../../../../metadata/tdsComponents.json";
 import coverageManifest from "../../../../metadata/coverage-manifest.json";
+// 셀 판정·요약 통계의 SSOT — docs 생성기(generate-brand-coverage.mjs)와 같은 node-free 모듈을 공유한다.
+// 예전엔 아래 로직을 손수 재선언해 docs(46) vs 보드(45) 로 어긋났다.
+import {
+  BRANDS,
+  BRAND_LABEL,
+  hasBrandFigma,
+  htmlStatus,
+  reactStatus,
+  summarize,
+} from "../../../../scripts/coverage-logic.mjs";
+import type { Brand, ManifestData, Status } from "../../../../scripts/coverage-logic.mjs";
 
 /* ─────────────────────────────────────────────────────────────────
  * Brand × Component Coverage Board
@@ -40,20 +51,10 @@ type TdsComponent = {
   figmaByBrand: Partial<Record<Brand, string>>;
 };
 
-const BRANDS = ["trost", "geniet", "nudge-eap", "cashwalk-biz", "runmile"] as const;
-type Brand = (typeof BRANDS)[number];
-
-const BRAND_LABEL: Record<Brand, string> = {
-  trost: "Trost",
-  geniet: "Geniet",
-  "nudge-eap": "NudgeEAP",
-  "cashwalk-biz": "CashwalkBiz",
-  runmile: "Runmile",
-};
-
-/* ─── 코드 매니페스트 SSOT — metadata/coverage-manifest.json 단일 출처.
- * scripts/generate-brand-coverage.mjs 가 생성하며 prestorybook/predev 훅이 매번 갱신.
- * 직접 하드코딩 금지: 컴포넌트가 추가/삭제될 때 drift 가 생긴다. ───────────────── */
+/* ─── 코드 매니페스트 — metadata/coverage-manifest.json 이 단일 출처(생성물).
+ * scripts/generate-brand-coverage.mjs(= pnpm fix 의 generate:brand-coverage)가 생성하고
+ * check-ssot 게이트가 stale 을 차단한다. 직접 하드코딩 금지.
+ * 배열(JSON) → Set 으로 복원해 coverage-logic 의 순수 판정 함수에 넘긴다. ───────────────── */
 const REACT_EXPORTS: ReadonlySet<string> = new Set(coverageManifest.reactExports);
 const HTML_EXPORTS: ReadonlySet<string> = new Set(coverageManifest.htmlExports);
 const BRAND_CHROME = BRANDS.reduce(
@@ -64,29 +65,15 @@ const BRAND_CHROME = BRANDS.reduce(
   },
   {} as Record<Brand, ReadonlySet<string>>,
 );
+const MANIFEST: ManifestData = {
+  reactExports: REACT_EXPORTS,
+  htmlExports: HTML_EXPORTS,
+  brandChrome: BRAND_CHROME,
+};
 
 /* ─── 헬퍼 ─── */
 const inv = inventory as InventoryEntry[];
 const invByName: Record<string, InventoryEntry> = Object.fromEntries(inv.map((c) => [c.name, c]));
-
-function hasBrandFigma(c: TdsComponent, brand: Brand): boolean {
-  return Boolean(c.figmaByBrand?.[brand]);
-}
-
-type Status = "synced" | "code" | "missing";
-
-function reactStatus(c: TdsComponent, brand: Brand): Status {
-  if (!c.nds) return "missing";
-  const codeExists = c.brandChrome ? BRAND_CHROME[brand].has(c.nds) : REACT_EXPORTS.has(c.nds);
-  if (!codeExists) return "missing";
-  return hasBrandFigma(c, brand) ? "synced" : "code";
-}
-
-function htmlStatus(c: TdsComponent, brand: Brand): Status {
-  if (!c.nds) return "missing";
-  if (!HTML_EXPORTS.has(c.nds)) return "missing";
-  return hasBrandFigma(c, brand) ? "synced" : "code";
-}
 
 function brandFigmaCount(c: TdsComponent): number {
   return BRANDS.filter((b) => hasBrandFigma(c, b)).length;
@@ -215,16 +202,12 @@ function CoverageBoard() {
     return groups;
   }, [filteredTds]);
 
-  /* ─── 통계 ─── */
-  const total = tdsComponents.length;
-  const mapped = tdsComponents.filter((c) => c.nds).length;
-  const gaps = tdsComponents.filter((c) => !c.nds).length;
-  const reactCovered = tdsComponents.filter((c) => c.nds && REACT_EXPORTS.has(c.nds)).length;
-  const htmlCovered = tdsComponents.filter((c) => c.nds && HTML_EXPORTS.has(c.nds)).length;
-
-  const figmaPerBrand: Record<Brand, number> = Object.fromEntries(
-    BRANDS.map((b) => [b, tdsComponents.filter((c) => hasBrandFigma(c, b)).length]),
-  ) as Record<Brand, number>;
+  /* ─── 통계 — coverage-logic.summarize 가 SSOT. docs 생성기와 동일 계산
+   *   (brandChrome 행 = 어느 브랜드든 chrome 폴더에 있으면 React 커버 → 46). ─── */
+  const { total, mapped, gaps, reactCovered, htmlCovered, figmaPerBrand } = summarize(
+    tdsComponents,
+    MANIFEST,
+  );
 
   return (
     <div
@@ -458,8 +441,8 @@ function CoverageBoard() {
                           )}
                         </td>
                         {BRANDS.map((b) => {
-                          const r = reactStatus(c, b);
-                          const h = htmlStatus(c, b);
+                          const r = reactStatus(c, b, MANIFEST);
+                          const h = htmlStatus(c, b, MANIFEST);
                           const figmaHref = c.figmaByBrand?.[b];
                           return (
                             <td key={b} style={{ ...cellStyle, textAlign: "center" }}>

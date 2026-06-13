@@ -132,6 +132,15 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "icon-catalog",
+    label: "icon catalog SSOT (metadata/iconCatalog.json ← @nudge-design/icons 배럴)",
+    check: ["node", "scripts/generate-icon-catalog.mjs", "--check"],
+    fix: ["node", "scripts/generate-icon-catalog.mjs"],
+    watch: ["packages/icons/src/index.ts", "metadata/iconCatalog.json", "scripts/generate-icon-catalog.mjs"],
+    buildFree: true, // packages/icons/src/index.ts 소스 텍스트를 직접 파싱 — dist 불필요
+    ssot: true,
+  },
+  {
     id: "guide-docs",
     label: "guide markdown docs",
     check: ["node", "scripts/generate-guide-docs.mjs", "--check"],
