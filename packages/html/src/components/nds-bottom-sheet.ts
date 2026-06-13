@@ -37,6 +37,9 @@ const BS_CLOSE_CLASS = `${BS_CLASS}__close`;
 const BS_BODY_CLASS = `${BS_CLASS}__body`;
 const BS_FOOTER_CLASS = `${BS_CLASS}__footer`;
 
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export class NdsBottomSheet extends NdsElement {
   static elementName = "nds-bottom-sheet";
 
@@ -61,6 +64,8 @@ export class NdsBottomSheet extends NdsElement {
   private _footer: HTMLDivElement | null = null;
   private _hasFooterContent = false;
   private _prevOverflow = "";
+  private _prevFocus: Element | null = null;
+  private _wasOpen = false;
 
   private _onEsc = (e: KeyboardEvent) => {
     if (e.key !== "Escape") return;
@@ -184,10 +189,27 @@ export class NdsBottomSheet extends NdsElement {
         this._prevOverflow = document.body.style.overflow;
         document.body.style.overflow = "hidden";
       }
+      if (!this._wasOpen) {
+        // react BottomSheetContent 미러 — 열릴 때 첫 focusable 로 이동
+        this._prevFocus = document.activeElement;
+        queueMicrotask(() => {
+          if (!this._content || !this.boolAttr("open")) return;
+          const first = this._content.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+          (first ?? this._content).focus({ preventScroll: true });
+        });
+      }
     } else {
       this._root.style.display = "none";
       document.body.style.overflow = this._prevOverflow;
+      if (this._wasOpen) {
+        // 닫힐 때 원래 focus 위치 복원
+        if (this._prevFocus instanceof HTMLElement) {
+          this._prevFocus.focus({ preventScroll: true });
+        }
+        this._prevFocus = null;
+      }
     }
+    this._wasOpen = open;
 
     this._handle.style.display = showHandle ? "" : "none";
 

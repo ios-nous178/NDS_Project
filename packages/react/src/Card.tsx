@@ -50,13 +50,22 @@ export interface CardRootProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const CardRoot: React.FC<CardRootProps> = React.memo(
-  ({ variant = "outlined", clickable = false, children, className, style, ...rest }) => (
+  ({ variant = "outlined", clickable = false, children, className, style, onKeyDown, ...rest }) => (
     <div
       data-slot="root"
       data-variant={variant}
       data-clickable={clickable ? "true" : "false"}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
       className={cx(CARD_ROOT_CLASS, className)}
       style={style}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (!event.defaultPrevented && clickable && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      }}
       {...rest}
     >
       {children}

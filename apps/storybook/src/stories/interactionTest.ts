@@ -21,6 +21,7 @@ export const createInteractionUser = () => {
     click: (element: Parameters<typeof user.click>[0]) => runStep(() => user.click(element)),
     type: (element: Parameters<typeof user.type>[0], text: Parameters<typeof user.type>[1]) =>
       runStep(() => user.type(element, text)),
+    clear: (element: Parameters<typeof user.clear>[0]) => runStep(() => user.clear(element)),
     tab: () => runStep(() => user.tab()),
     keyboard: (text: Parameters<typeof user.keyboard>[0]) => runStep(() => user.keyboard(text)),
   };

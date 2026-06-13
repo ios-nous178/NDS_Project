@@ -688,14 +688,20 @@ export const ClosingAnimationCompletes: Story = {
     const dialog = within(document.body).getByRole("dialog");
     await expect(dialog).toBeInTheDocument();
 
-    // ESC 누르면 closing 상태로 전환
+    // ESC 직전에 루트를 잡아둔다 — 닫힘 애니메이션이 끝나면 DOM에서 제거되므로
+    const root = document.body.querySelector(".nds-bottom-sheet__root");
+    await expect(root).toBeInTheDocument();
+
+    // ESC 누르면 closing 상태로 전환 (분리된 노드에도 마지막 속성이 남는다)
     await user.keyboard("{Escape}");
+    await waitFor(() => {
+      expect(root).toHaveAttribute("data-closing", "true");
+    });
 
-    const root = document.body.querySelector("[data-slot='root']");
-    await expect(root).toHaveAttribute("data-closing", "true");
-
-    // 다이얼로그가 아직 존재 (애니메이션 진행 중)
-    await expect(dialog).toBeInTheDocument();
+    // closing 애니메이션이 완료되면 시트가 DOM에서 제거된다
+    await waitFor(() => {
+      expect(document.body.querySelector(".nds-bottom-sheet__root")).not.toBeInTheDocument();
+    });
   },
 };
 

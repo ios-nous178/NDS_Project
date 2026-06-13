@@ -1169,6 +1169,10 @@ export const AccessibilityBehavior: Story = {
     const confirmButton = within(dialog).getByRole("button", { name: "확인" });
     await expect(confirmButton).toHaveFocus();
 
+    // 확인 버튼이 DOM상 마지막 포커스 대상이므로 Tab은 첫 번째(닫기)로 순환한다
+    await user.tab();
+    await expect(within(dialog).getByRole("button", { name: "모달 닫기" })).toHaveFocus();
+
     await user.tab();
     await expect(within(dialog).getByRole("button", { name: "취소" })).toHaveFocus();
 
@@ -1200,17 +1204,18 @@ export const FocusTrapLoop: Story = {
 
     await expect(confirmButton).toHaveFocus();
 
-    await user.tab();
-    await expect(cancelButton).toHaveFocus();
-
+    // DOM 순서: 닫기(헤더) → 취소 → 확인. 확인(마지막)에서 Tab은 닫기로 순환.
     await user.tab();
     await expect(closeButton).toHaveFocus();
+
+    await user.tab();
+    await expect(cancelButton).toHaveFocus();
 
     await user.tab();
     await expect(confirmButton).toHaveFocus();
 
     await user.keyboard("{Shift>}{Tab}{/Shift}");
-    await expect(closeButton).toHaveFocus();
+    await expect(cancelButton).toHaveFocus();
   },
 };
 

@@ -259,10 +259,10 @@ export const DisabledChipInteraction: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const disabledChip = canvas.getByText("비활성").closest("[data-slot]");
+    const disabledChip = canvas.getByText("비활성").closest('[data-slot="root"]');
     await expect(disabledChip).toHaveAttribute("data-disabled", "true");
 
-    const disabledFilled = canvas.getByText("비활성 채움").closest("[data-slot]");
+    const disabledFilled = canvas.getByText("비활성 채움").closest('[data-slot="root"]');
     await expect(disabledFilled).toHaveAttribute("data-disabled", "true");
   },
 };

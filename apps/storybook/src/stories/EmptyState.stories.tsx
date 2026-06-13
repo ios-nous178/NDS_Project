@@ -281,17 +281,17 @@ export const AccessibilityStructureReview: Story = {
     await expect(
       flat.getByRole("heading", { level: 3, name: "상담 내역이 없습니다" }),
     ).toBeInTheDocument();
-    await expect(
-      flat.getByText("첫 상담을 예약해보세요.\n전문 상담사가 도와드립니다."),
-    ).toBeInTheDocument();
+    const flatDescription = flatSection.querySelector('[data-slot="description"]');
+    await expect(flatDescription).toHaveTextContent("첫 상담을 예약해보세요.");
+    await expect(flatDescription).toHaveTextContent("전문 상담사가 도와드립니다.");
     await expect(flat.getByRole("button", { name: "상담 예약하기" })).toBeInTheDocument();
 
     await expect(
       compound.getByRole("heading", { level: 3, name: "상담 내역이 없습니다" }),
     ).toBeInTheDocument();
-    await expect(
-      compound.getByText("첫 상담을 예약해보세요.\n전문 상담사가 도와드립니다."),
-    ).toBeInTheDocument();
+    const compoundDescription = compoundSection.querySelector('[data-slot="description"]');
+    await expect(compoundDescription).toHaveTextContent("첫 상담을 예약해보세요.");
+    await expect(compoundDescription).toHaveTextContent("전문 상담사가 도와드립니다.");
     await expect(compound.getByRole("button", { name: "상담 예약하기" })).toBeInTheDocument();
   },
 };

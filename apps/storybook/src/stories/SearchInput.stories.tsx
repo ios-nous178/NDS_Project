@@ -273,7 +273,7 @@ export const SearchCallbackInteraction: Story = {
     const canvas = within(canvasElement);
     const user = createInteractionUser();
 
-    const searchButton = canvas.getByRole("button", { name: /검색/i });
+    const searchButton = canvas.getByRole("button", { name: "검색" });
     await user.click(searchButton);
 
     await expect(canvas.getByTestId("search-result")).toHaveTextContent('"번아웃" 검색 실행');
@@ -292,6 +292,7 @@ export const AccessibilityBehavior: Story = {
     await expect(searchbox).toHaveAttribute("aria-describedby");
     await expect(canvas.getByText("검색 버튼 또는 Enter 키로 실행됩니다")).toBeInTheDocument();
 
+    await user.clear(searchbox);
     await user.type(searchbox, "수면");
     await pause();
 

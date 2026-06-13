@@ -161,14 +161,21 @@ export const BottomSheetContent: React.FC<BottomSheetContentProps> = ({
 }) => {
   const { startClose, titleId, descriptionId } = useBottomSheetContext();
   const contentRef = useRef<HTMLDivElement>(null);
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    previousActiveElementRef.current = document.activeElement as HTMLElement | null;
+
     const el = contentRef.current;
     if (!el) return;
 
     const focusable = getFocusableElements(el);
     const target = focusable[0] ?? el;
     target.focus();
+
+    return () => {
+      previousActiveElementRef.current?.focus();
+    };
   }, []);
 
   return (
