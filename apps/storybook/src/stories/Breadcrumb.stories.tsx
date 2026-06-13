@@ -30,13 +30,12 @@ export const TwoLevels: Story = {
 
 export const FourLevels: Story = {
   name: "Variant/4단계",
-  tags: ["gallery"],
   args: {
     items: [
       { label: "홈", href: "/" },
-      { label: "서비스", href: "/service" },
-      { label: "심리검사", href: "/service/test" },
-      { label: "PHQ-9 우울증 검사" },
+      { label: "카테고리", href: "/category" },
+      { label: "하위 카테고리", href: "/category/sub" },
+      { label: "상세" },
     ],
   },
 };

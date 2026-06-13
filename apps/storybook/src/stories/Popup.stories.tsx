@@ -45,6 +45,38 @@ const meta: Meta<PopupProps> = {
 export default meta;
 type Story = StoryObj<PopupProps>;
 
+/* ─── Overview ─── 첫 화면 = 열린 팝업 예시(클릭 불필요). 갤러리 프리뷰로도 그대로 재사용.
+   Popup 은 body 로 portal 되므로 카드 안에서는 실제 nds-popup__* 클래스로 열린 형태를 정적 렌더. */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div className="nds-popup__content" data-slot="content" style={{ width: 224, margin: "0 auto" }}>
+      <div className="nds-popup__text" data-slot="text-info">
+        <h3 className="nds-popup__title" data-slot="title">
+          정말 삭제할까요?
+        </h3>
+        <p className="nds-popup__description" data-slot="description">
+          이 작업은 되돌릴 수 없습니다.
+        </p>
+      </div>
+      <div
+        className="nds-popup__actions"
+        data-slot="actions"
+        data-layout={currentActionsLayout()}
+        data-single="false"
+      >
+        <button type="button" className="nds-popup__btn nds-popup__btn--cancel">
+          취소
+        </button>
+        <button type="button" className="nds-popup__btn nds-popup__btn--confirm">
+          삭제
+        </button>
+      </div>
+    </div>
+  ),
+};
+
 /* ─── Playground ─── */
 
 function PopupExample(args: React.ComponentProps<typeof Popup>) {
@@ -305,7 +337,6 @@ function CompoundDemo() {
 }
 
 export const CompoundAPI: Story = {
-  tags: ["gallery"],
   name: "Recipe/Compound API",
   render: () => <CompoundDemo />,
 };
@@ -342,7 +373,6 @@ function DestructiveConfirmDemo() {
 }
 
 export const DestructiveConfirm: Story = {
-  tags: ["gallery"],
   name: "Recipe/Destructive Confirm",
   render: () => <DestructiveConfirmDemo />,
 };

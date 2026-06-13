@@ -30,7 +30,6 @@ export const Playground: Story = {
 };
 
 export const WithPresets: Story = {
-  tags: ["gallery"],
   name: "Recipe/캐포비 빠른설정 프리셋 (자정까지)",
   render: function Render() {
     const [t, setT] = useState("18:00");

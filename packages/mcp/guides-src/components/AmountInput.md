@@ -4,7 +4,7 @@
 
 ## summary
 
-큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프. NumberStepper(작은 정수)와 분리.
+큰 금액/수량 입력(원·명·개·포인트 등). 자동 천 단위 콤마, presets(빠른 입력), max/min 클램프.
 
 ## pitfalls
 

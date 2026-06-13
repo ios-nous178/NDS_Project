@@ -32,7 +32,6 @@ export const Playground: Story = {
 
 export const Sizes: Story = {
   name: "Variant/모든 크기",
-  tags: ["gallery"],
   render: () => (
     <div
       style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}

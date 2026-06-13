@@ -33,8 +33,31 @@ export const Playground: Story = {
   },
 };
 
-export const Single: Story = {
+const GALLERY_CATEGORIES = [
+  { key: "all", label: "전체" },
+  { key: "meditation", label: "명상", count: 12 },
+  { key: "sleep", label: "수면", count: 8 },
+];
+
+export const Overview: Story = {
   tags: ["gallery"],
+  name: "Overview",
+  render: function Render() {
+    const [v, setV] = useState<string[]>(["meditation"]);
+    return (
+      <div style={{ width: 320 }}>
+        <FilterBar
+          options={GALLERY_CATEGORIES}
+          value={v}
+          onValueChange={setV}
+          showReset
+        />
+      </div>
+    );
+  },
+};
+
+export const Single: Story = {
   name: "Variant/단일 선택",
   render: function Render() {
     const [v, setV] = useState<string[]>(["all"]);

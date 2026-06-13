@@ -46,6 +46,35 @@ const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div style={{ width: 353 }}>{children}</div>
 );
 
+/* ─── Overview (gallery) — 실제 인기글 목록 + 더보기 ─── */
+
+const galleryItems: PopularPostsItem[] = [
+  { id: 1, title: "오늘 만보 걷기 성공한 사람 모여요", count: 128 },
+  { id: 2, title: "출근 전 10분 스트레칭 루틴 공유", count: 64 },
+  { id: 3, title: "주말마다 동네 한 바퀴 산책하는 중", count: 47 },
+  { id: 4, title: "물 2L 마시기 일주일째 후기", count: 23 },
+  { id: 5, title: "잠 잘 오는 명상 음악 추천받아요", count: 9 },
+];
+
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  render: () => (
+    <Frame>
+      <PopularPosts
+        tabs={[
+          { key: "realtime", label: "실시간" },
+          { key: "weekly", label: "주간" },
+          { key: "monthly", label: "월간" },
+        ]}
+        activeTabKey="realtime"
+        items={galleryItems}
+        onMoreClick={() => {}}
+      />
+    </Frame>
+  ),
+};
+
 /* ─── State: Default (실시간 active) ─── */
 
 function DefaultStory() {
@@ -127,7 +156,6 @@ export const FewItems: Story = {
 /* ─── Variant: Count formats ─── */
 
 export const CountVariants: Story = {
-  tags: ["gallery"],
   name: "Variant/Count Formats",
   render: () => (
     <Frame>

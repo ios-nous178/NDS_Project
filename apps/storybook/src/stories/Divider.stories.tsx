@@ -17,6 +17,28 @@ const meta: Meta<typeof Divider> = {
 export default meta;
 type Story = StoryObj<typeof Divider>;
 
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  render: () => (
+    <div style={{ width: 240, fontSize: 14, color: "#1a1a1a" }}>
+      <div style={{ fontWeight: 600 }}>섹션 제목</div>
+      <Divider spacing={10} />
+      <div style={{ color: "#666" }}>본문 내용이 여기에 들어갑니다.</div>
+      <Divider thickness={6} color="#eee" spacing={12} />
+      <div style={{ fontWeight: 600 }}>다음 섹션</div>
+      <Divider spacing={10} />
+      <div style={{ display: "flex", alignItems: "center", color: "#666" }}>
+        <span>약관</span>
+        <Divider orientation="vertical" />
+        <span>개인정보</span>
+        <Divider orientation="vertical" />
+        <span>고객센터</span>
+      </div>
+    </div>
+  ),
+};
+
 export const Playground: Story = {
   decorators: [
     (Story) => (
@@ -28,7 +50,6 @@ export const Playground: Story = {
 };
 
 export const Horizontal: Story = {
-  tags: ["gallery"],
   name: "Variant/Horizontal",
   render: () => (
     <div style={{ width: 300 }}>
@@ -53,7 +74,6 @@ export const Vertical: Story = {
 };
 
 export const ThickSection: Story = {
-  tags: ["gallery"],
   name: "Recipe/섹션 구분선",
   render: () => (
     <div style={{ width: 300 }}>

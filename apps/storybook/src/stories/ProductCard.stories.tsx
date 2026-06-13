@@ -112,21 +112,21 @@ export const SoldOut: Story = {
 
 export const CashdealDesktop: Story = {
   tags: ["gallery"],
-  name: "Variant/Cashdeal Desktop (md)",
+  name: "Variant/Desktop (md)",
   parameters: {
     docs: {
       description: {
         story:
-          "캐시딜 데스크탑 카드 (236w). 랭킹 배지 + 원가(취소선) + 할인율/가격 + 적립/무료배송 칩 + 구매자수/별점 풀스펙.",
+          "데스크탑 상품 카드 (236w). 랭킹 배지 + 원가(취소선) + 할인율/가격 + 적립/무료배송 칩 + 구매자수/별점 풀스펙.",
       },
     },
   },
   render: () => (
     <ProductCard
       size="md"
-      thumbnail="https://picsum.photos/seed/cashdeal-pc-1/472/472"
+      thumbnail="https://picsum.photos/seed/product-pc-1/472/472"
       rankingNumber={1}
-      title="허닭X캐시딜단독 베스트 닭가슴살/주먹밥/소시지 외 패키지 모음전"
+      title="베스트셀러 종합비타민 30일분 2박스 패키지 모음전"
       originalPrice={20250}
       discountPercent={31}
       price={13900}
@@ -142,8 +142,7 @@ export const CashdealDesktop: Story = {
 /* ─── Recipe: 캐시딜 PC 랭킹 리스트 1~5위 ─── */
 
 export const CashdealRankingRow: Story = {
-  tags: ["gallery"],
-  name: "Recipe/Cashdeal Ranking (Desktop)",
+  name: "Recipe/랭킹 목록 (Desktop)",
   parameters: {
     docs: {
       description: {

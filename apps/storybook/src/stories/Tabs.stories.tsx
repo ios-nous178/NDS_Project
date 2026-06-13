@@ -105,6 +105,58 @@ function PlatformLabel({ text }: { text: string }) {
 }
 
 /* ════════════════════════════════════════════
+ * Gallery preview — 카탈로그 카드용 컴팩트 프리뷰
+ * ════════════════════════════════════════════ */
+
+function GalleryPreviewDemo() {
+  const [lineKey, setLineKey] = useState("home");
+  const [chipKey, setChipKey] = useState("all");
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-comfortable)",
+        width: 300,
+      }}
+    >
+      <Tabs
+        variant="line"
+        size="pc"
+        tone="neutral"
+        activeKey={lineKey}
+        onTabChange={setLineKey}
+        items={[
+          { key: "home", title: "홈" },
+          { key: "list", title: "목록" },
+          { key: "info", title: "정보" },
+        ]}
+      />
+      <Tabs
+        variant="chip"
+        size="mobile"
+        tone="color"
+        fullWidth={false}
+        activeKey={chipKey}
+        onTabChange={setChipKey}
+        items={[
+          { key: "all", title: "전체" },
+          { key: "recent", title: "최근" },
+          { key: "saved", title: "저장됨" },
+        ]}
+      />
+    </div>
+  );
+}
+
+export const GalleryPreview: Story = {
+  tags: ["gallery"],
+  name: "Recipe/Gallery Preview",
+  parameters: { layout: "centered" },
+  render: () => <GalleryPreviewDemo />,
+};
+
+/* ════════════════════════════════════════════
  * Default story — 컨트롤로 조작 가능
  * ════════════════════════════════════════════ */
 
@@ -481,7 +533,6 @@ function MiniLineTab({ state }: { state: "default" | "active" | "hover" | "disab
 }
 
 export const States: Story = {
-  tags: ["gallery"],
   name: "Recipe/States",
   parameters: { layout: "padded" },
   render: () => (
@@ -568,7 +619,6 @@ function SpecTable({
 }
 
 export const SizeSpecs: Story = {
-  tags: ["gallery"],
   name: "Recipe/Size & Specs",
   parameters: { layout: "padded" },
   render: () => (

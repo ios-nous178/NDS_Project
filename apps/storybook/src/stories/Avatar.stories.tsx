@@ -32,7 +32,6 @@ export const Playground: Story = {
 
 export const WithImage: Story = {
   name: "Variant/이미지",
-  tags: ["gallery"],
   args: { src: "https://i.pravatar.cc/150?img=5", alt: "사용자", size: "lg" },
 };
 

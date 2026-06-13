@@ -24,9 +24,37 @@ const meta: Meta<CardProps> = {
 export default meta;
 type Story = StoryObj<CardProps>;
 
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+      <div style={{ width: 150 }}>
+        <Card
+          variant="outlined"
+          title="주간 리포트"
+          description="이번 주 활동 요약"
+          metadata="3분 전 업데이트"
+        />
+      </div>
+      <div style={{ width: 150 }}>
+        <Card
+          variant="flat"
+          title="새 소식"
+          description="업데이트된 내용이 있어요"
+          cta={
+            <Button size="sm" variant="outlined">
+              보기
+            </Button>
+          }
+        />
+      </div>
+    </div>
+  ),
+};
+
 export const Outlined: Story = {
   name: "State/Outlined",
-  tags: ["gallery"],
   render: () => (
     <div style={{ width: 300 }}>
       <Card
@@ -114,7 +142,6 @@ export const Flat: Story = {
 
 export const CompoundCounselorCard: Story = {
   name: "Recipe/Compound Counselor Card",
-  tags: ["gallery"],
   render: () => (
     <div style={{ width: 282 }}>
       <Card.Root variant="outlined" clickable>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { groupByCategorySorted, orderedCategories } from "@nudge-design/catalog";
 import { getGalleryVariants } from "./galleryRegistry";
@@ -118,18 +118,20 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
 
       <div style={cardPreview}>
         {variants.length > 0 ? (
-          <div style={previewStack}>
-            {variants.map((v) => (
-              <div key={v.exportName} style={previewVariant}>
-                {variants.length > 1 && <span style={previewVariantLabel}>{v.label}</span>}
-                <ErrorBoundary
-                  fallback={<span style={previewPlaceholder}>{entry.name} preview</span>}
-                >
-                  <v.Component />
-                </ErrorBoundary>
-              </div>
-            ))}
-          </div>
+          <AutoFitPreview>
+            <div style={previewStack}>
+              {variants.map((v) => (
+                <div key={v.exportName} style={previewVariant}>
+                  {variants.length > 1 && <span style={previewVariantLabel}>{v.label}</span>}
+                  <ErrorBoundary
+                    fallback={<span style={previewPlaceholder}>{entry.name} preview</span>}
+                  >
+                    <v.Component />
+                  </ErrorBoundary>
+                </div>
+              ))}
+            </div>
+          </AutoFitPreview>
         ) : (
           <span style={previewPlaceholder}>{entry.name}</span>
         )}
@@ -239,6 +241,57 @@ const TONE_COLOR: Record<GuideTone, string> = {
   warn: "#C77700",
   info: "#017EE4",
 };
+
+/**
+ * 프리뷰가 카드 박스(폭 + PREVIEW_MAX_HEIGHT)를 넘치면 transform scale 로 맞춰 축소하고,
+ * 축소된 카드에만 % 배지를 단다. 들어맞는 카드는 100% 그대로(배지 없음).
+ * 측정은 transform 의 영향을 안 받는 offsetWidth/Height 로 — ResizeObserver 로 콘텐츠/폭 변화 추적.
+ */
+const PREVIEW_MAX_HEIGHT = 240;
+
+function AutoFitPreview({ children }: { children: React.ReactNode }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState({ scale: 1, height: 0 });
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    const content = contentRef.current;
+    if (!box || !content) return;
+    const measure = () => {
+      const availW = box.clientWidth;
+      const natW = content.offsetWidth;
+      const natH = content.offsetHeight;
+      if (!availW || !natW || !natH) return;
+      const scale = Math.min(1, availW / natW, PREVIEW_MAX_HEIGHT / natH);
+      setFit({ scale, height: natH * scale });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(box);
+    ro.observe(content);
+    return () => ro.disconnect();
+  }, [children]);
+
+  const pct = Math.round(fit.scale * 100);
+  return (
+    <div ref={boxRef} style={{ ...autoFitBox, height: fit.height || undefined }}>
+      <div
+        ref={contentRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transformOrigin: "top center",
+          transform: `translateX(-50%) scale(${fit.scale})`,
+        }}
+      >
+        {children}
+      </div>
+      {fit.scale < 1 && <span style={fitBadge}>{pct}%</span>}
+    </div>
+  );
+}
 
 /* React 18에서 error boundary는 클래스만 가능. 인라인으로 정의. */
 class ErrorBoundary extends React.Component<
@@ -509,16 +562,38 @@ const syncedTag: React.CSSProperties = {
   borderRadius: 5,
 };
 
-/* 미리보기 영역은 카드 크기와 무관하게 컴포넌트 실제 크기 유지.
- * 영역만 넓혀서 여백을 두고, 안의 UI는 자연 크기로 중앙 정렬. */
+/* 미리보기 영역. 컴포넌트는 자연 크기로 렌더하되, 박스를 넘치면 AutoFitPreview 가 맞춰 축소. */
 const cardPreview: React.CSSProperties = {
+  position: "relative",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   minHeight: 180,
   padding: "var(--semantic-inset-modal)",
   background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(43,150,237,0.03), transparent 80%)",
-  overflowX: "auto",
+  overflow: "hidden",
+};
+
+// AutoFitPreview 박스 — 폭 100%, 높이는 측정된 (축소 후) 콘텐츠 높이. 안의 콘텐츠는 absolute 중앙.
+const autoFitBox: React.CSSProperties = {
+  position: "relative",
+  width: "100%",
+};
+
+// 축소된 카드에만 뜨는 현재 배율 배지 (우상단).
+const fitBadge: React.CSSProperties = {
+  position: "absolute",
+  top: 4,
+  right: 4,
+  fontSize: 10,
+  fontWeight: 700,
+  color: "#888",
+  background: "rgba(255,255,255,0.92)",
+  border: "1px solid #ECECEC",
+  borderRadius: 5,
+  padding: "1px 5px",
+  fontFamily: "ui-monospace, SFMono-Regular, monospace",
+  pointerEvents: "none",
 };
 
 // 큐레이션된 gallery 변형들을 세로로 쌓아 인라인 노출. 변형이 2개 이상이면 작은 라벨을 단다.

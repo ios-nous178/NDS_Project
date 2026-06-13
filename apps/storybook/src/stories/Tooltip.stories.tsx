@@ -29,6 +29,21 @@ const meta: Meta<typeof Tooltip> = {
 export default meta;
 type Story = StoryObj<typeof Tooltip>;
 
+/* ─── Overview ─── 첫 화면 = 툴팁이 떠 있는 상태(클릭/hover 불필요). 갤러리 프리뷰로도 재사용(정적 인라인). */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ position: "relative", paddingTop: 32, display: "inline-block" }}>
+      <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", padding: "6px 10px", background: "#111", color: "#fff", borderRadius: 6, fontSize: 11, whiteSpace: "nowrap" }}>
+        툴팁 내용
+        <span aria-hidden style={{ position: "absolute", bottom: -4, left: "50%", transform: "translateX(-50%) rotate(45deg)", width: 8, height: 8, background: "#111" }} />
+      </div>
+      <div style={{ display: "inline-block", padding: "6px 12px", border: "1px solid #D8D8D8", borderRadius: 8, fontSize: 13, color: "#111" }}>Hover</div>
+    </div>
+  ),
+};
+
 /** hover 없이도 보이도록 trigger 를 감싸 충분한 여백을 둔 미리보기 프레임. */
 const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div style={{ padding: 96, display: "inline-flex" }}>{children}</div>
@@ -65,7 +80,6 @@ export const Playground: Story = {
 /* ─── 2. 짧은 힌트 (단일/두 줄) ─── */
 
 export const ShortHint: Story = {
-  tags: ["gallery"],
   name: "Variant/짧은 힌트 (자동 줄바꿈)",
   render: () => (
     <Frame>

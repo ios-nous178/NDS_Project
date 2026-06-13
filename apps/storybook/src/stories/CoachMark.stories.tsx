@@ -13,6 +13,22 @@ const meta: Meta<typeof CoachMark> = {
 export default meta;
 type Story = StoryObj<typeof CoachMark>;
 
+/* ─── Overview ─── 첫 화면 = 안내 말풍선이 떠 있는 상태(클릭 불필요). 갤러리 프리뷰로도 재사용(정적 인라인). */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ position: "relative", width: 200, display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 68 }}>
+      <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 200, padding: "10px 12px", background: "#111", color: "#fff", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.18)" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 2 }}>여기를 눌러보세요</div>
+        <div style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>이 버튼이 핵심 액션입니다.</div>
+        <span aria-hidden style={{ position: "absolute", bottom: -5, left: "50%", transform: "translateX(-50%) rotate(45deg)", width: 10, height: 10, background: "#111" }} />
+      </div>
+      <div style={{ padding: "8px 14px", border: "1px solid #D8D8D8", borderRadius: 8, fontSize: 13, color: "#111", background: "#fff" }}>도움말</div>
+    </div>
+  ),
+};
+
 export const Playground: Story = {
   render: function Render() {
     const [open, setOpen] = useState(false);
@@ -77,7 +93,6 @@ export const Playground: Story = {
 };
 
 export const SingleStep: Story = {
-  tags: ["gallery"],
   name: "Recipe/단일 안내",
   render: function Render() {
     const [open, setOpen] = useState(false);

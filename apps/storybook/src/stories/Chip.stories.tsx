@@ -67,10 +67,31 @@ const meta: Meta<ChipProps> = {
 export default meta;
 type Story = StoryObj<ChipProps>;
 
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  render: () => (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--semantic-gap-default)",
+        flexWrap: "wrap",
+        maxWidth: 240,
+      }}
+    >
+      <Chip label="선택됨" variant="fill" color="brand" />
+      <Chip label="선택 가능" variant="outlined" color="brand" />
+      <Chip label="보조" variant="ghost" color="neutral" />
+      <Chip label="대면" variant="ghost" color="neutral" size="sm" icon={<PinIcon size={14} color="currentColor" />} />
+      <Chip label="필터" variant="fill" color="brand" onRemove={() => {}} />
+    </div>
+  ),
+};
+
 export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
-  tags: ["gallery"],
   name: "Spec/Style × Color Matrix",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
@@ -183,7 +204,6 @@ export const Disabled: Story = {
 };
 
 export const WithIcon: Story = {
-  tags: ["gallery"],
   name: "Recipe/With Icon",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>

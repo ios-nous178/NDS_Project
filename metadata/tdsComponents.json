@@ -173,7 +173,7 @@
       "platforms": ["mobile", "rn"],
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/numeric-spinner/",
-      "nds": "NumberStepper",
+      "nds": null,
       "figmaByBrand": {}
     },
     {

@@ -15,7 +15,7 @@ export const Single: Story = {
   name: "Variant/Single (한 번에 하나)",
   tags: ["gallery"],
   render: () => (
-    <div style={{ width: "100%", maxWidth: 360 }}>
+    <div style={{ width: 320 }}>
       <Accordion type="single" defaultValue="a">
         <AccordionItem value="a">
           <AccordionTrigger>이용 약관</AccordionTrigger>
@@ -24,10 +24,6 @@ export const Single: Story = {
         <AccordionItem value="b">
           <AccordionTrigger>개인정보 처리방침</AccordionTrigger>
           <AccordionContent>개인정보 수집·이용 항목과 보관 기간을 안내합니다.</AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="c">
-          <AccordionTrigger>마케팅 정보 수신 동의</AccordionTrigger>
-          <AccordionContent>이벤트·혜택 알림 수신에 대한 선택 동의 항목입니다.</AccordionContent>
         </AccordionItem>
       </Accordion>
     </div>

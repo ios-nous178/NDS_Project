@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T09:37:49.055Z",
+  "generatedAt": "2026-06-13T10:43:11.694Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1873,74 +1873,6 @@
       ]
     },
     {
-      "name": "CircularProgress",
-      "props": [
-        {
-          "name": "value",
-          "optional": false,
-          "type": "number"
-        },
-        {
-          "name": "max",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "size",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "thickness",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "color",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "trackColor",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "label",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "caption",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "hideLabel",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "aria-label",
-          "optional": true,
-          "type": "string"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/CircularProgress.d.ts",
-      "htmlTag": "nds-circular-progress",
-      "htmlObservedAttrs": [
-        "value",
-        "max",
-        "size",
-        "thickness",
-        "color",
-        "track-color",
-        "label",
-        "caption",
-        "hide-label"
-      ]
-    },
-    {
       "name": "CoachMark",
       "props": [
         {
@@ -2069,54 +2001,6 @@
         "time",
         "text",
         "show-reply"
-      ]
-    },
-    {
-      "name": "Confetti",
-      "props": [
-        {
-          "name": "active",
-          "optional": false,
-          "type": "boolean"
-        },
-        {
-          "name": "onComplete",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "colors",
-          "optional": true,
-          "type": "string[]"
-        },
-        {
-          "name": "count",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "duration",
-          "optional": true,
-          "type": "number"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/Confetti.d.ts",
-      "htmlTag": "nds-confetti",
-      "htmlAttrs": {
-        "color": [
-          "#FF6B6B",
-          "#FFD166",
-          "#06D6A0",
-          "#118AB2",
-          "#9D4EDD",
-          "#FF9F1C"
-        ]
-      },
-      "htmlObservedAttrs": [
-        "active",
-        "colors",
-        "count",
-        "duration"
       ]
     },
     {
@@ -4629,73 +4513,6 @@
         "description",
         "time",
         "clickable"
-      ]
-    },
-    {
-      "name": "NumberStepper",
-      "props": [
-        {
-          "name": "value",
-          "optional": false,
-          "type": "number"
-        },
-        {
-          "name": "onValueChange",
-          "optional": false,
-          "type": "(value: number) => void"
-        },
-        {
-          "name": "min",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "max",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "step",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "size",
-          "optional": true,
-          "type": "NumberStepperSize"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "editable",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "unit",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "aria-label",
-          "optional": true,
-          "type": "string"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/NumberStepper.d.ts",
-      "htmlTag": "nds-number-stepper",
-      "htmlObservedAttrs": [
-        "value",
-        "min",
-        "max",
-        "step",
-        "size",
-        "disabled",
-        "editable",
-        "unit"
       ]
     },
     {
@@ -13980,10 +13797,8 @@
     "nds-checkbox-group",
     "nds-checkbox-tree",
     "nds-chip",
-    "nds-circular-progress",
     "nds-coach-mark",
     "nds-comment-item",
-    "nds-confetti",
     "nds-confirm-tooltip",
     "nds-content-viewer",
     "nds-countdown-timer",
@@ -14038,7 +13853,6 @@
     "nds-multi-step-form",
     "nds-notice-alert",
     "nds-notification-item",
-    "nds-number-stepper",
     "nds-order-summary-card",
     "nds-page-header",
     "nds-pagination",
@@ -14495,21 +14309,6 @@
       ]
     },
     {
-      "tag": "nds-circular-progress",
-      "attrs": {},
-      "observedAttrs": [
-        "value",
-        "max",
-        "size",
-        "thickness",
-        "color",
-        "track-color",
-        "label",
-        "caption",
-        "hide-label"
-      ]
-    },
-    {
       "tag": "nds-coach-mark",
       "attrs": {},
       "observedAttrs": [
@@ -14532,25 +14331,6 @@
         "time",
         "text",
         "show-reply"
-      ]
-    },
-    {
-      "tag": "nds-confetti",
-      "attrs": {
-        "color": [
-          "#FF6B6B",
-          "#FFD166",
-          "#06D6A0",
-          "#118AB2",
-          "#9D4EDD",
-          "#FF9F1C"
-        ]
-      },
-      "observedAttrs": [
-        "active",
-        "colors",
-        "count",
-        "duration"
       ]
     },
     {
@@ -15060,20 +14840,6 @@
         "description",
         "time",
         "clickable"
-      ]
-    },
-    {
-      "tag": "nds-number-stepper",
-      "attrs": {},
-      "observedAttrs": [
-        "value",
-        "min",
-        "max",
-        "step",
-        "size",
-        "disabled",
-        "editable",
-        "unit"
       ]
     },
     {

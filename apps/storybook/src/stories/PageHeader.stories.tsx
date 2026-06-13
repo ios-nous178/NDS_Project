@@ -12,6 +12,24 @@ const meta: Meta<typeof PageHeader> = {
 export default meta;
 type Story = StoryObj<typeof PageHeader>;
 
+/* ─── Overview ─── 첫 화면 = 대표 헤더(폭 제한). 갤러리 프리뷰로도 재사용.
+   PageHeader 는 fullscreen 폭이라 카탈로그 카드에선 폭을 제한해 컴팩트하게 보인다. */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div style={{ width: 320 }}>
+      <PageHeader
+        title="상세"
+        subtitle="부제목이 여기에 표시됩니다"
+        onBack={() => {}}
+        actions={<Button size="sm">저장</Button>}
+        bordered
+      />
+    </div>
+  ),
+};
+
 export const Playground: Story = {
   render: () => (
     <PageHeader
@@ -24,7 +42,6 @@ export const Playground: Story = {
 };
 
 export const WithBack: Story = {
-  tags: ["gallery"],
   name: "Recipe/뒤로가기",
   render: () => (
     <PageHeader
@@ -37,7 +54,6 @@ export const WithBack: Story = {
 };
 
 export const WithBreadcrumb: Story = {
-  tags: ["gallery"],
   name: "Recipe/브레드크럼 + 액션",
   render: () => (
     <PageHeader

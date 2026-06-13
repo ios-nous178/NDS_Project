@@ -29,6 +29,18 @@ const meta: Meta<typeof TitleGroup> = {
 export default meta;
 type Story = StoryObj<typeof TitleGroup>;
 
+export const Overview: Story = {
+  tags: ["gallery"],
+  name: "Overview",
+  parameters: { layout: "padded" },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, width: 240 }}>
+      <TitleGroup level="h3" title="오늘의 마음 케어" subtitle="맞춤 콘텐츠를 만나보세요" />
+      <TitleGroup level="h5" title="오늘의 루틴" subtitle="스스로 마음건강을 관리하는 습관" />
+    </div>
+  ),
+};
+
 export const Playground: Story = {};
 
 export const H1: Story = {
@@ -86,7 +98,6 @@ export const TitleOnly: Story = {
 };
 
 export const AllLevels: Story = {
-  tags: ["gallery"],
   name: "Variant/All Levels",
   parameters: { layout: "padded" },
   render: () => (

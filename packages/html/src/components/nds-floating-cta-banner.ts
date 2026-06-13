@@ -46,7 +46,11 @@ export class NdsFloatingCtaBanner extends NdsElement {
   static elementName = "nds-floating-cta-banner";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-floating-cta-banner"].observedAttributes, "caption", "cta-text"];
+    return [
+      ...COMPONENT_ATTRS["nds-floating-cta-banner"].observedAttributes,
+      "caption",
+      "cta-text",
+    ];
   }
 
   private _btn: HTMLButtonElement | null = null;
@@ -134,6 +138,7 @@ export class NdsFloatingCtaBanner extends NdsElement {
 
     this._btn.dataset.size = size;
     this._btn.dataset.floating = floating ? "true" : "false";
+    this._btn.dataset.hasIcon = this._hasLeadingIcon ? "true" : "false";
     this._btn.setAttribute("aria-label", ariaLabel);
 
     this._captionEl.textContent = caption;

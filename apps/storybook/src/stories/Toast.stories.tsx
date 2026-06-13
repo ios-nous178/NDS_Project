@@ -34,6 +34,26 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
+/* ─── Overview (gallery) ─── */
+
+// 갤러리용 정적 프리뷰 — Toast 는 portal·자동소멸이라 트리거 버튼만 두면 카드에 아무것도 안 보인다.
+// 열린 토스트 UI 자체를 nds-toast__item / __message 클래스로 인라인 정적 렌더(viewport 는 position:fixed 라 제외).
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  parameters: { layout: "padded" },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
+      <div className="nds-toast__item" role="status">
+        <span className="nds-toast__message">저장되었습니다</span>
+      </div>
+      <div className="nds-toast__item" style={{ borderRadius: 9999 }} role="status">
+        <span className="nds-toast__message">변경 사항이 적용되었습니다</span>
+      </div>
+    </div>
+  ),
+};
+
 /* ─── Default ─── */
 
 function DefaultToastExample() {
@@ -55,7 +75,6 @@ function BottomShapeExample() {
 }
 
 export const BottomShape: Story = {
-  tags: ["gallery"],
   name: "State/Bottom (모바일 · rounded 24)",
   render: () => <BottomShapeExample />,
 };
@@ -148,7 +167,6 @@ function StackingExample() {
 }
 
 export const Stacking: Story = {
-  tags: ["gallery"],
   name: "Recipe/Stacking Max Count (opt-in)",
   // 기본값은 1개 교체 — maxCount 를 올려야 스택된다.
   parameters: { toastMaxCount: 3 },

@@ -258,18 +258,6 @@
     "notes": "AudioPlayer의 영상 버전. 라이브 스트리밍/HLS는 별도 라이브러리 필요."
   },
   {
-    "name": "NumberStepper",
-    "category": "입력",
-    "status": "implemented",
-    "description": "수량 조절 +/- 버튼 입력. min/max 자동 비활성, 단위 표시, 직접 타이핑 옵션",
-    "storybookTitle": "Components/Inputs/NumberStepper",
-    "docsPath": "/components/number-stepper",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "복약 횟수, 챌린지 목표, 알림 빈도, 수량 입력",
-    "notes": "Stepper(과정 인디케이터)와 다름. 작은 정수 값 조절 전용."
-  },
-  {
     "name": "Autocomplete",
     "category": "입력",
     "status": "implemented",
@@ -388,18 +376,6 @@
     "figmaNodeId": "",
     "usageSummary": "메트릭 카드 추이, 리스트 트렌드, 대시보드 신호",
     "notes": "본격 차트 아님. 50+ 포인트는 부적합. baseline은 음수 데이터일 때만."
-  },
-  {
-    "name": "CircularProgress",
-    "category": "피드백",
-    "status": "implemented",
-    "description": "원형 진행도. value/max 비율, 라벨/캡션 커스텀, semantic 색상 지원",
-    "storybookTitle": "Components/Feedback/CircularProgress",
-    "docsPath": "/components/circular-progress",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "일일 목표 달성률, 챌린지 진행, 업로드 진행도",
-    "notes": "ScoreGauge(단계 분류)와 분리, ProgressBar(가로)와 분리."
   },
   {
     "name": "MultiStepForm",
@@ -666,18 +642,6 @@
     "figmaNodeId": "",
     "usageSummary": "채팅 음성 메시지, 짧은 음성 메모 재생",
     "notes": "AudioPlayer(트랙바)와 분리된 컴팩트 메시지 형태."
-  },
-  {
-    "name": "Confetti",
-    "category": "피드백",
-    "status": "implemented",
-    "description": "축하 이펙트. canvas + RAF 기반, 색상/입자수/지속 커스텀",
-    "storybookTitle": "Components/Feedback/Confetti",
-    "docsPath": "/components/confetti",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "챌린지 완료, 첫 가입 환영, 검사 종료 (긍정 결과)",
-    "notes": "active를 항상 true로 두지 말 것. onComplete에서 false 리셋."
   },
   {
     "name": "CommentItem",

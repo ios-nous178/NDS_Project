@@ -237,6 +237,40 @@ const meta: Meta<ModalProps> = {
 export default meta;
 type Story = StoryObj<ModalProps>;
 
+/* ─── Overview ─── 첫 화면 = 열린 모달 예시(클릭 불필요). 갤러리 프리뷰로도 그대로 재사용.
+   Modal 은 body 로 portal 되므로 카드 안에서는 실제 nds-modal__* 클래스로 열린 형태를 정적 렌더. */
+export const Overview: Story = {
+  name: "Overview",
+  tags: ["gallery"],
+  render: () => (
+    <div className="nds-modal__content" style={{ width: 244, margin: "0 auto" }}>
+      <div className="nds-modal__header" data-slot="header" data-has-title="true">
+        <span aria-hidden className="nds-modal__header-spacer" data-slot="header-spacer" />
+        <h3 className="nds-modal__header-title">알림</h3>
+        <button type="button" aria-hidden tabIndex={-1} className="nds-modal__close" data-slot="close">
+          ✕
+        </button>
+      </div>
+      <div className="nds-modal__body" data-slot="body">
+        저장한 내용을 적용할까요?
+      </div>
+      <div
+        className="nds-modal__footer"
+        data-slot="footer"
+        data-layout={currentActionsLayout()}
+        data-has-both-actions="true"
+      >
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-cancel">
+          취소
+        </button>
+        <button type="button" className="nds-modal__footer-action nds-modal__footer-confirm">
+          확인
+        </button>
+      </div>
+    </div>
+  ),
+};
+
 function FlatModalExample({
   bodyText = "전문 상담사와의 상담을 예약하시겠습니까?",
   ...args
@@ -1098,7 +1132,6 @@ export const WebViewPlaylistEditUI: Story = {
 };
 
 export const WebViewPlaylistEditWithSlotProps: Story = {
-  tags: ["gallery"],
   name: "Recipe/WebView Playlist Edit With Slot Props",
   render: () => <PlaylistEditModalSlotPropsExample />,
   parameters: {
@@ -1111,7 +1144,6 @@ export const WebViewPlaylistEditWithSlotProps: Story = {
 };
 
 export const WebViewPlaylistEditWithClassNames: Story = {
-  tags: ["gallery"],
   name: "Recipe/WebView Playlist Edit With Class Names",
   render: () => <PlaylistEditModalClassNameExample />,
   parameters: {
