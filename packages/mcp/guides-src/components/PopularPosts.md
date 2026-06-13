@@ -45,7 +45,7 @@ usagePolicy:
 
 ## summary
 
-사이드바용 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tabs(기간/정렬 pill 5개) + ranked row 리스트 의 3단 레이어. Row = Rank(Bold) + Title(truncate) + Count(red, `[N]` / 999 초과 `[+999]`). PC 사이드바 폭(≈353w) 가정 — 모바일은 별도 모듈로 분기.
+사이드바용 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tab(기간/정렬 pill 5개) + ranked row 리스트 의 3단 레이어. Row = Rank(Bold) + Title(truncate) + Count(red, `[N]` / 999 초과 `[+999]`). PC 사이드바 폭(≈353w) 가정 — 모바일은 별도 모듈로 분기.
 
 ## pitfalls
 

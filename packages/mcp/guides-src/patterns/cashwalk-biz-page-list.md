@@ -23,7 +23,7 @@ metrics:
   pageSizeSelect: "'10개씩 보기' 셀렉트 (우측)"
   validatePaginationThreshold: Row > 50 필수 / ≤ 10 생략
   validateFilterThreshold: 필터 > 4 → 패널 분리
-  emptyState: "'등록된 OOO이 없습니다' + CTA 필수"
+  resultState: "'등록된 OOO이 없습니다' + CTA 필수"
   relatedPatterns: cashwalk-biz-page-patterns, cashwalk-biz-action-pattern, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab, cashwalk-biz-admin-alert-banner
 figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234
 references:

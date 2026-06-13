@@ -37,7 +37,7 @@ export const Notice: Story = {
     const [liked, setLiked] = useState(false);
     const [count, setCount] = useState(12);
     return (
-      <div style={{ maxWidth: 320, margin: "0 auto" }}>
+      <div style={{ maxWidth: 640, margin: "0 auto" }}>
         <Article.Root>
           <Article.Header title="6월 정기 점검 안내">
             <span>운영팀</span>

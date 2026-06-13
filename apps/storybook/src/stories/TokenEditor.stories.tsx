@@ -35,7 +35,7 @@ function groupTokens(vars: Record<string, string>) {
     else if (key.includes("--nds-bottom-sheet")) group = "BottomSheet";
     else if (key.includes("--nds-app-bar")) group = "AppBar";
     else if (key.includes("--nds-footer")) group = "Footer";
-    else if (key.includes("--nds-tab")) group = "Tabs";
+    else if (key.includes("--nds-tab")) group = "Tab";
     else if (key.includes("--semantic")) group = "시맨틱 컬러";
     else if (key.includes("--radius")) group = "Radius";
     else if (key.includes("--font")) group = "Typography";
@@ -130,7 +130,7 @@ function TokenEditor() {
       "Input",
       "AppBar",
       "Footer",
-      "Tabs",
+      "Tab",
       "Toggle",
       "Toast",
       "Modal",

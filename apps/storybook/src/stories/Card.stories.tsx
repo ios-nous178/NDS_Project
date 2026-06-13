@@ -24,31 +24,46 @@ const meta: Meta<CardProps> = {
 export default meta;
 type Story = StoryObj<CardProps>;
 
-export const Overview: Story = {
-  name: "Overview",
+// variant 을 카드별로 나눠 카탈로그가 각 프리뷰에 storyName 라벨을 달도록 한다.
+// outlined = 보더로 분리 / flat = 보더·그림자 없음 → 회색 surface 위에 얹어야 카드로 읽힘.
+export const GalleryOutlined: Story = {
+  name: "variant=outlined (보더로 분리)",
   tags: ["gallery"],
   render: () => (
-    <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-      <div style={{ width: 150 }}>
-        <Card
-          variant="outlined"
-          title="주간 리포트"
-          description="이번 주 활동 요약"
-          metadata="3분 전 업데이트"
-        />
-      </div>
-      <div style={{ width: 150 }}>
-        <Card
-          variant="flat"
-          title="새 소식"
-          description="업데이트된 내용이 있어요"
-          cta={
-            <Button size="sm" variant="outlined">
-              보기
-            </Button>
-          }
-        />
-      </div>
+    <div style={{ width: 220 }}>
+      <Card
+        variant="outlined"
+        title="주간 리포트"
+        description="이번 주 활동 요약"
+        metadata="3분 전 업데이트"
+      />
+    </div>
+  ),
+};
+
+export const GalleryFlat: Story = {
+  name: "variant=flat (surface 위 그룹)",
+  tags: ["gallery"],
+  render: () => (
+    // flat 은 보더/그림자가 없어 흰 배경에선 안 보인다 — 회색 그룹 surface 위에 올려 대비를 준다.
+    <div
+      style={{
+        width: 220,
+        padding: 12,
+        background: colors.neutral[100],
+        borderRadius: 12,
+      }}
+    >
+      <Card
+        variant="flat"
+        title="새 소식"
+        description="업데이트된 내용이 있어요"
+        cta={
+          <Button size="sm" variant="outlined">
+            보기
+          </Button>
+        }
+      />
     </div>
   ),
 };

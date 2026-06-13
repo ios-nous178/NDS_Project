@@ -257,7 +257,7 @@ export const cashwalkBizTheme: BrandTheme = {
     //   비활성 chip 컬러는 NudgeEAP 스타일(subtle bg + subtle text)로 통일 — 기존 흰 텍스트
     //   /button-bg-disabled "의도된 저대비"는 hover 시 배경이 더 연해지고 글자가 검정으로
     //   뒤집혀 어색했다(사용자 피드백 2026-06). 치수(radius/height/padding/weight)는 유지.
-    tabs: {
+    tab: {
       lineFontSize: 16,
       lineLineHeight: 24,
       lineDefaultWeight: "500",

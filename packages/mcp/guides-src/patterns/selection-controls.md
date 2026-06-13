@@ -4,14 +4,14 @@
 
 ## summary
 
-선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tabs(variant=segment) / Dropdown 중 하나로 매핑한다.
+선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tab(variant=segment) / Dropdown 중 하나로 매핑한다.
 
 ## rules
 
 - ① 다중 선택 + 짧은 라벨(연령대·시군구·태그·관심사) → SelectChip (`<nds-chip selected interactive>`, 캐포비=노란 채움/검정 텍스트).
 - ② 단일 선택 + 설명 없는 짧은 옵션 2~3개(OS 전체/Android/iOS·성별·노출 구분) → SelectionButtonGroup.
 - ③ 단일 선택 + 설명/아이콘 있는 카드(캠페인 목표·유형·소진 방식) → SelectionCard(mode=single) — 라디오 도트 내장, 커스텀 카드 금지.
-- ④ 목록 상태 필터(전체/송출중/정지) → Tabs variant='segment' 또는 캐포비 Box Tab(pattern:cashwalk-biz-tab).
+- ④ 목록 상태 필터(전체/송출중/정지) → Tab variant='segment' 또는 캐포비 Box Tab(pattern:cashwalk-biz-tab).
 - ⑤ 단일 선택 옵션 4개 초과 → Dropdown.
 
 ## avoid

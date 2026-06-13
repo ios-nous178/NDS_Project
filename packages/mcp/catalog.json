@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T17:13:04.347Z",
+  "generatedAt": "2026-06-13T19:09:33.949Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2686,72 +2686,6 @@
       ]
     },
     {
-      "name": "EmptyState",
-      "props": [
-        {
-          "name": "icon",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "status",
-          "optional": true,
-          "type": "EmptyStateStatus",
-          "allowedValues": [
-            "empty",
-            "success",
-            "error",
-            "info"
-          ]
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "description",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "action",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "minHeight",
-          "optional": true,
-          "type": "number | string"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "React.CSSProperties"
-        },
-        {
-          "name": "slotProps",
-          "optional": true,
-          "type": "EmptyStateSlotProps"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/EmptyState.d.ts",
-      "htmlTag": "nds-empty-state",
-      "htmlObservedAttrs": [
-        "description",
-        "min-height",
-        "status",
-        "title",
-        "action",
-        "hide-icon"
-      ]
-    },
-    {
       "name": "FAB",
       "props": [
         {
@@ -4807,6 +4741,72 @@
       ]
     },
     {
+      "name": "ResultState",
+      "props": [
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "ResultStateStatus",
+          "allowedValues": [
+            "empty",
+            "success",
+            "error",
+            "info"
+          ]
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "action",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "minHeight",
+          "optional": true,
+          "type": "number | string"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "React.CSSProperties"
+        },
+        {
+          "name": "slotProps",
+          "optional": true,
+          "type": "ResultStateSlotProps"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/ResultState.d.ts",
+      "htmlTag": "nds-result-state",
+      "htmlObservedAttrs": [
+        "description",
+        "min-height",
+        "status",
+        "title",
+        "action",
+        "hide-icon"
+      ]
+    },
+    {
       "name": "ReviewCard",
       "props": [
         {
@@ -5833,7 +5833,7 @@
       ]
     },
     {
-      "name": "Tabs",
+      "name": "Tab",
       "props": [
         {
           "name": "items",
@@ -5853,7 +5853,7 @@
         {
           "name": "variant",
           "optional": true,
-          "type": "TabsVariant",
+          "type": "TabVariant",
           "allowedValues": [
             "line",
             "chip",
@@ -5863,7 +5863,7 @@
         {
           "name": "size",
           "optional": true,
-          "type": "TabsSize",
+          "type": "TabSize",
           "allowedValues": [
             "mobile",
             "pc"
@@ -5872,7 +5872,7 @@
         {
           "name": "tone",
           "optional": true,
-          "type": "TabsTone",
+          "type": "TabTone",
           "allowedValues": [
             "neutral",
             "color"
@@ -5896,11 +5896,11 @@
         {
           "name": "slotProps",
           "optional": true,
-          "type": "TabsSlotProps"
+          "type": "TabSlotProps"
         }
       ],
-      "dtsRelPath": "packages/react/dist/Tabs.d.ts",
-      "htmlTag": "nds-tabs",
+      "dtsRelPath": "packages/react/dist/Tab.d.ts",
+      "htmlTag": "nds-tab",
       "htmlAttrs": {
         "variant": [
           "line",
@@ -11140,7 +11140,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-default-bg",
+      "name": "--nds-tab-chip-default-bg",
       "value": "var(--semantic-bg-surface-subtle)",
       "group": "nds",
       "brands": [
@@ -11148,7 +11148,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-default-color",
+      "name": "--nds-tab-chip-default-color",
       "value": "var(--semantic-text-subtle-default)",
       "group": "nds",
       "brands": [
@@ -11156,7 +11156,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-default-weight",
+      "name": "--nds-tab-chip-default-weight",
       "value": "700",
       "group": "nds",
       "brands": [
@@ -11164,7 +11164,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-font-size",
+      "name": "--nds-tab-chip-font-size",
       "value": "16px",
       "group": "nds",
       "brands": [
@@ -11172,7 +11172,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-line-height",
+      "name": "--nds-tab-chip-line-height",
       "value": "24px",
       "group": "nds",
       "brands": [
@@ -11180,7 +11180,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-padding-x",
+      "name": "--nds-tab-chip-padding-x",
       "value": "20px",
       "group": "nds",
       "brands": [
@@ -11188,7 +11188,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-radius",
+      "name": "--nds-tab-chip-radius",
       "value": "10px",
       "group": "nds",
       "brands": [
@@ -11196,7 +11196,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-selected-bg",
+      "name": "--nds-tab-chip-selected-bg",
       "value": "var(--semantic-bg-inverse-default)",
       "group": "nds",
       "brands": [
@@ -11204,7 +11204,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-chip-tab-height",
+      "name": "--nds-tab-chip-tab-height",
       "value": "52px",
       "group": "nds",
       "brands": [
@@ -11212,7 +11212,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-line-default-weight",
+      "name": "--nds-tab-line-default-weight",
       "value": "500",
       "group": "nds",
       "brands": [
@@ -11220,7 +11220,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-line-font-size",
+      "name": "--nds-tab-line-font-size",
       "value": "16px",
       "group": "nds",
       "brands": [
@@ -11228,7 +11228,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-line-indicator-height",
+      "name": "--nds-tab-line-indicator-height",
       "value": "2px",
       "group": "nds",
       "brands": [
@@ -11236,7 +11236,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-line-line-height",
+      "name": "--nds-tab-line-line-height",
       "value": "24px",
       "group": "nds",
       "brands": [
@@ -11244,7 +11244,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-line-padding-x",
+      "name": "--nds-tab-line-padding-x",
       "value": "16px",
       "group": "nds",
       "brands": [
@@ -11252,7 +11252,7 @@
       ]
     },
     {
-      "name": "--nds-tabs-line-tab-height",
+      "name": "--nds-tab-line-tab-height",
       "value": "48px",
       "group": "nds",
       "brands": [
@@ -12009,7 +12009,7 @@
     },
     {
       "name": "--semantic-button-text-neutral",
-      "value": "#FFFFFF",
+      "value": "#383838",
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#111111",
@@ -13205,7 +13205,6 @@
     "nds-drawer",
     "nds-dropdown-menu",
     "nds-ds-highlight",
-    "nds-empty-state",
     "nds-fab",
     "nds-file-upload",
     "nds-filter-bar",
@@ -13256,6 +13255,7 @@
     "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
+    "nds-result-state",
     "nds-review-card",
     "nds-search-input",
     "nds-select",
@@ -13277,10 +13277,10 @@
     "nds-stats-table",
     "nds-stepper",
     "nds-summary-card",
-    "nds-tabs",
-    "nds-tabs-list",
-    "nds-tabs-panel",
-    "nds-tabs-trigger",
+    "nds-tab",
+    "nds-tab-list",
+    "nds-tab-panel",
+    "nds-tab-trigger",
     "nds-tag-input",
     "nds-text",
     "nds-text-button",
@@ -13844,18 +13844,6 @@
       ]
     },
     {
-      "tag": "nds-empty-state",
-      "attrs": {},
-      "observedAttrs": [
-        "description",
-        "min-height",
-        "status",
-        "title",
-        "action",
-        "hide-icon"
-      ]
-    },
-    {
       "tag": "nds-fab",
       "attrs": {},
       "observedAttrs": [
@@ -14294,6 +14282,18 @@
       ]
     },
     {
+      "tag": "nds-result-state",
+      "attrs": {},
+      "observedAttrs": [
+        "description",
+        "min-height",
+        "status",
+        "title",
+        "action",
+        "hide-icon"
+      ]
+    },
+    {
       "tag": "nds-review-card",
       "attrs": {},
       "observedAttrs": [
@@ -14546,7 +14546,7 @@
       ]
     },
     {
-      "tag": "nds-tabs",
+      "tag": "nds-tab",
       "attrs": {
         "variant": [
           "line",

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Tabs } from "../../src/Tabs";
+import { Tab } from "../../src/Tab";
 
-function TabsHarness({ variant = "line" as const }) {
+function TabHarness({ variant = "line" as const }) {
   const [activeKey, setActiveKey] = useState("all");
 
   return (
-    <Tabs
+    <Tab
       items={[
         { key: "all", title: "전체", content: <div>전체 콘텐츠</div> },
         { key: "counsel", title: "상담", content: <div>상담 콘텐츠</div> },
@@ -20,10 +20,10 @@ function TabsHarness({ variant = "line" as const }) {
   );
 }
 
-describe("Tabs 사용자 시나리오", () => {
+describe("Tab 사용자 시나리오", () => {
   it("탭 클릭으로 패널 콘텐츠가 전환된다", async () => {
     const user = userEvent.setup();
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     expect(screen.getByText("전체 콘텐츠")).toBeVisible();
     expect(screen.queryByText("상담 콘텐츠")).not.toBeInTheDocument();
@@ -36,7 +36,7 @@ describe("Tabs 사용자 시나리오", () => {
 
   it("Enter 키로 탭을 활성화할 수 있다", async () => {
     const user = userEvent.setup();
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     screen.getByRole("tab", { name: "챌린지" }).focus();
     await user.keyboard("{Enter}");
@@ -46,7 +46,7 @@ describe("Tabs 사용자 시나리오", () => {
 
   it("Space 키로 탭을 활성화할 수 있다", async () => {
     const user = userEvent.setup();
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     screen.getByRole("tab", { name: "상담" }).focus();
     await user.keyboard(" ");
@@ -56,7 +56,7 @@ describe("Tabs 사용자 시나리오", () => {
 
   it("ArrowRight로 다음 탭, ArrowLeft로 이전 탭 이동 (순환)", async () => {
     const user = userEvent.setup();
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     screen.getByRole("tab", { name: "전체" }).focus();
 
@@ -79,7 +79,7 @@ describe("Tabs 사용자 시나리오", () => {
 
   it("Home/End로 첫/마지막 탭으로 이동한다", async () => {
     const user = userEvent.setup();
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     screen.getByRole("tab", { name: "전체" }).focus();
 
@@ -91,9 +91,9 @@ describe("Tabs 사용자 시나리오", () => {
   });
 });
 
-describe("Tabs 접근성: WAI-ARIA Tabs 패턴", () => {
+describe("Tab 접근성: WAI-ARIA Tab 패턴", () => {
   it("tablist, tab, tabpanel 역할이 올바르게 설정된다", () => {
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     expect(screen.getByRole("tablist")).toBeInTheDocument();
     expect(screen.getAllByRole("tab")).toHaveLength(3);
@@ -103,7 +103,7 @@ describe("Tabs 접근성: WAI-ARIA Tabs 패턴", () => {
 
   it("활성 탭만 aria-selected=true이고 tabIndex=0이다", async () => {
     const user = userEvent.setup();
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     const tabs = screen.getAllByRole("tab");
 
@@ -123,7 +123,7 @@ describe("Tabs 접근성: WAI-ARIA Tabs 패턴", () => {
   });
 
   it("tab의 aria-controls가 대응하는 tabpanel의 id를 가리킨다", () => {
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     const activeTab = screen.getByRole("tab", { name: "전체" });
     const panelId = activeTab.getAttribute("aria-controls")!;
@@ -135,7 +135,7 @@ describe("Tabs 접근성: WAI-ARIA Tabs 패턴", () => {
   });
 
   it("tabpanel의 aria-labelledby가 대응하는 tab의 id를 가리킨다", () => {
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     // 활성 패널의 aria-labelledby가 대응하는 tab id를 가리킨다
     const activeTab = screen.getByRole("tab", { name: "전체" });
@@ -149,7 +149,7 @@ describe("Tabs 접근성: WAI-ARIA Tabs 패턴", () => {
   });
 
   it("비활성 패널은 DOM에서 숨겨진다 (display: none)", () => {
-    render(<TabsHarness />);
+    render(<TabHarness />);
 
     // 활성 패널만 보인다
     const panels = document.querySelectorAll("[role='tabpanel']");
@@ -160,21 +160,21 @@ describe("Tabs 접근성: WAI-ARIA Tabs 패턴", () => {
   });
 });
 
-describe("Tabs Compound API", () => {
+describe("Tab Compound API", () => {
   it("개별 서브컴포넌트로 커스텀 탭을 구성한다", async () => {
     const user = userEvent.setup();
 
     function CustomTabs() {
       const [active, setActive] = useState("a");
       return (
-        <Tabs.Root activeKey={active} onTabChange={setActive}>
-          <Tabs.List>
-            <Tabs.Trigger tabKey="a">탭 A</Tabs.Trigger>
-            <Tabs.Trigger tabKey="b">탭 B</Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Panel tabKey="a">패널 A 내용</Tabs.Panel>
-          <Tabs.Panel tabKey="b">패널 B 내용</Tabs.Panel>
-        </Tabs.Root>
+        <Tab.Root activeKey={active} onTabChange={setActive}>
+          <Tab.List>
+            <Tab.Trigger tabKey="a">탭 A</Tab.Trigger>
+            <Tab.Trigger tabKey="b">탭 B</Tab.Trigger>
+          </Tab.List>
+          <Tab.Panel tabKey="a">패널 A 내용</Tab.Panel>
+          <Tab.Panel tabKey="b">패널 B 내용</Tab.Panel>
+        </Tab.Root>
       );
     }
 
@@ -187,19 +187,19 @@ describe("Tabs Compound API", () => {
   });
 });
 
-describe("Tabs variant 조합", () => {
+describe("Tab variant 조합", () => {
   const variants = ["line", "pill", "square"] as const;
 
   it.each(variants)("variant=%s 가 tablist에 data-variant로 적용된다", (variant) => {
-    render(<TabsHarness variant={variant} />);
+    render(<TabHarness variant={variant} />);
     expect(screen.getByRole("tablist")).toHaveAttribute("data-variant", variant);
   });
 });
 
-describe("Tabs 브랜치 커버리지: Flat API 옵션", () => {
+describe("Tab 브랜치 커버리지: Flat API 옵션", () => {
   it("fullWidth=false이면 탭리스트가 전체폭을 차지하지 않는다", () => {
     const { container } = render(
-      <Tabs
+      <Tab
         items={[{ key: "a", title: "A", content: <div>내용 A</div> }]}
         activeKey="a"
         onTabChange={() => {}}
@@ -208,12 +208,12 @@ describe("Tabs 브랜치 커버리지: Flat API 옵션", () => {
     );
 
     const root = container.querySelector("[data-slot='root']") as HTMLElement;
-    expect(root.style.getPropertyValue("--nds-tabs-width")).toBe("auto");
+    expect(root.style.getPropertyValue("--nds-tab-width")).toBe("auto");
   });
 
   it("items의 content가 모두 undefined이면 패널이 렌더링되지 않는다", () => {
     const { container } = render(
-      <Tabs
+      <Tab
         items={[
           { key: "a", title: "A" },
           { key: "b", title: "B" },
@@ -229,7 +229,7 @@ describe("Tabs 브랜치 커버리지: Flat API 옵션", () => {
 
   it("slotProps로 trigger/panel에 className이 적용된다", () => {
     const { container } = render(
-      <Tabs
+      <Tab
         items={[{ key: "a", title: "A", content: <div>내용</div> }]}
         activeKey="a"
         onTabChange={() => {}}

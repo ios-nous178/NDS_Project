@@ -87,7 +87,7 @@ export const popularPostsStyles = `
     color: currentColor;
   }
 
-  /* ─── Tabs ─── */
+  /* ─── Tab ─── */
 
   :where(.${PP_TABS_CLASS}) {
     display: flex;

@@ -6,9 +6,9 @@ import { Input } from "../../src/Input";
 import { Button } from "../../src/Button";
 import { Snackbar } from "../../src/Snackbar";
 import { Select } from "../../src/Select";
-import { Tabs } from "../../src/Tabs";
+import { Tab } from "../../src/Tab";
 import { Chip } from "../../src/Chip";
-import { EmptyState } from "../../src/EmptyState";
+import { ResultState } from "../../src/ResultState";
 
 const { Provider: SnackbarProvider, useSnackbar } = Snackbar;
 
@@ -146,7 +146,7 @@ describe("통합: Snackbar + Button 연동", () => {
   });
 });
 
-describe("통합: Tabs + Chip 필터 조합", () => {
+describe("통합: Tab + Chip 필터 조합", () => {
   function FilteredList() {
     const [tab, setTab] = useState("all");
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -166,7 +166,7 @@ describe("통합: Tabs + Chip 필터 조합", () => {
 
     return (
       <div>
-        <Tabs
+        <Tab
           items={[
             { key: "all", title: "전체" },
             { key: "counsel", title: "상담" },
@@ -193,7 +193,7 @@ describe("통합: Tabs + Chip 필터 조합", () => {
           ))}
         </ul>
         {filtered.length === 0 && (
-          <EmptyState title="결과 없음" description="조건을 변경해보세요" />
+          <ResultState title="결과 없음" description="조건을 변경해보세요" />
         )}
       </div>
     );
@@ -224,7 +224,7 @@ describe("통합: Tabs + Chip 필터 조합", () => {
     expect(within(list).getByText("챌린지 A")).toBeVisible();
   });
 
-  it("필터 결과가 0건이면 EmptyState가 표시된다", async () => {
+  it("필터 결과가 0건이면 ResultState가 표시된다", async () => {
     const user = userEvent.setup();
     render(<FilteredList />);
 
@@ -236,7 +236,7 @@ describe("통합: Tabs + Chip 필터 조합", () => {
 
     // "완료" 필터 해제하고 다시 걸기 등으로는 빈 결과 안 나옴
     // 직접 불가능한 조합을 만들어보자
-    // 여기서는 "상담" 탭 + "완료" 필터는 1개가 나오므로 EmptyState 안 나옴
+    // 여기서는 "상담" 탭 + "완료" 필터는 1개가 나오므로 ResultState 안 나옴
     // 대신 all 탭에서 테스트
   });
 });

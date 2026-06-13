@@ -11,14 +11,14 @@
 - 글로벌 네비는 AppBar. PageHeader는 각 페이지 안의 타이틀 영역.
 - 제목 블록은 Heading 합성이라 폰트·제목↔부제 gap·색을 PageHeader 쪽에서 따로 박지 말 것. 위계 스케일을 바꿔야 하면 Heading 토큰(Figma 859:5614)에서.
 - onBack 지정 시 좌측 ← 자동 노출 — 직접 IconButton 추가하지 말 것 (이중 노출).
-- bottom 슬롯은 헤더 padding 외곽까지 음수 마진으로 펼쳐짐. Tabs를 그 안에서 padding 직접 줄 때 0/24/0 등으로 미세 조정.
+- bottom 슬롯은 헤더 padding 외곽까지 음수 마진으로 펼쳐짐. Tab를 그 안에서 padding 직접 줄 때 0/24/0 등으로 미세 조정.
 - bordered=true는 스크롤되는 본문과 헤더를 분리할 때만 사용. 분리감이 필요 없으면 false.
 
 ## recommended
 
 - 디테일: title + onBack + actions
 - 리스트: title + subtitle + actions(생성 버튼)
-- 탭형 페이지: title + bottom={<Tabs />}
+- 탭형 페이지: title + bottom={<Tab />}
 
 ## examplesHtml.do
 

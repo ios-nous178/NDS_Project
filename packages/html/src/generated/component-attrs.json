@@ -591,22 +591,6 @@
       ]
     }
   },
-  "nds-empty-state": {
-    "observedAttributes": [
-      "description",
-      "min-height",
-      "status",
-      "title"
-    ],
-    "enums": {
-      "status": [
-        "empty",
-        "success",
-        "error",
-        "info"
-      ]
-    }
-  },
   "nds-fab": {
     "observedAttributes": [
       "aria-label",
@@ -1024,6 +1008,22 @@
     ],
     "enums": {}
   },
+  "nds-result-state": {
+    "observedAttributes": [
+      "description",
+      "min-height",
+      "status",
+      "title"
+    ],
+    "enums": {
+      "status": [
+        "empty",
+        "success",
+        "error",
+        "info"
+      ]
+    }
+  },
   "nds-review-card": {
     "observedAttributes": [
       "rating",
@@ -1238,7 +1238,7 @@
     ],
     "enums": {}
   },
-  "nds-tabs": {
+  "nds-tab": {
     "observedAttributes": [
       "active-key",
       "full-width",

@@ -32,7 +32,7 @@ const meta: Meta<typeof PopularPosts> = {
     docs: {
       description: {
         component:
-          "사이드바에 위치하는 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tabs(기간/정렬) + 10개 행 리스트 의 3단 레이어. " +
+          "사이드바에 위치하는 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tab(기간/정렬) + 10개 행 리스트 의 3단 레이어. " +
           "Rank 는 두 자리 zero-padded(`01`~`10`), Count 는 `[N]` / 999 초과는 `[+999]` 로 표기.",
       },
     },
@@ -101,7 +101,7 @@ export const Default: Story = {
 /* ─── State: 탭 없음 ─── */
 
 export const NoTabs: Story = {
-  name: "State/No Tabs",
+  name: "State/No Tab",
   render: () => (
     <Frame>
       <PopularPosts items={sampleItems} onMoreClick={() => console.log("more")} />

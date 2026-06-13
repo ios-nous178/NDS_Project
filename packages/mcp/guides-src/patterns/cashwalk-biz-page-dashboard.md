@@ -23,7 +23,7 @@ metrics:
   cardBg: --semantic-bg-surface-default (#FFFFFF)
   canvasBg: --semantic-bg-surface-subtle (#FAFAFA)
   validateSummaryThreshold: 핵심 지표 ≤ 4 → Summary Strip / >4 → 별도 카드·그리드
-  emptyState: 데이터 없음 → 회색 패널 + 안내문
+  resultState: 데이터 없음 → 회색 패널 + 안내문
   relatedPatterns: cashwalk-biz-page-patterns, admin-shell, dense-list
 figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9
 references:

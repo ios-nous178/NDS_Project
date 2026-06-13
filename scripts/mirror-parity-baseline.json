@@ -377,17 +377,17 @@
       "since": "2026-06"
     },
     {
-      "key": "EmptyState::prop-name::html attr \"hide-icon\" 에 대응하는 react prop 이 없음",
+      "key": "ResultState::prop-name::html attr \"hide-icon\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },
     {
-      "key": "EmptyState::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
+      "key": "ResultState::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
       "reason": "html 은 action attr(라벨)로 내장 버튼 렌더 — 커스텀 액션 노드는 react 전용. 의도적",
       "since": "2026-06"
     },
     {
-      "key": "EmptyState::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
+      "key": "ResultState::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
       "reason": "html 은 내장 기본 아이콘 + hide-icon attr — 커스텀 아이콘은 react 전용. 의도적",
       "since": "2026-06"
     },
@@ -847,7 +847,7 @@
       "since": "2026-06"
     },
     {
-      "key": "Tabs::prop-name::react prop → \"items\" 가 html observedAttributes 에 없음",
+      "key": "Tab::prop-name::react prop → \"items\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },

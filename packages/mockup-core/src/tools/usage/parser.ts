@@ -313,7 +313,7 @@ function emptyUsage(
   };
 }
 
-/** "Tabs.Tab" / "Select.Option" → "Tabs" / "Select". slot 제거 후 카탈로그 매칭용 베이스 이름. */
+/** "Tab.Tab" / "Select.Option" → "Tab" / "Select". slot 제거 후 카탈로그 매칭용 베이스 이름. */
 function baseComponentName(component: string): string {
   const dot = component.indexOf(".");
   return dot === -1 ? component : component.slice(0, dot);

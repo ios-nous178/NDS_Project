@@ -29,7 +29,7 @@ import "./components/nds-divider.js";
 import "./components/nds-spinner.js";
 import "./components/nds-textarea.js";
 import "./components/nds-input.js";
-import "./components/nds-tabs.js";
+import "./components/nds-tab.js";
 import "./components/nds-drawer.js";
 import "./components/nds-dropdown-menu.js";
 import "./components/nds-carousel.js";
@@ -107,7 +107,7 @@ import "./components/nds-checkbox-group.js";
 // import 되지 않아 standalone 번들에 미포함 → <nds-*> 가 런타임 미등록(빈 박스)이었다.
 // scripts/check-runtime-registry.mjs 가 define()↔runtime.ts import drift 를 하드 게이트한다.
 import "./components/nds-brand-logo.js";
-import "./components/nds-empty-state.js";
+import "./components/nds-result-state.js";
 import "./components/nds-pagination.js";
 import "./components/nds-popup.js";
 import "./components/nds-snackbar.js";

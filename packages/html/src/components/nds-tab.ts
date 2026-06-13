@@ -1,18 +1,18 @@
 /**
- * <nds-tabs> + sub-elements — DS Tabs 의 vanilla Web Component 버전.
+ * <nds-tab> + sub-elements — DS Tab 의 vanilla Web Component 버전.
  *
  * 사용 예:
- *   <nds-tabs active-key="home" variant="line" size="mobile" tone="neutral">
- *     <nds-tabs-list>
- *       <nds-tabs-trigger key="home">홈</nds-tabs-trigger>
- *       <nds-tabs-trigger key="profile">프로필</nds-tabs-trigger>
- *     </nds-tabs-list>
- *     <nds-tabs-panel key="home">홈 내용</nds-tabs-panel>
- *     <nds-tabs-panel key="profile">프로필 내용</nds-tabs-panel>
- *   </nds-tabs>
+ *   <nds-tab active-key="home" variant="line" size="mobile" tone="neutral">
+ *     <nds-tab-list>
+ *       <nds-tab-trigger key="home">홈</nds-tab-trigger>
+ *       <nds-tab-trigger key="profile">프로필</nds-tab-trigger>
+ *     </nds-tab-list>
+ *     <nds-tab-panel key="home">홈 내용</nds-tab-panel>
+ *     <nds-tab-panel key="profile">프로필 내용</nds-tab-panel>
+ *   </nds-tab>
  *
  * 이벤트:
- *   trigger 클릭/Enter/Space/Arrow → 부모 nds-tabs 의 active-key 변경 +
+ *   trigger 클릭/Enter/Space/Arrow → 부모 nds-tab 의 active-key 변경 +
  *   부모에서 "tabs-change" CustomEvent (detail: { activeKey }) 디스패치 (bubbles).
  *
  * MVP 제약:
@@ -22,20 +22,20 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 
-export type TabsVariant = "line" | "chip" | "segment";
-export type TabsSize = "mobile" | "pc";
-export type TabsTone = "neutral" | "color";
+export type TabVariant = "line" | "chip" | "segment";
+export type TabSize = "mobile" | "pc";
+export type TabTone = "neutral" | "color";
 
-const VARIANTS: readonly TabsVariant[] = ["line", "chip", "segment"];
-const SIZES: readonly TabsSize[] = ["mobile", "pc"];
-const TONES: readonly TabsTone[] = ["neutral", "color"];
+const VARIANTS: readonly TabVariant[] = ["line", "chip", "segment"];
+const SIZES: readonly TabSize[] = ["mobile", "pc"];
+const TONES: readonly TabTone[] = ["neutral", "color"];
 
-const TABS_ROOT_CLASS = "nds-tabs__root";
-const TABS_LIST_CLASS = "nds-tabs__list";
-const TABS_TRIGGER_CLASS = "nds-tabs__trigger";
-const TABS_TRIGGER_INNER_CLASS = "nds-tabs__trigger-inner";
-const TABS_INDICATOR_CLASS = "nds-tabs__indicator";
-const TABS_PANEL_CLASS = "nds-tabs__panel";
+const TAB_ROOT_CLASS = "nds-tab__root";
+const TAB_LIST_CLASS = "nds-tab__list";
+const TAB_TRIGGER_CLASS = "nds-tab__trigger";
+const TAB_TRIGGER_INNER_CLASS = "nds-tab__trigger-inner";
+const TAB_INDICATOR_CLASS = "nds-tab__indicator";
+const TAB_PANEL_CLASS = "nds-tab__panel";
 
 let nextBaseId = 0;
 
@@ -58,10 +58,10 @@ function applyIndicatorStyle(indicator: HTMLElement, active: HTMLElement | null)
   indicator.style.width = `${active.offsetWidth}px`;
 }
 
-/* ──────────────── <nds-tabs> ──────────────── */
+/* ──────────────── <nds-tab> ──────────────── */
 
-export class NdsTabs extends NdsElement {
-  static elementName = "nds-tabs";
+export class NdsTab extends NdsElement {
+  static elementName = "nds-tab";
 
   static get observedAttributes(): readonly string[] {
     return ["active-key", "variant", "size", "tone", "full-width", "base-id"];
@@ -76,9 +76,9 @@ export class NdsTabs extends NdsElement {
   }
 
   private _mount(): void {
-    this._baseId = this.attr("base-id", `nds-tabs-${++nextBaseId}`);
+    this._baseId = this.attr("base-id", `nds-tab-${++nextBaseId}`);
     const root = document.createElement("div");
-    root.className = TABS_ROOT_CLASS;
+    root.className = TAB_ROOT_CLASS;
     root.dataset.slot = "root";
     while (this.firstChild) root.appendChild(this.firstChild);
     this.appendChild(root);
@@ -90,7 +90,7 @@ export class NdsTabs extends NdsElement {
     if (this.style.display !== "contents") this.style.display = "contents";
 
     const root = this._root;
-    root.style.setProperty("--nds-tabs-width", this.boolAttr("full-width") ? "100%" : "auto");
+    root.style.setProperty("--nds-tab-width", this.boolAttr("full-width") ? "100%" : "auto");
 
     // 자식 trigger/panel 에게 active-key 와 base id 전달 → 각자 갱신.
     this._notifyChildren();
@@ -104,19 +104,19 @@ export class NdsTabs extends NdsElement {
     const tone = this._norm("tone", TONES, "neutral");
 
     // list 와 trigger 들
-    const lists = this._root.querySelectorAll<NdsTabsList>("nds-tabs-list");
+    const lists = this._root.querySelectorAll<NdsTabList>("nds-tab-list");
     lists.forEach((l) => l.applyParentState(variant, size, tone));
 
-    const triggers = this._root.querySelectorAll<NdsTabsTrigger>("nds-tabs-trigger");
+    const triggers = this._root.querySelectorAll<NdsTabTrigger>("nds-tab-trigger");
     triggers.forEach((t) => t.applyParentState(this._baseId, activeKey));
 
-    const panels = this._root.querySelectorAll<NdsTabsPanel>("nds-tabs-panel");
+    const panels = this._root.querySelectorAll<NdsTabPanel>("nds-tab-panel");
     panels.forEach((p) => p.applyParentState(this._baseId, activeKey));
 
     // indicator 위치 갱신 (microtask 다음에 — child reflect 끝난 뒤)
     queueMicrotask(() => {
-      const list = this._root?.querySelector<HTMLUListElement>("ul." + TABS_LIST_CLASS);
-      const indicator = list?.querySelector<HTMLSpanElement>("span." + TABS_INDICATOR_CLASS);
+      const list = this._root?.querySelector<HTMLUListElement>("ul." + TAB_LIST_CLASS);
+      const indicator = list?.querySelector<HTMLSpanElement>("span." + TAB_INDICATOR_CLASS);
       if (!list || !indicator) return;
       const active = list.querySelector<HTMLElement>('[data-active="true"]');
       applyIndicatorStyle(indicator, active);
@@ -138,10 +138,10 @@ export class NdsTabs extends NdsElement {
   }
 }
 
-/* ──────────────── <nds-tabs-list> ──────────────── */
+/* ──────────────── <nds-tab-list> ──────────────── */
 
-export class NdsTabsList extends NdsElement {
-  static elementName = "nds-tabs-list";
+export class NdsTabList extends NdsElement {
+  static elementName = "nds-tab-list";
 
   static get observedAttributes(): readonly string[] {
     return [];
@@ -149,9 +149,9 @@ export class NdsTabsList extends NdsElement {
 
   private _ul: HTMLUListElement | null = null;
   private _indicator: HTMLSpanElement | null = null;
-  private _variant: TabsVariant = "line";
-  private _size: TabsSize = "mobile";
-  private _tone: TabsTone = "neutral";
+  private _variant: TabVariant = "line";
+  private _size: TabSize = "mobile";
+  private _tone: TabTone = "neutral";
 
   override connectedCallback(): void {
     if (!this._ul) this._mount();
@@ -160,7 +160,7 @@ export class NdsTabsList extends NdsElement {
 
   private _mount(): void {
     const ul = document.createElement("ul");
-    ul.className = TABS_LIST_CLASS;
+    ul.className = TAB_LIST_CLASS;
     ul.dataset.slot = "list";
     ul.setAttribute("role", "tablist");
     while (this.firstChild) ul.appendChild(this.firstChild);
@@ -175,7 +175,7 @@ export class NdsTabsList extends NdsElement {
     this._syncIndicator();
   }
 
-  applyParentState(variant: TabsVariant, size: TabsSize, tone: TabsTone): void {
+  applyParentState(variant: TabVariant, size: TabSize, tone: TabTone): void {
     this._variant = variant;
     this._size = size;
     this._tone = tone;
@@ -195,7 +195,7 @@ export class NdsTabsList extends NdsElement {
     const needIndicator = this._variant === "line";
     if (needIndicator && !this._indicator) {
       const span = document.createElement("span");
-      span.className = TABS_INDICATOR_CLASS;
+      span.className = TAB_INDICATOR_CLASS;
       span.dataset.slot = "indicator";
       span.setAttribute("aria-hidden", "true");
       this._ul.appendChild(span);
@@ -207,10 +207,10 @@ export class NdsTabsList extends NdsElement {
   }
 }
 
-/* ──────────────── <nds-tabs-trigger> ──────────────── */
+/* ──────────────── <nds-tab-trigger> ──────────────── */
 
-export class NdsTabsTrigger extends NdsElement {
-  static elementName = "nds-tabs-trigger";
+export class NdsTabTrigger extends NdsElement {
+  static elementName = "nds-tab-trigger";
 
   static get observedAttributes(): readonly string[] {
     return ["key", "disabled"];
@@ -224,7 +224,7 @@ export class NdsTabsTrigger extends NdsElement {
 
   override connectedCallback(): void {
     if (!this._li) this._mount();
-    // 부모 nds-tabs / nds-tabs-list 의 _mount() 가 자식을 reparent 하면
+    // 부모 nds-tab / nds-tab-list 의 _mount() 가 자식을 reparent 하면
     // 이 trigger 도 disconnect→reconnect 됩니다. 리스너를 host element 자체에
     // 달면 light DOM bubble 로 li 클릭이 그대로 잡히고, addEventListener 가
     // 같은 (type, listener) 에 idempotent 이므로 재mount 가드와 무관하게 안전.
@@ -240,12 +240,12 @@ export class NdsTabsTrigger extends NdsElement {
 
   private _mount(): void {
     const li = document.createElement("li");
-    li.className = TABS_TRIGGER_CLASS;
+    li.className = TAB_TRIGGER_CLASS;
     li.dataset.slot = "trigger";
     li.setAttribute("role", "tab");
 
     const inner = document.createElement("span");
-    inner.className = TABS_TRIGGER_INNER_CLASS;
+    inner.className = TAB_TRIGGER_INNER_CLASS;
     const label = document.createElement("span");
     while (this.firstChild) label.appendChild(this.firstChild);
     inner.appendChild(label);
@@ -287,7 +287,7 @@ export class NdsTabsTrigger extends NdsElement {
     if (this.boolAttr("disabled")) return;
     const key = this.attr("key", "");
     if (!key) return;
-    const parent = this.closest<NdsTabs>("nds-tabs");
+    const parent = this.closest<NdsTab>("nds-tab");
     parent?.selectKey(key);
   }
 
@@ -315,15 +315,15 @@ export class NdsTabsTrigger extends NdsElement {
       const nextLi = triggers[nextIdx];
       nextLi?.focus();
       const nextKey = nextLi?.dataset.tabKey;
-      if (nextKey) this.closest<NdsTabs>("nds-tabs")?.selectKey(nextKey);
+      if (nextKey) this.closest<NdsTab>("nds-tab")?.selectKey(nextKey);
     }
   }
 }
 
-/* ──────────────── <nds-tabs-panel> ──────────────── */
+/* ──────────────── <nds-tab-panel> ──────────────── */
 
-export class NdsTabsPanel extends NdsElement {
-  static elementName = "nds-tabs-panel";
+export class NdsTabPanel extends NdsElement {
+  static elementName = "nds-tab-panel";
 
   static get observedAttributes(): readonly string[] {
     return ["key"];
@@ -340,7 +340,7 @@ export class NdsTabsPanel extends NdsElement {
 
   private _mount(): void {
     const div = document.createElement("div");
-    div.className = TABS_PANEL_CLASS;
+    div.className = TAB_PANEL_CLASS;
     div.dataset.slot = "panel";
     div.setAttribute("role", "tabpanel");
     div.tabIndex = 0;
@@ -369,7 +369,7 @@ export class NdsTabsPanel extends NdsElement {
   }
 }
 
-define(NdsTabs);
-define(NdsTabsList);
-define(NdsTabsTrigger);
-define(NdsTabsPanel);
+define(NdsTab);
+define(NdsTabList);
+define(NdsTabTrigger);
+define(NdsTabPanel);

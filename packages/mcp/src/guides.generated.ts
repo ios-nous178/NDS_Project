@@ -1190,25 +1190,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 옵션이 너무 많고 destructive 가 일반 액션 사이 -->\n<nds-dropdown-menu items='[{\"label\":\"1\"},{\"label\":\"2\"},{\"label\":\"삭제\"},{\"label\":\"4\"},{\"label\":\"5\"},...]'></nds-dropdown-menu>"
     }
   },
-  "EmptyState": {
-    "name": "EmptyState",
-    "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다.",
-    "pitfalls": [
-      "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음.",
-      "인라인 placeholder ↔ 풀페이지 결과 화면의 차이는 `status` 가 아니라 `minHeight` 로 조절한다. 빈 리스트는 작게(예: 200), 결제 성공·404 결과 화면은 `minHeight=\"60vh\"` 처럼 크게. **같은 컴포넌트, altitude 만 다름.**",
-      "에러/성공 결과에는 반드시 `status=\"error|success\"` — 색·기본 글리프가 시멘틱하게 바뀐다. status 없이 중립 빈상태로 에러를 표현하면 시그널이 약함.",
-      "인라인 placeholder 를 footer/nav 위로 풀스크린 채우지 말 것 — 영역 안 placeholder 면 `minHeight` 를 작게 둔다(풀페이지는 결과 화면 전용).",
-      "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 브랜드 일러스트가 있으면 `icon` 으로 주입."
-    ],
-    "recommended": [
-      "status: 빈 리스트/검색결과 `empty`(기본·중립), 결제·제출 성공 `success`, 404·실패 `error`, 안내·점검중 `info`",
-      "결과 화면(풀페이지)은 `minHeight=\"60vh\"` + `action` 에 1차 CTA(홈으로/다시 시도)"
-    ],
-    "examplesHtml": {
-      "do": "<!-- 인라인 빈 상태 -->\n<nds-empty-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-empty-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-empty-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\" action=\"홈으로\"></nds-empty-state>",
-      "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-empty-state title=\"페이지를 찾을 수 없어요\"></nds-empty-state>"
-    }
-  },
   "FAB": {
     "name": "FAB",
     "summary": "Floating Action Button. 화면 하단에 떠 있는 가장 중요한 단일 액션. position 기본 bottom-right (fixed).",
@@ -1262,8 +1243,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "summary": "가로 필터 칩 그룹. 다중/단일 선택, 카운트, 자동 초기화. **FilterBar = 현재 view 안에서 데이터를 점진적으로 좁히기(날짜·키워드·상태 등 다중 조건 누적 · 쿼리 파라미터로 URL 유지)** — view 자체를 전환하는 **Tab** 과 역할이 다르다(상호 배타적 큰 분류는 Tab). 배치: 페이지 타이틀 → Tab → FilterBar → 데이터.",
     "pitfalls": [
       "single은 라디오와 다름 — 같은 칩 다시 누르면 해제됨.",
-      "옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tabs/Drawer 필터 검토.",
-      "Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터.",
+      "옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tab/Drawer 필터 검토.",
+      "Tab는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터.",
       "**상호 배타적 큰 분류(진행중/종료 같은 view 전환)를 FilterBar 로 만들지 말 것 — Tab 사용.** 반대로 날짜 범위·키워드 같은 조건 좁히기를 Tab 으로 만들지 말 것 — FilterBar 사용. (결정 트리: view 바뀌면 Tab / 조건 누적이면 Filter / 2–7개 단일 선택이면 Radio·SelectionButtonGroup.)",
       "**배치**: 페이지 타이틀 → Tab → FilterBar → 데이터 영역. Filter 는 쿼리 파라미터로 누적돼 URL 공유 시에도 유지된다.",
       "**FilterBar 에 Primary CTA 외 다른 액션 버튼을 여러 개 두지 말 것 — CTA 는 1개만.** 필터 항목이 12개+ 면 별도 `[필터 더보기]` 모달로.",
@@ -2075,13 +2056,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "글로벌 네비는 AppBar. PageHeader는 각 페이지 안의 타이틀 영역.",
       "제목 블록은 Heading 합성이라 폰트·제목↔부제 gap·색을 PageHeader 쪽에서 따로 박지 말 것. 위계 스케일을 바꿔야 하면 Heading 토큰(Figma 859:5614)에서.",
       "onBack 지정 시 좌측 ← 자동 노출 — 직접 IconButton 추가하지 말 것 (이중 노출).",
-      "bottom 슬롯은 헤더 padding 외곽까지 음수 마진으로 펼쳐짐. Tabs를 그 안에서 padding 직접 줄 때 0/24/0 등으로 미세 조정.",
+      "bottom 슬롯은 헤더 padding 외곽까지 음수 마진으로 펼쳐짐. Tab를 그 안에서 padding 직접 줄 때 0/24/0 등으로 미세 조정.",
       "bordered=true는 스크롤되는 본문과 헤더를 분리할 때만 사용. 분리감이 필요 없으면 false."
     ],
     "recommended": [
       "디테일: title + onBack + actions",
       "리스트: title + subtitle + actions(생성 버튼)",
-      "탭형 페이지: title + bottom={<Tabs />}"
+      "탭형 페이지: title + bottom={<Tab />}"
     ],
     "examplesHtml": {
       "do": "<nds-page-header page-title=\"설정\" subtitle=\"계정과 알림을 관리하세요\" show-back bordered>\n  <nds-breadcrumb slot=\"breadcrumb\" items='[{\"label\":\"홈\",\"href\":\"/\"}]'></nds-breadcrumb>\n  <nds-button slot=\"actions\" color=\"primary\">저장</nds-button>\n</nds-page-header>\n<script>el.addEventListener(\"nds-page-header-back\", () => history.back());</script>",
@@ -2194,7 +2175,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "rankWidth": "21px 고정 — 두 자리 zero-padded"
       }
     },
-    "summary": "사이드바용 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tabs(기간/정렬 pill 5개) + ranked row 리스트 의 3단 레이어. Row = Rank(Bold) + Title(truncate) + Count(red, `[N]` / 999 초과 `[+999]`). PC 사이드바 폭(≈353w) 가정 — 모바일은 별도 모듈로 분기.",
+    "summary": "사이드바용 커뮤니티 인기글 랭킹 모듈. Header(제목 + 더보기) + Tab(기간/정렬 pill 5개) + ranked row 리스트 의 3단 레이어. Row = Rank(Bold) + Title(truncate) + Count(red, `[N]` / 999 초과 `[+999]`). PC 사이드바 폭(≈353w) 가정 — 모바일은 별도 모듈로 분기.",
     "pitfalls": [
       "Rank 는 컴포넌트 내부에서 두 자리 zero-padded 로 자동 변환 — `items` 에 별도 rank 필드 넘기지 말 것. 배열 순서가 곧 순위.",
       "Count 는 컴포넌트가 자동 포맷 (`[N]` / 999 초과 `[+999]`) — 외부에서 문자열로 가공해서 넘기지 말 것.",
@@ -2421,6 +2402,25 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 같은 그룹인데 name 이 서로 다름 — 둘 다 선택 가능해짐 -->\n<nds-radio name=\"freq-a\" value=\"daily\" label=\"매일\"></nds-radio>\n<nds-radio name=\"freq-b\" value=\"weekly\" label=\"주 1회\"></nds-radio>"
     }
   },
+  "ResultState": {
+    "name": "ResultState",
+    "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다.",
+    "pitfalls": [
+      "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음.",
+      "인라인 placeholder ↔ 풀페이지 결과 화면의 차이는 `status` 가 아니라 `minHeight` 로 조절한다. 빈 리스트는 작게(예: 200), 결제 성공·404 결과 화면은 `minHeight=\"60vh\"` 처럼 크게. **같은 컴포넌트, altitude 만 다름.**",
+      "에러/성공 결과에는 반드시 `status=\"error|success\"` — 색·기본 글리프가 시멘틱하게 바뀐다. status 없이 중립 빈상태로 에러를 표현하면 시그널이 약함.",
+      "인라인 placeholder 를 footer/nav 위로 풀스크린 채우지 말 것 — 영역 안 placeholder 면 `minHeight` 를 작게 둔다(풀페이지는 결과 화면 전용).",
+      "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 브랜드 일러스트가 있으면 `icon` 으로 주입."
+    ],
+    "recommended": [
+      "status: 빈 리스트/검색결과 `empty`(기본·중립), 결제·제출 성공 `success`, 404·실패 `error`, 안내·점검중 `info`",
+      "결과 화면(풀페이지)은 `minHeight=\"60vh\"` + `action` 에 1차 CTA(홈으로/다시 시도)"
+    ],
+    "examplesHtml": {
+      "do": "<!-- 인라인 빈 상태 -->\n<nds-result-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-result-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-result-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\" action=\"홈으로\"></nds-result-state>",
+      "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-result-state title=\"페이지를 찾을 수 없어요\"></nds-result-state>"
+    }
+  },
   "ReviewCard": {
     "name": "ReviewCard",
     "summary": "별점 후기 카드 (0.5 단위). 작성자/별점/본문/태그/푸터 슬롯, verified 인증 마크.",
@@ -2512,7 +2512,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**폭은 기본 전체너비(fullWidth/full-width=true)** — 폼/FormField 안에서 트리거가 100% 를 채운다(캐포비 어드민 폼 기본 규칙). 좁게 써야 하는 경우(어드민 검색 필터 등)에만 `full-width=\"false\"`(React `fullWidth={false}`)를 명시. 드롭다운 메뉴 폭은 전체너비면 트리거 폭으로 고정, auto(좁은) 셀렉트는 가장 넓은 옵션까지 grow 후 캡(360px) — 캡/트리거폭에 닿으면 옵션 라벨이 줄바꿈 대신 말줄임. 메뉴를 트리거보다 임의로 넓게 만들지 말 것.",
       "변경 핸들러는 **onValueChange** (onChange 아님). React 표준이 아닌 DS 컨벤션.",
       "**드롭다운 흉내 금지** — `<nds-button>` / raw `<button>` + ChevronRight/ChevronDown 아이콘 조합으로 드롭다운 모양만 따라 그리지 말 것. 키보드 탐색·focus trap·옵션 list a11y 가 전부 빠짐. 옵션이 1개라도 있으면 무조건 `<nds-select>` 또는 React `<Select>`. 'scope switcher / sort / filter' 같이 옵션이 동적이면 더더욱 raw button 금지.",
-      "옵션이 2-3 개의 토글성 선택지면 Tabs / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",
+      "옵션이 2-3 개의 토글성 선택지면 Tab / Segment 도 고려 — Select 는 옵션 수가 많거나 라벨이 긴 경우.",
       "**Select(searchable) vs Autocomplete 구분** — 옵션 목록에서 *고르는* 검색은 `Select searchable`(값은 옵션으로 제약). 사용자가 *목록에 없는 값을 자유 입력*하거나 서버에서 비동기로 받은 제안을 보여주는 거면 Autocomplete. searchable 로 자유 입력을 흉내내지 말 것.",
       "`searchable` 검색 placeholder 는 `search-placeholder`(React `searchPlaceholder`), 결과 0건 문구는 `empty-message`(React `emptyMessage`)."
     ],
@@ -2604,7 +2604,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-703",
     "summary": "폼 내 상호 배타적 옵션의 단일 선택 (권장 2~3개). 브랜드색 아웃라인의 개별 버튼을 gap 으로 나열 — FormField ContentSlot 에 교체. 선택 시 brand-subtle 배경 + brand 보더 + 굵은 텍스트.",
     "pitfalls": [
-      "Tabs variant='segment' 와 혼동 — segment 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.",
+      "Tab variant='segment' 와 혼동 — segment 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.",
       "옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.",
       "라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.",
       "선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.",
@@ -2613,7 +2613,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     "examplesHtml": {
       "do": "<nds-selection-button-group value=\"always\" options='[{\"value\":\"always\",\"label\":\"항상\"},{\"value\":\"time\",\"label\":\"특정 시간만\"},{\"value\":\"weekday\",\"label\":\"특정 요일/시간만\"}]'></nds-selection-button-group>\n<script>el.addEventListener(\"selection-button-change\", e => setSchedule(e.detail.value));</script>",
-      "dont": "<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. Tabs variant=segment 사용 -->\n<nds-selection-button-group options='[{\"value\":\"list\",\"label\":\"목록\"},{\"value\":\"grid\",\"label\":\"그리드\"}]'></nds-selection-button-group>"
+      "dont": "<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. Tab variant=segment 사용 -->\n<nds-selection-button-group options='[{\"value\":\"list\",\"label\":\"목록\"},{\"value\":\"grid\",\"label\":\"그리드\"}]'></nds-selection-button-group>"
     }
   },
   "SelectionCard": {
@@ -2855,8 +2855,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- rows 를 string 으로 — 줄이 렌더되지 않음. 반드시 JSON 배열 -->\n<nds-summary-card rows=\"상품 50000\"></nds-summary-card>"
     }
   },
-  "Tabs": {
-    "name": "Tabs",
+  "Tab": {
+    "name": "Tab",
     "references": [
       {
         "label": "Tab vs Filter — 역할·배치·결정 트리 (DesignGuide)",
@@ -2875,7 +2875,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "CTA 대체 (저장/신청/다음 단계)",
         "필터 컨트롤 (FilterBar 사용)",
         "페이지 단위 라우팅 (좌측 메뉴 · Breadcrumb 사용)",
-        "세그먼트형 단일 값 선택 (Tabs variant='segment' 사용)"
+        "세그먼트형 단일 값 선택 (Tab variant='segment' 사용)"
       ],
       "variantPolicy": {
         "line": "기본 — 모바일/PC 공통, 콘텐츠 전환. 활성 탭 하단 인디케이터. tone=neutral(진한 텍스트)/color(브랜드).",
@@ -2889,7 +2889,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "변경 핸들러는 onTabChange (onChange 아님).",
       "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 보기 전환만.",
       "같은 리스트의 '필터' 는 FilterBar, Tab 은 '뷰/카테고리/섹션 전환' — 둘을 섞어 쓰지 말 것.",
-      "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tabs variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
+      "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tab variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
       "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
       "캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것.",
       "**Underline(line) vs Box(chip) 용도 구분 (Figma DesignGuide/Tab 3544-206)**: Underline=페이지 메인 카테고리·목록 필터·단계 전환, Box=상태/좁은 영역 필터(진행중·진행예정·종료). **한 화면에 Tab 종류는 1개로 통일 — Underline 과 Box 를 같은 화면에서 혼용하지 말 것.** Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select 검토).",
@@ -2897,8 +2897,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**화면 배치 순서**: 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 좁히는 흐름. Tab 안에 또 Tab 중첩 금지(Sub-section 은 Accordion/Anchor). 캐포비 admin 풀 스펙·치수는 `pattern:cashwalk-biz-tab`."
     ],
     "examplesHtml": {
-      "do": "<nds-tabs active-key=\"home\" variant=\"line\" size=\"mobile\">\n  <nds-tabs-list>\n    <nds-tabs-trigger key=\"home\">홈</nds-tabs-trigger>\n    <nds-tabs-trigger key=\"profile\">프로필</nds-tabs-trigger>\n  </nds-tabs-list>\n  <nds-tabs-panel key=\"home\">홈 콘텐츠</nds-tabs-panel>\n  <nds-tabs-panel key=\"profile\">프로필 콘텐츠</nds-tabs-panel>\n</nds-tabs>\n<script>tabs.addEventListener(\"tabs-change\", e => console.log(e.detail.activeKey));</script>",
-      "dont": "<!-- panel 의 key 가 trigger 의 key 와 불일치 — 빈 화면이 노출됨 -->\n<nds-tabs active-key=\"home\">\n  <nds-tabs-list><nds-tabs-trigger key=\"home\">홈</nds-tabs-trigger></nds-tabs-list>\n  <nds-tabs-panel key=\"HOME\">홈 콘텐츠</nds-tabs-panel>\n</nds-tabs>"
+      "do": "<nds-tab active-key=\"home\" variant=\"line\" size=\"mobile\">\n  <nds-tab-list>\n    <nds-tab-trigger key=\"home\">홈</nds-tab-trigger>\n    <nds-tab-trigger key=\"profile\">프로필</nds-tab-trigger>\n  </nds-tab-list>\n  <nds-tab-panel key=\"home\">홈 콘텐츠</nds-tab-panel>\n  <nds-tab-panel key=\"profile\">프로필 콘텐츠</nds-tab-panel>\n</nds-tab>\n<script>tabs.addEventListener(\"tabs-change\", e => console.log(e.detail.activeKey));</script>",
+      "dont": "<!-- panel 의 key 가 trigger 의 key 와 불일치 — 빈 화면이 노출됨 -->\n<nds-tab active-key=\"home\">\n  <nds-tab-list><nds-tab-trigger key=\"home\">홈</nds-tab-trigger></nds-tab-list>\n  <nds-tab-panel key=\"HOME\">홈 콘텐츠</nds-tab-panel>\n</nds-tab>"
     }
   },
   "TagInput": {
@@ -3243,7 +3243,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "name": "action-row",
     "metrics": {
       "preferredBuckets": "44 / 48 / 52 px",
-      "defaultBucket": "44px (Button.md · Tabs.chip pc · Input.field)",
+      "defaultBucket": "44px (Button.md · Tab.chip pc · Input.field)",
       "maxHeightMixPerRow": 1,
       "gapBetweenItems": "8 / 12 / 16 px (--semantic-gap-component-*)",
       "verticalAlign": "center"
@@ -3251,16 +3251,16 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "summary": "헤더 우측 액션 row · 필터 바 · 도구 모음처럼 *서로 다른 컴포넌트가 한 줄로 나란히 놓이는* 영역에서 높이를 어떻게 맞추는가. 빠지면 1-2px 어긋남이 row 전체를 시각적으로 불편하게 만든다. `sizing.button` / `sizing.tabs` / `sizing.input` 토큰의 단일 source of truth.",
     "rules": [
       "한 row 안의 모든 컴포넌트는 *동일한 height bucket* (44 / 48 / 52 중 하나) 으로 통일. 4px 차이도 정렬 깨짐.",
-      "**기본 bucket = 44px** — Button.md(44) / Tabs.chip(pc 44) / Input.field(44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.",
+      "**기본 bucket = 44px** — Button.md(44) / Tab.chip(pc 44) / Input.field(44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.",
       "**큰 bucket = 48px** — Button.lg(48) / Button.field(48) / Input.default(48) / AppBar 아래 큰 액션 row. primary CTA 가 포함된 row 에 사용.",
-      "**작은 bucket = 38-42px** — Button.sm(42) / Button.xs(38) / Tabs.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.",
+      "**작은 bucket = 38-42px** — Button.sm(42) / Button.xs(38) / Tab.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.",
       "DS 컴포넌트의 height 는 `sizing.button.{size}` / `sizing.tabs.{type}.{viewport}` / `sizing.input.{kind}` 토큰이 단일 진실. **인라인 height 로 덮어쓰지 말 것** — 자연 높이가 다른 컴포넌트를 같은 px 로 강제하면 line-height 가 어긋난다.",
       "DateRangePicker / Toggle / Select 같이 sizing.* 토큰이 없는 컴포넌트는 size prop 으로 매치하거나, 같은 row 에서 padding 만 조정해 외형을 맞춘다. **임의 height: 40px 같은 raw px 금지** — 토큰에서 가장 가까운 bucket 으로 라운드.",
       "row 안 컴포넌트 간 gap 은 8 / 12 / 16 중 하나. var(--semantic-gap-component-tight) / var(--semantic-gap-component-default) / var(--semantic-gap-component-loose).",
       "row baseline 정렬: align-items: center (vertical center) 가 기본. text label 이 있는 컴포넌트와 icon-only 컴포넌트를 섞으면 baseline 정렬은 어긋남 — center 만 사용."
     ],
     "avoid": [
-      "한 row 안에 Button(44) + Tabs(56) + Toggle(38) 처럼 다른 bucket 의 컴포넌트를 섞기",
+      "한 row 안에 Button(44) + Tab(56) + Toggle(38) 처럼 다른 bucket 의 컴포넌트를 섞기",
       "`style={{ height: '40px' }}` 같은 raw px 로 컴포넌트 자연 높이를 덮어쓰기 — line-height 어긋남",
       "DateRangePicker 의 input 자연 높이가 40px 이라고 다른 컴포넌트도 height: 40 으로 강제하기 (toggle/tabs 가 깨짐)",
       "primary CTA 가 들어있는 row 에 작은 sm/xs Button 을 섞기 — 시각 위계 흐려짐",
@@ -3794,7 +3794,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "cardBg": "--semantic-bg-surface-default (#FFFFFF)",
       "canvasBg": "--semantic-bg-surface-subtle (#FAFAFA)",
       "validateSummaryThreshold": "핵심 지표 ≤ 4 → Summary Strip / >4 → 별도 카드·그리드",
-      "emptyState": "데이터 없음 → 회색 패널 + 안내문",
+      "resultState": "데이터 없음 → 회색 패널 + 안내문",
       "relatedPatterns": "cashwalk-biz-page-patterns, admin-shell, dense-list"
     },
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9",
@@ -4001,7 +4001,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "pageSizeSelect": "'10개씩 보기' 셀렉트 (우측)",
       "validatePaginationThreshold": "Row > 50 필수 / ≤ 10 생략",
       "validateFilterThreshold": "필터 > 4 → 패널 분리",
-      "emptyState": "'등록된 OOO이 없습니다' + CTA 필수",
+      "resultState": "'등록된 OOO이 없습니다' + CTA 필수",
       "relatedPatterns": "cashwalk-biz-page-patterns, cashwalk-biz-action-pattern, admin-shell, action-row, dense-list, cashwalk-biz-page-detail, cashwalk-biz-badge-chip, cashwalk-biz-tab, cashwalk-biz-admin-alert-banner"
     },
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3613-234",
@@ -4321,14 +4321,14 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "boxRadius": 10,
       "tabVsFilter": "Tab = view 전환(상호 배타·URL 경로) / Filter = 현재 view 좁히기(다중 누적·쿼리 파라미터)",
       "screenOrder": "페이지 타이틀 → Tab → FilterBar → 데이터 영역",
-      "relatedComponents": "Tabs, FilterBar",
+      "relatedComponents": "Tab, FilterBar",
       "relatedPatterns": "cashwalk-biz-step-progress, cashwalk-biz-badge-chip, cashwalk-biz-page-patterns"
     },
-    "summary": "캐시워크 포 비즈니스 admin 의 Tab 카탈로그 — Underline(line) + Box(chip) 2 변형. DS `Tabs` 컴포넌트로 구현, 브랜드 색·치수는 data-brand=\"cashwalk-biz\" 시 자동 cascade.",
+    "summary": "캐시워크 포 비즈니스 admin 의 Tab 카탈로그 — Underline(line) + Box(chip) 2 변형. DS `Tab` 컴포넌트로 구현, 브랜드 색·치수는 data-brand=\"cashwalk-biz\" 시 자동 cascade.",
     "rules": [
-      "**Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tabs variant=\"line\" size=\"pc\" tone=\"neutral\">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.",
-      "**Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tabs variant=\"chip\" size=\"pc\" tone=\"neutral\">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).",
-      "치수·색은 모두 캐포비 브랜드 토큰(`--nds-tabs-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand=\"cashwalk-biz\"` 만 루트에 있으면 자동 적용된다.",
+      "**Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tab variant=\"line\" size=\"pc\" tone=\"neutral\">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.",
+      "**Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tab variant=\"chip\" size=\"pc\" tone=\"neutral\">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).",
+      "치수·색은 모두 캐포비 브랜드 토큰(`--nds-tab-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand=\"cashwalk-biz\"` 만 루트에 있으면 자동 적용된다.",
       "동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`.",
       "**Tab vs Filter — 역할이 다르다(혼동 금지).** 둘 다 데이터를 분류해 보여주지만: **Tab** = 데이터를 **상호 배타적으로 분류**(한 번에 한 view 만) → **view 자체가 바뀜** → URL **경로** 변경(`/quizzes/active → /quizzes/done`). 예: 진행중/종료/대기, 승인/반려. **Filter**(`pattern:` FilterBar) = **현재 view 안에서 조건을 점진적으로 좁히기** → 같은 view 에 **결과만 변함** → **쿼리 파라미터**로 누적(`?date=…&keyword=…`, URL 공유 시에도 필터 유지). 예: 날짜 범위·키워드·카테고리 다중.",
       "**결정 트리** — Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**. Q2. 조건을 누적해서 좁히나(다중 필터)? → YES = **Filter(FilterBar)**. Q3. 옵션 2–7개 단일 선택인가? → YES = **Radio / SelectionButtonGroup**(`get_guide` Selection Components). 그 외 = 다른 컨트롤 검토.",
@@ -5095,12 +5095,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   },
   "selection-controls": {
     "name": "selection-controls",
-    "summary": "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tabs(variant=segment) / Dropdown 중 하나로 매핑한다.",
+    "summary": "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tab(variant=segment) / Dropdown 중 하나로 매핑한다.",
     "rules": [
       "① 다중 선택 + 짧은 라벨(연령대·시군구·태그·관심사) → SelectChip (`<nds-chip selected interactive>`, 캐포비=노란 채움/검정 텍스트).",
       "② 단일 선택 + 설명 없는 짧은 옵션 2~3개(OS 전체/Android/iOS·성별·노출 구분) → SelectionButtonGroup.",
       "③ 단일 선택 + 설명/아이콘 있는 카드(캠페인 목표·유형·소진 방식) → SelectionCard(mode=single) — 라디오 도트 내장, 커스텀 카드 금지.",
-      "④ 목록 상태 필터(전체/송출중/정지) → Tabs variant='segment' 또는 캐포비 Box Tab(pattern:cashwalk-biz-tab).",
+      "④ 목록 상태 필터(전체/송출중/정지) → Tab variant='segment' 또는 캐포비 Box Tab(pattern:cashwalk-biz-tab).",
       "⑤ 단일 선택 옵션 4개 초과 → Dropdown."
     ],
     "avoid": [

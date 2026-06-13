@@ -108,8 +108,8 @@ export { NdsTextarea } from "./components/nds-textarea.js";
 export { NdsInput } from "./components/nds-input.js";
 export type { InputSize } from "./components/nds-input.js";
 
-export { NdsTabs, NdsTabsList, NdsTabsTrigger, NdsTabsPanel } from "./components/nds-tabs.js";
-export type { TabsSize, TabsTone, TabsVariant } from "./components/nds-tabs.js";
+export { NdsTab, NdsTabList, NdsTabTrigger, NdsTabPanel } from "./components/nds-tab.js";
+export type { TabSize, TabTone, TabVariant } from "./components/nds-tab.js";
 
 export { NdsDrawer } from "./components/nds-drawer.js";
 export type { DrawerSide, DrawerSize } from "./components/nds-drawer.js";
@@ -297,7 +297,7 @@ export { NdsInspector } from "./components/nds-inspector.js";
 // react↔html export parity 복원 — 이 컴포넌트들은 runtime.ts 에는 등록돼 있으나
 // index 배럴에서 빠져 있었다(NdsStepper 회귀와 동일 계열).
 
-export { NdsEmptyState } from "./components/nds-empty-state.js";
+export { NdsResultState } from "./components/nds-result-state.js";
 
 export { NdsPagination } from "./components/nds-pagination.js";
 
