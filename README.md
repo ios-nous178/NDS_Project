@@ -135,7 +135,7 @@ flowchart TB
     SLACK["Slack 알림<br/>(pending.md 우선,<br/>없으면 git log fallback)"]
   end
 
-  EXT["외부 소비자<br/>Claude Desktop 에 .mcpb 재설치<br/>+ get_setup({ step: 'install' }) 로 .tgz 갱신"]
+  EXT["외부 소비자<br/>Claude Desktop: .mcpb 재설치<br/>Codex: .mcpb unzip 후 server.mjs 를 config.toml 등록<br/>+ get_setup({ step: 'install' }) 로 .tgz 갱신"]
 
   CS --> VP --> SYNC --> NOTES --> PUSH
   PUSH -->|push trigger| PACK
