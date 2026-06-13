@@ -220,7 +220,7 @@ export const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           )}
         </div>
         {helperText && (
-          <p className={PI_HELPER_CLASS} data-error={error ? "true" : "false"}>
+          <p className={PI_HELPER_CLASS + " nds-helper-text"} data-error={error ? "true" : "false"}>
             {helperText}
           </p>
         )}

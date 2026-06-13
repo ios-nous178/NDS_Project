@@ -27,7 +27,6 @@ const TP_COL_CLASS = `${TP_CLASS}__col`;
 const TP_COL_HEAD_CLASS = `${TP_CLASS}__col-head`;
 const TP_COL_LIST_CLASS = `${TP_CLASS}__col-list`;
 const TP_OPTION_CLASS = `${TP_CLASS}__option`;
-const TP_HELPER_CLASS = `${TP_CLASS}__helper`;
 
 export const tpStyles = `
   :where(.${TP_ROOT_CLASS}) {
@@ -231,11 +230,7 @@ export const tpStyles = `
     outline-offset: -2px;
   }
 
-  :where(.${TP_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.input.helpertextDefault};
-  }
-  :where(.${TP_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
+  /* helper 폰트·색·margin·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text(HelperText.ts) 소유 */
 
   @keyframes nds-time-picker-fade-in {
     from { opacity: 0; transform: translateY(-4px); }

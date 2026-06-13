@@ -18,7 +18,6 @@ const AS_RESULT_CLASS = `${AS_CLASS}__result`;
 const AS_RESULT_LIST_CLASS = `${AS_CLASS}__result-list`;
 const AS_RESULT_ITEM_CLASS = `${AS_CLASS}__result-item`;
 const AS_DETAIL_CLASS = `${AS_CLASS}__detail`;
-const AS_HELPER_CLASS = `${AS_CLASS}__helper`;
 
 export const apStyles = `
   :where(.${AS_CLASS}) {
@@ -132,9 +131,5 @@ export const apStyles = `
     margin-top: ${spacing[4]}px;
   }
 
-  :where(.${AS_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.input.helpertextDefault};
-  }
-  :where(.${AS_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
+  /* helper 폰트·색·margin·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text(HelperText.ts) 소유 */
 `;

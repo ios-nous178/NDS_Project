@@ -18,7 +18,6 @@ const AI_INPUT_CLASS = `${AI_CLASS}__input`;
 const AI_UNIT_CLASS = `${AI_CLASS}__unit`;
 const AI_PRESETS_CLASS = `${AI_CLASS}__presets`;
 const AI_PRESET_CLASS = `${AI_CLASS}__preset`;
-const AI_HELPER_CLASS = `${AI_CLASS}__helper`;
 
 export const aiStyles = `
   :where(.${AI_CLASS}) {
@@ -102,11 +101,5 @@ export const aiStyles = `
   }
   :where(.${AI_PRESET_CLASS}:hover) { background: ${cv.surface.section}; }
 
-  :where(.${AI_HELPER_CLASS}) {
-    font-size: ${typeScale.caption2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption2.lineHeight}px;
-    color: ${cv.input.helpertextDefault};
-  }
-  :where(.${AI_HELPER_CLASS}[data-error="true"]) { color: ${cv.input.helpertextError}; }
+  /* helper 폰트·색·margin·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text(HelperText.ts) 소유 */
 `;

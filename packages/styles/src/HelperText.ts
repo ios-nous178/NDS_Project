@@ -25,6 +25,8 @@ export const helperTextStyles = `
     display: inline-flex;
     align-items: center;
     gap: ${spacing[6]}px;
+    /* 헬퍼 element 가 <p> 여도 UA margin(1em) 이 새지 않게 — 간격은 부모 레이아웃(root gap / margin-top)이 소유 */
+    margin: 0;
     font-size: ${typeScale.caption2.fontSize}px;
     font-weight: ${fontWeight.regular};
     line-height: ${typeScale.caption2.lineHeight}px;

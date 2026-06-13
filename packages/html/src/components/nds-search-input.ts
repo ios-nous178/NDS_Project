@@ -196,7 +196,7 @@ export class NdsSearchInput extends NdsElement {
     const displayHelper = showError ? errorMessage : helperText;
     if (displayHelper) {
       const helper = document.createElement("span");
-      helper.className = SEARCH_HELPER_CLASS;
+      helper.className = SEARCH_HELPER_CLASS + " nds-helper-text";
       helper.dataset.slot = "helper";
       helper.dataset.error = String(showError);
       if (showError) helper.setAttribute("role", "alert");

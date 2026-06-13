@@ -234,7 +234,7 @@ export class NdsAmountInput extends NdsElement {
     }
     if (!this._helperEl) {
       const p = document.createElement("p");
-      p.className = AI_HELPER_CLASS;
+      p.className = AI_HELPER_CLASS + " nds-helper-text";
       this._root!.appendChild(p);
       this._helperEl = p;
     }

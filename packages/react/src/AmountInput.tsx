@@ -192,7 +192,7 @@ export const AmountInput = React.forwardRef<HTMLInputElement, AmountInputProps>(
           </div>
         )}
         {helperText && (
-          <p className={AI_HELPER_CLASS} data-error={error ? "true" : "false"}>
+          <p className={AI_HELPER_CLASS + " nds-helper-text"} data-error={error ? "true" : "false"}>
             {helperText}
           </p>
         )}

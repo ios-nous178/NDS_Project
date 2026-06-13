@@ -156,7 +156,7 @@ export class NdsAddressPicker extends NdsElement {
     detailWrap.append(detailStrong, detailPostal, detailInput);
 
     const helper = document.createElement("p");
-    helper.className = AS_HELPER_CLASS;
+    helper.className = AS_HELPER_CLASS + " nds-helper-text";
     helper.hidden = true;
 
     root.append(label, row, resultWrap, detailWrap, helper);

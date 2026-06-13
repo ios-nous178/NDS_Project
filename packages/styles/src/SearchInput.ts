@@ -17,7 +17,6 @@ const SEARCH_WRAPPER_CLASS = `${SEARCH_CLASS}__wrapper`;
 const SEARCH_FIELD_CLASS = `${SEARCH_CLASS}__field`;
 const SEARCH_CLEAR_CLASS = `${SEARCH_CLASS}__clear`;
 const SEARCH_BUTTON_CLASS = `${SEARCH_CLASS}__button`;
-const SEARCH_HELPER_CLASS = `${SEARCH_CLASS}__helper`;
 
 export const searchInputStyles = `
   :where(.${SEARCH_ROOT_CLASS}) {
@@ -136,14 +135,5 @@ export const searchInputStyles = `
     height: ${sizing.icon.default}px;
   }
 
-  :where(.${SEARCH_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.input.helpertextDefault};
-  }
-
-  :where(.${SEARCH_HELPER_CLASS}[data-error="true"]) {
-    color: ${cv.textRole.statusError};
-  }
+  /* helper 폰트·색·margin·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text(HelperText.ts) 소유 */
 `;

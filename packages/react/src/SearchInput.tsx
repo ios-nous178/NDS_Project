@@ -236,7 +236,7 @@ export const SearchInputHelper: React.FC<SearchInputHelperProps> = ({
       id={idProp ?? helperId}
       data-slot="helper"
       data-error={error ? "true" : "false"}
-      className={cx(SEARCH_HELPER_CLASS, className)}
+      className={cx(SEARCH_HELPER_CLASS, "nds-helper-text", className)}
       role={error ? "alert" : undefined}
       {...rest}
     >

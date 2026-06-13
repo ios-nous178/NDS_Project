@@ -347,7 +347,7 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>(
         )}
 
         {helperText && (
-          <p className={TP_HELPER_CLASS} data-error={error ? "true" : "false"}>
+          <p className={TP_HELPER_CLASS + " nds-helper-text"} data-error={error ? "true" : "false"}>
             {helperText}
           </p>
         )}

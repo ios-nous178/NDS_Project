@@ -19,7 +19,6 @@ const TI_CHIPS_CLASS = `${TI_CLASS}__chips`;
 const TI_TAG_CLASS = `${TI_CLASS}__tag`;
 const TI_REMOVE_CLASS = `${TI_CLASS}__remove`;
 const TI_INPUT_CLASS = `${TI_CLASS}__input`;
-const TI_HELPER_CLASS = `${TI_CLASS}__helper`;
 
 export const tiStyles = `
   :where(.${TI_ROOT_CLASS}) {
@@ -233,10 +232,5 @@ export const tiStyles = `
     height: 10px;
   }
 
-  :where(.${TI_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    color: ${cv.input.helpertextDefault};
-  }
-
-  :where(.${TI_HELPER_CLASS}[data-error="true"]) { color: ${cv.input.helpertextError}; }
+  /* helper 폰트·색·margin·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text(HelperText.ts) 소유 */
 `;

@@ -184,7 +184,7 @@ export class NdsTimePicker extends NdsElement {
     field.append(trigger, presetsEl);
 
     const helper = document.createElement("p");
-    helper.className = TP_HELPER_CLASS;
+    helper.className = TP_HELPER_CLASS + " nds-helper-text";
 
     root.append(labelEl, field, helper);
     this.appendChild(root);

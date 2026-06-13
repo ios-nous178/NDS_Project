@@ -229,7 +229,7 @@ export class NdsPhoneInput extends NdsElement {
     fieldWrap.appendChild(menu);
 
     const helperEl = document.createElement("p");
-    helperEl.className = PI_HELPER_CLASS;
+    helperEl.className = PI_HELPER_CLASS + " nds-helper-text";
 
     root.append(labelEl, fieldWrap, helperEl);
     this.appendChild(root);

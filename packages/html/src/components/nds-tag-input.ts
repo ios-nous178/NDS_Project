@@ -192,7 +192,7 @@ export class NdsTagInput extends NdsElement {
     });
 
     const helperEl = document.createElement("p");
-    helperEl.className = TI_HELPER_CLASS;
+    helperEl.className = TI_HELPER_CLASS + " nds-helper-text";
 
     root.append(labelEl, helperEl);
     this.appendChild(root);

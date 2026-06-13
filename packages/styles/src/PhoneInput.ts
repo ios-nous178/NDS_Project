@@ -20,7 +20,6 @@ const PI_DIAL_CLASS = `${PI_CLASS}__dial`;
 const PI_DIAL_CODE_CLASS = `${PI_CLASS}__dial-code`;
 const PI_CHEVRON_CLASS = `${PI_CLASS}__chevron`;
 const PI_INPUT_CLASS = `${PI_CLASS}__input`;
-const PI_HELPER_CLASS = `${PI_CLASS}__helper`;
 const PI_MENU_CLASS = `${PI_CLASS}__menu`;
 const PI_MENU_ITEM_CLASS = `${PI_CLASS}__menu-item`;
 const PI_MENU_CODE_CLASS = `${PI_CLASS}__menu-code`;
@@ -203,11 +202,5 @@ export const phoneInputStyles = `
     border-color: ${cv.input.borderError};
   }
 
-  :where(.${PI_HELPER_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
-    color: ${cv.input.helpertextDefault};
-  }
-
-  :where(.${PI_HELPER_CLASS}[data-error="true"]) { color: var(--semantic-text-status-error); }
+  /* helper 폰트·색·margin·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text(HelperText.ts) 소유 */
 `;

@@ -172,7 +172,7 @@ export const AddressPicker = React.forwardRef<HTMLDivElement, AddressPickerProps
         )}
 
         {helperText && (
-          <p className={AS_HELPER_CLASS} data-error={error ? "true" : "false"}>
+          <p className={AS_HELPER_CLASS + " nds-helper-text"} data-error={error ? "true" : "false"}>
             {helperText}
           </p>
         )}

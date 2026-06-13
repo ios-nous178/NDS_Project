@@ -244,7 +244,7 @@ export const TagInput = React.forwardRef<HTMLDivElement, TagInputProps>(
         )}
 
         {helperText && (
-          <p className={TI_HELPER_CLASS} data-error={error ? "true" : "false"}>
+          <p className={TI_HELPER_CLASS + " nds-helper-text"} data-error={error ? "true" : "false"}>
             {helperText}
           </p>
         )}
