@@ -283,6 +283,13 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
   // _shared 로 hoist 되게 한다(이전엔 hasRef 차이로 토픽 수만큼 반복 노출). figma 픽셀
   // 확인 큐는 "있으면" 조건부라 noRef 컴포넌트에도 부정확하지 않다.
   const baseAdvisory = COMPONENT_GUIDE_ADVISORY;
+  // 합성 전용(standalone:false) 컴포넌트는 "단독 사용 금지"를 advisory 로 부각 —
+  // AI 가 헬퍼텍스트/검증칩을 부모 없이 덜렁 놓는 오용을 차단.
+  const standaloneAdvisory =
+    guide.standalone === false
+      ? "⚠ 합성 전용 — 단독 사용 금지. 부모 없이는 의미 없는 서브 컴포넌트입니다" +
+        (guide.composeWith?.length ? ` (반드시 ${guide.composeWith.join(" · ")} 와 합성해 사용).` : ".")
+      : undefined;
 
   if (target === "html") {
     const { examplesHtml, _htmlStatus, ...rest } = guide;
@@ -317,6 +324,7 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
     }
     return {
       _advisory: baseAdvisory,
+      ...(standaloneAdvisory ? { _standaloneAdvisory: standaloneAdvisory } : {}),
       _htmlAdvisory: htmlAdvisory,
       _principlesDigest: PRINCIPLES_DIGEST,
       ...rest,
@@ -327,6 +335,7 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
 
   return {
     _advisory: baseAdvisory,
+    ...(standaloneAdvisory ? { _standaloneAdvisory: standaloneAdvisory } : {}),
     _principlesDigest: PRINCIPLES_DIGEST,
     ...guide,
     references: resolvedReferences ?? guide.references,

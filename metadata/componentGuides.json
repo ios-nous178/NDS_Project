@@ -1288,6 +1288,11 @@
     },
     "FieldActionRow": {
       "name": "FieldActionRow",
+      "standalone": false,
+      "composeWith": [
+        "Input",
+        "Button"
+      ],
       "summary": "전화번호 인증 / 인증코드 입력처럼 '입력 1개 (+ 액션 버튼) (+타이머)' 한 줄 패턴 전용 helper. **action 은 옵션** — 생략하면 코드 입력 + 우측 타이머만(인라인 버튼 없는 레이아웃, 예: 캐포비 본인인증의 별도 full-width 재전송 버튼 + 타이머만 있는 코드 입력. pattern:cashwalk-biz-verification). React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
       "pitfalls": [
         "**라벨이 필요하면 `label`(html: label 속성 / react: label prop)을 쓴다 — 라벨을 손으로 버튼과 같은 줄에 넣지 말 것.** '휴대폰 번호' 같은 필드 라벨이 필요한 인증 row 에서 라벨을 별도 마크업으로 버튼 옆/위에 욱여넣으면 버튼이 라벨 높이에 떠 입력칸과 어긋난다(회귀). label 을 넘기면 라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다.",
@@ -3370,6 +3375,11 @@
     "ValidationChip": {
       "name": "ValidationChip",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
+      "standalone": false,
+      "composeWith": [
+        "Input",
+        "FormField"
+      ],
       "stateMatrix": {
         "incomplete": "muted — icon/text var(--semantic-text-muted-default) (#999) · 체크 글리프 · 아직 미충족(기본값)",
         "complete": "brand — icon/text var(--semantic-text-brand-default) (#2b96ed) · 체크 글리프 · 규칙 충족",

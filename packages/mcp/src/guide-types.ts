@@ -109,6 +109,13 @@ export interface ComponentGuide {
   /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
   accessibility?: string[];
   interactivePattern?: string;
+  /**
+   * 합성 전용(standalone 금지) 여부. `false` 면 부모 없이는 의미 없는 필드/카드 서브 컴포넌트 —
+   * 단독 사용 금지(예: HelperText·ValidationChip·FieldActionRow). 미설정(=true)은 단독 사용 가능.
+   */
+  standalone?: boolean;
+  /** `standalone: false` 일 때 함께 합성되는 부모/형제 컴포넌트 (예: ["Input", "FormField"]). */
+  composeWith?: string[];
 }
 
 export interface PatternGuide {

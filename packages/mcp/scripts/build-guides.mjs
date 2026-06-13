@@ -48,6 +48,8 @@ const COMPONENT_FIELDS = new Set([
   "references",
   "accessibility",
   "interactivePattern",
+  "standalone",
+  "composeWith",
 ]);
 const PATTERN_FIELDS = new Set([
   "name",

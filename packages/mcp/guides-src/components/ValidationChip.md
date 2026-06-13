@@ -1,5 +1,7 @@
 ---
 figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569
+standalone: false
+composeWith: [Input, FormField]
 stateMatrix:
   incomplete: "muted — icon/text var(--semantic-text-muted-default) (#999) · 체크 글리프 · 아직 미충족(기본값)"
   complete: "brand — icon/text var(--semantic-text-brand-default) (#2b96ed) · 체크 글리프 · 규칙 충족"

@@ -1,5 +1,6 @@
 ---
-{}
+standalone: false
+composeWith: [Input, Button]
 ---
 
 ## summary
