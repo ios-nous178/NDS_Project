@@ -63,7 +63,7 @@ const renderStars = (rating: number) => {
         <defs>
           <linearGradient id="${id}">
             <stop offset="50%" stop-color="currentColor" />
-            <stop offset="50%" stop-color="#E0E0E0" />
+            <stop offset="50%" style="stop-color: var(--nds-rating-star-empty, #D8D8D8)" />
           </linearGradient>
         </defs>
         <path
@@ -75,7 +75,7 @@ const renderStars = (rating: number) => {
       svg.innerHTML = `
         <path
           d="M7 1l1.8 3.8L13 5.5l-3 2.9.8 4.3L7 10.5 3.2 12.7 4 8.4 1 5.5l4.2-.7z"
-          fill="${filled ? "currentColor" : "#E0E0E0"}"
+          style="fill: ${filled ? "currentColor" : "var(--nds-rating-star-empty, #D8D8D8)"}"
         />
       `;
     }
@@ -88,7 +88,14 @@ export class NdsReviewCard extends NdsElement {
   static elementName = "nds-review-card";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-review-card"].observedAttributes, "author", "meta", "rating-label", "card-title", "body"];
+    return [
+      ...COMPONENT_ATTRS["nds-review-card"].observedAttributes,
+      "author",
+      "meta",
+      "rating-label",
+      "card-title",
+      "body",
+    ];
   }
 
   private _root: HTMLDivElement | null = null;

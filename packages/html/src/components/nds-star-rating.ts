@@ -17,7 +17,7 @@ const SR_VALUE_CLASS = `${SR_CLASS}__value`;
 
 const STAR_PATH = "M8 1.3l2 4.1 4.5.6-3.3 3.2.8 4.5L8 11.4l-4 2.3.8-4.5L1.5 6l4.5-.6z";
 const FILLED_COLOR = "var(--nds-rating-star, #FFD54F)"; // 슬롯 토큰 — style.fill 로 적용(attr 는 var() 미보장)
-const EMPTY_COLOR = "#E0E0E0";
+const EMPTY_COLOR = "var(--nds-rating-star-empty, #D8D8D8)"; // 빈 별 슬롯 — 기본 neutral[300]
 const DEFAULT_STAR_SIZE = 16;
 const STAR_SIZE_BY_NAME = {
   sm: 14,

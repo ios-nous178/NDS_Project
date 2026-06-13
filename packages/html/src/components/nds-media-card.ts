@@ -45,8 +45,8 @@ const renderStars = (rating: number, container: HTMLElement) => {
     svg.setAttribute("height", "14");
     svg.setAttribute("viewBox", "0 0 14 14");
     svg.setAttribute("aria-hidden", "true");
-    svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" fill="${
-      filled ? "#FFD54F" : "#E0E0E0"
+    svg.innerHTML = `<path d="M7 1L8.85 4.75L13 5.35L10 8.27L10.71 12.4L7 10.45L3.29 12.4L4 8.27L1 5.35L5.15 4.75L7 1Z" style="fill: ${
+      filled ? "var(--nds-rating-star, #FFD54F)" : "var(--nds-rating-star-empty, #D8D8D8)"
     }"/>`;
     container.appendChild(svg);
   }
@@ -56,7 +56,16 @@ export class NdsMediaCard extends NdsElement {
   static elementName = "nds-media-card";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-media-card"].observedAttributes, "image-src", "image-alt", "image-overlay", "eyebrow", "card-title", "body", "clickable"];
+    return [
+      ...COMPONENT_ATTRS["nds-media-card"].observedAttributes,
+      "image-src",
+      "image-alt",
+      "image-overlay",
+      "eyebrow",
+      "card-title",
+      "body",
+      "clickable",
+    ];
   }
 
   private _root: HTMLDivElement | null = null;

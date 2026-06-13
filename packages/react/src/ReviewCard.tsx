@@ -73,7 +73,7 @@ const renderStars = (rating: number) => {
             <defs>
               <linearGradient id={`half-${i}`}>
                 <stop offset="50%" stopColor="currentColor" />
-                <stop offset="50%" stopColor="#E0E0E0" />
+                <stop offset="50%" style={{ stopColor: "var(--nds-rating-star-empty, #D8D8D8)" }} />
               </linearGradient>
             </defs>
             <path
@@ -84,7 +84,7 @@ const renderStars = (rating: number) => {
         ) : (
           <path
             d="M7 1l1.8 3.8L13 5.5l-3 2.9.8 4.3L7 10.5 3.2 12.7 4 8.4 1 5.5l4.2-.7z"
-            fill={filled ? "currentColor" : "#E0E0E0"}
+            style={{ fill: filled ? "currentColor" : "var(--nds-rating-star-empty, #D8D8D8)" }}
           />
         )}
       </svg>,

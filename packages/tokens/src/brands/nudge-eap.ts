@@ -12,7 +12,17 @@
  */
 
 import type { BrandTheme } from "./types.js";
-import { neutral, coolGray, blue, magenta, yellow, red, coralRed, green, amber } from "../colors.js";
+import {
+  neutral,
+  coolGray,
+  blue,
+  magenta,
+  yellow,
+  red,
+  coralRed,
+  green,
+  amber,
+} from "../colors.js";
 import { fontFamily, typeScale } from "../typography.js";
 import { radius } from "../spacing.js";
 import { shadow, zIndex } from "../elevation.js";
@@ -57,7 +67,7 @@ export const nudgeEapTheme: BrandTheme = {
       "4": "#34C759",
       empty: "#BBBBBB",
     },
-    rating: { star: "#FFD54F" },
+    rating: { star: "#FFD54F", starEmpty: neutral[300] }, // 빈 별 — 팔레트 내 최근접 그레이(#D8D8D8)
     // Toast — 단일 다크 토스트 (Figma 1330:2). role-based 시멘틱 변수 집합 밖이라 --nds-* 슬롯.
     // 모든 브랜드 공통 기본값 (캐포비는 Toast 자체가 banned → Snackbar).
     toast: {

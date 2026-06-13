@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T04:40:42.645Z",
+  "generatedAt": "2026-06-13T05:06:11.039Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11795,6 +11795,11 @@
     {
       "name": "--nds-rating-star",
       "value": "#FFD54F",
+      "group": "nds"
+    },
+    {
+      "name": "--nds-rating-star-empty",
+      "value": "#D8D8D8",
       "group": "nds"
     },
     {
