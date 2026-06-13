@@ -309,5 +309,22 @@ export const cashwalkBizTheme: BrandTheme = {
       stackedBg: "var(--semantic-border-normal-default)",
       stackedRadius: 10,
     },
+    // Pagination — admin boxed(테두리 박스 white + Border/Normal, radius 4, 34h) · active 검정 fill · boxed disabled.
+    // Figma PaginationGuide 4118:1186. (옛 styles/Pagination.ts [data-brand] 블록 대체)
+    pagination: {
+      gap: 6,
+      itemHeight: 34,
+      itemBorder: "1px solid var(--semantic-border-normal-default)",
+      itemRadius: 4,
+      itemBg: "var(--semantic-bg-surface-default)",
+      itemColor: "var(--semantic-text-normal-default)",
+      itemWeight: "500",
+      activeBg: "var(--semantic-fill-neutral-default)",
+      activeBgHover: "var(--semantic-fill-neutral-default)",
+      activeWeight: "500",
+      disabledOpacity: "1",
+      disabledBg: "var(--semantic-bg-surface-subtle)",
+      disabledColor: "var(--semantic-text-disabled-default)",
+    },
   },
 };

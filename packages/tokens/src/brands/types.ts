@@ -317,11 +317,26 @@ export interface ComponentOverrides {
     /** checked 트랙 위 내장 라벨 색 (`--nds-toggle-label-active-color`). base button.textDefault. */
     labelActiveColor?: ComponentValue;
   };
-  /** Pagination active 페이지 시각 — 런마일은 brand orange 가 아닌 gray800 fill (Figma 120:1234). */
+  /**
+   * Pagination — active 페이지 색(런마일 gray800) + 캐포비 boxed 아이템 re-skin.
+   * 캐포비는 테두리 박스(gap/height/border/radius/bg/color/weight) + boxed disabled(opacity/bg/color).
+   * 다른 브랜드 미설정 → 테두리 없는 투명 버튼(fallback).
+   */
   pagination?: {
+    gap?: ComponentValue;
+    itemHeight?: ComponentValue;
+    itemBorder?: ComponentValue;
+    itemRadius?: ComponentValue;
+    itemBg?: ComponentValue;
+    itemColor?: ComponentValue;
+    itemWeight?: ComponentValue;
     activeBg?: ComponentValue;
     activeBgHover?: ComponentValue;
     activeText?: ComponentValue;
+    activeWeight?: ComponentValue;
+    disabledOpacity?: ComponentValue;
+    disabledBg?: ComponentValue;
+    disabledColor?: ComponentValue;
   };
   /**
    * Checkbox 시각 변형. 캐포비 가이드(3082:899)는 box 15×15 / 1.25px border / radius 2px /

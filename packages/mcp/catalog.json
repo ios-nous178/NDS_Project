@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T08:34:04.104Z",
+  "generatedAt": "2026-06-13T09:00:22.140Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11638,19 +11638,27 @@
     },
     {
       "name": "--nds-pagination-active-bg",
-      "value": "#4E5968",
+      "value": "var(--semantic-fill-neutral-default)",
       "group": "nds",
       "brands": [
+        "cashwalk-biz",
         "runmile"
-      ]
+      ],
+      "brandValues": {
+        "runmile": "#4E5968"
+      }
     },
     {
       "name": "--nds-pagination-active-bg-hover",
-      "value": "#333D4B",
+      "value": "var(--semantic-fill-neutral-default)",
       "group": "nds",
       "brands": [
+        "cashwalk-biz",
         "runmile"
-      ]
+      ],
+      "brandValues": {
+        "runmile": "#333D4B"
+      }
     },
     {
       "name": "--nds-pagination-active-text",
@@ -11658,6 +11666,94 @@
       "group": "nds",
       "brands": [
         "runmile"
+      ]
+    },
+    {
+      "name": "--nds-pagination-active-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-disabled-bg",
+      "value": "var(--semantic-bg-surface-subtle)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-disabled-color",
+      "value": "var(--semantic-text-disabled-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-disabled-opacity",
+      "value": "1",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-gap",
+      "value": "6px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-item-bg",
+      "value": "var(--semantic-bg-surface-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-item-border",
+      "value": "1px solid var(--semantic-border-normal-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-item-color",
+      "value": "var(--semantic-text-normal-default)",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-item-height",
+      "value": "34px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-item-radius",
+      "value": "4px",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-pagination-item-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": [
+        "cashwalk-biz"
       ]
     },
     {
