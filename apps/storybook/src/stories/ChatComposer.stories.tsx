@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ChatComposer } from "@nudge-design/react";
 
 const meta: Meta<typeof ChatComposer> = {
-  title: "Components/Domain/ChatComposer",
+  title: "Components/Inputs/ChatComposer",
   component: ChatComposer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

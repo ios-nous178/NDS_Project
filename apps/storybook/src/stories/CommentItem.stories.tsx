@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { CommentItem, Avatar, Badge, LikeButton } from "@nudge-design/react";
 
 const meta: Meta<typeof CommentItem> = {
-  title: "Components/Domain/CommentItem",
+  title: "Components/Display/CommentItem",
   component: CommentItem,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
