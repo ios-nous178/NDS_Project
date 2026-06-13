@@ -113,7 +113,6 @@ export const MinimalMessage: Story = {
 };
 
 export const CompoundAPI: Story = {
-  tags: ["gallery"],
   name: "Recipe/Compound API",
   render: () => (
     <div style={{ width: 360 }}>

@@ -210,18 +210,6 @@
     "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/outlined/ghost) × Color(brand/neutral/success/error/caution), Size(sm 24 / md 28, 모바일 기준), pill 라운드 고정, semantic 토큰 직접 바인딩."
   },
   {
-    "name": "FieldActionRow",
-    "category": "레이아웃",
-    "status": "implemented",
-    "description": "입력 + 버튼 조합 레이아웃. 인증번호 입력, 타이머, 에러/성공 상태 지원",
-    "storybookTitle": "Components/Layout/FieldActionRow",
-    "docsPath": "/components/field-action-row",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "휴대폰 인증, 인증번호 확인, 이메일 인증, 쿠폰 코드 입력",
-    "notes": "SignUpPhoneInput, SignUpSMSCodeInput, FormPhoneVerifyInput 패턴을 통합한 레이아웃 컴포넌트입니다."
-  },
-  {
     "name": "Calendar",
     "category": "입력",
     "status": "implemented",
@@ -472,18 +460,6 @@
     "figmaNodeId": "",
     "usageSummary": "감정 일기 음성 모드, 챗 음성 메시지, 상담 음성 메모",
     "notes": "마이크 접근/저장은 외부 처리. seconds는 외부 timer로 갱신."
-  },
-  {
-    "name": "NotificationItem",
-    "category": "피드백",
-    "status": "implemented",
-    "description": "알림 리스트 한 건. kind 5종, 미읽음 점, 시간 라벨, 본문 2줄 클램프",
-    "storybookTitle": "Components/Feedback/NotificationItem",
-    "docsPath": "/components/notification-item",
-    "figmaUrl": "",
-    "figmaNodeId": "",
-    "usageSummary": "알림 센터, 푸시 히스토리, 시스템 안내 리스트",
-    "notes": "Toast/Snackbar와 분리. 알림 히스토리 한 건 표현용."
   },
   {
     "name": "CountdownTimer",

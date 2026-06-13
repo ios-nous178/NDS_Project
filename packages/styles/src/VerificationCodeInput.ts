@@ -1,6 +1,6 @@
 /* VerificationCodeInput — 웹용 단일 필드 인증번호 입력 (DS Input 토큰 상속).
    네이티브식 자리별 세그먼트가 아니라 한 줄 박스 한 칸. 타이머·재전송·확인 버튼은
-   이 필드를 FieldActionRow 로 합성해 얻는다 (이 컴포넌트는 코드 입력 필드만 책임).
+   이 필드를 FormField + InputGroup 으로 합성해 얻는다 (이 컴포넌트는 코드 입력 필드만 책임).
    높이/둥근모서리/보더는 base Input 시멘틱 토큰(--nds-input-*)을 그대로 상속. */
 import {
   cv,

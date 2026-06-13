@@ -1060,10 +1060,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "ContentViewer": {
     "name": "ContentViewer",
-    "summary": "HTML/리치 텍스트 본문 렌더러. 위험 태그 자동 정리 + 이미지 lazy + 외부 링크 noopener 자동.",
+    "summary": "HTML/리치 텍스트 본문 렌더러. allowlist 기반 sanitize(허용 prose 태그/속성/URL 스킴만) + 이미지 lazy + 외부 링크 noopener 자동.",
     "pitfalls": [
-      "html prop은 가능한 한 호출부에서 sanitize한 안전한 HTML을 넘기는 게 정석. 컴포넌트 내장 sanitize는 보완책 (script/iframe/on*=/javascript: 정도만 정리).",
-      "사용자 입력 HTML은 반드시 서버나 DOMPurify 같은 라이브러리로 1차 처리 후 넘길 것 — 내장 sanitize는 알려진 attack vector만 커버.",
+      "내장 sanitize는 allowlist 방식 — 허용 prose 태그(p/h1-6/ul/ol/li/blockquote/pre/code/table/a/img/strong/em…)·속성·http(s)/mailto/tel/상대 URL 만 남기고 나머지는 unwrap·제거(클라이언트 DOM). 문자열 단계에서 script/iframe/on*=/javascript:/vbscript: 도 선제거.",
+      "그래도 신뢰할 수 없는 사용자 입력은 서버나 DOMPurify 로 1차 처리 후 넘기는 게 안전(심층 방어) — 내장 sanitize 는 클라이언트에서만 allowlist 를 강제하고, SSR 동기 출력은 문자열 1차 방어까지만 적용된다.",
       "내부 링크는 그대로 — http(s)로 시작하는 외부 링크에만 target=_blank + rel='noopener noreferrer' 자동.",
       "본문 안 table/blockquote/pre 까지 표준 스타일 적용됨 — 검사 해설/명상 가이드 등 긴 본문에 적합."
     ],
@@ -1083,7 +1083,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "endsAt을 매 렌더 새로 계산하면 카운트가 흔들림 — useMemo로 고정.",
       "onComplete는 0초 도달 시 1회만. 재시작은 endsAt을 새로 set.",
       "remaining 포맷은 자연어 — 정확한 카운트가 필요하면 mm:ss/hh:mm:ss.",
-      "기본 색은 텍스트 기본(회색계). 캐포비 본인인증 코드 입력의 오렌지 타이머처럼 강조하려면 tone=\"brand\" (react `tone=\"brand\"` / html `tone=\"brand\"`). FieldActionRow 의 timer 슬롯 wrapper 는 이미 brand 색이지만, 그 안에 CountdownTimer 컴포넌트를 넣으면 컴포넌트 자체 색이 이겨서 회색이 되므로 tone=\"brand\" 를 줘야 오렌지로 나온다."
+      "기본 색은 텍스트 기본(회색계). 캐포비 본인인증 코드 입력의 오렌지 타이머처럼 강조하려면 tone=\"brand\" (react `tone=\"brand\"` / html `tone=\"brand\"`). 인증 코드 입력 우측에 겹쳐 배치할 때도 컴포넌트 자체 색이 기본 회색이라, 캐포비 오렌지로 보이려면 반드시 tone=\"brand\" 를 줘야 한다."
     ],
     "recommended": [
       "인증 만료: useMemo로 expiry 고정 + onComplete로 재발송",
@@ -1257,30 +1257,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 화면에 FAB 와 primary nds-button 양쪽 — 대표 액션이 둘이 됨 -->\n<nds-button color=\"primary\">기록 추가</nds-button>\n<nds-fab icon=\"plus\" label=\"기록 추가\"></nds-fab>"
     }
   },
-  "FieldActionRow": {
-    "name": "FieldActionRow",
-    "standalone": false,
-    "composeWith": [
-      "Input",
-      "Button"
-    ],
-    "summary": "전화번호 인증 / 인증코드 입력처럼 '입력 1개 (+ 액션 버튼) (+타이머)' 한 줄 패턴 전용 helper. **action 은 옵션** — 생략하면 코드 입력 + 우측 타이머만(인라인 버튼 없는 레이아웃, 예: 캐포비 본인인증의 별도 full-width 재전송 버튼 + 타이머만 있는 코드 입력. pattern:cashwalk-biz-verification). React 는 flat API 하나만 — 구 Compound API(.Root/.Field/.Action…) 는 제거됨.",
-    "pitfalls": [
-      "**라벨이 필요하면 `label`(html: label 속성 / react: label prop)을 쓴다 — 라벨을 손으로 버튼과 같은 줄에 넣지 말 것.** '휴대폰 번호' 같은 필드 라벨이 필요한 인증 row 에서 라벨을 별도 마크업으로 버튼 옆/위에 욱여넣으면 버튼이 라벨 높이에 떠 입력칸과 어긋난다(회귀). label 을 넘기면 라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다.",
-      "**전송/재전송 토글** — 휴대폰 인증에서 [인증번호 받기] 버튼은 전송 후 [재전송]으로 라벨을 토글한다(상태는 호출부 useState). 표준 라벨은 '재전송'(SMS 재발송) — '재시도'는 실패 재시도 뉘앙스라 인증 발송엔 '재전송'을 쓴다.",
-      "범용 폼 레이아웃 용도 아님 — 여러 필드/버튼은 Input + Button 직접 조합. 이 컴포넌트는 인증 row 1줄에만.",
-      "Action 이 핵심 폼 동작(검색 / 제출) 이면 row 안이 아니라 별도 CTA 영역.",
-      "Action 라벨이 길어 row 가 줄바꿈 — 80자 미만 / 1-2 단어로 유지.",
-      "React 에서 더는 .Root/.Row/.Field/.Timer/.Action/.Helper 합성 불가 — field/action/timer/helperText prop 으로 전달.",
-      "타이머는 필드 우측 안에 떠도, **필드가 자동으로 우측 공간을 예약**(data-has-timer)하므로 입력값/placeholder 가 타이머 밑으로 안 파고든다 — 필드 input 에 수동 paddingRight 를 넣지 말 것(구 회귀 워크어라운드). 좁은 폭이 부족하면 `--nds-far-timer-reserve` 로 조정.",
-      "필드 **안**에 들어가는 타이머는 값만(mm:ss) 두고 '남은 시간' 라벨은 생략한다 — helper-text 가 맥락을 주고, 라벨을 넣으면 좁은 필드가 더 빡빡해진다. (CountdownTimer 에 label prop 을 안 주면 값만 렌더.)",
-      "action 에 DS Button(<Button>/<nds-button>)을 넣으면 그 버튼의 color/variant 가 그대로 적용된다 — 캐포비 검정 확인 버튼은 color=\"neutral\" (secondary 아님 — 캐포비는 secondary tone 이 Figma 가이드에 없어 Button 이 denylist+콘솔 경고로 막는다. 검정 #111 = neutral/solid, 회색 = neutral/soft). 메인 제출 CTA 만 노랑 color=\"primary\". (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하므로, color 가 안 먹던 '노란 버튼' 회귀는 해소됨.) actionTone prop 은 raw <button> 전용."
-    ],
-    "examplesHtml": {
-      "do": "<!-- 라벨이 필요한 인증 row(예: 휴대폰 번호 + [인증번호 받기])는 label 속성을 쓴다 —\n     라벨은 한 줄 위, 입력+버튼은 인라인으로 컴포넌트가 정렬한다. 전송 후 버튼은 [재전송]으로 토글. -->\n<nds-field-action-row label=\"휴대폰 번호\" helper-text=\"'-' 없이 숫자만 입력해주세요\">\n  <nds-input slot=\"field\" placeholder=\"01012345678\"></nds-input>\n  <nds-button slot=\"action\" color=\"neutral\" variant=\"outlined\">인증번호 받기</nds-button>\n</nds-field-action-row>\n\n<!-- action 버튼 색은 nds-button 의 color 가 그대로 산다 — 캐포비 검정 확인/재전송은 color=\"neutral\"\n     (캐포비는 secondary tone 이 Figma 가이드에 없어 denylist+콘솔 경고. 검정/회색 CTA = neutral).\n     (FieldActionRow 는 raw <button> 에만 brand 톤을 강제하고 DS 버튼은 건드리지 않음.) -->\n<nds-field-action-row helper-text=\"이메일로 인증 코드를 보냈어요\">\n  <nds-input slot=\"field\" label=\"인증 코드\"></nds-input>\n  <nds-button slot=\"action\" color=\"neutral\">재전송</nds-button>\n</nds-field-action-row>",
-      "dont": "<!-- slot 미지정 — 위치/스타일이 적용 안 됨 -->\n<nds-field-action-row>\n  <nds-input></nds-input>\n  <nds-button>재전송</nds-button>\n</nds-field-action-row>"
-    }
-  },
   "FileUpload": {
     "name": "FileUpload",
     "summary": "Drag&drop + 클릭 업로드. multiple/accept/maxSize 지원. 제어 컴포넌트.",
@@ -1428,7 +1404,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "sizeMatrix": {
       "top": "label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.",
       "left": "label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. baseline 정렬을 위해 label 컬럼 padding-top 10px(default)/12px(admin) 자동 적용.",
-      "density:default": "label body3 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.",
+      "density:default": "label caption1 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.",
       "density:admin": "label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준)."
     },
     "summary": "Input / Textarea / Select 같은 form control 의 label / helper / error / counter 슬롯을 묶는 래퍼. label-position(top|left) + density(default|admin) 조합으로 모바일/admin 폼을 한 컴포넌트로 처리.",
@@ -1447,7 +1423,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "캐시워크 포 비즈니스 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input size='compact' / nds-select>",
       "캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)",
       "FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.",
-      "글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만."
+      "글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.",
+      "라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker/PinPad/SignaturePad)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용."
     ],
     "examplesHtml": {
       "do": "<!-- 모바일/일반 폼 -->\n<nds-form-field label=\"이름\" helper=\"실명을 입력해주세요\" html-for=\"name-input\" required>\n  <nds-input id=\"name-input\" name=\"name\"></nds-input>\n</nds-form-field>\n\n<!-- 캐시워크 포 비즈니스 admin: label 좌측 + compact + admin density -->\n<nds-form-field label=\"Label\" label-position=\"left\" density=\"admin\" html-for=\"admin-name\">\n  <nds-input id=\"admin-name\" size=\"compact\" placeholder=\"값을 입력하세요\"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label=\"기간\" label-position=\"left\" density=\"admin\">\n  <nds-input-group>\n    <nds-select placeholder=\"년\"></nds-select>\n    <nds-select placeholder=\"월\"></nds-select>\n    <nds-select placeholder=\"일\"></nds-select>\n  </nds-input-group>\n</nds-form-field>",
@@ -2084,23 +2061,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "examplesHtml": {
       "do": "<nds-notice-alert variant=\"caution\" message=\"목표 참여자 수는 1,000명 단위로 입력해 주세요.\"></nds-notice-alert>\n<nds-notice-alert variant=\"error\" message=\"필수 정보가 누락되어 저장할 수 없어요.\"></nds-notice-alert>",
       "dont": "<!-- 단순 안내인데 error 남발 → 의미 흐려짐 (info/caution 이 맞음) -->\n<nds-notice-alert variant=\"error\" message=\"최대 30자 이내로 입력해 주세요.\"></nds-notice-alert>\n<!-- 확인 버튼이 필요한 메시지를 NoticeAlert 로 — Modal 이 맞음 -->\n<nds-notice-alert variant=\"notice\" message=\"삭제하시겠어요? [확인]\"></nds-notice-alert>"
-    }
-  },
-  "NotificationItem": {
-    "name": "NotificationItem",
-    "summary": "알림 리스트 한 건. kind별 아이콘 톤, 미읽음 점, 시간 라벨, 본문 2줄 클램프.",
-    "pitfalls": [
-      "Toast/Snackbar와 다름 — 알림 센터(히스토리) 한 건 표현용.",
-      "description 본문은 자동 2줄 클램프. 더 길게 보여주려면 onClick으로 디테일 진입.",
-      "unread는 단순 시각 표시 — 읽음 처리는 onClick 안에서 외부 state 갱신."
-    ],
-    "recommended": [
-      "알림 센터: List 안에 NotificationItem 반복",
-      "kind별 자동 아이콘: 직접 icon prop 안 줘도 됨"
-    ],
-    "examplesHtml": {
-      "do": "<nds-notification-item kind=\"success\" item-title=\"결제 완료\"\n  description=\"6/1 14:00 첫 상담\" time=\"방금 전\" unread clickable></nds-notification-item>\n<script>el.addEventListener(\"nds-notification-click\", () => navigate(\"/notice/1\"));</script>",
-      "dont": "<!-- kind 누락 — 색/아이콘이 의미 없는 default -->\n<nds-notification-item item-title=\"알림\"></nds-notification-item>"
     }
   },
   "NudgeEAPAppBar": {
@@ -2827,7 +2787,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "<Sidebar items={items} activeKey={key} onItemClick={(it) => navigate(it.key)} user={{ name, role }} />",
       "섹션 그룹: items={[{ key: 'content', label: '콘텐츠 운영', items: [...] }, { key: 'system', label: '시스템', items: [...] }]}",
       "icon-only 사이드바: collapsed + onToggleCollapse 페어로 controlled. 토글 버튼은 헤더에 자동 노출.",
-      "뱃지: item.badge=12 (숫자) 또는 ReactNode. 빨간 dot 만 보이면 NotificationItem 의 dot 패턴을 참고."
+      "뱃지: item.badge=12 (숫자) 또는 ReactNode."
     ],
     "accessibility": [
       "활성 아이템에 aria-current='page' 가 자동 부착됨 — 추가로 박지 말 것.",
@@ -3352,9 +3312,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "VerificationCodeInput": {
     "name": "VerificationCodeInput",
-    "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FieldActionRow** 로 합성한다(타이머는 FieldActionRow 가 필드 안에 렌더, 버튼은 액션 슬롯). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input. 자리별 PIN 은 PinPad.)",
+    "summary": "SMS/이메일 인증코드 입력 — 웹용 단일 필드(한 줄 박스). 코드 **입력 필드만** 책임진다. 자리별 세그먼트(네이티브식)가 아니라 base Input 과 동일한 단일 박스라 붙여넣기·자동완성(one-time-code)이 자연 지원되고 높이/둥근모서리는 Input 토큰(--nds-input-*)을 상속한다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(타이머 CountdownTimer 는 코드 입력 우측에 겹쳐 배치, 확인 버튼은 InputGroup 의 같은 행). (구 이름 OtpInput — 2026-06 VerificationCodeInput 으로 개명, 태그 nds-verification-code-input. 자리별 PIN 은 PinPad.)",
     "pitfalls": [
-      "이 컴포넌트는 코드 필드만 — 타이머/재전송/확인 버튼은 직접 넣지 말고 FieldActionRow 로 합성한다(내장 타이머 없음).",
+      "이 컴포넌트는 코드 필드만 — 타이머/재전송/확인 버튼은 FormField(헬퍼) + InputGroup(코드 입력 + 버튼) + CountdownTimer 합성으로 붙인다(내장 타이머 없음).",
       "value는 숫자 string. length만큼 채워지면 onComplete(react)/code-complete(html) 발화 — 그 안에서 자동 제출하면 UX 좋음.",
       "입력은 숫자만 허용(영문/특수문자 자동 필터). 영숫자 OTP가 필요하면 maxLength 늘린 일반 Input 검토.",
       "autoComplete=\"one-time-code\" 가 단일 input 에 적용 — iOS/Android SMS 자동 추출 동작.",
@@ -3362,12 +3322,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**자리별 박스(6칸 세그먼트) 는 모바일/네이티브 앱 패턴** — 웹/데스크톱에서는 이 단일 필드가 표준이다(붙여넣기·자동완성·접근성이 자연 동작). 네이티브 앱의 6칸 OTP 화면을 웹 목업으로 그대로 옮겨 자리별 박스를 raw <input> 으로 만들지 말 것. 자리별 PIN 점 인디케이터가 필요하면 PinPad."
     ],
     "recommended": [
-      "회원가입/로그인 SMS 인증: FieldActionRow(field=VerificationCodeInput length=6 autoFocus · timer=CountdownTimer · action=Button '확인') · onComplete 로 자동 검증.",
-      "재전송: 타이머 만료(timerExpired) 시 FieldActionRow 의 action 버튼을 '재전송'으로 토글 → 클릭에서 재발송.",
+      "회원가입/로그인 SMS 인증: FormField(helper) > InputGroup(align=start) 에 VerificationCodeInput length=6 autoFocus + 확인 Button, 타이머(CountdownTimer)는 코드 입력 우측에 겹쳐 배치 · onComplete 로 자동 검증.",
+      "재전송: 타이머 만료 시 InputGroup 의 버튼을 '재전송'으로 토글 → 클릭에서 재발송.",
       "에러 시 error prop + Toast. 자동 clear 는 호출부에서 결정(전체 clear가 보통 안전)."
     ],
     "examplesHtml": {
-      "do": "<!-- 레시피A · 인라인 확인 버튼형: 코드 입력 + 타이머 + 확인 버튼을 nds-field-action-row 한 줄로.\n     버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color=\"neutral\"(secondary 아님). -->\n<nds-field-action-row helper-text=\"문자로 전송된 인증번호를 입력해주세요\">\n  <nds-verification-code-input slot=\"field\" length=\"6\" auto-focus></nds-verification-code-input>\n  <nds-countdown-timer slot=\"timer\" ends-at=\"2026-06-08T12:03:00Z\" format=\"mm:ss\" tone=\"brand\"></nds-countdown-timer>\n  <nds-button slot=\"action\" color=\"neutral\" size=\"field\">확인</nds-button>\n</nds-field-action-row>\n\n<!-- 레시피B · 캐포비 본인인증형(pattern:cashwalk-biz-verification): 전송/재전송은 별도 full-width 검정 버튼,\n     코드 입력엔 인라인 버튼 없이 타이머만(FieldActionRow 의 action 생략), 확정은 하단 [다음](primary full-width). -->\n<nds-button color=\"neutral\" full-width>인증번호 재전송</nds-button>\n<nds-field-action-row>\n  <nds-verification-code-input slot=\"field\" length=\"6\" auto-focus></nds-verification-code-input>\n  <nds-countdown-timer slot=\"timer\" ends-at=\"2026-06-08T12:03:00Z\" format=\"mm:ss\" tone=\"brand\"></nds-countdown-timer>\n</nds-field-action-row>\n<!-- …다른 폼 필드… -->\n<nds-button color=\"primary\" full-width>다음</nds-button>\n<script>\n  document.querySelector(\"nds-verification-code-input\").addEventListener(\"code-complete\", e => verify(e.detail.value));\n</script>",
+      "do": "<!-- 레시피A · 인라인 확인 버튼형: 코드 입력 + 확인 버튼을 FormField > InputGroup 으로, 타이머는 코드 입력 우측에 겹쳐 배치.\n     버튼 색은 nds-button 의 color 가 그대로 — 캐포비 검정 확인은 color=\"neutral\"(secondary 아님). -->\n<nds-form-field helper=\"문자로 전송된 인증번호를 입력해주세요\">\n  <nds-input-group align=\"start\">\n    <nds-verification-code-input length=\"6\" auto-focus></nds-verification-code-input>\n    <nds-button color=\"neutral\" size=\"field\">확인</nds-button>\n  </nds-input-group>\n</nds-form-field>\n\n<!-- 레시피B · 캐포비 본인인증형(pattern:cashwalk-biz-verification): 전송/재전송은 별도 full-width 검정 버튼,\n     코드 입력엔 인라인 버튼 없이 타이머(CountdownTimer tone=\"brand\")만, 확정은 하단 [다음](primary full-width). -->\n<nds-button color=\"neutral\" full-width>인증번호 재전송</nds-button>\n<nds-verification-code-input length=\"6\" auto-focus></nds-verification-code-input>\n<nds-countdown-timer ends-at=\"2026-06-08T12:03:00Z\" format=\"mm:ss\" tone=\"brand\"></nds-countdown-timer>\n<!-- …다른 폼 필드… -->\n<nds-button color=\"primary\" full-width>다음</nds-button>\n<script>\n  document.querySelector(\"nds-verification-code-input\").addEventListener(\"code-complete\", e => verify(e.detail.value));\n</script>",
       "dont": "<!-- 자리별 박스를 raw <input> 6개로 흉내 — 붙여넣기/자동완성/접근성 손실. 단일 nds-verification-code-input 사용 -->\n<input maxlength=\"1\"/><input maxlength=\"1\"/>…"
     }
   },
@@ -4290,11 +4250,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**언제 쓰나**: PRD 에 '로그인 / 회원가입 / 비밀번호 찾기 / 이메일 인증 / 가입 완료' 키워드가 있고, 사이드바·네비게이션 없이 단독 흐름으로 진행되며, 단일 목적 + 단일 폼 + 단일 CTA 로 구성되는 화면.",
       "**중앙 카드 1개 (shell·GNB 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) **그리고 상단 GNB/글로벌 헤더 둘 다 미적용**. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬. ⚠️ 상단에 GNB 바(raw `<header>`/`.topbar`/`nds-header`)를 두고 로고를 텍스트(\"cashwalk for business\")로 박지 말 것 — 브랜드 식별은 **카드 안 `<nds-brand-logo>` 에셋 하나뿐**(validator `cashwalk-biz-onboarding-no-gnb` error).",
       "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing). ⚠️ **카드 패딩을 빼면 CTA·컨텐츠가 카드 모서리에 full-bleed 로 붙는다** — full-width CTA 도 이 48px 패딩 *안에서* 카드 폭을 채워야지 모서리에 붙으면 안 됨(validator `onboarding-card-no-padding` error). `<nds-card>` 로 쓰면 패딩이 자동 적용된다.",
-      "**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand=\"cashwalk-biz\">` / React `<BrandLogo brand=\"cashwalk-biz\" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw <img>/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
+      "**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand=\"cashwalk-biz\">` / React `<BrandLogo brand=\"cashwalk-biz\" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw `<img>`/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
       "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
       "**03 Primary CTA (단일 액션 화면)**: 로그인·찾기처럼 액션이 **하나뿐**인 화면은 Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득) — `<nds-button full-width>`. 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개. ⚠️ **모달 단일버튼(우측 hug)과 혼동 금지** — 단일 액션 온보딩 CTA 는 full-width 가 하드 계약(validator `onboarding-cta-not-fullwidth` error). 모달 단일버튼은 반대로 hug 우측정렬. (`pattern:cashwalk-biz-button`)",
       "**03b Footer Nav (멀티스텝 화면)**: 가입 심사처럼 **이전/다음(제출)** 이 있는 멀티스텝은 버튼을 카드 안에 넣지 않는다 — **카드(섹션) *아래* 분리된 캔버스 행**에 둔다(흰 바·상단 border·sticky 없음, 카드와 gap). **좌측 [이전 단계]**(Outlined, hug) + **우측 [다음 단계]/[제출]**(Solid/Primary, hug, 우측정렬). 멀티스텝 푸터의 버튼은 full-width 가 아니라 **hug** (validator 가 이전버튼/Stepper 존재를 감지해 full-width 강제를 면제). **제출(다음) Primary 버튼도 카드 안에 넣지 말 것** — 카드 안 Primary solid 는 `onboarding-multistep-cta-inside-card` error(이전버튼을 텍스트 링크로 두고 제출을 카드 안 full-width 로 박는 회귀 차단). 이전버튼을 카드 안에 넣으면 `onboarding-back-button-inside-card` warn. **상단엔 진행 표시 `Stepper`**(component:Stepper, variant=bar/numbered) — `Stepper` 가 있으면 validator 가 멀티스텝으로 인식한다.",
-      "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = FieldActionRow(action 생략) + 코드 입력 + 우측 인라인 타이머**. 타이머는 `CountdownTimer tone=\"brand\"`(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
+      "**03c 본인 인증 Section (휴대폰/이메일 → 인증번호)**: 연락처 입력(전화/이메일 TextInput) → **[인증번호 전송/재전송]은 별도 full-width 검정 버튼**(`<nds-button color=\"neutral\" full-width>` — primary 노랑 아님, 인라인 버튼도 아님) → 그 아래 **인증번호 입력 = VerificationCodeInput + 우측 인라인 타이머(CountdownTimer)**(인라인 확인 버튼 없음). 타이머는 `CountdownTimer tone=\"brand\"`(캐포비 오렌지 #FD9B02). 인증 입력엔 인라인 확인 버튼을 두지 않고, 확정은 하단 [다음](primary full-width)으로 한다. raw <input> 6칸·자작 +/- 금지(`verification-manual-assembly` warn) — `nds-verification-code-input` 단일 박스 사용.",
       "**04 Helper**: 보조 링크는 **TextButton(Medium)** — 로그인 화면의 '아이디 찾기 | 비밀번호 찾기', 가입 유도 등. solid 버튼으로 만들지 않는다.",
       "**상태 분기는 같은 골격**: 로그인 / 아이디 찾기 / 비밀번호 찾기는 동일한 480px 중앙 카드 레이아웃의 변형. 화면마다 다른 골격을 만들지 않는다.",
       "**Validate**: ① 멀티스텝(이전/다음·제출) → 상단 진행 `Stepper`(component:Stepper) + 카드 아래 분리 Footer Nav(위 03b). ② Form 필드 > 5 → `pattern:cashwalk-biz-page-form` 전환 검토. ③ 외부 인증(SMS/Email) 필요 → **본인 인증 Section(위 03c)** 추가. ④ 이용약관 동의 필요 → Form 위에 CheckboxGroup 추가."
@@ -4309,7 +4269,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**단일 액션 화면**의 Primary CTA 를 카드 폭보다 좁게(hug) / 2개 이상 / outlined 로 (단, 멀티스텝은 이전+제출 footer nav 가 정상 — 위 03b)",
       "멀티스텝의 [이전 단계]/제출 버튼을 카드 *안*에 넣기 — 카드와 분리해 하단 캔버스 footer nav 로 (`onboarding-back-button-inside-card`)",
       "보조 링크(찾기·가입)를 solid 버튼으로 — TextButton(Medium) 텍스트 링크가 맞다",
-      "로고를 raw <img>/SVG 로 조립하거나 35KB base64 를 손으로 붙이기 — `<nds-brand-logo brand=\"cashwalk-biz\">` / `<BrandLogo brand=\"cashwalk-biz\" />` 사용",
+      "로고를 raw `<img>`/SVG 로 조립하거나 35KB base64 를 손으로 붙이기 — `<nds-brand-logo brand=\"cashwalk-biz\">` / `<BrandLogo brand=\"cashwalk-biz\" />` 사용",
       "필드 6개 이상·3스텝 이상을 단일 온보딩 카드에 욱여넣기 (Validate Rule 위반 → Form/Multi-step 전환)"
     ]
   },
@@ -4730,7 +4690,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "summary": "폼 입력의 검증·합성 규칙 SSOT(넛지EAP Library · InputFormGuide 1399:124). 단일 필드 레이아웃(라벨-위·필드 치수·여백)은 pattern:nudge-eap-form-layout 이 담당하고, 이 가이드는 그 위에서 **검증 표시(ValidationChip)·합성 컨트롤(인라인 버튼·비밀번호 토글)·Label/Helper/Error 규칙·검증 시점**을 정한다. 회원가입처럼 규칙이 여러 개인 폼에서 어떤 신호를 언제 보여줄지 결정한다.",
     "rules": [
       "합성 ① Input + ValidationChip — 형식 규칙이 2개 이상일 때 Input 아래 한 줄에 `<nds-validation-chip>` 를 나열. 입력값이 규칙을 충족할 때마다 해당 chip 을 `state=\"incomplete\" → \"complete\"`(Brand Blue) 로 전환. 비밀번호/이메일 형식 안내에 사용(component:ValidationChip).",
-      "합성 ② Input + Inline Button — 인증번호 받기·중복 확인 같은 **단일 액션**은 Input 과 같은 행에 작은 outlined 버튼을 둔다. `FieldActionRow` 컴포넌트가 이 레이아웃의 1급 표현 — 커스텀 flex 행을 새로 만들지 말 것(component:FieldActionRow).",
+      "합성 ② Input + Inline Button — 인증번호 받기·중복 확인 같은 **단일 액션**은 Input 과 같은 행에 작은 outlined 버튼을 둔다. `FormField` > `InputGroup`(align=\"start\") 로 입력+버튼을 한 줄에 합성한다 — 커스텀 flex 행을 새로 만들지 말 것(component:InputGroup).",
       "합성 ③ Input + Eye Icon — 비밀번호 표시/숨김은 `<nds-input type=\"password\">` 의 **내장 password-toggle** 이 자동 제공(우측 눈 버튼, type 토글·포커스 유지까지 처리). 별도 trailing 버튼을 만들지 말 것 — 끄려면 `password-toggle=\"false\"`.",
       "Label / Placeholder — Label 은 항상 필드 위(Top Label). 필수 항목은 별표(`*`) + `aria-required`. Placeholder 는 형식 힌트만 — **Label 을 대체하지 않는다**.",
       "Helper / Error — 같은 자리에서 교차한다(동시 노출 X). 여러 검증이 실패해도 Error 는 **1줄만**(우선순위: 필수 → 형식 → 길이 → 도메인 → 서버). Helper/Error 영역은 표시 안 돼도 1줄 높이를 예약해 레이아웃 점프를 막는다.",
@@ -4742,12 +4702,12 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "ValidationChip 으로 폼 필드의 단일 에러 1줄을 대체 — 에러 1줄은 FormField helper/error 슬롯, ValidationChip 은 규칙 체크리스트(여러 개 동시).",
       "Helper 와 Error 동시 노출 — 한 자리에서 교차해야 한다.",
       "검증 실패 메시지를 규칙별로 여러 줄 — Error 는 우선순위 1줄.",
-      "인라인 액션 버튼을 커스텀 flex 로 새로 — FieldActionRow 재사용.",
+      "인라인 액션 버튼을 커스텀 flex 로 새로 — FormField + InputGroup 합성 재사용.",
       "chip·버튼·헬퍼 색을 raw hex 로 — state/semantic 토큰으로 5 브랜드 자동 대응."
     ],
     "_readyMade": {
       "note": "넛지EAP 회원가입 합성 3종. 색은 모두 semantic 토큰(ValidationChip state · Button color)으로 브랜드 cascade 자동 대응.",
-      "html": "<!-- ① Input + ValidationChip (비밀번호 실시간 검증) -->\n<div style=\"display:flex; flex-direction:column; gap:8px; max-width:332px\">\n  <nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>\n  <div style=\"display:flex; gap:12px\">\n    <nds-validation-chip state=\"complete\">6자 이상</nds-validation-chip>\n    <nds-validation-chip state=\"incomplete\">영문+숫자</nds-validation-chip>\n  </div>\n</div>\n\n<!-- ② Input + Inline Button (인증번호 받기) — FieldActionRow (action-tone 이 버튼 톤 결정) -->\n<nds-field-action-row action-tone=\"outline\">\n  <nds-input slot=\"field\" placeholder=\"휴대폰 번호\"></nds-input>\n  <nds-button slot=\"action\">인증번호 받기</nds-button>\n</nds-field-action-row>\n\n<!-- ③ Input + Eye Icon (비밀번호 표시·숨김) — type=\"password\" 면 눈 토글 자동, 별도 마크업 불필요 -->\n<nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>"
+      "html": "<!-- ① Input + ValidationChip (비밀번호 실시간 검증) -->\n<div style=\"display:flex; flex-direction:column; gap:8px; max-width:332px\">\n  <nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>\n  <div style=\"display:flex; gap:12px\">\n    <nds-validation-chip state=\"complete\">6자 이상</nds-validation-chip>\n    <nds-validation-chip state=\"incomplete\">영문+숫자</nds-validation-chip>\n  </div>\n</div>\n\n<!-- ② Input + Inline Button (인증번호 받기) — FormField > InputGroup(align=\"start\") -->\n<nds-form-field label=\"휴대폰 번호\">\n  <nds-input-group align=\"start\">\n    <nds-input placeholder=\"010-0000-0000\"></nds-input>\n    <nds-button variant=\"outlined\">인증번호 받기</nds-button>\n  </nds-input-group>\n</nds-form-field>\n\n<!-- ③ Input + Eye Icon (비밀번호 표시·숨김) — type=\"password\" 면 눈 토글 자동, 별도 마크업 불필요 -->\n<nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>"
     }
   },
   "host-spacing": {

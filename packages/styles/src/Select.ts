@@ -37,9 +37,9 @@ export const selectStyles = `
   }
 
   :where(.${SELECT_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.normal};
   }
 

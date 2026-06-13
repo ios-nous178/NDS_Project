@@ -84,13 +84,14 @@ import { FormField } from "@nudge-design/react";
 | `description` | `ReactNode` | — | 라벨 위 세부 설명 (예: 검사 문항) |
 | `helper` | `ReactNode` | — | 도움말 (에러가 없을 때) |
 | `error` | `ReactNode` | — | 에러 메시지 (있으면 helper 대신 표시) |
+| `success` | `ReactNode` | — | 성공/확인 메시지 (에러가 없을 때 helper 대신 success 톤으로 표시). 예: "인증되었습니다" |
 | `required` | `boolean` | `false` | 필수 표시 (* 빨간 별) |
 | `optional` | `boolean` | `false` | 선택 표시 ("(선택)" 회색 텍스트) |
 | `counter` | `ReactNode` | — | 글자 수 카운터 (예: "12 / 200") |
 | `htmlFor` | `string` | — | 라벨이 가리킬 컨트롤 id (없으면 자동 생성) |
 | `labelPosition` | `FormFieldLabelPosition` | `"top"` | 라벨 위치. `"top"` 이 모바일/일반 폼 기본. `"left"` 는 캐포비 admin 표준 (라벨 좌측 고정 + 컴팩트 인풋과 짝). description 이 있으면 자동으로 top 으로 폴백된다. |
 | `labelWidth` | `number` | `180` | `labelPosition="left"` 일 때 라벨 컬럼 너비 (px). Figma admin 표준 180. 좁은 라벨에서는 120, 긴 라벨에서는 200~240 사용. |
-| `density` | `FormFieldDensity` | `"default"` | 폼 밀도. 캐포비 admin / Cashwalk for Business 어드민 폼은 `"admin"` 표준. - `"default"`: label body3 13/18, helper caption 12/16, row 간 별도 gap 없음 (부모 stack 이 결정). - `"admin"`: label Subtitle1 16/24, helper Body2 14/20, **FormField 자체 py-24** — stack 시 자동으로 시각 48px 간격 형성 (Figma FormSection 3387:871 표준). |
+| `density` | `FormFieldDensity` | `"default"` | 폼 밀도. 캐포비 admin / Cashwalk for Business 어드민 폼은 `"admin"` 표준. - `"default"`: label caption1 13/18, helper caption 12/16, row 간 별도 gap 없음 (부모 stack 이 결정). - `"admin"`: label Subtitle1 16/24, helper Body2 14/20, **FormField 자체 py-24** — stack 시 자동으로 시각 48px 간격 형성 (Figma FormSection 3387:871 표준). |
 | `children` *(필수)* | `ReactNode` | — | 폼 컨트롤 (Input/Textarea/Select/Radio 등) |
 
 <!-- AUTO-GEN:props:END -->

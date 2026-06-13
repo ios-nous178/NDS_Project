@@ -20,7 +20,8 @@ export const ppStyles = `
   }
 
   :where(.${PP_LABEL_CLASS}) {
-    font-size: ${typeScale.body2.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.normal};
     font-weight: ${fontWeight.medium};
   }

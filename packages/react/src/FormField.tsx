@@ -29,6 +29,8 @@ export interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   helper?: React.ReactNode;
   /** 에러 메시지 (있으면 helper 대신 표시) */
   error?: React.ReactNode;
+  /** 성공/확인 메시지 (에러가 없을 때 helper 대신 success 톤으로 표시). 예: "인증되었습니다" */
+  success?: React.ReactNode;
   /** 필수 표시 (* 빨간 별) */
   required?: boolean;
   /** 선택 표시 ("(선택)" 회색 텍스트) */
@@ -51,7 +53,7 @@ export interface FormFieldProps extends React.HTMLAttributes<HTMLDivElement> {
   labelWidth?: number;
   /**
    * 폼 밀도. 캐포비 admin / Cashwalk for Business 어드민 폼은 `"admin"` 표준.
-   * - `"default"`: label body3 13/18, helper caption 12/16, row 간 별도 gap 없음 (부모 stack 이 결정).
+   * - `"default"`: label caption1 13/18, helper caption 12/16, row 간 별도 gap 없음 (부모 stack 이 결정).
    * - `"admin"`: label Subtitle1 16/24, helper Body2 14/20, **FormField 자체 py-24** —
    *   stack 시 자동으로 시각 48px 간격 형성 (Figma FormSection 3387:871 표준).
    * @default "default"
@@ -72,6 +74,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   description,
   helper,
   error,
+  success,
   required = false,
   optional = false,
   counter,
@@ -89,7 +92,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   const helperId = `${fieldId}-helper`;
   const errorId = `${fieldId}-error`;
 
-  const showFooter = helper !== undefined || error !== undefined || counter !== undefined;
+  const showFooter =
+    helper !== undefined || error !== undefined || success !== undefined || counter !== undefined;
   // description 은 라벨 아래 줄(top) 에서만 의미가 있음 — left 모드에서는 자동으로 top 으로 폴백.
   const resolvedPosition: FormFieldLabelPosition =
     labelPosition === "left" && description === undefined ? "left" : "top";
@@ -144,6 +148,15 @@ export const FormField: React.FC<FormFieldProps> = ({
                 className={cx(FF_ERROR_CLASS, "nds-helper-text")}
               >
                 {error}
+              </span>
+            ) : success !== undefined ? (
+              <span
+                data-slot="success"
+                data-variant="success"
+                id={helperId}
+                className={cx(FF_HELPER_CLASS, "nds-helper-text")}
+              >
+                {success}
               </span>
             ) : helper !== undefined ? (
               <span

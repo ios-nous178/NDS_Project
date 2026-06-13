@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T10:43:11.694Z",
+  "generatedAt": "2026-06-13T13:25:39.221Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2944,85 +2944,6 @@
       ]
     },
     {
-      "name": "FieldActionRow",
-      "props": [
-        {
-          "name": "label",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "field",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "action",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "actionTone",
-          "optional": true,
-          "type": "\"outline\" | \"solid\"",
-          "allowedValues": [
-            "outline",
-            "solid"
-          ]
-        },
-        {
-          "name": "timer",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "timerExpired",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "error",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "helperText",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "success",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "React.CSSProperties"
-        },
-        {
-          "name": "slotProps",
-          "optional": true,
-          "type": "FieldActionRowSlotProps"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/FieldActionRow.d.ts",
-      "htmlTag": "nds-field-action-row",
-      "htmlObservedAttrs": [
-        "action-tone",
-        "error",
-        "helper-text",
-        "success",
-        "timer-expired",
-        "label"
-      ]
-    },
-    {
       "name": "FileUpload",
       "props": [
         {
@@ -3256,6 +3177,11 @@
           "type": "React.ReactNode"
         },
         {
+          "name": "success",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
           "name": "required",
           "optional": true,
           "type": "boolean"
@@ -3317,6 +3243,7 @@
         "description",
         "helper",
         "error",
+        "success",
         "counter"
       ]
     },
@@ -4456,63 +4383,6 @@
         "variant",
         "message",
         "hide-icon"
-      ]
-    },
-    {
-      "name": "NotificationItem",
-      "props": [
-        {
-          "name": "kind",
-          "optional": true,
-          "type": "NotificationKind",
-          "allowedValues": [
-            "info",
-            "success",
-            "warning",
-            "error",
-            "system"
-          ]
-        },
-        {
-          "name": "icon",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "title",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "description",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "time",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "unread",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "() => void"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/NotificationItem.d.ts",
-      "htmlTag": "nds-notification-item",
-      "htmlObservedAttrs": [
-        "kind",
-        "unread",
-        "item-title",
-        "description",
-        "time",
-        "clickable"
       ]
     },
     {
@@ -13812,7 +13682,6 @@
     "nds-empty-state",
     "nds-expandable-text",
     "nds-fab",
-    "nds-field-action-row",
     "nds-file-upload",
     "nds-filter-bar",
     "nds-floating-cta-banner",
@@ -13852,7 +13721,6 @@
     "nds-multi-select",
     "nds-multi-step-form",
     "nds-notice-alert",
-    "nds-notification-item",
     "nds-order-summary-card",
     "nds-page-header",
     "nds-pagination",
@@ -14514,18 +14382,6 @@
       ]
     },
     {
-      "tag": "nds-field-action-row",
-      "attrs": {},
-      "observedAttrs": [
-        "action-tone",
-        "error",
-        "helper-text",
-        "success",
-        "timer-expired",
-        "label"
-      ]
-    },
-    {
       "tag": "nds-file-upload",
       "attrs": {},
       "observedAttrs": [
@@ -14583,6 +14439,7 @@
         "description",
         "helper",
         "error",
+        "success",
         "counter"
       ]
     },
@@ -14828,18 +14685,6 @@
         "variant",
         "message",
         "hide-icon"
-      ]
-    },
-    {
-      "tag": "nds-notification-item",
-      "attrs": {},
-      "observedAttrs": [
-        "kind",
-        "unread",
-        "item-title",
-        "description",
-        "time",
-        "clickable"
       ]
     },
     {

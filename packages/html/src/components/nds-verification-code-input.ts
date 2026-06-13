@@ -5,7 +5,7 @@
  * 높이/둥근모서리는 base Input 토큰 상속. (자리별 PIN 은 <nds-pin-pad>.)
  *
  * 이 컴포넌트는 코드 입력 필드만 책임진다. 타이머·재전송·확인 버튼이 함께 있는 인증 폼은
- * 이 필드를 <nds-field-action-row> 로 합성한다(타이머는 field-action-row 가 필드 안에 렌더).
+ * 이 필드를 <nds-form-field> + <nds-input-group> 으로 합성한다(타이머는 코드 입력 우측에 겹쳐 배치).
  *
  * 사용:
  *   <nds-verification-code-input length="6" auto-focus></nds-verification-code-input>
@@ -36,7 +36,11 @@ export class NdsVerificationCodeInput extends NdsElement {
   static elementName = "nds-verification-code-input";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-verification-code-input"].observedAttributes, "auto-focus", "placeholder"];
+    return [
+      ...COMPONENT_ATTRS["nds-verification-code-input"].observedAttributes,
+      "auto-focus",
+      "placeholder",
+    ];
   }
 
   private _root: HTMLDivElement | null = null;

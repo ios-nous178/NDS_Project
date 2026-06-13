@@ -49,8 +49,8 @@ export const formFieldStyles = `
     display: inline-flex;
     align-items: center;
     gap: var(--semantic-gap-tight);
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: var(--nds-form-field-label-color, ${cv.textRole.normal});
   }

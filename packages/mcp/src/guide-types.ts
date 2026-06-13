@@ -111,7 +111,7 @@ export interface ComponentGuide {
   interactivePattern?: string;
   /**
    * 합성 전용(standalone 금지) 여부. `false` 면 부모 없이는 의미 없는 필드/카드 서브 컴포넌트 —
-   * 단독 사용 금지(예: HelperText·ValidationChip·FieldActionRow). 미설정(=true)은 단독 사용 가능.
+   * 단독 사용 금지(예: HelperText·ValidationChip). 미설정(=true)은 단독 사용 가능.
    */
   standalone?: boolean;
   /** `standalone: false` 일 때 함께 합성되는 부모/형제 컴포넌트 (예: ["Input", "FormField"]). */

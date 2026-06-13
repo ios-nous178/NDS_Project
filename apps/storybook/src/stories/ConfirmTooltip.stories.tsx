@@ -52,44 +52,75 @@ export const Overview: Story = {
       data-brand="cashwalk-biz"
       style={{
         position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-end",
-        width: 240,
-        height: 200,
-        padding: 16,
+        width: 264,
+        height: 248,
+        borderRadius: 10,
+        overflow: "hidden",
+        border: "1px solid #ECECEC",
+        background: "#FAFAFA",
         boxSizing: "border-box",
-        background: "rgba(17, 17, 17, 0.6)",
-        borderRadius: 8,
       }}
     >
-      {/* 딤 위에 떠 있는 모달 표면 — 툴팁이 그 위 요소를 anchor */}
+      {/* 1) 딤 아래로 비치는 어드민 화면 (스크림이 가리는 실제 본문) */}
+      <div
+        style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 }}
+        aria-hidden
+      >
+        <div style={{ height: 10, width: 104, borderRadius: 4, background: "#E4E4E4" }} />
+        <div
+          style={{ height: 34, borderRadius: 6, background: "#fff", border: "1px solid #ECECEC" }}
+        />
+        <div
+          style={{ height: 34, borderRadius: 6, background: "#fff", border: "1px solid #ECECEC" }}
+        />
+        <div
+          style={{ height: 34, borderRadius: 6, background: "#fff", border: "1px solid #ECECEC" }}
+        />
+      </div>
+
+      {/* 2) 모달 딤(스크림) — 본문을 덮어 '오버레이 위'임을 드러낸다 */}
+      <div
+        style={{ position: "absolute", inset: 0, background: "rgba(17,17,17,0.45)" }}
+        aria-hidden
+      />
+
+      {/* 3) 딤 위 모달 카드 — 그 안 버튼에 ConfirmTooltip 을 앵커해 tail 이 실제 컨트롤을 가리킨다 */}
       <div
         style={{
           position: "absolute",
           left: "50%",
-          bottom: 20,
+          bottom: 16,
           transform: "translateX(-50%)",
           width: 196,
-          height: 84,
           background: "#fff",
           borderRadius: 12,
           boxShadow: "0 12px 32px rgba(0,0,0,0.24)",
+          padding: 14,
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          boxSizing: "border-box",
         }}
-        aria-hidden
-      />
-      <ConfirmTooltip
-        open
-        placement="top"
-        actions="dual"
-        bodyWidth={172}
-        title="이 항목을 삭제할까요?"
-        description="삭제하면 다시 되돌릴 수 없습니다."
-        confirmLabel="삭제"
-        cancelLabel="취소"
       >
-        <span style={{ display: "inline-block", width: 1, height: 1 }} aria-hidden />
-      </ConfirmTooltip>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#111" }}>소재 관리</div>
+        <div style={{ fontSize: 12, lineHeight: 1.5, color: "#666" }}>
+          연결된 소재를 정리하세요.
+        </div>
+        <ConfirmTooltip
+          open
+          placement="top"
+          actions="dual"
+          bodyWidth={172}
+          title="이 항목을 삭제할까요?"
+          description="삭제하면 다시 되돌릴 수 없습니다."
+          confirmLabel="삭제"
+          cancelLabel="취소"
+        >
+          <Button color="secondary" variant="outlined" size="sm">
+            연결 해제
+          </Button>
+        </ConfirmTooltip>
+      </div>
     </div>
   ),
 };

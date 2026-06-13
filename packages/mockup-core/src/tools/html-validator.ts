@@ -85,11 +85,7 @@ import { collectDocumentLevelViolations } from "./validator-rules/document-level
 import { collectSelectedItemsPanelViolations } from "./validator-rules/selected-items.js";
 
 // 공유 타입은 validator-rules/types.ts 로 이동(순수 이동) — 기존 모듈 경로 호환을 위해 re-export.
-export type {
-  HtmlSurface,
-  HtmlViolation,
-  HtmlViolationSeverity,
-} from "./validator-rules/types.js";
+export type { HtmlSurface, HtmlViolation, HtmlViolationSeverity } from "./validator-rules/types.js";
 
 export interface HtmlValidationContext {
   tokenSet: Set<string>;
@@ -182,7 +178,7 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "onboarding-card-no-padding": { severity: "error", kind: "invariant" },
   // 멀티스텝 온보딩(Stepper 존재)인데 제출 CTA 가 카드 안에 있음 — 카드 *아래* 분리 footer-nav(hug)로 빼야 함.
   "onboarding-multistep-cta-inside-card": { severity: "error", kind: "invariant" },
-  // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer + field-action-row 미사용
+  // 인증번호 입력/타이머를 손으로 조립 — verification-code-input + countdown-timer 미사용
   "verification-manual-assembly": { severity: "warn", kind: "model-guard" },
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
   "consent-raw-checkbox": { severity: "warn", kind: "model-guard" },
@@ -1672,12 +1668,10 @@ export function validateHtmlSource(
 
         // ─── 4) 인증번호 입력/타이머를 손으로 조립 (verification-manual-assembly) ───
         //   placeholder 에 "인증번호"/"6자리" 가 있거나, 인증 입력 근처에 카운트다운 텍스트(남은 시간
-        //   / mm:ss)가 있는데 <nds-verification-code-input> 도 아니고 <nds-field-action-row> 로
-        //   감싸이지도 않은 경우.
+        //   / mm:ss)가 있는데 <nds-verification-code-input> 를 안 쓴 경우.
         {
           const hasVerificationInputComponent = $("nds-verification-code-input").length > 0;
-          const hasFieldActionRow = $("nds-field-action-row").length > 0;
-          if (!hasVerificationInputComponent && !hasFieldActionRow) {
+          if (!hasVerificationInputComponent) {
             const docText = $("body").text();
             const hasCountdown = /남은\s*시간/.test(docText) || /\b\d{1,2}:\d{2}\b/.test(docText);
             let manualVerifInput: DomElement | null = null;
@@ -1700,7 +1694,7 @@ export function validateHtmlSource(
                 selector: el ? describeElement(el) : "<onboarding root>",
                 detail: "인증번호 입력/타이머를 손으로 조립.",
                 suggestion:
-                  "<nds-verification-code-input length=\"6\"> + <nds-countdown-timer> 를 <nds-field-action-row> 로 합성할 것. get_guide({ topic: 'component:FieldActionRow' }).",
+                  "<nds-verification-code-input length=\"6\"> + <nds-countdown-timer> 를 <nds-form-field> / <nds-input-group> 로 합성할 것. get_guide({ topic: 'component:VerificationCodeInput' }).",
               });
             }
           }

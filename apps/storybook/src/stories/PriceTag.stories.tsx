@@ -53,22 +53,3 @@ export const USD: Story = {
   name: "Variant/달러 (prefix)",
   render: () => <PriceTag amount={29.99} originalAmount={49.99} prefix="$" unit="" />,
 };
-
-export const InCardContext: Story = {
-  tags: ["gallery"],
-  name: "Recipe/상품 카드 안",
-  render: () => (
-    <div
-      style={{
-        width: 240,
-        padding: "var(--semantic-inset-card)",
-        border: "1px solid #ddd",
-        borderRadius: 12,
-      }}
-    >
-      <div style={{ background: "#FAFBFC", height: 120, borderRadius: 8, marginBottom: 12 }} />
-      <div style={{ fontSize: 14, color: "#666", marginBottom: 4 }}>마음챙김 가이드북</div>
-      <PriceTag amount={19000} originalAmount={25000} size="lg" />
-    </div>
-  ),
-};

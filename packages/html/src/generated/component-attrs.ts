@@ -666,21 +666,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-field-action-row": {
-    "observedAttributes": [
-      "action-tone",
-      "error",
-      "helper-text",
-      "success",
-      "timer-expired"
-    ],
-    "enums": {
-      "action-tone": [
-        "outline",
-        "solid"
-      ]
-    }
-  },
   "nds-file-upload": {
     "observedAttributes": [
       "accept",
@@ -987,21 +972,6 @@ export const COMPONENT_ATTRS = {
         "caution",
         "success",
         "error"
-      ]
-    }
-  },
-  "nds-notification-item": {
-    "observedAttributes": [
-      "kind",
-      "unread"
-    ],
-    "enums": {
-      "kind": [
-        "info",
-        "success",
-        "warning",
-        "error",
-        "system"
       ]
     }
   },

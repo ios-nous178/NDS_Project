@@ -11,7 +11,7 @@
 - endsAt을 매 렌더 새로 계산하면 카운트가 흔들림 — useMemo로 고정.
 - onComplete는 0초 도달 시 1회만. 재시작은 endsAt을 새로 set.
 - remaining 포맷은 자연어 — 정확한 카운트가 필요하면 mm:ss/hh:mm:ss.
-- 기본 색은 텍스트 기본(회색계). 캐포비 본인인증 코드 입력의 오렌지 타이머처럼 강조하려면 tone="brand" (react `tone="brand"` / html `tone="brand"`). FieldActionRow 의 timer 슬롯 wrapper 는 이미 brand 색이지만, 그 안에 CountdownTimer 컴포넌트를 넣으면 컴포넌트 자체 색이 이겨서 회색이 되므로 tone="brand" 를 줘야 오렌지로 나온다.
+- 기본 색은 텍스트 기본(회색계). 캐포비 본인인증 코드 입력의 오렌지 타이머처럼 강조하려면 tone="brand" (react `tone="brand"` / html `tone="brand"`). 인증 코드 입력 우측에 겹쳐 배치할 때도 컴포넌트 자체 색이 기본 회색이라, 캐포비 오렌지로 보이려면 반드시 tone="brand" 를 줘야 한다.
 
 ## recommended
 

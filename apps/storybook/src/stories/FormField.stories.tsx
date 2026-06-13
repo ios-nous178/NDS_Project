@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   FormField,
+  FormSection,
   Input,
   InputGroup,
   Select,
@@ -176,26 +177,15 @@ function CashwalkBizAdminTextFieldExample() {
 }
 
 function AdminFormSectionExample() {
-  // CashwalkBiz Figma "기본 정보" FormSection (3466:17405) 재현.
-  // Container = white card with radius-16 border, padding 24.
-  // 안에 FormField 2개 stack — 둘 다 density="admin" 이라 py-24 가 자동으로 사이 48px 시각 간격을 만듦.
+  // CashwalkBiz Figma "기본 정보" FormSection (3466:17405) 재현 — 카드 chrome(white·radius16·padding24)은
+  // FormSection 컴포넌트가 data-brand cascade 로 소유(hex 직접 X). FormField 2개 density="admin" py-24 → 사이 48px.
   const [single, setSingle] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   return (
-    <div style={{ width: 1000 }}>
-      <h3 style={{ font: "700 24px/1.2 Inter", margin: "0 0 16px", color: "#111" }}>기본 정보</h3>
-      <div
-        style={{
-          background: "#fff",
-          border: "1px solid #eee",
-          borderRadius: 16,
-          padding: 24,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    <div data-brand="cashwalk-biz" style={{ width: 1000 }}>
+      <FormSection title="기본 정보">
         <FormField label="Label" labelPosition="left" density="admin">
           <Select
             value={single}
@@ -239,7 +229,7 @@ function AdminFormSectionExample() {
             />
           </InputGroup>
         </FormField>
-      </div>
+      </FormSection>
     </div>
   );
 }

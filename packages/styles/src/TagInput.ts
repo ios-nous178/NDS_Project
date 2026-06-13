@@ -33,7 +33,8 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 
   :where(.${TI_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.normal};
   }

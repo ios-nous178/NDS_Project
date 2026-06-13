@@ -256,7 +256,7 @@ function PrefixSuffixDemo() {
         prefix={<SearchIconGlyph />}
         clearable
         onClear={() => setValue("")}
-        helperText="prefix/suffix 슬롯 예시입니다. 검색 전용 UI는 SearchInput을, 인증 패턴은 FieldActionRow를 사용하세요."
+        helperText="prefix/suffix 슬롯 예시입니다. 검색 전용 UI는 SearchInput을, 인증 패턴은 VerificationCodeInput을 사용하세요."
       />
     </div>
   );
@@ -332,8 +332,9 @@ function ClearButtonInteractionDemo() {
  * 검색 UI가 필요하면 SearchInput 컴포넌트를 사용하세요.
  * @see Components/SearchInput
  *
- * 입력 + 버튼 조합(인증 등)이 필요하면 FieldActionRow를 사용하세요.
- * @see Components/FieldActionRow
+ * 입력 + 버튼 한 줄(인증 등)이 필요하면 FormField + InputGroup 합성을, 인증 코드 입력은
+ * VerificationCodeInput 을 사용하세요.
+ * @see Components/VerificationCodeInput
  */
 
 /* ─── Interaction Tests ─── */

@@ -140,7 +140,9 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 /* 컴포넌트 root — ① 브랜드 override > ② variant > ③ 기본 */
 background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv.surface.section}));
 /* variant 룰은 background 를 직접 안 박고 ② 슬롯만 set, 값은 글로벌 시멘틱 참조 */
-:where(.nds-snackbar[data-variant="info"]) { --nds-snackbar-variant-bg: var(--semantic-bg-status-info); }
+:where(.nds-snackbar[data-variant="info"]) {
+  --nds-snackbar-variant-bg: var(--semantic-bg-status-info);
+}
 ```
 
 - **① `--nds-{c}-{prop}`** — 브랜드 서피스 override. 브랜드 파일 `components.{c}.{prop}` 가 emit. variant 를 통째로 덮음(예: 캐포비 Snackbar "variant 무시 흰카드"). 평소엔 unset → ②로 폴백.
@@ -149,16 +151,16 @@ background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv
 
 작동 원리: 룰이 전부 `:where()`(특정성 0)라 옛날엔 `[data-brand]` 블록을 **source-order 뒤**에 둬서 variant 를 덮었다. 이를 **`var()` 우선순위 + custom property 상속**으로 대체 — ①(`--nds-snackbar-bg`)이 `[data-brand]`/`:root` 조상에 정의되면 상속돼 var 체인 최우선으로 이기므로, variant 룰의 특정성과 무관하게 브랜드가 이긴다.
 
-**확장(YAGNI)** — "브랜드 X 가 *이 컴포넌트의* info 만 글로벌과 다르게"(예: Banner info ≠ Snackbar info)는 ③(글로벌)으론 안 된다. 그땐 ②를 `var(--nds-snackbar-info-bg, var(--semantic-bg-status-info))` 로 **한 겹 끼우면** 컴포넌트-per-variant 슬롯이 생긴다. **단 실제 요구가 생기기 전엔 만들지 않는다** — 4 variant × N prop × M 컴포넌트로 슬롯 폭발 금지. 캐포비는 ①만 필요하므로 지금은 ①+②③ 만 구현.
+**확장(YAGNI)** — "브랜드 X 가 _이 컴포넌트의_ info 만 글로벌과 다르게"(예: Banner info ≠ Snackbar info)는 ③(글로벌)으론 안 된다. 그땐 ②를 `var(--nds-snackbar-info-bg, var(--semantic-bg-status-info))` 로 **한 겹 끼우면** 컴포넌트-per-variant 슬롯이 생긴다. **단 실제 요구가 생기기 전엔 만들지 않는다** — 4 variant × N prop × M 컴포넌트로 슬롯 폭발 금지. 캐포비는 ①만 필요하므로 지금은 ①+②③ 만 구현.
 
-**예외(진짜 구조)** — *요소 자체의 추가/숨김*(예: 모달 가운데정렬용 spacer 숨김, 없던 행/요소 추가)은 토큰화 불가 → `[data-brand]` 유지. 단 **아이콘 "모양" 교체**(캐포비 에러 아이콘·DatePicker 캘린더 글리프)는 구조처럼 보여도 `mask-image` 의 SVG URL 을 `--nds-{c}-icon` 슬롯에 담으면 토큰화 가능 (custom property 는 mask URL 값을 담음, 색은 `currentColor`=토큰) → 아래 숙제 참조.
+**예외(진짜 구조)** — _요소 자체의 추가/숨김_(예: 모달 가운데정렬용 spacer 숨김, 없던 행/요소 추가)은 토큰화 불가 → `[data-brand]` 유지. 단 **아이콘 "모양" 교체**(캐포비 에러 아이콘·DatePicker 캘린더 글리프)는 구조처럼 보여도 `mask-image` 의 SVG URL 을 `--nds-{c}-icon` 슬롯에 담으면 토큰화 가능 (custom property 는 mask URL 값을 담음, 색은 `currentColor`=토큰) → 아래 숙제 참조.
 
 #### brand 분기 마이그레이션 — 잔여 숙제 (점진)
 
 슬롯-합성으로 Snackbar·FormSection·Toggle·SelectedItemsPanel·TagInput·Pagination 의 색/radius 분기 이전 완료. 남은 `[data-brand]`:
 
 - **HelperText(=`InputHelper` 일반화) 통합 (★, 합성 전용)** — Input·Textarea·Select·FormField 가 헬퍼텍스트+캐포비 에러아이콘 `::before` 를 각자 구현(4중 중복, 별점 3중중복과 같은 클래스). 기존 공개 compound `InputHelper`(variant `default/success/error/disabled` + icon)를 공용 `.nds-helper-text` 클래스로 일반화해 4종이 재사용 → 상태색 1벌 + 캐포비 에러아이콘 `[data-brand] .nds-helper-text::before` **1줄**(현 4벌, base 변화 0). 결정: info status·success 아이콘·에러 mask토큰은 보류(현행 유지). **단독 사용 금지 — Input/FormField 합성 전용**(아래 합성-전용 부류).
-- **합성 전용(standalone 금지) 부류 — ✅ 메커니즘 구현됨 (컨벤션)** — 부모 없이는 의미 없는 서브 컴포넌트는 가이드 frontmatter 에 `standalone: false` + `composeWith: [부모…]` 를 설정한다(`ComponentGuide` 필드 · `build-guides` 허용). `get_guide` 가 `_standaloneAdvisory`("⚠ 합성 전용 — 단독 사용 금지")로 부각해 AI 의 단독 오용을 차단. **적용**: `ValidationChip`(composeWith Input·FormField) · `FieldActionRow`(Input·Button). **신규 합성 전용 컴포넌트(예: HelperText)는 빌드 시 반드시 `standalone:false` 설정** — 이게 "전부 일관되게" 의 강제 지점. (`Card.*` 서브파트 등은 자체 가이드가 없어 부모 가이드에서 문서화.)
+- **합성 전용(standalone 금지) 부류 — ✅ 메커니즘 구현됨 (컨벤션)** — 부모 없이는 의미 없는 서브 컴포넌트는 가이드 frontmatter 에 `standalone: false` + `composeWith: [부모…]` 를 설정한다(`ComponentGuide` 필드 · `build-guides` 허용). `get_guide` 가 `_standaloneAdvisory`("⚠ 합성 전용 — 단독 사용 금지")로 부각해 AI 의 단독 오용을 차단. **적용**: `ValidationChip`(composeWith Input·FormField). **신규 합성 전용 컴포넌트(예: HelperText)는 빌드 시 반드시 `standalone:false` 설정** — 이게 "전부 일관되게" 의 강제 지점. (`Card.*` 서브파트 등은 자체 가이드가 없어 부모 가이드에서 문서화.)
 - **브랜드 아이콘 스왑 → `--nds-{c}-icon` mask 토큰** — DatePicker 캘린더 글리프처럼 "브랜드가 아이콘 모양만 바꾸는" `[data-brand]` 는 mask-image URL 슬롯으로 이전(컴포넌트가 브랜드 모름). 위 HelperText 에러 아이콘과 같은 패턴.
 - **Modal·Popup** — `[data-brand]` 대부분 **배치/구조**(가운데 spacer 숨김·좌측 정렬·gap·typography·size) = 예외 유지가 정답. 순수 색(footer 취소버튼 bg/border/text)만 슬롯化 대상. confirm CTA 는 이미 confirmCta 토큰.
 

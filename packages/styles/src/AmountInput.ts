@@ -30,9 +30,9 @@ export const aiStyles = `
   }
 
   :where(.${AI_LABEL_CLASS}) {
-    font-size: ${typeScale.caption2.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.caption2.lineHeight}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.normal};
   }
 

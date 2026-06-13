@@ -42,15 +42,18 @@ export interface VerificationCodeInputProps extends Omit<
  * 붙여넣기·자동완성(`one-time-code`) 지원. (자리별 세그먼트 PIN 은 PinPad 를 쓴다.)
  *
  * 이 컴포넌트는 **코드 입력 필드만** 책임진다. 타이머·재전송·확인 버튼이 함께 있는
- * 인증 폼은 이 필드를 **FieldActionRow** 로 합성한다(타이머는 FieldActionRow 가 필드 안에 렌더):
+ * 인증 폼은 이 필드를 **FormField + InputGroup** 으로 합성한다(타이머는 코드 입력 우측에 겹쳐 배치):
  *
  * @example
- * <FieldActionRow
- *   field={<VerificationCodeInput value={code} onValueChange={setCode} onComplete={verify} />}
- *   action={<Button color="secondary">확인</Button>}
- *   timer={<CountdownTimer endsAt={endsAt} />}
- *   timerExpired={expired}
- *   helperText="문자로 전송된 인증번호를 입력해주세요" />
+ * <FormField helper="문자로 전송된 인증번호를 입력해주세요">
+ *   <InputGroup align="start">
+ *     <div style={{ position: "relative", flex: 1 }}>
+ *       <VerificationCodeInput value={code} onValueChange={setCode} onComplete={verify} />
+ *       <CountdownTimer endsAt={endsAt} style={timerInField} />
+ *     </div>
+ *     <Button color="secondary" size="field">확인</Button>
+ *   </InputGroup>
+ * </FormField>
  */
 export const VerificationCodeInput = React.forwardRef<HTMLInputElement, VerificationCodeInputProps>(
   (

@@ -35,6 +35,48 @@ describe("nds-content-viewer — DOM parity with React ContentViewer", () => {
     expect(out).not.toMatch(/onerror/i);
   });
 
+  it("unwraps non-allowlisted tags but keeps their text (allowlist)", async () => {
+    const el = document.createElement("nds-content-viewer");
+    el.setAttribute("html", "<p>안녕 <font color='red'>강조</font> 끝</p>");
+    document.body.appendChild(el);
+    await flush();
+
+    const root = el.querySelector(".nds-content-viewer") as HTMLElement;
+    expect(root.querySelector("font")).toBeNull();
+    expect(root.querySelector("p")!.textContent).toBe("안녕 강조 끝");
+  });
+
+  it("strips disallowed attributes (class/id/style) but keeps allowed ones", async () => {
+    const el = document.createElement("nds-content-viewer");
+    el.setAttribute("html", '<p class="x" id="y" style="color:red" title="ok">hi</p>');
+    document.body.appendChild(el);
+    await flush();
+
+    const p = el.querySelector("p")!;
+    expect(p.hasAttribute("class")).toBe(false);
+    expect(p.hasAttribute("id")).toBe(false);
+    expect(p.hasAttribute("style")).toBe(false);
+    expect(p.getAttribute("title")).toBe("ok");
+  });
+
+  it("removes data:/unknown URL schemes on href/src, keeps http(s)/relative", async () => {
+    const el = document.createElement("nds-content-viewer");
+    el.setAttribute(
+      "html",
+      '<a href="data:text/html,x">bad</a><a href="https://ok.com">ok</a>' +
+        '<img src="data:image/svg+xml,x"><img src="/safe.png">',
+    );
+    document.body.appendChild(el);
+    await flush();
+
+    const anchors = el.querySelectorAll("a");
+    expect(anchors[0].hasAttribute("href")).toBe(false);
+    expect(anchors[1].getAttribute("href")).toBe("https://ok.com");
+    const imgs = el.querySelectorAll("img");
+    expect(imgs[0].hasAttribute("src")).toBe(false);
+    expect(imgs[1].getAttribute("src")).toBe("/safe.png");
+  });
+
   it("auto-applies loading=lazy and decoding=async on images", async () => {
     const el = document.createElement("nds-content-viewer");
     el.setAttribute("html", '<p><img src="/a.png"><img src="/b.png" loading="eager"></p>');

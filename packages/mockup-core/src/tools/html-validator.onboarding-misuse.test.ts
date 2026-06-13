@@ -108,13 +108,13 @@ test("인증번호 input 을 손으로 조립 → verification-manual-assembly w
   assert.equal(hit?.severity, "warn");
 });
 
-test("nds-field-action-row 로 감싸면 위반 아님", () => {
+test("nds-verification-code-input 을 쓰면 위반 아님", () => {
   const html = wrap(`
     <nds-brand-logo brand="cashwalk-biz"></nds-brand-logo>
-    <nds-field-action-row>
+    <nds-form-field>
       <nds-verification-code-input length="6"></nds-verification-code-input>
       <nds-countdown-timer></nds-countdown-timer>
-    </nds-field-action-row>`);
+    </nds-form-field>`);
   assert.equal(has(html, "verification-manual-assembly"), undefined);
 });
 

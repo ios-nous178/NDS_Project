@@ -43,141 +43,26 @@ export const Overview: Story = {
   tags: ["gallery"],
   parameters: { layout: "padded" },
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
-      <div className="nds-toast__item" role="status">
-        <span className="nds-toast__message">저장되었습니다</span>
-      </div>
-      <div className="nds-toast__item" style={{ borderRadius: 9999 }} role="status">
-        <span className="nds-toast__message">변경 사항이 적용되었습니다</span>
-      </div>
+    <div className="nds-toast__item" role="status">
+      <span className="nds-toast__message">저장되었습니다</span>
     </div>
   ),
 };
 
-/* ─── Default ─── */
+/* ─── Helpers reused by interaction tests ─── */
 
 function DefaultToastExample() {
   const { toast } = useToast();
-
   return <Button onClick={() => toast("저장되었습니다")}>토스트 표시</Button>;
 }
-
-export const Default: Story = {
-  name: "State/Default",
-  render: () => <DefaultToastExample />,
-};
-
-/* ─── Position = Shape (Top: PC pill · Bottom: 모바일 rounded 24) ─── */
-
-function BottomShapeExample() {
-  const { toast } = useToast();
-  return <Button onClick={() => toast("저장되었습니다")}>하단 · rounded 24</Button>;
-}
-
-export const BottomShape: Story = {
-  name: "State/Bottom (모바일 · rounded 24)",
-  render: () => <BottomShapeExample />,
-};
 
 function TopShapeExample() {
   const { toast } = useToast();
   return <Button onClick={() => toast("저장되었습니다")}>상단 · pill</Button>;
 }
 
-export const TopShape: Story = {
-  name: "State/Top (PC · pill)",
-  parameters: { toastPosition: "top" },
-  render: () => <TopShapeExample />,
-};
-
-/* ─── Multiline ─── */
-
-function MultilineExample() {
-  const { toast } = useToast();
-
-  return (
-    <Button onClick={() => toast("상담 예약이 완료되었습니다\n확인 메일을 보내드렸습니다")}>
-      멀티라인 토스트
-    </Button>
-  );
-}
-
-export const Multiline: Story = {
-  name: "State/Multiline",
-  render: () => <MultilineExample />,
-};
-
-/* ─── Custom Duration ─── */
-
-function CustomDurationExample() {
-  const { toast } = useToast();
-
-  return (
-    <div style={{ display: "flex", gap: "var(--semantic-gap-default)", flexWrap: "wrap" }}>
-      <Button onClick={() => toast("1초 후 사라집니다", { duration: 1000 })}>1초</Button>
-      <Button onClick={() => toast("5초 후 사라집니다", { duration: 5000 })}>5초</Button>
-      <Button onClick={() => toast("10초 후 사라집니다", { duration: 10000 })}>10초</Button>
-    </div>
-  );
-}
-
-export const CustomDuration: Story = {
-  name: "State/Custom Duration",
-  render: () => <CustomDurationExample />,
-};
-
-/* ─── Top Position ─── */
-
-function TopPositionExample() {
-  return (
-    <ToastProvider position="top">
-      <TopPositionInner />
-    </ToastProvider>
-  );
-}
-
-function TopPositionInner() {
-  const { toast } = useToast();
-  return <Button onClick={() => toast("상단에 표시됩니다")}>상단 토스트</Button>;
-}
-
-export const TopPosition: Story = {
-  name: "State/Top Position",
-  render: () => <TopPositionExample />,
-};
-
-/* ─── Stacking (연속 호출) ─── */
-
-function StackingExample() {
-  const { toast } = useToast();
-  let count = 0;
-
-  return (
-    <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
-      <Button
-        onClick={() => {
-          count++;
-          toast(`알림 ${count}`);
-        }}
-      >
-        연속 호출 (최대 3개)
-      </Button>
-    </div>
-  );
-}
-
-export const Stacking: Story = {
-  name: "Recipe/Stacking Max Count (opt-in)",
-  // 기본값은 1개 교체 — maxCount 를 올려야 스택된다.
-  parameters: { toastMaxCount: 3 },
-  render: () => <StackingExample />,
-};
-
-/* ─── Feedback Flow (실무 시나리오) ─── */
-
 function FeedbackFlowExample() {
   const { toast } = useToast();
-
   return (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
       <Button onClick={() => toast("프로필이 저장되었습니다")}>프로필 저장</Button>
@@ -188,9 +73,51 @@ function FeedbackFlowExample() {
   );
 }
 
-export const FeedbackFlow: Story = {
-  name: "Recipe/Feedback Flow",
-  render: () => <FeedbackFlowExample />,
+/* ─── Position in context (실제 화면 위 노출 위치) ─── */
+
+// Toast viewport 는 position:fixed portal 이라 프레임 안에 가둘 수 없다 → 정적 nds-toast 마크업으로
+// 화면 어디에 어떤 모양으로 뜨는지(상단 pill / 하단 rounded 24)만 보여준다. (position = shape)
+function ToastFrame({
+  label,
+  position,
+  message,
+}: {
+  label: string;
+  position: "top" | "bottom";
+  message: string;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+      <span style={frameLabel}>{label}</span>
+      <div style={phoneFrame}>
+        <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 10 }} aria-hidden>
+          <div style={{ height: 12, width: 128, borderRadius: 4, background: "#E8E8E8" }} />
+          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+        </div>
+        <div
+          className="nds-toast__viewport"
+          data-position={position}
+          style={{ position: "absolute" }}
+        >
+          <div className="nds-toast__item" role="status">
+            <span className="nds-toast__message">{message}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const PositionInContext: Story = {
+  name: "State/노출 위치 (화면 위)",
+  render: () => (
+    <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
+      <ToastFrame label="모바일 · 하단 (rounded 24)" position="bottom" message="저장되었습니다" />
+      <ToastFrame label="PC · 상단 (pill)" position="top" message="저장되었습니다" />
+    </div>
+  ),
 };
 
 /* ─── Interaction Tests ─── */
@@ -287,4 +214,23 @@ export const ToastStackingLimitEdge: Story = {
       expect(toasts.length).toBeLessThanOrEqual(3);
     });
   },
+};
+
+/* ─── styles ─── */
+
+const phoneFrame: React.CSSProperties = {
+  position: "relative",
+  width: 300,
+  height: 520,
+  borderRadius: 28,
+  border: "8px solid #1F2937",
+  background: "#FFF",
+  overflow: "hidden",
+  boxSizing: "border-box",
+};
+
+const frameLabel: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  color: "#666",
 };

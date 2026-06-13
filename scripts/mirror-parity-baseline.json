@@ -447,16 +447,6 @@
       "since": "2026-06"
     },
     {
-      "key": "FieldActionRow::slot::html slot=\"field\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "react 는 field 를 children 으로 모델링 — html 만 명명 슬롯. 모델 차이 박제",
-      "since": "2026-06"
-    },
-    {
-      "key": "FieldActionRow::slot::html slot=\"timer\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "react timer prop 존재(내부 data-slot=timer 렌더) — 모델 차이/name-gate 위양성",
-      "since": "2026-06"
-    },
-    {
       "key": "FileUpload::prop-name::react prop → \"value\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -639,16 +629,6 @@
     {
       "key": "NoticeAlert::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
       "reason": "html 은 variant 별 내장 아이콘 렌더 — 커스텀은 react 전용. 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "NotificationItem::prop-name::html attr \"clickable\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "NotificationItem::prop-name::html attr \"item-title\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },
     {

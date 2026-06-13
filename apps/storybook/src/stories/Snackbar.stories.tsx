@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
 import { Snackbar } from "@nudge-design/react";
@@ -12,7 +12,7 @@ const meta: Meta<typeof Snackbar> = {
   component: Snackbar,
   tags: ["autodocs"],
   parameters: {
-    layout: "padded",
+    layout: "centered",
     docs: {
       description: {
         component: getComponentDocsDescription("Snackbar"),
@@ -36,12 +36,8 @@ export const Overview: Story = {
   tags: ["gallery"],
   name: "Overview",
   render: () => (
-    <div style={{ width: 320 }}>
-      <Snackbar
-        title="변경사항이 저장됐어요"
-        actionLabel="되돌리기"
-        onAction={() => {}}
-      />
+    <div style={{ width: 440 }}>
+      <Snackbar title="변경사항이 저장됐어요" actionLabel="되돌리기" onAction={() => {}} />
     </div>
   ),
 };
@@ -273,6 +269,86 @@ export const CashbizTopRight: Story = {
   ),
 };
 
+/* ─── Position in context (실제 화면 위 노출 위치) ─── */
+
+/**
+ * 폰 프레임 안에서 Snackbar 가 실제로 어디에 뜨는지 보여준다. Provider 의 viewport 는
+ * `position: fixed` 라 프레임을 `transform` 으로 containing block 으로 만들고 `portalContainer`
+ * 로 프레임을 지정해 브라우저 창이 아닌 프레임 기준으로 고정시킨다. (기본=하단 중앙 / 캐포비=우측 상단)
+ */
+function PhoneFrame({
+  label,
+  brand,
+  children,
+}: {
+  label: string;
+  brand?: string;
+  children: (frame: HTMLElement | null) => React.ReactNode;
+}) {
+  const [frame, setFrame] = useState<HTMLElement | null>(null);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+      <span style={frameLabel}>{label}</span>
+      <div ref={setFrame} data-brand={brand} style={phoneFrame}>
+        <div
+          style={{ padding: "16px 16px", display: "flex", flexDirection: "column", gap: 10 }}
+          aria-hidden
+        >
+          <div style={{ height: 12, width: 128, borderRadius: 4, background: "#E8E8E8" }} />
+          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+          <div style={{ height: 60, borderRadius: 10, background: "#F3F4F6" }} />
+        </div>
+        {children(frame)}
+      </div>
+    </div>
+  );
+}
+
+/** 마운트 시 1회 노출 (정적 화면에서도 위치가 보이도록 길게 유지). */
+function AutoSnackbar({ message }: { message: string }) {
+  const { snackbar } = useSnackbar();
+  const fired = useRef(false);
+  useEffect(() => {
+    if (fired.current) return;
+    fired.current = true;
+    snackbar(message);
+  }, [snackbar, message]);
+  return null;
+}
+
+export const PositionInContext: Story = {
+  name: "State/노출 위치 (화면 위)",
+  render: () => (
+    <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
+      <PhoneFrame label="기본 · 하단 중앙">
+        {(frame) =>
+          frame && (
+            <SnackbarProvider position="bottom" duration={1_000_000} portalContainer={frame}>
+              <AutoSnackbar message="변경사항이 저장됐어요" />
+            </SnackbarProvider>
+          )
+        }
+      </PhoneFrame>
+      <PhoneFrame label="캐포비 · 우측 상단" brand="cashwalk-biz">
+        {(frame) =>
+          frame && (
+            <SnackbarProvider
+              position="top-right"
+              brand="cashwalk-biz"
+              maxCount={1}
+              duration={1_000_000}
+              portalContainer={frame}
+            >
+              <AutoSnackbar message="변경사항이 저장됐어요" />
+            </SnackbarProvider>
+          )
+        }
+      </PhoneFrame>
+    </div>
+  ),
+};
+
 /* ─── Interaction Tests (docs 개요에서 바로 테스트) ─── */
 
 export const TriggeredInteraction: Story = {
@@ -340,4 +416,23 @@ const triggerButton: React.CSSProperties = {
   background: "#FFF",
   font: "inherit",
   cursor: "pointer",
+};
+
+const phoneFrame: React.CSSProperties = {
+  position: "relative",
+  // fixed viewport 가 브라우저 창이 아닌 이 프레임 기준으로 잡히도록 containing block 생성.
+  transform: "translateZ(0)",
+  width: 300,
+  height: 520,
+  borderRadius: 28,
+  border: "8px solid #1F2937",
+  background: "#FFF",
+  overflow: "hidden",
+  boxSizing: "border-box",
+};
+
+const frameLabel: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  color: "#666",
 };

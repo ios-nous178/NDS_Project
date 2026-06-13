@@ -39,7 +39,6 @@ export { NdsBreadcrumb, NdsBreadcrumbItem } from "./components/nds-breadcrumb.js
 export { NdsChip } from "./components/nds-chip.js";
 export type { ChipColor, ChipSize, ChipVariant } from "./components/nds-chip.js";
 
-
 export { NdsCheckbox } from "./components/nds-checkbox.js";
 
 export { NdsRadio } from "./components/nds-radio.js";
@@ -152,7 +151,6 @@ export { NdsSearchInput } from "./components/nds-search-input.js";
 
 export { NdsStarRating } from "./components/nds-star-rating.js";
 
-
 // 누락 회귀: React Stepper 는 export 돼 있으나 html 미러가 index 에서 빠져 define() 부작용이
 // 실행 안 돼 customElements 에 미등록 → <nds-stepper> 가 높이 0 으로 안 보였음(목업 폼 스텝퍼).
 export { NdsStepper } from "./components/nds-stepper.js";
@@ -203,7 +201,6 @@ export {
 export { NdsTimeline } from "./components/nds-timeline.js";
 export type { TimelineStatus, TimelineMode, TimelineDirection } from "./components/nds-timeline.js";
 
-
 export { NdsAttachmentItem } from "./components/nds-attachment-item.js";
 export type { AttachmentFileType, AttachmentStatus } from "./components/nds-attachment-item.js";
 
@@ -218,12 +215,7 @@ export type { FABSize, FABColor, FABPosition } from "./components/nds-fab.js";
 export { NdsPriceTag } from "./components/nds-price-tag.js";
 export type { PriceTagSize } from "./components/nds-price-tag.js";
 
-
-export { NdsNotificationItem } from "./components/nds-notification-item.js";
-export type { NotificationKind } from "./components/nds-notification-item.js";
-
 export { NdsPageHeader } from "./components/nds-page-header.js";
-
 
 export { NdsFloatingCtaBanner } from "./components/nds-floating-cta-banner.js";
 export type { FloatingCtaBannerSize } from "./components/nds-floating-cta-banner.js";
@@ -261,8 +253,6 @@ export { NdsPopularPosts } from "./components/nds-popular-posts.js";
 export { NdsTrendingKeywords } from "./components/nds-trending-keywords.js";
 export type { TrendingTrend } from "./components/nds-trending-keywords.js";
 
-export { NdsFieldActionRow } from "./components/nds-field-action-row.js";
-
 export { NdsTimePicker } from "./components/nds-time-picker.js";
 
 export { NdsMediaThumbnail } from "./components/nds-media-thumbnail.js";
@@ -271,7 +261,6 @@ export type { MediaRounded, MediaFit } from "./components/nds-media-thumbnail.js
 export { NdsCalendar } from "./components/nds-calendar.js";
 
 export { NdsChatComposer } from "./components/nds-chat-composer.js";
-
 
 export { NdsDataTable } from "./components/nds-data-table.js";
 export type { DataTableSortDirection } from "./components/nds-data-table.js";

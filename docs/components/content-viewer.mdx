@@ -29,7 +29,7 @@ import { ContentViewer } from "@nudge-design/react";
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
 | `html` *(필수)* | `string` | — | 본문 HTML — 호출부에서 sanitize한 안전한 HTML 권장 |
-| `sanitize` | `boolean` | `true` | 컴포넌트 내부에서 한 번 더 위험 태그 제거 (기본 true) |
+| `sanitize` | `boolean` | `true` | 내부 sanitize (문자열 위험태그 제거 + 클라이언트 allowlist 정리). 기본 true |
 | `imageLazy` | `boolean` | `true` | 이미지에 loading="lazy" 자동 부여 (기본 true) |
 | `externalLinkBlank` | `boolean` | `true` | 외부 링크(http/https)에 target="_blank" + rel 자동 부여 (기본 true) |
 

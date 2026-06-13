@@ -97,6 +97,7 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
   const guide = GUIDES[entry.name];
   const figmaHref = guide?.figmaNodeUrl ?? entry.figmaUrl;
   const [guideOpen, setGuideOpen] = useState(false);
+  const [fitPct, setFitPct] = useState<number | null>(null);
   const hasGuideBody = Boolean(
     guide &&
     (guide.summary ||
@@ -118,20 +119,23 @@ function ComponentCard({ entry }: { entry: InventoryEntry }) {
 
       <div style={cardPreview}>
         {variants.length > 0 ? (
-          <AutoFitPreview>
-            <div style={previewStack}>
-              {variants.map((v) => (
-                <div key={v.exportName} style={previewVariant}>
-                  {variants.length > 1 && <span style={previewVariantLabel}>{v.label}</span>}
-                  <ErrorBoundary
-                    fallback={<span style={previewPlaceholder}>{entry.name} preview</span>}
-                  >
-                    <v.Component />
-                  </ErrorBoundary>
-                </div>
-              ))}
-            </div>
-          </AutoFitPreview>
+          <>
+            <AutoFitPreview onMeasure={setFitPct}>
+              <div style={previewStack}>
+                {variants.map((v) => (
+                  <div key={v.exportName} style={previewVariant}>
+                    {variants.length > 1 && <span style={previewVariantLabel}>{v.label}</span>}
+                    <ErrorBoundary
+                      fallback={<span style={previewPlaceholder}>{entry.name} preview</span>}
+                    >
+                      <v.Component />
+                    </ErrorBoundary>
+                  </div>
+                ))}
+              </div>
+            </AutoFitPreview>
+            {fitPct !== null && <span style={fitBadge}>{fitPct}%</span>}
+          </>
         ) : (
           <span style={previewPlaceholder}>{entry.name}</span>
         )}
@@ -243,13 +247,20 @@ const TONE_COLOR: Record<GuideTone, string> = {
 };
 
 /**
- * 프리뷰가 카드 박스(폭 + PREVIEW_MAX_HEIGHT)를 넘치면 transform scale 로 맞춰 축소하고,
- * 축소된 카드에만 % 배지를 단다. 들어맞는 카드는 100% 그대로(배지 없음).
+ * 프리뷰는 카드 폭에 맞추되, 높이는 폭의 PREVIEW_HEIGHT_RATIO 배까지 유동적으로 키운다.
+ * 그 범위를 넘치면 transform scale 로 맞춰 축소하고, 현재 배율은 onMeasure 로 카드에 올려보내
+ * 카드(프리뷰 영역) 우상단에 고정 배지로 항상 표시한다 — 내부 콘텐츠 높이와 무관.
  * 측정은 transform 의 영향을 안 받는 offsetWidth/Height 로 — ResizeObserver 로 콘텐츠/폭 변화 추적.
  */
-const PREVIEW_MAX_HEIGHT = 240;
+const PREVIEW_HEIGHT_RATIO = 1.5;
 
-function AutoFitPreview({ children }: { children: React.ReactNode }) {
+function AutoFitPreview({
+  children,
+  onMeasure,
+}: {
+  children: React.ReactNode;
+  onMeasure?: (pct: number) => void;
+}) {
   const boxRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ scale: 1, height: 0 });
@@ -263,17 +274,19 @@ function AutoFitPreview({ children }: { children: React.ReactNode }) {
       const natW = content.offsetWidth;
       const natH = content.offsetHeight;
       if (!availW || !natW || !natH) return;
-      const scale = Math.min(1, availW / natW, PREVIEW_MAX_HEIGHT / natH);
+      // 폭은 카드에 고정, 높이는 폭의 1.5배까지 유동 — 그 안에서만 축소.
+      const maxH = availW * PREVIEW_HEIGHT_RATIO;
+      const scale = Math.min(1, availW / natW, maxH / natH);
       setFit({ scale, height: natH * scale });
+      onMeasure?.(Math.round(scale * 100));
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(box);
     ro.observe(content);
     return () => ro.disconnect();
-  }, [children]);
+  }, [children, onMeasure]);
 
-  const pct = Math.round(fit.scale * 100);
   return (
     <div ref={boxRef} style={{ ...autoFitBox, height: fit.height || undefined }}>
       <div
@@ -288,7 +301,6 @@ function AutoFitPreview({ children }: { children: React.ReactNode }) {
       >
         {children}
       </div>
-      {fit.scale < 1 && <span style={fitBadge}>{pct}%</span>}
     </div>
   );
 }
@@ -507,10 +519,14 @@ const categoryHeaderCount: React.CSSProperties = {
   color: "#999",
 };
 
+// 카드 폭은 고정 (모든 카드 동일), 높이는 콘텐츠/프리뷰에 따라 유동 (AutoFitPreview 가 폭×1.5 까지 허용).
+const CARD_WIDTH = 320;
+
 const grid: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+  gridTemplateColumns: `repeat(auto-fill, ${CARD_WIDTH}px)`,
   gap: "var(--semantic-gap-loose)",
+  justifyContent: "start",
 };
 
 const card: React.CSSProperties = {
@@ -580,11 +596,12 @@ const autoFitBox: React.CSSProperties = {
   width: "100%",
 };
 
-// 축소된 카드에만 뜨는 현재 배율 배지 (우상단).
+// 카드 프리뷰 영역 우상단에 항상 고정으로 뜨는 현재 배율 배지 (내부 콘텐츠 높이와 무관).
 const fitBadge: React.CSSProperties = {
   position: "absolute",
-  top: 4,
-  right: 4,
+  top: 8,
+  right: 8,
+  zIndex: 1,
   fontSize: 10,
   fontWeight: 700,
   color: "#888",

@@ -9,7 +9,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1399-
 ## rules
 
 - 합성 ① Input + ValidationChip — 형식 규칙이 2개 이상일 때 Input 아래 한 줄에 `<nds-validation-chip>` 를 나열. 입력값이 규칙을 충족할 때마다 해당 chip 을 `state="incomplete" → "complete"`(Brand Blue) 로 전환. 비밀번호/이메일 형식 안내에 사용(component:ValidationChip).
-- 합성 ② Input + Inline Button — 인증번호 받기·중복 확인 같은 **단일 액션**은 Input 과 같은 행에 작은 outlined 버튼을 둔다. `FieldActionRow` 컴포넌트가 이 레이아웃의 1급 표현 — 커스텀 flex 행을 새로 만들지 말 것(component:FieldActionRow).
+- 합성 ② Input + Inline Button — 인증번호 받기·중복 확인 같은 **단일 액션**은 Input 과 같은 행에 작은 outlined 버튼을 둔다. `FormField` > `InputGroup`(align="start") 로 입력+버튼을 한 줄에 합성한다 — 커스텀 flex 행을 새로 만들지 말 것(component:InputGroup).
 - 합성 ③ Input + Eye Icon — 비밀번호 표시/숨김은 `<nds-input type="password">` 의 **내장 password-toggle** 이 자동 제공(우측 눈 버튼, type 토글·포커스 유지까지 처리). 별도 trailing 버튼을 만들지 말 것 — 끄려면 `password-toggle="false"`.
 - Label / Placeholder — Label 은 항상 필드 위(Top Label). 필수 항목은 별표(`*`) + `aria-required`. Placeholder 는 형식 힌트만 — **Label 을 대체하지 않는다**.
 - Helper / Error — 같은 자리에서 교차한다(동시 노출 X). 여러 검증이 실패해도 Error 는 **1줄만**(우선순위: 필수 → 형식 → 길이 → 도메인 → 서버). Helper/Error 영역은 표시 안 돼도 1줄 높이를 예약해 레이아웃 점프를 막는다.
@@ -22,7 +22,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1399-
 - ValidationChip 으로 폼 필드의 단일 에러 1줄을 대체 — 에러 1줄은 FormField helper/error 슬롯, ValidationChip 은 규칙 체크리스트(여러 개 동시).
 - Helper 와 Error 동시 노출 — 한 자리에서 교차해야 한다.
 - 검증 실패 메시지를 규칙별로 여러 줄 — Error 는 우선순위 1줄.
-- 인라인 액션 버튼을 커스텀 flex 로 새로 — FieldActionRow 재사용.
+- 인라인 액션 버튼을 커스텀 flex 로 새로 — FormField + InputGroup 합성 재사용.
 - chip·버튼·헬퍼 색을 raw hex 로 — state/semantic 토큰으로 5 브랜드 자동 대응.
 
 ## readyMade.note
@@ -41,11 +41,13 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1399-
   </div>
 </div>
 
-<!-- ② Input + Inline Button (인증번호 받기) — FieldActionRow (action-tone 이 버튼 톤 결정) -->
-<nds-field-action-row action-tone="outline">
-  <nds-input slot="field" placeholder="휴대폰 번호"></nds-input>
-  <nds-button slot="action">인증번호 받기</nds-button>
-</nds-field-action-row>
+<!-- ② Input + Inline Button (인증번호 받기) — FormField > InputGroup(align="start") -->
+<nds-form-field label="휴대폰 번호">
+  <nds-input-group align="start">
+    <nds-input placeholder="010-0000-0000"></nds-input>
+    <nds-button variant="outlined">인증번호 받기</nds-button>
+  </nds-input-group>
+</nds-form-field>
 
 <!-- ③ Input + Eye Icon (비밀번호 표시·숨김) — type="password" 면 눈 토글 자동, 별도 마크업 불필요 -->
 <nds-input type="password" placeholder="비밀번호"></nds-input>

@@ -27,7 +27,7 @@ figmaNodeUrl: https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B
 - <Sidebar items={items} activeKey={key} onItemClick={(it) => navigate(it.key)} user={{ name, role }} />
 - 섹션 그룹: items={[{ key: 'content', label: '콘텐츠 운영', items: [...] }, { key: 'system', label: '시스템', items: [...] }]}
 - icon-only 사이드바: collapsed + onToggleCollapse 페어로 controlled. 토글 버튼은 헤더에 자동 노출.
-- 뱃지: item.badge=12 (숫자) 또는 ReactNode. 빨간 dot 만 보이면 NotificationItem 의 dot 패턴을 참고.
+- 뱃지: item.badge=12 (숫자) 또는 ReactNode.
 
 ## accessibility
 

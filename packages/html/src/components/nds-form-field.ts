@@ -31,7 +31,15 @@ export class NdsFormField extends NdsElement {
   static elementName = "nds-form-field";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-form-field"].observedAttributes, "label", "description", "helper", "error", "counter"];
+    return [
+      ...COMPONENT_ATTRS["nds-form-field"].observedAttributes,
+      "label",
+      "description",
+      "helper",
+      "error",
+      "success",
+      "counter",
+    ];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -67,6 +75,7 @@ export class NdsFormField extends NdsElement {
     const description = this.getAttribute("description");
     const helper = this.getAttribute("helper");
     const error = this.getAttribute("error");
+    const success = this.getAttribute("success");
     const required = this.boolAttr("required");
     const optional = this.boolAttr("optional");
     const counter = this.getAttribute("counter");
@@ -137,7 +146,7 @@ export class NdsFormField extends NdsElement {
     }
 
     // Footer (append after control)
-    if (helper || error || counter) {
+    if (helper || error || success || counter) {
       const footerDiv = document.createElement("div");
       footerDiv.dataset.slot = "footer";
       footerDiv.className = FF_FOOTER_CLASS;
@@ -150,6 +159,13 @@ export class NdsFormField extends NdsElement {
         errorSpan.setAttribute("role", "alert");
         errorSpan.textContent = error;
         footerDiv.appendChild(errorSpan);
+      } else if (success) {
+        const successSpan = document.createElement("span");
+        successSpan.dataset.slot = "success";
+        successSpan.dataset.variant = "success";
+        successSpan.className = `${FF_HELPER_CLASS} nds-helper-text`;
+        successSpan.textContent = success;
+        footerDiv.appendChild(successSpan);
       } else if (helper) {
         const helperSpan = document.createElement("span");
         helperSpan.dataset.slot = "helper";

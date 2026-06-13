@@ -19,7 +19,8 @@ export const sigStyles = `
   }
 
   :where(.${SP_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.normal};
   }

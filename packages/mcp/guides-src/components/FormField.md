@@ -3,7 +3,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-
 sizeMatrix:
   top: label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.
   left: label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. baseline 정렬을 위해 label 컬럼 padding-top 10px(default)/12px(admin) 자동 적용.
-  density:default: label body3 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.
+  density:default: label caption1 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.
   density:admin: label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준).
 ---
 
@@ -29,6 +29,7 @@ Input / Textarea / Select 같은 form control 의 label / helper / error / count
 - 캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)
 - FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.
 - 글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.
+- 라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker/PinPad/SignaturePad)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용.
 
 ## examplesHtml.do
 
