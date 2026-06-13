@@ -159,7 +159,8 @@ background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv
 
 슬롯-합성으로 Snackbar·FormSection·Toggle·SelectedItemsPanel·TagInput·Pagination 의 색/radius 분기 이전 완료. 남은 `[data-brand]`:
 
-- **HelperText 프리미티브 통합 (★)** — Input·Textarea·Select·FormField 가 캐포비 에러 아이콘 `::before`(circle-i mask)를 **4중 중복**한다(별점 3중중복과 같은 클래스). 입력류 공용 `HelperText` 프리미티브(상태 `default`/`info`/`success`/`error`/`disabled` + 자동 검증 아이콘)로 통합 → 헬퍼텍스트·아이콘을 한 곳에서 렌더, 입력 컴포넌트는 `<HelperText status>` 만 합성. 색은 이미 `cv.input.helpertext*`(default/success/error/disabled), 에러 아이콘은 `--nds-helper-error-icon` mask 토큰(브랜드가 모양 override).
+- **HelperText(=`InputHelper` 일반화) 통합 (★, 합성 전용)** — Input·Textarea·Select·FormField 가 헬퍼텍스트+캐포비 에러아이콘 `::before` 를 각자 구현(4중 중복, 별점 3중중복과 같은 클래스). 기존 공개 compound `InputHelper`(variant `default/success/error/disabled` + icon)를 공용 `.nds-helper-text` 클래스로 일반화해 4종이 재사용 → 상태색 1벌 + 캐포비 에러아이콘 `[data-brand] .nds-helper-text::before` **1줄**(현 4벌, base 변화 0). 결정: info status·success 아이콘·에러 mask토큰은 보류(현행 유지). **단독 사용 금지 — Input/FormField 합성 전용**(아래 합성-전용 부류).
+- **합성 전용(standalone 금지) 부류 캡처 (★)** — 부모 없이는 의미 없는 필드/카드 서브 컴포넌트(`HelperText`·`ValidationChip`·`InputHelper(Group)`·`FieldActionRow`·`Card.*` 등)를 "합성 전용"으로 표시해 단독 오용 차단. 방식 미정: (A) 각 가이드 pitfalls prose vs (B) 가이드 frontmatter `standalone:false`+`composeWith` 구조 필드(+카탈로그 배지·향후 스토리 단독사용 경고 게이트). ValidationChip 가이드엔 prose 1줄 먼저 적용.
 - **브랜드 아이콘 스왑 → `--nds-{c}-icon` mask 토큰** — DatePicker 캘린더 글리프처럼 "브랜드가 아이콘 모양만 바꾸는" `[data-brand]` 는 mask-image URL 슬롯으로 이전(컴포넌트가 브랜드 모름). 위 HelperText 에러 아이콘과 같은 패턴.
 - **Modal·Popup** — `[data-brand]` 대부분 **배치/구조**(가운데 spacer 숨김·좌측 정렬·gap·typography·size) = 예외 유지가 정답. 순수 색(footer 취소버튼 bg/border/text)만 슬롯化 대상. confirm CTA 는 이미 confirmCta 토큰.
 
