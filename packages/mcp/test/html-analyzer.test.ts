@@ -278,16 +278,13 @@ describe("reportHtmlMockupUsage", () => {
         dryRun: true,
         dsVersionFallback: "9.9.9",
         assetVersionFallback: "1.2.3",
-        iconVersionFallback: "4.5.6",
       });
       expect(r.usage.dsVersions?.source).toBe("mcp-bundle");
       expect(r.usage.dsVersions?.primary).toBe("9.9.9");
       // primary mirror 도 채워져 시트의 @nudge-design/react 컬럼이 비지 않는다
       expect(r.usage.dsVersions?.packages["@nudge-design/react"]).toBe("9.9.9");
       expect(r.usage.dsVersions?.assetVersion).toBe("1.2.3");
-      expect(r.usage.dsVersions?.iconVersion).toBe("4.5.6");
       expect(r.usage.dsVersions?.packages["@nudge-design/assets"]).toBe("1.2.3");
-      expect(r.usage.dsVersions?.packages["@nudge-design/icons"]).toBe("4.5.6");
     });
   });
 });

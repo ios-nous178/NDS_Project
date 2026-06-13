@@ -26,10 +26,11 @@ DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.y
 - **MCPB/root 릴리즈 버전 anchor** 는 Changesets fixed 그룹과 같은 DS 코드 패키지(`@nudge-design/{react,tokens,styles,tailwind-preset,html}`)의 `package.json` version 이다.
 - 루트 `package.json` 과 `packages/mcp/manifest.json` 은 둘 다 그 **미러** — `sync-mcpb-version.mjs` 가 둘을 위 DS 코드 패키지의 최대 버전으로 끌어올린다.
 - 루트 미러는 `pack-local-packages.mjs` 가 tarball 파일명에 박는 값이라, sync 빠지면 `pack` 이 의도치 않은 다운그레이드를 만든다 → 빠뜨리지 말 것.
-- `@nudge-design/assets`, `@nudge-design/icons` 는 별도 버전 트랙이다. MCPB/root version anchor 에서 제외하고, `packages/mcp/manifest.json` 의 `asset_version` / `icon_version` 에 현재 패키지 버전을 기록한다. 따라서 assets/icons 버전은 MCPB 버전과 달라도 정상이다.
+- `@nudge-design/assets` 는 별도 버전 트랙이다. MCPB/root version anchor 에서 제외하고, `packages/mcp/manifest.json` 의 `asset_version` 에 현재 패키지 버전을 기록한다(assets 는 S3 호스팅이라 번들이 버전을 알아야 함). 따라서 assets 버전은 MCPB 버전과 달라도 정상이다.
+- `@nudge-design/icons` 도 별도 npm 버전 트랙이지만 **정적 npm 패키지로만 배포**(S3 미사용)라 `manifest.json` 에 미러하지 않는다 — additive 추가 시 자체 changeset 으로 patch/minor bump 만 하면 된다. (아이콘은 트리셰이킹·타입세이프 유지를 위해 런타임 fetch 하지 않는다.)
 - `@nudge-design/mcp`(내부)는 버전 SSOT 에선 분리돼 있지만 **MCP 서버 코드/가이드/검증 룰을 고쳤거나 외부 전파 의미가 있으면 함께 bump** 한다. 단순 DS 컴포넌트 변경만이면 사용자 확인 없이 무조건 포함하지 말고, 변경 파일 기준으로 포함 여부를 판단한다.
 - 워크플로우 트리거 경로: `packages/mcp/src/**`, `packages/tokens/src/**`, `packages/react/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. **단 `manifest.json` version 이 기존 tag 와 같으면 release skip** → step 2 의 자동 동기화가 핵심.
-- CI `pnpm lint` 의 `sync-mcpb-version --check` 가 루트/manifest drift 와 `asset_version` / `icon_version` drift 를 막는다(손으로 어긋나면 빨갛게). `pack-local-packages.mjs` 도 root ↔ DS 코드 패키지 일치를 assert.
+- CI `pnpm lint` 의 `sync-mcpb-version --check` 가 루트/manifest drift 와 `asset_version` drift 를 막는다(손으로 어긋나면 빨갛게). `pack-local-packages.mjs` 도 root ↔ DS 코드 패키지 일치를 assert.
 
 ## 릴리즈 대상 선택 규칙
 
@@ -37,7 +38,7 @@ DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.y
 2. 사용자에게 릴리즈 대상 패키지를 짧게 확인한다. 기본 추천은 실제 변경된 패키지 + 외부 전파에 필요한 패키지다.
 3. 목표 버전이 주어졌으면 현재 MCPB/root 버전에서 목표 버전까지의 bump 레벨을 계산한다. 예: `0.0.3 -> 0.0.4` 는 patch, `0.0.3 -> 0.1.0` 은 minor.
 4. fixed 그룹(`react`, `tokens`, `styles`, `tailwind-preset`, `html`) 중 하나를 올리면 Changesets 가 그룹 전체를 같은 버전으로 맞춘다. 사용자가 "react 만"이라고 해도 fixed 그룹 특성을 설명하고 진행한다.
-5. assets/icons 를 포함하면 해당 패키지 changeset 을 따로 둔다. MCPB version 과 맞추지 않아도 되며, `pnpm version-packages` 뒤 `sync-mcpb-version.mjs` 가 manifest 의 `asset_version` / `icon_version` 을 맞춘다.
+5. assets/icons 를 포함하면 해당 패키지 changeset 을 따로 둔다. MCPB version 과 맞추지 않아도 된다. assets 는 `pnpm version-packages` 뒤 `sync-mcpb-version.mjs` 가 manifest 의 `asset_version` 을 맞춘다. icons 는 정적 npm 이라 manifest 미러가 없다(changeset 만).
 
 ## 절차
 
@@ -45,13 +46,13 @@ DS 패키지는 **Changesets** 로 버저닝한다. 자동화는 `release-mcpb.y
 # 1. DS 소스 수정 후 변경 기록 (대화형 또는 .changeset/{name}.md 직접 작성)
 pnpm changeset
 #    영향 패키지 / major·minor·patch / 한 줄 요약. → .changeset/{auto-name}.md
-#    fixed DS 코드 그룹, assets/icons 별도 트랙, mcp 포함 여부를 변경 파일 기준으로 결정한다.
+#    fixed DS 코드 그룹, assets(S3)/icons(정적 npm) 별도 트랙, mcp 포함 여부를 변경 파일 기준으로 결정한다.
 #    (가이드/원칙만 바꿔도 외부 전파 필요하면 영향 패키지 골라 patch.)
 
 # 2. 누적 changeset 일괄 반영
 pnpm version-packages
 #    → 선택 패키지 package.json version bump + CHANGELOG.md 갱신
-#    → 후속 자동: sync-mcpb-version.mjs(루트+manifest/asset_version/icon_version sync) · sync-version-docs.mjs(docs 버전표)
+#    → 후속 자동: sync-mcpb-version.mjs(루트+manifest/asset_version sync) · sync-version-docs.mjs(docs 버전표)
 ```
 
 ### 3. 슬랙용 비개발자 톤 변경사항 — ★ 릴리즈에 항상 포함

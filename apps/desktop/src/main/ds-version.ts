@@ -8,13 +8,12 @@ import { fileURLToPath } from "node:url";
  *
  * 번들러리스 목업 폴더(node_modules 없음)에선 detectDsVersions 가 비므로, 앱이 동봉한
  * @nudge-design/react 패키지 버전을 진리로 쓴다 — 이게 곧 inline 되는 DS runtime/CSS 의 버전이다.
- * assets/icons 는 동봉 MCP manifest 의 asset_version/icon_version 을 쓴다.
+ * assets 는 동봉 MCP manifest 의 asset_version 을 쓴다.
  * 1회 resolve 후 캐시. 못 찾으면 null(스탬프는 "—" 로 폴백).
  */
 export interface BundledDsVersions {
   dsVersion: string | null;
   assetVersion: string | null;
-  iconVersion: string | null;
 }
 
 let cached: BundledDsVersions | undefined;
@@ -39,7 +38,6 @@ export function resolveBundledDsVersions(): BundledDsVersions {
       cached = {
         dsVersion: v,
         assetVersion: manifest?.assetVersion ?? null,
-        iconVersion: manifest?.iconVersion ?? null,
       };
       return cached;
     }
@@ -52,7 +50,6 @@ export function resolveBundledDsVersions(): BundledDsVersions {
   cached = {
     dsVersion: manifest?.dsVersion ?? null,
     assetVersion: manifest?.assetVersion ?? null,
-    iconVersion: manifest?.iconVersion ?? null,
   };
   return cached;
 }
@@ -78,13 +75,11 @@ function readBundledManifestVersions(): BundledDsVersions | null {
       const m = JSON.parse(readFileSync(p, "utf8")) as {
         version?: string;
         asset_version?: string;
-        icon_version?: string;
       };
-      if (m.version || m.asset_version || m.icon_version) {
+      if (m.version || m.asset_version) {
         return {
           dsVersion: m.version ?? null,
           assetVersion: m.asset_version ?? null,
-          iconVersion: m.icon_version ?? null,
         };
       }
     } catch {

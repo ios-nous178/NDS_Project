@@ -109,8 +109,6 @@ export interface BuildSinglefileHtmlArgs {
   dsVersion?: string;
   /** 스탬프/usage fallback 용 @nudge-design/assets 버전. MCPB manifest.asset_version. */
   assetVersion?: string;
-  /** 스탬프/usage fallback 용 @nudge-design/icons 버전. MCPB manifest.icon_version. */
-  iconVersion?: string;
 }
 
 export type WorkspaceIntent = "react" | "html";
@@ -447,7 +445,6 @@ export async function buildSinglefileHtml(
         cwd,
         dsVersionFallback: args.dsVersion,
         assetVersionFallback: args.assetVersion,
-        iconVersionFallback: args.iconVersion,
       });
     } catch (err) {
       // Sheets webhook 실패는 reportHtmlMockupUsage 안에서 큐 적재로 처리되지만
@@ -467,7 +464,6 @@ export async function buildSinglefileHtml(
       args.appVersion,
       args.dsVersion,
       args.assetVersion,
-      args.iconVersion,
       report?.usage,
     );
   }
@@ -977,7 +973,6 @@ function stampDsBar(
   appVersion?: string,
   dsVersionOverride?: string,
   assetVersionOverride?: string,
-  iconVersionOverride?: string,
   usage?: ReportHtmlMockupUsageResult["usage"],
 ): void {
   try {
@@ -991,11 +986,9 @@ function stampDsBar(
       usage?.dsVersions?.primary ?? dsVersionOverride ?? detectDsVersions(cwd).primary;
     const detectedVersions = usage?.dsVersions ?? detectDsVersions(cwd);
     const assetVersion = detectedVersions.assetVersion ?? assetVersionOverride;
-    const iconVersion = detectedVersions.iconVersion ?? iconVersionOverride;
     const next = injectDsStampBar(html, {
       dsVersion,
       assetVersion,
-      iconVersion,
       ratio,
       adoptionRatio,
       appVersion,

@@ -106,6 +106,5 @@ export interface McpbManifest {
   name: string;
   version: string;
   asset_version?: string;
-  icon_version?: string;
   repository?: { type?: string; url?: string };
 }

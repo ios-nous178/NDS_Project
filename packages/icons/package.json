@@ -25,11 +25,6 @@
       "import": "./dist/vanilla.js",
       "default": "./dist/vanilla.js"
     },
-    "./remote-url": {
-      "types": "./dist/remote-url.d.ts",
-      "import": "./dist/remote-url.js",
-      "default": "./dist/remote-url.js"
-    },
     "./mono/vanilla": {
       "types": "./dist/mono/vanilla.d.ts",
       "import": "./dist/mono/vanilla.js",
@@ -39,8 +34,7 @@
       "types": "./dist/multicolor/vanilla.d.ts",
       "import": "./dist/multicolor/vanilla.js",
       "default": "./dist/multicolor/vanilla.js"
-    },
-    "./manifest.json": "./dist/manifest.json"
+    }
   },
   "files": [
     "dist"
@@ -49,7 +43,7 @@
   "scripts": {
     "generate": "node scripts/generate.cjs",
     "import:mockup": "node scripts/import-iconsax-mockup.mjs",
-    "build": "rm -rf dist && node scripts/generate.cjs && tsc && node scripts/generate-manifest.mjs",
+    "build": "rm -rf dist && node scripts/generate.cjs && tsc",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

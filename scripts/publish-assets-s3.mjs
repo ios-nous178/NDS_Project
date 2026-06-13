@@ -1,20 +1,18 @@
 #!/usr/bin/env node
 /**
- * Publish @nudge-design/assets and @nudge-design/icons artifacts to S3.
+ * Publish @nudge-design/assets artifacts to S3.
+ *
+ * Icons are intentionally NOT published here — they ship as a static npm
+ * package (@nudge-design/icons) to keep tree-shaking / type-safety. Only the
+ * heavy raster/illustration assets live on S3.
  *
  * Default mode is dry-run. Use --apply to execute AWS CLI commands.
  *
  * Release URLs:
  *   https://asset.nudge-dev.com/nds-assets/assets/{assetVersion}/files/...
- *   https://asset.nudge-dev.com/nds-assets/icons/{iconVersion}/vanilla.js
- *   https://asset.nudge-dev.com/nds-assets/icons/{iconVersion}/mono/vanilla.js
- *   https://asset.nudge-dev.com/nds-assets/icons/{iconVersion}/multicolor/vanilla.js
  *
  * Channel URLs:
  *   https://asset.nudge-dev.com/nds-assets/channels/assets-dev/files/...
- *   https://asset.nudge-dev.com/nds-assets/channels/icons-dev/vanilla.js
- *   https://asset.nudge-dev.com/nds-assets/channels/icons-dev/mono/vanilla.js
- *   https://asset.nudge-dev.com/nds-assets/channels/icons-dev/multicolor/vanilla.js
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -44,7 +42,6 @@ if (!["release", "channel"].includes(mode)) {
 }
 
 const assetPkg = readJson(path.join(ROOT, "packages/assets/package.json"));
-const iconPkg = readJson(path.join(ROOT, "packages/icons/package.json"));
 
 const targets =
   mode === "release"
@@ -57,15 +54,6 @@ const targets =
           url: `${cdnOrigin}/${prefix}/assets/${assetPkg.version}/files`,
           immutable: true,
         },
-        {
-          label: "icons",
-          localDir: "packages/icons/dist",
-          localManifest: "packages/icons/dist/manifest.json",
-          s3Prefix: `${prefix}/icons/${iconPkg.version}`,
-          url: `${cdnOrigin}/${prefix}/icons/${iconPkg.version}`,
-          immutable: true,
-          include: ["vanilla.js", "mono/vanilla.js", "multicolor/vanilla.js", "manifest.json"],
-        },
       ]
     : [
         {
@@ -75,15 +63,6 @@ const targets =
           s3Prefix: `${prefix}/channels/assets-dev`,
           url: `${cdnOrigin}/${prefix}/channels/assets-dev/files`,
           immutable: false,
-        },
-        {
-          label: "icons",
-          localDir: "packages/icons/dist",
-          localManifest: "packages/icons/dist/manifest.json",
-          s3Prefix: `${prefix}/channels/icons-dev`,
-          url: `${cdnOrigin}/${prefix}/channels/icons-dev`,
-          immutable: false,
-          include: ["vanilla.js", "mono/vanilla.js", "multicolor/vanilla.js", "manifest.json"],
         },
       ];
 
@@ -98,43 +77,26 @@ for (const target of targets) {
   if (target.immutable && apply) {
     assertS3PrefixEmpty(`s3://${bucket}/${target.s3Prefix}/`);
   }
-  if (target.label === "assets") {
-    run([
-      "aws",
-      "s3",
-      "sync",
-      path.join(ROOT, target.localDir),
-      `s3://${bucket}/${target.s3Prefix}/files`,
-      "--cache-control",
-      target.immutable ? "public,max-age=31536000,immutable" : "public,max-age=60",
-    ]);
-    run([
-      "aws",
-      "s3",
-      "cp",
-      path.join(ROOT, target.localManifest),
-      `s3://${bucket}/${target.s3Prefix}/manifest.json`,
-      "--cache-control",
-      target.immutable ? "public,max-age=300" : "no-cache",
-      "--content-type",
-      "application/json",
-    ]);
-  } else {
-    for (const file of target.include ?? []) {
-      const contentType = file.endsWith(".json") ? "application/json" : "text/javascript";
-      run([
-        "aws",
-        "s3",
-        "cp",
-        path.join(ROOT, target.localDir, file),
-        `s3://${bucket}/${target.s3Prefix}/${file}`,
-        "--cache-control",
-        target.immutable ? "public,max-age=31536000,immutable" : "public,max-age=60",
-        "--content-type",
-        contentType,
-      ]);
-    }
-  }
+  run([
+    "aws",
+    "s3",
+    "sync",
+    path.join(ROOT, target.localDir),
+    `s3://${bucket}/${target.s3Prefix}/files`,
+    "--cache-control",
+    target.immutable ? "public,max-age=31536000,immutable" : "public,max-age=60",
+  ]);
+  run([
+    "aws",
+    "s3",
+    "cp",
+    path.join(ROOT, target.localManifest),
+    `s3://${bucket}/${target.s3Prefix}/manifest.json`,
+    "--cache-control",
+    target.immutable ? "public,max-age=300" : "no-cache",
+    "--content-type",
+    "application/json",
+  ]);
 }
 
 if (!apply) {
@@ -152,7 +114,7 @@ function readJson(file) {
 }
 
 function assertExists(abs, label) {
-  if (!fs.existsSync(abs)) fail(`Missing ${label}. Build assets/icons before publishing.`);
+  if (!fs.existsSync(abs)) fail(`Missing ${label}. Build assets before publishing.`);
 }
 
 function run(cmd, options = {}) {

@@ -27,9 +27,9 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
-// changeset `fixed` 그룹과 동일한 DS 코드 집합을 본다. assets/icons 는 별도
-// 버전 트랙이라 root/MCPB version anchor 에서 제외하고 manifest 의 asset_version /
-// icon_version 에만 기록한다.
+// changeset `fixed` 그룹과 동일한 DS 코드 집합을 본다. assets 는 별도
+// 버전 트랙이라 root/MCPB version anchor 에서 제외하고 manifest 의 asset_version
+// 에만 기록한다. 아이콘은 정적 npm 패키지로만 배포하므로 여기서 추적하지 않는다.
 const DS_PACKAGE_DIRS = [
   "packages/react",
   "packages/tokens",
@@ -38,7 +38,6 @@ const DS_PACKAGE_DIRS = [
   "packages/html",
 ];
 const ASSET_PKG_PATH = path.join(ROOT, "packages/assets/package.json");
-const ICON_PKG_PATH = path.join(ROOT, "packages/icons/package.json");
 const MANIFEST_PATH = path.join(ROOT, "packages/mcp/manifest.json");
 const MCP_PKG_PATH = path.join(ROOT, "packages/mcp/package.json");
 const ROOT_PKG_PATH = path.join(ROOT, "package.json");
@@ -90,7 +89,6 @@ const targetVersion = maxEntry.version.raw;
 const manifest = readJson(MANIFEST_PATH);
 const rootPkg = readJson(ROOT_PKG_PATH);
 const assetPkg = readJson(ASSET_PKG_PATH);
-const iconPkg = readJson(ICON_PKG_PATH);
 
 const mirrors = [
   { label: "packages/mcp/manifest.json", path: MANIFEST_PATH, obj: manifest },
@@ -105,18 +103,12 @@ const manifestVersionFields = [
     have: manifest.asset_version,
     expected: assetPkg.version,
   },
-  {
-    key: "icon_version",
-    label: "packages/mcp/manifest.json icon_version",
-    have: manifest.icon_version,
-    expected: iconPkg.version,
-  },
 ];
 const manifestFieldDrift = manifestVersionFields.filter((m) => m.have !== m.expected);
 
 if (drift.length === 0 && manifestFieldDrift.length === 0) {
   console.log(
-    `[sync-mcpb-version] all mirrors already at ${targetVersion}; assets=${assetPkg.version}, icons=${iconPkg.version}`,
+    `[sync-mcpb-version] all mirrors already at ${targetVersion}; assets=${assetPkg.version}`,
   );
   process.exit(0);
 }

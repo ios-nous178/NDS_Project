@@ -19,8 +19,6 @@ export interface DsStampInfo {
   dsVersion?: string | null;
   /** @nudge-design/assets version. MCPB 에서는 manifest.asset_version. */
   assetVersion?: string | null;
-  /** @nudge-design/icons version. MCPB 에서는 manifest.icon_version. */
-  iconVersion?: string | null;
   /** NDS 전체 사용률 0–100 (overallRatio == 기존 dsRatio). 항상 표기되는 하한값. */
   ratio: number;
   /**
@@ -61,7 +59,6 @@ const STAMP = {
 export function renderDsStampBar(info: DsStampInfo): string {
   const ds = escHtml((info.dsVersion ?? "").trim() || "—");
   const assetVersion = (info.assetVersion ?? "").trim();
-  const iconVersion = (info.iconVersion ?? "").trim();
   const clampPct = (n: number): number => Math.max(0, Math.min(100, Math.round(n)));
   const overall = clampPct(info.ratio);
   const adoption =
@@ -89,9 +86,6 @@ export function renderDsStampBar(info: DsStampInfo): string {
   ];
   if (assetVersion) {
     parts.push(divider, seg("ASSET", `v${escHtml(assetVersion)}`));
-  }
-  if (iconVersion) {
-    parts.push(divider, seg("ICON", `v${escHtml(iconVersion)}`));
   }
   if (appV) {
     parts.push(divider, seg("STUDIO", `v${escHtml(appV)}`));

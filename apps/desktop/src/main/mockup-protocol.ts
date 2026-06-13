@@ -120,7 +120,6 @@ export function registerMockupProtocol(): void {
         const stamped = injectDsStampBar(html, {
           dsVersion,
           assetVersion: bundledVersions.assetVersion ?? detectedVersions.assetVersion,
-          iconVersion: bundledVersions.iconVersion ?? detectedVersions.iconVersion,
           ratio: counts.dsRatio,
           appVersion: app.getVersion(),
         });

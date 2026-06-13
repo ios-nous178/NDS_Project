@@ -60,7 +60,6 @@ export function detectDsVersions(cwd: string): DsVersions {
       primary: installed[DS_VERSION_PRIMARY] ?? firstNonNull(installed),
       packages: installed,
       assetVersion: installed["@nudge-design/assets"],
-      iconVersion: installed["@nudge-design/icons"],
       source: "node_modules",
     };
   }
@@ -71,7 +70,6 @@ export function detectDsVersions(cwd: string): DsVersions {
       primary: declared[DS_VERSION_PRIMARY] ?? firstNonNull(declared),
       packages: declared,
       assetVersion: declared["@nudge-design/assets"],
-      iconVersion: declared["@nudge-design/icons"],
       source: "package.json",
     };
   }

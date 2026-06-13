@@ -1,8 +1,15 @@
 # Asset/Icon Versioning And S3 Migration Plan
 
+> **STATUS (2026-06-14): Icons reverted to static npm.** Only heavy raster **assets**
+> (logos, illustrations) ship via S3. SVG **icons** stay in the static `@nudge-design/icons`
+> npm package — moving them to runtime S3 fetch would lose tree-shaking, type-safety, and
+> offline rendering and add FOUC, for only a few KB saved. Icons keep their own npm version
+> track (additive → patch/minor bump) but are **not** mirrored to `manifest.json` / S3.
+> The icon-S3 sections below are historical; the asset-S3 split stands.
+
 ## Goal
 
-Split binary asset and icon delivery from the DS code release train so design assets can move faster during development without forcing a full DS/MCPB version bump.
+Split heavy **raster asset** delivery (not icons) from the DS code release train so design assets can move faster during development without forcing a full DS/MCPB version bump.
 
 ## Current Findings
 

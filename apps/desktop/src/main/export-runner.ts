@@ -39,7 +39,6 @@ export async function exportMockup(
     appVersion,
     dsVersion: bundledVersions.dsVersion ?? undefined,
     assetVersion: bundledVersions.assetVersion ?? undefined,
-    iconVersion: bundledVersions.iconVersion ?? undefined,
   });
 
   let workspaceOutputRel: string | undefined;

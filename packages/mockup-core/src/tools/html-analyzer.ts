@@ -252,8 +252,6 @@ export interface ReportHtmlMockupUsageArgs {
   dsVersionFallback?: string;
   /** MCPB manifest.asset_version fallback for bundled @nudge-design/assets. */
   assetVersionFallback?: string;
-  /** MCPB manifest.icon_version fallback for bundled @nudge-design/icons. */
-  iconVersionFallback?: string;
 }
 
 export interface ReportHtmlMockupUsageResult {
@@ -313,7 +311,6 @@ export async function reportHtmlMockupUsage(
     loggedAt,
     dsVersionFallback: args.dsVersionFallback,
     assetVersionFallback: args.assetVersionFallback,
-    iconVersionFallback: args.iconVersionFallback,
   });
 
   const dryRun = args.dryRun === true;
@@ -404,7 +401,6 @@ interface BuildUsageArgs {
   loggedAt: string;
   dsVersionFallback?: string;
   assetVersionFallback?: string;
-  iconVersionFallback?: string;
 }
 
 function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
@@ -442,10 +438,8 @@ function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
         ...dsVersions.packages,
         "@nudge-design/react": args.dsVersionFallback,
         ...(args.assetVersionFallback ? { "@nudge-design/assets": args.assetVersionFallback } : {}),
-        ...(args.iconVersionFallback ? { "@nudge-design/icons": args.iconVersionFallback } : {}),
       },
       assetVersion: args.assetVersionFallback ?? null,
-      iconVersion: args.iconVersionFallback ?? null,
       source: "mcp-bundle",
     };
   }
