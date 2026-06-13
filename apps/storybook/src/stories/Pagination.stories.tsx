@@ -28,11 +28,13 @@ export const Playground: Story = {
 };
 
 export const FewPages: Story = {
+  tags: ["gallery"],
   name: "Recipe/페이지 적음",
   render: () => <PaginationExample page={2} totalPages={5} onPageChange={() => {}} />,
 };
 
 export const ManyPages: Story = {
+  tags: ["gallery"],
   name: "Recipe/페이지 많음",
   render: () => (
     <PaginationExample page={10} totalPages={50} siblings={2} onPageChange={() => {}} />

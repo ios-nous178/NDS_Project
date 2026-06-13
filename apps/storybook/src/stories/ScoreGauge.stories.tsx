@@ -22,6 +22,7 @@ export const Default: Story = {
 };
 
 export const PHQ9Custom: Story = {
+  tags: ["gallery"],
   name: "Recipe/PHQ-9 Custom Segments",
   render: () => (
     <div style={{ width: 320 }}>

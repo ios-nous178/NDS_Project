@@ -28,6 +28,7 @@ export const Playground: Story = {
 };
 
 export const List: Story = {
+  tags: ["gallery"],
   name: "Recipe/알림 리스트",
   render: () => (
     <div style={{ width: 480, border: "1px solid #eee", borderRadius: 12, overflow: "hidden" }}>
@@ -66,6 +67,7 @@ export const List: Story = {
 };
 
 export const Kinds: Story = {
+  tags: ["gallery"],
   name: "Variant/모든 종류",
   render: () => (
     <div style={{ width: 480, border: "1px solid #eee", borderRadius: 12, overflow: "hidden" }}>

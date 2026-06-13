@@ -54,6 +54,7 @@ export const Error: Story = {
 };
 
 export const OnComplete: Story = {
+  tags: ["gallery"],
   name: "Recipe/On Complete",
   render: () => {
     const [v, setV] = useState("");
@@ -84,6 +85,7 @@ export const OnComplete: Story = {
 };
 
 export const InVerificationForm: Story = {
+  tags: ["gallery"],
   name: "Recipe/인증 폼 (FieldActionRow 합성)",
   render: () => {
     const [v, setV] = useState("");

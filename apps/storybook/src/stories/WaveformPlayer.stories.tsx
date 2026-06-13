@@ -23,6 +23,7 @@ export const Playground: Story = {
 };
 
 export const WithPeaks: Story = {
+  tags: ["gallery"],
   name: "Recipe/사전 계산된 파형",
   render: () => (
     <div style={{ width: 320 }}>
@@ -47,6 +48,7 @@ export const CustomColor: Story = {
 };
 
 export const InChat: Story = {
+  tags: ["gallery"],
   name: "Recipe/채팅 음성 메시지",
   render: () => (
     <div

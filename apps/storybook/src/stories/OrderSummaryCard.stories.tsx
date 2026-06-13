@@ -30,6 +30,7 @@ export const Playground: Story = {
 };
 
 export const Counseling: Story = {
+  tags: ["gallery"],
   name: "Recipe/상담 예약 요약",
   render: () => (
     <div style={{ width: 480 }}>

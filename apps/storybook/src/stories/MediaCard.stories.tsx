@@ -71,6 +71,7 @@ export const Default: Story = {
 /* ─── State: With Image Overlay ─── */
 
 export const WithImageOverlay: Story = {
+  tags: ["gallery"],
   name: "State/With Image Overlay",
   render: () => (
     <div style={{ width: 280 }}>
@@ -95,6 +96,7 @@ export const WithImageOverlay: Story = {
 /* ─── Layout: Grid (4-up) ─── */
 
 export const Grid4Up: Story = {
+  tags: ["gallery"],
   name: "Recipe/Grid 4-up (desktop)",
   render: () => (
     <div

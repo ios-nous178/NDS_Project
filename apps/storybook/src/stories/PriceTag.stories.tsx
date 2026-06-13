@@ -19,6 +19,7 @@ type Story = StoryObj<typeof PriceTag>;
 export const Playground: Story = { render: (args) => <PriceTag {...args} /> };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/sm md lg",
   render: () => (
     <div
@@ -54,6 +55,7 @@ export const USD: Story = {
 };
 
 export const InCardContext: Story = {
+  tags: ["gallery"],
   name: "Recipe/상품 카드 안",
   render: () => (
     <div

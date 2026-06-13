@@ -46,6 +46,7 @@ const phqHtml = `
 `;
 
 export const AssessmentExplanation: Story = {
+  tags: ["gallery"],
   name: "Recipe/Assessment Explanation",
   render: () => w(<ContentViewer html={phqHtml} />),
 };
@@ -59,6 +60,7 @@ const dangerousHtml = `
 `;
 
 export const Sanitized: Story = {
+  tags: ["gallery"],
   name: "Recipe/Sanitize Dangerous HTML",
   render: () =>
     w(

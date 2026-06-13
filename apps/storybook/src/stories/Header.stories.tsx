@@ -26,6 +26,7 @@ type Story = StoryObj<typeof Header>;
 /* ─── Compact (옛 AppBar) ─── */
 
 export const CompactMobile: Story = {
+  tags: ["gallery"],
   name: "Base/Mobile",
   args: {
     variant: "compact",

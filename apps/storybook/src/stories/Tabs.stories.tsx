@@ -481,6 +481,7 @@ function MiniLineTab({ state }: { state: "default" | "active" | "hover" | "disab
 }
 
 export const States: Story = {
+  tags: ["gallery"],
   name: "Recipe/States",
   parameters: { layout: "padded" },
   render: () => (
@@ -567,6 +568,7 @@ function SpecTable({
 }
 
 export const SizeSpecs: Story = {
+  tags: ["gallery"],
   name: "Recipe/Size & Specs",
   parameters: { layout: "padded" },
   render: () => (

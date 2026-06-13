@@ -60,6 +60,7 @@ export const Autoplay: Story = {
 
 export const CounterIndicator: Story = {
   name: "Variant/카운터 인디케이터",
+  tags: ["gallery"],
   render: () => (
     <div style={{ width: 360 }}>
       <Carousel indicator="counter">
@@ -86,6 +87,7 @@ export const NoIndicator: Story = {
 
 export const ContentCarousel: Story = {
   name: "Recipe/콘텐츠 카드 슬라이더",
+  tags: ["gallery"],
   render: () => (
     <div style={{ width: 360 }}>
       <Carousel indicator="dots">

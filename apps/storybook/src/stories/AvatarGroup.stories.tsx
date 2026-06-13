@@ -32,6 +32,7 @@ export const Playground: Story = {
 
 export const Sizes: Story = {
   name: "Variant/모든 크기",
+  tags: ["gallery"],
   render: () => (
     <div
       style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
@@ -57,6 +58,7 @@ export const ManyMembers: Story = {
 
 export const WithImages: Story = {
   name: "Recipe/이미지 + 이니셜 fallback",
+  tags: ["gallery"],
   render: () => (
     <AvatarGroup
       items={[

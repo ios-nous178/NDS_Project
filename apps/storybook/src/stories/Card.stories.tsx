@@ -26,6 +26,7 @@ type Story = StoryObj<CardProps>;
 
 export const Outlined: Story = {
   name: "State/Outlined",
+  tags: ["gallery"],
   render: () => (
     <div style={{ width: 300 }}>
       <Card
@@ -113,6 +114,7 @@ export const Flat: Story = {
 
 export const CompoundCounselorCard: Story = {
   name: "Recipe/Compound Counselor Card",
+  tags: ["gallery"],
   render: () => (
     <div style={{ width: 282 }}>
       <Card.Root variant="outlined" clickable>

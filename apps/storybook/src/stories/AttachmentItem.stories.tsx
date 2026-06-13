@@ -49,6 +49,7 @@ export const Uploading: Story = {
 
 export const Error: Story = {
   name: "State/Error",
+  tags: ["gallery"],
   render: () =>
     w(
       <AttachmentItem
@@ -63,6 +64,7 @@ export const Error: Story = {
 
 export const List: Story = {
   name: "Recipe/Multiple Attachments",
+  tags: ["gallery"],
   render: () => (
     <div
       style={{

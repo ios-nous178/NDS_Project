@@ -20,6 +20,7 @@ const formatTime = (sec: number) => {
 
 export const VideoCall: Story = {
   name: "Recipe/화상 상담",
+  tags: ["gallery"],
   render: function Render() {
     const [muted, setMuted] = useState(false);
     const [camera, setCamera] = useState(true);
@@ -45,6 +46,7 @@ export const VideoCall: Story = {
 
 export const VoiceCall: Story = {
   name: "Recipe/음성 상담 (스피커)",
+  tags: ["gallery"],
   render: function Render() {
     const [muted, setMuted] = useState(false);
     const [speaker, setSpeaker] = useState(false);

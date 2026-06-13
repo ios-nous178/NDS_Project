@@ -91,6 +91,7 @@ function FilledExample() {
 }
 
 export const Filled: Story = {
+  tags: ["gallery"],
   name: "State/Filled",
   render: () => <FilledExample />,
 };
@@ -123,6 +124,7 @@ function WithSearchCallbackExample() {
 }
 
 export const WithSearchCallback: Story = {
+  tags: ["gallery"],
   name: "Recipe/With Search Callback",
   render: () => <WithSearchCallbackExample />,
 };

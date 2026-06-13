@@ -43,6 +43,7 @@ export const Playground: Story = {
 };
 
 export const WithMaxLength: Story = {
+  tags: ["gallery"],
   name: "Edge/최대 30초",
   render: function Render() {
     const [state, setState] = useState<VoiceRecorderState>("idle");

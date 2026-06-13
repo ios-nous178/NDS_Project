@@ -21,6 +21,7 @@ export default meta;
 type Story = StoryObj<typeof FormSection>;
 
 export const Default: Story = {
+  tags: ["gallery"],
   render: () => (
     <div style={{ maxWidth: 720 }}>
       <FormSection title="기본 정보" description="계정 식별 정보를 입력하세요.">

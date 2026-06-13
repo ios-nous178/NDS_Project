@@ -61,6 +61,7 @@ export const Playground: Story = {
 };
 
 export const SingleImage: Story = {
+  tags: ["gallery"],
   name: "Recipe/단일 이미지 (네비 없음)",
   render: function Render() {
     const [open, setOpen] = useState(false);

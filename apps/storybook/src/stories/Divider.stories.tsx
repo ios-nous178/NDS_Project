@@ -28,6 +28,7 @@ export const Playground: Story = {
 };
 
 export const Horizontal: Story = {
+  tags: ["gallery"],
   name: "Variant/Horizontal",
   render: () => (
     <div style={{ width: 300 }}>
@@ -52,6 +53,7 @@ export const Vertical: Story = {
 };
 
 export const ThickSection: Story = {
+  tags: ["gallery"],
   name: "Recipe/섹션 구분선",
   render: () => (
     <div style={{ width: 300 }}>

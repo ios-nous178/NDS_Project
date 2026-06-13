@@ -262,10 +262,12 @@ function RadioWrappedExample() {
 export const Basic: Story = { name: "State/기본", render: () => <BasicExample /> };
 export const Error: Story = { name: "State/에러 상태", render: () => <ErrorExample /> };
 export const WithCounter: Story = {
+  tags: ["gallery"],
   name: "Variant/글자수 카운터",
   render: () => <CounterExample />,
 };
 export const WrappingLikert: Story = {
+  tags: ["gallery"],
   name: "Recipe/LikertScale 감싸기",
   render: () => <LikertWrappedExample />,
 };

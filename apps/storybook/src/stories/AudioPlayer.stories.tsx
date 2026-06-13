@@ -15,6 +15,7 @@ type Story = StoryObj<typeof AudioPlayer>;
 
 export const Default: Story = {
   name: "State/Default",
+  tags: ["gallery"],
   render: () => {
     const [playing, setPlaying] = useState(false);
     const [time, setTime] = useState(0);
@@ -57,6 +58,7 @@ export const Playing: Story = {
 
 export const WithSkip: Story = {
   name: "Recipe/Series Player",
+  tags: ["gallery"],
   render: () => {
     const [playing, setPlaying] = useState(false);
     const [time, setTime] = useState(45);

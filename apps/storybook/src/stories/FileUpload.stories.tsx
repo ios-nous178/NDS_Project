@@ -47,6 +47,7 @@ export const Multiple: Story = {
 };
 
 export const ImageOnly: Story = {
+  tags: ["gallery"],
   name: "Recipe/Image with Size Limit",
   render: () => {
     const [files, setFiles] = useState<File[]>([]);

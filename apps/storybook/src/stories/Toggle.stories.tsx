@@ -27,6 +27,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/비교",
   render: function Render() {
     const [a, setA] = useState(true);

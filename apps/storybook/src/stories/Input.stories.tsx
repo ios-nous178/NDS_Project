@@ -263,6 +263,7 @@ function PrefixSuffixDemo() {
 }
 
 export const WithPrefixAndSuffix: Story = {
+  tags: ["gallery"],
   name: "Recipe/Prefix Suffix",
   render: () => <PrefixSuffixDemo />,
 };

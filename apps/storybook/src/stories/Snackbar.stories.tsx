@@ -158,6 +158,7 @@ function ManagedActionExample() {
 }
 
 export const ManagedWithAction: Story = {
+  tags: ["gallery"],
   name: "Variant/With Action (되돌리기)",
   render: () => (
     <SnackbarProvider position="bottom" duration={6000}>
@@ -185,6 +186,7 @@ function ManagedErrorActionExample() {
 }
 
 export const ManagedErrorWithAction: Story = {
+  tags: ["gallery"],
   name: "Variant/Error With Action (다시 시도)",
   render: () => (
     <SnackbarProvider position="bottom" duration={6000}>

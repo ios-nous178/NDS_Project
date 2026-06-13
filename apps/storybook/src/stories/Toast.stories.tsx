@@ -55,6 +55,7 @@ function BottomShapeExample() {
 }
 
 export const BottomShape: Story = {
+  tags: ["gallery"],
   name: "State/Bottom (모바일 · rounded 24)",
   render: () => <BottomShapeExample />,
 };
@@ -147,6 +148,7 @@ function StackingExample() {
 }
 
 export const Stacking: Story = {
+  tags: ["gallery"],
   name: "Recipe/Stacking Max Count (opt-in)",
   // 기본값은 1개 교체 — maxCount 를 올려야 스택된다.
   parameters: { toastMaxCount: 3 },

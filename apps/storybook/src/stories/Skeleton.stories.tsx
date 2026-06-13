@@ -20,6 +20,7 @@ type Story = StoryObj<typeof Skeleton>;
 export const Playground: Story = {};
 
 export const Rectangular: Story = {
+  tags: ["gallery"],
   name: "Variant/Rectangular",
   args: { variant: "rectangular", width: 300, height: 160 },
 };
@@ -35,6 +36,7 @@ export const Text: Story = {
 };
 
 export const CardSkeleton: Story = {
+  tags: ["gallery"],
   name: "Recipe/카드 로딩",
   render: () => (
     <div

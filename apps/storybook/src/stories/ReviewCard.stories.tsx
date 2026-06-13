@@ -61,6 +61,7 @@ export const HalfStar: Story = {
 };
 
 export const ProductReview: Story = {
+  tags: ["gallery"],
   name: "Recipe/상품 후기",
   render: () => (
     <div style={{ width: 480 }}>

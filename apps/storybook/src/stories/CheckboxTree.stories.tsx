@@ -179,6 +179,7 @@ export const Standalone: Story = {
 };
 
 export const NoSelectAll: Story = {
+  tags: ["gallery"],
   name: "State/전체선택 없음 + 검색 숨김",
   render: () => {
     const Harness = () => {

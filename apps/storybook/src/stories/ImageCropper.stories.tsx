@@ -55,6 +55,7 @@ export const Playground: Story = {
 };
 
 export const Square: Story = {
+  tags: ["gallery"],
   name: "Variant/사각형 자르기",
   render: () => (
     <ImageCropper

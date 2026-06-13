@@ -305,6 +305,7 @@ function CompoundDemo() {
 }
 
 export const CompoundAPI: Story = {
+  tags: ["gallery"],
   name: "Recipe/Compound API",
   render: () => <CompoundDemo />,
 };
@@ -341,6 +342,7 @@ function DestructiveConfirmDemo() {
 }
 
 export const DestructiveConfirm: Story = {
+  tags: ["gallery"],
   name: "Recipe/Destructive Confirm",
   render: () => <DestructiveConfirmDemo />,
 };

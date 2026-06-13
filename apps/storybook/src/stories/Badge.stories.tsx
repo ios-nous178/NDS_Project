@@ -77,6 +77,7 @@ export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
   name: "Spec/Style × Color Matrix",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       {VARIANTS.map((variant) => (
@@ -168,6 +169,7 @@ export const ColorUsage: Story = {
 
 export const StatusBadges: Story = {
   name: "Recipe/Status Badges",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
       <Badge variant="fill" color="success">

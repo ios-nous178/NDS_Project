@@ -1,5 +1,5 @@
 {
-  "$comment": "check-storybook-catalog.mjs 의 기존 공백 waiver. surface=inventory|previews. 게이트 도입(2026-06-12) 시점에 이미 누락돼 있던 항목 — 해소(등록)하면 게이트가 '이미 해소됨' 경고를 주니 그때 항목을 지울 것. 신규 컴포넌트는 여기 추가하지 말고 카탈로그에 등록하는 게 기본.",
+  "$comment": "check-storybook-catalog.mjs 의 의도된 공백 waiver. surface = 'inventory'(react export 가 componentInventory 에 없음) | 'gallery'(카탈로그 inventory 엔트리가 gallery 태그 스토리=라이브 프리뷰 없음). 신규 컴포넌트는 여기 추가하지 말고 inventory 등록 + 대표 스토리에 tags:[\"gallery\"] 를 다는 게 기본. 해소(등록/태깅)하면 게이트가 '이미 해소됨' 경고를 주니 그때 항목을 지울 것.",
   "entries": [
     {
       "surface": "inventory",
@@ -10,11 +10,6 @@
       "surface": "inventory",
       "name": "Header",
       "reason": "TODO — 브랜드 셸 성격이라 inventory 분류 보류. 결정 후 등록 또는 사유 확정."
-    },
-    {
-      "surface": "previews",
-      "name": "Header",
-      "reason": "브랜드 셸(풀폭 헤더)이라 카드형 미니 프리뷰가 부적합 — fallback 메타 카드로 표시."
     },
     {
       "surface": "inventory",
@@ -32,11 +27,6 @@
       "reason": "TODO — 게이트 도입 전 inventory 미등록. 등록 대기."
     },
     {
-      "surface": "previews",
-      "name": "InputGroup",
-      "reason": "TODO — 라이브 프리뷰 미작성. 의미 있는 조합 예시로 등록 대기."
-    },
-    {
       "surface": "inventory",
       "name": "SelectionButton",
       "reason": "TODO — 게이트 도입 전 inventory 미등록. 등록 대기."
@@ -45,6 +35,11 @@
       "surface": "inventory",
       "name": "Sidebar",
       "reason": "TODO — 어드민 셸 컴포넌트. inventory 분류(어드민 표면) 결정 후 등록."
+    },
+    {
+      "surface": "gallery",
+      "name": "DSHighlight",
+      "reason": "페이지 단위 개발용 오버레이 도구(Provider/Mark/Toggle). body 포털 오버레이라 카드형 미니 프리뷰에 부적합 — 전용 스토리는 있고 카탈로그에선 메타 카드로 표시."
     }
   ]
 }

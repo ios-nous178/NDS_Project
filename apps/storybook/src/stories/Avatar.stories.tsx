@@ -32,6 +32,7 @@ export const Playground: Story = {
 
 export const WithImage: Story = {
   name: "Variant/이미지",
+  tags: ["gallery"],
   args: { src: "https://i.pravatar.cc/150?img=5", alt: "사용자", size: "lg" },
 };
 
@@ -82,6 +83,7 @@ export const AllShapes: Story = {
 
 export const ShapeSizeMatrix: Story = {
   name: "Variant/Shape × Size 매트릭스",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {(["circle", "rounded", "square"] as const).map((shape) => (

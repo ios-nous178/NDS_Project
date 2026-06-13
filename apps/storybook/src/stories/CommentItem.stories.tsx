@@ -36,6 +36,7 @@ export const Playground: Story = {
 };
 
 export const WithBadgeAndReplies: Story = {
+  tags: ["gallery"],
   name: "Recipe/뱃지 + 답글 트리",
   render: () => (
     <div style={{ width: 480 }}>
@@ -76,6 +77,7 @@ export const WithBadgeAndReplies: Story = {
 };
 
 export const SimpleList: Story = {
+  tags: ["gallery"],
   name: "Recipe/간단 리스트",
   render: () => (
     <div style={{ width: 480, display: "flex", flexDirection: "column" }}>

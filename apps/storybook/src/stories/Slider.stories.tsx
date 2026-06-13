@@ -27,6 +27,7 @@ export const Default: Story = {
 };
 
 export const PainScale: Story = {
+  tags: ["gallery"],
   name: "Recipe/Pain Scale",
   render: () => (
     <Wrapped
@@ -43,6 +44,7 @@ export const PainScale: Story = {
 };
 
 export const StressPercent: Story = {
+  tags: ["gallery"],
   name: "Recipe/Stress %",
   render: () => (
     <Wrapped

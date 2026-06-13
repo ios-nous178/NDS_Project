@@ -122,7 +122,8 @@ function EmptyExample() {
   );
 }
 
-export const Flat: Story = { name: "단순 그리드", render: () => <FlatExample /> };
+export const Flat: Story = {
+  tags: ["gallery"], name: "단순 그리드", render: () => <FlatExample /> };
 export const Grouped: Story = { name: "오전/오후/저녁 그룹", render: () => <GroupedExample /> };
 export const ThreeColumns: Story = { name: "3열", render: () => <ThreeColumnsExample /> };
 export const Empty: Story = { name: "빈 상태", render: () => <EmptyExample /> };

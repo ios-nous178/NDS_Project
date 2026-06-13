@@ -22,6 +22,7 @@ type Story = StoryObj<typeof Timeline>;
 
 /* ── activity 모드: 시간순 이벤트 로그 ── */
 export const Activity: Story = {
+  tags: ["gallery"],
   name: "Variant/이벤트 로그 (activity)",
   render: () => (
     <div style={{ maxWidth: 360 }}>

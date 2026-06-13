@@ -69,6 +69,7 @@ export const States: Story = {
 
 /** 회원가입 비밀번호 검증 — Input 아래에 규칙 칩을 나열(pattern:form-validation). */
 export const WithInput: Story = {
+  tags: ["gallery"],
   parameters: { layout: "padded", controls: { disable: true } },
   render: () => (
     <div style={{ maxWidth: 332, display: "flex", flexDirection: "column", gap: 8 }}>

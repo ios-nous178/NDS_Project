@@ -59,6 +59,7 @@ export const SixActionsThreeCols: Story = {
 };
 
 export const WithBadges: Story = {
+  tags: ["gallery"],
   name: "Recipe/배지 (NEW / 카운트)",
   render: () => (
     <div style={{ width: 360 }}>
@@ -101,6 +102,7 @@ export const Disabled: Story = {
 };
 
 export const CustomIconColors: Story = {
+  tags: ["gallery"],
   name: "Recipe/아이콘 배경 색 커스텀",
   render: () => (
     <div style={{ width: 360 }}>

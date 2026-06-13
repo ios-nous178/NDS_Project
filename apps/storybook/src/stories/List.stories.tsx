@@ -153,6 +153,7 @@ function DividedExample() {
 }
 
 export const CardWithAvatars: Story = {
+  tags: ["gallery"],
   name: "Recipe/카드 + 아바타 (상담사 목록)",
   render: () => <CardExample />,
 };
@@ -166,6 +167,7 @@ export const PlainNav: Story = {
 };
 export const Divided: Story = { name: "Recipe/Divided (메뉴)", render: () => <DividedExample /> };
 export const WithMetadata: Story = {
+  tags: ["gallery"],
   name: "Recipe/Metadata 포함 (Title + Description + Metadata)",
   render: () => <MetadataExample />,
 };

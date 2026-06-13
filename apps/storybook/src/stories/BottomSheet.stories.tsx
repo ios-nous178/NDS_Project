@@ -74,6 +74,7 @@ function FlatExample() {
 
 export const Default: Story = {
   name: "State/Default",
+  tags: ["gallery"],
   render: () => <FlatExample />,
 };
 
@@ -549,6 +550,7 @@ export const TwoButtonFooter: Story = {
 
 export const ShareSheet: Story = {
   name: "Recipe/Share Sheet (SNS 공유)",
+  tags: ["gallery"],
   render: () => <ShareSheetExample />,
 };
 

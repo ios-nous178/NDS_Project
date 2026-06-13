@@ -29,6 +29,7 @@ export const Disabled: Story = {
 };
 
 export const AllStates: Story = {
+  tags: ["gallery"],
   name: "State/All States",
   render: () => (
     <div

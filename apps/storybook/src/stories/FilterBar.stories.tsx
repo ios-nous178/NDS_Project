@@ -34,6 +34,7 @@ export const Playground: Story = {
 };
 
 export const Single: Story = {
+  tags: ["gallery"],
   name: "Variant/단일 선택",
   render: function Render() {
     const [v, setV] = useState<string[]>(["all"]);

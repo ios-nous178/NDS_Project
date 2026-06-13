@@ -87,6 +87,7 @@ export const Expanded: Story = {
 };
 
 export const Prefilled: Story = {
+  tags: ["gallery"],
   name: "State/선택됨 (요약 표시)",
   render: () => {
     const Harness = () => {

@@ -25,6 +25,7 @@ export const Playground: Story = {
 
 export const WithMarkers: Story = {
   name: "Recipe/일정 마커",
+  tags: ["gallery"],
   render: function Render() {
     const [value, setValue] = useState<string | undefined>();
     const today = new Date();

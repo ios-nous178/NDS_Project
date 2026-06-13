@@ -265,6 +265,7 @@ export const PhoneVerification: Story = {
 };
 
 export const CashpobiVerification: Story = {
+  tags: ["gallery"],
   name: "Recipe/CashwalkBiz 본인인증 (action 생략 + brand 타이머)",
   render: () => <CashpobiVerificationExample />,
 };
@@ -290,6 +291,7 @@ export const ExpiredTimer: Story = {
 };
 
 export const FullFlow: Story = {
+  tags: ["gallery"],
   name: "Recipe/Full Verification Flow",
   render: () => <FullFlowExample />,
 };

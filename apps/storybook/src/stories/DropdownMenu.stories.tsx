@@ -90,6 +90,7 @@ function GroupedExample() {
   );
 }
 
-export const Basic: Story = { name: "더보기 액션", render: () => <MoreActionsExample /> };
+export const Basic: Story = {
+  tags: ["gallery"], name: "더보기 액션", render: () => <MoreActionsExample /> };
 export const ButtonTrigger: Story = { name: "버튼 트리거", render: () => <ButtonTriggerExample /> };
 export const Grouped: Story = { name: "그룹화", render: () => <GroupedExample /> };

@@ -148,6 +148,7 @@ export const FigmaSpec: Story = {
 
 export const ColorMatrix: Story = {
   name: "Spec/Color × Variant Matrix",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-wide)" }}>
       {(["primary", "secondary", "neutral"] as const).map((color) => (
@@ -288,6 +289,7 @@ export const VariantMatrix: Story = {
 
 export const SizeScale: Story = {
   name: "State/Size Scale",
+  tags: ["gallery"],
   render: () => (
     <div
       style={{
@@ -343,6 +345,7 @@ export const StateComparison: Story = {
 
 export const HomePageActionButtons: Story = {
   name: "Recipe/Homepage Action Buttons",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", width: 480, gap: "var(--semantic-gap-comfortable)" }}>
       <Button size="xl" fullWidth>

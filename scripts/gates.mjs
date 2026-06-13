@@ -98,11 +98,11 @@ export const GATES = [
   },
   {
     id: "storybook-catalog",
-    label: "Storybook catalog coverage (스토리·inventory·PREVIEWS 3면 대조)",
+    label: "Storybook catalog coverage (스토리·inventory·gallery 태그 3면 대조)",
     check: ["node", "scripts/check-storybook-catalog.mjs"],
     fix: null,
     fixHint:
-      "신규 컴포넌트는 metadata/componentInventory.json + AllComponents PREVIEWS 에 등록. " +
+      "신규 컴포넌트는 metadata/componentInventory.json 등록 + 대표 스토리에 tags:[\"gallery\"] 태깅. " +
       "의도된 제외는 scripts/storybook-catalog-baseline.json 에 사유와 함께 추가.",
     watch: [
       "apps/storybook/src/stories/",

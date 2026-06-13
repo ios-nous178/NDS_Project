@@ -86,6 +86,7 @@ export const TitleOnly: Story = {
 };
 
 export const AllLevels: Story = {
+  tags: ["gallery"],
   name: "Variant/All Levels",
   parameters: { layout: "padded" },
   render: () => (

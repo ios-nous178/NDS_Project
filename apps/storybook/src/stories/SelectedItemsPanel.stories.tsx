@@ -49,6 +49,7 @@ function DefaultDemo() {
 }
 
 export const Default: Story = {
+  tags: ["gallery"],
   render: () => <DefaultDemo />,
 };
 

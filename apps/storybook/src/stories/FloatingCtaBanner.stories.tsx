@@ -147,11 +147,13 @@ function FloatingShowcase({ size }: { size: "pc" | "mobile" }) {
 }
 
 export const FloatingOverContent: Story = {
+  tags: ["gallery"],
   name: "Recipe/Floating Over Content (PC)",
   render: () => <FloatingShowcase size="pc" />,
 };
 
 export const FloatingMobileOverContent: Story = {
+  tags: ["gallery"],
   name: "Recipe/Floating Over Content (Mobile)",
   render: () => <FloatingShowcase size="mobile" />,
 };

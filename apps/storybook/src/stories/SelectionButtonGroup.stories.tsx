@@ -99,6 +99,7 @@ function DisabledItemExample() {
 }
 
 export const TwoOptions: Story = {
+  tags: ["gallery"],
   name: "Variant/2개 옵션",
   render: () => <TwoOptionExample />,
 };

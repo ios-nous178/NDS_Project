@@ -25,6 +25,7 @@ export const Playground: Story = {
 };
 
 export const ChallengeComplete: Story = {
+  tags: ["gallery"],
   name: "Recipe/챌린지 완료",
   render: function Render() {
     const [active, setActive] = useState(false);
@@ -47,6 +48,7 @@ export const ChallengeComplete: Story = {
 };
 
 export const CustomColors: Story = {
+  tags: ["gallery"],
   name: "Variant/사용자 색상 팔레트",
   render: function Render() {
     const [active, setActive] = useState(false);

@@ -66,6 +66,7 @@ export const MultipleChoice: Story = {
 };
 
 export const WithIcons: Story = {
+  tags: ["gallery"],
   name: "Recipe/아이콘 포함",
   render: function Render() {
     const [v, setV] = useState("morning");
@@ -97,6 +98,7 @@ export const WithIcons: Story = {
 };
 
 export const Horizontal: Story = {
+  tags: ["gallery"],
   name: "Recipe/가로 배치",
   render: function Render() {
     const [v, setV] = useState("low");

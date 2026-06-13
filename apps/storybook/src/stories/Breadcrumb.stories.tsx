@@ -30,6 +30,7 @@ export const TwoLevels: Story = {
 
 export const FourLevels: Story = {
   name: "Variant/4단계",
+  tags: ["gallery"],
   args: {
     items: [
       { label: "홈", href: "/" },
@@ -42,6 +43,7 @@ export const FourLevels: Story = {
 
 export const CustomSeparator: Story = {
   name: "Variant/커스텀 구분자",
+  tags: ["gallery"],
   args: {
     items: [
       { label: "홈", href: "/" },

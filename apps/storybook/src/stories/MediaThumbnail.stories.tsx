@@ -20,6 +20,7 @@ export const Default: Story = {
 };
 
 export const Square: Story = {
+  tags: ["gallery"],
   name: "Variant/Square",
   render: () => <MediaThumbnail src={SAMPLE} alt="" aspectRatio="1/1" width={200} rounded="lg" />,
 };
@@ -44,6 +45,7 @@ export const Contain: Story = {
 };
 
 export const Fallback: Story = {
+  tags: ["gallery"],
   name: "Recipe/Fallback on Error",
   render: () => (
     <MediaThumbnail

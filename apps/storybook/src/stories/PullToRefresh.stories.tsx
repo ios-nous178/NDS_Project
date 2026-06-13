@@ -53,6 +53,7 @@ export const Playground: Story = {
 };
 
 export const CustomLabels: Story = {
+  tags: ["gallery"],
   name: "Recipe/라벨 커스텀",
   render: () => (
     <div style={{ width: 360, height: 280, border: "1px solid #ddd", borderRadius: 8 }}>

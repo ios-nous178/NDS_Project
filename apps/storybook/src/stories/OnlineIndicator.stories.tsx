@@ -20,6 +20,7 @@ type Story = StoryObj<typeof OnlineIndicator>;
 export const Playground: Story = { render: (args) => <OnlineIndicator {...args} /> };
 
 export const Statuses: Story = {
+  tags: ["gallery"],
   name: "Variant/모든 상태",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-default)" }}>
@@ -32,6 +33,7 @@ export const Statuses: Story = {
 };
 
 export const OnAvatar: Story = {
+  tags: ["gallery"],
   name: "Recipe/아바타 우하단 점",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-wide)" }}>

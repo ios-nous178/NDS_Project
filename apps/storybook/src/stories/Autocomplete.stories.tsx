@@ -83,6 +83,7 @@ export const Empty: Story = {
 
 export const MinQuery: Story = {
   name: "Recipe/최소 입력 길이 2",
+  tags: ["gallery"],
   render: function Render() {
     const [v, setV] = useState("");
     const filtered = useMemo(
@@ -107,6 +108,7 @@ export const MinQuery: Story = {
 
 export const NoHighlight: Story = {
   name: "Variant/하이라이트 끔",
+  tags: ["gallery"],
   render: function Render() {
     const [v, setV] = useState("");
     const filtered = useMemo(

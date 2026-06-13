@@ -44,6 +44,7 @@ export const Default: Story = {
 };
 
 export const TwoItems: Story = {
+  tags: ["gallery"],
   name: "Variant/2 items",
   render: () => <QuickMenu items={ITEMS.slice(0, 2)} />,
 };

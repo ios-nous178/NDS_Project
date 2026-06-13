@@ -68,6 +68,7 @@ const FILTERS: CheckboxGroupItem[] = [
 
 export const DataSelectAll: Story = {
   name: "Variant/전체선택 (indeterminate)",
+  tags: ["gallery"],
   render: () => {
     const Harness = () => {
       const [v, setV] = useState<string[]>(["stress"]);
@@ -121,6 +122,7 @@ const TERMS: CheckboxGroupItem[] = [
 
 export const ConsentScreen: Story = {
   name: "Variant/약관 동의 (pattern:consent)",
+  tags: ["gallery"],
   render: () => {
     const Harness = () => {
       // pre-tick 금지(개인정보보호법) — 초기값 빈 배열

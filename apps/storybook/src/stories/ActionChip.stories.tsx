@@ -62,6 +62,7 @@ export const TextOnly: Story = {
 
 export const Disabled: Story = {
   name: "State/Disabled",
+  tags: ["gallery"],
   args: {
     icon: <DownloadIcon width={14} height={14} />,
     label: "다운로드",
@@ -73,6 +74,7 @@ export const Disabled: Story = {
 
 export const Group: Story = {
   name: "Recipe/helper 영역 예시",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "inline-flex", gap: 8 }}>
       <ActionChip icon={<InfoIcon width={14} height={14} />} label="예시 이미지" />

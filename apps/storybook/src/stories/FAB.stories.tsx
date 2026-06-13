@@ -39,6 +39,7 @@ export const Extended: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/md vs lg",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-loose)", alignItems: "center" }}>

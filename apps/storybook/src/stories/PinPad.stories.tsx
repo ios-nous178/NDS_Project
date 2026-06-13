@@ -27,6 +27,7 @@ export const Playground: Story = {
 };
 
 export const FourDigit: Story = {
+  tags: ["gallery"],
   name: "Variant/4자리",
   render: function Render() {
     const [pin, setPin] = useState("");
@@ -43,6 +44,7 @@ export const FourDigit: Story = {
 };
 
 export const Shuffled: Story = {
+  tags: ["gallery"],
   name: "Recipe/키 셔플 (보안)",
   render: function Render() {
     const [pin, setPin] = useState("");

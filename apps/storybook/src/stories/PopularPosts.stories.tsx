@@ -127,6 +127,7 @@ export const FewItems: Story = {
 /* ─── Variant: Count formats ─── */
 
 export const CountVariants: Story = {
+  tags: ["gallery"],
   name: "Variant/Count Formats",
   render: () => (
     <Frame>

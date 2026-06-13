@@ -95,6 +95,7 @@ export const Playground: Story = {
 };
 
 export const ProgressIndicator: Story = {
+  tags: ["gallery"],
   name: "Variant/progress 인디케이터 (기본)",
   render: () => (
     <div style={{ width: 480 }}>

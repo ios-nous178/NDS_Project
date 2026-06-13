@@ -65,6 +65,7 @@ export const Playground: Story = {
 /* ─── 2. 짧은 힌트 (단일/두 줄) ─── */
 
 export const ShortHint: Story = {
+  tags: ["gallery"],
   name: "Variant/짧은 힌트 (자동 줄바꿈)",
   render: () => (
     <Frame>

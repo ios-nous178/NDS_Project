@@ -26,6 +26,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/sm md lg",
   render: function Render() {
     const [a, setA] = useState(1);
@@ -42,6 +43,7 @@ export const Sizes: Story = {
 };
 
 export const WithUnit: Story = {
+  tags: ["gallery"],
   name: "Recipe/단위 표시",
   render: function Render() {
     const [n, setN] = useState(2);

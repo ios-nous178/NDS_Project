@@ -26,6 +26,7 @@ type Story = StoryObj<typeof ProgressBar>;
 export const Playground: Story = {};
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/비교",
   render: () => (
     <div
@@ -44,6 +45,7 @@ export const Sizes: Story = {
 };
 
 export const CustomColor: Story = {
+  tags: ["gallery"],
   name: "Recipe/색상 오버라이드",
   render: () => (
     <div

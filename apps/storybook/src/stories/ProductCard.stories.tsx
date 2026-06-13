@@ -111,6 +111,7 @@ export const SoldOut: Story = {
 /* ─── Variation: 캐시딜 PC (236w) — 랭킹 + 풀 메타 ─── */
 
 export const CashdealDesktop: Story = {
+  tags: ["gallery"],
   name: "Variant/Cashdeal Desktop (md)",
   parameters: {
     docs: {
@@ -141,6 +142,7 @@ export const CashdealDesktop: Story = {
 /* ─── Recipe: 캐시딜 PC 랭킹 리스트 1~5위 ─── */
 
 export const CashdealRankingRow: Story = {
+  tags: ["gallery"],
   name: "Recipe/Cashdeal Ranking (Desktop)",
   parameters: {
     docs: {

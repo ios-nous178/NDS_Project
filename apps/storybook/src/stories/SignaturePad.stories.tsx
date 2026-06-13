@@ -27,6 +27,7 @@ export const Playground: Story = {
 };
 
 export const SaveOnSubmit: Story = {
+  tags: ["gallery"],
   name: "Recipe/제출 시 dataURL 추출",
   render: function Render() {
     const ref = useRef<SignaturePadHandle>(null);
@@ -75,6 +76,7 @@ export const Disabled: Story = {
 };
 
 export const HideControls: Story = {
+  tags: ["gallery"],
   name: "Variant/컨트롤 숨김",
   render: () => (
     <div style={{ width: 480 }}>

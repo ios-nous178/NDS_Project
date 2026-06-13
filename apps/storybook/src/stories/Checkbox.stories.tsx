@@ -101,6 +101,7 @@ function CheckboxIndeterminateExample() {
 
 export const Vertical: Story = {
   name: "State/Vertical",
+  tags: ["gallery"],
   render: () => <CheckboxExample />,
 };
 
@@ -116,6 +117,7 @@ export const Disabled: Story = {
 
 export const Indeterminate: Story = {
   name: "State/Indeterminate",
+  tags: ["gallery"],
   render: () => <CheckboxIndeterminateExample />,
 };
 

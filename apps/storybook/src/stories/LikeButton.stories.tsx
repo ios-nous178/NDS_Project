@@ -35,6 +35,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/sm md lg",
   render: function Render() {
     const [s, setS] = useState(false);

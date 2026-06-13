@@ -78,6 +78,7 @@ export const Shapes: Story = {
 
 export const Sizes: Story = {
   name: "Variant/Size 비교",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
       {(["xs", "sm", "md", "lg", "xl", "2xl"] as const).map((s) => (
@@ -113,6 +114,7 @@ export const UnionOverlap: Story = {
 
 export const UnionAcc: Story = {
   name: "Variant/Union Accessory (status dot)",
+  tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", gap: 16 }}>
       <Asset

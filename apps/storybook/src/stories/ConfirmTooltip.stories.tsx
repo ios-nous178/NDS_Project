@@ -67,6 +67,7 @@ export const Playground: Story = {
 /* ─── 2. Actions=Dual (취소 + 해제) ─── */
 
 export const Dual: Story = {
+  tags: ["gallery"],
   name: "Variant/Dual (취소+해제)",
   args: { actions: "dual", open: true },
   render: (args) => (

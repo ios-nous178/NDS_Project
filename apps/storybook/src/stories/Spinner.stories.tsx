@@ -18,6 +18,7 @@ export const Default: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "State/Sizes",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-wide)", alignItems: "center" }}>
@@ -30,6 +31,7 @@ export const Sizes: Story = {
 };
 
 export const InsideButton: Story = {
+  tags: ["gallery"],
   name: "Recipe/Inside Button",
   render: () => (
     <Button color="primary" variant="solid" disabled>

@@ -1098,6 +1098,7 @@ export const WebViewPlaylistEditUI: Story = {
 };
 
 export const WebViewPlaylistEditWithSlotProps: Story = {
+  tags: ["gallery"],
   name: "Recipe/WebView Playlist Edit With Slot Props",
   render: () => <PlaylistEditModalSlotPropsExample />,
   parameters: {
@@ -1110,6 +1111,7 @@ export const WebViewPlaylistEditWithSlotProps: Story = {
 };
 
 export const WebViewPlaylistEditWithClassNames: Story = {
+  tags: ["gallery"],
   name: "Recipe/WebView Playlist Edit With Class Names",
   render: () => <PlaylistEditModalClassNameExample />,
   parameters: {

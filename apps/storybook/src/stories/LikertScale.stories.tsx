@@ -105,6 +105,7 @@ function DisabledExample() {
 }
 
 export const FivePoint: Story = {
+  tags: ["gallery"],
   name: "Variant/5점 척도 (양 끝 라벨)",
   render: () => <FivePointExample />,
 };

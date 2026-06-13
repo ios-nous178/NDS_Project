@@ -137,6 +137,7 @@ function TrendingKeywordsWithClickHandler() {
 }
 
 export const WithClickHandler: Story = {
+  tags: ["gallery"],
   name: "Recipe/Click Handler",
   render: () => <TrendingKeywordsWithClickHandler />,
 };
@@ -144,6 +145,7 @@ export const WithClickHandler: Story = {
 /* ─── Recipe: 커스텀 제목 ─── */
 
 export const CustomTitle: Story = {
+  tags: ["gallery"],
   name: "Recipe/Custom Title",
   args: {
     items: [

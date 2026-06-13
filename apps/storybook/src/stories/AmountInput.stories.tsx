@@ -38,6 +38,7 @@ export const Playground: Story = {
 
 export const USD: Story = {
   name: "Variant/달러 (prefix)",
+  tags: ["gallery"],
   render: function Render() {
     const [v, setV] = useState<number | null>(0);
     return (
@@ -76,6 +77,7 @@ export const WithError: Story = {
 
 export const Donation: Story = {
   name: "Recipe/후원 금액",
+  tags: ["gallery"],
   render: function Render() {
     const [v, setV] = useState<number | null>(null);
     return (

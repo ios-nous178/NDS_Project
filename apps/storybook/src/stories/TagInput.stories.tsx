@@ -72,6 +72,7 @@ export const Empty: Story = {
 /* ─── 3. 인라인(해시태그) variant ─── */
 
 export const InlineHashtag: Story = {
+  tags: ["gallery"],
   name: "Variant/inline (해시태그)",
   render: function Render() {
     const [tags, setTags] = useState<string[]>(["수면", "스트레스"]);
@@ -96,6 +97,7 @@ export const InlineHashtag: Story = {
 /* ─── 4. 에러 ─── */
 
 export const WithError: Story = {
+  tags: ["gallery"],
   name: "State/에러",
   render: function Render() {
     const [emails, setEmails] = useState<string[]>([]);

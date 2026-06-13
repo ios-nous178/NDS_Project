@@ -27,6 +27,7 @@ const w = (children: React.ReactNode) => (
 
 export const Single: Story = {
   name: "State/Single Pair",
+  tags: ["gallery"],
   render: () =>
     w(
       <>
@@ -42,6 +43,7 @@ export const Single: Story = {
 
 export const Grouped: Story = {
   name: "State/Grouped Messages",
+  tags: ["gallery"],
   render: () =>
     w(
       <>

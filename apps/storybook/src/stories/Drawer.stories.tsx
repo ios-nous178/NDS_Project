@@ -156,7 +156,8 @@ function LargeExample() {
   );
 }
 
-export const Right: Story = { name: "오른쪽 (상세)", render: () => <RightExample /> };
+export const Right: Story = {
+  tags: ["gallery"], name: "오른쪽 (상세)", render: () => <RightExample /> };
 export const LeftNav: Story = { name: "왼쪽 (네비게이션)", render: () => <LeftNavExample /> };
 export const Filter: Story = { name: "필터 패널", render: () => <FilterExample /> };
 export const Large: Story = { name: "Large 사이즈", render: () => <LargeExample /> };

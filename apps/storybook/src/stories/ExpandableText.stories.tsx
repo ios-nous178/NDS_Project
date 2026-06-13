@@ -27,6 +27,7 @@ export const Playground: Story = {
 };
 
 export const FiveLines: Story = {
+  tags: ["gallery"],
   name: "Variant/5줄까지 표시",
   render: () => (
     <div style={{ width: 360 }}>
@@ -56,6 +57,7 @@ export const HideCollapse: Story = {
 };
 
 export const CustomLabels: Story = {
+  tags: ["gallery"],
   name: "Recipe/라벨 커스텀",
   render: () => (
     <div style={{ width: 360 }}>

@@ -93,6 +93,7 @@ export const Default: Story = {
 
 /** 페이지네이션과 조합 (참여 시간대 통계 등 긴 표). */
 export const WithPagination: Story = {
+  tags: ["gallery"],
   render: () => {
     function Demo() {
       const [page, setPage] = useState(1);

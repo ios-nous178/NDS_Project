@@ -29,6 +29,7 @@ export const Playground: Story = {
 };
 
 export const AllVariants: Story = {
+  tags: ["gallery"],
   name: "Variant/5종 상태",
   render: () => (
     <div style={{ width: 640, display: "flex", flexDirection: "column", gap: 12 }}>
@@ -45,6 +46,7 @@ export const AllVariants: Story = {
 };
 
 export const MultiLine: Story = {
+  tags: ["gallery"],
   name: "Recipe/여러 줄",
   render: () => (
     <div style={{ width: 420 }}>

@@ -57,6 +57,7 @@ export const Line: Story = {
 };
 
 export const GroupedBar: Story = {
+  tags: ["gallery"],
   render: () => (
     <Card title="연령대별 차트 — 성별 분포">
       <Chart
@@ -75,6 +76,7 @@ export const GroupedBar: Story = {
 /** 도넛 — 성별 분포. 시리즈 1개 = 1 세그먼트, 범례에 % 표기. 알수없음은 --nds-chart-empty(회색). */
 export const Donut: Story = {
   name: "Variant/Donut (성별 분포)",
+  tags: ["gallery"],
   render: () => (
     <Card title="성별">
       <Chart

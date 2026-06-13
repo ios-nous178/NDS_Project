@@ -32,6 +32,7 @@ export const Playground: Story = {
 };
 
 export const WithError: Story = {
+  tags: ["gallery"],
   name: "State/에러",
   render: function Render() {
     const [country, setCountry] = useState("KR");
@@ -54,6 +55,7 @@ export const WithError: Story = {
 };
 
 export const WithHelper: Story = {
+  tags: ["gallery"],
   name: "Recipe/헬퍼 텍스트",
   render: function Render() {
     const [country, setCountry] = useState("KR");

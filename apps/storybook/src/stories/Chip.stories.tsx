@@ -70,6 +70,7 @@ type Story = StoryObj<ChipProps>;
 export const Playground: Story = {};
 
 export const StyleMatrix: Story = {
+  tags: ["gallery"],
   name: "Spec/Style × Color Matrix",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
@@ -182,6 +183,7 @@ export const Disabled: Story = {
 };
 
 export const WithIcon: Story = {
+  tags: ["gallery"],
   name: "Recipe/With Icon",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>

@@ -32,6 +32,7 @@ export const Default: Story = {
 };
 
 export const WithPresets: Story = {
+  tags: ["gallery"],
   name: "Recipe/With Presets",
   render: () => {
     const [v, setV] = useState<DateRange>({});
@@ -51,6 +52,7 @@ export const WithPresets: Story = {
 };
 
 export const Prefilled: Story = {
+  tags: ["gallery"],
   name: "State/Prefilled",
   render: () => {
     const today = new Date();

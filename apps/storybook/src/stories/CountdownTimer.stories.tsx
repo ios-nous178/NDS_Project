@@ -19,11 +19,13 @@ export const Playground: Story = {
 };
 
 export const Urgent: Story = {
+  tags: ["gallery"],
   name: "Recipe/임박 (10초)",
   render: () => <CountdownTimer endsAt={Date.now() + 10_000} label="후 만료" />,
 };
 
 export const HHMMSS: Story = {
+  tags: ["gallery"],
   name: "Variant/hh:mm:ss",
   render: () => <CountdownTimer endsAt={inMin(125)} format="hh:mm:ss" label="남음" />,
 };

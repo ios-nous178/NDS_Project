@@ -77,6 +77,7 @@ export const Playground: Story = {
 };
 
 export const SingleStep: Story = {
+  tags: ["gallery"],
   name: "Recipe/단일 안내",
   render: function Render() {
     const [open, setOpen] = useState(false);

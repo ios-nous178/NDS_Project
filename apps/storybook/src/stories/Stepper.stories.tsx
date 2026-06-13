@@ -115,6 +115,7 @@ export const Completed: Story = {
 };
 
 export const Dots: Story = {
+  tags: ["gallery"],
   name: "Variant/도트 스타일",
   render: () => <DotsExample />,
 };

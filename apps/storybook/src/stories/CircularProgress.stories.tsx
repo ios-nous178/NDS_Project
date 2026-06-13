@@ -22,6 +22,7 @@ export const Playground: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["gallery"],
   name: "Variant/sm md lg",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-wide)", alignItems: "center" }}>
@@ -60,6 +61,7 @@ export const Colors: Story = {
 };
 
 export const WithLabelOverride: Story = {
+  tags: ["gallery"],
   name: "Recipe/라벨 커스텀 (분/시간)",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-wide)" }}>

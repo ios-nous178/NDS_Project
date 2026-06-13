@@ -84,6 +84,7 @@ export const WithAttachAndMic: Story = {
 
 export const WithQuickReplies: Story = {
   name: "Recipe/빠른 응답 칩",
+  tags: ["gallery"],
   render: function Render() {
     const [v, setV] = useState("");
     return (
@@ -117,6 +118,7 @@ export const WithMaxLength: Story = {
 
 export const Disabled: Story = {
   name: "State/비활성 (전송 중)",
+  tags: ["gallery"],
   render: () => (
     <div style={{ width: 480 }}>
       <ChatComposer

@@ -80,6 +80,7 @@ export const Clickable: Story = {
 };
 
 export const WithSort: Story = {
+  tags: ["gallery"],
   name: "Recipe/With Sort",
   render: () => {
     const [sortKey, setSortKey] = useState("startedAt");
@@ -124,6 +125,7 @@ export const Loading: Story = {
 };
 
 export const ResponsiveCards: Story = {
+  tags: ["gallery"],
   name: "Recipe/Responsive Cards (mobile)",
   parameters: { viewport: { defaultViewport: "mobile1" } },
   render: () => (

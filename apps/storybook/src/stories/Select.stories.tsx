@@ -237,6 +237,7 @@ function NoLabelExample() {
 }
 
 export const WithoutLabel: Story = {
+  tags: ["gallery"],
   name: "State/Without Label",
   render: () => <NoLabelExample />,
 };
@@ -289,6 +290,7 @@ function CompoundExample() {
 }
 
 export const Compound: Story = {
+  tags: ["gallery"],
   name: "Recipe/Compound API",
   render: () => <CompoundExample />,
 };

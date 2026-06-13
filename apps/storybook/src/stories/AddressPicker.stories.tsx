@@ -64,6 +64,7 @@ export const Playground: Story = {
 
 export const PreSelected: Story = {
   name: "State/이미 선택된 상태",
+  tags: ["gallery"],
   render: function Render() {
     const [value, setValue] = useState<AddressValue | null>({
       address: MOCK[0],

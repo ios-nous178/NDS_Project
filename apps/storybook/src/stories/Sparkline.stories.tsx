@@ -37,6 +37,7 @@ export const Variants: Story = {
 };
 
 export const InCard: Story = {
+  tags: ["gallery"],
   name: "Recipe/카드 안의 미니 추이",
   render: () => (
     <div
@@ -66,6 +67,7 @@ export const InCard: Story = {
 };
 
 export const WithBaseline: Story = {
+  tags: ["gallery"],
   name: "Variant/baseline 표시",
   render: () => (
     <div>

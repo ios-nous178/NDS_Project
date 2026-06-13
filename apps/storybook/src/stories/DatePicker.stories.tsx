@@ -89,5 +89,6 @@ export const DisabledDates: Story = {
   name: "선택 불가 날짜",
   render: () => <DisabledDateExample />,
 };
-export const PreFilled: Story = { name: "초기값 있음", render: () => <PreFilledExample /> };
+export const PreFilled: Story = {
+  tags: ["gallery"], name: "초기값 있음", render: () => <PreFilledExample /> };
 export const Disabled: Story = { name: "비활성화", render: () => <DisabledExample /> };

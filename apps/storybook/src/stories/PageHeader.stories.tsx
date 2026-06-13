@@ -24,6 +24,7 @@ export const Playground: Story = {
 };
 
 export const WithBack: Story = {
+  tags: ["gallery"],
   name: "Recipe/뒤로가기",
   render: () => (
     <PageHeader
@@ -36,6 +37,7 @@ export const WithBack: Story = {
 };
 
 export const WithBreadcrumb: Story = {
+  tags: ["gallery"],
   name: "Recipe/브레드크럼 + 액션",
   render: () => (
     <PageHeader

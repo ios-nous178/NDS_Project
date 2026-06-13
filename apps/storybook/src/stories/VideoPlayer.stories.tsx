@@ -31,6 +31,7 @@ export const Playground: Story = {
 };
 
 export const NativeControls: Story = {
+  tags: ["gallery"],
   name: "Variant/네이티브 컨트롤",
   render: () => (
     <div style={{ width: 480 }}>
@@ -54,6 +55,7 @@ export const Square: Story = {
 };
 
 export const NoTitle: Story = {
+  tags: ["gallery"],
   name: "Recipe/제목 없이",
   render: () => (
     <div style={{ width: 480 }}>

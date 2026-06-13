@@ -29,6 +29,7 @@ const SAMPLE_IMAGE =
 /* ─── state=empty ─── */
 
 export const Empty: Story = {
+  tags: ["gallery"],
   name: "State/Empty",
   args: { state: "empty" },
 };
