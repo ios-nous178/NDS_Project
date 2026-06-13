@@ -3,140 +3,23 @@ sidebar_position: 2
 title: 브랜드 컴포넌트 커버리지
 ---
 
-<!-- AUTO-GENERATED FILE. Run `pnpm generate:brand-coverage` after updating metadata/tdsComponents.json. -->
-<!-- markdownlint-disable MD024 MD013 -->
+import BrandCoverage from "@site/src/components/BrandCoverage";
 
 # 브랜드 × 컴포넌트 커버리지
 
 NDS 가 결국 갖춰야 할 **목표 컴포넌트** 리스트를 baseline 으로,
-4개 브랜드 × 2개 패키지(@nudge-design/react, @nudge-design/html) 의 구현 현황을 보여줍니다.
+5개 브랜드 × 2개 패키지(`@nudge-design/react`, `@nudge-design/html`) 의 구현 현황을 보여줍니다.
 
-범례:
+범례 — `●` 코드 + 해당 브랜드 Figma 가이드 둘 다 ✓ · `○` 코드 있음, 이 브랜드 Figma 가이드 미정합 · `—` 코드 없음.
 
-- `●` 코드 + 해당 브랜드 Figma 가이드 둘 다 ✓
-- `○` 코드 있음, 이 브랜드 Figma 가이드 미정합
-- `—` 코드 없음
+> 아래 보드는 Storybook `Coverage/Brand × Component` 와 **같은 공유 컴포넌트**
+> (`@nudge-design/catalog` 의 `BrandCoverageTable`)로 렌더링됩니다. 판정·요약 계산은
+> `scripts/coverage-logic.mjs` SSOT, 데이터는 `metadata/{tdsComponents,coverage-manifest}.json` 입니다.
 
-> 브랜드 Figma 가이드는 `metadata/tdsComponents.json` 의 `figmaByBrand[brand]` 슬롯이 SSOT. 슬롯이 채워질수록 `○` 가 `●` 로 점등됩니다.
-> `brandChrome: true` 컴포넌트(예: Navbar→AppBar)는 `packages/react/src/{brand}/` 폴더에 해당 파일이 있어야 코드 있음으로 판정됩니다.
-
-## 요약
-
-| 항목 | 값 |
-|---|---|
-| 목표 컴포넌트 (rows) | 53 |
-| NDS 매핑됨 | 47 / 53 |
-| NDS 미구현 (gap) | 6 |
-| React 커버 | 46 / 53 |
-| HTML 커버 | 43 / 53 |
-| Figma 정합 — Trost | 0 / 53 |
-| Figma 정합 — Geniet | 0 / 53 |
-| Figma 정합 — NudgeEAP | 8 / 53 |
-| Figma 정합 — CashwalkBiz | 0 / 53 |
-| Figma 정합 — Runmile | 0 / 53 |
-
-## 일반
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Button](https://tossmini-docs.toss.im/tds-mobile/components/Button/) | **Button** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [TextButton](https://tossmini-docs.toss.im/tds-mobile/components/text-button/) | **TextButton** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [IconButton](https://tossmini-docs.toss.im/tds-mobile/components/icon-button/) | **IconButton** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Badge](https://tossmini-docs.toss.im/tds-mobile/components/badge/) | **Badge** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [Border](https://tossmini-docs.toss.im/tds-mobile/components/border/) | **Divider** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Highlight](https://tossmini-docs.toss.im/tds-mobile/components/highlight/) | **DSHighlight** | ○ · — | ○ · — | ○ · — | ○ · — | ○ · — |
-| [Gradient](https://tossmini-docs.toss.im/tds-react-native/components/gradient/) | _미매핑_<br /><span style={{fontSize:11,opacity:0.7}}>그라데이션 유틸 — NDS 에는 토큰만 존재.</span> | — · — | — · — | — · — | — · — | — · — |
-| [Shadow](https://tossmini-docs.toss.im/tds-react-native/components/shadow/) | _미매핑_<br /><span style={{fontSize:11,opacity:0.7}}>그림자 유틸 — NDS 는 elevation 토큰으로 대체.</span> | — · — | — · — | — · — | — · — | — · — |
-
-## 콘텐츠
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [BoardRow](https://tossmini-docs.toss.im/tds-mobile/components/board-row/) | **Accordion**<br /><span style={{fontSize:11,opacity:0.7}}>BoardRow = 토글형 Q&A. NDS Accordion 으로 매핑.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [ListRow](https://tossmini-docs.toss.im/tds-mobile/components/ListRow/list-row-overview/) | **List**<br /><span style={{fontSize:11,opacity:0.7}}>NDS 는 List + ListItem 으로 통합.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [ListHeader](https://tossmini-docs.toss.im/tds-mobile/components/list-header/) | **PageHeader** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [ListFooter](https://tossmini-docs.toss.im/tds-mobile/components/list-footer/) | _미매핑_<br /><span style={{fontSize:11,opacity:0.7}}>리스트 하단 보조 텍스트 — NDS 별도 컴포넌트 없음.</span> | — · — | — · — | — · — | — · — | — · — |
-| [Asset](https://tossmini-docs.toss.im/tds-mobile/components/Asset/asset/) | **Asset** | ○ · — | ○ · — | ○ · — | ○ · — | ○ · — |
-| [Carousel](https://tossmini-docs.toss.im/tds-react-native/components/carousel/) | **Carousel** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Paragraph](https://tossmini-docs.toss.im/tds-mobile/components/paragraph/) | **ExpandableText**<br /><span style={{fontSize:11,opacity:0.7}}>Paragraph 자체는 텍스트 컴포넌트 — NDS 는 ExpandableText 로 가장 가까운 패턴 제공.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Post](https://tossmini-docs.toss.im/tds-mobile/components/post/) | **TitleGroup**<br /><span style={{fontSize:11,opacity:0.7}}>Post = 줄글 포스트 스타일. NDS TitleGroup + 본문 조합으로 대체.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-
-## 피드백
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [BottomInfo](https://tossmini-docs.toss.im/tds-mobile/components/bottom-info/) | _미매핑_<br /><span style={{fontSize:11,opacity:0.7}}>TDS 의 보조 문구 하단 영역 — NDS 에는 명시 컴포넌트 없음 (Banner / NoticeAlert 로 대체).</span> | — · — | — · — | — · — | — · — | — · — |
-| [Bubble](https://tossmini-docs.toss.im/tds-mobile/components/bubble/) | **Tooltip**<br /><span style={{fontSize:11,opacity:0.7}}>TDS Bubble = 한 줄 안내 풍선. NDS Tooltip 으로 매핑.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Toast](https://tossmini-docs.toss.im/tds-mobile/components/toast/) | **Toast** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Loader](https://tossmini-docs.toss.im/tds-mobile/components/loader/) | **Spinner** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Skeleton](https://tossmini-docs.toss.im/tds-mobile/components/skeleton/) | **Skeleton** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [ProgressBar](https://tossmini-docs.toss.im/tds-mobile/components/progress-bar/) | **ProgressBar** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [ProgressStepper](https://tossmini-docs.toss.im/tds-mobile/components/progress-stepper/) | **MultiStepForm**<br /><span style={{fontSize:11,opacity:0.7}}>단계 진행 표시 — NDS MultiStepForm 의 indicator.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Result](https://tossmini-docs.toss.im/tds-mobile/components/result/) | **EmptyState**<br /><span style={{fontSize:11,opacity:0.7}}>TDS Result = 완료/실패 결과 화면. NDS 에서는 EmptyState (변형) 으로 커버.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [ErrorPage](https://tossmini-docs.toss.im/tds-react-native/components/error-page/) | **EmptyState** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-
-## 오버레이
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [BottomSheet](https://tossmini-docs.toss.im/tds-mobile/components/bottom-sheet/) | **BottomSheet** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Menu](https://tossmini-docs.toss.im/tds-mobile/components/menu/) | **DropdownMenu** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Modal](https://tossmini-docs.toss.im/tds-mobile/components/modal/) | **Modal** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [Dialog](https://tossmini-docs.toss.im/tds-mobile/components/Dialog/dialog/) | **Popup** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Tooltip](https://tossmini-docs.toss.im/tds-mobile/components/tooltip/) | **Tooltip** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-
-## 레이아웃
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [BottomCTA](https://tossmini-docs.toss.im/tds-mobile/components/BottomCTA/check-first/) | **FloatingCtaBanner** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [GridList](https://tossmini-docs.toss.im/tds-mobile/components/grid-list/) | **QuickActionGrid** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [List](https://tossmini-docs.toss.im/tds-react-native/components/list/) | **List** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Top](https://tossmini-docs.toss.im/tds-mobile/components/top/) | **PageHeader** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [AmountTop](https://tossmini-docs.toss.im/tds-react-native/components/amount-top/) | _미매핑_<br /><span style={{fontSize:11,opacity:0.7}}>TDS 의 금액 강조 상단 영역 — NDS 미구현.</span> | — · — | — · — | — · — | — · — | — · — |
-
-## 입력
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Checkbox](https://tossmini-docs.toss.im/tds-mobile/components/checkbox/) | **Checkbox** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [Radio](https://tossmini-docs.toss.im/tds-react-native/components/radio/) | **Radio** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [Switch](https://tossmini-docs.toss.im/tds-mobile/components/switch/) | **Toggle** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [TextField](https://tossmini-docs.toss.im/tds-mobile/components/TextField/text-field/) | **Input** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [SearchField](https://tossmini-docs.toss.im/tds-mobile/components/search-field/) | **SearchInput** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Slider](https://tossmini-docs.toss.im/tds-mobile/components/slider/) | **Slider** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Stepper](https://tossmini-docs.toss.im/tds-mobile/components/stepper/) | **Stepper** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [NumericSpinner](https://tossmini-docs.toss.im/tds-mobile/components/numeric-spinner/) | **NumberStepper** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [SegmentedControl](https://tossmini-docs.toss.im/tds-mobile/components/segmented-control/) | **SegmentedControl** | — · — | — · — | — · — | — · — | — · — |
-| [Rating](https://tossmini-docs.toss.im/tds-mobile/components/rating/) | **StarRating** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Keypad](https://tossmini-docs.toss.im/tds-mobile/components/Keypad/keypad/) | **PinPad** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Dropdown](https://tossmini-docs.toss.im/tds-react-native/components/dropdown/) | **Select** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-
-## 내비게이션
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Tab](https://tossmini-docs.toss.im/tds-mobile/components/tab/) | **Tabs** | ○ · ○ | ○ · ○ | ● · ● | ○ · ○ | ○ · ○ |
-| [Navbar](https://tossmini-docs.toss.im/tds-react-native/components/navbar/) | **AppBar** | ○ · — | ○ · — | ○ · — | — · — | ○ · — |
-
-## 데이터
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [TableRow](https://tossmini-docs.toss.im/tds-mobile/components/table-row/) | **DataTable** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [Chart](https://tossmini-docs.toss.im/tds-mobile/components/chart/) | **Sparkline**<br /><span style={{fontSize:11,opacity:0.7}}>TDS Chart 보다 NDS Sparkline 이 가볍지만 가장 가까운 매핑.</span> | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
-| [BarChart](https://tossmini-docs.toss.im/tds-react-native/components/bar-chart/) | _미매핑_<br /><span style={{fontSize:11,opacity:0.7}}>전용 BarChart 없음 — DataTable 또는 외부 차트 라이브러리 사용 권장.</span> | — · — | — · — | — · — | — · — | — · — |
-
-## 도메인
-
-| 목표 컴포넌트 | NDS 대응 | Trost (R · H) | Geniet (R · H) | NudgeEAP (R · H) | CashwalkBiz (R · H) | Runmile (R · H) |
-| --- | --- | --- | --- | --- | --- | --- |
-| [Agreement](https://tossmini-docs.toss.im/tds-mobile/components/Agreement/v4/) | **CheckboxGroup** | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ | ○ · ○ |
+<BrandCoverage />
 
 ## 갱신 방법
 
-1. 브랜드별 Figma 가이드가 새로 추가되면 `metadata/tdsComponents.json` 의 해당 컴포넌트 `figmaByBrand` 객체에 URL 추가
-2. `pnpm generate:brand-coverage` 실행 → 이 페이지 + `metadata/coverage-manifest.json` 재생성
-3. Storybook `Coverage / Brand × Component (목표)` 페이지에서도 동일 데이터로 확인
-
-_데이터 출처: `metadata/tdsComponents.json` · `metadata/coverage-manifest.json` (parsed from `packages/{react,html}/src/index.ts` + `packages/react/src/{brand}/`)_
+1. 브랜드별 Figma 가이드가 새로 추가되면 `metadata/tdsComponents.json` 의 해당 컴포넌트 `figmaByBrand` 객체에 URL 추가 → `○` 가 `●` 로 점등.
+2. `brandChrome: true` 컴포넌트(예: Navbar→AppBar)는 `packages/react/src/{brand}/` 폴더에 파일이 있어야 코드 있음으로 판정됩니다.
+3. `pnpm generate:brand-coverage` 실행 → `metadata/coverage-manifest.json`(보드 데이터 출처) 재생성.

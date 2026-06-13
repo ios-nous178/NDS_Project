@@ -37,3 +37,51 @@ export function summarize(
   components: CoverageComponent[],
   manifest: ManifestData,
 ): CoverageSummary;
+
+export interface CoverageCell {
+  brand: Brand;
+  react: Status;
+  html: Status;
+  figmaHref: string | null;
+}
+export interface CoverageRow {
+  tds: string;
+  docsUrl: string | null;
+  nds: string | null;
+  ndsNote: string | null;
+  platforms: string[];
+  inventoryCategory: string | null;
+  mapped: boolean;
+  figmaCount: number;
+  cells: CoverageCell[];
+}
+export interface CoverageGroup {
+  categoryKey: string;
+  categoryLabel: string;
+  rows: CoverageRow[];
+}
+export interface CoverageChromeRow {
+  name: string;
+  present: Record<Brand, boolean>;
+}
+export interface CoverageView {
+  brands: { id: Brand; label: string }[];
+  summary: CoverageSummary;
+  groups: CoverageGroup[];
+  chromeMatrix: CoverageChromeRow[];
+}
+export interface CoverageViewInput {
+  tdsComponents: Array<
+    CoverageComponent & {
+      tds: string;
+      category: string;
+      docsUrl?: string;
+      ndsNote?: string;
+      platforms?: string[];
+    }
+  >;
+  categories?: Record<string, string>;
+  manifest: ManifestData;
+  inventoryByName?: Record<string, { category?: string }>;
+}
+export function buildCoverageView(input: CoverageViewInput): CoverageView;

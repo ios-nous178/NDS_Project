@@ -1,4 +1,5 @@
 export { IconCatalog } from "./IconCatalog.js";
+export { BrandCoverageTable } from "./BrandCoverageTable.js";
 export type {
   IconBrandId,
   IconCatalogBrand,
@@ -8,4 +9,12 @@ export type {
   IconCatalogMode,
   IconCatalogProps,
   IconComponentType,
+  BrandCoverageTableProps,
+  CoverageCell,
+  CoverageChromeRow,
+  CoverageGroup,
+  CoverageRow,
+  CoverageStatus,
+  CoverageSummary,
+  CoverageView,
 } from "./types.js";

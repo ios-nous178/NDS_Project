@@ -124,7 +124,7 @@ export const GATES = [
   },
   {
     id: "brand-coverage",
-    label: "brand coverage docs",
+    label: "brand coverage manifest (metadata/coverage-manifest.json — 보드는 공유 컴포넌트가 렌더)",
     check: ["node", "scripts/generate-brand-coverage.mjs", "--check"],
     fix: ["node", "scripts/generate-brand-coverage.mjs"],
     watch: ["packages/react/src/index.ts", "packages/html/src/index.ts", "metadata/"],

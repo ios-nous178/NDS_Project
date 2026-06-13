@@ -68,3 +68,59 @@ export function summarize(components, manifest) {
   );
   return { total, mapped, gaps, reactCovered, htmlCovered, figmaPerBrand };
 }
+
+/**
+ * 커버리지 보드/표가 그릴 view 모델 전체를 한 번에 계산. docs(라이브 보드)와 storybook 이
+ * 같은 행/셀 구조를 쓰도록 한 곳에서 만든다 → 공유 <BrandCoverageTable> 은 dumb 렌더러.
+ *   input  { tdsComponents, categories(키→라벨), manifest(Set 포함), inventoryByName(name→{category}) }
+ *   output { brands, summary, groups[ {categoryKey,categoryLabel,rows[ {…, cells[ {brand,react,html,figmaHref} ]} ]} ], chromeMatrix }
+ */
+export function buildCoverageView({
+  tdsComponents,
+  categories = {},
+  manifest,
+  inventoryByName = {},
+}) {
+  const brands = BRANDS.map((id) => ({ id, label: BRAND_LABEL[id] }));
+  const summary = summarize(tdsComponents, manifest);
+
+  const order = [];
+  const groupMap = new Map();
+  for (const c of tdsComponents) {
+    if (!groupMap.has(c.category)) {
+      groupMap.set(c.category, []);
+      order.push(c.category);
+    }
+    const cells = BRANDS.map((b) => ({
+      brand: b,
+      react: reactStatus(c, b, manifest),
+      html: htmlStatus(c, b, manifest),
+      figmaHref: c.figmaByBrand?.[b] ?? null,
+    }));
+    groupMap.get(c.category).push({
+      tds: c.tds,
+      docsUrl: c.docsUrl ?? null,
+      nds: c.nds ?? null,
+      ndsNote: c.ndsNote ?? null,
+      platforms: c.platforms ?? [],
+      inventoryCategory: c.nds ? (inventoryByName[c.nds]?.category ?? null) : null,
+      mapped: Boolean(c.nds),
+      figmaCount: BRANDS.filter((b) => hasBrandFigma(c, b)).length,
+      cells,
+    });
+  }
+  const groups = order.map((key) => ({
+    categoryKey: key,
+    categoryLabel: categories[key] ?? key,
+    rows: groupMap.get(key),
+  }));
+
+  const chromeNames = new Set();
+  for (const b of BRANDS) for (const n of manifest.brandChrome[b] ?? []) chromeNames.add(n);
+  const chromeMatrix = [...chromeNames].sort((a, b) => a.localeCompare(b)).map((name) => ({
+    name,
+    present: Object.fromEntries(BRANDS.map((b) => [b, manifest.brandChrome[b]?.has(name) ?? false])),
+  }));
+
+  return { brands, summary, groups, chromeMatrix };
+}

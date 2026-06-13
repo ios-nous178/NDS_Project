@@ -71,3 +71,61 @@ export interface IconCatalogProps {
   /** 결과 없을 때 문구 */
   emptyLabel?: string;
 }
+
+/* ── Brand × Component Coverage ──────────────────────────────────────────────
+ * view 모델은 coverage-logic.mjs 의 buildCoverageView 결과(SSOT). 컴포넌트는 dumb 렌더러. */
+export type CoverageStatus = "synced" | "code" | "missing";
+
+export interface CoverageCell {
+  brand: string;
+  react: CoverageStatus;
+  html: CoverageStatus;
+  figmaHref: string | null;
+}
+
+export interface CoverageRow {
+  tds: string;
+  docsUrl: string | null;
+  nds: string | null;
+  ndsNote: string | null;
+  platforms: string[];
+  inventoryCategory: string | null;
+  mapped: boolean;
+  figmaCount: number;
+  cells: CoverageCell[];
+}
+
+export interface CoverageGroup {
+  categoryKey: string;
+  categoryLabel: string;
+  rows: CoverageRow[];
+}
+
+export interface CoverageChromeRow {
+  name: string;
+  present: Record<string, boolean>;
+}
+
+export interface CoverageSummary {
+  total: number;
+  mapped: number;
+  gaps: number;
+  reactCovered: number;
+  htmlCovered: number;
+  figmaPerBrand: Record<string, number>;
+}
+
+export interface CoverageView {
+  brands: { id: string; label: string }[];
+  summary: CoverageSummary;
+  groups: CoverageGroup[];
+  chromeMatrix: CoverageChromeRow[];
+}
+
+export interface BrandCoverageTableProps {
+  /** coverage-logic.buildCoverageView 결과 */
+  view: CoverageView;
+  title?: string;
+  /** 범례 표시(기본 true) */
+  legend?: boolean;
+}
