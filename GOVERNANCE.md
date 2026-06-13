@@ -5,9 +5,9 @@
 - **Track A — 무엇을 시스템에 포함시킬지** (Brand / Component / Token / Asset / Documentation)
 - **Track B — 어떻게 더 잘 생성할지** (Learning / Validation / AI / Quality / Telemetry)
 
-> **운영 철학**: 거버넌스의 상당 부분은 이미 **게이트·스킬·baseline**으로 코드에 강제돼 있습니다. 이 문서는 그 결정들을 *명문화하고 SSOT로 링크*하는 인덱스이며, 아직 비어 있는 정책(🔴)은 **제안**으로 적고 [결정 필요](#결정-필요-open-decisions) 절에 모았습니다.
+> **운영 철학**: 거버넌스의 상당 부분은 이미 **게이트·스킬·baseline**으로 코드에 강제돼 있습니다. 이 문서는 그 결정들을 *명문화하고 SSOT로 링크*하는 인덱스입니다. 정책 결정은 아래 **결정 (확정)** 표에 모았고, 일부는 정책만 확정·**구현은 후속**(🟡)입니다.
 
-**상태 범례**: ✅ 구현됨(강제) · 🟡 부분(기술만/문서 없음) · 🔴 공백(정책 제안 단계)
+**상태 범례**: ✅ 구현됨(강제) · 🟡 정책 확정·강제 도구 미구현 · 🔴 미정
 
 관련: [ARCHITECTURE.md](ARCHITECTURE.md) (구조) · [CONTRIBUTING.md](CONTRIBUTING.md) (기여 플로우) · [CLAUDE.md](CLAUDE.md)·MCP (규칙 SSOT)
 
@@ -33,20 +33,20 @@
 | **SSOT** | `packages/tokens/src/` · [DESIGN.md](DESIGN.md) · `docs/guide/design-token-principles.mdx` · `token-review-checklist.mdx` |
 | **강제** | `tokens-sync`(DESIGN.md↔src)·`brand-completeness`(5브랜드 정의/waiver)·`input-token-binding` 게이트 |
 
-### A3. Brand (신규 브랜드 편입) — 🟡 기술만 있음, 절차 없음
+### A3. Brand (신규 브랜드 편입) — ✅ 절차 확정 (승인: DS 오너)
 
 | | |
 |---|---|
 | **현황** | `brand-completeness` 게이트 + `packages/tokens/src/brands/<brand>.ts` 템플릿은 있으나, **"브랜드를 받을지" 의사결정 절차가 문서화돼 있지 않음** |
 | **SSOT(기술)** | `scripts/check-brand-completeness.mjs` · `scripts/brand-completeness-baseline.json` |
 
-**제안 절차** (→ [결정 필요](#결정-필요-open-decisions)):
+**절차 (확정)** — 승인권자: **DS 오너**(D3):
 1. **요청** — 실제 제품 필요 근거(2+ 화면) + 브랜드 오너 지정
 2. **팔레트** — `brands/<brand>.palette.ts` 원시 색 정의
 3. **시멘틱 매핑** — `brands/<brand>.ts` 가 base 시멘틱 leaf 를 **전부 명시 정의 or waiver**
 4. **게이트 통과** — `pnpm lint:brand-completeness` green (silent base-fallback 0)
-5. **승인 → 등재** — `BRANDS` 목록·tailwind preset·문서에 반영
-> 원칙: 브랜드 차이는 **토큰 값으로만**. 브랜드 전용 컴포넌트는 예외이며 명시 사유 필요([ARCHITECTURE.md](ARCHITECTURE.md) "브랜드는 토큰으로만").
+5. **DS 오너 승인 → 등재** — `BRANDS` 목록·tailwind preset·문서에 반영
+> 원칙: 브랜드 차이는 **토큰 값으로만**. 브랜드 전용 컴포넌트는 **원칙 금지, 명시 사유 시에만 예외**(D4 — [ARCHITECTURE.md](ARCHITECTURE.md) "브랜드는 토큰으로만").
 
 ### A4. Asset (아이콘/로고/이미지) — ✅ 기술 / 🟡 추가기준
 
@@ -56,24 +56,24 @@
 | **SSOT** | `packages/icons/`(README) · `packages/assets/`(README) |
 | **공백** | "어느 브랜드까지·언제 새 로고/일러스트를 받나"의 기준 미문서화. 중복 방지는 `find_icon`(MCP) 선조회 |
 
-### A5. Deprecated / Breaking Change — 🔴 정책 없음 (가장 큰 Track A 공백)
+### A5. Deprecated / Breaking Change — 🟡 정책 확정, 강제 도구 미구현
 
 | | |
 |---|---|
-| **현황** | `@deprecated` JSDoc 이 일부 prop 에 산발(예: `Card.tsx` description/metadata/footer), 폐기 토큰 alias(`--gap-*`→`--semantic-gap-*`) 정도. **유예 기간·제거 시점·승인 절차·마이그레이션 규칙이 전무** |
+| **현황** | `@deprecated` JSDoc 이 일부 prop 에 산발(예: `Card.tsx` description/metadata/footer), 폐기 토큰 alias(`--gap-*`→`--semantic-gap-*`). 아래 정책으로 통일 |
+| **승인** | breaking change = **DS 오너** 단독 리뷰 + **major changeset 필수**(D1/D2) |
 
-**제안 정책** (→ [결정 필요](#결정-필요-open-decisions)):
-
-변경을 3단계로 분류:
+**정책 (확정)** — 변경을 3단계로 분류:
 | 단계 | 의미 | 버전 | 의무 |
 |---|---|---|---|
 | **additive** | 기존 사용 안 깨는 추가 | minor (changeset) | — |
 | **deprecation** | 대체 있음, 아직 동작 | minor | `@deprecated <대체> — <사유>` JSDoc + changeset 명시 |
-| **breaking** | 제거/시그니처 변경 | **major** | changeset major + **마이그레이션 노트**(release notes) + MCP 가이드 갱신 |
+| **breaking** | 제거/시그니처 변경 | **major** | DS 오너 승인 + major changeset + **마이그레이션 노트**(release notes) + MCP 가이드 갱신 |
 
-라이프사이클: **`@deprecated` 표기(대체 명시) → 최소 1 minor 릴리즈 유예(동작 유지) → 다음 major 에서 제거.** 컴포넌트·prop·토큰·아이콘 동일.
+**라이프사이클(확정)**: `@deprecated` 표기(대체 명시) → **최소 1 minor 릴리즈 유예**(동작 유지) → **다음 major 에서 제거.** 컴포넌트·prop·토큰·아이콘 동일.
 - SSOT = `@deprecated` JSDoc(이미 사용 중) + changeset.
-- (후속 옵션) `@deprecated` 항목을 모아 보여주는 게이트/생성물 — 현재 없음, 필요 시 추가.
+- **컨벤션**: `@deprecated` 1줄은 반드시 `@deprecated <대체 API> — <사유/since>` 형식.
+- **후속(미구현)**: `@deprecated` 항목을 모아 "유예 중 / 제거 예정" 을 보여주는 게이트/생성물 — 정책 강제용. 필요 시 추가.
 
 ### A6. Documentation (언제 수정·누가 승인) — 🟡
 
@@ -125,46 +125,60 @@ usage_weekly_summary(뷰)                                   주간 리포트(마
 - **②가 핵심 무료 이득**: egress 가 이미 `ruleKind: 'model-guard'` 를 "히트 0 추적(폐기 후보)용" 으로 분류 중 → 안 쓰이는 룰 자동 발견.
 - **③ lookup 미스**: `find_component`/`find_token` 이 "찾았는데 없음" = AI 환각 or 진짜 공백 신호 → 가이드 보강 or 신규 편입 트리거.
 - **구현**(후속): 주간 스케줄(GitHub Actions cron 또는 routine) → Supabase 집계 쿼리 → 리포트를 슬랙/GitHub 이슈로 → 트리아지해 위 스킬로 라우팅. **설계는 이 문서, 구현은 별도 작업.**
-- → [결정 필요](#결정-필요-open-decisions): 주기·오너·리포트 도착지.
+- **주기·오너·도착지(D5 확정)**: 주 1회 · DS 오너 트리아지 · 슬랙 + artifact.
 
-### B4. Quality (좋은 목업의 정의) — 🟡 점수만, rubric 없음
+### B4. Quality (좋은 목업의 정의) — 🟡 rubric 확정, 임계·👍/👎 수집 미구현
 
 | | |
 |---|---|
-| **현황** | MCP `score_mockup_quality` 가 overall(0~100) 반환(검증 위반을 차원별 가중 → `computeScores`, 순수함수). **"좋은 목업"의 명시 rubric/해석 가이드는 없음** |
+| **현황** | MCP `score_mockup_quality` 가 overall(0~100) 반환(검증 위반을 차원별 가중 → `computeScores`, 순수함수). 아래 rubric 으로 해석/합격선 통일 |
 | **SSOT** | `packages/mcp` mockup validator · `score_mockup_quality` |
-| **제안** | 점수 차원(토큰 정합·컴포넌트 적합·접근성·UX라이팅·밀도/강조)별 합격선과 해석을 rubric 문서로. 피드백 0건 즉시채택 vs 다회 재생성의 임계도 여기서 정의 |
 
-### B5. AI (AI 자동 판단 범위) — 🟡 휴리스틱만
+**rubric (확정·D7)** — 차원별 임계 + 사용자 만족도 신호 병행:
+
+| 차원 | 본다 | 임계(초안) |
+|---|---|---|
+| 토큰 정합 | raw hex/px 0, 시멘틱/슬롯만 | error 0 |
+| 컴포넌트 적합 | 용도에 맞는 DS 컴포넌트(추측/raw markup 아님) | 미스 0 |
+| 접근성 | role/label/대비/포커스 | error 0 |
+| UX 라이팅 | 톤·명사형·금지 패턴 | warn 최소화 |
+| 밀도·강조 | primary CTA 과다·장식 chip·화살표 남발 | warn 최소화 |
+
+- **합격선**: 각 차원의 error=0 + overall ≥ 임계(초안, 운영하며 보정).
+- **👍/👎 사용자 만족도(D7)**: 점수만으로 못 잡는 "느낌"을 사람 신호로 보완 — 목업/컴포넌트에 **좋아요/별로예요** 반응을 수집해 품질 차원에 합산. **수집 메커니즘(미구현)**: `log_feedback`(MCP)에 `reaction: up|down` 필드 추가 → feedback 이벤트로 egress → 분석 뷰 `learning_satisfaction_weekly`(후속 마이그레이션)로 주간 집계. 점수(객관) + 👍/👎(주관)를 Learning 리포트(B3)에 나란히.
+
+### B5. AI (AI 자동 판단 범위) — ✅ 경계 확정 (D6)
 
 | | |
 |---|---|
-| **현황** | `find_*`(조회+환각 추적)·`suggest_replacement`·`recommend_page_pattern`. 판단은 스킬 본문 휴리스틱("토큰 부재면 flag") 수준 |
-| **제안 경계** | 3단계로 명문화 — **추천만**(대체 컴포넌트·패턴 제안) / **자동 수정**(검증 가능한 토큰·prop 위반) / **생성 차단**(admission·figma 노드 없음·brand drift 등 하드 게이트). 어디까지 자동인지 = [결정 필요](#결정-필요-open-decisions) |
+| **현황** | `find_*`(조회+환각 추적)·`suggest_replacement`·`recommend_page_pattern` |
+| **경계(확정)** | 3단계 — ① **추천만**: 대체 컴포넌트·패턴 제안(`suggest_replacement`·`recommend_page_pattern`) ② **자동 수정**: 검증 가능한 **토큰·prop 위반**(raw hex→시멘틱, 잘못된 enum 등) ③ **차단(사람 확인)**: admission(figma 노드 없는 신규 편입)·**brand drift**·breaking — 자동 통과 금지 |
+
+> 요지: 객관적·되돌리기 쉬운 위반(①②)은 AI 가 자동, 정책·디자인 근거가 필요한 판단(③)은 사람이 게이트.
 
 ---
 
-## 결정 필요 (Open Decisions)
+## 결정 (확정 — 2026-06-14)
 
-아래는 정책을 확정하려면 팀/오너 판단이 필요한 지점입니다. 각 항목에 **제안 기본값**을 적어 뒀습니다.
-
-| # | 결정 | 제안 기본값 |
+| # | 결정 | 확정값 |
 |---|---|---|
-| D1 | **Deprecation 유예 기간** | 최소 1 minor 릴리즈 유예 후 다음 major 에서 제거 |
-| D2 | **Breaking change 승인권자** | DS 오너 1인 리뷰 + major changeset 필수 |
-| D3 | **Brand 편입 승인권자** | 디자인 리드 + DS 오너 공동 |
-| D4 | **브랜드 전용 컴포넌트 허용?** | 원칙 금지, 명시 사유 시 예외(현 정책 유지) |
-| D5 | **Learning 리포트 주기·오너·도착지** | 주 1회 · DS 오너 트리아지 · 슬랙 + GitHub 이슈 |
-| D6 | **AI 자동 수정 범위** | 토큰/prop 위반까지 자동, admission·brand drift 는 차단(사람 확인) |
-| D7 | **Quality 합격선** | rubric 차원별 임계 — 초안 후 합의 |
+| D1 | **Deprecation 유예 기간** | ✅ 최소 1 minor 유예 → 다음 major 제거 |
+| D2 | **Breaking change 승인권자** | ✅ DS 오너 단독 리뷰 + major changeset 필수 |
+| D3 | **Brand 편입 승인권자** | ✅ DS 오너 단독 |
+| D4 | **브랜드 전용 컴포넌트 허용?** | ✅ 원칙 금지, 명시 사유 시에만 예외 |
+| D5 | **Learning 리포트 주기·오너·도착지** | ✅ 주 1회 · DS 오너 트리아지 · 슬랙 + artifact (구현됨) |
+| D6 | **AI 자동 수정 범위** | ✅ 토큰/prop 위반까지 자동, admission·brand drift 는 차단(사람 확인) |
+| D7 | **Quality 합격선** | ✅ rubric 차원별 임계(B4) + 사용자 👍/👎 만족도 병행 |
+
+> 임계 구체값(D7)·`@deprecated` 강제 게이트(A5 후속)·👍/👎 수집(B4 후속)은 운영하며 보정/구현.
 
 ---
 
 ## 우선순위 제안
 
-거버넌스 *고도화*의 ROI 순서:
+정책은 확정됨(위 결정 표). 남은 것은 **구현/연결**:
 
-1. **Learning 루프 기동(B3)** — ✅ 분석 뷰·리포트·워크플로 구현 완료. 남은 건 Supabase 프로젝트 연결(secret) + 리포트 트리아지 오너 확정(D5). 연결되면 "측정→개선" 루프가 처음으로 닫힘.
-2. **Deprecation/Breaking 정책(A5)** — 외부 소비자가 생기면 곧 필요. 정책 확정 + `@deprecated` 컨벤션 통일.
-3. **Quality rubric(B4) + AI 경계(B5)** — score 해석과 자동화 한계를 명문화해 일관성↑.
-4. **Brand admission(A3) 문서화** — 신규 브랜드 들어올 때 절차 확정.
+1. **Learning 연결** — 분석 뷰·리포트·워크플로 ✅. 남은 건 Supabase 프로젝트 + CI secret(`SUPABASE_URL`/`SUPABASE_SERVICE_KEY`) 연결. 연결되면 "측정→개선" 루프가 살아 돌아감.
+2. **👍/👎 수집(B4 후속)** — `log_feedback` 에 `reaction` 필드 + `learning_satisfaction_weekly` 뷰. (MCP egress + 마이그레이션)
+3. **`@deprecated` 강제 게이트(A5 후속)** — 유예 중/제거 예정 목록 생성물 + 게이트.
+4. **Quality 임계 구체값(D7)** — 운영 데이터로 차원별 컷 보정.
