@@ -75,6 +75,9 @@ export const footerStyles = `
     height: var(--nds-footer-height, ${sizing.bottomBar.height}px);
     background: var(--nds-footer-background, ${cv.surface.default});
     border-top: 1px solid var(--nds-footer-border-color, ${cv.borderRole.subtle});
+    /* 브랜드 chrome 색 격리 — 외부 페이지 color(예: body{color:#333})가 currentColor SVG 로
+       새어 비활성 아이콘이 검게 나오던 버그 방지. 아이템이 active/inactive 로 다시 덮는다. */
+    color: var(--nds-footer-nav-inactive-color, ${cv.textRole.subtle});
     font-family: var(--nds-footer-font-family, ${fontFamily.web});
     box-sizing: border-box;
     z-index: var(--nds-footer-z-index, ${zIndex.sticky});

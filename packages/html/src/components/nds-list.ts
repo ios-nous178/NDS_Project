@@ -56,7 +56,30 @@ export class NdsList extends NdsElement {
     ul.className = "nds-list__root";
     ul.dataset.slot = "root";
     ul.setAttribute("role", "list");
+
+    // slot="header" / slot="footer" 자식은 presentation li 로 분리해 상/하단에 고정.
+    let header: HTMLLIElement | null = null;
+    let footer: HTMLLIElement | null = null;
+    const slotted = Array.from(this.children).filter(
+      (el): el is HTMLElement =>
+        el instanceof HTMLElement &&
+        (el.getAttribute("slot") === "header" || el.getAttribute("slot") === "footer"),
+    );
+    for (const el of slotted) {
+      const which = el.getAttribute("slot");
+      el.removeAttribute("slot");
+      const li = document.createElement("li");
+      li.className = `nds-list__${which}`;
+      li.dataset.slot = which!;
+      li.setAttribute("role", "presentation");
+      li.appendChild(el);
+      if (which === "header") header = li;
+      else footer = li;
+    }
+
+    if (header) ul.appendChild(header);
     while (this.firstChild) ul.appendChild(this.firstChild);
+    if (footer) ul.appendChild(footer);
     this.appendChild(ul);
     this._root = ul;
   }

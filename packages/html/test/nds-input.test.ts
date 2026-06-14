@@ -49,6 +49,23 @@ describe("nds-input — size별 inline 높이 (브랜드 cascade 보존)", () =>
     const root = el.querySelector<HTMLElement>('[data-slot="root"]')!;
     expect(root.style.getPropertyValue("--nds-input-height")).toBe("44px");
   });
+
+  // error-message: 과거엔 html 이 이 속성을 안 봐서 조용히 실패(React errorMessage 미러 누락).
+  it("error-message 를 주면 error 상태 + 그 텍스트가 빨간 helper 로 노출된다", async () => {
+    const el = document.createElement("nds-input");
+    el.setAttribute("label", "비밀번호 확인");
+    el.setAttribute("error-message", "비밀번호가 일치하지 않습니다.");
+    document.body.appendChild(el);
+    await flush();
+    const root = el.querySelector<HTMLElement>('[data-slot="root"]')!;
+    const wrapper = el.querySelector<HTMLElement>('[data-slot="wrapper"]')!;
+    const helper = el.querySelector<HTMLElement>('[data-slot="helper"]')!;
+    expect(root.dataset.error).toBe("true");
+    expect(wrapper.dataset.error).toBe("true"); // 빨간 보더
+    expect(helper).toBeTruthy();
+    expect(helper.dataset.error).toBe("true"); // 빨간 helper
+    expect(helper.textContent).toBe("비밀번호가 일치하지 않습니다.");
+  });
 });
 
 describe("nds-input — 비밀번호 표시/숨김 토글", () => {

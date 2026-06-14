@@ -377,21 +377,6 @@
       "since": "2026-06"
     },
     {
-      "key": "ResultState::prop-name::html attr \"hide-icon\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "ResultState::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
-      "reason": "html 은 action attr(라벨)로 내장 버튼 렌더 — 커스텀 액션 노드는 react 전용. 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "ResultState::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
-      "reason": "html 은 내장 기본 아이콘 + hide-icon attr — 커스텀 아이콘은 react 전용. 의도적",
-      "since": "2026-06"
-    },
-    {
       "key": "FAB::prop-name::html attr \"disabled\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -493,11 +478,6 @@
     },
     {
       "key": "Input::prop-name::react prop → \"complete\" 가 html observedAttributes 에 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Input::prop-name::react prop → \"error-message\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
     },
@@ -672,6 +652,21 @@
       "since": "2026-06"
     },
     {
+      "key": "ResultState::prop-name::html attr \"hide-icon\" 에 대응하는 react prop 이 없음",
+      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
+      "since": "2026-06"
+    },
+    {
+      "key": "ResultState::slot::react ReactNode prop \"action\" 에 대응하는 html slot=\"action\" 구현이 없음",
+      "reason": "html 은 action attr(라벨)로 내장 버튼 렌더 — 커스텀 액션 노드는 react 전용. 의도적",
+      "since": "2026-06"
+    },
+    {
+      "key": "ResultState::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
+      "reason": "html 은 내장 기본 아이콘 + hide-icon attr — 커스텀 아이콘은 react 전용. 의도적",
+      "since": "2026-06"
+    },
+    {
       "key": "ReviewCard::prop-name::html attr \"card-title\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"
@@ -829,6 +824,11 @@
     {
       "key": "Sparkline::prop-name::react prop → \"aria-label\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
+      "since": "2026-06"
+    },
+    {
+      "key": "StarRating::prop-name::html attr \"interactive\" 에 대응하는 react prop 이 없음",
+      "reason": "의도된 divergence — React 는 onValueChange 핸들러 유무로 입력 모드를 켜지만(콜백은 attr 로 표현 불가) html 은 핸들러를 못 받으므로 `interactive` 불리언 속성으로 토글. 기능 동등, 표현만 다름.",
       "since": "2026-06"
     },
     {

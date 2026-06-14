@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ReviewCard, Avatar, LikeButton } from "@nudge-design/react";
+import { ReviewCard, Avatar, LikeButton, List, ListItem, Button, TextButton } from "@nudge-design/react";
 
 const meta: Meta<typeof ReviewCard> = {
   title: "Components/Display/ReviewCard",
@@ -81,4 +81,63 @@ export const ProductReview: Story = {
 export const Minimal: Story = {
   name: "Edge/작성자 + 별점만",
   render: () => <ReviewCard author="홍길동" rating={4} body="좋았어요" />,
+};
+
+// pattern:review-list — List 컨테이너(header/footer) + ReviewCard 아이템.
+// 도움돼요는 카드 footer 안 / 더보기는 List footer 슬롯. (목업 오용 "도움돼요 카드 밖" 교정 예시)
+const REVIEWS = [
+  {
+    id: 1,
+    author: "건강맘4**",
+    meta: "2026.03.15 · 구매인증",
+    rating: 5,
+    body: "눈이 자주 피로했는데 3개월 정도 먹고 나서 확실히 눈 뻑뻑함이 줄었어요. 알약도 크지 않아 먹기 편하고 재구매 의향 있어요.",
+    verified: true,
+    helpful: 34,
+  },
+  {
+    id: 2,
+    author: "워킹맘1**",
+    meta: "2026.03.08 · 구매인증",
+    rating: 4,
+    body: "알약이 크지 않아서 먹기 편하고 냄새도 없어요. 2개월 복용 중인데 아직 극적인 변화는 없지만 꾸준히 먹어볼 생각입니다.",
+    verified: true,
+    helpful: 21,
+  },
+];
+
+export const ReviewListRecipe: Story = {
+  tags: ["gallery"],
+  name: "Recipe/리뷰 리스트 (pattern:review-list)",
+  render: () => (
+    <div style={{ width: 480 }}>
+      <List
+        variant="plain"
+        header={
+          <>
+            <span>리뷰 47</span>
+            <span style={{ color: "var(--semantic-text-muted-default)" }}>평점 4.7</span>
+          </>
+        }
+        footer={
+          <Button fullWidth variant="outlined">
+            리뷰 더 보기 (전체 47)
+          </Button>
+        }
+      >
+        {REVIEWS.map((r) => (
+          <ListItem key={r.id}>
+            <ReviewCard
+              author={r.author}
+              meta={r.meta}
+              rating={r.rating}
+              body={r.body}
+              verified={r.verified}
+              footer={<TextButton>도움돼요 {r.helpful}</TextButton>}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  ),
 };

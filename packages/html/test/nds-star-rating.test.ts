@@ -59,4 +59,37 @@ describe("nds-star-rating — DOM parity with React StarRating", () => {
     expect(svg.getAttribute("width")).toBe("16");
     expect(svg.getAttribute("height")).toBe("16");
   });
+
+  it("is display-only by default (no interactive attr)", async () => {
+    const el = document.createElement("nds-star-rating");
+    el.setAttribute("value", "3");
+    document.body.appendChild(el);
+    await flush();
+
+    const root = el.querySelector(".nds-star-rating") as HTMLElement;
+    expect(root.dataset.interactive).toBe("false");
+    expect(root.getAttribute("role")).toBe("img");
+  });
+
+  it("becomes editable with the `interactive` attribute and emits star-rating-change on click", async () => {
+    const el = document.createElement("nds-star-rating");
+    el.setAttribute("value", "0");
+    el.setAttribute("interactive", "");
+    document.body.appendChild(el);
+    await flush();
+
+    const root = el.querySelector(".nds-star-rating") as HTMLElement;
+    expect(root.dataset.interactive).toBe("true");
+    expect(root.getAttribute("role")).toBe("radiogroup");
+
+    let received = -1;
+    el.addEventListener("star-rating-change", (e) => {
+      received = (e as CustomEvent<{ value: number }>).detail.value;
+    });
+    const stars = root.querySelectorAll(".nds-star-rating__star");
+    (stars[3] as HTMLElement).click(); // 4번째 별
+
+    expect(received).toBe(4);
+    expect(el.getAttribute("value")).toBe("4");
+  });
 });

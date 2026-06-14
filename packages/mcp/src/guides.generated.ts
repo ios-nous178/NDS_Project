@@ -559,6 +559,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.",
       "**로고는 base64 내장 — 자산 파일·호스팅 불필요.** 5개 브랜드 로고가 BRAND_DATA 에 data URI 로 박혀 있어 `asset-base-url` 없이도 어디서든 안 깨지고 렌더된다 (단일 HTML 목업 그대로 OK). `asset-base-url` 은 **자체 로고로 바꿀 때만** 쓰는 선택적 override — `public/assets/brand/{brand}/logos/` 폴더를 만들 의무는 없다.",
       "**surface 별 출력 다름** — `web` (PC GNB · 로고+메뉴+auth), `mobile` (compact 헤더 · 로고+auth), `webview` (뒤로가기 + 타이틀만). 모바일 화면이면 surface='mobile' 명시.",
+      "**서브페이지(상세/카테고리/폼) 뒤로+타이틀 헤더 = `surface=\"webview\"`** (+ `header-title`). 이게 정답 — `nds-icon-button` + 타이틀로 sticky 앱바를 **손수 조립하지 말 것**(손수조립 안티패턴). webview 헤더는 정상 렌더된다(약 52px).",
+      "**호스트 엘리먼트는 `display:contents` — 그 자체의 height 는 0 으로 측정된다(정상).** `<nds-brand-header>`/`<nds-header>` 의 `getBoundingClientRect().height` 가 0 이라고 \"헤더가 안 뜬다\"고 오진하지 말 것. 실제 헤더 박스(내부 `<header class=\"nds-header\">`)가 높이·sticky 를 갖는다. 호스트를 측정/스타일/포지셔닝하려 하지 말고(거기에 `position:sticky`·`height` 걸어도 안 먹음) 컴포넌트가 알아서 한다.",
       "active-key 는 BRAND_DATA[brand].webMenu 의 key 와 매칭. 잘못 적으면 활성 메뉴 표시가 안 됨. 각 브랜드 key 목록은 nds-brand-chrome.ts BRAND_DATA 또는 아래 recommended 참고."
     ],
     "recommended": [
@@ -1154,13 +1156,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "name": "Divider",
     "summary": "섹션 사이의 시각적 분리선. 카드 안 내부 분할에 남발하지 말고, 한 화면당 의미 있는 분리에만 사용.",
     "pitfalls": [
+      "**상하 간격은 `spacing` 속성으로 — 대칭이 자동.** `spacing=\"16\"` 이면 divider 위·아래 margin 이 **동일**하게 잡힌다(`margin: spacing 0`). 간격을 형제의 한쪽 margin/gap 으로만 주면 divider 가 다음 항목에 붙어 **위/아래 비대칭**(예: 위 12·아래 0)으로 어색해진다 — 폼/스텝 리스트에서 자주 나오는 footgun.",
+      "**flex-gap 컨테이너 + divider `spacing` 은 간격이 중복**된다. 둘 중 하나만: ① 컨테이너 `gap` 만 쓰고 divider 는 `spacing` 없이(자체 margin 0) 형제로, 또는 ② 컨테이너 gap 0 + divider `spacing` 으로 간격.",
+      "스텝/섹션 마크업 **안쪽에 divider 를 끼우지** 말고(라벨에 달라붙어 비대칭) 섹션 **사이 형제**로 둘 것.",
       "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — Heading + spacing 토큰이 우선.",
       "List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.",
       "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임."
     ],
     "examplesHtml": {
       "do": "<section>섹션 A</section>\n<nds-divider orientation=\"horizontal\" spacing=\"24\"></nds-divider>\n<section>섹션 B</section>",
-      "dont": "<!-- list 항목 사이마다 divider 직접 — list variant 가 책임 -->\n<nds-list-item>항목 1</nds-list-item>\n<nds-divider></nds-divider>\n<nds-list-item>항목 2</nds-list-item>"
+      "dont": "<!-- ① list 항목 사이마다 divider 직접 — list variant 가 책임 -->\n<nds-list-item>항목 1</nds-list-item>\n<nds-divider></nds-divider>\n<nds-list-item>항목 2</nds-list-item>\n\n<!-- ② 스텝 안에 divider 를 끼워 다음 라벨에 달라붙음 → 위/아래 비대칭.\n     spacing 없이 컨테이너 gap 만 있으면 위쪽만 간격이 생긴다.\n     → divider 를 섹션 사이 형제로 옮기고 spacing 으로 대칭 확보 -->\n<div style=\"display:flex; flex-direction:column; gap:12px\">\n  <div>1단계 본문<nds-divider></nds-divider></div>\n  <label>2단계 라벨</label>\n</div>"
     }
   },
   "Drawer": {
@@ -1632,7 +1637,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     "examplesHtml": {
       "do": "<!-- 미리보기만 빠르게: auto-preview 면 선택 즉시 컴포넌트가 objectURL 로 렌더 -->\n<nds-image-upload auto-preview accept=\"image/*\"\n  upload-label=\"사진 추가\" size-hint=\"JPG/PNG · 최대 5MB\"></nds-image-upload>\n<script>el.addEventListener(\"file-select\", e => upload(e.detail.files));</script>\n<!-- 서버 URL 로 controlled: state/image-url 을 직접 관리 -->\n<nds-image-upload state=\"uploaded\" image-url=\"https://cdn/...png\"></nds-image-upload>",
-      "dont": "<!-- auto-preview 없이 state 를 그대로 두면 upload 끝나도 미리보기 안 뜸 -->\n<nds-image-upload state=\"empty\"></nds-image-upload>  <!-- file-select 만 듣고 image-url/state 미갱신 → 영영 empty -->"
+      "dont": "<!-- ① auto-preview 없이 state 를 그대로 두면 upload 끝나도 미리보기 안 뜸 -->\n<nds-image-upload state=\"empty\"></nds-image-upload>  <!-- file-select 만 듣고 image-url/state 미갱신 → 영영 empty -->\n\n<!-- ② 사진 첨부를 버튼+숨김 input 으로 직접 조립 — 미리보기/사이즈안내/상태를 다시 짜야 한다.\n     → nds-image-upload(auto-preview) 한 줄로 끝. 직접 만들지 말 것 -->\n<button onclick=\"document.querySelector('#file').click()\">사진 첨부</button>\n<input id=\"file\" type=\"file\" hidden>"
     }
   },
   "Input": {
@@ -1658,11 +1663,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
       "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
       "**helperText 와 errorMessage 동시 노출 금지** (★ 핵심 룰). DS 는 우선순위 error > success > helper 로 1 줄만 표시하도록 이미 강제하지만, 가이드/스토리/목업에서도 두 줄 동시 표시한 형태로 그리지 말 것. 헬퍼는 '비어 있을 때의 안내', 에러는 '검증 실패 후의 즉시 피드백' — 의미가 충돌하고 인지 부하가 커진다. 검증 실패 순간 helper 는 같은 자리에서 error 메시지로 교체되어야 함 (자리 점프 X, 두 줄 누적 X).",
-      "**글자수 카운터(24/25)** 는 `maxlength` + `show-count`(React `maxLength` + `showCount`) — 우측에 자동 노출, 초과 시 빨간색. suffix 에 직접 텍스트로 박지 말 것. (Textarea 는 maxlength 만 주면 카운터 자동.)"
+      "**글자수 카운터(24/25)** 는 `maxlength` + `show-count`(React `maxLength` + `showCount`) — 우측에 자동 노출, 초과 시 빨간색. suffix 에 직접 텍스트로 박지 말 것. (Textarea 는 maxlength 만 주면 카운터 자동.)",
+      "**필드 검증 에러는 Input 인라인으로, NoticeAlert 박스로 띄우지 말 것** (★). html=`error error-message=\"...\"`, React=`error errorMessage=\"...\"` → 필드 아래 빨간 헬퍼(role=alert). 비밀번호 불일치·이메일 형식·중복 등은 전부 이 패턴(component:NoticeAlert 오용 금지).",
+      "**html `error-message` / `error` 를 함께(또는 `error-message` 단독) 주어야 빨간 보더+메시지가 뜬다.** `error-message` 만 줘도 error 상태로 간주된다. (과거엔 html 이 `error-message` 를 안 봐서 조용히 실패 → 이제 관측함. `helper-text` 만 주면 회색 안내로만 뜨니 에러엔 `error-message` 를 쓸 것.)",
+      "**가로 행(인풋+버튼 한 줄)에서 인풋을 늘리려면 `full-width`** — host 가 display:contents 라 `<nds-input>` 에 `style=\"flex:1\"`·`width:100%` 를 줘도 무시된다(내부 root 까지 안 닿음). `<nds-input full-width>` 면 행의 남는 폭을 채운다(세로 스택은 자동 full). React 는 `fullWidth`(기본 true)."
     ],
     "recommended": [
       "기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />",
-      "검증 실패: errorMessage 사용 — role='alert' 가 자동 부착됨",
+      "검증 실패: errorMessage 사용 — role='alert' 가 자동 부착됨 (html `error error-message=\"...\"`)",
       "검증 성공: complete + successMessage — primary 컬러 헬퍼로 자동 전환",
       "달력/검색 같은 아이콘 affordance: suffix prop (24x24)",
       "Multi-helper(비밀번호 규칙 체크리스트 등): helpers={[{ text, icon?, variant? }, ...]} — 또는 compound <Input.HelperGroup><Input.Helper>…</Input.Helper>…</Input.HelperGroup>",
@@ -1676,7 +1684,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     "interactivePattern": "controlled/uncontrolled 모두 지원. clearable + onClear 로 값 초기화 콜백 부착. suffix slot 에 IconButton 등을 넣어도 됨 (단 onClick 핸들러 필수).",
     "examplesHtml": {
-      "do": "<nds-input label=\"이메일\" placeholder=\"example@nudge.kr\" clearable></nds-input>\n<!-- 글자수 카운터(24/25): maxlength + show-count (React: maxLength + showCount) -->\n<nds-input label=\"캠페인 이름\" maxlength=\"25\" show-count></nds-input>\n<!-- 비밀번호: type=password 면 눈 토글 자동 노출 -->\n<nds-input label=\"비밀번호\" type=\"password\"></nds-input>\n<script>el.addEventListener(\"input\", e => setValue(e.target.value));</script>",
+      "do": "<nds-input label=\"이메일\" placeholder=\"example@nudge.kr\" clearable></nds-input>\n<!-- 글자수 카운터(24/25): maxlength + show-count (React: maxLength + showCount) -->\n<nds-input label=\"캠페인 이름\" maxlength=\"25\" show-count></nds-input>\n<!-- 비밀번호: type=password 면 눈 토글 자동 노출 -->\n<nds-input label=\"비밀번호\" type=\"password\"></nds-input>\n<!-- 필드 검증 에러: error + error-message (NoticeAlert 박스 X) → 필드 아래 빨간 헬퍼 -->\n<nds-input label=\"비밀번호 확인\" type=\"password\" error error-message=\"비밀번호가 일치하지 않습니다.\"></nds-input>\n<!-- 인풋+버튼 한 줄: 인풋에 full-width 면 버튼 옆 남는 폭을 채움 -->\n<div style=\"display:flex; gap:8px; align-items:flex-end\">\n  <nds-input label=\"이메일\" full-width placeholder=\"example@nudge.kr\"></nds-input>\n  <nds-button>인증 메일</nds-button>\n</div>\n<script>el.addEventListener(\"input\", e => setValue(e.target.value));</script>",
       "dont": "<!-- value 와 default-value 를 동시에 설정 — controlled / uncontrolled 가 섞임 -->\n<nds-input label=\"이메일\" value=\"a@b\" default-value=\"x@y\"></nds-input>\n<!-- 글자수 카운터를 suffix 텍스트로 직접 박지 말 것 — show-count 사용 -->\n<nds-input label=\"이름\" suffix=\"0/25\"></nds-input>\n<!-- 비밀번호 눈 아이콘을 suffix 로 손수 조립 금지 — type=password 가 자동 제공 -->\n<nds-input label=\"비밀번호\" type=\"password\" suffix=\"👁\"></nds-input>\n<!-- raw <input> + className 으로 모양만 흉내 -->\n<input class=\"nds-input\" />"
     }
   },
@@ -1797,9 +1805,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Compact(40px)는 PC only — 모바일 Min Touch Target 48px 미달이므로 모바일에선 Default(56px) 이상.",
       "Title 은 Content 의 Required 요소 — Description/Metadata 만 있는 Row 금지. 최소 Title 한 줄.",
       "Avatar + Thumbnail 같은 Leading 슬롯 안에 2종 동시 배치 금지 — Leading 은 단일 식별자.",
-      "Row 의 클릭은 ListItem 의 `onSelect` 사용 — raw <li onClick> 금지. onSelect 가 있으면 자동으로 button 역할 + 키보드 포커스 처리."
+      "Row 의 클릭은 ListItem 의 `onSelect` 사용 — raw <li onClick> 금지. onSelect 가 있으면 자동으로 button 역할 + 키보드 포커스 처리.",
+      "리스트 제목·\"더 보기\" 푸터·Pagination 은 `List` 의 `header`/`footer` 슬롯에 넣는다 — ListItem(Row)으로 위장하거나 리스트 밖 형제로 두지 말 것. header/footer 는 role=presentation 이라 리스트 항목 수에 안 잡힌다."
     ],
     "recommended": [
+      "헤더/푸터 슬롯: <List header={<span>리뷰 47</span>} footer={<Button fullWidth variant='outlined'>더 보기 (전체 47)</Button>}> — 리스트가 제목·더보기·Pagination 을 직접 소유. 리뷰 등 카드형 나열은 `pattern:review-list` 참조.",
       "기본 사용: <List variant='divided'><ListItem leading={<Avatar/>} title='제목' description='설명' trailing={<ChevronRightIcon/>} onSelect={…} /></List>",
       "PC 설정 화면 (Compact 40): <List variant='plain'><ListItem size='sm' leading={<Icon/>} title='설정 항목' trailing={<Toggle/>} /></List> — 정보 밀도 우선.",
       "검색 결과 (Default 56): <List variant='divided'><ListItem leading={<Avatar/>} title='이름' trailing={<ChevronRightIcon/>} onSelect={…} /></List>",
@@ -1932,7 +1942,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
-      "캐포비 admin 모달의 주 action(확인/적용)은 color=\"neutral\" variant=\"solid\" — 브랜드 시그니처 **검정 CTA**(#111·흰 텍스트). 취소/닫기는 color=\"neutral\" variant=\"outlined\", 파괴적 확정만 color=\"error\". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. (캐포비는 secondary tone 이 없어 Button/validator 가 경고하니 검정은 neutral 로. 검정인데 색이 틀리면 data-brand=\"cashwalk-biz\" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)",
+      "캐포비 admin 모달의 주 action(확인/적용)은 color=\"neutral\" variant=\"solid\" — 브랜드 시그니처 **검정 CTA**(#111·흰 텍스트). 취소/닫기는 color=\"neutral\" variant=\"outlined\", 파괴적 확정만 color=\"error\". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. **★ footer 버튼은 주·보조(취소/아웃라인) 가리지 않고 전부 `shape=\"pill\"`** — 보조 버튼에 빠뜨려 pill+각진 버튼이 섞이는 게 흔한 회귀. validator `brand-modal-footer-button-shape`(brand-profiles cashwalk-biz.modal.footerButtonShape=\"pill\") 가 pill 누락 버튼을 잡는다. (캐포비는 secondary tone 이 없어 Button/validator 가 경고하니 검정은 neutral 로. 검정인데 색이 틀리면 data-brand=\"cashwalk-biz\" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)",
       "**★ 캐포비 확인/팝업 모달 버튼에 `color` 를 절대 생략하지 말 것 — 생략하면 노랑(primary)이 된다.** Button/<nds-button> 의 기본 color 는 `primary`(노랑)라, 모달 footer 에 `<nds-button>비즈니스 그룹 만들기</nds-button>` 처럼 color 를 안 적으면 캐포비 검정 CTA 가 아니라 노랑 버튼이 렌더된다(5회+ 재발한 회귀의 근본). **반드시 `color=\"neutral\" variant=\"solid\" shape=\"pill\"` 를 명시**한다. validator `brand-modal-confirm-cta` 가 확인/팝업 모달의 primary/색생략 footer 버튼을 error 로 잡는다. (본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/피커(⑥)·데이터로더(⑦) 같은 대형 모달뿐 — max-width 720+.)",
       "**모달/팝업 버튼이 2개일 때는 항상 가로 정렬을 유지한다 — 라벨이 길어 안 들어가도 세로 스택 금지.** 좁아서 한 줄에 안 들어가면 세로로 쌓지 말고 **라벨 텍스트를 줄인다**(예: \"비즈니스 그룹 만들기\"→\"그룹 만들기\", \"나중에 다시 하기\"→\"나중에\", \"지금 확인할게요\"→\"확인\"). 모달 footer 에 `flex-direction:column` / `actions-layout=\"stack\"` 을 넣지 말 것 — validator `brand-modal-footer-stacked` 가 warn. (모달 버튼 라벨은 1~2 단어로.)",
       "**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot=\"footer\">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot=\"footer\"><nds-button color=\"neutral\" variant=\"solid\" shape=\"pill\">확인</nds-button></div>` — slot=\"footer\" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).",
@@ -1975,6 +1985,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     ],
     "summary": "폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스 — DS notice 패턴의 구현체. 입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됨. Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구)과 분리 — 인라인 지속 메시지만 NoticeAlert. 5 variant — info(중립 회색·아이콘 없음) / notice(블루·차분한 공지) / caution(옐로우 아이콘·회색 배경) / success(그린·완료) / error(레드 배경+레드 텍스트·조치 필요). 캐포비 admin Figma node 3902:1212 가 시각 SSOT(height 48 · radius 12 · padding 12/16 · gap 10 · 좌측 status 아이콘 20×20 + 본문). 색은 임의 hex 금지, semantic status 토큰 binding. notice 패턴 규칙(강조 예산·화면당 색 박스 1개)을 그대로 따른다.",
     "pitfalls": [
+      "**특정 입력 필드의 검증 실패(비밀번호 불일치·이메일 형식·중복 등)는 NoticeAlert 가 아니다 → 그 필드의 인라인 에러로.** (★ 자주 하는 오용) Input/FormField 의 `error` + `error-message`(html) / `errorMessage`(React)로 필드 바로 아래 빨간 헬퍼(role=alert 자동). NoticeAlert 는 폼/페이지 단위의 **영구 안내·정책 메시지**용이지 필드 1개의 검증 피드백용이 아니다 — 멀리 떨어진 박스로 띄우면 어느 입력이 틀렸는지 끊긴다.",
       "error variant 를 단순 안내용으로 남발하지 말 것 — 의미가 흐려짐. 단순 정보는 info, 주의는 caution.",
       "액션·확인 버튼이 필요한 메시지는 NoticeAlert 가 아님 → Modal/Dialog. 일시적 결과 알림 → Toast. 전역 공지 → Banner.",
       "같은 화면에 색 배경 박스(notice/success/error) 를 여러 개 쌓지 말 것 — notice 패턴 강조 예산(화면당 색 박스 1개 권장). info/caution(회색)은 비교적 자유.",
@@ -2427,15 +2438,17 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "pitfalls": [
       "rating은 0-5, 0.5 단위. 범위 밖이면 시각적으로 깨짐.",
       "본문 줄바꿈은 white-space: pre-wrap 자동 — body에 \\n 그대로 사용.",
-      "footer는 보통 LikeButton/도움됨 버튼. 자유 슬롯이라 텍스트도 가능."
+      "**'도움돼요'·좋아요·신고 같은 리뷰 액션은 반드시 `footer` 슬롯(html `slot=\"footer\"`)에 넣어 카드 안에 둔다.** 카드 밖 형제로 두면 흰 배경 밖으로 떨어져 어느 리뷰의 액션인지 연결이 끊긴다 — 실제 목업에서 자주 나오는 오용. footer는 자유 슬롯이라 LikeButton/도움됨 버튼/텍스트 모두 가능.",
+      "리뷰를 여러 개 나열할 땐 ReviewCard 를 직접 쌓지 말고 `pattern:review-list` 를 따른다 (List 컨테이너 + footer 에 더보기/Pagination)."
     ],
     "recommended": [
       "상담 후기: verified + tags=['편안함','전문성']",
-      "상품 리뷰: meta='구매 인증' + verified"
+      "상품 리뷰: meta='구매 인증' + verified",
+      "도움돼요/좋아요: `footer` 슬롯에 LikeButton 또는 TextButton"
     ],
     "examplesHtml": {
-      "do": "<nds-review-card author=\"홍길동\" meta=\"2025.05.20 · 1회기\"\n  rating=\"5\" card-title=\"정말 좋았어요\"\n  body=\"처음엔 망설였는데 지금은 매주 기다려져요\" verified></nds-review-card>",
-      "dont": "<!-- rating=\"6\" — max(5) 초과로 표시가 깨짐 -->\n<nds-review-card author=\"…\" rating=\"6\"></nds-review-card>"
+      "do": "<!-- 도움돼요 는 footer 슬롯 → 카드 안에 들어간다 -->\n<nds-review-card author=\"건강맘4**\" meta=\"2026.03.15 · 구매인증\"\n  rating=\"5\" body=\"3개월 정도 먹고 눈 피로가 줄었어요. 재구매 의향 있어요.\" verified>\n  <button slot=\"footer\" class=\"nds-text-button\" type=\"button\">도움돼요 34</button>\n</nds-review-card>",
+      "dont": "<!-- ① rating=\"6\" — max(5) 초과로 표시가 깨짐 -->\n<nds-review-card author=\"…\" rating=\"6\"></nds-review-card>\n\n<!-- ② 도움돼요 를 카드 밖 형제로 — 카드 경계(흰 배경) 밖으로 떨어져 리뷰와 끊긴다.\n     → slot=\"footer\" 로 카드 안에 넣을 것 -->\n<nds-review-card author=\"…\" rating=\"5\" body=\"…\"></nds-review-card>\n<button>도움돼요 34</button>"
     }
   },
   "RunmileBottomNav": {
@@ -2783,15 +2796,16 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "StarRating": {
     "name": "StarRating",
-    "summary": "1-5 / 1-10 별 점수. 후기 입력 + 후기 표시 양쪽에 사용. readonly 와 disabled 구분.",
+    "summary": "1-5 / 1-10 별 점수. 후기 입력 + 후기 표시 양쪽에 사용. **입력(클릭해서 별점 선택)은 html `interactive` 속성 / React `onValueChange` 핸들러로 켠다.** 안 켜면 표시 전용(별이 클릭되지 않음).",
     "pitfalls": [
+      "**입력 모드를 깜빡하면 별이 안 눌린다 (자주 하는 실수).** html 은 `<nds-star-rating interactive>` 속성을, React 는 `onValueChange` prop 을 줘야 클릭 가능. 둘 다 없으면 표시 전용(`role=\"img\"`)이라 리뷰 작성 폼에서 \"별점이 동작 안 함\"으로 보인다. ❌ nds-icon-button 으로 별을 직접 만들지 말 것 — `interactive` 면 된다.",
       "0.5 단위 반쪽 별 표시는 `precision=\"half\"` 로 켠다. 기본 `precision=\"full\"` 은 정수 반올림이라 4.5 가 5개로 보인다. 인터랙티브(입력) 모드는 항상 정수.",
       "readonly 와 disabled 혼동 — disabled 는 폼 비활성, readonly 는 보기 전용 (clickable 아님).",
       "max 가 5 인데 value 6 — 표시가 깨짐.",
       "HTML size 는 React 와 동일하게 px 숫자를 우선 사용. \"md\"/\"lg\" alias 는 허용되지만 목업 가이드 예제에서는 숫자 px 로 지시."
     ],
     "examplesHtml": {
-      "do": "<nds-star-rating value=\"4\" size=\"20\" max=\"5\" show-value></nds-star-rating>\n<nds-star-rating value=\"4.5\" size=\"16\" max=\"5\" precision=\"half\" readonly></nds-star-rating>\n<script>el.addEventListener(\"star-rating-change\", e => setRating(e.detail.value));</script>",
+      "do": "<!-- 입력(리뷰 작성): interactive 로 클릭 가능, 이벤트로 값 수신 -->\n<nds-star-rating value=\"0\" size=\"32\" max=\"5\" interactive></nds-star-rating>\n<script>el.addEventListener(\"star-rating-change\", e => setRating(e.detail.value));</script>\n\n<!-- 표시 전용(후기 노출): readonly + precision=half -->\n<nds-star-rating value=\"4.5\" size=\"16\" max=\"5\" precision=\"half\" readonly></nds-star-rating>",
       "dont": "<!-- value 가 max 초과 -->\n<nds-star-rating value=\"6\" max=\"5\"></nds-star-rating>"
     }
   },
@@ -4101,7 +4115,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "rules": [
       "**언제 쓰나**: PRD 에 '로그인 / 회원가입 / 비밀번호 찾기 / 이메일 인증 / 가입 완료' 키워드가 있고, 사이드바·네비게이션 없이 단독 흐름으로 진행되며, 단일 목적 + 단일 폼 + 단일 CTA 로 구성되는 화면.",
       "**중앙 카드 1개 (shell·GNB 없음)**: 비로그인 상태라 admin-shell(사이드바/topbar) **그리고 상단 GNB/글로벌 헤더 둘 다 미적용**. 캔버스 배경 = `--semantic-bg-surface-subtle`(#FAFAFA 탈색 회색), 그 위에 카드를 **수직+수평 중앙** 정렬. ⚠️ 상단에 GNB 바(raw `<header>`/`.topbar`/`nds-header`)를 두고 로고를 텍스트(\"cashwalk for business\")로 박지 말 것 — 브랜드 식별은 **카드 안 `<nds-brand-logo>` 에셋 하나뿐**(validator `cashwalk-biz-onboarding-no-gnb` error).",
-      "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing). ⚠️ **카드 패딩을 빼면 CTA·컨텐츠가 카드 모서리에 full-bleed 로 붙는다** — full-width CTA 도 이 48px 패딩 *안에서* 카드 폭을 채워야지 모서리에 붙으면 안 됨(validator `onboarding-card-no-padding` error). `<nds-card>` 로 쓰면 패딩이 자동 적용된다.",
+      "**카드 규격**: 폭 **480px 고정**, padding **48px**, 배경 `--semantic-bg-surface-default`(#FFFFFF), radius **16px**. 카드 내부 큰 단위 그룹(로고/폼/CTA/헬퍼) 간 간격 **40px**(itemSpacing). ⚠️ **카드 패딩을 빼면 CTA·컨텐츠가 카드 모서리에 full-bleed 로 붙는다** — full-width CTA 도 이 48px 패딩 *안에서* 카드 폭을 채워야지 모서리에 붙으면 안 됨(validator `onboarding-card-no-padding` error).",
+      "⚠️ **`<nds-card>` 기본 패딩은 48 이 아니라 16px** — 온보딩 카드는 반드시 `style=\"--nds-card-padding:48px\"`(또는 `--nds-card-padding` 슬롯)로 **명시 override**. 기본값에 의존하면 패딩이 좁아 보인다(실제 회귀: 16px 로 떠 답답).",
+      "⚠️ **카드 내부 커스텀 블록(소셜 로그인 버튼·구분선 등)은 `width:100%`(stretch)로 카드 폭을 채울 것** — `nds-card` 내부는 `align-items:flex-start` 라 폭을 안 주면 좌측으로 쪼그라들어 우측이 텅 빈 비대칭 레이아웃이 된다(실제 회귀). 입력/버튼은 `full-width`, 직접 만든 래퍼는 `width:100%`.",
       "**01 Logo**: 카드 상단 중앙 정렬. **BrandLogo 컴포넌트로 박는다** — HTML `<nds-brand-logo brand=\"cashwalk-biz\">` / React `<BrandLogo brand=\"cashwalk-biz\" />`. 사이드바와 동일한 로고 SSOT 가 data URI 로 내장돼 단일 HTML 에서도 안 깨진다. **35KB base64 를 손으로 붙이거나 raw `<img>`/SVG 로 조립 금지**(모지바케·로고 유실 회귀의 직접 원인). 찾기 화면은 로고 아래 안내문(예: '캐시워크 for 비즈니스 계정의 아이디를 찾을 방법을 선택해 주세요.')을 둔다.",
       "**02 Form**: 로그인 화면은 **TextInput**(ID + Password, Password 는 eye 토글). 아이디/비밀번호 찾기 화면은 **RadioGroup**(찾기 방법 선택 — 전화/이메일). 입력 단위 스타일은 `pattern:cashwalk-biz-input`.",
       "**03 Primary CTA (단일 액션 화면)**: 로그인·찾기처럼 액션이 **하나뿐**인 화면은 Button **Solid / Primary / X-Large**, 가로 **FILL**(카드 폭 가득) — `<nds-button full-width>`. 캐포비 brand yellow(#FFD200) + 검정 텍스트. 화면당 primary CTA 1개. ⚠️ **모달 단일버튼(우측 hug)과 혼동 금지** — 단일 액션 온보딩 CTA 는 full-width 가 하드 계약(validator `onboarding-cta-not-fullwidth` error). 모달 단일버튼은 반대로 hug 우측정렬. (`pattern:cashwalk-biz-button`)",
@@ -4769,8 +4785,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "name": "multi-step-form",
     "summary": "다단계 폼(마법사)은 **DS 컴포넌트가 아니라 조립 패턴**이다. 진행 표시·단계 헤더·이전/다음 풋터는 이미 있는 조각(Stepper / Heading / FormSection / cta-group)이고, 다단계의 진짜 어려움(단계별 검증, 단계 간 데이터 보관, 뒤로 갔다 와도 값 유지, 비동기 검증, 제출)은 **앱이 소유하는 상태머신**이다. 예전 `<MultiStepForm steps={…} canProceed>` 컨테이너는 칠하는 픽셀이 progress+header+footer 뿐이고 어려운 건 전부 `canProceed` boolean 으로 떠넘기는 얇은 셸이라, 실사용 0·Figma 노드 없음으로 제거(강등)했다. 다단계 흐름은 아래 **조립 계약**을 그대로 따른다 — 새 셸 컴포넌트를 만들지 말 것. (단계 진척 *표시*만 = component:Stepper, 시간순 로그 = component:Timeline.)",
     "rules": [
-      "① 상태는 앱이 소유한다(MUST) — 부모가 (a) 현재 단계 인덱스, (b) **모든 단계의 입력값을 한 state 객체**, (c) 단계별 유효성을 보관한다. 각 단계 컴포넌트에 값을 흩뿌리지 말 것 — 단일 SSOT 라야 뒤로/앞으로가 안전하다.",
-      "② 구조는 4단 수직 스택으로 고정(MUST) — 위에서 아래로 **진행(Stepper) → 헤더(Heading) → 본문(FormSection/FormField) → 풋터(cta-group)**. 순서·구성을 바꾸지 말 것.\n- 진행 = `Stepper`(이산 단계, `current`=단계 인덱스). 단순 % 진행만이면 `ProgressBar` 도 가능하나 단계가 셀 수 있으면 Stepper 가 우선.\n- 헤더 = `Heading`(현재 단계 title + description). 단계마다 교체.\n- 본문 = `FormSection`/`FormField` 입력. 검증·합성은 pattern:form-validation 을 그대로 따른다.\n- 풋터 = pattern:cta-group — **이전(secondary) + 다음/제출(primary)** 한 행.",
+      "⓪ 레이아웃을 먼저 고른다 — **화면전환(screen-swap)** vs **누적 노출(progressive disclosure)**. 둘 다 정규 패턴이고 상태 계약(①·③·④)은 동일, **표시 방식만** 다르다:\n- **화면전환** (기본 · 긴 마법사 · 단계별 검증 많음 · 회원가입/온보딩) — 한 번에 한 단계 본문만 보이고 갈아끼움. 진행=`Stepper`, 풋터=`이전(secondary)+다음/제출(primary)` 한 행(아래 ②). 단계 4+ 거나 단계마다 무거운 검증이면 이쪽.\n- **누적 노출** (짧은 모바일 폼 · 리뷰 작성처럼 단계 2~5개 · 한 화면 스크롤) — 완료한 단계가 **위에 그대로 남고 다음 단계가 아래로 추가 노출**된다. 진행=상단 **슬림 `ProgressBar`(N/총단계)**, **이전/다음 버튼 없음**(스크롤로 위 단계 수정), 풋터는 **마지막 단계에서만 취소/제출**. 6칸 스텝퍼를 좁은 모바일에 욱여넣지 말 것. 단계 사이 구분선은 `Divider`(상하 대칭 spacing — `component:Divider`).",
+      "① 상태는 앱이 소유한다(MUST) — 부모가 (a) 현재 단계 인덱스, (b) **모든 단계의 입력값을 한 state 객체**, (c) 단계별 유효성을 보관한다. 각 단계 컴포넌트에 값을 흩뿌리지 말 것 — 단일 SSOT 라야 뒤로/앞으로가 안전하다. (누적 노출도 동일 — 완료 단계 값은 state 에 남고 화면엔 계속 보인다.)",
+      "② (화면전환 한정) 구조는 4단 수직 스택으로 고정(MUST) — 위에서 아래로 **진행(Stepper) → 헤더(Heading) → 본문(FormSection/FormField) → 풋터(cta-group)**. 순서·구성을 바꾸지 말 것.\n- 진행 = `Stepper`(이산 단계, `current`=단계 인덱스). 단순 % 진행만이면 `ProgressBar` 도 가능하나 단계가 셀 수 있으면 Stepper 가 우선.\n- 헤더 = `Heading`(현재 단계 title + description). 단계마다 교체.\n- 본문 = `FormSection`/`FormField` 입력. 검증·합성은 pattern:form-validation 을 그대로 따른다.\n- 풋터 = pattern:cta-group — **이전(secondary) + 다음/제출(primary)** 한 행.",
       "③ 전진은 게이팅한다(MUST) — 현재 단계가 **유효하기 전엔 '다음' 버튼을 disabled**. 클릭만으로 무효 단계를 넘기지 말 것(soft gate 금지). 검증 시점은 pattern:form-validation(onBlur + 단계 제출 시 일괄).",
       "④ 값은 보존한다(MUST) — '이전' 후 다시 '다음' 하면 입력했던 값이 **그대로 복원**돼야 한다. 단계 전환으로 본문을 언마운트해 값을 잃지 말 것 — 값은 ①의 부모 state 에 남고 본문만 갈아끼운다.",
       "⑤ 비동기 검증은 게이트에 묶는다(MUST) — 중복확인·인증 같은 async 결과는 boolean 으로 ③ 게이트에 연결. 대기 중엔 '다음' 버튼 로딩, **낙관적 전진 금지**(응답 전 다음 단계로 못 감).",
@@ -4779,6 +4796,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "⑧ 컴포넌트 승격 기준(governance) — 다단계 셸을 다시 DS 컴포넌트로 만들려면 **2개 이상 브랜드의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다. 둘 중 하나라도 없으면 이 패턴으로 조립한다(예전 셸이 제거된 이유)."
     ],
     "avoid": [
+      "짧은 모바일 폼(리뷰 작성 등)에 **6칸 스텝퍼 + 이전/다음 풋터를 욱여넣기** — 단계 라벨이 잘리고 UI 가 답답하다. 단계 2~5개·모바일이면 누적 노출(⓪: 슬림 ProgressBar, 이전/다음 없음)을 쓴다.",
+      "누적 노출인데 단계마다 **화면을 통째로 갈아끼워 위 단계가 사라지기** — 누적 노출의 핵심은 완료 단계가 위에 남는 것. 갈아끼울 거면 화면전환 모델로.",
       "진행+헤더+풋터만 그리고 어려운 건 `canProceed` boolean 으로 떠넘기는 **얇은 래퍼 컴포넌트를 새로 만들기** — 직접 조립 대비 가치가 없어 제거된 안티패턴이다.",
       "검증 없이 클릭으로 단계 전진(soft gate) — ③ 위반.",
       "'이전' 시 본문 언마운트로 입력값 소실 — ④ 위반.",
@@ -5091,6 +5110,33 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "코드모드 결과를 **typecheck 없이** 커밋 — prop 누락/시그니처 불일치는 앱 컴파일에서만 드러난다.",
       "표현식 className(`{cx(...)}`)을 억지로 문자열화해 교체 — 런타임 클래스 로직이 사라진다(코드모드가 일부러 skip 하는 이유).",
       "DS 에 1:1 대응이 없는 커스텀 컴포넌트를 무리하게 치환 — 추가 prop/동작을 잃는다."
+    ]
+  },
+  "review-list": {
+    "name": "review-list",
+    "metrics": {
+      "container": "List (role=list + header/footer 슬롯)",
+      "item": "ReviewCard (카드 1장 = 리뷰 1건)",
+      "helpfulSlot": "ReviewCard footer (도움돼요/좋아요/신고)",
+      "moreFooter": "List footer — full-width 더보기 Button 또는 Pagination",
+      "paginationThreshold": 6
+    },
+    "summary": "리뷰/후기를 여러 건 나열하는 패턴. 리뷰는 **'카드 1장 = 리뷰 1건'** 이라 조밀한 row(`ListItem` 의 leading/title/trailing)가 아니라 `ReviewCard` 를 쓴다. 컨테이너는 `List`(role=list + header/footer 슬롯)로 감싸 \"리뷰 N건\" 헤더와 \"더 보기\" 푸터를 리스트가 직접 소유하게 한다. (상품 리뷰·상담 후기·앱 피드 공통)",
+    "rules": [
+      "**아이템 = ReviewCard, 컨테이너 = List.** 리뷰 본문은 멀티라인 + 별점 + 태그 + 액션이라 `ListItem` 의 row 레이아웃에 안 맞는다 → `ReviewCard` 를 그대로 쓰고, `List` 로 감싸 리스트 의미(role=list)와 header/footer 를 얻는다.",
+      "**'도움돼요'·좋아요·신고는 ReviewCard 의 `footer` 슬롯 안에.** 카드 밖 형제로 두지 않는다(카드 경계 밖으로 떨어져 어느 리뷰의 액션인지 끊긴다). → `component:ReviewCard` 의 footer do/dont 참조.",
+      "**\"더 보기\"는 List 의 `footer` 슬롯에.** 카드 밖 떠돌이 버튼이 아니라 리스트가 소유하는 푸터. 맥락별 두 형태:\n- **모바일 리뷰/피드** → `footer` 에 **full-width outlined `Button`** \"리뷰 더 보기 (전체 N)\". 개수(N)를 함께 노출.\n- **어드민/데이터 많은 표 성격** → `footer` 에 **`Pagination`** (아이템 6개 이상이면 권장 — `pattern:card-section` 과 동일 임계).",
+      "**헤더(선택)는 List 의 `header` 슬롯에** — \"리뷰 47\", 정렬/필터 토글 등. 리스트가 소유.",
+      "**변형**: 카드 사이 간격이 필요한 카드형은 `List variant=\"plain\"`. 구분선으로 붙이는 조밀형은 `variant=\"divided\"`.",
+      "**밀도**: `pattern:dense-list` 와 정합 — 카드당 주요 정보 3·보조 5 이내, 반복 카드 CTA 는 도움돼요 1개 수준.",
+      "**합성 형태**: `<List variant=\"plain\" header={제목} footer={더보기 Button 또는 Pagination}>` 안에 리뷰마다 `<ListItem>` 으로 감싼 `<ReviewCard ... footer={도움돼요 버튼} />`. (List = 리스트 의미·헤더/푸터, ListItem = li 래퍼·간격, ReviewCard = 카드 본체, ReviewCard.footer = 도움돼요)"
+    ],
+    "avoid": [
+      "'도움돼요'·더보기 버튼을 카드/리스트 **밖 형제**로 두기 — 경계 밖으로 떨어져 소속이 끊긴다. (footer 슬롯으로)",
+      "리뷰를 `ListItem` 의 leading/title/description row 로 욱여넣기 — 별점·태그·멀티라인 본문이 깨진다. 리뷰는 ReviewCard.",
+      "컨테이너 없이 `ReviewCard` 만 줄줄이 쌓기 — role=list 의미·헤더/푸터 둘 곳이 없어진다.",
+      "같은 화면에서 더보기 버튼 + Pagination 동시 사용 — 둘 중 하나(맥락별).",
+      "카드마다 elevation/색 배경 반복 — `pattern:dense-list` 위반."
     ]
   },
   "selection-controls": {

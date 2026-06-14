@@ -25,11 +25,14 @@ stateMatrix:
 - errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.
 - **helperText 와 errorMessage 동시 노출 금지** (★ 핵심 룰). DS 는 우선순위 error > success > helper 로 1 줄만 표시하도록 이미 강제하지만, 가이드/스토리/목업에서도 두 줄 동시 표시한 형태로 그리지 말 것. 헬퍼는 '비어 있을 때의 안내', 에러는 '검증 실패 후의 즉시 피드백' — 의미가 충돌하고 인지 부하가 커진다. 검증 실패 순간 helper 는 같은 자리에서 error 메시지로 교체되어야 함 (자리 점프 X, 두 줄 누적 X).
 - **글자수 카운터(24/25)** 는 `maxlength` + `show-count`(React `maxLength` + `showCount`) — 우측에 자동 노출, 초과 시 빨간색. suffix 에 직접 텍스트로 박지 말 것. (Textarea 는 maxlength 만 주면 카운터 자동.)
+- **필드 검증 에러는 Input 인라인으로, NoticeAlert 박스로 띄우지 말 것** (★). html=`error error-message="..."`, React=`error errorMessage="..."` → 필드 아래 빨간 헬퍼(role=alert). 비밀번호 불일치·이메일 형식·중복 등은 전부 이 패턴(component:NoticeAlert 오용 금지).
+- **html `error-message` / `error` 를 함께(또는 `error-message` 단독) 주어야 빨간 보더+메시지가 뜬다.** `error-message` 만 줘도 error 상태로 간주된다. (과거엔 html 이 `error-message` 를 안 봐서 조용히 실패 → 이제 관측함. `helper-text` 만 주면 회색 안내로만 뜨니 에러엔 `error-message` 를 쓸 것.)
+- **가로 행(인풋+버튼 한 줄)에서 인풋을 늘리려면 `full-width`** — host 가 display:contents 라 `<nds-input>` 에 `style="flex:1"`·`width:100%` 를 줘도 무시된다(내부 root 까지 안 닿음). `<nds-input full-width>` 면 행의 남는 폭을 채운다(세로 스택은 자동 full). React 는 `fullWidth`(기본 true).
 
 ## recommended
 
 - 기본: <Input label='이메일' placeholder='example@nudge.kr' helperText='...' />
-- 검증 실패: errorMessage 사용 — role='alert' 가 자동 부착됨
+- 검증 실패: errorMessage 사용 — role='alert' 가 자동 부착됨 (html `error error-message="..."`)
 - 검증 성공: complete + successMessage — primary 컬러 헬퍼로 자동 전환
 - 달력/검색 같은 아이콘 affordance: suffix prop (24x24)
 - Multi-helper(비밀번호 규칙 체크리스트 등): helpers={[{ text, icon?, variant? }, ...]} — 또는 compound <Input.HelperGroup><Input.Helper>…</Input.Helper>…</Input.HelperGroup>
@@ -54,6 +57,13 @@ controlled/uncontrolled 모두 지원. clearable + onClear 로 값 초기화 콜
 <nds-input label="캠페인 이름" maxlength="25" show-count></nds-input>
 <!-- 비밀번호: type=password 면 눈 토글 자동 노출 -->
 <nds-input label="비밀번호" type="password"></nds-input>
+<!-- 필드 검증 에러: error + error-message (NoticeAlert 박스 X) → 필드 아래 빨간 헬퍼 -->
+<nds-input label="비밀번호 확인" type="password" error error-message="비밀번호가 일치하지 않습니다."></nds-input>
+<!-- 인풋+버튼 한 줄: 인풋에 full-width 면 버튼 옆 남는 폭을 채움 -->
+<div style="display:flex; gap:8px; align-items:flex-end">
+  <nds-input label="이메일" full-width placeholder="example@nudge.kr"></nds-input>
+  <nds-button>인증 메일</nds-button>
+</div>
 <script>el.addEventListener("input", e => setValue(e.target.value));</script>
 ```
 

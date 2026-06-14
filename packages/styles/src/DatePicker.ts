@@ -103,7 +103,9 @@ export const datePickerStyles = `
     display: none;
   }
 
-  :where(.${DP_CLEAR_BTN_CLASS}) {
+  /* :not([hidden]) 필수 — html 어댑터는 clear 를 항상 mount 하고 hidden 속성으로 토글하는데,
+     display:inline-flex 가 hidden(UA display:none)을 덮어 빈 값에도 ×가 떠 캘린더 아이콘과 겹쳤다. */
+  :where(.${DP_CLEAR_BTN_CLASS}:not([hidden])) {
     position: absolute;
     top: 50%;
     right: var(--semantic-inset-card);

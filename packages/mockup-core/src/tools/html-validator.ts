@@ -195,6 +195,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "brand-modal-confirm-cta": { severity: "error", kind: "brand-policy" },
   // 모달 footer 의 두 버튼이 세로로 스택됨 — 라벨이 길어도 가로 유지 + 라벨 축약이 원칙(세로 금지).
   "brand-modal-footer-stacked": { severity: "warn", kind: "brand-policy" },
+  // 캐포비 모달 footer 버튼에 shape="pill" 누락 — 주·보조 모두 pill 이어야 하는데 보조에 빠뜨려 각진 버튼 섞임.
+  "brand-modal-footer-button-shape": { severity: "warn", kind: "brand-policy" },
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": { severity: "error", kind: "model-guard" },
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -2143,6 +2145,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "brand-modal-single-button-fullwidth": "layout",
   "brand-modal-confirm-cta": "layout",
   "brand-modal-footer-stacked": "layout",
+  "brand-modal-footer-button-shape": "layout",
   "raw-landmark": "layout",
   "nested-card": "layout",
   "card-badge-overuse": "layout",

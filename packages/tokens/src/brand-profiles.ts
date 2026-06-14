@@ -38,6 +38,9 @@ export interface BrandModalPolicy {
   singleButtonLayout?: "hug-right";
   /** 모달 footer 두 버튼의 세로 스택 금지(가로 유지 + 라벨 축약). */
   footerStackBanned?: boolean;
+  /** 모달 footer 버튼 shape 계약 — "pill" 이면 footer 의 모든 버튼이 shape="pill" 이어야 함
+   * (validator 가 비-pill 버튼을 위반으로 잡는다). 캐포비처럼 모달 버튼을 전부 pill 로 강제할 때. */
+  footerButtonShape?: "pill";
 }
 
 export interface BrandNotificationPolicy {
@@ -91,6 +94,8 @@ export const BRAND_PROFILES: Record<BrandSlug, BrandProfile> = {
       confirmCtaColor: "neutral",
       singleButtonLayout: "hug-right",
       footerStackBanned: true,
+      // 캐포비 모달 버튼은 전부 pill — 보조 버튼에 shape="pill" 빠뜨려 각진 버튼 섞이는 재발 차단.
+      footerButtonShape: "pill",
     },
     notifications: {
       // 캐포비 알림 SSOT = Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 전면 금지.

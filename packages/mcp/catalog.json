@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T19:09:33.949Z",
+  "generatedAt": "2026-06-14T04:45:56.011Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3438,6 +3438,7 @@
         "helper-text",
         "size",
         "error",
+        "error-message",
         "disabled",
         "readonly",
         "full-width",
@@ -3591,6 +3592,16 @@
             "card",
             "divided"
           ]
+        },
+        {
+          "name": "header",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "footer",
+          "optional": true,
+          "type": "React.ReactNode"
         },
         {
           "name": "children",
@@ -5721,7 +5732,8 @@
         "show-value",
         "size",
         "value",
-        "readonly"
+        "readonly",
+        "interactive"
       ]
     },
     {
@@ -14001,6 +14013,7 @@
         "helper-text",
         "size",
         "error",
+        "error-message",
         "disabled",
         "readonly",
         "full-width",
@@ -14509,7 +14522,8 @@
         "show-value",
         "size",
         "value",
-        "readonly"
+        "readonly",
+        "interactive"
       ]
     },
     {
