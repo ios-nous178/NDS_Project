@@ -14,24 +14,23 @@ phases:
     runtime-versions:
       nodejs: 24
     commands:
+      # EC2 compute + base AMI(amazonlinux-x86_64-base)는 runtime-versions:nodejs:24 를 지원하지 않아
+      # 구버전 Node 로 뜬다. n 으로 Node 24 를 /usr/local 에 명시 설치 — 파일시스템 설치라 이후 phase 까지
+      # PATH 로 유지된다. (관리형 이미지로 바꿔 이미 24 면 조건 미충족 → 건너뜀, no-op.)
+      - node -v || true
+      - if ! node -v 2>/dev/null | grep -q '^v24\.'; then npm install -g n && n 24 && hash -r; fi
+      - node -v
       - corepack enable
       - corepack prepare pnpm@${PNPM_VERSION} --activate
       - pnpm config set store-dir .pnpm-store
-      - node -v
       - pnpm -v
 
   pre_build:
     commands:
       # 툴체인 가시화 — 로그가 꺼져 있어도 실행 세부정보의 명령 단위로 어디서 깨지는지 보이게 한다.
       - echo "=== toolchain ===" && which node && node -v && which pnpm && pnpm -v
-      # Node 24 가드 — base AMI(amazonlinux-x86_64-base)는 runtime-versions:nodejs:24 를 보장하지 않는다.
-      # 구버전 Node 로 떨어지면 install 은 통과해도 generate:ssot/tsc 가 깨지므로 여기서 명확히 실패시킨다.
-      - |
-        NODE_MAJOR=$(node -p "process.versions.node.split('.')[0]")
-        if [ "$NODE_MAJOR" != "24" ]; then
-          echo "FATAL: Node 24 expected but found $(node -v). 이미지 'amazonlinux-x86_64-base' 가 runtime-versions 를 무시했을 수 있음 — 관리형 이미지(aws/codebuild/amazonlinux-x86_64-standard:5.0)로 바꾸거나 Node 24 를 명시 설치하세요." >&2
-          exit 1
-        fi
+      # Node 24 트립와이어(한 줄 — 줄바꿈 처리에 영향받지 않음). install 의 Node 24 확보가 실패했으면 여기서 명확히 멈춘다.
+      - node -p "process.versions.node.split('.')[0]" | grep -qx 24 || { echo "FATAL: Node 24 required, got $(node -v)"; exit 1; }
       - pnpm install --frozen-lockfile
       # generate:ssot 를 구성 하위명령으로 펼친다 — 실패 시 CodeBuild 가 '깨진 하위명령'을 단독으로 보고(로그 미설정에도 단계 특정 가능).
       - pnpm exec turbo build --filter=@nudge-design/mcp^... --output-logs=errors-only
