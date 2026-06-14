@@ -738,11 +738,15 @@ function renderBrandBanner(banner: BannerData): string {
  *   글자가 위 baseline 에 붙는다. brand-chrome 안에서 한 번만 vertical center override. */
 const WEBVIEW_FIX_ID = "nds-brand-chrome-webview-fix";
 const WEBVIEW_FIX_CSS = `
-  :where(nds-brand-header) .nds-header[data-variant="webview"] .nds-header__title {
+  /* base styles.css 의 .nds-header[data-variant="webview"] .nds-header__title (특정성 0,3,0)가
+   * transform: translateX(-50%) 를 박아, :where(특정성 0) override 의 세로 translate(-50%) 가
+   * 무력화돼 타이틀이 top:50% 에만 걸려 아래로 떨어진다. nds-brand-header 엘리먼트 셀렉터로
+   * 특정성(0,3,1)을 올려 vertical center 가 이기게 한다. */
+  nds-brand-header .nds-header[data-variant="webview"] .nds-header__title {
     top: 50%;
     transform: translate(-50%, -50%);
   }
-  :where(nds-brand-header) .nds-header[data-variant="webview"] {
+  nds-brand-header .nds-header[data-variant="webview"] {
     position: relative;
   }
 `;
@@ -1512,7 +1516,8 @@ function renderTrostHeader(
       .nds-brand-trost-webview__title {
         position: absolute;
         left: 50%;
-        transform: translateX(-50%);
+        top: 50%;
+        transform: translate(-50%, -50%);
         max-width: 56%;
         margin: 0;
         font-weight: 700;
