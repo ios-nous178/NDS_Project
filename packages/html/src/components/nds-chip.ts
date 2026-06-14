@@ -41,101 +41,9 @@ const VARIANTS: readonly ChipVariant[] = ["fill", "outlined", "ghost"];
 const COLORS: readonly ChipColor[] = ["brand", "neutral", "success", "error", "caution"];
 const SIZES: readonly ChipSize[] = ["sm", "md"];
 
-interface ColorTokens {
-  background: string;
-  text: string;
-  border: string;
-}
-
-const FILL_COLORS: Record<ChipColor, ColorTokens> = {
-  brand: {
-    background: "var(--semantic-fill-brand-default)",
-    text: "var(--semantic-button-text-default, #ffffff)",
-    border: "transparent",
-  },
-  neutral: {
-    background: "var(--semantic-fill-neutral-default)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
-    border: "transparent",
-  },
-  success: {
-    background: "var(--semantic-bg-status-success)",
-    text: "var(--semantic-text-status-success)",
-    border: "transparent",
-  },
-  error: {
-    background: "var(--semantic-fill-status-error)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
-    border: "transparent",
-  },
-  caution: {
-    background: "var(--semantic-fill-status-caution)",
-    text: "var(--semantic-text-strong-default)",
-    border: "transparent",
-  },
-};
-
-const OUTLINED_COLORS: Record<ChipColor, ColorTokens> = {
-  brand: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-brand-default)",
-    border: "var(--semantic-border-brand-default)",
-  },
-  neutral: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-normal-default)",
-    border: "var(--semantic-border-normal-default)",
-  },
-  success: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-status-success)",
-    border: "var(--semantic-text-status-success)",
-  },
-  error: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-status-error)",
-    border: "var(--semantic-border-status-error)",
-  },
-  caution: {
-    background: "var(--semantic-bg-surface-default, #ffffff)",
-    text: "var(--semantic-text-status-caution)",
-    border: "var(--semantic-border-status-caution)",
-  },
-};
-
-const GHOST_COLORS: Record<ChipColor, ColorTokens> = {
-  brand: {
-    background: "var(--semantic-bg-brand-subtle)",
-    text: "var(--semantic-text-brand-default)",
-    border: "transparent",
-  },
-  neutral: {
-    background: "var(--semantic-bg-surface-subtle)",
-    text: "var(--semantic-text-normal-default)",
-    border: "transparent",
-  },
-  success: {
-    background: "var(--semantic-bg-status-success)",
-    text: "var(--semantic-text-status-success)",
-    border: "transparent",
-  },
-  error: {
-    background: "var(--semantic-bg-status-error)",
-    text: "var(--semantic-text-status-error)",
-    border: "transparent",
-  },
-  caution: {
-    background: "var(--semantic-bg-status-caution)",
-    text: "var(--semantic-text-status-caution)",
-    border: "transparent",
-  },
-};
-
-const COLORS_BY_VARIANT: Record<ChipVariant, Record<ChipColor, ColorTokens>> = {
-  fill: FILL_COLORS,
-  outlined: OUTLINED_COLORS,
-  ghost: GHOST_COLORS,
-};
+// variant×color / selected 별 색은 styles/src/Chip.ts 의 [data-variant][data-color] /
+// [data-selected="true"][data-color] CSS 룰이 --nds-chip-bg/fg/border 슬롯에 주입한다.
+// 여기(WC)에서는 색을 더 이상 박지 않는다 — data-variant/data-color/data-selected 만 set.
 
 interface SizeTokens {
   height: number;
@@ -231,14 +139,8 @@ export class NdsChip extends NdsElement {
 
     // selected 는 React Chip.tsx 와 동일하게 brand 채움(FILL)이 기본 선택표시이며,
     // 브랜드가 brand-subtle 등 다른 선택 톤을 원하면 `--nds-chip-selected-*` 로 override.
-    const baseCt = selected ? FILL_COLORS[color] : COLORS_BY_VARIANT[variant][color];
-    const ct = selected
-      ? {
-          background: `var(--nds-chip-selected-background, ${baseCt.background})`,
-          text: `var(--nds-chip-selected-text, ${baseCt.text})`,
-          border: `var(--nds-chip-selected-border, ${baseCt.border})`,
-        }
-      : baseCt;
+    // 색은 styles/src/Chip.ts 의 [data-variant][data-color] / [data-selected] CSS 룰이 슬롯에 주입 —
+    // 여기서는 data-* attr 만 set, 인라인 색은 박지 않는다.
     const st = SIZE_TOKENS[size];
     const paddingRight = removable ? Math.max(st.paddingX - 4, 6) : st.paddingX;
 
@@ -270,9 +172,8 @@ export class NdsChip extends NdsElement {
       height: `${st.height}px`,
       padding: `${st.paddingY}px ${paddingRight}px ${st.paddingY}px ${st.paddingX}px`,
       borderRadius: "9999px",
-      background: ct.background,
-      color: ct.text,
-      border: `1px solid ${ct.border}`,
+      // 색(background/color/border)은 styles/src/Chip.ts 의 [data-variant][data-color] /
+      // [data-selected] CSS 룰이 슬롯에 주입 — 여기서 인라인으로 박지 않는다.
       fontFamily: "var(--font-family-web, 'Pretendard', -apple-system, sans-serif)",
       fontSize: `${st.fontSize}px`,
       lineHeight: `${st.lineHeight}px`,

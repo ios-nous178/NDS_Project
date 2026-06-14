@@ -1,5 +1,5 @@
 import React from "react";
-import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-design/tokens";
+import { sizing, spacing, zIndex } from "@nudge-design/tokens";
 
 /* ─────────────────────────────────────────────────────────────
  * Header — base 헤더
@@ -45,43 +45,9 @@ const H_AUTH_DIVIDER_CLASS = `${HEADER_CLASS}__auth-divider`;
 
 export type HeaderVariant = "compact" | "webview" | "transparent" | "web";
 export type HeaderPosition = "sticky" | "fixed" | "static";
-/* ─── Variant config (flex variants) ─── */
 
-interface VariantStyle {
-  background: string;
-  borderBottom: string;
-  shadow: string;
-  titleFontSize: number;
-  titleLineHeight: number;
-  titleFontWeight: number;
-}
-
-const flexVariantConfig: Record<"compact" | "webview" | "transparent", VariantStyle> = {
-  compact: {
-    background: cv.surface.default,
-    borderBottom: `1px solid ${cv.borderRole.subtle}`,
-    shadow: "none",
-    titleFontSize: typeScale.body1.fontSize,
-    titleLineHeight: typeScale.body1.lineHeight,
-    titleFontWeight: fontWeight.bold,
-  },
-  webview: {
-    background: cv.surface.default,
-    borderBottom: "none",
-    shadow: "none",
-    titleFontSize: typeScale.body1.fontSize,
-    titleLineHeight: typeScale.body1.lineHeight,
-    titleFontWeight: fontWeight.bold,
-  },
-  transparent: {
-    background: "transparent",
-    borderBottom: "none",
-    shadow: "none",
-    titleFontSize: typeScale.body1.fontSize,
-    titleLineHeight: typeScale.body1.lineHeight,
-    titleFontWeight: fontWeight.bold,
-  },
-};
+/* flex variant 의 색(background/border-bottom/shadow)·title font 는 styles 의
+ * [data-variant]/[data-elevated] 룰이 소유한다. 여기선 data-attr 만 set. */
 
 /* ─── Utils ─── */
 
@@ -165,7 +131,6 @@ const HeaderComponent = React.forwardRef<HTMLElement, HeaderProps>(
     }
 
     /* ─── flex variants ─── */
-    const variantStyle = flexVariantConfig[variant];
     const resolvedPosition = position ?? "sticky";
 
     return (
@@ -183,12 +148,6 @@ const HeaderComponent = React.forwardRef<HTMLElement, HeaderProps>(
             right: resolvedPosition === "fixed" ? 0 : undefined,
             "--nds-header-height": `${sizing.appBar.height}px`,
             "--nds-header-padding-x": `${spacing[16]}px`,
-            "--nds-header-background": variantStyle.background,
-            "--nds-header-border-bottom": variantStyle.borderBottom,
-            "--nds-header-shadow": elevated ? shadow["1"] : variantStyle.shadow,
-            "--nds-header-title-font-size": `${variantStyle.titleFontSize}px`,
-            "--nds-header-title-line-height": `${variantStyle.titleLineHeight}px`,
-            "--nds-header-title-font-weight": variantStyle.titleFontWeight,
             "--nds-header-z-index": zIndex.appBar,
             ...style,
           } as React.CSSProperties

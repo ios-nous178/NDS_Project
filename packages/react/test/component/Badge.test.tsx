@@ -75,25 +75,28 @@ describe("Badge shape (default / pill)", () => {
     expect(root).toHaveAttribute("data-shape", "default");
   });
 
-  it("shape=pill 은 data-shape=pill + 완전 둥근 radius(9999px) 를 적용한다", () => {
+  it("shape=pill 은 data-shape=pill 을 set 한다(완전 둥근 radius 는 styles CSS)", () => {
     render(
       <Badge shape="pill" size="sm">
         프리미엄
       </Badge>,
     );
     const root = screen.getByText("프리미엄").closest("[data-slot='root']") as HTMLElement;
+    // radius(9999px)·size 라운드는 @nudge-design/styles 의 .nds-badge[data-shape]/[data-size]
+    // CSS 룰이 합성 — 컴포넌트는 data-attr 만 set, 인라인 radius 는 박지 않는다.
     expect(root).toHaveAttribute("data-shape", "pill");
-    expect(root.style.borderRadius).toContain("9999px");
+    expect(root.style.borderRadius).toBe("");
   });
 
-  it("shape=default 은 size 별 라운드 사각 radius 를 유지한다(pill 아님)", () => {
+  it("shape=default 은 data-shape=default 을 set 한다(size 별 라운드 사각은 styles CSS)", () => {
     render(
       <Badge shape="default" size="sm">
         충전
       </Badge>,
     );
     const root = screen.getByText("충전").closest("[data-slot='root']") as HTMLElement;
-    expect(root.style.borderRadius).not.toContain("9999px");
+    expect(root).toHaveAttribute("data-shape", "default");
+    expect(root.style.borderRadius).toBe("");
   });
 });
 

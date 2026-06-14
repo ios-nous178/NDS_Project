@@ -15,27 +15,14 @@ export type FABColor = "primary" | "neutral" | "secondary";
 export type FABPosition = "bottom-right" | "bottom-left" | "bottom-center" | "static";
 
 const SIZE_CONFIG: Record<FABSize, number> = { md: 48, lg: 56 };
-const COLOR_CONFIG: Record<FABColor, { bg: string; fg: string }> = {
-  primary: {
-    bg: "var(--semantic-bg-brand-default)",
-    fg: "var(--semantic-button-text-default)",
-  },
-  secondary: {
-    bg: "var(--semantic-fill-neutral-default)",
-    fg: "var(--semantic-text-inverse-default)",
-  },
-  neutral: {
-    bg: "var(--semantic-bg-surface-default)",
-    fg: "var(--semantic-text-normal-default)",
-  },
-};
+// color → bg/fg 색은 styles 의 [data-color] 룰이 결정한다(JS 색맵 우회 금지). 여기선 data-color 만 set.
 const POSITIONS: readonly FABPosition[] = [
   "bottom-right",
   "bottom-left",
   "bottom-center",
   "static",
 ];
-const COLORS = Object.keys(COLOR_CONFIG) as FABColor[];
+const COLORS: readonly FABColor[] = ["primary", "neutral", "secondary"];
 const SIZES = Object.keys(SIZE_CONFIG) as FABSize[];
 const FORWARDED_ATTRS = [
   "aria-label",
@@ -77,7 +64,6 @@ export class NdsFab extends NdsElement {
     const color = this._normalizedColor();
     const position = this._normalizedPosition();
     const labelText = this.getAttribute("label") ?? this.textContent?.trim() ?? "";
-    const colors = COLOR_CONFIG[color];
 
     this._button.disabled = this.boolAttr("disabled");
     this._button.dataset.size = size;
@@ -85,8 +71,6 @@ export class NdsFab extends NdsElement {
     this._button.dataset.position = position;
     this._button.style.setProperty("--nds-fab-size", `${SIZE_CONFIG[size]}px`);
     this._button.style.setProperty("--nds-fab-padding", labelText ? "16px" : "0");
-    this._button.style.setProperty("--nds-fab-bg", colors.bg);
-    this._button.style.setProperty("--nds-fab-fg", colors.fg);
     setOptionalPxVar(this._button, "--nds-fab-offset", this.getAttribute("offset"));
 
     for (const name of FORWARDED_ATTRS) {

@@ -5,6 +5,7 @@ import {
   fontWeight,
   grid,
   radius,
+  shadow,
   sizing,
   spacing,
   transition,
@@ -34,7 +35,11 @@ const H_SEARCH_ICON_CLASS = `${HEADER_CLASS}__search-icon`;
 const H_AUTH_DIVIDER_CLASS = `${HEADER_CLASS}__auth-divider`;
 
 export const headerStyles = `
-  /* Root — flex variants (compact / webview / transparent) */
+  /* Root — flex variants (compact / webview / transparent).
+     색은 JS 색맵을 우회하지 않는다 — react/html 은 data-variant / data-elevated 만 set,
+     배경·하단보더는 [data-variant] 룰이, shadow 는 [data-elevated] 룰이 슬롯에 주입한다.
+     ① 슬롯(--nds-header-*) = 브랜드/인스턴스 override · ② [data-variant] 룰 = variant 차이.
+     title font(body1+bold)·shadow none 은 3 variant 공통 상수 → 기본 룰에 직접. */
   :where(.${HEADER_CLASS}[data-variant="compact"]),
   :where(.${HEADER_CLASS}[data-variant="webview"]),
   :where(.${HEADER_CLASS}[data-variant="transparent"]) {
@@ -44,8 +49,8 @@ export const headerStyles = `
     width: 100%;
     min-height: var(--nds-header-height, ${sizing.appBar.height}px);
     padding: 0 var(--nds-header-padding-x, var(--semantic-inset-card));
-    background: var(--nds-header-background, ${cv.surface.default});
-    border-bottom: var(--nds-header-border-bottom, 1px solid ${cv.borderRole.subtle});
+    background: var(--nds-header-background, var(--nds-header-variant-background, ${cv.surface.default}));
+    border-bottom: var(--nds-header-border-bottom, var(--nds-header-variant-border-bottom, none));
     box-shadow: var(--nds-header-shadow, none);
     font-family: var(--nds-header-font-family, ${fontFamily.web});
     box-sizing: border-box;
@@ -55,6 +60,27 @@ export const headerStyles = `
       box-shadow ${transition.default};
   }
 
+  /* variant 차이 = background(transparent 만 투명) + border-bottom(compact 만 subtle 1px) */
+  :where(.${HEADER_CLASS}[data-variant="compact"]) {
+    --nds-header-variant-background: ${cv.surface.default};
+    --nds-header-variant-border-bottom: 1px solid ${cv.borderRole.subtle};
+  }
+
+  :where(.${HEADER_CLASS}[data-variant="webview"]) {
+    --nds-header-variant-background: ${cv.surface.default};
+    --nds-header-variant-border-bottom: none;
+  }
+
+  :where(.${HEADER_CLASS}[data-variant="transparent"]) {
+    --nds-header-variant-background: transparent;
+    --nds-header-variant-border-bottom: none;
+  }
+
+  /* elevated — shadow 는 3 variant 모두 none 이 기본, elevated 일 때만 그림자 */
+  :where(.${HEADER_CLASS}[data-elevated]) {
+    --nds-header-shadow: ${shadow["1"]};
+  }
+
   :where(.${H_LEFT_CLASS}) {
     display: flex;
     align-items: center;
@@ -62,10 +88,11 @@ export const headerStyles = `
     flex-shrink: 0;
   }
 
+  /* title — body1 + bold. 3 variant 공통 상수이므로 슬롯 아닌 직접 값. */
   :where(.${H_TITLE_CLASS}) {
-    font-size: var(--nds-header-title-font-size, ${typeScale.body1.fontSize}px);
-    line-height: var(--nds-header-title-line-height, ${typeScale.body1.lineHeight}px);
-    font-weight: var(--nds-header-title-font-weight, ${fontWeight.bold});
+    font-size: ${typeScale.body1.fontSize}px;
+    line-height: ${typeScale.body1.lineHeight}px;
+    font-weight: ${fontWeight.bold};
     color: var(--nds-header-title-color, ${cv.textRole.normal});
     white-space: nowrap;
     overflow: hidden;

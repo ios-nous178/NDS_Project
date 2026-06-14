@@ -4,14 +4,14 @@
  * DOM:
  *   <nds-badge variant="fill" color="brand" size="md">NEW</nds-badge>
  *
- *   → <span class="nds-badge" data-slot="root" data-variant="fill" data-color="brand" data-size="md"
- *           style="...전체 시각 속성 인라인...">
+ *   → <span class="nds-badge" data-slot="root" data-variant="fill" data-color="brand"
+ *           data-size="md" data-shape="default">
  *       <span class="nds-badge__label" data-slot="label">NEW</span>
  *     </span>
  *
- * 주의: React Badge 는 styles.css 에 .nds-badge 룰을 두지 않고, 모든 시각 속성
- * (height/padding/fontSize/border/background/color) 을 인라인 style 로 직접 박는다.
- * WC 도 똑같이 한다 — stylesheet 에 .nds-badge 룰이 없는 게 정상.
+ * 색(variant×color)·치수(size)·shape 라운드는 @nudge-design/styles 의 .nds-badge
+ * CSS 룰이 data-variant/data-color/data-size/data-shape 로 합성한다 (react 미러와 동일).
+ * WC 는 data-attr 만 set — 인라인 색/치수 스타일은 박지 않는다.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -26,132 +26,6 @@ const VARIANTS: readonly BadgeVariant[] = ["fill", "ghost", "line"];
 const COLORS: readonly BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
 const SIZES: readonly BadgeSize[] = ["sm", "md", "lg"];
 const SHAPES: readonly BadgeShape[] = ["default", "pill"];
-
-interface ColorTokens {
-  background: string;
-  text: string;
-  border: string;
-}
-
-const FILL_COLORS: Record<BadgeColor, ColorTokens> = {
-  brand: {
-    background: "var(--semantic-fill-brand-default)",
-    text: "var(--semantic-button-text-default, #ffffff)",
-    border: "transparent",
-  },
-  neutral: {
-    background: "var(--semantic-fill-neutral-default)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
-    border: "transparent",
-  },
-  success: {
-    background: "var(--semantic-bg-status-success)",
-    text: "var(--semantic-text-status-success)",
-    border: "transparent",
-  },
-  error: {
-    background: "var(--semantic-fill-status-error)",
-    text: "var(--semantic-text-inverse-default, #ffffff)",
-    border: "transparent",
-  },
-  caution: {
-    background: "var(--semantic-fill-status-caution)",
-    text: "var(--semantic-text-strong-default)",
-    border: "transparent",
-  },
-  info: {
-    background: "var(--semantic-bg-status-info)",
-    text: "var(--semantic-text-status-info)",
-    border: "transparent",
-  },
-};
-
-const GHOST_COLORS: Record<BadgeColor, ColorTokens> = {
-  brand: {
-    background: "var(--semantic-bg-brand-subtle)",
-    text: "var(--semantic-text-brand-default)",
-    border: "transparent",
-  },
-  neutral: {
-    background: "var(--semantic-bg-surface-subtle)",
-    text: "var(--semantic-text-normal-default)",
-    border: "transparent",
-  },
-  success: {
-    background: "var(--semantic-bg-status-success)",
-    text: "var(--semantic-text-status-success)",
-    border: "transparent",
-  },
-  error: {
-    background: "var(--semantic-bg-status-error)",
-    text: "var(--semantic-text-status-error)",
-    border: "transparent",
-  },
-  caution: {
-    background: "var(--semantic-bg-status-caution)",
-    text: "var(--semantic-text-status-caution)",
-    border: "transparent",
-  },
-  info: {
-    background: "var(--semantic-bg-status-info)",
-    text: "var(--semantic-text-status-info)",
-    border: "transparent",
-  },
-};
-
-const LINE_COLORS: Record<BadgeColor, ColorTokens> = {
-  brand: {
-    background: "transparent",
-    text: "var(--semantic-text-brand-default)",
-    border: "var(--semantic-border-brand-default)",
-  },
-  neutral: {
-    background: "transparent",
-    text: "var(--semantic-text-normal-default)",
-    border: "var(--semantic-border-normal-default)",
-  },
-  success: {
-    background: "transparent",
-    text: "var(--semantic-text-status-success)",
-    border: "var(--semantic-text-status-success)",
-  },
-  error: {
-    background: "transparent",
-    text: "var(--semantic-text-status-error)",
-    border: "var(--semantic-border-status-error)",
-  },
-  caution: {
-    background: "transparent",
-    text: "var(--semantic-text-status-caution)",
-    border: "var(--semantic-border-status-caution)",
-  },
-  info: {
-    background: "transparent",
-    text: "var(--semantic-text-status-info)",
-    border: "var(--semantic-text-status-info)",
-  },
-};
-
-const COLORS_BY_VARIANT: Record<BadgeVariant, Record<BadgeColor, ColorTokens>> = {
-  fill: FILL_COLORS,
-  ghost: GHOST_COLORS,
-  line: LINE_COLORS,
-};
-
-interface SizeTokens {
-  height: number;
-  paddingY: number;
-  paddingX: number;
-  radius: number;
-  fontSize: number;
-  lineHeight: number;
-}
-
-const SIZE_TOKENS: Record<BadgeSize, SizeTokens> = {
-  sm: { height: 22, paddingY: 3, paddingX: 6, radius: 4, fontSize: 11, lineHeight: 14 },
-  md: { height: 26, paddingY: 4, paddingX: 8, radius: 4, fontSize: 13, lineHeight: 18 },
-  lg: { height: 30, paddingY: 5, paddingX: 10, radius: 6, fontSize: 14, lineHeight: 20 },
-};
 
 export class NdsBadge extends NdsElement {
   static elementName = "nds-badge";
@@ -192,35 +66,13 @@ export class NdsBadge extends NdsElement {
     const size = this._norm("size", SIZES, "md");
     const shape = this._norm("shape", SHAPES, "default");
 
-    const ct = COLORS_BY_VARIANT[variant][color];
-    const st = SIZE_TOKENS[size];
-    const resolvedRadius = shape === "pill" ? "9999px" : `${st.radius}px`;
-
+    // 색·치수·shape 라운드는 @nudge-design/styles 의 .nds-badge CSS 룰이 data-attr 로 합성.
+    // WC 는 data-attr 만 set — 인라인 색/치수는 박지 않는다 (react 미러와 동일).
     const root = this._root;
     root.dataset.variant = variant;
     root.dataset.color = color;
     root.dataset.size = size;
     root.dataset.shape = shape;
-
-    // React Badge 의 rootStyle 객체와 1:1 동일
-    Object.assign(root.style, {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "var(--semantic-gap-tight)",
-      height: `var(--nds-badge-height, ${st.height}px)`,
-      padding: `var(--nds-badge-padding-y, ${st.paddingY}px) var(--nds-badge-padding-x, ${st.paddingX}px)`,
-      borderRadius: `var(--nds-badge-radius, ${resolvedRadius})`,
-      background: ct.background,
-      color: ct.text,
-      border: `1px solid ${ct.border}`,
-      fontFamily: "var(--font-family-web, 'Pretendard', -apple-system, sans-serif)",
-      fontSize: `var(--nds-badge-font-size, ${st.fontSize}px)`,
-      lineHeight: `var(--nds-badge-line-height, ${st.lineHeight}px)`,
-      fontWeight: "var(--nds-badge-font-weight, 700)",
-      boxSizing: "border-box",
-      whiteSpace: "nowrap",
-    });
   }
 
   private _norm<T extends string>(attrName: string, allowed: readonly T[], fallback: T): T {

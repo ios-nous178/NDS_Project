@@ -1,5 +1,4 @@
 import React from "react";
-import { fontFamily, fontWeight } from "@nudge-design/tokens";
 
 /* ─── Class names ─── */
 
@@ -15,12 +14,9 @@ export type ValidationChipState = "incomplete" | "complete" | "error";
 /**
  * 아이콘·텍스트가 같은 색을 쓰므로 root 에 `color` 한 번만 박고 SVG 는 `currentColor`.
  * incomplete = 아직 미충족(muted), complete = 충족(brand), error = 형식 위반(status-error).
+ * 색·레이아웃은 styles/src/ValidationChip.ts 의 .nds-validation-chip / [data-state] 룰에서만
+ * 정의한다 — react/html 은 data-state 만 set(JS 색맵 우회 금지).
  */
-const STATE_COLOR: Record<ValidationChipState, string> = {
-  incomplete: "var(--semantic-text-muted-default, #999999)",
-  complete: "var(--semantic-text-brand-default, #2b96ed)",
-  error: "var(--semantic-text-status-error, #f13f00)",
-};
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
   classNames.filter(Boolean).join(" ");
@@ -89,39 +85,19 @@ export interface ValidationChipProps extends React.HTMLAttributes<HTMLSpanElemen
  */
 export const ValidationChip = React.forwardRef<HTMLSpanElement, ValidationChipProps>(
   ({ state = "incomplete", className, style, labelClassName, children, ...rest }, ref) => {
-    const rootStyle: React.CSSProperties = {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "var(--semantic-gap-tight, 4px)",
-      color: STATE_COLOR[state],
-      fontFamily: fontFamily.web,
-      fontSize: "12px",
-      lineHeight: "normal",
-      fontWeight: fontWeight.regular,
-      whiteSpace: "nowrap",
-      ...style,
-    };
-
     return (
       <span
         ref={ref}
         data-slot="root"
         data-state={state}
         className={cx(VC_CLASS, className)}
-        style={rootStyle}
+        style={style}
         {...rest}
       >
         <span
           data-slot="icon"
           aria-hidden="true"
           className={VC_ICON_CLASS}
-          style={{
-            display: "inline-flex",
-            flexShrink: 0,
-            width: "16px",
-            height: "16px",
-          }}
         >
           {state === "error" ? <ErrorGlyph /> : <CheckGlyph />}
         </span>

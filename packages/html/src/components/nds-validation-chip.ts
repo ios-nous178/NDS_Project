@@ -4,13 +4,13 @@
  * DOM:
  *   <nds-validation-chip state="complete">6자 이상</nds-validation-chip>
  *
- *   → <span class="nds-validation-chip" data-slot="root" data-state="complete" style="...인라인...">
+ *   → <span class="nds-validation-chip" data-slot="root" data-state="complete">
  *       <span class="nds-validation-chip__icon" data-slot="icon">…svg…</span>
  *       <span class="nds-validation-chip__label" data-slot="label">6자 이상</span>
  *     </span>
  *
- * React ValidationChip 과 동일하게 모든 시각 속성을 인라인 style 로 박는다 —
- * stylesheet 에 .nds-validation-chip 룰이 없는 게 정상(Badge 와 같은 방식).
+ * 색·레이아웃은 styles/src/ValidationChip.ts 의 .nds-validation-chip / [data-state] 룰에서만
+ * 정의한다 — react/html 은 data-state 만 set(JS 색맵 우회 금지).
  * 아이콘·텍스트는 root 의 color(상태색)을 currentColor 로 상속한다.
  */
 
@@ -23,12 +23,6 @@ const STATES: readonly ValidationChipState[] = ["incomplete", "complete", "error
 const FORWARDED_ATTRS = ["role", "aria-label", "aria-labelledby", "title"] as const;
 
 const VC_CLASS = "nds-validation-chip";
-
-const STATE_COLOR: Record<ValidationChipState, string> = {
-  incomplete: "var(--semantic-text-muted-default, #999999)",
-  complete: "var(--semantic-text-brand-default, #2b96ed)",
-  error: "var(--semantic-text-status-error, #f13f00)",
-};
 
 const CHECK_SVG =
   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="display:block" xmlns="http://www.w3.org/2000/svg">' +
@@ -83,28 +77,8 @@ export class NdsValidationChip extends NdsElement {
 
     const state = this._norm("state", STATES, "incomplete");
     const root = this._root;
+    // 색·레이아웃은 styles 의 .nds-validation-chip / [data-state] 룰이 담당 — data-state 만 set.
     root.dataset.state = state;
-
-    // React ValidationChip 의 rootStyle 과 1:1 동일
-    Object.assign(root.style, {
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "var(--semantic-gap-tight, 4px)",
-      color: STATE_COLOR[state],
-      fontFamily: "var(--font-family-web, 'Pretendard', -apple-system, sans-serif)",
-      fontSize: "12px",
-      lineHeight: "normal",
-      fontWeight: "400",
-      whiteSpace: "nowrap",
-    });
-
-    Object.assign(this._icon.style, {
-      display: "inline-flex",
-      flexShrink: "0",
-      width: "16px",
-      height: "16px",
-    });
 
     const glyphKey = state === "error" ? "error" : "check";
     if (this._icon.dataset.glyph !== glyphKey) {

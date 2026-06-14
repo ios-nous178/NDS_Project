@@ -25,7 +25,7 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
-import { cv, fontWeight, shadow, sizing, spacing, typeScale, zIndex } from "@nudge-design/tokens";
+import { sizing, spacing, zIndex } from "@nudge-design/tokens";
 
 const HEADER_CLASS = "nds-header";
 const H_LEFT_CLASS = `${HEADER_CLASS}__left`;
@@ -45,41 +45,8 @@ const H_SEARCH_ICON_CLASS = `${HEADER_CLASS}__search-icon`;
 export type HeaderVariant = "compact" | "webview" | "transparent" | "web";
 export type HeaderPosition = "sticky" | "fixed" | "static";
 
-interface FlexVariantStyle {
-  background: string;
-  borderBottom: string;
-  shadow: string;
-  titleFontSize: number;
-  titleLineHeight: number;
-  titleFontWeight: number;
-}
-
-const flexVariantConfig: Record<string, FlexVariantStyle> = {
-  compact: {
-    background: cv.surface.default,
-    borderBottom: `1px solid ${cv.borderRole.subtle}`,
-    shadow: "none",
-    titleFontSize: typeScale.body1.fontSize,
-    titleLineHeight: typeScale.body1.lineHeight,
-    titleFontWeight: fontWeight.bold,
-  },
-  webview: {
-    background: cv.surface.default,
-    borderBottom: "none",
-    shadow: "none",
-    titleFontSize: typeScale.body1.fontSize,
-    titleLineHeight: typeScale.body1.lineHeight,
-    titleFontWeight: fontWeight.bold,
-  },
-  transparent: {
-    background: "transparent",
-    borderBottom: "none",
-    shadow: "none",
-    titleFontSize: typeScale.body1.fontSize,
-    titleLineHeight: typeScale.body1.lineHeight,
-    titleFontWeight: fontWeight.bold,
-  },
-};
+/* flex variant 의 색(background/border-bottom/shadow)·title font 는 styles 의
+ * [data-variant]/[data-elevated] 룰이 소유한다. 여기선 data-attr 만 set. */
 
 /* ──────────────── <nds-header> ──────────────── */
 
@@ -177,27 +144,10 @@ export class NdsHeader extends NdsElement {
     if (isWeb) {
       if (maxWidth) this._header.style.setProperty("--nds-header-max-width", `${maxWidth}px`);
     } else {
-      const variantStyle = flexVariantConfig[variant] || flexVariantConfig.compact;
+      // 색(background/border-bottom/shadow)·title font 는 styles 의 [data-variant]/
+      // [data-elevated] 룰이 set — 여기선 치수 슬롯만(색 JS 맵 우회 금지).
       this._header.style.setProperty("--nds-header-height", `${sizing.appBar.height}px`);
       this._header.style.setProperty("--nds-header-padding-x", `${spacing[16]}px`);
-      this._header.style.setProperty("--nds-header-background", variantStyle.background);
-      this._header.style.setProperty("--nds-header-border-bottom", variantStyle.borderBottom);
-      this._header.style.setProperty(
-        "--nds-header-shadow",
-        elevated ? shadow["1"] : variantStyle.shadow,
-      );
-      this._header.style.setProperty(
-        "--nds-header-title-font-size",
-        `${variantStyle.titleFontSize}px`,
-      );
-      this._header.style.setProperty(
-        "--nds-header-title-line-height",
-        `${variantStyle.titleLineHeight}px`,
-      );
-      this._header.style.setProperty(
-        "--nds-header-title-font-weight",
-        String(variantStyle.titleFontWeight),
-      );
       this._header.style.setProperty("--nds-header-z-index", String(zIndex.appBar));
 
       if (title) this._titleEl.textContent = title;

@@ -35,22 +35,6 @@ export interface FABProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   "aria-label"?: string;
 }
 
-/* ─── Styles ─── */
-
-const colorConfig: Record<FABColor, { bg: string; fg: string }> = {
-  primary: {
-    bg: "var(--semantic-bg-brand-default)",
-    fg: "var(--semantic-button-text-default)",
-  },
-  secondary: {
-    bg: "var(--semantic-fill-neutral-default)",
-    fg: "var(--semantic-text-inverse-default)",
-  },
-  neutral: {
-    bg: "var(--semantic-bg-surface-default)",
-    fg: "var(--semantic-text-normal-default)",
-  },
-};
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -75,7 +59,6 @@ export const FAB = React.forwardRef<HTMLButtonElement, FABProps>(
     ref,
   ) => {
     const px = sizeConfig[size];
-    const c = colorConfig[color];
     const padding = label ? `${spacing[16]}px` : "0";
 
     return (
@@ -92,8 +75,6 @@ export const FAB = React.forwardRef<HTMLButtonElement, FABProps>(
           {
             "--nds-fab-size": `${px}px`,
             "--nds-fab-padding": padding,
-            "--nds-fab-bg": c.bg,
-            "--nds-fab-fg": c.fg,
             ...(offset !== undefined && { "--nds-fab-offset": `${offset}px` }),
             ...style,
           } as React.CSSProperties

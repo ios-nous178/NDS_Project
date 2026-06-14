@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T16:26:24.791Z",
+  "generatedAt": "2026-06-14T18:35:19.658Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -2778,6 +2778,13 @@
       ],
       "dtsRelPath": "packages/react/dist/FAB.d.ts",
       "htmlTag": "nds-fab",
+      "htmlAttrs": {
+        "color": [
+          "primary",
+          "neutral",
+          "secondary"
+        ]
+      },
       "htmlObservedAttrs": [
         "icon",
         "label",
@@ -13907,7 +13914,13 @@
     },
     {
       "tag": "nds-fab",
-      "attrs": {},
+      "attrs": {
+        "color": [
+          "primary",
+          "neutral",
+          "secondary"
+        ]
+      },
       "observedAttrs": [
         "icon",
         "label",

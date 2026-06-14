@@ -28,6 +28,20 @@ export const fabStyles = `
     z-index: 50;
   }
 
+  /* color → bg/fg 슬롯 합성. react/html 은 data-color 만 set, 색은 여기서(JS 색맵 우회 금지). */
+  :where(.${FB_CLASS}[data-color="primary"]) {
+    --nds-fab-bg: ${cv.surface.brand};
+    --nds-fab-fg: ${cv.button.textDefault};
+  }
+  :where(.${FB_CLASS}[data-color="secondary"]) {
+    --nds-fab-bg: ${cv.fill.neutral};
+    --nds-fab-fg: ${cv.textRole.inverse};
+  }
+  :where(.${FB_CLASS}[data-color="neutral"]) {
+    --nds-fab-bg: ${cv.surface.default};
+    --nds-fab-fg: ${cv.textRole.normal};
+  }
+
   :where(.${FB_CLASS}:hover) {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22), 0 3px 6px rgba(0, 0, 0, 0.1);
