@@ -74,6 +74,7 @@
     "Modal",
     "MultiSelect",
     "NoticeAlert",
+    "NumericSpinner",
     "PageSizeSelect",
     "Pagination",
     "PhoneInput",

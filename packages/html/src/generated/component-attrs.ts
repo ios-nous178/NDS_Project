@@ -904,6 +904,22 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
+  "nds-numeric-spinner": {
+    "observedAttributes": [
+      "disabled",
+      "max",
+      "min",
+      "size",
+      "step",
+      "value"
+    ],
+    "enums": {
+      "size": [
+        "medium",
+        "small"
+      ]
+    }
+  },
   "nds-pagination": {
     "observedAttributes": [
       "page",

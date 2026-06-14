@@ -43,6 +43,7 @@
     "LikertScale",
     "MediaCard",
     "MediaThumbnail",
+    "NumericSpinner",
     "Popup",
     "PriceTag",
     "ProgressBar",

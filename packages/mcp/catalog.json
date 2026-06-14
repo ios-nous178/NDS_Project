@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T18:47:24.960Z",
+  "generatedAt": "2026-06-14T21:08:24.327Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4126,6 +4126,60 @@
         "variant",
         "message",
         "hide-icon"
+      ]
+    },
+    {
+      "name": "NumericSpinner",
+      "props": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": "number"
+        },
+        {
+          "name": "onValueChange",
+          "optional": false,
+          "type": "(value: number) => void"
+        },
+        {
+          "name": "min",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "max",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "step",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": "NumericSpinnerSize",
+          "allowedValues": [
+            "medium",
+            "small"
+          ]
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/NumericSpinner.d.ts",
+      "htmlTag": "nds-numeric-spinner",
+      "htmlObservedAttrs": [
+        "disabled",
+        "max",
+        "min",
+        "size",
+        "step",
+        "value"
       ]
     },
     {
@@ -13143,6 +13197,7 @@
     "nds-modal",
     "nds-multi-select",
     "nds-notice-alert",
+    "nds-numeric-spinner",
     "nds-pagination",
     "nds-phone-input",
     "nds-popular-posts",
@@ -14051,6 +14106,18 @@
         "variant",
         "message",
         "hide-icon"
+      ]
+    },
+    {
+      "tag": "nds-numeric-spinner",
+      "attrs": {},
+      "observedAttrs": [
+        "disabled",
+        "max",
+        "min",
+        "size",
+        "step",
+        "value"
       ]
     },
     {

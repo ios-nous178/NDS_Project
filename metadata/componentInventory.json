@@ -607,6 +607,18 @@
     "notes": "value=number|null (빈 입력은 null). NumberStepper(작은 정수)와 분리."
   },
   {
+    "name": "NumericSpinner",
+    "category": "입력",
+    "status": "implemented",
+    "description": "−/값/+ 로 정수 증감. 직접 입력·화살표 키 지원, min/max 도달 시 버튼 비활성",
+    "storybookTitle": "Components/Inputs/NumericSpinner",
+    "docsPath": "/components/numeric-spinner",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "수량/회차/세트 수/인원 등 작은 정수 조정",
+    "notes": "작은 정수 전용. 큰 수/금액은 AmountInput, 단계 진행 표시는 Stepper."
+  },
+  {
     "name": "Textarea",
     "category": "입력",
     "status": "implemented",

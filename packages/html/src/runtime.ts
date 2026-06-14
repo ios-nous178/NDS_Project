@@ -60,6 +60,7 @@ import "./components/nds-quick-action-grid.js";
 import "./components/nds-quick-menu.js";
 import "./components/nds-likert-scale.js";
 import "./components/nds-amount-input.js";
+import "./components/nds-numeric-spinner.js";
 import "./components/nds-verification-code-input.js";
 import "./components/nds-address-picker.js";
 import "./components/nds-accordion.js";

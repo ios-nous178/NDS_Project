@@ -45,6 +45,7 @@ export * from "./Breadcrumb.js";
 export * from "./Banner.js";
 export * from "./NoticeAlert.js";
 export * from "./Textarea.js";
+export * from "./NumericSpinner.js";
 export * from "./Tooltip.js";
 export * from "./ConfirmTooltip.js";
 export * from "./TrendingKeywords.js";
