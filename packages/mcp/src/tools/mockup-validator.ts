@@ -423,9 +423,7 @@ export function validateMockupSource(
   }
 
   const primaryTokenRefs = [
-    ...source.matchAll(
-      /var\(--color-(?:semantic-primary|blue|cobalt|trostEapBanner|yellow-primary)[\w-]*\)/g,
-    ),
+    ...source.matchAll(/var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)[\w-]*\)/g),
   ];
   const primaryRoleSignals = [
     {

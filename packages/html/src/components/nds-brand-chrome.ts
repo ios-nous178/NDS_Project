@@ -124,6 +124,23 @@ interface BottomNavData {
   tabs: BottomNavTab[];
 }
 
+/**
+ * 브랜드 프로모/크로스셀 띠 배너 (desktop 헤더 상단). 브랜드 무관 — 내용은 데이터로
+ * 주입하고 색은 `--nds-brand-banner-*` 슬롯으로 override (구 react TrostEAPBanner 의 후신).
+ */
+interface BannerData {
+  /** 굵게 강조되는 도입부. */
+  strong: string;
+  /** strong 뒤 일반 텍스트. */
+  text: string;
+  /** CTA pill 라벨: prefix + accent(강조색) + suffix. 셋 다 없으면 CTA 생략. */
+  ctaPrefix?: string;
+  ctaAccent?: string;
+  ctaSuffix?: string;
+  /** 클릭 이동 (외부 링크 새 탭). */
+  href: string;
+}
+
 interface BrandChrome {
   label: string;
   logo: BrandLogo;
@@ -169,12 +186,6 @@ interface BrandChrome {
     partnerSignupLabel?: string;
     tabs: { name: string; href: string; isNew?: boolean }[];
     activeTab: string;
-    bannerStrong: string;
-    bannerText: string;
-    bannerCtaPrefix: string;
-    bannerCtaAccent: string;
-    bannerCtaSuffix: string;
-    bannerHref: string;
     /** 모바일 rich 2단 헤더 (Storybook TrostWebviewHome) — 포인트 칩 금액 / row2 검색 placeholder. */
     mobilePointAmount: string;
     mobileSearchPlaceholder: string;
@@ -203,6 +214,9 @@ interface BrandChrome {
 
   /** 앱 하단 BottomNav 5탭. web 전용 brand (cashwalk-biz) 는 미설정. */
   bottomNav?: BottomNavData;
+
+  /** 데스크탑 헤더 상단 프로모/크로스셀 띠 배너. 브랜드 무관, 토큰 override 가능. */
+  banner?: BannerData;
 }
 
 /* ──────────────── Data ──────────────── */
@@ -313,6 +327,14 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
       copyright: "Copyright Humart Company. All Rights Reserved.",
     },
     extra: "긴급 위기상담 전화: 자살예방 상담전화 1393 / 정신건강 위기상담 전화 1577-0199",
+    banner: {
+      strong: "기업 전용 멘탈케어 프로그램",
+      text: "을 도입하고 싶다면?",
+      ctaPrefix: "지금 ",
+      ctaAccent: "넛지EAP",
+      ctaSuffix: " 이용해보기",
+      href: "https://eapkorea.co.kr/",
+    },
     trost: {
       pcMaxWidth: 1080,
       searchInputWidth: 530,
@@ -328,12 +350,6 @@ const BRAND_DATA: Record<BrandKey, BrandChrome> = {
         { name: "약물치료", href: "/medicine" },
       ],
       activeTab: "/",
-      bannerStrong: "기업 전용 멘탈케어 프로그램",
-      bannerText: "을 도입하고 싶다면?",
-      bannerCtaPrefix: "지금 ",
-      bannerCtaAccent: "넛지EAP",
-      bannerCtaSuffix: " 이용해보기",
-      bannerHref: "https://eapkorea.co.kr/",
       mobilePointAmount: "123,990",
       mobileSearchPlaceholder: "심리검사, 상담, 마음챙김을 검색해보세요.",
       webviewTitle: "타이틀",
@@ -662,6 +678,58 @@ function renderLogoImg(
 /** Once-per-document style injection guard. */
 function ensureStyle(id: string, css: string): string {
   return `<style data-nds-style="${id}">${css}</style>`;
+}
+
+/* 브랜드 무관 프로모/크로스셀 띠 배너 (desktop 헤더 상단).
+ * 색은 `--nds-brand-banner-*` 슬롯 — default 는 현행 EAP 크로스셀 띠 값. 다른 브랜드는
+ * 데이터(banner)만 주입하고 필요 시 슬롯만 override (컴포넌트에 브랜드 분기 없음). */
+const BRAND_BANNER_CSS = `
+    .nds-brand-banner {
+      width: 100%;
+      height: var(--nds-brand-banner-height, 50px);
+      background: var(--nds-brand-banner-bg, #d5eafb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+    }
+    .nds-brand-banner__text {
+      margin-right: 20px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--nds-brand-banner-text-color, #333);
+      font-weight: 400;
+    }
+    .nds-brand-banner__text > strong { font-weight: 700; }
+    .nds-brand-banner__cta {
+      display: inline-flex;
+      align-items: center;
+      height: 34px;
+      background: var(--nds-brand-banner-cta-bg, #eaf5fd);
+      border-radius: 8px;
+      padding: 0 11px;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+    .nds-brand-banner__cta-label {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      color: var(--nds-brand-banner-cta-color, #333);
+    }
+    .nds-brand-banner__cta-label > span {
+      color: var(--nds-brand-banner-accent, #ff7a00);
+    }
+`;
+
+/** 브랜드 데이터의 banner 를 띠 배너 HTML 로 렌더 — desktop 헤더 첫 자식으로 삽입. */
+function renderBrandBanner(banner: BannerData): string {
+  const hasCta = !!(banner.ctaPrefix || banner.ctaAccent || banner.ctaSuffix);
+  const cta = hasCta
+    ? `<span class="nds-brand-banner__cta"><p class="nds-brand-banner__cta-label">${escapeHtml(banner.ctaPrefix ?? "")}${banner.ctaAccent ? `<span>${escapeHtml(banner.ctaAccent)}</span>` : ""}${escapeHtml(banner.ctaSuffix ?? "")}</p></span>`
+    : "";
+  return `${ensureStyle("nds-brand-banner", BRAND_BANNER_CSS)}<a class="nds-brand-banner" href="${escapeAttr(banner.href)}" target="_blank" rel="noreferrer"><p class="nds-brand-banner__text"><strong>${escapeHtml(banner.strong)}</strong>${escapeHtml(banner.text)}</p>${cta}</a>`;
 }
 
 /** Shared webview header — 좌측 < 버튼 + 중앙 title.
@@ -1386,13 +1454,12 @@ function renderGenietHeader(
 }
 
 /* ──────────────── Brand: Trost ──────────────── */
-/* React: TrostWebHeader (= TrostDesktopHeader) — sticky compound:
- *   1) EAP Banner (50h, light blue)
+/* Trost web 데스크탑 헤더 — sticky 3단 구성:
+ *   1) 띠 배너 (50h) — 브랜드 무관 `banner` 데이터 → renderBrandBanner (다른 브랜드도 재사용)
  *   2) Utility Header (logo + search form + login + app download button)
  *   3) Tab Navigation (70h, tabs with active underline)
  *
- * 호스트 앱이 슬롯 컴포넌트 (TrostEAPBanner / TrostUtilityHeader / TrostTabNavigation) 를
- * 직접 주입하는 React 패턴을, HTML 에서는 BRAND_DATA 의 trost 필드를 사용해 1:1 재현. */
+ * 모두 BRAND_DATA[trost] 데이터로 구동 (목업 셸이라 호스트 앱 주입 없이 1벌로 렌더). */
 
 function renderTrostHeader(
   brand: BrandChrome,
@@ -1625,45 +1692,6 @@ function renderTrostHeader(
       box-sizing: border-box;
     }
 
-    /* EAP Banner (50h) — light blue strip with CTA */
-    .nds-brand-trost-web__banner {
-      width: 100%;
-      height: 50px;
-      background: #d5eafb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-decoration: none;
-      color: inherit;
-    }
-    .nds-brand-trost-web__banner-text {
-      margin-right: 20px;
-      font-size: 16px;
-      line-height: 1.5;
-      color: #333;
-      font-weight: 400;
-    }
-    .nds-brand-trost-web__banner-text > strong { font-weight: 700; }
-    .nds-brand-trost-web__banner-cta {
-      display: inline-flex;
-      align-items: center;
-      height: 34px;
-      background: #eaf5fd;
-      border-radius: 8px;
-      padding: 0 11px;
-      text-decoration: none;
-      box-sizing: border-box;
-    }
-    .nds-brand-trost-web__banner-cta-label {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.43;
-      color: #333;
-    }
-    .nds-brand-trost-web__banner-cta-label > span {
-      color: #ff7a00;
-    }
-
     /* Utility Header (logo + search + login + app download) */
     .nds-brand-trost-web__utility {
       width: 100%;
@@ -1837,12 +1865,7 @@ function renderTrostHeader(
   return `
     ${ensureStyle(styleId, css)}
     <header class="nds-brand-trost-web" data-slot="root">
-      <a class="nds-brand-trost-web__banner" href="${escapeAttr(t.bannerHref)}" target="_blank" rel="noreferrer">
-        <p class="nds-brand-trost-web__banner-text"><strong>${escapeHtml(t.bannerStrong)}</strong>${escapeHtml(t.bannerText)}</p>
-        <span class="nds-brand-trost-web__banner-cta">
-          <p class="nds-brand-trost-web__banner-cta-label">${escapeHtml(t.bannerCtaPrefix)}<span>${escapeHtml(t.bannerCtaAccent)}</span>${escapeHtml(t.bannerCtaSuffix)}</p>
-        </span>
-      </a>
+      ${brand.banner ? renderBrandBanner(brand.banner) : ""}
       <section class="nds-brand-trost-web__utility">
         <div class="nds-brand-trost-web__utility-inner">
           <div class="nds-brand-trost-web__utility-left">

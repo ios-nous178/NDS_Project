@@ -50,8 +50,8 @@
 
 ## 결정사항 (확정)
 
-- 트로스트 앱위젯 4개(EAPBanner·SearchForm·LoginSection·AppDownloadButton) — **이번 범위 밖(보류)**. chrome 아닌 트로스트 서비스 위젯이라 별도 작업으로.
-- `NudgeEAPLogo` — **유지**.
+- 트로스트 앱위젯 4개(EAPBanner·SearchForm·LoginSection·AppDownloadButton) — **제거** (2026-06-15, 보류→제거). 목업 전용이라 공개 react 에서 빼고, `EAPBanner` 는 `nds-brand-chrome` 의 브랜드-무관 `banner` 영역(`renderBrandBanner` + `--nds-brand-banner-*` 슬롯)으로 일반화 흡수 — 다른 브랜드도 `banner` 데이터만 주입하면 재사용. SearchForm/LoginSection/AppDownloadButton 은 소비처 0 이라 단순 제거.
+- `NudgeEAPLogo` — **제거** (2026-06-15, 유지→제거). 6변종(koen/ko/en/en-dark/symbol)+DAIN SVG base64 는 `@nudge-design/assets`(brand-logo-defaults/manifest) SSOT 로 이관, 소비는 `BrandLogo`/브랜드 데이터로.
 - `nds-sidebar` 물리적 위치 — **`nds-brand-chrome`에 코드 흡수(병합)**. standalone `nds-sidebar` 제거, admin chrome은 `nds-brand-chrome`의 한 형태로. 목업 경로(intake 라우팅·validator·가이드)도 nds-brand-chrome admin 형태로 전환해야 함.
 
 ## Phase 1 — `BottomNav` 신설 (additive · 비파괴, 먼저)

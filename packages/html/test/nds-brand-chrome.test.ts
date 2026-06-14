@@ -104,8 +104,8 @@ describe("nds-brand-header / nds-brand-footer", () => {
     document.body.appendChild(el);
     await flush();
 
-    expect(el.querySelector(".nds-brand-trost-web__banner")).toBeTruthy();
-    expect(el.querySelector(".nds-brand-trost-web__banner-text")?.textContent).toContain(
+    expect(el.querySelector(".nds-brand-banner")).toBeTruthy();
+    expect(el.querySelector(".nds-brand-banner__text")?.textContent).toContain(
       "기업 전용 멘탈케어",
     );
     expect(el.querySelector(".nds-brand-trost-web__utility")).toBeTruthy();

@@ -11,18 +11,11 @@
  */
 
 import type { BrandTheme } from "./types.js";
-import {
-  trostCobalt,
-  trostEapBanner,
-  trostNeutral,
-  trostPink,
-  trostStatus,
-  trostYellow,
-} from "./trost.palette.js";
+import { trostCobalt, trostNeutral, trostPink, trostStatus, trostYellow } from "./trost.palette.js";
 import { trostSemantic } from "./trost.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export — API 호환 유지
-export { trostYellow, trostEapBanner, trostCobalt, trostPink, trostNeutral, trostStatus };
+export { trostYellow, trostCobalt, trostPink, trostNeutral, trostStatus };
 export { trostSemantic };
 export type { TrostSemanticTokens } from "./trost.semantic.js";
 

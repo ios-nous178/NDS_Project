@@ -18,7 +18,6 @@ export {
   trostNeutral,
   trostStatus,
   trostSemantic,
-  trostEapBanner,
 } from "./trost.js";
 export type { TrostSemanticTokens } from "./trost.js";
 

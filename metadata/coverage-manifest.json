@@ -261,16 +261,9 @@
     "VideoPlayer"
   ],
   "brandChrome": {
-    "trost": [
-      "AppDownloadButton",
-      "EAPBanner",
-      "LoginSection",
-      "SearchForm"
-    ],
+    "trost": [],
     "geniet": [],
-    "nudge-eap": [
-      "Logo"
-    ],
+    "nudge-eap": [],
     "cashwalk-biz": [],
     "runmile": []
   },

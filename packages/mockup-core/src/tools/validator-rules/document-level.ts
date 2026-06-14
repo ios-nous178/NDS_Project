@@ -373,9 +373,7 @@ export function collectDocumentLevelViolations(
 
   // primary-color-role-overload — primary 계열 색이 여러 역할로 과다 사용
   const primaryTokenRefs =
-    source.match(
-      /var\(--color-(?:semantic-primary|blue|cobalt|trostEapBanner|yellow-primary)[\w-]*\)/g,
-    ) ?? [];
+    source.match(/var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)[\w-]*\)/g) ?? [];
   const primaryRoleSignals = [
     {
       name: "button",

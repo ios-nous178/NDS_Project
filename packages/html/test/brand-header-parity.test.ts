@@ -138,8 +138,8 @@ describe("Geniet mobile ↔ React GenietAppBar variant='mobile'", () => {
 
 /* ──────────────────────────────────────────────────────────────────────────
  * Trost — TrostWebHeaderDesktop (Zeplin Dp775xl)
- *   React: packages/react/src/trost/DesktopHeader.tsx (compound 3슬롯)
- *     · TrostEAPBanner (50h light blue, "기업 전용 멘탈케어" + 넛지EAP CTA)
+ *   목업 셸: nds-brand-chrome renderTrostHeader (3단 desktop 헤더)
+ *     · 띠 배너 (50h, brand.banner → renderBrandBanner, "기업 전용 멘탈케어" + 넛지EAP CTA)
  *     · TrostUtilityHeader (logo + yellow-border search 530w + login + app-dl)
  *     · TrostTabNavigation (70h, 6탭 중 "커뮤니티" isNew)
  *   Story: WebHeader.Trost.stories.tsx → TrostWebHeaderDesktop
@@ -148,14 +148,14 @@ describe("Geniet mobile ↔ React GenietAppBar variant='mobile'", () => {
 describe("Trost web ↔ React TrostWebHeader (compound)", () => {
   it("EAP banner: strong + body text + CTA accent '넛지EAP'", async () => {
     const el = await mount({ brand: "trost" });
-    const banner = el.querySelector(".nds-brand-trost-web__banner");
+    const banner = el.querySelector(".nds-brand-banner");
     expect(banner).toBeTruthy();
     expect(banner?.getAttribute("href")).toBe("https://eapkorea.co.kr/");
-    const bannerText = el.querySelector(".nds-brand-trost-web__banner-text");
+    const bannerText = el.querySelector(".nds-brand-banner__text");
     expect(bannerText?.querySelector("strong")?.textContent).toBe("기업 전용 멘탈케어 프로그램");
     expect(bannerText?.textContent).toContain("도입하고 싶다면?");
     /* CTA accent 단어 '넛지EAP' 가 별도 span 으로 강조 */
-    const ctaAccent = el.querySelector(".nds-brand-trost-web__banner-cta-label span");
+    const ctaAccent = el.querySelector(".nds-brand-banner__cta-label span");
     expect(ctaAccent?.textContent).toBe("넛지EAP");
   });
 
