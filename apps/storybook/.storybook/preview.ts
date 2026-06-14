@@ -3,6 +3,9 @@ import type { Preview, Decorator } from "@storybook/react";
 import { brandThemes, defaultBrand } from "../src/brand-themes";
 import "../../../packages/tokens/dist/tokens.css";
 import "../../../packages/react/dist/styles.css";
+// 목업 전용 html 웹컴포넌트(nds-brand-*, nds-sidebar) 를 Storybook 에서 렌더하려면
+// custom element 등록이 필요 — runtime import 가 모든 nds-* 를 define 한다.
+import "@nudge-design/html/runtime";
 
 const TOKEN_OVERRIDE_KEY = "nds-token-overrides";
 const SPEC_OVERLAY_KEY = "nds-spec-overlay";

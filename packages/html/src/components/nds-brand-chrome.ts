@@ -738,11 +738,18 @@ function renderBrandBanner(banner: BannerData): string {
  *   글자가 위 baseline 에 붙는다. brand-chrome 안에서 한 번만 vertical center override. */
 const WEBVIEW_FIX_ID = "nds-brand-chrome-webview-fix";
 const WEBVIEW_FIX_CSS = `
-  :where(nds-brand-header) .nds-header[data-variant="webview"] .nds-header__title {
+  /* base styles.css 의 .nds-header[data-variant="webview"] .nds-header__title (특정성 0,3,0)가
+   * transform: translateX(-50%) 를 박아, :where(특정성 0) override 의 세로 translate(-50%) 가
+   * 무력화돼 타이틀이 top:50% 에만 걸려 아래로 떨어진다. nds-brand-header 엘리먼트 셀렉터로
+   * 특정성(0,3,1)을 올려 vertical center 가 이기게 한다. */
+  nds-brand-header .nds-header[data-variant="webview"] .nds-header__title {
     top: 50%;
     transform: translate(-50%, -50%);
+    /* h1 기본 상단 마진(~0.67em≈10.7px)이 타이틀을 아래로 밀어 세로중앙이 어긋난다.
+     * base .nds-header__title 에 margin:0 이 없어서 — 여기서 리셋. (실측: offset 10.7→0) */
+    margin: 0;
   }
-  :where(nds-brand-header) .nds-header[data-variant="webview"] {
+  nds-brand-header .nds-header[data-variant="webview"] {
     position: relative;
   }
 `;
@@ -807,20 +814,20 @@ const RUNMILE_ICONS = {
  *    id 충돌을 피하려고 id 를 유니크 prefix (nds-bn-*) 로 바꿔 박았다. */
 const BOTTOM_NAV_ICONS: Record<string, string> = {
   // ── 공용 (Trost / NudgeEAP) ──
-  home: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(2 0.5)"><g><path d="M7.93359 3.3418C9.09145 2.24197 10.9085 2.24197 12.0664 3.3418L18.3779 9.33789C18.7753 9.71546 19 10.24 19 10.7881V18.5C19 19.6046 18.1046 20.5 17 20.5H3C1.89543 20.5 1 19.6046 1 18.5V10.7881C1 10.24 1.22474 9.71546 1.62207 9.33789L7.93359 3.3418Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 13.5C11.6569 13.5 13 14.8431 13 16.5V20.5H7V16.5C7 14.8431 8.34315 13.5 10 13.5Z" stroke="currentColor" stroke-width="2"/></g></g></svg>`,
+  home: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(2 0.5)"><g><path d="M7.93359 3.3418C9.09145 2.24197 10.9085 2.24197 12.0664 3.3418L18.3779 9.33789C18.7753 9.71546 19 10.24 19 10.7881V18.5C19 19.6046 18.1046 20.5 17 20.5H3C1.89543 20.5 1 19.6046 1 18.5V10.7881C1 10.24 1.22474 9.71546 1.62207 9.33789L7.93359 3.3418Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 13.5C11.6569 13.5 13 14.8431 13 16.5V20.5H7V16.5C7 14.8431 8.34315 13.5 10 13.5Z" stroke="currentColor" stroke-width="1.5"/></g></g></svg>`,
   "home-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(2 2.02)"><g><path d="M7.24512 1.09976C8.78891 -0.366587 11.2111 -0.366586 12.7549 1.09976L19.0664 7.09585C19.6625 7.66219 20 8.44843 20 9.27066V16.9826C20 18.6394 18.6569 19.9826 17 19.9826H14V14.9826C13.9998 12.7736 12.209 10.9826 10 10.9826C7.79097 10.9826 6.00018 12.7736 6 14.9826V19.9826H3C1.34315 19.9826 0 18.6394 0 16.9826V9.27066C4.95478e-05 8.44843 0.337502 7.66219 0.933594 7.09585L7.24512 1.09976ZM10.1494 12.9884C11.1841 13.0649 11.9998 13.9284 12 14.9826V19.9826H8V14.9826C8.00018 13.8782 8.89554 12.9826 10 12.9826L10.1494 12.9884Z" fill="currentColor"/></g></g></svg>`,
-  mentalcare: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M2 9.50001C2.00002 8.38721 2.33759 7.30059 2.96813 6.38367C3.59867 5.46675 4.49252 4.76267 5.53161 4.36441C6.5707 3.96615 7.70616 3.89245 8.78801 4.15305C9.86987 4.41365 10.8472 4.99629 11.591 5.82401C11.6434 5.88002 11.7067 5.92468 11.7771 5.95521C11.8474 5.98574 11.9233 6.00149 12 6.00149C12.0767 6.00149 12.1526 5.98574 12.2229 5.95521C12.2933 5.92468 12.3566 5.88002 12.409 5.82401C13.1504 4.99091 14.128 4.40338 15.2116 4.13961C16.2952 3.87585 17.4335 3.94836 18.4749 4.34749C19.5163 4.74663 20.4114 5.45346 21.0411 6.37391C21.6708 7.29436 22.0053 8.38477 22 9.50001C22 11.79 20.7 14 19.2 15.5C17.7 17 13.7062 20.1463 13.508 20.313C13.3098 20.4797 13.0919 20.6989 12.834 20.8173C12.5762 20.9357 12.296 20.9979 12.0123 20.9997C11.7285 21.0015 11.4476 20.9428 11.1883 20.8277C10.9289 20.7126 10.7526 20.5247 10.508 20.332C10.2634 20.1393 6.3 17 4.8 15.5C3.3 14 2 11.8 2 9.50001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 11.7795H17.199C16.369 11.7795 15.954 11.7795 15.61 11.9745C15.266 12.1685 15.053 12.5245 14.626 13.2355L14.596 13.2875C14.198 13.9505 13.999 14.2815 13.71 14.2765C13.421 14.2715 13.234 13.9325 12.861 13.2545L11.174 10.1875C10.827 9.55548 10.654 9.23948 10.376 9.22448C10.099 9.20948 9.892 9.50448 9.479 10.0945L9.196 10.4995C8.756 11.1265 8.537 11.4395 8.212 11.6095C7.886 11.7795 7.503 11.7795 6.738 11.7795H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g></svg>`,
+  mentalcare: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M2 9.50001C2.00002 8.38721 2.33759 7.30059 2.96813 6.38367C3.59867 5.46675 4.49252 4.76267 5.53161 4.36441C6.5707 3.96615 7.70616 3.89245 8.78801 4.15305C9.86987 4.41365 10.8472 4.99629 11.591 5.82401C11.6434 5.88002 11.7067 5.92468 11.7771 5.95521C11.8474 5.98574 11.9233 6.00149 12 6.00149C12.0767 6.00149 12.1526 5.98574 12.2229 5.95521C12.2933 5.92468 12.3566 5.88002 12.409 5.82401C13.1504 4.99091 14.128 4.40338 15.2116 4.13961C16.2952 3.87585 17.4335 3.94836 18.4749 4.34749C19.5163 4.74663 20.4114 5.45346 21.0411 6.37391C21.6708 7.29436 22.0053 8.38477 22 9.50001C22 11.79 20.7 14 19.2 15.5C17.7 17 13.7062 20.1463 13.508 20.313C13.3098 20.4797 13.0919 20.6989 12.834 20.8173C12.5762 20.9357 12.296 20.9979 12.0123 20.9997C11.7285 21.0015 11.4476 20.9428 11.1883 20.8277C10.9289 20.7126 10.7526 20.5247 10.508 20.332C10.2634 20.1393 6.3 17 4.8 15.5C3.3 14 2 11.8 2 9.50001Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 11.7795H17.199C16.369 11.7795 15.954 11.7795 15.61 11.9745C15.266 12.1685 15.053 12.5245 14.626 13.2355L14.596 13.2875C14.198 13.9505 13.999 14.2815 13.71 14.2765C13.421 14.2715 13.234 13.9325 12.861 13.2545L11.174 10.1875C10.827 9.55548 10.654 9.23948 10.376 9.22448C10.099 9.20948 9.892 9.50448 9.479 10.0945L9.196 10.4995C8.756 11.1265 8.537 11.4395 8.212 11.6095C7.886 11.7795 7.503 11.7795 6.738 11.7795H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g></svg>`,
   "mentalcare-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M14.9756 3.16812C16.2564 2.85644 17.6021 2.94149 18.833 3.41323C20.0638 3.88501 21.1218 4.72093 21.8662 5.80874C22.6097 6.89555 23.0053 8.18342 23 9.50015L22.9961 9.74722C22.9076 12.2999 21.4664 14.6479 19.9072 16.2072C19.1172 16.9972 17.7059 18.1887 16.501 19.1789C15.8919 19.6793 15.3238 20.1375 14.8965 20.4806C14.683 20.6521 14.5039 20.7959 14.373 20.9005C14.3075 20.953 14.2543 20.9958 14.2148 21.0275C14.1955 21.0431 14.1796 21.0552 14.168 21.0646C14.1575 21.0731 14.1523 21.0774 14.1514 21.0783C14.056 21.1585 13.6709 21.5329 13.251 21.7257C12.8642 21.9032 12.4441 21.9965 12.0186 21.9992C11.593 22.0019 11.1712 21.914 10.7822 21.7414C10.5429 21.6351 10.3582 21.5011 10.2188 21.3898C10.1517 21.3362 10.0858 21.2803 10.0352 21.2375C9.98067 21.1914 9.93552 21.1535 9.88965 21.1173C9.66295 20.9388 5.64435 17.7587 4.09277 16.2072C2.53412 14.6485 1.09245 12.3099 1.00391 9.7482L1 9.50015C1.0001 8.18517 1.39944 6.90007 2.14453 5.81656C2.88968 4.73322 3.94606 3.90141 5.17383 3.43081C6.40178 2.9602 7.74397 2.87287 9.02246 3.18081C10.1435 3.45092 11.1697 4.01376 11.998 4.80777C12.8248 4.00834 13.8525 3.44148 14.9756 3.16812ZM10.3242 8.22378C9.8056 8.2347 9.45141 8.53494 9.25293 8.74429C9.0517 8.95664 8.84759 9.25289 8.66016 9.52066L8.65918 9.52163L8.37598 9.92691C8.1465 10.2539 8.01174 10.445 7.89746 10.5802C7.79624 10.7 7.75648 10.7184 7.74805 10.7228C7.7377 10.7282 7.6972 10.7483 7.54883 10.7619C7.37274 10.778 7.1385 10.7794 6.73828 10.7794H6C5.44776 10.7794 5.00008 11.2272 5 11.7794C5.00006 12.3317 5.44775 12.7794 6 12.7794H6.73828C7.10264 12.7794 7.44249 12.7804 7.73047 12.7541C8.0388 12.7258 8.35676 12.6621 8.6748 12.4962L8.67578 12.4953C8.9923 12.3296 9.2256 12.1069 9.4248 11.8712C9.61095 11.651 9.80515 11.3719 10.0146 11.0734L10.0156 11.0724L10.2979 10.6691L11.9844 13.7365C12.1547 14.0461 12.3362 14.3798 12.5215 14.6232C12.7115 14.8728 13.0825 15.2658 13.6924 15.2765C14.3005 15.287 14.6854 14.9097 14.8848 14.6671C15.0787 14.4312 15.2715 14.1045 15.4531 13.8019L15.458 13.7941L15.4619 13.7873L15.4834 13.7501C15.7069 13.3779 15.839 13.1602 15.9531 13.006C16.0543 12.8694 16.0948 12.8487 16.1016 12.8449L16.1035 12.8439C16.1124 12.8388 16.1534 12.8151 16.3193 12.799C16.5103 12.7804 16.7652 12.7794 17.1992 12.7794H18C18.5522 12.7794 18.9999 12.3317 19 11.7794C18.9999 11.2272 18.5522 10.7794 18 10.7794H17.1992C16.8034 10.7794 16.435 10.7786 16.125 10.8087C15.7942 10.841 15.4545 10.9141 15.1191 11.1037C14.7822 11.2937 14.5436 11.5483 14.3457 11.8156C14.1607 12.0655 13.9719 12.3822 13.7686 12.7209L13.7646 12.7277L13.7598 12.7355L13.7373 12.7726L12.0498 9.70523C11.8929 9.41935 11.7225 9.10302 11.5459 8.87027C11.3709 8.63976 11.0505 8.30228 10.5352 8.2355L10.4297 8.22573L10.3242 8.22378Z" fill="currentColor"/></g></svg>`,
-  mypage: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.5 20.9994C20.5 16.5811 16.6944 12.9994 12 12.9994C7.30558 12.9994 3.5 16.5811 3.5 20.9994H20.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="3.5" stroke="currentColor" stroke-width="2"/></svg>`,
-  "mypage-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.5 20.9994C20.5 16.5811 16.6944 12.9994 12 12.9994C7.30558 12.9994 3.5 16.5811 3.5 20.9994H20.5Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="4.5" fill="currentColor"/></svg>`,
+  mypage: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.5 20.9994C20.5 16.5811 16.6944 12.9994 12 12.9994C7.30558 12.9994 3.5 16.5811 3.5 20.9994H20.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="3.5" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  "mypage-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.5 20.9994C20.5 16.5811 16.6944 12.9994 12 12.9994C7.30558 12.9994 3.5 16.5811 3.5 20.9994H20.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="6.5" r="4.5" fill="currentColor"/></svg>`,
   // ── Trost 전용 ──
   "trost-counsel": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.46 1.86)"><path d="M15.9258 15.9514C15.5507 15.5763 15.34 15.0676 15.34 14.5372C15.34 14.0067 15.5507 13.498 15.9258 13.1229C16.3009 12.7479 16.8096 12.5372 17.34 12.5372C17.8704 12.5372 18.3792 12.7479 18.7542 13.1229C19.1293 13.498 19.34 14.0067 19.34 14.5372C19.34 15.0676 19.1293 15.5763 18.7542 15.9514C18.3792 16.3264 17.8704 16.5372 17.34 16.5372C16.8096 16.5372 16.3009 16.3264 15.9258 15.9514Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.34 19.5372C14.34 18.4372 15.24 17.5372 16.34 17.5372H18.34C19.44 17.5372 20.34 18.4372 20.34 19.5372" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/><path d="M20.2608 9.41C20.2108 4.63 15.8508 0.75 10.5108 0.75C5.17077 0.75 0.750766 4.68 0.750766 9.5C0.750766 10.9005 1.11679 12.2611 1.82043 13.4898C1.98149 13.771 2.02066 14.1093 1.90267 14.4112L0.800766 17.23C0.700766 17.49 0.750766 17.78 0.930766 17.99C1.11077 18.2 1.39077 18.29 1.66077 18.23L5.65621 17.3349C5.87305 17.2864 6.09928 17.3129 6.30323 17.4011C7.59283 17.9591 8.95963 18.25 10.3008 18.25C10.3708 18.25 10.4408 18.25 10.5108 18.25C10.6408 18.25 10.7708 18.24 10.9008 18.23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></g></svg>`,
   "trost-counsel-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.46 1.86)"><path d="M15.9258 15.9514C15.5507 15.5763 15.34 15.0676 15.34 14.5372C15.34 14.0067 15.5507 13.498 15.9258 13.1229C16.3009 12.7479 16.8096 12.5372 17.34 12.5372C17.8704 12.5372 18.3792 12.7479 18.7542 13.1229C19.1293 13.498 19.34 14.0067 19.34 14.5372C19.34 15.0676 19.1293 15.5763 18.7542 15.9514C18.3792 16.3264 17.8704 16.5372 17.34 16.5372C16.8096 16.5372 16.3009 16.3264 15.9258 15.9514Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.34 19.5372C14.34 18.4372 15.24 17.5372 16.34 17.5372H18.34C19.44 17.5372 20.34 18.4372 20.34 19.5372" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/><path d="M11.6652 16.3742C11.8336 16.1116 11.8985 15.794 11.8424 15.4871C11.7823 15.1581 11.7508 14.829 11.7508 14.5C11.7508 12.95 12.3808 11.46 13.4808 10.4C14.5408 9.34 15.7552 8.95967 17.2852 8.95967C18.2552 8.95967 18.9998 9.07711 19.8398 9.53711C19.8398 9.53711 20.0185 9.62755 20.1517 9.5506C20.2557 9.4905 20.2608 9.34786 20.2568 9.22781C20.0995 4.5318 15.7828 0.75 10.5108 0.75C5.17077 0.75 0.750766 4.68 0.750766 9.5C0.750766 10.9005 1.11679 12.2611 1.82043 13.4898C1.98149 13.771 2.02066 14.1093 1.90267 14.4112L0.800766 17.23C0.700766 17.49 0.750766 17.78 0.930766 17.99C1.11077 18.2 1.39077 18.29 1.66077 18.23L5.65621 17.3349C5.87305 17.2864 6.09928 17.3129 6.30323 17.4011C7.59283 17.9591 8.95963 18.25 10.3008 18.25C10.3708 18.25 10.4408 18.25 10.5108 18.25C10.7427 18.25 10.9324 18.0742 10.997 17.8515C11.1481 17.3302 11.3709 16.8332 11.6652 16.3742Z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/></g></svg>`,
   "trost-community": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="18" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M8 8H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 12H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 16H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
   "trost-community-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 2C19.6569 2 21 3.34315 21 5V19C21 20.6569 19.6569 22 18 22H6C4.34315 22 3 20.6569 3 19V5C3 3.34315 4.34315 2 6 2H18ZM8 15.25C7.58579 15.25 7.25 15.5858 7.25 16C7.25 16.4142 7.58579 16.75 8 16.75H16C16.4142 16.75 16.75 16.4142 16.75 16C16.75 15.5858 16.4142 15.25 16 15.25H8ZM8 11.25C7.58579 11.25 7.25 11.5858 7.25 12C7.25 12.4142 7.58579 12.75 8 12.75H16C16.4142 12.75 16.75 12.4142 16.75 12C16.75 11.5858 16.4142 11.25 16 11.25H8ZM8 7.25C7.58579 7.25 7.25 7.58579 7.25 8C7.25 8.41421 7.58579 8.75 8 8.75H16C16.4142 8.75 16.75 8.41421 16.75 8C16.75 7.58579 16.4142 7.25 16 7.25H8Z" fill="currentColor"/></svg>`,
   // ── NudgeEAP 전용 ──
-  challenge: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 3C7 2.44772 6.55228 2 6 2C5.44772 2 5 2.44772 5 3V21C5 21.5523 5.44772 22 6 22C6.55228 22 7 21.5523 7 21V3Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H18.0586C18.9435 4 19.6608 4.71734 19.6608 5.60222C19.6608 6.03448 19.4861 6.4484 19.1765 6.75L17.0885 8.78363C16.6928 9.16897 16.6845 9.80208 17.0698 10.1977C17.0759 10.204 17.0822 10.2102 17.0885 10.2164L19.1765 12.25C19.8104 12.8674 19.8238 13.8818 19.2064 14.5157C18.9048 14.8253 18.4908 15 18.0586 15H6V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></g></svg>`,
-  "challenge-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 3C7 2.44772 6.55228 2 6 2C5.44772 2 5 2.44772 5 3V21C5 21.5523 5.44772 22 6 22C6.55228 22 7 21.5523 7 21V3Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H18.0586C18.9435 4 19.6608 4.71734 19.6608 5.60222C19.6608 6.03448 19.4861 6.4484 19.1765 6.75L17.0885 8.78363C16.6928 9.16897 16.6845 9.80208 17.0698 10.1977C17.0759 10.204 17.0822 10.2102 17.0885 10.2164L19.1765 12.25C19.8104 12.8674 19.8238 13.8818 19.2064 14.5157C18.9048 14.8253 18.4908 15 18.0586 15H6V4Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></g></svg>`,
+  challenge: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 3C7 2.44772 6.55228 2 6 2C5.44772 2 5 2.44772 5 3V21C5 21.5523 5.44772 22 6 22C6.55228 22 7 21.5523 7 21V3Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H18.0586C18.9435 4 19.6608 4.71734 19.6608 5.60222C19.6608 6.03448 19.4861 6.4484 19.1765 6.75L17.0885 8.78363C16.6928 9.16897 16.6845 9.80208 17.0698 10.1977C17.0759 10.204 17.0822 10.2102 17.0885 10.2164L19.1765 12.25C19.8104 12.8674 19.8238 13.8818 19.2064 14.5157C18.9048 14.8253 18.4908 15 18.0586 15H6V4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></g></svg>`,
+  "challenge-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 3C7 2.44772 6.55228 2 6 2C5.44772 2 5 2.44772 5 3V21C5 21.5523 5.44772 22 6 22C6.55228 22 7 21.5523 7 21V3Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4H18.0586C18.9435 4 19.6608 4.71734 19.6608 5.60222C19.6608 6.03448 19.4861 6.4484 19.1765 6.75L17.0885 8.78363C16.6928 9.16897 16.6845 9.80208 17.0698 10.1977C17.0759 10.204 17.0822 10.2102 17.0885 10.2164L19.1765 12.25C19.8104 12.8674 19.8238 13.8818 19.2064 14.5157C18.9048 14.8253 18.4908 15 18.0586 15H6V4Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></g></svg>`,
   counsel: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.5 2.5)"><g><g><mask id="nds-bn-counsel-mask" fill="white"><path d="M10.5 0C16.299 0 21 3.80558 21 8.5C21 13.1944 16.299 17 10.5 17C9.68157 17 8.88566 16.9207 8.12109 16.7773L4.65332 18.457C3.65727 18.9391 2.50011 18.214 2.5 17.1074V14.002C0.941964 12.519 0 10.5993 0 8.5C0 3.80558 4.70101 0 10.5 0Z"/></mask><path d="M8.12109 16.7773L8.48979 14.8116C8.06919 14.7327 7.63438 14.7908 7.24924 14.9774L8.12109 16.7773ZM4.65332 18.457L5.52468 20.2572L5.52517 20.257L4.65332 18.457ZM2.5 17.1074H0.5V17.1076L2.5 17.1074ZM2.5 14.002H4.5C4.5 13.4544 4.2755 12.9308 3.87888 12.5533L2.5 14.002ZM10.5 0V2C15.6099 2 19 5.28422 19 8.5H21H23C23 2.32694 16.988 -2 10.5 -2V0ZM21 8.5H19C19 11.7158 15.6099 15 10.5 15V17V19C16.988 19 23 14.6731 23 8.5H21ZM10.5 17V15C9.81084 15 9.13838 14.9333 8.48979 14.8116L8.12109 16.7773L7.75239 18.7431C8.63293 18.9082 9.5523 19 10.5 19V17ZM8.12109 16.7773L7.24924 14.9774L3.78147 16.6571L4.65332 18.457L5.52517 20.257L8.99294 18.5773L8.12109 16.7773ZM4.65332 18.457L3.78196 16.6568C4.11345 16.4964 4.49996 16.7378 4.5 17.1072L2.5 17.1074L0.5 17.1076C0.500247 19.6903 3.2011 21.3819 5.52468 20.2572L4.65332 18.457ZM2.5 17.1074H4.5V14.002H2.5H0.5V17.1074H2.5ZM2.5 14.002L3.87888 12.5533C2.65399 11.3874 2 9.96992 2 8.5H0H-2C-2 11.2287 -0.770064 13.6506 1.12112 15.4506L2.5 14.002ZM0 8.5H2C2 5.28422 5.39007 2 10.5 2V0V-2C4.01195 -2 -2 2.32694 -2 8.5H0Z" fill="currentColor" mask="url(#nds-bn-counsel-mask)"/></g><g><path d="M7.7 8.71997C7.7 9.27127 7.25263 9.71756 6.7 9.71756C6.14737 9.71756 5.7 9.27127 5.7 8.71997C5.7 8.16867 6.14737 7.72238 6.7 7.72238C7.25263 7.72238 7.7 8.16867 7.7 8.71997Z" fill="currentColor"/><path d="M11.5 8.71997C11.5 9.27127 11.0526 9.71756 10.5 9.71756C9.94738 9.71756 9.5 9.27127 9.5 8.71997C9.5 8.16867 9.94738 7.72238 10.5 7.72238C11.0526 7.72238 11.5 8.16867 11.5 8.71997Z" fill="currentColor"/><path d="M15.3 8.71997C15.3 9.27127 14.8522 9.71756 14.3009 9.71756C13.7495 9.71756 13.3 9.27127 13.3 8.71997C13.3 8.16867 13.7478 7.72238 14.3009 7.72238C14.854 7.72238 15.3 8.16867 15.3 8.71997Z" fill="currentColor"/></g></g></g></svg>`,
   "counsel-active": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1.5 2.5)"><g><path d="M10.5 0C16.299 0 21 3.80558 21 8.5C21 13.1944 16.299 17 10.5 17C9.68157 17 8.88566 16.9207 8.12109 16.7773L4.65332 18.457C3.65727 18.9391 2.50011 18.214 2.5 17.1074V14.002C0.941964 12.519 0 10.5993 0 8.5C0 3.80558 4.70101 0 10.5 0ZM6.7002 7.72266C6.14764 7.72266 5.70033 8.16854 5.7002 8.71973C5.7002 9.27103 6.14756 9.71777 6.7002 9.71777C7.25274 9.71767 7.7002 9.27096 7.7002 8.71973C7.70006 8.1686 7.25266 7.72276 6.7002 7.72266ZM10.5 7.72266C9.94745 7.72267 9.50013 8.16855 9.5 8.71973C9.5 9.27102 9.94736 9.71776 10.5 9.71777C11.0526 9.71777 11.5 9.27103 11.5 8.71973C11.4999 8.16854 11.0525 7.72266 10.5 7.72266ZM14.3008 7.72266C13.7478 7.72271 13.2999 8.16857 13.2998 8.71973C13.2998 9.27099 13.7494 9.71772 14.3008 9.71777C14.8521 9.71777 15.2998 9.27103 15.2998 8.71973C15.2997 8.16854 14.8538 7.72266 14.3008 7.72266Z" fill="currentColor"/></g></g></svg>`,
   // ── Geniet 전용 (단일 그래픽 — color cascade 로 active 구분) ──
@@ -1479,6 +1486,8 @@ function renderTrostHeader(
   const TC_BORDER_SUBTLE = "var(--semantic-border-subtle-default, #F2F2F2)";
   const TC_BORDER_NORMAL = "var(--semantic-border-normal-default, #E5E5E5)";
   const TC_FONT = "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif";
+  // 트로스트 brand accent(텍스트 orange #FF9D00) — N 뱃지 등 brand 강조. (구 raw #ff7a00 정합)
+  const TC_TEXT_BRAND = "var(--semantic-text-brand-default, #FF9D00)";
 
   if (surface === "webview") {
     /* React TrostAppBar variant="webview" 의 기본 케이스 (sub / app=trost):
@@ -1512,7 +1521,8 @@ function renderTrostHeader(
       .nds-brand-trost-webview__title {
         position: absolute;
         left: 50%;
-        transform: translateX(-50%);
+        top: 50%;
+        transform: translate(-50%, -50%);
         max-width: 56%;
         margin: 0;
         font-weight: 700;
@@ -1688,7 +1698,7 @@ function renderTrostHeader(
     .nds-brand-trost-web {
       display: block;
       width: 100%;
-      background: #fff;
+      background: ${TC_BG};
       box-sizing: border-box;
     }
 
@@ -1697,7 +1707,7 @@ function renderTrostHeader(
       width: 100%;
       padding: 20px 0;
       border-bottom: 1px solid #ececec;
-      background: #fff;
+      background: ${TC_BG};
     }
     .nds-brand-trost-web__utility-inner {
       max-width: ${t.pcMaxWidth}px;
@@ -1741,13 +1751,13 @@ function renderTrostHeader(
       padding: 13px 36px 13px 20px;
       font-size: 15px;
       line-height: 1.47;
-      color: #333;
+      color: ${TC_TEXT_NORMAL};
       font-weight: 400;
       box-sizing: border-box;
       font-family: inherit;
     }
     .nds-brand-trost-web__search input::placeholder {
-      color: #333;
+      color: ${TC_TEXT_NORMAL};
       font-weight: 400;
     }
     .nds-brand-trost-web__search-submit {
@@ -1769,7 +1779,7 @@ function renderTrostHeader(
       margin-right: 20px;
       font-size: 16px;
       line-height: 24px;
-      color: #000;
+      color: ${TC_TEXT_STRONG};
       font-weight: 700;
       cursor: pointer;
       background: transparent;
@@ -1785,7 +1795,7 @@ function renderTrostHeader(
       padding: 11px 16px;
       border-radius: 12px;
       border: 1px solid #d8d8d8;
-      background: #fff;
+      background: ${TC_BG};
       font-size: 15px;
       line-height: 22px;
       cursor: pointer;
@@ -1800,7 +1810,7 @@ function renderTrostHeader(
       width: 100%;
       height: 70px;
       border-bottom: 1px solid #ececec;
-      background: #fff;
+      background: ${TC_BG};
     }
     .nds-brand-trost-web__tabnav-inner {
       max-width: ${t.pcMaxWidth}px;
@@ -1837,16 +1847,16 @@ function renderTrostHeader(
       text-decoration: none;
     }
     .nds-brand-trost-web__tabnav-link[data-active="true"] {
-      color: #000;
-      border-bottom-color: #000;
+      color: ${TC_TEXT_STRONG};
+      border-bottom-color: ${TC_TEXT_STRONG};
     }
     .nds-brand-trost-web__tabnav-new {
       display: inline-flex;
       margin-left: 4px;
       padding: 0 6px;
       height: 18px;
-      background: #ff7a00;
-      color: #fff;
+      background: ${TC_TEXT_BRAND};
+      color: ${TC_BG};
       font-size: 11px;
       line-height: 18px;
       font-weight: 700;

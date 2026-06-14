@@ -183,6 +183,9 @@ importers:
       '@nudge-design/catalog':
         specifier: workspace:*
         version: link:../../packages/catalog
+      '@nudge-design/html':
+        specifier: workspace:*
+        version: link:../../packages/html
       '@nudge-design/icons':
         specifier: workspace:*
         version: link:../../packages/icons
