@@ -87,10 +87,10 @@ describe("nds-brand-bottom-nav", () => {
   });
 
   it("emits unique url(#…) ids to avoid clip/mask collisions", async () => {
-    const el = await mount("nudge-eap", "home");
+    // geniet "리뷰" 아이콘이 clipPath(url(#…)) 를 쓰므로 유니크 prefix(nds-bn-*) 로 박혀
+    // 다중 인라인 시 id 충돌이 없어야 한다. (counsel 은 mask→stroke 전환으로 url 참조 제거)
+    const el = await mount("geniet", "home");
     const html = el.innerHTML;
-    // counsel mask id 가 유니크 prefix 로 박혀 있어야 함
-    expect(html).toContain("nds-bn-counsel-mask");
-    expect(html).not.toContain("path-1-inside-1_0_38");
+    expect(html).toContain("nds-bn-geniet-review-clip");
   });
 });

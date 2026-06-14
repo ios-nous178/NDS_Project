@@ -17,3 +17,8 @@
 - **바텀네비 아이콘 stroke 정합** — 공유 바텀네비 아이콘(home·mentalcare·mypage·challenge
   +active)이 `stroke-width:2` 로, 브랜드 자체 아이콘 및 아이콘 시스템 norm(1.5)보다 굵었다.
   트로스트 멘탈케어/내공간이 이 공유 아이콘을 재사용해 유독 두껍게 튀던 것을 1.5 로 정규화.
+  추가로 NudgeEAP **상담(counsel)** 아이콘은 Figma inside-stroke mask(≈2px filled band)
+  기법이라 다른 아이콘보다 굵게 보이던 것을, mask 의 centerline 을 정식 `stroke-width:1.5`
+  path 로 변환해 정합(불필요한 `url(#…)` mask 참조도 제거). 런마일 **커뮤니티(runmile-people)**
+  아이콘도 filled-band(≈1.7px)로 그려져 런마일 norm(`stroke-width:1.3`)보다 굵던 것을,
+  동일 구도(앞/뒤 인물 2인 + 그룹 베이스)의 1.3 stroke 아웃라인으로 재작성해 정합.
