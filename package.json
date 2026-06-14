@@ -39,6 +39,7 @@
     "lint:style-token-parity": "node scripts/check-style-token-parity.mjs",
     "lint:mirror-parity:update": "node scripts/check-mirror-parity.mjs --update",
     "lint:input-focus": "node scripts/check-input-tests.mjs",
+    "lint:behavior-tests": "node scripts/check-behavior-tests.mjs",
     "lint:actions-layout": "node scripts/check-actions-layout.mjs",
     "lint:brand-completeness": "node scripts/check-brand-completeness.mjs",
     "lint:tailwind-presets": "node scripts/check-tailwind-presets.mjs",

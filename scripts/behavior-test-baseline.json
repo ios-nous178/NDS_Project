@@ -1,0 +1,52 @@
+[
+  {
+    "component": "Calendar",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 날짜 선택·disabled·range 로직 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "CheckboxGroup",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 다중 선택·indeterminate 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "CheckboxTree",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 노드 expand/collapse·indeterminate 전파 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "ConfirmTooltip",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — dialog 팝오버 트리거·confirm/cancel·Escape 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "DataTable",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 정렬·행 확장·선택 상태기계 동작 테스트 추가 예정(고난도)",
+    "since": "2026-06"
+  },
+  {
+    "component": "DateRangePicker",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 시작/끝 범위 선택·경계 로직 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "Drawer",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — overlay 닫기·Escape·포커스 트랩 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "PhoneInput",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 국가코드 드롭다운·포맷 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "TagInput",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — 토큰화·Backspace 제거·Enter 동작 테스트 추가 예정",
+    "since": "2026-06"
+  },
+  {
+    "component": "Tooltip",
+    "reason": "게이트 도입(2026-06) 시점 기존 미커버 — hover/focus 트리거·aria-describedby 동작 테스트 추가 예정",
+    "since": "2026-06"
+  }
+]

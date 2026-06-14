@@ -94,6 +94,24 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "behavior-tests",
+    label: "상호작용 위젯 동작 테스트 (react behavior/a11y 회귀 가드)",
+    check: ["node", "scripts/check-behavior-tests.mjs"],
+    fix: null,
+    fixHint:
+      "복잡 상호작용 위젯에 user-event 로 키보드/클릭/포커스/aria 동작 테스트를 " +
+      "packages/react/test/component/{Name}.test.tsx 에 추가하거나, 사유와 함께 " +
+      "scripts/behavior-test-baseline.json 에 등재하세요.",
+    watch: [
+      "packages/react/src/",
+      "packages/react/test/component/",
+      "scripts/check-behavior-tests.mjs",
+      "scripts/behavior-test-baseline.json",
+    ],
+    buildFree: true, // react src/test 소스만 읽음 — dist 불필요
+    ssot: true,
+  },
+  {
     id: "brand-completeness",
     label: "brand semantic completeness",
     check: ["node", "scripts/check-brand-completeness.mjs"],
@@ -132,7 +150,7 @@ export const GATES = [
     check: ["node", "scripts/check-storybook-catalog.mjs"],
     fix: null,
     fixHint:
-      "신규 컴포넌트는 metadata/componentInventory.json 등록 + 대표 스토리에 tags:[\"gallery\"] 태깅. " +
+      '신규 컴포넌트는 metadata/componentInventory.json 등록 + 대표 스토리에 tags:["gallery"] 태깅. ' +
       "의도된 제외는 scripts/storybook-catalog-baseline.json 에 사유와 함께 추가.",
     watch: [
       "apps/storybook/src/stories/",
@@ -154,7 +172,8 @@ export const GATES = [
   },
   {
     id: "brand-coverage",
-    label: "brand coverage manifest (metadata/coverage-manifest.json — 보드는 공유 컴포넌트가 렌더)",
+    label:
+      "brand coverage manifest (metadata/coverage-manifest.json — 보드는 공유 컴포넌트가 렌더)",
     check: ["node", "scripts/generate-brand-coverage.mjs", "--check"],
     fix: ["node", "scripts/generate-brand-coverage.mjs"],
     watch: ["packages/react/src/index.ts", "packages/html/src/index.ts", "metadata/"],
@@ -182,7 +201,11 @@ export const GATES = [
     label: "icon catalog SSOT (metadata/iconCatalog.json ← @nudge-design/icons 배럴)",
     check: ["node", "scripts/generate-icon-catalog.mjs", "--check"],
     fix: ["node", "scripts/generate-icon-catalog.mjs"],
-    watch: ["packages/icons/src/index.ts", "metadata/iconCatalog.json", "scripts/generate-icon-catalog.mjs"],
+    watch: [
+      "packages/icons/src/index.ts",
+      "metadata/iconCatalog.json",
+      "scripts/generate-icon-catalog.mjs",
+    ],
     buildFree: true, // packages/icons/src/index.ts 소스 텍스트를 직접 파싱 — dist 불필요
     ssot: true,
   },
