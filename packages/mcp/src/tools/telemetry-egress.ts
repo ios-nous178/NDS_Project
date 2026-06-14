@@ -167,9 +167,38 @@ function project(name: string, args: ToolArgs, result: unknown): TelemetryEvent[
       return projectQuality(args, result);
     case "get_guide":
       return projectGuideDemand(args, result);
+    case "prompt_satisfaction":
+      return projectSatisfaction(args, result);
     default:
       return [];
   }
+}
+
+/**
+ * prompt_satisfaction → 만족도(👍/👎) feedback 이벤트. sentiment 는 elicitation **결과**(사용자 클릭)에서
+ * 온다(args 아님). recorded:true 일 때만 적재 — 스킵(decline/cancel)/미지원은 이벤트 없음.
+ */
+function projectSatisfaction(args: ToolArgs, result: unknown): FeedbackEvent[] {
+  const obj = asObject(result);
+  if (!obj || obj.recorded !== true) return [];
+  const sentiment = obj.sentiment === "up" || obj.sentiment === "down" ? obj.sentiment : undefined;
+  if (!sentiment) return [];
+  const scoreOverall = typeof obj.scoreOverall === "number" ? obj.scoreOverall : undefined;
+  const screen = strField(obj.screen) ?? strField(args.screen);
+  return [
+    {
+      kind: "feedback",
+      uuid: randomUUID(),
+      sessionId: SESSION_ID,
+      text: sentiment === "up" ? "👍 (만족)" : "👎 (불만족)",
+      source: "tool",
+      category: "satisfaction",
+      sentiment,
+      ...(scoreOverall !== undefined ? { scoreOverall } : {}),
+      ...(screen ? { target: screen } : {}),
+      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+    },
+  ];
 }
 
 /** validate_html_mockup → validation 이벤트(룰별 위반 집계 + 코드 점수). */

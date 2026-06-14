@@ -654,6 +654,30 @@ const TOOLS = [
       additionalProperties: false,
     },
   },
+  {
+    name: "prompt_satisfaction",
+    description:
+      "목업 결과 만족도(👍/👎)를 사용자에게 클릭 다이얼로그로 물어 기록한다(elicitation). " +
+      "═══ WHEN ═══ " +
+      "build_singlefile_html 결과(점수·파일위치)를 사용자에게 **보여준 직후**, 깨끗한 빌드(DS 에러 0)일 때 호출한다. " +
+      "**화면당 세션 1회만** — 같은 화면을 재빌드해도 다시 호출하지 말 것(서버도 중복을 막지만 호출 자체를 아끼는 게 맞다). " +
+      "에러가 있는 중간(수정 루프) 빌드에는 호출하지 않는다. " +
+      "═══ HOW ═══ " +
+      "빌드 도구를 막지 않으려고 분리된 도구다 — 결과를 먼저 렌더한 뒤 이 도구를 호출하면 다이얼로그가 그 다음에 뜬다. " +
+      "👍/👎 클릭 시 객관 점수와 함께 자동 기록되고, 사용자가 닫으면(decline/cancel) 스킵된다. " +
+      "호스트가 elicitation 미지원이면 결과에 supported:false 가 와서 텍스트 안내(satisfactionOffer)로 폴백하면 된다. " +
+      "═══ ARGS ═══ scoreOverall = 방금 빌드/검증의 overall 점수. screen = 목업 파일/화면명. brand = 브랜드 슬러그.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        screen: { type: "string", description: "평가 대상 목업 파일/화면명 (예: dist/index.html)." },
+        scoreOverall: { type: "number", description: "직전 빌드/검증의 객관 품질 점수(overall)." },
+        brand: { type: "string", description: "브랜드 슬러그 (예: 'cashwalk-biz')." },
+      },
+      required: [],
+      additionalProperties: false,
+    },
+  },
 ];
 
 export const TOOL_DEFINITIONS = TOOLS;
@@ -904,6 +928,12 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         sentiment: optionalEnum(args, "sentiment", SENTIMENT_VALUES, toolName),
         scoreOverall: optionalNumber(args, "scoreOverall", toolName),
         target: optionalString(args, "target", toolName),
+        brand: optionalString(args, "brand", toolName),
+      };
+    case "prompt_satisfaction":
+      return {
+        screen: optionalString(args, "screen", toolName),
+        scoreOverall: optionalNumber(args, "scoreOverall", toolName),
         brand: optionalString(args, "brand", toolName),
       };
     default:

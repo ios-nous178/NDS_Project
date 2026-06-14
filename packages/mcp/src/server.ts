@@ -727,13 +727,16 @@ function extractCodeDeductions(result: unknown): Record<string, string[]> {
  * 회고: 에이전트가 좋은 차원 5개만 발췌하고 낮은 icon 차원을 빼서 "왜 81?" 이 안 보였음.
  * mustSurface 로 카드를 발췌 없이 그대로 노출하게 강제. 정성(D2)은 score_mockup_quality.
  */
+// 만족도 다이얼로그를 이미 띄운 화면(=세션 내 1회 제한). MCP 서버 프로세스 수명 = 세션.
+const ELICITED_SCREENS = new Set<string>();
+
 // 객관 점수 옆 주관 만족도(👍/👎) 수집 안내 — build/validate 결과에 동봉. 질문이 아니라 '안내'다.
 // 동기 부여(기록하면 다음 목업이 더 좋아짐)를 붙여 자발적 평가를 유도하되, 강요하지 않는다.
 const SATISFACTION_OFFER = {
   prompt:
     "수정이 더 필요하면 그냥 말씀해 주세요. 이 결과가 괜찮으면 👍 / 아쉬우면 👎 를 한 줄 남겨 주시면 — 객관 품질 점수와 함께 쌓여서 다음 목업이 점점 더 정확해집니다.",
   howToLog:
-    "사용자가 명시적으로 👍/👎(또는 '좋다'/'별로')로 평가하면 그때만 log_feedback({ category:'satisfaction', sentiment:'up'|'down', text:'한 줄 사유', scoreOverall:<직전 overall> }) 로 기록. AI 가 먼저 '어떠세요?'라고 묻지 말 것(안내만 1회) · 모호한 반응은 추측하지 말 것 · 빌드가 여러 번 돌아도 사용자가 평가하는 순간 1회만.",
+    "권장: 이 결과(점수·파일경로)를 사용자에게 보여준 뒤, 깨끗한 빌드면 prompt_satisfaction({ screen, scoreOverall }) 를 호출해 👍/👎 클릭 다이얼로그를 띄운다(화면당 1회·빌드 안 막힘). 호스트가 미지원(supported:false)이거나 사용자가 그냥 '좋다/별로'로 말하면 log_feedback({ category:'satisfaction', sentiment, scoreOverall }) 로 기록. AI 가 텍스트로 먼저 캐묻지 말 것 · 모호 반응 추측 금지.",
 };
 
 function attachScoreGate<T>(result: T): T {
@@ -955,6 +958,62 @@ export const toolHandlers = {
       sentiment,
       message: sentiment ? "만족도가 기록되었습니다." : "피드백이 기록되었습니다.",
     };
+  },
+  // 목업 만족도(👍/👎)를 클릭 다이얼로그(elicitation)로 물어 기록한다. 빌드와 분리된 별도 도구 —
+  // 빌드 결과를 먼저 보여준 뒤 호출하면 다이얼로그가 그 다음에 떠 "보고 나서 평가"가 된다.
+  // 화면당 세션 1회만(중복 호출 가드). 미지원 호스트는 supported:false 로 텍스트 폴백.
+  prompt_satisfaction: async (args: ToolArgs) => {
+    const screen = typeof args.screen === "string" && args.screen ? args.screen : "(목업)";
+    const scoreOverall = typeof args.scoreOverall === "number" ? args.scoreOverall : null;
+    const brand = typeof args.brand === "string" ? args.brand : undefined;
+
+    if (!server.getClientCapabilities()?.elicitation) {
+      return {
+        ok: true,
+        supported: false,
+        recorded: false,
+        message:
+          "이 호스트는 클릭 다이얼로그(elicitation)를 지원하지 않습니다. satisfactionOffer 텍스트로 안내하고, 사용자가 평가하면 log_feedback({ category:'satisfaction', sentiment }) 로 기록하세요.",
+      };
+    }
+    if (ELICITED_SCREENS.has(screen)) {
+      return { ok: true, recorded: false, alreadyAsked: true, message: "이 화면은 세션 내 이미 만족도를 물었습니다." };
+    }
+    ELICITED_SCREENS.add(screen);
+
+    const scoreLabel = scoreOverall != null ? `품질 ${scoreOverall}점 · ` : "";
+    let res: Awaited<ReturnType<typeof server.elicitInput>>;
+    try {
+      res = await server.elicitInput({
+        mode: "form",
+        message: `${scoreLabel}${screen} — 결과 확인하셨나요? 이 목업 어떠셨어요? (평가는 선택이에요. 안 하시려면 닫기/취소)`,
+        requestedSchema: {
+          type: "object",
+          properties: {
+            sentiment: {
+              type: "string",
+              enum: ["up", "down"],
+              enumNames: ["👍 좋아요", "👎 아쉬워요"],
+              title: "만족도",
+              description: "이 목업 결과에 대한 만족도",
+            },
+          },
+          required: ["sentiment"],
+        },
+      });
+    } catch (e) {
+      return { ok: false, recorded: false, error: `elicitation 실패: ${(e as Error).message}` };
+    }
+
+    const sentiment =
+      res.action === "accept" && (res.content?.sentiment === "up" || res.content?.sentiment === "down")
+        ? (res.content.sentiment as "up" | "down")
+        : undefined;
+    if (!sentiment) {
+      return { ok: true, recorded: false, action: res.action, message: "만족도 스킵됨." };
+    }
+    // recorded:true + sentiment → afterCall captureTelemetry 가 feedback 이벤트로 적재(객관점수 페어링).
+    return { ok: true, recorded: true, sentiment, scoreOverall, screen, ...(brand ? { brand } : {}) };
   },
   get_guide: (args: ToolArgs) =>
     withVisualReferencePrompt(
