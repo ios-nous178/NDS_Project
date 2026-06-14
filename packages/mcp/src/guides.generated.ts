@@ -806,6 +806,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Title 슬롯은 항상 Media 다음, 좌측 정렬 — 카드마다 다른 위치에 두면 안 됨.",
       "Thumb 이미지가 없을 때는 Brand Soft 단색 폴백 사용 — 빈 회색 박스 / placeholder 이미지 금지.",
       "Decorative Card 금지 — 콘텐츠 위계가 없는 장식용 카드 생성 금지. 동일 형식 반복이 아니면 Banner/Section 사용.",
+      "카드 장식 라인/accent 바 금지 — 상단 컬러 라인(border-top accent), 좌측 accent 보더, ::before 컬러 바 등으로 카드를 장식하지 않는다. 카드가 가질 수 있는 선은 outlined variant 의 중립 1px 전체 보더와 옵션 footer/divider hairline(`border-top 1px subtle`) 뿐 — 컬러 accent 선은 DS Card 에 없다. 강조는 색이 아니라 Chip/Badge·텍스트 위계로, 영역 구분은 spacing/Divider 로. (`get_guide({ topic: 'pattern:visual-antipatterns' })` 표면 그룹 참고.)",
       "그리드 카드 간격 임의 혼합(8/12/16/20px) 금지. Auto Layout: Mobile 16px, Web·CMS 24px.",
       "Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.",
       "Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경."
@@ -5394,6 +5395,28 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Footer 를 200h 미만 라이트로 — 코퍼레이트 랜딩은 dark/dense."
     ]
   },
+  "scroll-rail": {
+    "name": "scroll-rail",
+    "metrics": {
+      "maxHorizontalRailsPerScreen": 1,
+      "nativeHorizontalScrollbar": "forbidden"
+    },
+    "summary": "가로로 넘치는 콘텐츠(카드 레일·칩 row·가로 탭·가로 미디어 목록)를 모바일에서 스크롤로 노출하는 패턴. 스크롤바는 숨기고, 아이템은 찌그러지지 않게 고정 폭으로 흐르게 한다. 핵심은 공용 `.nds-scroll-x` 유틸 클래스 — 스크롤바 숨김(`scrollbar-width:none` + `::-webkit-scrollbar{display:none}` + `-ms-overflow-style:none`)을 컴포넌트마다 재구현하지 않고 한 자리에서 가져온다.",
+    "rules": [
+      "가로 스크롤 컨테이너에는 공용 `.nds-scroll-x` 유틸 클래스를 건다 — `overflow-x:auto` + 스크롤바 숨김(크로스 브라우저)이 한 벌로 적용된다. `::-webkit-scrollbar`/`scrollbar-width` 를 컴포넌트·목업에서 직접 재구현하지 않는다.",
+      "레이아웃은 호출부 책임 — `.nds-scroll-x` 에 `display:flex; gap:<token>` 를 주고, 각 아이템(카드)은 `flex-shrink:0` + 고정/최소 폭으로 찌그러짐을 막는다. (회귀 사례: 레일 아이템이 flex shrink 돼 카드가 81px 로 짓눌림 — flex-shrink:0 누락이 원인.)",
+      "`nds-card` 를 레일 아이템으로 쓸 땐 폭을 호스트가 아니라 카드 박스에 건다 — `nds-card` 호스트는 `display:contents` 라 host 에 건 flex/grid·width 가 안 먹는다. `--nds-card-width` 토큰으로 폭을 주거나, 폭을 가진 래퍼(`<div style=\"flex:0 0 280px\">`)로 감싼다. 호스트에 `display:block !important` 를 박는 핵으로 우회하지 않는다.",
+      "가독 여백은 레일 양 끝 아이템의 padding(또는 컨테이너 `scroll-padding-inline`)으로 — 첫/끝 카드가 화면 가장자리에 붙지 않게. 가장자리까지 흐르는 bleed 레일이 모바일 기본.",
+      "한 화면(또는 한 스크롤 영역)에 가로 스크롤 레일을 2개 이상 쌓지 않는다 — 가로/세로 스크롤 축이 섞여 사용자가 스크롤 방향을 잃는다."
+    ],
+    "avoid": [
+      "가로 스크롤 컨테이너에 네이티브 스크롤바를 그대로 노출 (특히 데스크톱 트랙패드/마우스에서 거슬림 — `.nds-scroll-x` 로 숨김 처리)",
+      "컴포넌트·목업마다 `::-webkit-scrollbar{display:none}` / `scrollbar-width:none` 를 손으로 재구현 (→ `.nds-scroll-x` 공용 유틸)",
+      "레일 아이템에 `flex-shrink` 기본값(1)을 둬 카드가 컨테이너 폭에 맞춰 찌그러지게 방치",
+      "`nds-card` 호스트에 폭/`display:block !important` 를 박아 레일 사이징을 우회 (호스트는 display:contents — 폭은 카드 박스/래퍼에)",
+      "한 화면에 가로 스크롤 레일을 여러 개 중첩·병치"
+    ]
+  },
   "selection-controls": {
     "name": "selection-controls",
     "summary": "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tabs(variant=segment) / Dropdown 중 하나로 매핑한다.",
@@ -5571,6 +5594,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "items": [
           "**Card Everything 금지** — 모든 정보 단위를 카드로 감싸지 않는다. 카드는 '독립된 정보 단위' 일 때만. 단순 group/section 은 spacing + h3 + Divider 로 위계를 만든다. 한 화면에 카드가 5개를 넘으면 80% 이상 안티패턴.",
           "**카드 안 카드 중첩 금지** — 카드 내부 영역 강조는 surface.section tone 한 단계 또는 inline Chip/Badge 로. nested Card 는 위계 표현 도구가 아니다.",
+          "**카드 장식 라인/accent 바 금지** — 카드 상단 컬러 라인(border-top accent) · 좌측 accent 보더 · ::before 컬러 바로 카드를 장식하지 않는다. 카드 테두리는 outlined 중립 1px 또는 footer/divider hairline 뿐 — 컬러 accent 선은 DS Card 에 없다. 강조는 색이 아니라 Chip/Badge·텍스트 위계로.",
           "**장식용 그림자 금지** — 떠 있지 않아야 할 요소(인라인 리스트 · 일반 카드 · 기본 입력)에 elevation/shadow 적용 금지. Shadow 는 floating UI(Modal · Popup · Dropdown · BottomSheet) 와 'hover 시 floating 표현' 에만.",
           "**Shadow-heavy 레이아웃 금지** — 한 화면에 그림자 있는 요소가 3개를 넘으면 floating 의미가 사라진다. Border 또는 surface tone 으로 대체."
         ]
@@ -5623,6 +5647,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "items": [
           "정보 단위가 아닌 단순 group/section 도 모두 카드로 감싸기",
           "카드 안에 또 카드를 만들어 내부 강조 시도",
+          "카드에 상단 컬러 라인/좌측 accent 바 등 장식용 컬러 보더 부착",
           "일반 카드 · 인라인 리스트 · 기본 입력에 shadow 적용",
           "한 화면에 floating panel(Modal/Drawer/Popup/Toast) 2개 이상 동시 노출"
         ]
@@ -5663,6 +5688,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "sectionColorOnly": "forbidden",
       "maxCardsPerScreen": 5,
       "nestedCard": "forbidden",
+      "decorativeCardAccentBar": "forbidden",
       "decorativeShadow": "forbidden",
       "maxShadowedElementsPerScreen": 3,
       "maxFloatingPanelsConcurrent": 1,
@@ -5685,6 +5711,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**Section 구분, 색상 단독 금지** — 영역 구분은 1차 spacing(--semantic-gap-loose/wide) → 2차 Divider/Border → 마지막에 surface tone 순서로. 색만으로 나누면 색맹·저시력 사용자가 구조를 잃는다.",
       "**Card Everything 금지** — 모든 정보 단위를 카드로 감싸지 않는다. 카드는 '독립된 정보 단위' 일 때만. 단순 group/section 은 spacing + h3 + Divider 로 위계를 만든다. 한 화면에 카드가 5개를 넘으면 80% 이상 안티패턴.",
       "**카드 안 카드 중첩 금지** — 카드 내부 영역 강조는 surface.section tone 한 단계 또는 inline Chip/Badge 로. nested Card 는 위계 표현 도구가 아니다.",
+      "**카드 장식 라인/accent 바 금지** — 카드 상단 컬러 라인(border-top accent) · 좌측 accent 보더 · ::before 컬러 바로 카드를 장식하지 않는다. 카드 테두리는 outlined 중립 1px 또는 footer/divider hairline 뿐 — 컬러 accent 선은 DS Card 에 없다. 강조는 색이 아니라 Chip/Badge·텍스트 위계로.",
       "**장식용 그림자 금지** — 떠 있지 않아야 할 요소(인라인 리스트 · 일반 카드 · 기본 입력)에 elevation/shadow 적용 금지. Shadow 는 floating UI(Modal · Popup · Dropdown · BottomSheet) 와 'hover 시 floating 표현' 에만.",
       "**Shadow-heavy 레이아웃 금지** — 한 화면에 그림자 있는 요소가 3개를 넘으면 floating 의미가 사라진다. Border 또는 surface tone 으로 대체.",
       "**Bold 남발 금지** — Bold 텍스트는 화면당 1-2 곳에만. 5곳 이상이면 위계가 사라지고 모든 글자가 평등해진다. 본문은 Regular/Medium.",
@@ -5707,6 +5734,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "영역 구분을 spacing 없이 색상만으로 처리",
       "정보 단위가 아닌 단순 group/section 도 모두 카드로 감싸기",
       "카드 안에 또 카드를 만들어 내부 강조 시도",
+      "카드에 상단 컬러 라인/좌측 accent 바 등 장식용 컬러 보더 부착",
       "일반 카드 · 인라인 리스트 · 기본 입력에 shadow 적용",
       "한 화면에 floating panel(Modal/Drawer/Popup/Toast) 2개 이상 동시 노출",
       "한 화면에 Bold 텍스트 5곳 이상",

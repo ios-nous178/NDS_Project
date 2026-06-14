@@ -84,6 +84,7 @@ stateMatrix:
 - Title 슬롯은 항상 Media 다음, 좌측 정렬 — 카드마다 다른 위치에 두면 안 됨.
 - Thumb 이미지가 없을 때는 Brand Soft 단색 폴백 사용 — 빈 회색 박스 / placeholder 이미지 금지.
 - Decorative Card 금지 — 콘텐츠 위계가 없는 장식용 카드 생성 금지. 동일 형식 반복이 아니면 Banner/Section 사용.
+- 카드 장식 라인/accent 바 금지 — 상단 컬러 라인(border-top accent), 좌측 accent 보더, ::before 컬러 바 등으로 카드를 장식하지 않는다. 카드가 가질 수 있는 선은 outlined variant 의 중립 1px 전체 보더와 옵션 footer/divider hairline(`border-top 1px subtle`) 뿐 — 컬러 accent 선은 DS Card 에 없다. 강조는 색이 아니라 Chip/Badge·텍스트 위계로, 영역 구분은 spacing/Divider 로. (`get_guide({ topic: 'pattern:visual-antipatterns' })` 표면 그룹 참고.)
 - 그리드 카드 간격 임의 혼합(8/12/16/20px) 금지. Auto Layout: Mobile 16px, Web·CMS 24px.
 - Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.
 - Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경.
