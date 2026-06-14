@@ -39,12 +39,10 @@
     "FileUpload",
     "FilterBar",
     "Footer",
-    "GenietFooter",
     "LikeButton",
     "LikertScale",
     "MediaCard",
     "MediaThumbnail",
-    "PageHeader",
     "Popup",
     "PriceTag",
     "ProgressBar",
@@ -67,8 +65,6 @@
     "TimePicker",
     "Timeline",
     "TrendingKeywords",
-    "TrostAppBar",
-    "TrostFooter",
     "VerificationCodeInput",
     "VideoPlayer"
   ]

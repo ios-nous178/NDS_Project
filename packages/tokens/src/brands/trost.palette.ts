@@ -14,16 +14,6 @@ export const trostYellow = {
   border: "#FFE600",
 } as const;
 
-// ─── Trost × NudgeEAP Banner 토큰 ───────────────────────
-export const trostEapBanner = {
-  /** 배너 영역 배경 (연한 노랑) */
-  bg: "#FFF8B8",
-  /** 배너 내부 CTA 박스 배경 (흰색 칩) */
-  ctaBg: "#FFFFFF",
-  /** "넛지EAP" 강조 텍스트 색상 (NudgeEAP primary blue) */
-  accent: "#2B96ED",
-} as const;
-
 export const trostCobalt = {
   500: "#4968FF",
   300: "#A3B3FF",

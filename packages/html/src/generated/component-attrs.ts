@@ -904,12 +904,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-page-header": {
-    "observedAttributes": [
-      "bordered"
-    ],
-    "enums": {}
-  },
   "nds-pagination": {
     "observedAttributes": [
       "page",
@@ -1126,21 +1120,6 @@ export const COMPONENT_ATTRS = {
         "horizontal"
       ]
     }
-  },
-  "nds-sidebar": {
-    "observedAttributes": [
-      "account",
-      "active-key",
-      "collapsed",
-      "collapsed-width",
-      "footer-actions",
-      "full-height",
-      "items",
-      "logo",
-      "user",
-      "width"
-    ],
-    "enums": {}
   },
   "nds-skeleton": {
     "observedAttributes": [

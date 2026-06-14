@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T18:35:19.658Z",
+  "generatedAt": "2026-06-14T18:47:24.960Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4129,54 +4129,6 @@
       ]
     },
     {
-      "name": "PageHeader",
-      "props": [
-        {
-          "name": "title",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "subtitle",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "onBack",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "breadcrumb",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "actions",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "bottom",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "bordered",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
-      "htmlTag": "nds-page-header",
-      "htmlObservedAttrs": [
-        "bordered",
-        "page-title",
-        "subtitle",
-        "show-back"
-      ]
-    },
-    {
       "name": "PageSizeSelect",
       "props": [
         {
@@ -5312,118 +5264,6 @@
         "name",
         "value",
         "values"
-      ]
-    },
-    {
-      "name": "Sidebar",
-      "props": [
-        {
-          "name": "items",
-          "optional": false,
-          "type": "SidebarItem[] | SidebarSection[]"
-        },
-        {
-          "name": "activeKey",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "onItemClick",
-          "optional": true,
-          "type": "(item: SidebarItem) => void"
-        },
-        {
-          "name": "width",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "collapsedWidth",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "collapsed",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "onToggleCollapse",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "logo",
-          "optional": true,
-          "type": "SidebarLogo"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "subtitle",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "header",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "account",
-          "optional": true,
-          "type": "SidebarAccount"
-        },
-        {
-          "name": "footer",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "footerActions",
-          "optional": true,
-          "type": "SidebarAction[]"
-        },
-        {
-          "name": "user",
-          "optional": true,
-          "type": "SidebarUser"
-        },
-        {
-          "name": "fullHeight",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "as",
-          "optional": true,
-          "type": "keyof React.JSX.IntrinsicElements"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/Sidebar.d.ts",
-      "htmlTag": "nds-sidebar",
-      "htmlObservedAttrs": [
-        "items",
-        "active-key",
-        "collapsed",
-        "show-toggle",
-        "width",
-        "collapsed-width",
-        "brand",
-        "logo-src",
-        "logo-alt",
-        "logo-width",
-        "logo-height",
-        "logo-href",
-        "title",
-        "subtitle",
-        "user",
-        "account",
-        "footer-actions",
-        "full-height"
       ]
     },
     {
@@ -13303,7 +13143,6 @@
     "nds-modal",
     "nds-multi-select",
     "nds-notice-alert",
-    "nds-page-header",
     "nds-pagination",
     "nds-phone-input",
     "nds-popular-posts",
@@ -14215,16 +14054,6 @@
       ]
     },
     {
-      "tag": "nds-page-header",
-      "attrs": {},
-      "observedAttrs": [
-        "bordered",
-        "page-title",
-        "subtitle",
-        "show-back"
-      ]
-    },
-    {
       "tag": "nds-pagination",
       "attrs": {},
       "observedAttrs": [
@@ -14459,30 +14288,6 @@
         "name",
         "value",
         "values"
-      ]
-    },
-    {
-      "tag": "nds-sidebar",
-      "attrs": {},
-      "observedAttrs": [
-        "items",
-        "active-key",
-        "collapsed",
-        "show-toggle",
-        "width",
-        "collapsed-width",
-        "brand",
-        "logo-src",
-        "logo-alt",
-        "logo-width",
-        "logo-height",
-        "logo-href",
-        "title",
-        "subtitle",
-        "user",
-        "account",
-        "footer-actions",
-        "full-height"
       ]
     },
     {

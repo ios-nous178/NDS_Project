@@ -162,6 +162,22 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "tds-coverage-pointers",
+    label: "TDS coverage 포인터 무결성 (metadata/tdsComponents.json nds → 실제 export)",
+    check: ["node", "scripts/check-tds-coverage-pointers.mjs"],
+    fix: null,
+    fixHint:
+      "리네임이면 metadata/tdsComponents.json 의 nds 를 현재 export 이름으로 수정, " +
+      '미구현 목표면 nds 를 "" 로 비워 갭으로 표시하세요.',
+    watch: [
+      "metadata/tdsComponents.json",
+      "packages/react/src/index.ts",
+      "packages/html/src/index.ts",
+    ],
+    buildFree: true,
+    ssot: true,
+  },
+  {
     id: "icon-catalog",
     label: "icon catalog SSOT (metadata/iconCatalog.json ← @nudge-design/icons 배럴)",
     check: ["node", "scripts/generate-icon-catalog.mjs", "--check"],

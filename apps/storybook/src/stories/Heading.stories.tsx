@@ -104,7 +104,7 @@ export const SemanticOverride: Story = {
     level: "h2",
     as: "h1",
     title: "설정",
-    description: "비주얼은 h2 스케일, DOM 은 페이지 랜드마크 h1 (PageHeader 내부 합성 패턴)",
+    description: "비주얼은 h2 스케일, DOM 은 페이지 랜드마크 h1 (pattern:page-header 합성)",
   },
 };
 

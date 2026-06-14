@@ -44,13 +44,20 @@ const DATA_URI_BY_FILENAME: Record<string, string> = {
   "brand/geniet/logos/geniet-logo-footer.webp": defaults.GENIET_LOGO_FOOTER_DATA_URI,
 
   "brand/nudge-eap/logos/nudge-eap-logo.png": defaults.NUDGE_EAP_LOGO_DATA_URI,
-  // SVG variant 는 같은 base64 fallback (PNG) 사용 — SVG dataUri 미준비
-  "brand/nudge-eap/logos/nudge-eap-logo.svg": defaults.NUDGE_EAP_LOGO_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-logo.svg": defaults.NUDGE_EAP_LOGO_SVG_DATA_URI,
   "brand/nudge-eap/logos/nudge-eap-logo-footer.png": defaults.NUDGE_EAP_LOGO_FOOTER_DATA_URI,
+  // 공식 로고 가이드 변종 (구 NudgeEAPLogo 컴포넌트에서 이관) — 벡터 SVG SSOT
+  "brand/nudge-eap/logos/nudge-eap-ko.svg": defaults.NUDGE_EAP_KO_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-koen.svg": defaults.NUDGE_EAP_KOEN_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-en.svg": defaults.NUDGE_EAP_EN_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-en-dark.svg": defaults.NUDGE_EAP_EN_DARK_DATA_URI,
+  "brand/nudge-eap/logos/nudge-eap-symbol.svg": defaults.NUDGE_EAP_SYMBOL_DATA_URI,
+  "brand/nudge-eap/logos/dain-logo.svg": defaults.DAIN_LOGO_DATA_URI,
 
   "brand/cashwalk-biz/logos/cashwalk-vertical.png": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
   "brand/cashwalk-biz/logos/cashwalk-horizontal.png": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
-  "brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg": defaults.CASHWALK_BIZ_LOGO_DATA_URI,
+  "brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg":
+    defaults.CASHWALK_BIZ_LOGO_DATA_URI,
 
   "brand/runmile/logos/runmile-logo.svg": defaults.RUNMILE_LOGO_DATA_URI,
   "brand/runmile/logos/runmile-logo-black.svg": defaults.RUNMILE_LOGO_BLACK_DATA_URI,

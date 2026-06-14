@@ -42,7 +42,7 @@ export interface HeadingProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   /**
    * 렌더할 헤딩 태그 override (기본 = level).
    * 비주얼(level 의 폰트·gap)은 그대로 두고 DOM 시맨틱만 바꿔야 할 때 쓴다.
-   * 예: PageHeader 는 시각적으로 h2 지만 페이지 랜드마크상 h1 이어야 함 → level='h2' as='h1'.
+   * 예: 페이지 헤더(pattern:page-header)는 시각적으로 h2 지만 페이지 랜드마크상 h1 이어야 함 → level='h2' as='h1'.
    */
   as?: HeadingLevel;
   /** 헤딩 텍스트 */

@@ -1,22 +1,15 @@
 /**
- * Brand header visual-parity check.
+ * Brand header 출력 구조 잠금.
  *
- * 이 파일의 단일 목적: `<nds-brand-header brand="...">` 출력이
- * `apps/storybook` 의 GenietDesktop / TrostWebHeaderDesktop / NudgeEAPWebHeaderDesktop /
- * CashwalkBizWebHeaderDesktop 스토리(= React 컴포넌트 출력)와 **시각적으로 동등한 요소를
- * 모두 들고 있는지**를 항목별로 단단히 잠그는 것.
+ * 이 파일의 단일 목적: `<nds-brand-header brand="...">` 출력이 각 브랜드 데스크톱 헤더의
+ * 시각 요소(로고/메뉴/검색/CTA 등)를 항목별로 빠짐없이 들고 있는지 단단히 잠그는 것.
  *
- * nds-brand-chrome.test.ts 가 "기본 동작" 단위 검증이라면, 이 파일은 "React 스토리와
- * 1:1 정합" 단위 검증. brand-chrome 의 BRAND_DATA 가 변경되어 React 디자인과 어긋나면
- * 여기 한 군데가 빨갛게 떠야 한다.
+ * 과거엔 공개 react 브랜드 chrome(GenietAppBar/TrostWebHeader 등)과의 1:1 정합 테스트였으나,
+ * chrome 통합으로 react 브랜드 chrome 은 제거됐고 이제 `nds-brand-chrome` 의 BRAND_DATA 가
+ * 브랜드 chrome 디자인 SSOT 다. nds-brand-chrome.test.ts 가 "기본 동작"이면 여기는 "브랜드별
+ * 완성형 요소" — BRAND_DATA 가 의도한 요소를 빠뜨리면 여기 한 군데가 빨갛게 떠야 한다.
  *
- * Reference sources (drift 의 SSOT):
- *   - apps/storybook/src/stories/AppBar.Geniet.stories.tsx       (GenietDesktop / GenietMobile)
- *   - apps/storybook/src/stories/WebHeader.Trost.stories.tsx     (TrostWebHeaderDesktop)
- *   - apps/storybook/src/stories/WebHeader.NudgeEAP.stories.tsx  (NudgeEAPWebHeaderDesktop)
- *   - apps/storybook/src/stories/AppBar.CashwalkBiz.stories.tsx     (CashwalkBizWebHeader)
- *   - apps/storybook/src/brand-fixtures.ts                       (콘텐츠 fixture)
- *   - packages/react/src/{geniet,trost,nudge-eap,cashwalk-biz}/      (DOM 구조 SSOT)
+ * 디자인 근거(Figma): 각 describe 블록 주석의 노드 id 참조.
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
@@ -145,8 +138,8 @@ describe("Geniet mobile ↔ React GenietAppBar variant='mobile'", () => {
 
 /* ──────────────────────────────────────────────────────────────────────────
  * Trost — TrostWebHeaderDesktop (Zeplin Dp775xl)
- *   React: packages/react/src/trost/DesktopHeader.tsx (compound 3슬롯)
- *     · TrostEAPBanner (50h light blue, "기업 전용 멘탈케어" + 넛지EAP CTA)
+ *   목업 셸: nds-brand-chrome renderTrostHeader (3단 desktop 헤더)
+ *     · 띠 배너 (50h, brand.banner → renderBrandBanner, "기업 전용 멘탈케어" + 넛지EAP CTA)
  *     · TrostUtilityHeader (logo + yellow-border search 530w + login + app-dl)
  *     · TrostTabNavigation (70h, 6탭 중 "커뮤니티" isNew)
  *   Story: WebHeader.Trost.stories.tsx → TrostWebHeaderDesktop
@@ -155,14 +148,14 @@ describe("Geniet mobile ↔ React GenietAppBar variant='mobile'", () => {
 describe("Trost web ↔ React TrostWebHeader (compound)", () => {
   it("EAP banner: strong + body text + CTA accent '넛지EAP'", async () => {
     const el = await mount({ brand: "trost" });
-    const banner = el.querySelector(".nds-brand-trost-web__banner");
+    const banner = el.querySelector(".nds-brand-banner");
     expect(banner).toBeTruthy();
     expect(banner?.getAttribute("href")).toBe("https://eapkorea.co.kr/");
-    const bannerText = el.querySelector(".nds-brand-trost-web__banner-text");
+    const bannerText = el.querySelector(".nds-brand-banner__text");
     expect(bannerText?.querySelector("strong")?.textContent).toBe("기업 전용 멘탈케어 프로그램");
     expect(bannerText?.textContent).toContain("도입하고 싶다면?");
     /* CTA accent 단어 '넛지EAP' 가 별도 span 으로 강조 */
-    const ctaAccent = el.querySelector(".nds-brand-trost-web__banner-cta-label span");
+    const ctaAccent = el.querySelector(".nds-brand-banner__cta-label span");
     expect(ctaAccent?.textContent).toBe("넛지EAP");
   });
 

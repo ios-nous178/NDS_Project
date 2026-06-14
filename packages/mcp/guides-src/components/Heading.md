@@ -12,7 +12,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=859-5
 - h4/h5 가 '★ 가장 자주' — 카드 헤딩(h4 · gap 6) / 서브 헤딩(h5 · gap 8). h1~h3 은 페이지 단위 hero / 큰 섹션 / 페이지 헤더.
 - description 폰트도 level 에 묶여 자동 결정: h1~h3 = Body3(14px), h4~h5 = Caption1(13px). 다른 사이즈가 필요하면 Heading 을 쓰지 말고 raw 헤딩으로.
 - 위계가 같은 자리에서는 같은 level 유지. h4 카드 헤딩들 사이에 h2 가 끼면 시각적 위계 망가짐.
-- Card / PageHeader 안에 Heading 을 중첩해서 쓰는 패턴이 정상. 단, PageHeader 가 이미 title 슬롯을 가진 경우엔 PageHeader 의 title 을 우선 사용(PageHeader 가 내부에서 Heading 으로 합성한다).
+- Card 안에 Heading 을 중첩해서 쓰는 패턴이 정상. 페이지 제목은 단일 컴포넌트가 아니라 `pattern:page-header`(Heading `level="h2" as="h1"` + Breadcrumb + actions 조합)로 조립한다.
 - `as` 는 비주얼은 level 그대로 두고 DOM 헤딩 태그만 바꿀 때만. 예: 페이지 랜드마크가 h1 이어야 하는데 폰트는 h2 스케일 → level='h2' as='h1'. 평소엔 쓰지 말 것 — level 과 태그가 어긋나면 접근성 위계가 흐트러진다.
 
 ## recommended

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BottomNav } from "@nudge-design/react";
+import { BottomNav, type BottomNavItemProps } from "@nudge-design/react";
 import {
   HomeIcon,
   HomeActiveIcon,
@@ -39,12 +39,14 @@ const PhoneShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </div>
 );
 
+// icon/activeIcon/badge 는 컴포넌트 prop 타입으로 고정 — storybook(@types/react@18)과
+// @nudge-design/react(@types/react@19) 의 ReactNode(bigint) 불일치를 피한다.
 interface DemoTab {
   key: string;
   label: string;
-  icon: React.ReactNode;
-  activeIcon: React.ReactNode;
-  badge?: React.ReactNode;
+  icon: BottomNavItemProps["icon"];
+  activeIcon: BottomNavItemProps["activeIcon"];
+  badge?: BottomNavItemProps["badge"];
 }
 
 const TABS: DemoTab[] = [

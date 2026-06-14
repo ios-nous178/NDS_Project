@@ -74,7 +74,6 @@
     "Modal",
     "MultiSelect",
     "NoticeAlert",
-    "PageHeader",
     "PageSizeSelect",
     "Pagination",
     "PhoneInput",
@@ -94,7 +93,6 @@
     "SelectionButton",
     "SelectionButtonGroup",
     "SelectionCard",
-    "Sidebar",
     "Skeleton",
     "Slider",
     "Snackbar",
@@ -211,7 +209,6 @@
     "Modal",
     "MultiSelect",
     "NoticeAlert",
-    "PageHeader",
     "Pagination",
     "PhoneInput",
     "PopularPosts",
@@ -264,40 +261,11 @@
     "VideoPlayer"
   ],
   "brandChrome": {
-    "trost": [
-      "AppBar",
-      "AppDownloadButton",
-      "BottomNav",
-      "DesktopHeader",
-      "EAPBanner",
-      "Footer",
-      "LoginSection",
-      "SearchForm",
-      "TabNavigation",
-      "UtilityHeader"
-    ],
-    "geniet": [
-      "AppBar",
-      "BottomNav",
-      "Footer"
-    ],
-    "nudge-eap": [
-      "AppBar",
-      "BottomNav",
-      "Footer",
-      "Logo",
-      "WebHeader"
-    ],
-    "cashwalk-biz": [
-      "Footer",
-      "WebHeader"
-    ],
-    "runmile": [
-      "AppBar",
-      "BottomNav",
-      "Footer",
-      "WebHeader"
-    ]
+    "trost": [],
+    "geniet": [],
+    "nudge-eap": [],
+    "cashwalk-biz": [],
+    "runmile": []
   },
   "generatedAt": "2026-06-06T04:55:27.260Z"
 }

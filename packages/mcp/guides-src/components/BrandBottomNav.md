@@ -41,7 +41,7 @@ validPropValues:
 - active-key 는 브랜드별 탭 key 와 매칭 — trost: home/counsel/community/care/my · geniet: home/record/benefit/review/community · nudge-eap: home/challenge/counsel/care/my · runmile: home/race/community/chat/my. 잘못 적으면 활성 탭 표시 안 됨.
 - **Geniet 은 단일 그래픽 + color cascade** — active/inactive 별도 아트가 아니라 같은 SVG 가 nav-item color(민트↔그레이)로 active 를 표현. Trost/NudgeEAP/Runmile 은 active/inactive 그래픽 분리(채워진 아이콘 전환).
 - Runmile 라벨은 12/16 (Figma 실측 — 11/14 아님).
-- HTML 래퍼는 트로스트 기본 앱(홈/심리상담/커뮤니티/멘탈케어/내공간)만 커버. React TrostBottomNav 의 variant='cashwalk-trost'(홈/사운드/내음악/커뮤니티/마이페이지)는 HTML 미지원 — 필요 시 React 컴포넌트 사용.
+- `<nds-brand-bottom-nav brand="trost">` 는 트로스트 기본 앱 5탭(홈/심리상담/커뮤니티/멘탈케어/내공간)만 커버. (캐시워크)트로스트 앱 변형(홈/사운드/내음악/커뮤니티/마이페이지)은 **현재 미지원** — 필요해지면 BRAND_DATA 에 variant 추가(후속). 그 전까지는 제네릭 `BottomNav` primitive 로 직접 5탭을 조립한다.
 
 ## recommended
 

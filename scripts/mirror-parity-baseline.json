@@ -572,16 +572,6 @@
       "since": "2026-06"
     },
     {
-      "key": "PageHeader::prop-name::html attr \"page-title\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "PageHeader::prop-name::html attr \"show-back\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
       "key": "PageSizeSelect::react-only::react 컴포넌트에 html 미러(nds-*)가 없음",
       "reason": "의도적 react 단면 — 어드민 전용 Select 합성 래퍼. html 어드민 목업은 nds-select 직접 사용이 관례",
       "since": "2026-06"
@@ -739,66 +729,6 @@
     {
       "key": "SelectedItemsPanel::prop-name::react prop → \"show-actions\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"brand\" 에 대응하는 react prop 이 없음",
-      "reason": "의도적: html nds-sidebar 는 brand attr 로 브랜드 로고 자동 주입(발견성). react 는 <BrandLogo brand> 를 logo 로 넘겨 동일.",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-alt\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-height\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-href\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-src\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-width\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"show-toggle\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::react prop → \"logo\" 가 html observedAttributes 에 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::html slot=\"account\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "html 사이드바는 <script slot> JSON 스펙 기반(모지바케 가드) — react 는 props 배열. 모델 차이 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::html slot=\"items\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "html 사이드바는 <script slot> JSON 스펙 기반(모지바케 가드) — react 는 props 배열. 모델 차이 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "html 사이드바는 JSON 스펙 렌더 — footer 커스텀 노드는 react 전용(어드민 한정). 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::react ReactNode prop \"header\" 에 대응하는 html slot=\"header\" 구현이 없음",
-      "reason": "html 사이드바는 JSON 스펙 렌더 — header 커스텀 노드는 react 전용(어드민 한정). 의도적",
       "since": "2026-06"
     },
     {
