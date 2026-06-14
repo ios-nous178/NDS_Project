@@ -181,7 +181,8 @@
       "platforms": ["mobile", "rn"],
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/segmented-control/",
-      "nds": "SegmentedControl",
+      "nds": "Tab",
+      "ndsNote": "SegmentedControl 은 Tab 에 변형(variant)으로 병합됨 — Tab 으로 커버.",
       "figmaByBrand": {}
     },
     {
@@ -213,7 +214,7 @@
       "platforms": ["mobile", "rn"],
       "category": "navigation",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/tab/",
-      "nds": "Tabs",
+      "nds": "Tab",
       "figmaByBrand": {
         "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9902"
       }
@@ -231,8 +232,8 @@
       "platforms": ["rn"],
       "category": "navigation",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/navbar/",
-      "nds": "AppBar",
-      "brandChrome": true,
+      "nds": "Header",
+      "ndsNote": "AppBar 는 Header(+HeaderNavBar 슬롯)로 통합됨 — Header 로 커버.",
       "figmaByBrand": {}
     },
     {
@@ -307,8 +308,8 @@
       "platforms": ["mobile", "rn"],
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/result/",
-      "nds": "EmptyState",
-      "ndsNote": "TDS Result = 완료/실패 결과 화면. NDS 에서는 EmptyState (변형) 으로 커버.",
+      "nds": "ResultState",
+      "ndsNote": "TDS Result = 완료/실패 결과 화면. NDS 에서는 ResultState (변형) 으로 커버.",
       "figmaByBrand": {}
     },
     {
@@ -316,7 +317,7 @@
       "platforms": ["rn"],
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/error-page/",
-      "nds": "EmptyState",
+      "nds": "ResultState",
       "figmaByBrand": {}
     },
     {
@@ -443,8 +444,8 @@
       "platforms": ["mobile"],
       "category": "content",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/paragraph/",
-      "nds": "ExpandableText",
-      "ndsNote": "Paragraph 자체는 텍스트 컴포넌트 — NDS 는 ExpandableText 로 가장 가까운 패턴 제공.",
+      "nds": "Text",
+      "ndsNote": "Paragraph = 텍스트 컴포넌트. ExpandableText 는 Text(expandable)로 흡수됨 — Text 로 커버.",
       "figmaByBrand": {}
     },
     {
@@ -452,8 +453,8 @@
       "platforms": ["mobile", "rn"],
       "category": "content",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/post/",
-      "nds": "TitleGroup",
-      "ndsNote": "Post = 줄글 포스트 스타일. NDS TitleGroup + 본문 조합으로 대체.",
+      "nds": "Heading",
+      "ndsNote": "Post = 줄글 포스트 스타일. NDS Heading + 본문 조합으로 대체.",
       "figmaByBrand": {}
     },
     {
