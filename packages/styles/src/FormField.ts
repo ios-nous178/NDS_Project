@@ -51,8 +51,8 @@ export const formFieldStyles = `
     display: inline-flex;
     align-items: center;
     gap: var(--semantic-gap-tight);
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: var(--nds-form-field-label-color, ${cv.textRole.normal});
   }
@@ -123,8 +123,9 @@ export const formFieldStyles = `
 
   :where(.${FF_COUNTER_CLASS}) {
     flex-shrink: 0;
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    /* char 카운터 — helper/error(공용 .nds-helper-text=caption2 12px)와 같은 footer 행이라 12px 로 정합 */
+    font-size: ${typeScale.caption2.fontSize}px;
+    line-height: ${typeScale.caption2.lineHeight}px;
     color: ${cv.textRole.muted};
     text-align: right;
   }

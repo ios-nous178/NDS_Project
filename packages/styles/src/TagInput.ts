@@ -33,8 +33,8 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 
   :where(.${TI_LABEL_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.normal};
   }
@@ -60,7 +60,7 @@ export const tiStyles = `
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: ${cv.input.bg};
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.body2.fontSize}px;
     color: ${cv.textRole.normal};
     outline: none;
     transition: border-color ${transition.default};
@@ -183,7 +183,7 @@ export const tiStyles = `
     outline: none;
     padding: 0 ${spacing[2]}px;
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.body2.fontSize}px;
     line-height: 26px;
     color: ${cv.textRole.normal};
   }

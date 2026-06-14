@@ -3,7 +3,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-
 sizeMatrix:
   top: label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.
   left: label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. 라벨 시작점 = control 시작점 (root align-items:flex-start 로 top 정렬) — Figma 정합. 입력 높이와 무관하게 라벨이 항상 control 상단에 붙는다 (예전 baseline 보정 padding-top 은 중앙 끌어내림 + 고정 px 라 입력 높이가 다르면 라벨이 처지던 버그여서 제거).
-  density:default: label caption1 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.
+  density:default: label body3 (14/20, 입력 패밀리 라벨 공통), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.
   density:admin: label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준).
 ---
 

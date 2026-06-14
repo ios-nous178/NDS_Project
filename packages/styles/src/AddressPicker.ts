@@ -29,8 +29,8 @@ export const apStyles = `
   }
 
   :where(.${AS_LABEL_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.normal};
   }

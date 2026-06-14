@@ -50,8 +50,8 @@ export const verificationCodeStyles = `
     outline: none;
     background: transparent;
     font-family: inherit;
-    font-size: ${typeScale.body1.fontSize}px;
-    line-height: ${typeScale.body1.lineHeight}px;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.medium};
     letter-spacing: normal;
     color: ${cv.textRole.strong};

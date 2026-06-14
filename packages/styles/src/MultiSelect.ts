@@ -66,9 +66,9 @@ export const multiSelectStyles = `
   :where(.${MS_TRIGGER_TEXT_CLASS}) {
     flex: 1;
     min-width: 0;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.body2.fontSize}px;
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
     white-space: nowrap;
     overflow: hidden;
@@ -140,6 +140,7 @@ export const multiSelectStyles = `
     margin-left: auto;
     flex-shrink: 0;
     font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.subtle};
   }
 
@@ -166,8 +167,8 @@ export const multiSelectStyles = `
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
   }
 
   /* ── Empty state ── */
@@ -178,8 +179,8 @@ export const multiSelectStyles = `
     min-height: 120px;
     padding: ${spacing[16]}px;
     text-align: center;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.muted};
   }
 

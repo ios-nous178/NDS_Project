@@ -37,8 +37,8 @@ export const phoneInputStyles = `
   }
 
   :where(.${PI_LABEL_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
-    line-height: ${typeScale.caption1.lineHeight}px;
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.normal};
   }
@@ -69,6 +69,7 @@ export const phoneInputStyles = `
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
     font-weight: ${fontWeight.medium};
     cursor: pointer;
     flex-shrink: 0;
@@ -134,7 +135,7 @@ export const phoneInputStyles = `
     cursor: pointer;
     border-radius: ${radius.sm}px;
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: ${typeScale.body2.fontSize}px;
     color: ${cv.textRole.normal};
     text-align: left;
     transition: background-color ${transition.default};

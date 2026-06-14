@@ -45,10 +45,12 @@ export const inputStyles = `
   }
 
   :where(.${INPUT_LABEL_CLASS}) {
-    /* Figma Section_Input(1399-143/1413-478): label 13px(caption1) · Text/Strong(#111) */
-    font-size: ${typeScale.caption1.fontSize}px;
+    /* 입력 패밀리 라벨 통일 — 14px(body3) · Text/Strong(#111).
+     * (구 Figma Section_Input(1399-143/1413-478) 주석은 caption1 13px 였으나,
+     *  "입력 라벨 14px 통일" 결정으로 body3 로 갱신) */
+    font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.caption1.lineHeight}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.strong};
   }
 

@@ -1361,7 +1361,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "sizeMatrix": {
       "top": "label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.",
       "left": "label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. 라벨 시작점 = control 시작점 (root align-items:flex-start 로 top 정렬) — Figma 정합. 입력 높이와 무관하게 라벨이 항상 control 상단에 붙는다 (예전 baseline 보정 padding-top 은 중앙 끌어내림 + 고정 px 라 입력 높이가 다르면 라벨이 처지던 버그여서 제거).",
-      "density:default": "label caption1 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.",
+      "density:default": "label body3 (14/20, 입력 패밀리 라벨 공통), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.",
       "density:admin": "label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준)."
     },
     "summary": "Input / Textarea / Select 같은 form control 의 label / helper / error / counter 슬롯을 묶는 래퍼. label-position(top|left) + density(default|admin) 조합으로 모바일/admin 폼을 한 컴포넌트로 처리.",
@@ -1581,7 +1581,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "pitfalls": [
       "검색 변형이 필요하면 SearchInput을 사용. Input에 SearchIcon을 직접 박지 말 것.",
       "**매 키 입력마다 value 를 재포맷하지 말 것** — `input` 이벤트에서 천단위 콤마/단위를 붙여 `el.value` 를 되쓰면 nds-input 의 내부 controlled 상태와 충돌해 커서가 튀고 한 글자만 입력되거나 수정이 막힌다(회귀: 입찰단가/예산 콤마 라이브 포맷으로 '한 글자 이상 입력·수정 불가'). 금액·수량은 콤마·단위·clamp 가 내장된 **AmountInput(`<nds-amount-input>`)** 을 쓰고(검증룰 amount-as-text-input 이 일반 금액 input 자체를 막음), 굳이 일반 input 이면 포맷은 blur 시점이나 제출 시 파싱으로 미루고 입력 중에는 raw 값을 그대로 유지하라.",
-      "label/helper 의 typography 는 caption-2(12/16) — body3(14/20) 로 키우지 말 것. Figma 명세보다 크면 폼이 산만해짐.",
+      "입력 라벨 typography = **body3(14/20)** 로 통일 (입력 패밀리 공통 — 구 caption1 13px 에서 상향). helper/카운터 = caption2(12/16). 라벨을 그보다 더 키우지 말 것(body2 15+ 금지) — 명세보다 크면 폼이 산만해짐. (브랜드는 토큰 cascade — 캐포비는 자기 조밀 스케일로 body3=13.)",
       "complete=true 와 errorMessage 를 동시에 주지 말 것 — error 가 우선이지만 success 의도가 묻힘.",
       "errorMessage/successMessage/helperText 중 하나라도 있으면 helpers 배열은 무시됨. 단일/멀티 의도를 분리해서 사용.",
       "**helperText 와 errorMessage 동시 노출 금지** (★ 핵심 룰). DS 는 우선순위 error > success > helper 로 1 줄만 표시하도록 이미 강제하지만, 가이드/스토리/목업에서도 두 줄 동시 표시한 형태로 그리지 말 것. 헬퍼는 '비어 있을 때의 안내', 에러는 '검증 실패 후의 즉시 피드백' — 의미가 충돌하고 인지 부하가 커진다. 검증 실패 순간 helper 는 같은 자리에서 error 메시지로 교체되어야 함 (자리 점프 X, 두 줄 누적 X).",

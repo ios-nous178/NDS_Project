@@ -38,9 +38,9 @@ export const selectStyles = `
   /* label↔trigger · trigger↔helper 모두 8 — 단일 root gap(--semantic-gap-label). */
 
   :where(.${SELECT_LABEL_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
+    font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.caption1.lineHeight}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.normal};
   }
 
@@ -78,9 +78,9 @@ export const selectStyles = `
   :where(.${SELECT_TRIGGER_TEXT_CLASS}) {
     flex: 1;
     min-width: 0;
-    font-size: var(--nds-select-font-size, ${typeScale.body3.fontSize}px);
+    font-size: var(--nds-select-font-size, ${typeScale.body2.fontSize}px);
     font-weight: ${fontWeight.regular};
-    line-height: var(--nds-select-line-height, ${typeScale.body3.lineHeight}px);
+    line-height: var(--nds-select-line-height, ${typeScale.body2.lineHeight}px);
     color: ${cv.textRole.normal};
     white-space: nowrap;
     overflow: hidden;
@@ -156,8 +156,8 @@ export const selectStyles = `
     outline: none;
     background: transparent;
     font-family: inherit;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
   }
 
@@ -170,8 +170,8 @@ export const selectStyles = `
     padding: var(--semantic-inset-card);
     text-align: center;
     color: ${cv.textRole.muted};
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
+    font-size: ${typeScale.body2.fontSize}px;
+    line-height: ${typeScale.body2.lineHeight}px;
   }
 
   :where(.${SELECT_OPTION_CLASS}) {
@@ -181,9 +181,9 @@ export const selectStyles = `
     padding: var(--nds-select-option-padding, var(--semantic-inset-input));
     border-radius: var(--nds-select-option-radius, 0);
     font-family: ${fontFamily.web};
-    font-size: var(--nds-select-font-size, ${typeScale.body3.fontSize}px);
+    font-size: var(--nds-select-font-size, ${typeScale.body2.fontSize}px);
     font-weight: ${fontWeight.regular};
-    line-height: var(--nds-select-line-height, ${typeScale.body3.lineHeight}px);
+    line-height: var(--nds-select-line-height, ${typeScale.body2.lineHeight}px);
     color: ${cv.textRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};

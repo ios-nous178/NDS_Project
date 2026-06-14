@@ -29,9 +29,9 @@ export const aiStyles = `
   }
 
   :where(.${AI_LABEL_CLASS}) {
-    font-size: ${typeScale.caption1.fontSize}px;
+    font-size: ${typeScale.body3.fontSize}px;
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.caption1.lineHeight}px;
+    line-height: ${typeScale.body3.lineHeight}px;
     color: ${cv.textRole.normal};
   }
 
@@ -90,7 +90,7 @@ export const aiStyles = `
     height: 36px;
     padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.borderRole.normal};
-    border-radius: 9999px;
+    border-radius: ${radius.pill}px;
     background: ${cv.surface.default};
     color: ${cv.textRole.normal};
     font-family: inherit;

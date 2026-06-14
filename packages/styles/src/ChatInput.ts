@@ -119,7 +119,7 @@ export const chatInputStyles = `
     height: 36px;
     border-radius: 9999px;
     background: ${cv.surface.brand};
-    color: #fff;
+    color: ${cv.iconRole.inverse};
     border: none;
     cursor: pointer;
     display: inline-flex;
