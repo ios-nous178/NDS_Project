@@ -88,6 +88,18 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "tailwind-presets",
+    label: "brand Tailwind preset 완전성 (브랜드마다 <brand>Preset)",
+    check: ["node", "scripts/check-tailwind-presets.mjs"],
+    fix: null,
+    fixHint:
+      "packages/tailwind-preset/src/index.ts 에 누락 브랜드의 `export const <brand>Preset` 를 " +
+      "추가하세요 (trostPreset/cashwalkBizPreset 구조 미러: atomic palette + radius + typography + shadow).",
+    watch: ["packages/tokens/src/brands/", "packages/tailwind-preset/src/"],
+    buildFree: true, // 소스 텍스트만 파싱 — dist 불필요
+    ssot: true,
+  },
+  {
     id: "component-attrs",
     label: "generated component-attrs freshness",
     check: ["node", "packages/html/scripts/generate-component-attrs.mjs", "--check"],

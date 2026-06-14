@@ -94,6 +94,34 @@ src/
 └── index.ts
 ```
 
+## 배포 — 코드/벡터는 npm, 래스터는 S3
+
+이 패키지의 npm tgz 에는 **코드·타입·메타데이터·매니페스트 + 벡터 로고(SVG)** 만 담는다.
+무거운 **래스터(PNG/JPG/WEBP, ~6.7MB)는 tgz 에 넣지 않는다** — `@nudge-design/react` 가 이
+패키지를 의존하므로, 래스터를 번들하면 모든 react 소비자가 6.7MB 를 transitive 로 끌어온다.
+(`package.json` `files` 가 `dist/files/**/*.svg` 만 허용 — 래스터는 제외.)
+
+대신 래스터는 **S3/CDN 에서 버전별로 전달**한다:
+
+- 빌드(`pnpm build`)는 여전히 `dist/files/**` 전체(래스터 포함)를 생성한다 — **S3 업로드 소스**이자
+  로컬 목업 툴링(`build_singlefile_html` on-demand base64 인라이너)·desktop mcpb 번들 동봉본.
+  (즉 디스크엔 그대로 있고 npm tgz 에만 빠진다.)
+- `scripts/publish-assets-s3.mjs` 가 `dist/files` 를 `…/nds-assets/assets/{version}/files` 로 sync.
+- 외부 호스팅 앱은 `remote-url` 헬퍼로 URL 을 조립한다:
+
+  ```ts
+  import { assetVersionBaseUrl, joinAssetUrl } from "@nudge-design/assets/remote-url";
+  import { getNudgeImg } from "@nudge-design/assets/nudge-eap-images";
+
+  const base = assetVersionBaseUrl("0.0.1"); // https://…/nds-assets/assets/0.0.1/files
+  const medal = getNudgeImg("rank", "rank-01");
+  <img src={joinAssetUrl(base, medal.filename)} alt="1위" />;
+  ```
+
+- 로고는 별개로 zero-config: `getBrandLogo(...).dataUri`(base64) 가 tgz 에 내장되고, SNS 로고 등
+  **SVG 는 tgz 에 포함**돼 `@nudge-design/assets/files/shared/sns-logos/...` 경로도 동작한다.
+  (래스터 경로만 tgz 에서 빠져 S3 가 필요하다.)
+
 ## NudgeEAP img 자산
 
 NudgeEAP Dev Figma (`mvecozaRQoGRePffskRgmh`, section 20:1699 "img") 의 화면용

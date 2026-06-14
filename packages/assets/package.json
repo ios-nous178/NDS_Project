@@ -74,7 +74,12 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "dist/manifest.json",
+    "dist/files/**/*.svg"
   ],
   "sideEffects": false,
   "scripts": {

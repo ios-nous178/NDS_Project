@@ -29,6 +29,23 @@ import {
   cashwalkBizStatus,
   cashwalkBizSemantic,
   cashwalkBizTheme,
+  genietMint,
+  genietRed,
+  genietYellow,
+  genietBlue,
+  genietPurple,
+  genietGreen,
+  genietGray,
+  genietNeutral,
+  genietStatus,
+  genietTheme,
+  runmileOrange,
+  runmileBlue,
+  runmileRed,
+  runmileGray,
+  runmileNeutral,
+  runmileStatus,
+  runmileTheme,
 } from "@nudge-design/tokens";
 
 /**
@@ -294,6 +311,143 @@ export const cashwalkBizPreset = {
         ? Object.fromEntries(
             Object.entries(cashwalkBizTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
           )
+        : undefined,
+    },
+  },
+};
+
+/**
+ * Geniet Tailwind preset.
+ *
+ * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 geniet.css 가 var 를 민트 톤으로
+ * redefine 하므로 자동 지니어트 색상. 별도 색상 alias 만 추가:
+ *   - `bg-geniet-neutral-*` · `bg-mint-*` 같은 브랜드 atomic
+ * Typography / radius(곡률 xl=18 · 2xl=23 포함) / shadow 는 지니어트 가이드 매핑.
+ */
+export const genietPreset = {
+  theme: {
+    extend: {
+      colors: {
+        // 지니어트 고유 atomic palette
+        "geniet-neutral": objectToPx(genietNeutral),
+        "geniet-gray": objectToPx(genietGray),
+        "geniet-red": objectToPx(genietRed),
+        "geniet-yellow": objectToPx(genietYellow),
+        "geniet-blue": objectToPx(genietBlue),
+        "geniet-green": objectToPx(genietGreen),
+        mint: objectToPx(genietMint),
+        purple: objectToPx(genietPurple),
+        status: objectToPx(genietStatus),
+
+        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — geniet.css 가 자동 redefine
+        ...nudgeEapPreset.theme.extend.colors,
+      },
+      fontFamily: {
+        sans: genietTheme.typography!.fontFamily!.web.split(", "),
+      },
+      fontWeight: {
+        regular: String(fontWeight.regular),
+        medium: String(fontWeight.medium),
+        bold: String(fontWeight.bold),
+      },
+      fontSize: Object.fromEntries(
+        Object.entries(genietTheme.typography!.typeScale!).map(([key, val]) => [
+          key,
+          [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
+        ]),
+      ),
+      spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
+      borderRadius: genietTheme.spacing?.radius
+        ? {
+            ...Object.fromEntries(
+              Object.entries(genietTheme.spacing.radius).map(([k, v]) => [
+                k,
+                v === 9999 ? "9999px" : `${v}px`,
+              ]),
+            ),
+            DEFAULT: `${genietTheme.spacing.radius.md}px`,
+          }
+        : undefined,
+      height: {
+        "btn-lg": `${sizing.button.lg}px`,
+        "btn-md": `${sizing.button.md}px`,
+        "btn-sm": `${sizing.button.sm}px`,
+        "btn-xs": `${sizing.button.xs}px`,
+        "btn-field": `${sizing.button.field}px`,
+        appbar: `${sizing.appBar.height}px`,
+        bottombar: `${sizing.bottomBar.height}px`,
+        input: `${sizing.input.default}px`,
+        "input-field": `${sizing.input.field}px`,
+      },
+      boxShadow: genietTheme.elevation?.shadow
+        ? Object.fromEntries(Object.entries(genietTheme.elevation.shadow))
+        : undefined,
+    },
+  },
+};
+
+/**
+ * Runmile Tailwind preset.
+ *
+ * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 runmile.css 가 var 를 오렌지 톤으로
+ * redefine 하므로 자동 런마일 색상. 별도 색상 alias 만 추가:
+ *   - `bg-runmile-neutral-*` · `bg-orange-*` 같은 브랜드 atomic
+ * Typography / radius(Toss 스타일 4/6/8/12/16/pill) / shadow 는 런마일 가이드 매핑.
+ */
+export const runmilePreset = {
+  theme: {
+    extend: {
+      colors: {
+        // 런마일 고유 atomic palette
+        "runmile-neutral": objectToPx(runmileNeutral),
+        "runmile-gray": objectToPx(runmileGray),
+        "runmile-red": objectToPx(runmileRed),
+        "runmile-blue": objectToPx(runmileBlue),
+        orange: objectToPx(runmileOrange),
+        status: objectToPx(runmileStatus),
+
+        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — runmile.css 가 자동 redefine
+        ...nudgeEapPreset.theme.extend.colors,
+      },
+      fontFamily: {
+        sans: runmileTheme.typography!.fontFamily!.web.split(", "),
+      },
+      fontWeight: {
+        regular: String(fontWeight.regular),
+        medium: String(fontWeight.medium),
+        bold: String(fontWeight.bold),
+      },
+      fontSize: Object.fromEntries(
+        Object.entries(runmileTheme.typography!.typeScale!).map(([key, val]) => [
+          key,
+          [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
+        ]),
+      ),
+      spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
+      borderRadius: runmileTheme.spacing?.radius
+        ? {
+            ...Object.fromEntries(
+              Object.entries(runmileTheme.spacing.radius).map(([k, v]) => [
+                k,
+                v === 9999 ? "9999px" : `${v}px`,
+              ]),
+            ),
+            DEFAULT: `${runmileTheme.spacing.radius.md}px`,
+          }
+        : undefined,
+      height: {
+        "btn-lg": `${sizing.button.lg}px`,
+        "btn-md": `${sizing.button.md}px`,
+        "btn-sm": `${sizing.button.sm}px`,
+        "btn-xs": `${sizing.button.xs}px`,
+        "btn-field": `${sizing.button.field}px`,
+        appbar: `${sizing.appBar.height}px`,
+        bottombar: `${sizing.bottomBar.height}px`,
+        input: `${sizing.input.default}px`,
+        "input-field": `${sizing.input.field}px`,
+      },
+      boxShadow: runmileTheme.elevation?.shadow
+        ? Object.fromEntries(Object.entries(runmileTheme.elevation.shadow))
         : undefined,
     },
   },

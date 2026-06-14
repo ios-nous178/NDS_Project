@@ -9,6 +9,11 @@
  * public taxonomy:
  *   - brand/{slug}/... — 브랜드/프로덕트 전용 자산
  *   - shared/...       — 제3자/공용 자산
+ *
+ * 주의: 여기서 만든 dist/files 전체(래스터 포함)는 빌드 산출물이지만 npm tgz 에 전부
+ * 담기진 않는다. package.json `files` 는 벡터(SVG)만 publish 하고 래스터(PNG/JPG/WEBP)는
+ * 제외한다 — 래스터는 S3(scripts/publish-assets-s3.mjs → remote-url)로 전달. dist/files 는
+ * 그 S3 업로드 소스이자 로컬 목업 인라이너·desktop 번들 동봉본이라 계속 통째로 생성한다.
  */
 import { cp, mkdir, readdir, rm } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
