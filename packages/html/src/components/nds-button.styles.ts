@@ -93,19 +93,21 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
   primary: {
     solid: {
       enabled: {
-        background: cv.surface.brand,
+        // Figma Solid/Primary = --semantic-button-bg-default (브랜드 buttonBg override). bg-brand 직참조 금지.
+        background: cv.button.bgDefault,
         text: cv.button.textDefault,
         border: cv.borderRole.brand,
       },
       disabled: {
         background: cv.button.bgDisabled,
-        text: cv.surface.default,
+        text: cv.textRole.inverse,
         border: cv.button.bgDisabled,
       },
       hover: {
-        background: cv.fill.brandHover,
+        // semantic-button-bg-hover 슬롯 — brand 별 hover 톤(Runmile orange/400 등)을 명시.
+        background: cv.button.bgHover,
         text: cv.button.textDefault,
-        border: cv.fill.brandHover,
+        border: cv.button.bgHover,
       },
     },
     soft: {
@@ -234,23 +236,26 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.borderRole.normal,
       },
     },
+    // Figma: Outlined/Neutral — 전용 button-outlined-neutral 토큰(브랜드 분기: 캐포비 #111,
+    // 런마일 #4E5968). textRole.normal/borderRole.normal 직참조 금지 — react Button 미러.
     outlined: {
       enabled: {
         background: cv.surface.default,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
+        text: cv.button.textNeutral,
+        border: cv.button.borderNeutral,
         fontWeight: fontWeight.medium,
       },
       disabled: {
+        // Outlined Disabled 텍스트는 brand 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
         background: cv.surface.default,
-        text: cv.textRole.muted,
-        border: cv.borderRole.subtle,
+        text: cv.button.textNeutralDisabled,
+        border: cv.button.borderNeutralDisabled,
         fontWeight: fontWeight.medium,
       },
       hover: {
         background: cv.surface.subtle,
-        text: cv.textRole.normal,
-        border: cv.borderRole.normal,
+        text: cv.button.textNeutral,
+        border: cv.button.borderNeutral,
         fontWeight: fontWeight.medium,
       },
     },

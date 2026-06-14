@@ -20,9 +20,9 @@ describe("nds-snackbar", () => {
     const root = el.querySelector(".nds-snackbar") as HTMLElement;
     expect(root.dataset.variant).toBe("success");
     expect(root.dataset.hasDesc).toBe("true");
-    expect(root.style.getPropertyValue("--nds-snackbar-bg")).toBe(
-      "var(--semantic-bg-status-success)",
-    );
+    // variant 색은 styles 의 [data-variant] 가 합성한다 — 컴포넌트는 브랜드-override 슬롯 ①
+    // (--nds-snackbar-bg)을 inline 으로 쓰지 않는다(캐포비 흰카드 brand override 보존). react 미러.
+    expect(root.style.getPropertyValue("--nds-snackbar-bg")).toBe("");
     expect(el.querySelector(".nds-snackbar__icon svg")).toBeTruthy();
     expect(el.querySelector(".nds-snackbar__title")?.textContent).toBe("저장됨");
     expect(el.querySelector(".nds-snackbar__desc")?.textContent).toBe("변경사항이 반영되었습니다");

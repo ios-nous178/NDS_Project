@@ -36,6 +36,7 @@
     "publish:assets-s3": "node scripts/publish-assets-s3.mjs",
     "lint:mcp-catalog": "node scripts/check-mcp-catalog.mjs",
     "lint:mirror-parity": "node scripts/check-mirror-parity.mjs",
+    "lint:style-token-parity": "node scripts/check-style-token-parity.mjs",
     "lint:mirror-parity:update": "node scripts/check-mirror-parity.mjs --update",
     "lint:input-focus": "node scripts/check-input-tests.mjs",
     "lint:actions-layout": "node scripts/check-actions-layout.mjs",

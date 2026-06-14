@@ -1,0 +1,10 @@
+{
+  "note": "react↔html 색 토큰(styles 우회 색맵) parity 의 알려진/허용된 divergence 스냅샷. 신규 drift 만 차단. reason 필수 — \"TODO\" 는 차단(사유 강제). 근본 해소는 색맵을 공유 styles/[data-variant] 로 이전하는 것. 갱신: node scripts/check-style-token-parity.mjs --update (merge — 기존 reason 보존).",
+  "entries": [
+    {
+      "key": "Footer::semantic-border-normal-default::react-only",
+      "reason": "구조 차이(색맵 드리프트 아님): react Footer.tsx 가 divider 요소 배경에 borderRole.normal 사용, html 은 divider 를 CSS/구조로 처리. footer border 색은 양쪽 borderRole.subtle 일치.",
+      "since": "2026-06"
+    }
+  ]
+}

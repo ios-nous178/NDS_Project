@@ -174,11 +174,12 @@ const SLOT_PROP_EXACT = new Set([
 const SLOT_PROP_SUFFIX_RE =
   /(Action|Actions|Avatar|Badge|Bottom|Breadcrumb|Footer|Header|Icon|Logo|Media|Meta|Prefix|Suffix|Slot|Thumbnail|Trailing)$/;
 
-// 권고(advisory) 종류 — 항상 리포트하되 게이트를 차단하진 않는다.
-// prop-name 은 react(node/controlled) ↔ html(attribute/string) 패러다임 차이로
-// 구조적 noise 가 크다(label/title 을 node 슬롯 vs 문자열 attr 로 노출 등).
-// 반면 enum-value / 컴포넌트 set 은 신호가 깨끗해 blocking 으로 둔다.
-const ADVISORY_KINDS = new Set(["prop-name"]);
+// 권고(advisory) 종류 — 항상 리포트하되 게이트를 차단하진 않는다. 현재는 비어 있다(전 종류 차단).
+// 과거엔 prop-name 을 무조건 advisory(비차단)로 뒀는데, 그러면 "react 에 prop 추가하고 html 미러를
+// 빠뜨려도 CI green" 인 사각이 생기고 그 안에 BottomSheet mask/close-on-esc 같은 진짜 기능 갭이
+// 은폐됐다. prop-name 도 차단으로 돌리되, react(node/controlled)↔html(attribute/string) 패러다임
+// noise 는 baseline 흡수 + reason 으로 다룬다(신규 prop-name drift 도 baseline 에 사유를 박아야 통과).
+const ADVISORY_KINDS = new Set();
 
 // react prop 이름 → html attribute 이름 정규화 (camelCase → kebab-case, 소문자).
 function toKebab(name) {

@@ -66,6 +66,24 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "style-token-parity",
+    label: "react/html 색 토큰 parity (styles 우회 색맵 drift)",
+    check: ["node", "scripts/check-style-token-parity.mjs"],
+    fix: null,
+    fixHint:
+      "양쪽 색맵을 같은 시멘틱 토큰으로 맞추세요(react .tsx ↔ html nds-*.ts[/.styles.ts]). " +
+      "근본 해소는 색맵을 공유 styles/[data-variant] 로 이전. 의도된 divergence 면 " +
+      "`node scripts/check-style-token-parity.mjs --update` 후 baseline 의 reason:'TODO' 에 사유 기입.",
+    watch: [
+      "packages/react/src/",
+      "packages/html/src/components/",
+      "packages/tokens/src/cssVar.ts",
+      "scripts/style-token-parity-baseline.json",
+    ],
+    buildFree: true, // cssVar.ts 소스 + 컴포넌트 소스만 파싱 — dist 불필요
+    ssot: true,
+  },
+  {
     id: "input-tests",
     label: "input focus-preservation tests",
     check: ["node", "scripts/check-input-tests.mjs"],
