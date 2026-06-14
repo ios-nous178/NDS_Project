@@ -94,6 +94,17 @@
     "notes": "HomePage SearchInput, WebView EapHomeSearchBox 패턴을 통합한 컴포넌트입니다."
   },
   {
+    "name": "BottomNav",
+    "category": "내비게이션",
+    "status": "implemented",
+    "description": "모바일 하단 고정 탭 바. compound + 슬롯(BottomNav.Item) · 활성/비활성 아이콘 · 배지 · --nds-bottomnav-* 토큰 슬롯으로 브랜드 색 흡수.",
+    "storybookTitle": "Components/Navigation/BottomNav",
+    "figmaUrl": "",
+    "figmaNodeId": "",
+    "usageSummary": "모바일 앱 하단 글로벌 네비게이션 (3~5탭)",
+    "notes": "브랜드 무관 primitive — 브랜드별 아이콘/라벨은 호출부가 주입하고, 색은 --nds-bottomnav-* 슬롯으로 브랜드 토큰이 덮는다. {Brand}BottomNav 래퍼 대체. figmaNodeUrl 확보 예정."
+  },
+  {
     "name": "Tab",
     "category": "내비게이션",
     "status": "implemented",

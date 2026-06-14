@@ -16,6 +16,7 @@ export * from "./Popup.js";
 export * from "./SearchInput.js";
 export * from "./Tab.js";
 export * from "./BottomSheet.js";
+export * from "./BottomNav.js";
 export * from "./Checkbox.js";
 export * from "./CheckboxGroup.js";
 export * from "./Radio.js";

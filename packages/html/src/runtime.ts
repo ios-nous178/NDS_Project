@@ -16,6 +16,7 @@ import "./components/nds-validation-chip.js";
 import "./components/nds-banner.js";
 import "./components/nds-notice-alert.js";
 import "./components/nds-breadcrumb.js";
+import "./components/nds-bottom-nav.js";
 import "./components/nds-chip.js";
 import "./components/nds-checkbox.js";
 import "./components/nds-radio.js";

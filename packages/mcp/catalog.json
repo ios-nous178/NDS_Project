@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T15:21:33.301Z",
+  "generatedAt": "2026-06-14T16:26:24.791Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -948,6 +948,47 @@
         "closable",
         "full-image-src",
         "full-image-srcset"
+      ]
+    },
+    {
+      "name": "BottomNav",
+      "props": [
+        {
+          "name": "activeKey",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onChange",
+          "optional": true,
+          "type": "(key: string) => void"
+        },
+        {
+          "name": "position",
+          "optional": true,
+          "type": "\"fixed\" | \"static\"",
+          "allowedValues": [
+            "fixed",
+            "static"
+          ]
+        },
+        {
+          "name": "shadow",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "children",
+          "optional": false,
+          "type": "React.ReactNode"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/BottomNav.d.ts",
+      "htmlTag": "nds-bottom-nav",
+      "htmlObservedAttrs": [
+        "active-key",
+        "position",
+        "shadow"
       ]
     },
     {
@@ -13183,6 +13224,8 @@
     "nds-avatar-group",
     "nds-badge",
     "nds-banner",
+    "nds-bottom-nav",
+    "nds-bottom-nav-item",
     "nds-bottom-sheet",
     "nds-brand-bottom-nav",
     "nds-brand-chrome",
@@ -13499,6 +13542,15 @@
         "closable",
         "full-image-src",
         "full-image-srcset"
+      ]
+    },
+    {
+      "tag": "nds-bottom-nav",
+      "attrs": {},
+      "observedAttrs": [
+        "active-key",
+        "position",
+        "shadow"
       ]
     },
     {

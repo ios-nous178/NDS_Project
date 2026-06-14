@@ -353,6 +353,32 @@
         "dont": "<!-- variant=\"image\" 일 때 full-image-src 가 아니라 banner-src 로 잘못 명시 -->\n<nds-banner variant=\"image\" banner-src=\"/hero.jpg\" banner-title=\"…\"></nds-banner>\n<!-- description 없이 closable 만 — 닫고 나면 의도가 사라짐 -->\n<nds-banner closable></nds-banner>"
       }
     },
+    "BottomNav": {
+      "name": "BottomNav",
+      "sizeMatrix": {
+        "root": "height 56(--nds-bottomnav-height) / width 100% / 하단 fixed / border-top 1px subtle",
+        "item": "flex 1 1 0 균등분할 / icon 24×24 / 라벨 11(label) / 세로 정렬(아이콘 위·라벨 아래)",
+        "badge": "우상단 카운트 칩 / 16×16 min / radius pill / bg status-error / 텍스트 inverse"
+      },
+      "stateMatrix": {
+        "item/default": "color --nds-bottomnav-inactive-color(=text subtle) · 비활성 아이콘",
+        "item/active": "color --nds-bottomnav-active-color(=text normal) · 활성 아이콘(activeIcon) · aria-current=page",
+        "root/shadow": "data-shadow 시 상단 그림자(콘텐츠 위에 떠 보이게)"
+      },
+      "summary": "모바일 앱 하단 글로벌 네비게이션(3~5탭) 전용 primitive. compound + 슬롯 — `<BottomNav activeKey onChange>` 안에 `<BottomNav.Item itemKey label icon activeIcon href badge>`. 브랜드를 모르는 컴포넌트로, 색은 `--nds-bottomnav-*` 슬롯으로 노출되고 브랜드 토큰이 값만 덮는다. 브랜드별 아이콘/라벨은 호출부가 주입한다(`{Brand}BottomNav` 래퍼 대체).",
+      "pitfalls": [
+        "`<BottomNav.Item>` 의 key prop 은 `itemKey` 다 — React 예약어 `key` 와 충돌하므로 `key` 로 활성 비교가 안 된다(목록 렌더 시 `key` 와 `itemKey` 둘 다 준다).",
+        "활성/비활성 아이콘이 다른 그래픽이면 `icon`(비활성) + `activeIcon`(활성) 둘 다 준다. `activeIcon` 생략 시 같은 그래픽에 색만 cascade 로 바뀐다(단일 currentColor 아이콘용).",
+        "색을 컴포넌트에 박지 말 것 — 브랜드 활성색은 `--nds-bottomnav-active-color`, 비활성은 `--nds-bottomnav-inactive-color` 슬롯으로 브랜드 토큰 파일이 덮는다.",
+        "데스크톱/PC 화면엔 쓰지 않는다 — 하단 탭 바는 모바일 전용. PC 보조 네비는 QuickMenu, 콘텐츠 전환은 Tab.",
+        "페이지 내 콘텐츠 전환(필터/세그먼트)에 쓰지 말 것 — 그건 Tab. BottomNav 는 화면 단위 라우팅 탭이다.",
+        "스토리북/스크롤 컨테이너 안에서는 `position=\"static\"` 으로 — 기본 `fixed` 는 뷰포트 하단에 붙는다."
+      ],
+      "examplesHtml": {
+        "do": "<nds-bottom-nav active-key=\"home\">\n  <nds-bottom-nav-item item-key=\"home\" label=\"홈\" href=\"/\">\n    <svg slot=\"icon\" width=\"24\" height=\"24\"><!-- 비활성 --></svg>\n    <svg slot=\"active-icon\" width=\"24\" height=\"24\"><!-- 활성 --></svg>\n  </nds-bottom-nav-item>\n  <nds-bottom-nav-item item-key=\"challenge\" label=\"챌린지\" href=\"/challenge\" badge=\"3\">\n    <svg slot=\"icon\" width=\"24\" height=\"24\"></svg>\n    <svg slot=\"active-icon\" width=\"24\" height=\"24\"></svg>\n  </nds-bottom-nav-item>\n  <nds-bottom-nav-item item-key=\"my\" label=\"내 공간\" href=\"/my\">\n    <svg slot=\"icon\" width=\"24\" height=\"24\"></svg>\n    <svg slot=\"active-icon\" width=\"24\" height=\"24\"></svg>\n  </nds-bottom-nav-item>\n</nds-bottom-nav>",
+        "dont": "<!-- raw <nav> 로 모양만 흉내 — 토큰/active 동작/색 격리 없음 -->\n<nav style=\"position:fixed;bottom:0;display:flex\">\n  <a style=\"color:#00A8AC\">홈</a>\n  <a style=\"color:#999\">챌린지</a>\n</nav>"
+      }
+    },
     "BottomSheet": {
       "name": "BottomSheet",
       "summary": "모바일에서 화면 하단에서 올라오는 시트. 옵션 선택 / 짧은 작업에 적합. 데스크탑에선 Drawer 가 자연스러움. 공유 시트는 이 컴포넌트로 4칸 그리드 + 링크 복사 레시피로 조립한다.",

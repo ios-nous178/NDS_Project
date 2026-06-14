@@ -189,6 +189,19 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
+  "nds-bottom-nav": {
+    "observedAttributes": [
+      "active-key",
+      "position",
+      "shadow"
+    ],
+    "enums": {
+      "position": [
+        "fixed",
+        "static"
+      ]
+    }
+  },
   "nds-bottom-sheet": {
     "observedAttributes": [
       "closable",

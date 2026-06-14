@@ -32,3 +32,8 @@ docs/guide/visual-antipatterns.md
 # 무손실 왕복이 깨진다.
 packages/mcp/guides-src/
 packages/mcp/src/guides.generated.ts
+
+# component-attrs 코드젠 산출물 — generate-component-attrs.mjs 의 직렬화(JSON.stringify 2-space)
+# 가 SSOT. prettier 가 배열을 1줄로 접으면 generate-component-attrs --check(lint:ssot)와
+# 충돌해 스테이징 시 커밋이 막힌다.
+packages/html/src/generated/

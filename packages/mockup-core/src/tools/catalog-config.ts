@@ -39,6 +39,8 @@ const EXTRA_NDS_TAGS = [
   "nds-footer-web",
   "nds-footer-web-row",
   "nds-footer-web-section",
+  "nds-bottom-nav",
+  "nds-bottom-nav-item",
 ];
 
 /** catalog → HtmlValidationContext 도출. (configureHtmlValidator 호출 전 단계 분리 — 테스트 용이) */

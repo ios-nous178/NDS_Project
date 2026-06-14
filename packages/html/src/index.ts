@@ -46,6 +46,8 @@ export type { NoticeAlertVariant } from "./components/nds-notice-alert.js";
 
 export { NdsBreadcrumb, NdsBreadcrumbItem } from "./components/nds-breadcrumb.js";
 
+export { NdsBottomNav, NdsBottomNavItem } from "./components/nds-bottom-nav.js";
+
 export { NdsChip } from "./components/nds-chip.js";
 export type { ChipColor, ChipSize, ChipVariant } from "./components/nds-chip.js";
 
@@ -178,7 +180,6 @@ export {
 
 export { NdsChart } from "./components/nds-chart.js";
 
-
 export { NdsText } from "./components/nds-text.js";
 
 export { NdsSummaryCard } from "./components/nds-summary-card.js";
@@ -237,7 +238,6 @@ export type { LikeButtonSize } from "./components/nds-like-button.js";
 
 export { NdsMediaCard } from "./components/nds-media-card.js";
 
-
 export { NdsSelectionCard, NdsSelectionCardItem } from "./components/nds-selection-card.js";
 export type { SelectionCardMode, SelectionCardLayout } from "./components/nds-selection-card.js";
 export { NdsSelectionButton } from "./components/nds-selection-button.js";
@@ -246,7 +246,6 @@ export { NdsSelectionButtonGroup } from "./components/nds-selection-button-group
 export { NdsFilterBar } from "./components/nds-filter-bar.js";
 
 export { NdsPhoneInput } from "./components/nds-phone-input.js";
-
 
 export { NdsProductCard } from "./components/nds-product-card.js";
 export type { ProductCardSize } from "./components/nds-product-card.js";
@@ -279,18 +278,11 @@ export type { DSHighlightMode } from "./components/nds-ds-highlight.js";
 
 export { NdsFileUpload } from "./components/nds-file-upload.js";
 
-
 export { NdsImageUpload } from "./components/nds-image-upload.js";
-
-
-
 
 export { NdsSidebar } from "./components/nds-sidebar.js";
 
-
 export { NdsVideoPlayer } from "./components/nds-video-player.js";
-
-
 
 export { NdsInspector } from "./components/nds-inspector.js";
 
