@@ -110,8 +110,38 @@ export const CompactTwoTier: Story = {
   ),
 };
 
-/* ─── Web (옛 WebHeader) ───
- *
- * 브랜드 완성형 헤더는 목업 전용 `nds-brand-chrome`(`<nds-brand-header brand="..." surface="web">`)
- * 으로 렌더된다 — 공개 react 패키지의 브랜드 chrome 컴포넌트는 제거됨. 사용 가이드는 MCP
- * `get_guide({ topic: 'component:BrandHeader' })`. 여기 base Header 는 브랜드-무관 골격만 데모. */
+/* ─── Web (데스크탑 80px, grid 3열: 로고 | 메뉴 | 액션) ─── */
+
+export const Web: Story = {
+  name: "Base/Web (데스크탑)",
+  render: () => (
+    <Header variant="web">
+      <Header.Logo
+        src="https://placehold.co/140x32?text=Logo"
+        alt="Logo"
+        href="/"
+        style={{ height: 32, width: "auto" }}
+      />
+      <Header.Menu
+        items={[
+          { key: "home", label: "홈", href: "#" },
+          { key: "features", label: "기능", href: "#" },
+          { key: "pricing", label: "요금", href: "#" },
+          { key: "blog", label: "블로그", href: "#" },
+        ]}
+        activeKey="home"
+      />
+      <Header.Actions>
+        <Header.AppDownloadButton href="#">앱 다운로드</Header.AppDownloadButton>
+        <Header.AuthButton authState="logout" href="#" />
+      </Header.Actions>
+    </Header>
+  ),
+};
+
+/*
+ * 브랜드 완성형 헤더(로고·메뉴·CTA 가 브랜드별로 박힌 것)는 목업 전용
+ * `nds-brand-chrome`(`<nds-brand-header brand="..." surface="web">`)으로 렌더된다 —
+ * 공개 react 패키지의 브랜드 chrome 컴포넌트는 제거됨. 사용 가이드는 MCP
+ * `get_guide({ topic: 'component:BrandHeader' })`. 위 스토리들은 브랜드-무관 base `Header` 데모.
+ */
