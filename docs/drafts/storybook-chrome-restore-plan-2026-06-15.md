@@ -8,14 +8,14 @@
 
 chrome 정리에서 **react 브랜드 chrome·Sidebar 가 제거**되며 그걸 렌더하던 스토리도 같이 삭제됐다:
 
-| 삭제된 스토리 | 무엇을 보여주던 것 | 대체 |
-| --- | --- | --- |
-| `BrandHeader.stories.tsx` | 5브랜드 헤더(react) | ❌ 없음 |
-| `BrandFooter.stories.tsx` | 5브랜드 푸터(react) | ❌ 없음 |
-| `BrandBottomNav.stories.tsx` | 4브랜드 바텀네비(react) | ❌ 없음 (primitive `BottomNav.stories` 는 있음, 브랜드 완성형은 없음) |
-| `BrandChrome.{5브랜드}.mdx` | 브랜드별 chrome 개요 | ❌ 없음 |
-| `Sidebar.CashwalkBiz.stories.tsx` | 캐포비 admin 사이드바(react) | ❌ 없음 (← "여닫기 보고 싶다" 한 그것) |
-| `PageHeader.stories.tsx` | 페이지 헤더 컴포넌트 | 패턴으로 강등(`pattern:page-header`) — 데모 선택 |
+| 삭제된 스토리                     | 무엇을 보여주던 것           | 대체                                                                  |
+| --------------------------------- | ---------------------------- | --------------------------------------------------------------------- |
+| `BrandHeader.stories.tsx`         | 5브랜드 헤더(react)          | ❌ 없음                                                               |
+| `BrandFooter.stories.tsx`         | 5브랜드 푸터(react)          | ❌ 없음                                                               |
+| `BrandBottomNav.stories.tsx`      | 4브랜드 바텀네비(react)      | ❌ 없음 (primitive `BottomNav.stories` 는 있음, 브랜드 완성형은 없음) |
+| `BrandChrome.{5브랜드}.mdx`       | 브랜드별 chrome 개요         | ❌ 없음                                                               |
+| `Sidebar.CashwalkBiz.stories.tsx` | 캐포비 admin 사이드바(react) | ❌ 없음 (← "여닫기 보고 싶다" 한 그것)                                |
+| `PageHeader.stories.tsx`          | 페이지 헤더 컴포넌트         | 패턴으로 강등(`pattern:page-header`) — 데모 선택                      |
 
 이 컴포넌트들은 이제 **목업 전용 html 웹컴포넌트**(`<nds-brand-header|footer|bottom-nav brand>`, `<nds-sidebar brand>`)가 SSOT 다. 디자이너가 Storybook 에서 브랜드 chrome 을 못 보는 게 "업데이트 안 된" 증상.
 
@@ -50,7 +50,7 @@ chrome 정리에서 **react 브랜드 chrome·Sidebar 가 제거**되며 그걸 
 
 타이틀은 모두 `Brands/*`(게이트 면제). brand globals(`context.globals.brand`) 또는 명시 per-brand 스토리.
 
-4. `BrandHeader.stories.tsx` (`Brands/Header`) — `<nds-brand-header brand surface>` × {web/mobile/webview} × 5브랜드. 옛 스토리 커버리지 미러(데스크톱/모바일/웹뷰).
+4. `BrandHeader.stories.tsx` (`Brands/Header`) — `<nds-brand-header brand surface>` × `{web/mobile/webview}` × 5브랜드. 옛 스토리 커버리지 미러(데스크톱/모바일/웹뷰).
 5. `BrandFooter.stories.tsx` (`Brands/Footer`) — `<nds-brand-footer brand surface={web|app}>`.
 6. `BrandBottomNav.stories.tsx` (`Brands/BottomNav`) — `<nds-brand-bottom-nav brand active-key>` (캐포비는 web 전용=없음 명시).
 7. (선택) `BrandChrome.mdx` 단일 개요 페이지 — 브랜드별 header+footer+bottomnav 를 한 화면에(옛 5개 mdx 통합). `<Meta title="Brands/Chrome 개요">`.
@@ -70,7 +70,7 @@ chrome 정리에서 **react 브랜드 chrome·Sidebar 가 제거**되며 그걸 
 
 13. 개요 mdx(`Header.mdx`/`Footer.mdx`/`BottomNav.mdx`) 에 "브랜드 완성형은 `Brands/*`" 링크/안내 추가, 옛 react 브랜드 chrome 언급 정리.
 14. **`pnpm --filter storybook build`** — tsc 만이 아니라 **실제 빌드**로 mdx/스토리 렌더 에러 0 확인(지금까지 tsc 만 돌렸음).
-15. `npx tsc --noEmit -p apps/storybook/tsconfig.json` · `node scripts/check-storybook-catalog.mjs`(Brands/* 면제 확인) · dev 서버 재시작 후 **5브랜드 × chrome + 사이드바 여닫기 육안 확인**.
+15. `npx tsc --noEmit -p apps/storybook/tsconfig.json` · `node scripts/check-storybook-catalog.mjs`(Brands/\* 면제 확인) · dev 서버 재시작 후 **5브랜드 × chrome + 사이드바 여닫기 육안 확인**.
 16. (해당 시) Chromatic/visual-regression 스냅샷 갱신 — 브랜드 chrome 이 react→html 로 바뀌어 baseline 재생성 필요할 수 있음.
 
 ## 리스크 / 주의
