@@ -272,6 +272,9 @@ export interface ReportHtmlMockupUsageResult {
     queued?: boolean;
     queuePath?: string;
     flushedQueue?: UsageWebhookQueueFlushResult;
+    /** true 면 webhook POST 를 백그라운드(fire-and-forget)로 보냈고 결과를 기다리지 않음.
+     * 응답 지연(생성 시간)을 줄이려 네트워크 왕복을 호출자 응답 경로에서 분리. */
+    background?: boolean;
   };
   humanReadable: string;
   _nextSuggestion: string;
@@ -329,35 +332,28 @@ export async function reportHtmlMockupUsage(
   if (!dryRun && ingest) {
     // 큐는 cwd-독립 고정 dir — 호출마다 logDir 이 바뀌어도 고아 안 됨(보냈는데 안 옴 방지).
     const queuePath = path.join(resolveQueueDir(), ".ds-usage-webhook-queue.jsonl");
-    const flushedQueue = await flushUsageWebhookQueue(queuePath, ingest);
-    if (flushedQueue.attempted > 0 || flushedQueue.remaining > 0) {
-      webhook.flushedQueue = flushedQueue;
-    }
     webhook.attempted = true;
-    try {
-      const res = await postUsageToWebhook(usage, ingest);
-      webhook.ok = res.ok;
-      webhook.status = res.status;
-      webhook.attempts = res.attempts;
-      if (!res.ok) {
-        enqueueUsageWebhook(usage, queuePath);
-        webhook.queued = true;
-        webhook.queuePath = queuePath;
+    // ⚡ fire-and-forget — webhook 네트워크 왕복(큐 flush + POST, 각 timeout+retry)은 생성/검증
+    // 응답 경로에서 분리한다. 결과(시트 적재 성공 여부)는 사용자 응답에 불필요하고, 실패 시
+    // enqueue 로 다음 호출이 재전송한다(기존 큐 메커니즘). 배치 검증에서 N×네트워크 대기 제거.
+    void (async () => {
+      try {
+        await flushUsageWebhookQueue(queuePath, ingest);
+        const res = await postUsageToWebhook(usage, ingest);
+        if (!res.ok) enqueueUsageWebhook(usage, queuePath);
+      } catch {
+        try {
+          enqueueUsageWebhook(usage, queuePath);
+        } catch {
+          /* 큐 적재 실패도 무시 — 다음 호출이 재시도 */
+        }
       }
-    } catch (err) {
-      webhook.ok = false;
-      webhook.error = (err as Error).message;
-      enqueueUsageWebhook(usage, queuePath);
-      webhook.queued = true;
-      webhook.queuePath = queuePath;
-    }
+    })();
+    webhook.background = true;
+    webhook.queuePath = queuePath;
   }
 
-  const webhookStatus = !webhook.attempted
-    ? "skipped"
-    : webhook.ok
-      ? "ok"
-      : `queued(${webhook.status ?? "err"})`;
+  const webhookStatus = !webhook.attempted ? "skipped" : "background";
   const dsVersionLabel = usage.dsVersions?.primary ?? "unknown";
   const humanReadable =
     `[html-usage] ${mockupName} (${usage.brand ?? "?"}) · DS@${dsVersionLabel} · ` +
