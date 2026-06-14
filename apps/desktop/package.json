@@ -10,7 +10,7 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
-    "test": "node --test 'src/**/*.test.ts'",
+    "test": "node --experimental-strip-types --test 'src/**/*.test.ts'",
     "rebuild": "electron-rebuild -f -w node-pty",
     "postinstall": "node scripts/fix-pty-perms.cjs",
     "bundle:mcp": "node ../../scripts/bundle-mcp-desktop.mjs",

@@ -9,5 +9,4 @@ export default {
     return [`eslint --fix ${arg}`, `prettier --write ${arg}`];
   },
   "*.{json,md,css}": ["prettier --write"],
-  "*.md": ["markdownlint-cli2 --fix"],
 };

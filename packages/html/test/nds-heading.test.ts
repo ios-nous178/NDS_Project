@@ -28,12 +28,10 @@ describe("nds-heading — DOM parity with React Heading", () => {
     expect(root.style.gap).toBe("var(--semantic-gap-title-h2)");
     expect(title.tagName).toBe("H2");
     expect(title.textContent).toBe("안녕");
-    expect(title.style.fontSize).toBe("28px");
-    expect(title.style.lineHeight).toBe("38px");
+    expect(title.classList.contains("nds-text-headline2")).toBe(true);
     expect(description.tagName).toBe("P");
     expect(description.textContent).toBe("반가워");
-    expect(description.style.fontSize).toBe("14px");
-    expect(description.style.lineHeight).toBe("20px");
+    expect(description.classList.contains("nds-text-body3")).toBe(true);
     expect(el.style.display).toBe("contents");
   });
 
@@ -46,15 +44,13 @@ describe("nds-heading — DOM parity with React Heading", () => {
 
     let title = el.querySelector(".nds-heading__title") as HTMLElement;
     expect(title.tagName).toBe("H1");
-    expect(title.style.fontSize).toBe("36px");
-    expect(title.style.lineHeight).toBe("48px");
+    expect(title.classList.contains("nds-text-headline1")).toBe(true);
 
     el.setAttribute("level", "h4");
     await flush();
     title = el.querySelector(".nds-heading__title") as HTMLElement;
     expect(title.tagName).toBe("H4");
-    expect(title.style.fontSize).toBe("20px");
-    expect(title.style.lineHeight).toBe("28px");
+    expect(title.classList.contains("nds-text-headline4")).toBe(true);
 
     const root = el.querySelector(".nds-heading") as HTMLElement;
     expect(root.dataset.level).toBe("h4");
@@ -73,7 +69,7 @@ describe("nds-heading — DOM parity with React Heading", () => {
     const title = el.querySelector(".nds-heading__title") as HTMLElement;
     // 시맨틱 태그는 as(h1), 비주얼(폰트·gap)은 level(h2).
     expect(title.tagName).toBe("H1");
-    expect(title.style.fontSize).toBe("28px");
+    expect(title.classList.contains("nds-text-headline2")).toBe(true);
     expect(root.dataset.level).toBe("h2");
     expect(root.style.gap).toBe("var(--semantic-gap-title-h2)");
   });
@@ -116,8 +112,7 @@ describe("nds-heading — DOM parity with React Heading", () => {
     await flush();
 
     const description = el.querySelector(".nds-heading__description") as HTMLElement;
-    expect(description.style.fontSize).toBe("13px");
-    expect(description.style.lineHeight).toBe("18px");
+    expect(description.classList.contains("nds-text-caption1")).toBe(true);
   });
 
   it("reads title/description from slotted children when attribute missing", async () => {
