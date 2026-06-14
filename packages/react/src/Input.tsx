@@ -19,7 +19,7 @@ const INPUT_COUNT_CLASS = `${INPUT_CLASS}__count`;
 /** 입력류 공용 헬퍼텍스트 클래스 (폰트·색·아이콘·캐포비 에러아이콘 SSOT — @nudge-design/styles HelperText.ts) */
 const HELPER_TEXT_CLASS = "nds-helper-text";
 
-export type InputSize = "default" | "field" | "compact";
+export type InputSize = "default" | "field";
 
 /* Figma 실측 (171:9903)
  *   label ↔ wrapper gap : 12px
@@ -27,8 +27,8 @@ export type InputSize = "default" | "field" | "compact";
  *   helper(items) gap   : 12px (HelpText 1 ↔ HelpText 2)
  *   wrapper text↔icon gap: 10px
  *
- * compact: CashwalkBiz admin TextField (Figma 3082:846) — height 40, padding 12.
- *   FormField.labelPosition="left" 와 짝으로 가장 자주 쓰임.
+ * 캐포비 admin TextField = 48px (size 미지정 → 브랜드 :root 48 cascade, 또는 field).
+ *   admin 폼이 40px(옛 compact)였던 건 fc223c7a 에서 brand height 40→48 로 정합되며 폐기.
  */
 const inputSizeConfig = {
   default: {
@@ -42,12 +42,6 @@ const inputSizeConfig = {
     paddingX: undefined,
     labelGap: spacing[8],
     helperGap: spacing[8],
-  },
-  compact: {
-    height: sizing.input.compact,
-    paddingX: spacing[12],
-    labelGap: spacing[6],
-    helperGap: spacing[6],
   },
 } as const;
 /* ─── Utils ─── */
@@ -149,8 +143,8 @@ export const InputRoot: React.FC<InputRootProps> = ({
         style={
           {
             "--nds-input-width": resolveFieldWidth(fieldWidth) ?? (fullWidth ? "100%" : "auto"),
-            // size="default" 는 inline 높이 생략 → 브랜드 :root override(캐포비 admin 40)가
-            // cascade 로 이김. inline 으로 박으면 nds-select(40) 와 높이 어긋남(48 vs 40).
+            // size="default" 는 inline 높이 생략 → 브랜드 :root override(캐포비 admin 48)가
+            // cascade 로 이김. inline 으로 박으면 같은 행 nds-select 와 높이 어긋날 수 있음.
             ...(size !== "default" && {
               "--nds-input-height": `${sizeStyle.height}px`,
             }),

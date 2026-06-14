@@ -4,9 +4,9 @@
  * 사용 예:
  *   <nds-form-field label="기간" label-position="left">
  *     <nds-input-group>
- *       <nds-select size="compact" placeholder="년"></nds-select>
- *       <nds-select size="compact" placeholder="월"></nds-select>
- *       <nds-select size="compact" placeholder="일"></nds-select>
+ *       <nds-select placeholder="년"></nds-select>
+ *       <nds-select placeholder="월"></nds-select>
+ *       <nds-select placeholder="일"></nds-select>
  *     </nds-input-group>
  *   </nds-form-field>
  *

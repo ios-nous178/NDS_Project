@@ -52,7 +52,7 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_INPUT_CLASS}) {
     flex: 1;
     min-width: 0;
-    /* Input 과 동일 슬롯 — 캐포비 admin 은 height 40 / radius 4 / padding inset-input 로 cascade */
+    /* Input 과 동일 슬롯 — 캐포비 admin 은 height 48 / radius 10 / padding inset-input 로 cascade */
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     box-sizing: border-box;
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));

@@ -1370,7 +1370,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
 - raw \`button\`, \`input\`, \`select\`, \`textarea\` 는 특별한 이유 없으면 사용하지 않는다. \`validate_html_mockup\` 의 \`native-form-element-without-nds-wrapper\` 룰로 자동 검출됨.
 - **이모지·텍스트 기호 절대 금지**. 라벨/제목/empty state 어디에도 이모지(😀 🔥 ⭐ ✅ ⚠️) / 기호(→ ← ✓ ★ •) 박지 말 것. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG.
-- 색상/간격은 인라인 hex, rgb, px 보다 DS 토큰(\`var(--semantic-* )\` / \`var(--semantic-gap-* )\` / \`var(--semantic-inset-* )\`) 을 우선 사용.
+- **스타일은 처음부터 클래스/CSS 로 — 인라인 \`style="…"\` 속성을 흩뿌리지 말 것.** 색·간격은 인라인 hex/rgb/px 대신 DS 토큰(\`var(--semantic-* )\` / \`var(--semantic-gap-* )\` / \`var(--semantic-inset-* )\`)을, 반복 스타일은 \`<style>\`/클래스로 한 곳에 모은다. 인라인으로 흩뿌리면 시각 피드백마다 HTML 을 다시 손대 재작성·재검증 라운드가 늘어난다(클래스-퍼스트가 편집 사이클·토큰 소모를 줄인다).
 - 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
 - **아이콘 선택 필수 우선순위**: 브랜드 전용 > NudgeEAP 기본 > MockupLinear/Bold > 자체 SVG.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
@@ -1653,7 +1653,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **기존 antd/HTML 코드를 받았을 때 변수명만 치환하지 말 것**. 색상값을 \`var(--...)\` 로 바꾸는 것만으론 "DS 적용"이 아니다. antd \`<Table>\` → DS \`<DataTable>\`, antd \`<Form>\` → DS \`Input\`/\`Select\` 조합 식으로 **컴포넌트 구조를 처음부터 재구성**한다. 한 줄이라도 antd import 가 남아 있으면 변환 미완료로 본다 (validate_mockup 의 \`antd-import-in-user-app\` 으로 자동 검출됨).
 - raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
 - **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.
-- 색상/간격은 인라인 hex, rgb, px 값보다 DS 토큰을 우선 사용한다.
+- **스타일은 처음부터 클래스/CSS 로 — 인라인 \`style\` 속성을 흩뿌리지 말 것.** 색·간격은 인라인 hex/rgb/px 값보다 DS 토큰을, 반복 스타일은 클래스/styled 로 한 곳에 모은다(인라인으로 흩뿌리면 시각 피드백마다 재작성·재검증 라운드가 늘어난다).
 - 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
 - **아이콘 선택 필수 우선순위**: 브랜드 전용 아이콘(Geniet*/Trost* 등) > NudgeEAP 기본 브랜드 아이콘 > 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) > 자체 생성 SVG. \`find_icon\` 과 \`get_brand({ brand })\` 로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 내려간다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.

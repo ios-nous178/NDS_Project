@@ -21,7 +21,7 @@ const meta: Meta<InputProps> = {
   argTypes: {
     size: {
       control: "radio",
-      options: ["default", "field", "compact"],
+      options: ["default", "field"],
     },
     error: { control: "boolean" },
     clearable: { control: "boolean" },
@@ -58,7 +58,7 @@ export const Playground: Story = {
 /* ─── Figma Spec (430:4212 / 171:9903 / Section_Input 294:12) ─── */
 
 const INPUT_SPEC_ROWS: Array<{ key: string; value: string }> = [
-  { key: "사이즈 (default / field)", value: "높이 48 / 44px" },
+  { key: "사이즈 (default / field)", value: "높이 48 / 48px (field 는 라벨갭만 타이트)" },
   { key: "Wrapper padding-X", value: "16px" },
   { key: "Wrapper 텍스트 ↔ 아이콘 gap", value: "10px" },
   { key: "Wrapper radius", value: "8px (radius.md)" },

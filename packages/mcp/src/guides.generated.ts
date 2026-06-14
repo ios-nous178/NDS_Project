@@ -1375,7 +1375,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-846",
     "sizeMatrix": {
       "top": "label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.",
-      "left": "label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. baseline 정렬을 위해 label 컬럼 padding-top 10px(default)/12px(admin) 자동 적용.",
+      "left": "label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. 라벨 시작점 = control 시작점 (root align-items:flex-start 로 top 정렬) — Figma 정합. 입력 높이와 무관하게 라벨이 항상 control 상단에 붙는다 (예전 baseline 보정 padding-top 은 중앙 끌어내림 + 고정 px 라 입력 높이가 다르면 라벨이 처지던 버그여서 제거).",
       "density:default": "label caption1 (13/18), helper caption (12/16). 자체 padding 0 — 부모 stack 이 간격 결정.",
       "density:admin": "label body1 (16/24, ≡ Figma Subtitle1/Medium), helper body3 (14/20, ≡ Figma Body2/Regular), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준)."
     },
@@ -1385,22 +1385,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "error 와 helper 를 동시에 표시 — 사용자는 어떤 메시지를 우선해야 할지 혼란. error 모드에서는 helper 숨김.",
       "counter 는 max-length 가 명확한 textarea / input 에서만 사용.",
       "label-position='left' + description 동시 사용 — description 이 있으면 자동으로 top 으로 폴백 (좌측 좁은 컬럼에 멀티라인 설명을 욱여넣지 않기 위함).",
-      "label-position='left' 인데 input size 가 default(48) — 캐시워크 포 비즈니스 admin 표준은 size='compact'(40). 라벨 baseline 이 안 맞음.",
       "density='admin' 인데 stack 사이에 별도 gap 24/48 박음 — FormField 자체 py-24 가 이미 시각 48px 을 만드므로 이중 간격이 됨. 부모는 그냥 flex column 으로 두고 FormField 가 알아서 간격 책임지게 할 것.",
-      "density 와 size 혼동: density 는 FormField 자체 (label/helper typo + padding) 가 admin 톤이냐, size 는 Input/Select 의 height 가 40 이냐. 캐시워크 포 비즈니스 admin 표준은 둘 다 admin/compact 짝.",
+      "density 와 size 혼동: density 는 FormField 의 label/helper 톤·padding, size 는 Input/Select 의 height. 캐포비 admin 표준 = density='admin' + size 미지정(또는 field) → 48px. 옛 compact(40)은 admin 표준이 아니었고 API 에서 제거됨.",
       "FormField child 슬롯에 raw <div> + 수기 flex 로 input 여러 개 — 대신 InputGroup 컴포넌트 사용 (gap 12 + flex:1 균등 자동)."
     ],
     "recommended": [
       "모바일/일반 폼: <nds-form-field label='이름' helper='실명' required> + <nds-input>",
-      "캐시워크 포 비즈니스 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input size='compact' / nds-select>",
+      "캐시워크 포 비즈니스 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input / nds-select> (size 미지정 → 캐포비 brand 48px cascade)",
       "캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)",
       "FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.",
       "글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.",
       "라벨 전략(하이브리드): label prop 이 있는 컨트롤(Input/Textarea/Select/AmountInput/PhoneInput/SearchInput/TagInput/TimePicker/Autocomplete/AddressPicker)은 bare 로도 완전한 필드 — 검색바·툴바 필터·테이블 셀·단일필드엔 굳이 FormField 로 감싸지 않는다. **자체 label 이 없는 컨트롤(MultiSelect·DateRangePicker·FileUpload·ImageUpload·Slider)** 에 필드 라벨이 필요하면 FormField 로 감싼다. left-label/admin density/counter/description 도 FormField 전용."
     ],
     "examplesHtml": {
-      "do": "<!-- 모바일/일반 폼 -->\n<nds-form-field label=\"이름\" helper=\"실명을 입력해주세요\" html-for=\"name-input\" required>\n  <nds-input id=\"name-input\" name=\"name\"></nds-input>\n</nds-form-field>\n\n<!-- 캐시워크 포 비즈니스 admin: label 좌측 + compact + admin density -->\n<nds-form-field label=\"Label\" label-position=\"left\" density=\"admin\" html-for=\"admin-name\">\n  <nds-input id=\"admin-name\" size=\"compact\" placeholder=\"값을 입력하세요\"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label=\"기간\" label-position=\"left\" density=\"admin\">\n  <nds-input-group>\n    <nds-select placeholder=\"년\"></nds-select>\n    <nds-select placeholder=\"월\"></nds-select>\n    <nds-select placeholder=\"일\"></nds-select>\n  </nds-input-group>\n</nds-form-field>",
-      "dont": "<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label=\"이름\" htmlFor=\"x\"><nds-input id=\"x\"></nds-input></nds-form-field>\n<!-- label-position=\"left\" 인데 default size — 라벨이 input 중앙과 안 맞음 -->\n<nds-form-field label=\"Label\" label-position=\"left\"><nds-input></nds-input></nds-form-field>\n<!-- admin 인데 부모에 gap 박음 — 이중 간격 -->\n<div style=\"display:flex;flex-direction:column;gap:24px\">\n  <nds-form-field density=\"admin\">...</nds-form-field>\n  <nds-form-field density=\"admin\">...</nds-form-field>\n</div>\n<!-- 수기 flex 로 row 다중 input — InputGroup 써야 함 -->\n<nds-form-field label=\"기간\"><div style=\"display:flex;gap:12px\"><nds-input/><nds-input/></div></nds-form-field>"
+      "do": "<!-- 모바일/일반 폼 -->\n<nds-form-field label=\"이름\" helper=\"실명을 입력해주세요\" html-for=\"name-input\" required>\n  <nds-input id=\"name-input\" name=\"name\"></nds-input>\n</nds-form-field>\n\n<!-- 캐시워크 포 비즈니스 admin: label 좌측 + admin density (height 48 cascade) -->\n<nds-form-field label=\"Label\" label-position=\"left\" density=\"admin\" html-for=\"admin-name\">\n  <nds-input id=\"admin-name\" placeholder=\"값을 입력하세요\"></nds-input>\n</nds-form-field>\n\n<!-- row 다중 input — InputGroup -->\n<nds-form-field label=\"기간\" label-position=\"left\" density=\"admin\">\n  <nds-input-group>\n    <nds-select placeholder=\"년\"></nds-select>\n    <nds-select placeholder=\"월\"></nds-select>\n    <nds-select placeholder=\"일\"></nds-select>\n  </nds-input-group>\n</nds-form-field>",
+      "dont": "<!-- htmlFor (React 표기) — vanilla HTML 에선 html-for 만 동작 -->\n<nds-form-field label=\"이름\" htmlFor=\"x\"><nds-input id=\"x\"></nds-input></nds-form-field>\n<!-- admin 인데 부모에 gap 박음 — 이중 간격 -->\n<div style=\"display:flex;flex-direction:column;gap:24px\">\n  <nds-form-field density=\"admin\">...</nds-form-field>\n  <nds-form-field density=\"admin\">...</nds-form-field>\n</div>\n<!-- 수기 flex 로 row 다중 input — InputGroup 써야 함 -->\n<nds-form-field label=\"기간\"><div style=\"display:flex;gap:12px\"><nds-input/><nds-input/></div></nds-form-field>"
     }
   },
   "FormSection": {
@@ -1659,8 +1658,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903",
     "sizeMatrix": {
       "default": "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
-      "field": "height 44 / 같은 토큰, label-gap 8",
-      "compact": "height 40 / padding 12·10 / label-gap 6 — CashwalkBiz admin TextField (Figma 3082:846). FormField.labelPosition='left' 와 짝으로 사용."
+      "field": "height 48 / 같은 토큰, label-gap 8 — 폼-행 변형(라벨갭만 타이트). 캐포비 admin TextField 도 48(Figma 3082:846)."
     },
     "stateMatrix": {
       "default": "border #D8D8D8 / bg white / placeholder #999",
@@ -3243,7 +3241,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "name": "action-row",
     "metrics": {
       "preferredBuckets": "44 / 48 / 52 px",
-      "defaultBucket": "44px (Button.md · Tabs.chip pc · Input.field)",
+      "defaultBucket": "44px (Button.md · Tabs.chip pc)",
       "maxHeightMixPerRow": 1,
       "gapBetweenItems": "8 / 12 / 16 px (--semantic-gap-component-*)",
       "verticalAlign": "center"
@@ -3251,8 +3249,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "summary": "헤더 우측 액션 row · 필터 바 · 도구 모음처럼 *서로 다른 컴포넌트가 한 줄로 나란히 놓이는* 영역에서 높이를 어떻게 맞추는가. 빠지면 1-2px 어긋남이 row 전체를 시각적으로 불편하게 만든다. `sizing.button` / `sizing.tabs` / `sizing.input` 토큰의 단일 source of truth.",
     "rules": [
       "한 row 안의 모든 컴포넌트는 *동일한 height bucket* (44 / 48 / 52 중 하나) 으로 통일. 4px 차이도 정렬 깨짐.",
-      "**기본 bucket = 44px** — Button.md(44) / Tabs.chip(pc 44) / Input.field(44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.",
-      "**큰 bucket = 48px** — Button.lg(48) / Button.field(48) / Input.default(48) / AppBar 아래 큰 액션 row. primary CTA 가 포함된 row 에 사용.",
+      "**기본 bucket = 44px** — Button.md(44) / Tabs.chip(pc 44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.",
+      "**큰 bucket = 48px** — Button.lg(48) / Button.field(48) / Input.default·field(48, 둘 다 sizing.input=48) / AppBar 아래 큰 액션 row. primary CTA 가 포함된 row 에 사용.",
       "**작은 bucket = 38-42px** — Button.sm(42) / Button.xs(38) / Tabs.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.",
       "DS 컴포넌트의 height 는 `sizing.button.{size}` / `sizing.tabs.{type}.{viewport}` / `sizing.input.{kind}` 토큰이 단일 진실. **인라인 height 로 덮어쓰지 말 것** — 자연 높이가 다른 컴포넌트를 같은 px 로 강제하면 line-height 가 어긋난다.",
       "DateRangePicker / Toggle / Select 같이 sizing.* 토큰이 없는 컴포넌트는 size prop 으로 매치하거나, 같은 row 에서 padding 만 조정해 외형을 맞춘다. **임의 height: 40px 같은 raw px 금지** — 토큰에서 가장 가까운 bucket 으로 라운드.",
@@ -3608,7 +3606,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       {
         "verdict": "good",
         "source": "Figma 290:1197 캐시워크 포 비즈니스 admin form (퀴즈 등록하기)",
-        "caption": "PageTitle 32 Bold (+부제, 아래 divider 없음) → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-40 rounded-10 → 콘텐츠 하단 우측 정렬 [취소][저장](별도 흰 바·고정 없음)."
+        "caption": "PageTitle 32 Bold (+부제, 아래 divider 없음) → 섹션 헤딩 24 Bold (카드 밖) → 카드 padding 48×36 radius 16 → 라벨-인라인-좌측 (172px) + 필드 h-48 rounded-10 → 콘텐츠 하단 우측 정렬 [취소][저장](별도 흰 바·고정 없음)."
       },
       {
         "verdict": "bad",
@@ -3633,7 +3631,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "fieldWidth": "Field Width 6단계 px 고정 — xs120/sm200/md304(default)/lg400/xl488/full100%. 폼 일반 입력 Medium 304, Textarea Full. 스케일 SSOT=pattern:cashwalk-biz-input.",
       "labelTypography": "Pretendard Medium 16/24 #666",
       "requiredMarker": "라벨 옆 ' *' #FC3500",
-      "fieldHeight": "40px (nds-input/nds-select 동일 — input default 는 brand :root 로 cascade, 48 로 두면 select 와 어긋남)",
+      "fieldHeight": "48px (nds-input/nds-select 동일 — 캐포비 brand :root 가 --nds-input-height 48 로 cascade; size 미지정이면 자동 48. 옛 size=\"compact\"(40) 는 폐기·제거됨)",
       "fieldRadius": "10px",
       "fieldBorder": "1px #D8D8D8",
       "fieldBg": "white",
@@ -3678,9 +3676,9 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**페이지 헤더**: 좌측 정렬 — 타이틀 Pretendard **Bold 32 / lh 60** #383838 **+ (있으면) 바로 아래 부제** Pretendard Regular 16/24 #666. **레퍼런스에 부제가 있으면 반드시 유지 — title-only 로 축소 금지.** **타이틀/부제 아래에 divider(밑줄·border-bottom·hr) 를 넣지 말 것** — 헤더는 라인 없이 여백만 두고 다음 섹션으로 바로 이어진다. 타이틀/부제 아래 ~76px 여백 후 섹션 헤딩 시작. **페이지 배경 위에 얹는다 — 별도 박스/sticky `nds-shell__topbar` 로 감싸지 말 것**(topbar 박스는 list/detail/dashboard 용). 우측에는 액션 두지 말 것(액션은 콘텐츠 하단 우측 정렬 [취소][저장]).",
       "**섹션 헤딩 (카드 위 분리 노출)**: 헤딩(예: '기본 정보') 은 카드 **밖** 위에 위치 — Pretendard **Bold 24 / lh 30** #383838. 헤딩 아래 ~54px 후 카드 시작.",
       "**섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.",
-      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**. 입력 필드 가로 너비는 **Field Width 6단계 스케일**(xs 120 / sm 200 / **md 304 default** / lg 400 / xl 488 / full 100%)에서 **px 고정**으로 선택 — 폼 일반 입력 = **Medium 304px**, 같은 행 input 은 같은 사이즈로 통일, Textarea 는 Full(100%). (임의 너비 ~684/228 류·hug·% 금지 — 스케일·use case 는 `pattern:cashwalk-biz-input` 의 Field Width 가 SSOT.) 라벨은 row 중앙 정렬.",
+      "**필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**. 입력 필드 가로 너비는 **Field Width 6단계 스케일**(xs 120 / sm 200 / **md 304 default** / lg 400 / xl 488 / full 100%)에서 **px 고정**으로 선택 — 폼 일반 입력 = **Medium 304px**, 같은 행 input 은 같은 사이즈로 통일, Textarea 는 Full(100%). (임의 너비 ~684/228 류·hug·% 금지 — 스케일·use case 는 `pattern:cashwalk-biz-input` 의 Field Width 가 SSOT.) 라벨은 control 상단(top) 정렬 — 라벨 시작점 = 입력 시작점 (FormField left 모드, Figma 정합).",
       "**라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.",
-      "**필드 컴포넌트**: 높이 **40px** (`nds-input`/`nds-select` 동일 높이로 정렬 — nds-input 은 size 미지정(default)이면 브랜드 :root 40 으로 cascade 되고 `size=\"compact\"` 도 40. **48 로 두면 nds-select(40) 와 높이가 어긋남**), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.",
+      "**필드 컴포넌트**: 높이 **48px** (`nds-input`/`nds-select` 동일 — size 미지정이면 캐포비 brand :root 가 `--nds-input-height` 48 로 cascade 해 자동 정렬. **`size=\"compact\"`(40) 는 폐기·제거됐으니 admin 에 쓰지 말 것** — 단일 필드 48 과 어긋남), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.",
       "**행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.",
       "**Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.",
       "**필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.",
@@ -4381,13 +4379,19 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "인접 Section 은 **BG 교차로 분리** — White(`--semantic-bg-surface-default`) ↔ Gray 50(`--semantic-bg-surface-subtle`). 그림자·보더 대신 배경 교차로 시각적 블록 분리감을 준다.",
       "Section 1개 안에 Container 1개 — Container 로 너비를 가둔다.",
       "Section 헤딩 — Section Title **32 Bold + 하단 16 여백**, 헤딩↔본문 간격 **24** 권장.",
-      "Section 끼리 직접 붙이지 않고 **padding 으로만 분리** — 사이에 margin 을 쓰지 않는다(margin collapse 방지)."
+      "Section 끼리 직접 붙이지 않고 **padding 으로만 분리** — 사이에 margin 을 쓰지 않는다(margin collapse 방지).",
+      "다열(2열+) 그리드는 **좁은 화면에서 1열 fallback 필수** — `@media (max-width:768px)` 에서 `grid-template-columns:1fr`(또는 `flex-wrap`). 모바일에서 다열을 그대로 두면 카드가 짓눌려 글자가 세로로 쪼개진다.",
+      "**시각 순서 = DOM 순서가 기본.** PC 2열(좌열 1–5 / 우열 6–10)을 만들려고 DOM 을 열 우선(1,6,2,7…)으로 까는 건 금지 — 모바일 1열에서 그 순서가 그대로 노출돼 랭킹이 뒤섞인다. DOM 은 읽기 순서(1,2,3…)대로 두고, 열 우선 배치는 `grid-auto-flow:column` + `grid-template-rows:repeat(N,auto)` 로 표현한다 — 그러면 모바일 1열에서도 DOM 순서(1,2,3…)가 유지된다.",
+      "모든 페이지 `<head>` 엔 `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">` — 없으면 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 전혀 안 먹는다(`build_singlefile_html` 은 산출물에 자동 주입하지만 원본에도 둔다)."
     ],
     "avoid": [
       "Container 밖에 컨텐츠를 두는 것 — 좌우 정렬·max-width 가 깨진다. 항상 `nds-container` 안에.",
       "Section 사이에 `margin` 사용 — padding 으로만 분리(margin collapse).",
       "같은 화면에서 Container 너비 혼용(예: 한 섹션 1200, 다른 섹션 960).",
-      "모바일에서 PC padding(좌우 40)을 그대로 사용 — Container 가 자동으로 16 으로 줄이므로 직접 좌우 padding 을 덧대지 않는다."
+      "모바일에서 PC padding(좌우 40)을 그대로 사용 — Container 가 자동으로 16 으로 줄이므로 직접 좌우 padding 을 덧대지 않는다.",
+      "다열 그리드를 **모바일 fallback(@media 1열 / flex-wrap) 없이** 사용 — 좁은 화면에서 카드 짓눌림·가로 오버플로우.",
+      "PC 다열을 위해 DOM 을 **열 우선(1,6,2,7…)으로 배열** — 모바일 1열에서 순서가 뒤섞인다(배치는 grid-auto-flow:column / CSS order 로, DOM 은 읽기 순서로).",
+      "`<meta name=\"viewport\">` 누락 — 모바일 스케일이 깨져 반응형이 전혀 안 먹는다."
     ]
   },
   "cta-group": {

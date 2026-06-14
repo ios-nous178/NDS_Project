@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T17:13:04.347Z",
+  "generatedAt": "2026-06-14T12:55:22.366Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3470,8 +3470,7 @@
           "type": "InputSize",
           "allowedValues": [
             "default",
-            "field",
-            "compact"
+            "field"
           ]
         },
         {
@@ -3495,8 +3494,7 @@
       "htmlAttrs": {
         "size": [
           "default",
-          "field",
-          "compact"
+          "field"
         ]
       },
       "htmlObservedAttrs": [
@@ -14004,8 +14002,7 @@
       "attrs": {
         "size": [
           "default",
-          "field",
-          "compact"
+          "field"
         ]
       },
       "observedAttrs": [

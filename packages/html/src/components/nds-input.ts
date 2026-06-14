@@ -19,9 +19,9 @@
 
 import { NdsElement, define } from "../base/nds-element.js";
 
-export type InputSize = "default" | "field" | "compact";
+export type InputSize = "default" | "field";
 
-const SIZES: readonly InputSize[] = ["default", "field", "compact"];
+const SIZES: readonly InputSize[] = ["default", "field"];
 
 // 입력 필드 가로 너비 6단계 — sizing.fieldWidth SSOT 미러 (Figma InputGuide Field Width 3897:1578).
 // react resolveFieldWidth(internal/fieldWidth.ts) 와 동일 값. full = 컨테이너 100%.
@@ -34,14 +34,13 @@ const FIELD_WIDTHS: Record<string, string> = {
   full: "100%",
 };
 
-// sizing.input.{default,field,compact} = {48, 44, 40}px. compact 는 캐포비 admin TextField (Figma 3082:846).
+// sizing.input.{default,field} = {48, 48}px (react inputSizeConfig 미러). 둘 다 48 — field 는 labelGap 8 의 폼-행 변형.
 const SIZE_CONFIG: Record<
   InputSize,
   { height: number; paddingX: number | null; labelGap: number; helperGap: number }
 > = {
   default: { height: 48, paddingX: null, labelGap: 12, helperGap: 8 },
-  field: { height: 44, paddingX: null, labelGap: 8, helperGap: 8 },
-  compact: { height: 40, paddingX: 12, labelGap: 6, helperGap: 6 },
+  field: { height: 48, paddingX: null, labelGap: 8, helperGap: 8 },
 };
 
 const FORWARDED_ATTRS = [
@@ -212,9 +211,9 @@ export class NdsInput extends NdsElement {
       resolvedFieldWidth ?? (fullWidth ? "100%" : "auto"),
     );
     // size="default" 는 inline 높이를 박지 않는다 — 그래야 브랜드 :root override
-    // (예: 캐포비 admin --nds-input-height:40)가 cascade 로 이긴다. inline 으로 박으면
-    // :root 를 눌러 nds-select(40, inline 안 박음) 와 높이가 어긋난다(48 vs 40).
-    // field/compact 는 작성자가 명시한 의도이므로 inline 유지.
+    // (예: 캐포비 admin --nds-input-height:48)가 cascade 로 이긴다. inline 으로 박으면
+    // :root 를 눌러 같은 행 nds-select(inline 안 박음) 와 높이가 어긋날 수 있다.
+    // field 는 작성자가 명시한 의도이므로 inline 유지(값은 default 와 동일 48).
     // CSS fallback: min-height: var(--nds-input-height, sizing.input.default=48px).
     if (size === "default") {
       root.style.removeProperty("--nds-input-height");

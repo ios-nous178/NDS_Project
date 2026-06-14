@@ -154,6 +154,9 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "admin-surface-consumer-chrome": { severity: "error", kind: "invariant" },
   // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
   "service-surface-admin-shell": { severity: "warn", kind: "invariant" },
+  // full 문서(<head> 존재)인데 <meta name="viewport"> 누락 — 모바일이 데스크탑 폭으로 렌더돼
+  // 반응형(@media)이 안 먹고 카드/다열 그리드가 짓눌림(회고: 모바일 카드 4열 짓눌림·글자 세로 쪼개짐)
+  "missing-viewport-meta": { severity: "warn", kind: "invariant" },
   // 캐포비 어드민(surface=admin + brand=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
   "cashwalk-biz-admin-page-pattern": { severity: "error", kind: "brand-policy" },
   // 캐포비 어드민 onboarding 패턴인데 shell(사이드바/풀하이트 셸)이 있음 — 온보딩은 비로그인 진입 화면이라 shell 금지
@@ -1939,6 +1942,24 @@ export function validateHtmlSource(
     }
   }
 
+  // ─── viewport meta 누락 (회고: 모바일 카드가 데스크탑 폭으로 렌더돼 4열로 짓눌림 · 반응형 @media 미발동) ───
+  //   full 문서(<head> 존재)인데 <meta name="viewport"> 가 없으면 모바일 브라우저가 데스크탑 폭으로
+  //   렌더한다 → 반응형 분기가 전혀 안 먹는다. build_singlefile_html 은 산출물에 자동 주입하지만
+  //   원본에도 선언하도록 환기(warn). fragment(<head> 없음)는 판정 불가라 skip.
+  //   주의: cheerio 는 fragment 에도 <head> 를 자동 생성하므로 DOM 이 아니라 원본 문자열에 실제
+  //   <head> 태그가 있는지로 'full 문서'를 판정한다(<header> 오매칭 방지: /<head[\s>]/).
+  if (/<head[\s>]/i.test(source) && $('head meta[name="viewport"]').length === 0) {
+    violations.push({
+      rule: "missing-viewport-meta",
+      line: 1,
+      selector: "<head>",
+      detail:
+        '<head> 에 <meta name="viewport"> 가 없습니다 — 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 안 먹고 카드/다열 그리드가 짓눌립니다.',
+      suggestion:
+        '<head> 에 <meta name="viewport" content="width=device-width, initial-scale=1"> 를 추가하세요. (build_singlefile_html 은 산출물에 자동 주입하지만 원본에도 두는 게 안전합니다.)',
+    });
+  }
+
   // ─── 헤딩 안 장식 아이콘 (descendant scan) ───
   for (const headingTag of ["h3", "h4"] as const) {
     $(headingTag).each((_i, el) => {
@@ -2267,10 +2288,10 @@ export interface ValidateHtmlMockupResult {
 }
 
 /**
- * 응답 크기 cap. 같은 rule 이 N건씩 터지면 detail/suggestion 텍스트가 누적돼 응답이 폭주한다.
- * - selector 는 HTML 한 줄 통째로 들어올 수 있어 길이만 cap
- * - 룰별 첫 N개는 full 객체로, 그 뒤는 line 만 (rule/detail/suggestion 은 첫 객체와 동일하므로 생략)
- * 결과적으로 응답 토큰을 절반 이하로 줄이면서도 위반 위치/패턴 식별에는 충분.
+ * 응답 크기 cap. 같은 rule 이 N건씩 터지면 detail/suggestion/selector 텍스트가 누적돼 응답이 폭주한다.
+ * - selector 는 HTML 한 줄 통째로 들어올 수 있어 길이만 cap (첫 N개), 그 뒤(꼬리)는 selector 자체를 생략
+ * - 룰별 첫 N개는 full 객체로, 그 뒤는 rule/line/severity 만 (detail/suggestion/selector 생략 — 전체 line·총계는 violationsByRule)
+ * 결과적으로 응답 토큰을 크게 줄이면서도 위반 위치/패턴 식별에는 충분(회고: inline-color 240건이 응답·컨텍스트를 점거).
  */
 const SELECTOR_MAX_LENGTH = 120;
 const FULL_SAMPLES_PER_RULE = 5;
@@ -2280,21 +2301,24 @@ function trimViolationsForResponse(violations: HtmlViolation[]): HtmlViolation[]
   return violations.map((v) => {
     const count = seenPerRule.get(v.rule) ?? 0;
     seenPerRule.set(v.rule, count + 1);
-    const selector =
-      v.selector && v.selector.length > SELECTOR_MAX_LENGTH
-        ? v.selector.slice(0, SELECTOR_MAX_LENGTH) + "…"
-        : v.selector;
     if (count < FULL_SAMPLES_PER_RULE) {
+      const selector =
+        v.selector && v.selector.length > SELECTOR_MAX_LENGTH
+          ? v.selector.slice(0, SELECTOR_MAX_LENGTH) + "…"
+          : v.selector;
       return { ...v, selector };
     }
-    // 같은 rule 의 N+1 번째부터는 line 만 (severity / detail / suggestion 은 sample 과 동일).
+    // 같은 rule 의 N+1 번째부터는 rule/line/severity 만 — selector·detail·suggestion 모두 생략.
+    // selector(요소당 1건, 최대 120자)가 응답 토큰의 대부분을 차지했다(회고: inline-color 240건 덤프가
+    // 매 턴 컨텍스트를 점거). 전체 line·룰별 총계는 violationsByRule 가 정확히 보유하므로 정보 손실은 없다.
+    // 행(=위반) 자체는 드롭하지 않고 selector 만 빼므로, 위반당 1행을 적재하는 telemetry(rule-stats
+    // 수명정책)의 룰별 카운트는 그대로 유지된다.
     // 주의: 첫 N(=5)건은 full 유지 — raw-landmark 처럼 같은 rule 이라도 위반마다 suggestion 이
     // 다른 케이스(header→BrandHeader / footer→BrandFooter)가 있어 무조건 dedup 하면 신호가 샌다.
     return {
       rule: v.rule,
       line: v.line,
       ...(v.severity ? { severity: v.severity } : {}),
-      ...(selector ? { selector } : {}),
     };
   });
 }
@@ -2374,6 +2398,6 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
       "이 검사는 HTML 정적 룰만 — JSX 전용(antd/외부 아이콘 import 잔존, Chip.label 속성, 화살표 아이콘 식별, IconButton size 등 prop 의미)은 .tsx 의 validate_mockup 으로 별도 확인하세요. " +
       "응답 cap: 같은 룰 첫 " +
       FULL_SAMPLES_PER_RULE +
-      "건만 full, 그 뒤는 line 만(룰별 총계는 violationsByRule).",
+      "건만 full, 그 뒤는 rule/line/severity 만(selector·detail 생략 — 룰별 총계·전체 line 은 violationsByRule).",
   };
 }

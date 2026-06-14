@@ -221,7 +221,7 @@ export interface ElevationOverrides {
  * 특정 컴포넌트만 브랜드 가이드에 맞게 보정할 때 사용.
  * emit: `--nds-{component}-{prop}` CSS var. 컴포넌트는 이 var 를 fallback 패턴으로 읽어 cascade.
  * (오버라이드를 안 정의한 브랜드는 컴포넌트의 fallback 값이 그대로 적용 — 기존 동작 유지)
- * 예) CashwalkBiz admin 은 input radius 4px / height 40px / padding-x = inset-input (base 8/48/inset-card).
+ * 예) CashwalkBiz admin 은 input radius 10px / height 48px / padding-x = inset-input (base 8/48/inset-card).
  *
  * value 가 number 면 `${value}px` 로 emit, string 이면 그대로 (`var(--semantic-inset-input)` 같은 CSS var 참조 가능).
  */

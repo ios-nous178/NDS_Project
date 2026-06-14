@@ -179,7 +179,7 @@ export const cashwalkBizTheme: BrandTheme = {
 
   // Component overrides — Figma 캐포비 InputGuide (3080:741) 기준.
   // base(NudgeEAP/Trost/Geniet) 는 input rounded 8px / height 48px / padding-x = --semantic-inset-card.
-  // 캐포비 admin 은 rounded 10px / height 40px / padding-x = --semantic-inset-input(10px).
+  // 캐포비 admin 은 rounded 10px / height 48px / padding-x = --semantic-inset-input(10px). (height 48 = base 와 동일 행 표준, fc223c7a 정합)
   // emit: `--nds-{component}-{prop}` → 각 컴포넌트가 fallback 으로 읽어 cascade (다른 브랜드는 fallback 그대로).
   components: {
     // 입력 패밀리(input/select/textarea/datepicker) radius·height 는 --nds-input-radius / --nds-input-height

@@ -681,6 +681,11 @@ function buildHtmlSinglefileNoBundler(
   const head = $("head");
   if (head.length === 0) $("html").prepend("<head></head>");
   $("head").prepend(`<style data-nds-standalone>\n${safeCss}\n</style>`);
+  // viewport meta 보장 — 누락 시 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 안 먹고 카드/다열
+  // 그리드가 짓눌린다(회고: 모바일 카드 4열 짓눌림). 멱등: 원본에 이미 선언돼 있으면 건드리지 않는다.
+  if ($('head meta[name="viewport"]').length === 0) {
+    $("head").prepend('<meta name="viewport" content="width=device-width, initial-scale=1">');
+  }
   const body = $("body");
   if (body.length === 0) $("html").append("<body></body>");
   $("body").append(`<script>\n${safeJs}\n</script>`);

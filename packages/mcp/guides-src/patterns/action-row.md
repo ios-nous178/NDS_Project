@@ -1,7 +1,7 @@
 ---
 metrics:
   preferredBuckets: 44 / 48 / 52 px
-  defaultBucket: 44px (Button.md · Tabs.chip pc · Input.field)
+  defaultBucket: 44px (Button.md · Tabs.chip pc)
   maxHeightMixPerRow: 1
   gapBetweenItems: 8 / 12 / 16 px (--semantic-gap-component-*)
   verticalAlign: center
@@ -14,8 +14,8 @@ metrics:
 ## rules
 
 - 한 row 안의 모든 컴포넌트는 *동일한 height bucket* (44 / 48 / 52 중 하나) 으로 통일. 4px 차이도 정렬 깨짐.
-- **기본 bucket = 44px** — Button.md(44) / Tabs.chip(pc 44) / Input.field(44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.
-- **큰 bucket = 48px** — Button.lg(48) / Button.field(48) / Input.default(48) / AppBar 아래 큰 액션 row. primary CTA 가 포함된 row 에 사용.
+- **기본 bucket = 44px** — Button.md(44) / Tabs.chip(pc 44) 가 자연 매치. 헤더 우측 액션 row · 필터 바 · 카드 footer 의 표준.
+- **큰 bucket = 48px** — Button.lg(48) / Button.field(48) / Input.default·field(48, 둘 다 sizing.input=48) / AppBar 아래 큰 액션 row. primary CTA 가 포함된 row 에 사용.
 - **작은 bucket = 38-42px** — Button.sm(42) / Button.xs(38) / Tabs.chip(mobile 36 — 38 에 가깝게 padding 조정). 정보 밀도 높은 어드민·표 상단 도구 모음에 사용.
 - DS 컴포넌트의 height 는 `sizing.button.{size}` / `sizing.tabs.{type}.{viewport}` / `sizing.input.{kind}` 토큰이 단일 진실. **인라인 height 로 덮어쓰지 말 것** — 자연 높이가 다른 컴포넌트를 같은 px 로 강제하면 line-height 가 어긋난다.
 - DateRangePicker / Toggle / Select 같이 sizing.* 토큰이 없는 컴포넌트는 size prop 으로 매치하거나, 같은 row 에서 padding 만 조정해 외형을 맞춘다. **임의 height: 40px 같은 raw px 금지** — 토큰에서 가장 가까운 bucket 으로 라운드.

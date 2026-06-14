@@ -41,8 +41,10 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}[data-label-position="left"]) > .${FF_LABEL_ROW_CLASS} {
     flex: 0 0 var(--nds-form-field-label-width, 180px);
     width: var(--nds-form-field-label-width, 180px);
-    /* control 의 입력 baseline 과 라벨 baseline 정렬 — 캐포비 admin 표준 (10px = input padding-y). */
-    padding-top: 10px;
+    /* Figma: 라벨 시작점 = control 시작점 (top-align). 루트의 align-items:flex-start 로
+     * 처리 — 입력 높이와 무관. 예전엔 라벨을 입력 세로중앙에 맞추려 padding-top(10/12px)을
+     * 박았으나, (1) Figma 는 중앙이 아닌 top 정렬이고 (2) 고정 px 라 입력 높이가 다르면
+     * 라벨이 처지는 버그였다 — 이제 top 정렬이라 높이(40/48 등) 무관. */
   }
 
   :where(.${FF_LABEL_CLASS}) {
@@ -91,10 +93,6 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}[data-density="admin"]) {
     padding-block: ${spacing[24]}px;
     gap: ${spacing[16]}px;
-  }
-  :where(.${FF_ROOT_CLASS}[data-density="admin"][data-label-position="left"]) > .${FF_LABEL_ROW_CLASS} {
-    /* admin: input height 48 기본 → baseline 정렬은 padding 0 (Subtitle1 line-height 24 == input vertical center) */
-    padding-top: 12px;
   }
   :where(.${FF_ROOT_CLASS}[data-density="admin"]) > .${FF_LABEL_ROW_CLASS} :where(.${FF_LABEL_CLASS}) {
     /* Figma Subtitle1/Medium 16/24 ≡ DS typeScale.body1 */

@@ -97,7 +97,7 @@ function LikertWrappedExample() {
 function LabelLeftExample() {
   const [name, setName] = useState("");
   return (
-    <div style={{ width: 600 }}>
+    <div data-brand="cashwalk-biz" style={{ width: 600 }}>
       <FormField
         label="이름"
         labelPosition="left"
@@ -106,7 +106,6 @@ function LabelLeftExample() {
       >
         <Input
           id="cashwalk-biz-admin-name"
-          size="compact"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="값을 입력하세요"
@@ -152,7 +151,10 @@ function CashwalkBizAdminTextFieldExample() {
   ] as const;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20, width: 600 }}>
+    <div
+      data-brand="cashwalk-biz"
+      style={{ display: "flex", flexDirection: "column", gap: 20, width: 600 }}
+    >
       {states.map((s) => (
         <div key={s.key} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <FormField
@@ -163,7 +165,7 @@ function CashwalkBizAdminTextFieldExample() {
             error={"error" in s ? s.error : undefined}
             htmlFor={`cashwalk-biz-admin-${s.key}`}
           >
-            <Input id={`cashwalk-biz-admin-${s.key}`} size="compact" {...s.props} />
+            <Input id={`cashwalk-biz-admin-${s.key}`} {...s.props} />
           </FormField>
           <span style={{ fontSize: 11, color: "#bbb", fontWeight: 700 }}>{s.caption}</span>
         </div>
@@ -268,7 +270,7 @@ export const LabelLeft: Story = {
     docs: {
       description: {
         story:
-          'CashwalkBiz admin TextField 패턴. `labelPosition="left"` + `Input size="compact"` (40px) 으로 라벨 좌측 고정 폼. 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
+          'CashwalkBiz admin TextField 패턴. `labelPosition="left"` 라벨 좌측 고정 폼 (캐포비 brand 에서 입력 높이 48px cascade — size 미지정). 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
       },
     },
   },
@@ -280,7 +282,7 @@ export const CashwalkBizAdminTextField: Story = {
     docs: {
       description: {
         story:
-          "Figma CashwalkBiz Library `Section_TextField` (3082:846) 의 5개 state 재현. Label=Left + Input size=compact 조합.",
+          "Figma CashwalkBiz Library `Section_TextField` (3082:846) 의 5개 state 재현. Label=Left + admin density (입력 48px) 조합.",
       },
     },
   },

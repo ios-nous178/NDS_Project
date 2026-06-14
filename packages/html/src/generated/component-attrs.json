@@ -767,8 +767,7 @@
     "enums": {
       "size": [
         "default",
-        "field",
-        "compact"
+        "field"
       ]
     }
   },

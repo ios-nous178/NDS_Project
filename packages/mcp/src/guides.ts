@@ -31,7 +31,7 @@ import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
  *   intent:'backoffice' 로 진행한다.
  *
  * ★ 캐포비(cashwalk-biz)는 DS 안에 자체 admin 디자인 시스템까지 갖고 있어
- *   (admin layout 1920/sidebar 300, input admin radius4/h40, Modal admin desktop 480),
+ *   (admin layout 1920/sidebar 300, input admin radius10/h48, Modal admin desktop 480),
  *   admin/백오피스 어느 쪽이든 결과가 DS(html + cascade) — 질문 없이 우회한다(회귀 보존).
  *   넛지EAP 어드민은 자체 admin 토큰 없이 기존 DS 컴포넌트/토큰으로 목업한다.
  *   resolveIntentRouting() 이 이 분기를 단일 지점에서 결정한다.
@@ -711,7 +711,7 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
-    "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tabs size mobile/pc, BrandFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%.",
+    "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tabs size mobile/pc, BrandFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%. 다열(2열+) 그리드는 좁은 화면에서 1열 fallback 필수(@media max-width:768 → grid-template-columns:1fr 또는 flex-wrap) — 안 두면 모바일에서 카드가 짓눌려 글자가 세로로 쪼개진다. **시각 순서 = DOM 순서가 기본** — PC 다열을 만들려고 DOM 을 열 우선(1,6,2,7…)으로 깔지 말 것(모바일 1열에서 순서가 뒤섞인다). DOM 은 읽기 순서(1,2,3…)대로 두고, '좌열 1–5 / 우열 6–10' 같은 열 우선 배치는 grid-auto-flow:column + grid-template-rows 로 표현한다(그래야 모바일 1열에서도 1,2,3…10 순서가 유지된다). 모든 목업 <head> 엔 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> 필수 — 없으면 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 전혀 안 먹는다(validator 의 missing-viewport-meta 로 검출).",
     "4pt 그리드에 맞춰 간격 설정. Gap(요소 간)과 Inset(컨테이너 내부)을 구분해 항상 semantic 토큰(--semantic-gap-* / --semantic-inset-*) 사용",
     "Brand background(--semantic-bg-brand-*)는 주의/안내/하이라이트 의미 전달이 필요할 때만, 한 화면당 1개 이내로 사용 — 자세히는 get_guide({ topic: 'pattern:surface-layer' })",
     "인터랙티브 요소(Button/IconButton/Card.Root clickable/Tabs)에는 onClick 등 핸들러를 반드시 부착",

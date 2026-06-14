@@ -771,8 +771,7 @@ export const COMPONENT_ATTRS = {
     "enums": {
       "size": [
         "default",
-        "field",
-        "compact"
+        "field"
       ]
     }
   },

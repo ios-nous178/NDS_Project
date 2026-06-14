@@ -2,8 +2,7 @@
 figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903
 sizeMatrix:
   default: height 48 / padding 16·13 / wrapper gap 10 / radius 8
-  field: height 44 / 같은 토큰, label-gap 8
-  compact: height 40 / padding 12·10 / label-gap 6 — CashwalkBiz admin TextField (Figma 3082:846). FormField.labelPosition='left' 와 짝으로 사용.
+  field: height 48 / 같은 토큰, label-gap 8 — 폼-행 변형(라벨갭만 타이트). 캐포비 admin TextField 도 48(Figma 3082:846).
 stateMatrix:
   default: "border #D8D8D8 / bg white / placeholder #999"
   typing: border var(--semantic-border-focus-default) (cv.border.focus) / text var(--semantic-text-strong-default) (cv.text.normal)
