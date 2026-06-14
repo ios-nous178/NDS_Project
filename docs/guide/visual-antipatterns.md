@@ -29,6 +29,7 @@ title: 시각 안티패턴
 
 - **Card Everything 금지** — 모든 정보 단위를 카드로 감싸지 않는다. 카드는 '독립된 정보 단위' 일 때만. 단순 group/section 은 spacing + h3 + Divider 로 위계를 만든다. 한 화면에 카드가 5개를 넘으면 80% 이상 안티패턴.
 - **카드 안 카드 중첩 금지** — 카드 내부 영역 강조는 surface.section tone 한 단계 또는 inline Chip/Badge 로. nested Card 는 위계 표현 도구가 아니다.
+- **카드 장식 라인/accent 바 금지** — 카드 상단 컬러 라인(border-top accent) · 좌측 accent 보더 · ::before 컬러 바로 카드를 장식하지 않는다. 카드 테두리는 outlined 중립 1px 또는 footer/divider hairline 뿐 — 컬러 accent 선은 DS Card 에 없다. 강조는 색이 아니라 Chip/Badge·텍스트 위계로.
 - **장식용 그림자 금지** — 떠 있지 않아야 할 요소(인라인 리스트 · 일반 카드 · 기본 입력)에 elevation/shadow 적용 금지. Shadow 는 floating UI(Modal · Popup · Dropdown · BottomSheet) 와 'hover 시 floating 표현' 에만.
 - **Shadow-heavy 레이아웃 금지** — 한 화면에 그림자 있는 요소가 3개를 넘으면 floating 의미가 사라진다. Border 또는 surface tone 으로 대체.
 
@@ -69,6 +70,7 @@ title: 시각 안티패턴
 
 - 정보 단위가 아닌 단순 group/section 도 모두 카드로 감싸기
 - 카드 안에 또 카드를 만들어 내부 강조 시도
+- 카드에 상단 컬러 라인/좌측 accent 바 등 장식용 컬러 보더 부착
 - 일반 카드 · 인라인 리스트 · 기본 입력에 shadow 적용
 - 한 화면에 floating panel(Modal/Drawer/Popup/Toast) 2개 이상 동시 노출
 
@@ -104,6 +106,7 @@ title: 시각 안티패턴
 | `sectionColorOnly` | forbidden |
 | `maxCardsPerScreen` | 5 |
 | `nestedCard` | forbidden |
+| `decorativeCardAccentBar` | forbidden |
 | `decorativeShadow` | forbidden |
 | `maxShadowedElementsPerScreen` | 3 |
 | `maxFloatingPanelsConcurrent` | 1 |
