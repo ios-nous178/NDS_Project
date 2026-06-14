@@ -16,6 +16,7 @@ metrics:
   defaultAsideWidth: 320px (--nds-shell-aside-width)
   defaultSectionRadius: 12px (--nds-section-radius)
   defaultFormRowLabelWidth: 140px (--nds-form-row-label-width)
+  sidebarLogo: nds-sidebar[brand] 가 로고 자동 주입 (5개 브랜드 data URI 내장) — 텍스트 placeholder·수동 base64 <img> 금지 · validator admin-sidebar-logo-not-component
   enforcementRule: raw-shell-pattern (error) — <style> 안 raw .page / .topbar / .section / .form-row 정의 차단
 ---
 
@@ -36,6 +37,7 @@ metrics:
 - **브랜드 토큰만 사용**: 색/보더/배경은 nds-shell 계열이 이미 `--semantic-bg-surface-default` / `--semantic-border-normal-default` / `--semantic-text-strong-default` 등을 참조. raw hex 또는 `var(--semantic-*)` 인라인 override 금지 — 브랜드 스왑 시 깨짐.
 - **Aside / sticky** 가 자체 white card 가 필요하면 → `<nds-section>` 으로 감싸기. 별도 `.aside { background: ...; border: 1px solid ...; border-radius: ...; padding: 24px; }` 를 새로 정의 금지 (nds-section 의 의도된 중복).
 - **Validator 강제**: html-validator 가 `<style>` 블록의 raw shell 패턴을 `raw-shell-pattern: error` 로 차단. 의도된 예외(예: 마케팅 랜딩의 hero 등 admin shell 이 아닌 layout) 만 별도 클래스명 (`.lp-hero` 등 nds- 접두 회피) + 인라인 토큰 사용으로 우회.
+- **사이드바/톱바 로고 = 컴포넌트로 자동 주입 (텍스트·수동 base64 금지)**: 사이드바 상단 브랜드 로고는 `<nds-sidebar brand="trost|geniet|nudge-eap|cashwalk-biz|runmile">` 만 두면 BrandHeader 와 동일 로고 SSOT 가 data URI 로 자동 주입된다. **5개 브랜드 로고가 에셋 패키지에 내장**돼 있으니 `"geniet"` 같은 텍스트·색박스 placeholder 로 두거나, 빌드 산출물에서 로고 base64 를 추출해 raw `<img src="data:…">` 로 박지 말 것(회귀: 백오피스 CMS 사이드바 로고를 텍스트로 두고 base64 를 손수 추출). 사이드바 밖(어드민 온보딩 카드 등)이면 `<nds-brand-logo brand="…">`. **React/antd 등 호스팅 앱**은 패키지를 못 가져온다는 오해 없이 `import { getBrandLogo } from "@nudge-design/assets"`(→ dataUri) 또는 `<BrandLogo brand="…" />` 사용. 자산 경로 목록은 `get_brand({ brand, assetKind: 'brandLogos' })`. (validator: `admin-sidebar-logo-not-component`.)
 - **사이드바 아이콘 = inline SVG (이름 아님)**: `<nds-sidebar items='[...]'>` 의 각 item `icon` 필드는 **innerHTML 로 주입되는 raw SVG 마크업**이다. `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **아이콘 이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자로 흘러나옴). 올바른 절차: `find_icon({ name })` → 반환된 inline SVG 문자열을 `icon` 에 넣는다. `icon` 은 React `<Sidebar>` 의 `icon?: ReactNode` 와 대칭 — HTML 은 SVG 문자열, React 는 엘리먼트. **HTML 목업이라 사이드바가 라벨 전용이라는 건 사실이 아니다**(런타임 한계 아님). `items` 는 JSON 속성이므로 SVG 안의 `"` 는 `\"` 로 이스케이프할 것.
 
 ## avoid
@@ -51,3 +53,4 @@ metrics:
 - raw `<header>` / `<main>` / `<aside>` 만 사용하고 nds-shell 클래스 미부여 — landmark 의미는 그대로 두되 클래스로 visual contract 보장
 - nds-sidebar item `icon` 에 아이콘 이름(`"CashwalkBizGnbBannerIcon"`)을 넣기 — innerHTML 이라 텍스트로 흘러나옴. find_icon 의 inline SVG 문자열을 넣을 것
 - 아이콘이 안 박힌다고 사이드바를 라벨 전용으로 두고 'HTML 런타임 한계'로 결론내리기 — icon=inline SVG 로 정상 렌더됨
+- 사이드바/톱바 로고를 텍스트('geniet')·색박스나 빌드에서 추출한 수동 base64 `<img data:…>` 로 손수 박기 — `<nds-sidebar brand>` 자동 주입 또는 `<nds-brand-logo brand>` 사용(로고는 에셋 패키지에 data URI 로 내장)

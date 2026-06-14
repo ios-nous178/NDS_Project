@@ -150,6 +150,10 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "raw-landmark": { severity: "warn", kind: "invariant" },
   // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
   "manual-brand-header": { severity: "warn", kind: "model-guard" },
+  // admin/CMS 셸 사이드바·톱바의 브랜드 로고를 컴포넌트(nds-sidebar[brand]/nds-brand-logo) 대신
+  // 텍스트 placeholder·수동 base64 <img> 로 손수 박음 (회고: 백오피스 CMS 로고를 에셋 패키지 두고
+  // 텍스트→base64 추출 우회). 캐포비 온보딩 한정 text-logo 차단을 모든 브랜드 admin 셸로 일반화.
+  "admin-sidebar-logo-not-component": { severity: "warn", kind: "model-guard" },
   // 선언 표면=admin 인데 소비자 brand chrome(header/footer/bottom-nav) 사용 (회고: 가입 admin 화면을 소비자 플로우로 오제작)
   "admin-surface-consumer-chrome": { severity: "error", kind: "invariant" },
   // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
@@ -1463,6 +1467,51 @@ export function validateHtmlSource(
           "브랜드 헤더는 손수 조립 금지. <nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'> 한 줄로 교체하면 로고/메뉴/auth 가 BRAND_DATA 에서 자동 렌더되고 surface 로 PC·모바일·웹뷰가 분기됩니다. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조.",
       });
     });
+  }
+
+  // ─── admin/CMS 셸 사이드바·톱바의 브랜드 로고를 컴포넌트로 안 박고 손수 조립 ───
+  //   회고(2026-06): 백오피스 CMS 사이드바 로고를 텍스트 placeholder 로 두거나 빌드 산출물에서
+  //   로고 base64 를 추출해 raw <img data:…> 로 박는 우회가 반복됐다("에셋 패키지에 있는데 어렵게
+  //   가져옴"). 5개 브랜드 로고는 brand-logo-defaults 에 data URI 로 내장 — <nds-sidebar brand> 가
+  //   사이드바 로고를 자동 주입하고, chrome 밖이면 <nds-brand-logo brand>. 캐포비 온보딩 한정이던
+  //   text-logo 차단(cashwalk-biz-onboarding-no-gnb)을 모든 브랜드 admin 셸 사이드바로 일반화.
+  {
+    const shellChrome = $(".nds-shell__sidebar, .nds-shell__topbar, nds-sidebar");
+    const hasProperLogo =
+      $("nds-sidebar[brand]").length > 0 || $("nds-brand-logo").length > 0;
+    if (shellChrome.length > 0 && !hasProperLogo) {
+      // 계정/아바타 영역의 data img 오탐 제외 (로고가 아님)
+      const avatarSel =
+        '[class*="avatar" i], [class*="account" i], [class*="profile" i], [slot="account"], .nds-sidebar__account';
+      // 손수 만든 로고 아티팩트 — 수동 base64 img(강한 신호)·logo 라벨 img. 사이드바 아이콘(inline SVG)은
+      // class/alt/src 에 logo 가 없고 svg 라 제외돼 오탐이 안 난다.
+      const imgLogo = shellChrome
+        .find('img[src^="data:image"], img[src*="logo" i], img[alt*="logo" i]')
+        .filter((_i, el) => el.type === "tag" && $(el).closest(avatarSel).length === 0);
+      // class*=logo 박스에 직계 텍스트만 있고 실제 로고 마크업(img/svg/nds-brand-logo)이 없으면 텍스트 로고.
+      const textLogo = shellChrome.find('[class*="logo" i]').filter((_i, el) => {
+        if (el.type !== "tag") return false;
+        const $el = $(el);
+        if ($el.find("img, svg, nds-brand-logo").length > 0) return false;
+        return $el.clone().children().remove().end().text().trim().length > 0;
+      });
+      const offenderNode = imgLogo.get(0) ?? textLogo.get(0);
+      if (offenderNode) {
+        const offset =
+          (offenderNode as unknown as { startIndex?: number }).startIndex ?? 0;
+        const isDataUri = /^data:image/i.test($(offenderNode).attr("src") ?? "");
+        violations.push({
+          rule: "admin-sidebar-logo-not-component",
+          line: lineNumberAt(source, offset),
+          selector: describeElement(offenderNode as unknown as DomElement),
+          detail: isDataUri
+            ? "admin/CMS 셸 사이드바·톱바의 브랜드 로고를 수동 base64 <img data:…> 로 박음 — 에셋 패키지 로고를 손수 추출/인라인한 우회."
+            : "admin/CMS 셸 사이드바·톱바의 브랜드 로고를 텍스트/raw <img> 로 손수 조립함(에셋 패키지에 실 로고 있음).",
+          suggestion:
+            '브랜드 로고는 손수 박지 말 것. 사이드바면 <nds-sidebar brand="trost|geniet|nudge-eap|cashwalk-biz|runmile"> 만 두면 BrandHeader 와 동일 로고 SSOT 가 data URI 로 자동 주입된다(텍스트 placeholder·35KB base64 추출 금지). chrome 밖이면 <nds-brand-logo brand="…">. React/antd 등 호스팅 앱은 import { getBrandLogo } from "@nudge-design/assets" 또는 <BrandLogo brand="…" />. 자산 목록은 get_brand({ brand, assetKind: "brandLogos" }). get_guide({ topic: "pattern:admin-shell" }) · get_guide({ topic: "component:BrandLogo" }).',
+        });
+      }
+    }
   }
 
   // ─── 선언 표면(surface) ↔ 화면 chrome 불일치 ───

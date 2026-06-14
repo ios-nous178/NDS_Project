@@ -579,20 +579,24 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "BrandLogo": {
     "name": "BrandLogo",
-    "summary": "브랜드 대표 로고(trost/geniet/nudge-eap/cashwalk-biz/runmile)를 컴포넌트로 박는다. base64 data URI 가 내장돼 단일 HTML/오프라인에서도 안 깨진다. `<nds-sidebar brand>` / `<nds-brand-header brand>` 가 주입하는 것과 동일한 로고 SSOT(brand-logo-defaults). brand chrome(헤더/사이드바)이 없는 화면 — 특히 캐포비 어드민 온보딩 카드 — 에서 로고를 넣는 표준 진입점.",
+    "summary": "브랜드 대표 로고(trost/geniet/nudge-eap/cashwalk-biz/runmile)를 컴포넌트로 박는다. base64 data URI 가 내장돼 단일 HTML/오프라인에서도 안 깨진다. `<nds-sidebar brand>` / `<nds-brand-header brand>` 가 주입하는 것과 동일한 로고 SSOT(brand-logo-defaults). brand chrome(헤더/사이드바)이 없는 화면 — 캐포비 어드민 온보딩 카드, **백오피스/CMS 사이드바·헤더, 어드민 셸의 로고 슬롯** 등 — 에서 로고를 넣는 표준 진입점. 5개 브랜드 전부 동일하게 동작(캐포비 전용 아님).",
     "pitfalls": [
       "35KB base64 data URI 를 logo-src/img 로 손수 붙이지 말 것 — brand 만 주면 자동 주입. 거대 블롭 추출·재인코딩이 한글 모지바케+로고 유실 회귀의 직접 원인.",
       "raw <img>/<svg> 로 로고를 직접 조립하지 말 것 — BrandLogo 로 박아야 5개 브랜드 일관 + SSOT 유지.",
+      "**백오피스/CMS 사이드바 로고를 텍스트 placeholder·색박스로 두거나 빌드 산출물에서 로고 base64 를 추출해 박지 말 것** — 5개 브랜드 로고가 에셋 패키지에 data URI 로 모두 내장돼 있다. 사이드바는 `<nds-sidebar brand=\"…\">` 가 로고를 자동 주입, chrome 밖이면 `<nds-brand-logo brand=\"…\">`. 자산 목록은 `get_brand({ brand, assetKind: 'brandLogos' })`. (validator `admin-sidebar-logo-not-component` 가 이 우회를 잡는다.)",
+      "**\"antd 등 비-DS 화면이라 패키지를 못 가져온다\"는 오해** — React/호스팅 앱은 `import { getBrandLogo } from '@nudge-design/assets'` 로 dataUri 를 받거나 `<BrandLogo brand=\"…\" />` 를 그대로 쓴다. 로고 자체는 import 한 줄이면 끝 — 빌드 결과물에서 base64 를 떼어다 붙이는 우회는 불필요하다.",
       "height 만 주면 폭은 비율 유지(auto). width 를 강제하면 찌그러질 수 있다.",
       "헤더/푸터/사이드바 안에서는 BrandLogo 를 또 박지 말 것 — 그 컴포넌트들은 brand 속성으로 로고를 이미 자동 주입한다. BrandLogo 는 chrome 이 없는 화면용."
     ],
     "recommended": [
+      "백오피스/CMS·어드민 셸 사이드바 로고: <nds-sidebar brand='geniet'> 만 두면 로고 자동 주입 — 사이드바 밖 단독 로고면 <nds-brand-logo brand='geniet'> (pattern:admin-shell)",
       "캐포비 어드민 온보딩 카드 상단: <nds-brand-logo brand='cashwalk-biz' height='40'> (pattern:cashwalk-biz-page-onboarding)",
+      "React/antd 등 호스팅 앱: import { getBrandLogo } from '@nudge-design/assets' 또는 <BrandLogo brand='…' />",
       "로고 클릭 시 홈 이동: href 지정"
     ],
     "examplesHtml": {
       "do": "<nds-brand-logo brand=\"cashwalk-biz\" height=\"40\"></nds-brand-logo>\n<!-- 링크: --><nds-brand-logo brand=\"nudge-eap\" href=\"/\"></nds-brand-logo>",
-      "dont": "<!-- 35KB base64 를 손으로 붙이거나 raw img/svg 로 로고 조립 — 모지바케·로고 유실 회귀 -->\n<img src=\"data:image/svg+xml;base64,PHN2Zy…(35KB)…\" />"
+      "dont": "<!-- 35KB base64 를 손으로 붙이거나 raw img/svg 로 로고 조립 — 모지바케·로고 유실 회귀 -->\n<img src=\"data:image/svg+xml;base64,PHN2Zy…(35KB)…\" />\n<!-- CMS/백오피스 사이드바 로고를 텍스트·색박스 placeholder 로 — 에셋 패키지에 실 로고 있음 -->\n<div class=\"cms-sidebar-logo\">geniet</div>"
     }
   },
   "Breadcrumb": {
@@ -3300,6 +3304,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "defaultAsideWidth": "320px (--nds-shell-aside-width)",
       "defaultSectionRadius": "12px (--nds-section-radius)",
       "defaultFormRowLabelWidth": "140px (--nds-form-row-label-width)",
+      "sidebarLogo": "nds-sidebar[brand] 가 로고 자동 주입 (5개 브랜드 data URI 내장) — 텍스트 placeholder·수동 base64 <img> 금지 · validator admin-sidebar-logo-not-component",
       "enforcementRule": "raw-shell-pattern (error) — <style> 안 raw .page / .topbar / .section / .form-row 정의 차단"
     },
     "summary": "어드민/CMS/대시보드 페이지의 **shell + section + form-row** 보일러플레이트. @nudge-design/styles 의 nds-shell / nds-section / nds-form-row 클래스를 의무 사용. raw <style> 블록으로 .page / .topbar / .section / .form-row 를 재정의하면 토큰 drift · 브랜드 스왑 실패 · 일관성 붕괴를 유발. 사용자 mock-test 기준 페이지당 200-600 줄 CSS 가 사라지는 영역.",
@@ -3315,6 +3320,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**브랜드 토큰만 사용**: 색/보더/배경은 nds-shell 계열이 이미 `--semantic-bg-surface-default` / `--semantic-border-normal-default` / `--semantic-text-strong-default` 등을 참조. raw hex 또는 `var(--semantic-*)` 인라인 override 금지 — 브랜드 스왑 시 깨짐.",
       "**Aside / sticky** 가 자체 white card 가 필요하면 → `<nds-section>` 으로 감싸기. 별도 `.aside { background: ...; border: 1px solid ...; border-radius: ...; padding: 24px; }` 를 새로 정의 금지 (nds-section 의 의도된 중복).",
       "**Validator 강제**: html-validator 가 `<style>` 블록의 raw shell 패턴을 `raw-shell-pattern: error` 로 차단. 의도된 예외(예: 마케팅 랜딩의 hero 등 admin shell 이 아닌 layout) 만 별도 클래스명 (`.lp-hero` 등 nds- 접두 회피) + 인라인 토큰 사용으로 우회.",
+      "**사이드바/톱바 로고 = 컴포넌트로 자동 주입 (텍스트·수동 base64 금지)**: 사이드바 상단 브랜드 로고는 `<nds-sidebar brand=\"trost|geniet|nudge-eap|cashwalk-biz|runmile\">` 만 두면 BrandHeader 와 동일 로고 SSOT 가 data URI 로 자동 주입된다. **5개 브랜드 로고가 에셋 패키지에 내장**돼 있으니 `\"geniet\"` 같은 텍스트·색박스 placeholder 로 두거나, 빌드 산출물에서 로고 base64 를 추출해 raw `<img src=\"data:…\">` 로 박지 말 것(회귀: 백오피스 CMS 사이드바 로고를 텍스트로 두고 base64 를 손수 추출). 사이드바 밖(어드민 온보딩 카드 등)이면 `<nds-brand-logo brand=\"…\">`. **React/antd 등 호스팅 앱**은 패키지를 못 가져온다는 오해 없이 `import { getBrandLogo } from \"@nudge-design/assets\"`(→ dataUri) 또는 `<BrandLogo brand=\"…\" />` 사용. 자산 경로 목록은 `get_brand({ brand, assetKind: 'brandLogos' })`. (validator: `admin-sidebar-logo-not-component`.)",
       "**사이드바 아이콘 = inline SVG (이름 아님)**: `<nds-sidebar items='[...]'>` 의 각 item `icon` 필드는 **innerHTML 로 주입되는 raw SVG 마크업**이다. `\"icon\":\"CashwalkBizGnbBannerIcon\"` 처럼 **아이콘 이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자로 흘러나옴). 올바른 절차: `find_icon({ name })` → 반환된 inline SVG 문자열을 `icon` 에 넣는다. `icon` 은 React `<Sidebar>` 의 `icon?: ReactNode` 와 대칭 — HTML 은 SVG 문자열, React 는 엘리먼트. **HTML 목업이라 사이드바가 라벨 전용이라는 건 사실이 아니다**(런타임 한계 아님). `items` 는 JSON 속성이므로 SVG 안의 `\"` 는 `\\\"` 로 이스케이프할 것."
     ],
     "avoid": [
@@ -3328,7 +3334,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "어드민 페이지 1개 안에서 nds-shell 클래스 + raw shell CSS 혼용 (drift 보장)",
       "raw `<header>` / `<main>` / `<aside>` 만 사용하고 nds-shell 클래스 미부여 — landmark 의미는 그대로 두되 클래스로 visual contract 보장",
       "nds-sidebar item `icon` 에 아이콘 이름(`\"CashwalkBizGnbBannerIcon\"`)을 넣기 — innerHTML 이라 텍스트로 흘러나옴. find_icon 의 inline SVG 문자열을 넣을 것",
-      "아이콘이 안 박힌다고 사이드바를 라벨 전용으로 두고 'HTML 런타임 한계'로 결론내리기 — icon=inline SVG 로 정상 렌더됨"
+      "아이콘이 안 박힌다고 사이드바를 라벨 전용으로 두고 'HTML 런타임 한계'로 결론내리기 — icon=inline SVG 로 정상 렌더됨",
+      "사이드바/톱바 로고를 텍스트('geniet')·색박스나 빌드에서 추출한 수동 base64 `<img data:…>` 로 손수 박기 — `<nds-sidebar brand>` 자동 주입 또는 `<nds-brand-logo brand>` 사용(로고는 에셋 패키지에 data URI 로 내장)"
     ]
   },
   "card-composition": {

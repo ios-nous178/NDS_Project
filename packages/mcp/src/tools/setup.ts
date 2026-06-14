@@ -1342,7 +1342,7 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
       files: logoFiles,
       importExample:
         logoVariants.length > 0
-          ? `import { getBrandLogo } from "@nudge-design/assets";\nconst logo = getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`});\n// → { filename, dataUri, mimeType }`
+          ? `// ① 단일 HTML 목업 (data URI 가 컴포넌트에 내장 — 이게 기본): 사이드바면 <nds-sidebar brand="${slug}"> 가 로고 자동 주입, chrome(헤더/사이드바) 밖이면 <nds-brand-logo brand="${slug}">. 백오피스/CMS·어드민 셸 사이드바 로고도 이걸로 — 텍스트·색박스 placeholder 나 빌드 산출물에서 추출한 수동 base64 <img> 금지(로고가 에셋에 data URI 로 내장).\n<nds-brand-logo brand="${slug}" height="40"></nds-brand-logo>\n// ② React/호스팅 앱(antd 등 비-DS 화면 포함 — "패키지를 못 가져온다"는 오해 차단): import { getBrandLogo } from "@nudge-design/assets"; getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`}) → { filename, dataUri, mimeType } — 또는 <BrandLogo brand="${slug}" />.`
           : null,
       publicHosting: {
         baseDir: "public/assets/",
