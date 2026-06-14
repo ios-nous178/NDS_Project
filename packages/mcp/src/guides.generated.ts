@@ -447,7 +447,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "active-key 는 브랜드별 탭 key 와 매칭 — trost: home/counsel/community/care/my · geniet: home/record/benefit/review/community · nudge-eap: home/challenge/counsel/care/my · runmile: home/race/community/chat/my. 잘못 적으면 활성 탭 표시 안 됨.",
       "**Geniet 은 단일 그래픽 + color cascade** — active/inactive 별도 아트가 아니라 같은 SVG 가 nav-item color(민트↔그레이)로 active 를 표현. Trost/NudgeEAP/Runmile 은 active/inactive 그래픽 분리(채워진 아이콘 전환).",
       "Runmile 라벨은 12/16 (Figma 실측 — 11/14 아님).",
-      "HTML 래퍼는 트로스트 기본 앱(홈/심리상담/커뮤니티/멘탈케어/내공간)만 커버. React TrostBottomNav 의 variant='cashwalk-trost'(홈/사운드/내음악/커뮤니티/마이페이지)는 HTML 미지원 — 필요 시 React 컴포넌트 사용."
+      "`<nds-brand-bottom-nav brand=\"trost\">` 는 트로스트 기본 앱 5탭(홈/심리상담/커뮤니티/멘탈케어/내공간)만 커버. (캐시워크)트로스트 앱 변형(홈/사운드/내음악/커뮤니티/마이페이지)은 **현재 미지원** — 필요해지면 BRAND_DATA 에 variant 추가(후속). 그 전까지는 제네릭 `BottomNav` primitive 로 직접 5탭을 조립한다."
     ],
     "recommended": [
       "Trost: `<nds-brand-bottom-nav brand='trost' active-key='counsel' />` · 탭 keys: home / counsel / community / care / my",
@@ -888,38 +888,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "do": "<nds-carousel autoplay=\"3000\" indicator=\"dots\" loop>\n  <img src=\"/banner1.jpg\" alt=\"\" />\n  <img src=\"/banner2.jpg\" alt=\"\" />\n</nds-carousel>",
       "dont": "<!-- 슬라이드가 1장인데 loop + autoplay — 같은 이미지가 깜빡임 -->\n<nds-carousel autoplay=\"3000\" loop><img src=\"/only.jpg\" /></nds-carousel>"
     }
-  },
-  "CashwalkBizFooter": {
-    "name": "CashwalkBizFooter",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-2208",
-    "summary": "캐시워크 포 비즈니스 통합 푸터. 캐시워크 포 비즈니스는 웹 전용이라 surface='web' (default) 만 지원. layout='desktop'|'mobile' 으로 반응형 분기. light 톤 + Neutral 텍스트.",
-    "pitfalls": [
-      "Trost 처럼 다크 푸터로 바꾸지 말 것 — 캐시워크 포 비즈니스 가이드는 light + neutral 텍스트.",
-      "surface prop 은 'web' 만 — 타입 단에서 다른 값 차단 (캐시워크 포 비즈니스는 app 푸터 없음).",
-      "기존 CashwalkBizWebFooter 의 variant prop 이 CashwalkBizFooter 에서는 layout 으로 rename."
-    ],
-    "recommended": [
-      "Desktop: `<CashwalkBizFooter layout='desktop' links={...} company={{ name:'캐시워크 주식회사', address:..., bizNumber:..., copyright:... }} maxWidth={1600} />`",
-      "Mobile: `<CashwalkBizFooter layout='mobile' links={...} company={...} />`",
-      "HTML 목업(vanilla): `<nds-brand-footer brand='cashwalk-biz' surface='web'>` — Footer 손수 조립 금지 (BrandFooter 가이드)."
-    ]
-  },
-  "CashwalkBizWebHeader": {
-    "name": "CashwalkBizWebHeader",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/?node-id=380-1739",
-    "summary": "캐시워크 포 비즈니스 (Cashwalk for Business) 웹 헤더. PC(로고+GNB+우측 액션) / Mobile(로고+햄버거) variant. 캐시워크 포 비즈니스는 *웹 전용* 이라 AppBar 가 없음 — chrome 슬롯 5개 중 WebHeader/WebFooter 만 제공. **HTML 목업은 `<nds-brand-header brand='cashwalk-biz' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
-    "pitfalls": [
-      "캐시워크 포 비즈니스 화면에는 base `<Header>` 가 아니라 `<CashwalkBizWebHeader>` 사용.",
-      "캐시워크 포 비즈니스 시그니처 (Yellow/200 + Neutral/900) 는 토큰 cascade 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
-      "캐시워크 포 비즈니스는 *AppBar / BottomNav 컴포넌트 없음* (앱 없으니 필요 없음). 모바일 헤더도 CashwalkBizWebHeader variant='mobile', 모바일 푸터는 CashwalkBizFooter layout='mobile'."
-    ],
-    "recommended": [
-      "Desktop: `<CashwalkBizWebHeader variant='desktop' logo={{...}} menuItems={...} activeKey='home' actions={[{ key:'login', label:'로그인', href:'#' }]} />`",
-      "Mobile: `<CashwalkBizWebHeader variant='mobile' logo={{...}} onMobileMenu={() => openDrawer()} />`",
-      "HTML 목업(vanilla): `<nds-brand-header brand='cashwalk-biz' surface='web' active-key='ad'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일은 반응형 web (별도 AppBar 없음)."
-    ]
   },
   "Chart": {
     "name": "Chart",
@@ -1427,7 +1395,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "**`FormField density=\"admin\"` 과 짝으로 쓴다** — 카드 좌우 패딩은 FormSection, 행 세로 리듬은 admin FormField 담당. 일반(`density` 미지정) FormField 를 넣으면 어드민 카드의 세로 리듬이 깨진다.",
       "캐포비 어드민 전용 톤 — 일반 서비스(Trost/Geniet/NudgeEAP/Runmile) 모바일·웹 폼에 쓰면 보더 카드가 과하다. 그쪽은 FormField 를 바로 쌓는다.",
       "**색·radius 를 hex 로 박지 말 것** — 흰 배경·1px subtle 보더·radius 는 `data-brand=\"cashwalk-biz\"` cascade 로 자동 매핑된다.",
-      "`title` 은 섹션 머리글(Headline3 24 Bold) — **페이지 제목으로 쓰지 말 것**. 페이지 제목은 PageHeader.",
+      "`title` 은 섹션 머리글(Headline3 24 Bold) — **페이지 제목으로 쓰지 말 것**. 페이지 제목은 `pattern:page-header`(Heading 조합).",
       "카드 한 장 = 의미상 한 그룹(기본 정보 / 결제 정보 …). 관련 없는 필드를 한 FormSection 에 몰지 말고 섹션을 나눈다."
     ],
     "recommended": [
@@ -1438,81 +1406,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "do": "<nds-form-section title=\"기본 정보\" description=\"회원에게 표시되는 정보입니다\">\n  <nds-form-field density=\"admin\" label=\"이름\"><input slot=\"control\" /></nds-form-field>\n  <nds-form-field density=\"admin\" label=\"연락처\"><input slot=\"control\" /></nds-form-field>\n</nds-form-section>",
       "dont": "<!-- 일반 FormField 를 admin 카드에 — 세로 리듬(py-24)이 안 맞음. density=\"admin\" 사용 -->\n<nds-form-section title=\"기본 정보\">\n  <nds-form-field label=\"이름\"><input slot=\"control\" /></nds-form-field>\n</nds-form-section>"
     }
-  },
-  "GenietAppBar": {
-    "name": "GenietAppBar",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=77-2",
-    "references": [
-      {
-        "label": "Geniet 데스크톱 홈 SSOT — 웹 PC 홈 풀 캡처",
-        "image": "references/geniet-web-home.png",
-        "caption": "Geniet 데스크톱 홈. 상단 Search Header(로고 + 검색 pill + 포인트/마이페이지/로그아웃 action) + Menu Header('음식 카테고리' 박스 + GNB 5탭 + 캐시리뷰/친구초대 CTA pill) 의 2단 구조. 본문은 헬시딜 배너 / 커뮤니티 BEST / 유저 리뷰 / 판매랭킹 / 매거진 / GenietFooter.",
-        "brand": "geniet"
-      },
-      {
-        "label": "Geniet 데스크톱 — 리뷰 작성 모달 오버레이",
-        "image": "references/geniet-web-review-modal.png",
-        "caption": "Geniet 데스크톱 음식 리뷰 페이지 위에 리뷰 작성 모달이 떠 있는 상태. 배경에 GenietAppBar Menu Header(음식 카테고리/홈/커뮤니티 GNB + 카테고리 chip row + 리뷰쓰기 mint CTA) 가 보임. 모달 자체는 별도 Dialog 컴포넌트 — AppBar 와 함께 등장하는 전형적 패턴.",
-        "brand": "geniet"
-      }
-    ],
-    "summary": "Geniet 브랜드 상단 헤더 (Figma 77:2 개편판). desktop = 2단(Search Header 54h + Menu Header 58h, 전체 172h) / mobile = 2단(Row1 50h + Row2 52h, 전체 102h) / webview variant. base Header 대신 Geniet 화면에서는 이걸 사용.",
-    "pitfalls": [
-      "Geniet 화면이면 base `<Header>` 가 아니라 `<GenietAppBar>` 사용. 검색 pill, '음식 카테고리' 박스, login_area action button(icon 28 + 11px 라벨), CTA mint pill 같은 구조는 DS 가 들고있다 — 인라인 손코딩 금지.",
-      "Search Header 우측은 `actionButtons` (icon+label vertical, 52×46). 단순 텍스트 link 면 `actionButtons` 가 잘못 — 이건 vertical 액션 버튼 슬롯. 예전 `authItems` / `mobileActions` 슬롯은 제거됨.",
-      "Search Header 의 trendingKeywords 는 검색 pill 바로 옆 (gap 24). Menu Header 안에 두지 말 것 (이전 구조와 다름).",
-      "Menu Header 우측 CTA 는 `ctaButtons` 에 tone='outline'(캐시리뷰) / 'tinted'(친구초대) / 'filled' 로 분류. 톤 임의 금지.",
-      "Mobile 검색 placeholder 는 PC와 카피가 다름 — `mobileSearchPlaceholder` 별도 지정. (PC: '궁금한 음식 칼로리...' / Mobile: '음식명, 칼로리, 영양성분, 음식 리뷰 검색')",
-      "Mobile Row1 우측 포인트 chip 은 `pointChip={{ amount: '34,300' }}` — gpoint 아이콘 기본, 텍스트 Medium 14. 사용자 아이콘은 `showUserIcon=true` (기본).",
-      "variant='webview' 일 때 logo 무시 (안 보임). webviewTitle / onBack 만 의미."
-    ],
-    "recommended": [
-      "Desktop: `<GenietAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' actionButtons={[{ key:'coupon', label:'쿠폰상점', icon:<GenietCouponIcon size={28} /> }, { key:'mypage', label:'마이페이지', icon:<GenietMypageIcon size={28} />, dividerBefore:true }, { key:'login', label:'로그인', icon:<GenietLoginIcon size={28} /> }]} searchPlaceholder='궁금한 음식 칼로리...' trendingKeywords={...} ctaButtons={[{ key:'cashreview', label:'캐시리뷰', icon:<GenietCashreviewIcon size={14} />, tone:'outline' }, { key:'invite', label:'친구초대 이벤트', icon:<GenietConfettiIcon size={14} />, tone:'tinted' }]} />`",
-      "Mobile: `<GenietAppBar variant='mobile' logo={...} mobileSearchPlaceholder='음식명, 칼로리...' pointChip={{ amount:'34,300' }} />` — Row1 logo + 포인트/유저, Row2 햄버거 + 검색.",
-      "Webview: `<GenietAppBar variant='webview' webviewTitle='건강 기록' onBack={...} />` — BackButton 자동.",
-      "카테고리 박스 라벨/링크 변경: `category={{ label: '카테고리', href: '/cat' }}`. 숨기려면 `category={false}`.",
-      "GNB 5탭 기본: 홈 / 커뮤니티 / 헬시딜 / 음식 리뷰 / 기록 (Pretendard Bold 17).",
-      "HTML 목업(vanilla): `<nds-brand-header brand='geniet' surface='mobile' active-key='home'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'."
-    ]
-  },
-  "GenietBottomNav": {
-    "name": "GenietBottomNav",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=90-2",
-    "references": [
-      {
-        "label": "Geniet 앱 — 음식 리뷰 상세 화면",
-        "image": "references/geniet-app-review-detail.png",
-        "caption": "Geniet 모바일 앱 음식 리뷰 상세 (포도향기님 아임닭 닭가슴살). 상단 webview 헤더 + 리뷰 본문 + '닭가슴살 먹은 유저들의 다른 리뷰' 그리드 + 커뮤니티 게시글 리스트 + 하단 5탭 GenietBottomNav (홈/기록/혜택/리뷰/커뮤니티) 가 함께 보이는 전형 화면.",
-        "brand": "geniet"
-      }
-    ],
-    "summary": "Geniet 5탭 BottomNav (Figma 90:2 — 홈/기록/혜택/리뷰/커뮤니티). 단일 그래픽 + color cascade. label 만 받으면 자동 아이콘 매핑. HTML 목업은 `<nds-brand-bottom-nav brand='geniet'>` (BrandBottomNav 가이드).",
-    "pitfalls": [
-      "label 이 '홈/기록/혜택/리뷰/커뮤니티' 중 하나가 아니면 fallback HomeIcon 으로 렌더 — 커스텀 라벨이면 tabs[i].icon 직접 지정.",
-      "active/inactive 그래픽 별도 매핑 금지 — Geniet 정책은 단일 그래픽 + color cascade (currentColor).",
-      "Trost/NudgeEAP 가 쓰는 active/inactive split 아이콘 패턴 (HomeActiveIcon 등) 을 여기 쓰지 말 것."
-    ],
-    "recommended": [
-      "`<GenietBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
-      "스크롤 컨테이너 안: `position='static'` 으로 fixed 빠져나가는 것 방지.",
-      "그림자 끄기: `shadow={false}` (기본 true — Figma 90:2 의 살짝 떠 보이는 가이드)",
-      "HTML 목업(vanilla): `<nds-brand-bottom-nav brand='geniet' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지."
-    ]
-  },
-  "GenietFooter": {
-    "name": "GenietFooter",
-    "_htmlStatus": "no-html-equivalent",
-    "summary": "Geniet 통합 푸터. Geniet 은 앱 환경 전용이라 surface='app' (default) 만 지원 — web 푸터 없음. Footer.Info 베이스 위 wrapper — links / company / extra(통신판매중개자 안내) / logo 슬롯.",
-    "pitfalls": [
-      "탭바는 별도 컴포넌트 GenietBottomNav. Footer 이름이지만 하단 탭바 아님.",
-      "extra 슬롯은 통신판매중개자 안내 같은 부가 고지 전용 — 일반 콘텐츠 넣지 말 것.",
-      "surface prop 은 'app' 만 — 타입 단에서 다른 값 차단 (Geniet 은 web 푸터 없음)."
-    ],
-    "recommended": [
-      "`<GenietFooter links={...} company={{ name, ceo, address, bizNumber, email, copyright }} extra='지니어트는 통신판매중개자이며...' logo={{ src, width, height }} />`",
-      "HTML 목업(vanilla): `<nds-brand-footer brand='geniet' surface='app'>` — Footer.Info 손수 조립 금지 (BrandFooter 가이드)."
-    ]
   },
   "Header": {
     "name": "Header",
@@ -1569,7 +1462,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "h4/h5 가 '★ 가장 자주' — 카드 헤딩(h4 · gap 6) / 서브 헤딩(h5 · gap 8). h1~h3 은 페이지 단위 hero / 큰 섹션 / 페이지 헤더.",
       "description 폰트도 level 에 묶여 자동 결정: h1~h3 = Body3(14px), h4~h5 = Caption1(13px). 다른 사이즈가 필요하면 Heading 을 쓰지 말고 raw 헤딩으로.",
       "위계가 같은 자리에서는 같은 level 유지. h4 카드 헤딩들 사이에 h2 가 끼면 시각적 위계 망가짐.",
-      "Card / PageHeader 안에 Heading 을 중첩해서 쓰는 패턴이 정상. 단, PageHeader 가 이미 title 슬롯을 가진 경우엔 PageHeader 의 title 을 우선 사용(PageHeader 가 내부에서 Heading 으로 합성한다).",
+      "Card 안에 Heading 을 중첩해서 쓰는 패턴이 정상. 페이지 제목은 단일 컴포넌트가 아니라 `pattern:page-header`(Heading `level=\"h2\" as=\"h1\"` + Breadcrumb + actions 조합)로 조립한다.",
       "`as` 는 비주얼은 level 그대로 두고 DOM 헤딩 태그만 바꿀 때만. 예: 페이지 랜드마크가 h1 이어야 하는데 폰트는 h2 스케일 → level='h2' as='h1'. 평소엔 쓰지 말 것 — level 과 태그가 어긋나면 접근성 위계가 흐트러진다."
     ],
     "recommended": [
@@ -2026,89 +1919,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 단순 안내인데 error 남발 → 의미 흐려짐 (info/caution 이 맞음) -->\n<nds-notice-alert variant=\"error\" message=\"최대 30자 이내로 입력해 주세요.\"></nds-notice-alert>\n<!-- 확인 버튼이 필요한 메시지를 NoticeAlert 로 — Modal 이 맞음 -->\n<nds-notice-alert variant=\"notice\" message=\"삭제하시겠어요? [확인]\"></nds-notice-alert>"
     }
   },
-  "NudgeEAPAppBar": {
-    "name": "NudgeEAPAppBar",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
-    "summary": "NudgeEAP 상단 헤더. 1단 (logo + GNB + AuthMenu), 80px h / 1200 max-width. desktop / mobile / webview variant.",
-    "pitfalls": [
-      "Geniet/Trost 와 달리 NudgeEAP 는 1단 헤더 — 검색바/카테고리/TrendingKeywords 없음.",
-      "AuthMenu separator='none' 패턴.",
-      "Figma SSOT: PC 웹 헤더 39:5751 / 앱 헤더 20:3235 (NudgeEAP Dev). 로고 가이드 698:87 (NudgeEAP Library)."
-    ],
-    "recommended": [
-      "Desktop: `<NudgeEAPAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' authItems={[{ key:'login', label:'로그인' }]} />`",
-      "Mobile: `<NudgeEAPAppBar variant='mobile' logo={...} authItems={...} />`",
-      "Webview: `<NudgeEAPAppBar variant='webview' webviewTitle='심리검사 결과' onBack={...} />`",
-      "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='mobile' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'."
-    ]
-  },
-  "NudgeEAPBottomNav": {
-    "name": "NudgeEAPBottomNav",
-    "figmaNodeUrl": "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-3331",
-    "summary": "NudgeEAP 5탭 BottomNav (홈/챌린지/상담/멘탈케어/내 공간). 5탭 모두 active/inactive 그래픽 분리 (채워진 아이콘으로 전환). HTML 목업은 `<nds-brand-bottom-nav brand='nudge-eap'>` (BrandBottomNav 가이드).",
-    "pitfalls": [
-      "label 매핑은 '홈/챌린지/상담/멘탈케어/내 공간' 기준. 다른 라벨이면 fallback HomeIcon.",
-      "상담 아이콘은 Counsel(점 3개 말풍선) — active 는 채워진 CounselActiveIcon. 빈 말풍선 Comment 아님.",
-      "Figma SSOT: 20:3331 (NudgeEAP Dev — 앱 네비게이션)."
-    ],
-    "recommended": [
-      "`<NudgeEAPBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
-      "HTML 목업(vanilla): `<nds-brand-bottom-nav brand='nudge-eap' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지."
-    ]
-  },
-  "NudgeEAPFooter": {
-    "name": "NudgeEAPFooter",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=20-13799",
-    "summary": "NudgeEAP 통합 푸터. surface='web' (Figma 20:13799) 은 약관+앱다운로드+ISO+DAIN+powered by 풍부 슬롯의 PC 푸터, surface='app' (default) 은 회사 정보 표준 푸터.",
-    "pitfalls": [
-      "Figma SSOT: web 푸터 20:13799 / app 푸터 (Footer.Info 표준).",
-      "탭바는 별도 컴포넌트 NudgeEAPBottomNav.",
-      "web surface 의 appDownloads / iso / dain / poweredBy 슬롯은 NudgeEAP 전용 — base Footer.Web compound 에는 없는 슬롯 (브랜드별 풍부 슬롯은 wrapper 내부에만).",
-      "Trost 처럼 다크 푸터 아님 — light + neutral 토큰."
-    ],
-    "recommended": [
-      "Web (PC): `<NudgeEAPFooter surface='web' links={...} company={{ address, bizNumber, phone, fax, email, copyright }} appDownloads={...} iso={{ imgSrc, captionLines }} dain={{ logoSrc, label }} poweredBy='powered by Cashwalk' maxWidth={1200} />`",
-      "App (surface 생략 가능): `<NudgeEAPFooter links={...} company={{ name:'(주)다인', address, bizNumber, copyright }} logo={{ src, width, height }} />`",
-      "HTML 목업(vanilla): `<nds-brand-footer brand='nudge-eap' surface='app'>` (PC 풍부 푸터는 surface='web') — Footer 손수 조립 금지 (BrandFooter 가이드)."
-    ]
-  },
-  "NudgeEAPWebHeader": {
-    "name": "NudgeEAPWebHeader",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/mvecozaRQoGRePffskRgmh/?node-id=39-5751",
-    "summary": "NudgeEAP 웹 헤더 (PC) — base Header (variant=\"web\") wrapper. 로고 200×60 (Symbol + KO+EN horizontal) + GNB 6탭 (상담하기/심리검사/심리치료/주간레터/소식/마이페이지) + 우측 앱다운로드 + 로그인/로그아웃. **HTML 목업은 `<nds-brand-header brand='nudge-eap' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
-    "pitfalls": [
-      "NudgeEAPAppBar 와 분리 — AppBar 는 앱(모바일/웹뷰) 전용 (Figma 20:3235), WebHeader 는 데스크톱 (39:5751).",
-      "로고는 Figma 698:87 (NudgeEAP Library) 의 *Symbol + KO+EN horizontal* (대표 로고) 사용 — 124×28 원본 PNG, 헤더에서 height auto 로 200×60 영역에 배치.",
-      "base `<Header variant=\"web\">` 대신 NudgeEAP 화면에서는 이 컴포넌트를 사용해야 fixture/스토리/Figma 가 일치."
-    ],
-    "recommended": [
-      "`<NudgeEAPWebHeader logo={{ src, alt:'NudgeEAP', href:'/' }} menuItems={GNB} activeKey={current} showAppDownload appDownloadHref='/download' authState={isLoggedIn ? 'logout' : 'login'} authHref='/auth' />`",
-      "HTML 목업(vanilla): `<nds-brand-header brand='nudge-eap' surface='web' active-key='counsel'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 모바일/웹뷰는 surface='mobile'|'webview'."
-    ]
-  },
-  "PageHeader": {
-    "name": "PageHeader",
-    "summary": "페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 + 하단 탭 슬롯. AppBar(글로벌 네비)와 분리. 제목/부제는 내부에서 Heading(level=h2, as=h1)으로 합성 — 폰트·gap·색이 Heading SSOT 를 따른다.",
-    "pitfalls": [
-      "글로벌 네비는 AppBar. PageHeader는 각 페이지 안의 타이틀 영역.",
-      "제목 블록은 Heading 합성이라 폰트·제목↔부제 gap·색을 PageHeader 쪽에서 따로 박지 말 것. 위계 스케일을 바꿔야 하면 Heading 토큰(Figma 859:5614)에서.",
-      "onBack 지정 시 좌측 ← 자동 노출 — 직접 IconButton 추가하지 말 것 (이중 노출).",
-      "bottom 슬롯은 헤더 padding 외곽까지 음수 마진으로 펼쳐짐. Tab를 그 안에서 padding 직접 줄 때 0/24/0 등으로 미세 조정.",
-      "bordered=true는 스크롤되는 본문과 헤더를 분리할 때만 사용. 분리감이 필요 없으면 false."
-    ],
-    "recommended": [
-      "디테일: title + onBack + actions",
-      "리스트: title + subtitle + actions(생성 버튼)",
-      "탭형 페이지: title + bottom={<Tab />}"
-    ],
-    "examplesHtml": {
-      "do": "<nds-page-header page-title=\"설정\" subtitle=\"계정과 알림을 관리하세요\" show-back bordered>\n  <nds-breadcrumb slot=\"breadcrumb\" items='[{\"label\":\"홈\",\"href\":\"/\"}]'></nds-breadcrumb>\n  <nds-button slot=\"actions\" color=\"primary\">저장</nds-button>\n</nds-page-header>\n<script>el.addEventListener(\"nds-page-header-back\", () => history.back());</script>",
-      "dont": "<!-- show-back 만 — 뒤로가기 이벤트 처리 없음 -->\n<nds-page-header page-title=\"설정\" show-back></nds-page-header>"
-    }
-  },
   "PageSizeSelect": {
     "name": "PageSizeSelect",
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-30014",
@@ -2480,21 +2290,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- ① rating=\"6\" — max(5) 초과로 표시가 깨짐 -->\n<nds-review-card author=\"…\" rating=\"6\"></nds-review-card>\n\n<!-- ② 도움돼요 를 카드 밖 형제로 — 카드 경계(흰 배경) 밖으로 떨어져 리뷰와 끊긴다.\n     → slot=\"footer\" 로 카드 안에 넣을 것 -->\n<nds-review-card author=\"…\" rating=\"5\" body=\"…\"></nds-review-card>\n<button>도움돼요 34</button>"
     }
   },
-  "RunmileBottomNav": {
-    "name": "RunmileBottomNav",
-    "figmaNodeUrl": "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1221-64046",
-    "summary": "Runmile 5탭 BottomNav (홈/대회정보/커뮤니티/채팅/마이페이지 — Figma 1221:64046). 5탭 모두 active/inactive 그래픽 분리, active=검정(#221E1F)/inactive=gray600. 라벨 12/16 (Figma 실측). HTML 목업은 `<nds-brand-bottom-nav brand='runmile'>` (BrandBottomNav 가이드).",
-    "pitfalls": [
-      "label 매핑은 '홈/대회정보/커뮤니티/채팅/마이페이지' 기준. 다른 라벨이면 fallback RunmileHomeIcon.",
-      "커뮤니티 탭은 2인 그룹(People) 아이콘, 마이페이지는 원형 인물(Account) 아이콘 — 4탭(83:887)→5탭(1221:64046) 개편판.",
-      "채팅 탭의 이중 말풍선(RunmileChats)은 웹 헤더의 단일 말풍선(RunmileChatting)과 다름 — 혼용 금지.",
-      "active 색 = --semantic-icon-strong-default. 라벨은 11/14 가 아니라 12/16."
-    ],
-    "recommended": [
-      "`<RunmileBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />`",
-      "HTML 목업(vanilla): `<nds-brand-bottom-nav brand='runmile' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지."
-    ]
-  },
   "RunmileScrollFab": {
     "name": "RunmileScrollFab",
     "_htmlStatus": "no-html-equivalent",
@@ -2513,25 +2308,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "pitfalls": [
       "현재 React/HTML 컴포넌트 없음. 공용 `<Toast>` 가 있다면 그쪽으로 brand mode 분기하거나, 신규 RunmileToast 로 구현 결정.",
       "PC ↔ MO 가 size 만 다른지 아니면 layout 도 다른지는 Figma 24:85 / 24:90 디테일 확인 필요."
-    ]
-  },
-  "RunmileWebHeader": {
-    "name": "RunmileWebHeader",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://www.figma.com/design/g3ifA735EE6EKjeL4ZW2ax/?node-id=1058-13336",
-    "references": [],
-    "summary": "Runmile 데스크톱 PC 헤더 (height 80, bg white, border-bottom 1px gray300, content max-width 1440 / 좌우 80px). 로고(coral) + 좌측 GNB(대회 정보/커뮤니티, Bold 18) + 중앙 검색바(coral 2px border, rounded 100) + 우측 액션(아이콘 28 + 라벨 14). `loggedIn` 으로 우측 액션 분기: false=채팅/로그인, true=채팅(미읽음 badge)/마이페이지. 모바일/웹뷰는 RunmileAppBar. **HTML 목업은 `<nds-brand-header brand='runmile' surface='web'>` (BottomNav 와 동일한 brand wrapper 패턴 — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
-    "pitfalls": [
-      "데스크톱 전용. 모바일/웹뷰 헤더는 `RunmileAppBar` (Figma 36:258) 사용.",
-      "로고는 base64 내장이 기본값 — `logoSrc` 안 줘도 coral #FF5B37 워드마크가 자동 렌더 (파일 호스팅 불필요). 자체 로고로 바꿀 때만 `logoSrc` 주입. `logoSrc=''` 처럼 빈 값을 명시하면 'Runmile' 텍스트 폴백.",
-      "우측 채팅 아이콘은 단일 말풍선(RunmileChattingIcon) — 바텀네비 채팅 탭의 이중 말풍선(RunmileChats)과 다름.",
-      "미읽음 badge 는 `loggedIn && chatUnreadCount > 0` 일 때만 노출 (99 초과 시 '99+').",
-      "색은 전부 data-brand=\"runmile\" cascade 의 --semantic-* 토큰 — host 가 hex 로 덮지 말 것."
-    ],
-    "recommended": [
-      "로그인 전 (로고 생략 = base64 기본): `<RunmileWebHeader menuItems={[{key:'competition',label:'대회 정보',href:'/competitions'},{key:'community',label:'커뮤니티',href:'/community'}]} activeKey='competition' loggedIn={false} onSearch={...} />`",
-      "로그인 후: `<RunmileWebHeader menuItems={RUNMILE_GNB} activeKey='community' loggedIn chatUnreadCount={12} myPageHref='/my' profileSrc={avatarUrl} />` — 자체 로고로 바꾸려면 `logoSrc={...}` 추가.",
-      "HTML 목업(vanilla): `<nds-brand-header brand='runmile' surface='web' active-key='race'>` — base nds-header + nds-header-menu-item 손수 조립 금지 (BrandHeader 가이드). 모바일 bar 는 surface='mobile'."
     ]
   },
   "SearchInput": {
@@ -3128,91 +2904,6 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- 자해 / 위기 도메인에서 사용 — 검색어 자체가 트리거 가능 -->\n<nds-trending-keywords items='[{\"rank\":1,\"keyword\":\"자해\"}]'></nds-trending-keywords>"
     }
   },
-  "TrostAppBar": {
-    "name": "TrostAppBar",
-    "_htmlStatus": "no-html-equivalent",
-    "summary": "Trost 상단 헤더. desktop(2단, 1080 max-width, 앱다운로드 CTA + TrendingKeywords) / mobile / webview variant. 트로스트는 앱이 2종(트로스트 앱 / (캐시워크)트로스트 앱)이라 webview(앱 인-웹뷰) 헤더 케이스가 다양 — app(back 아이콘)·webviewLevel(main/sub)·우측 액션 조합으로 분기 (Figma 5:1169 App bar). base Header 대신 Trost 화면에서는 이걸 사용.",
-    "pitfalls": [
-      "Trost 화면이면 base `<Header>` 가 아니라 `<TrostAppBar>` 사용.",
-      "앱 다운로드 버튼 노출 토글: `showAppDownload`. 라벨: `appDownloadLabel`. 핸들러: `onAppDownload`.",
-      "Trost 의 AuthMenu separator 는 'none' (디바이더 없음). Geniet 의 'divider' 패턴과 다름.",
-      "모바일 홈 (모바일 웹 / 앱 인-웹뷰 홈 공용): `variant='mobile'` + `pointChip` 또는 `mobileSearchPlaceholder` 가 있으면 2단 rich 레이아웃. `pointChip.icon` 미지정 시 `TrostEnergyCoinIcon` (다크 코인 + 노란 번개) 자동.",
-      "단순 단단(로고+로그인) 모바일 헤더가 필요하면 `pointChip` / `mobileSearchPlaceholder` 둘 다 비우면 fallback 단단 레이아웃.",
-      "webview 헤더는 앱이 2종이라 케이스가 다양 — `app`('trost'=쉐브론 back / 'cashwalk-trost'=화살표 back), `webviewLevel`('main'=좌측 타이틀 20px·h56·back 없음 / 'sub'=중앙 타이틀 16px·h44·back. 기본 'sub').",
-      "webview 우측 액션은 핸들러를 넘긴 것만 노출 (순서 검색→설정→텍스트→알림): `onSearchClick`/`onSettingClick`/`onNotificationClick`(+`hasNotification` 점)/`webviewActionText`+`onWebviewActionText`(cobalt 텍스트). 액션 없는 단순 sub 는 `webviewTitle`+`onBack` 만.",
-      "webview main 홈(로고+포인트+알림)은 `webviewLevel='main'` + `logo` + `pointChip`(타이틀 미지정) + `onNotificationClick`."
-    ],
-    "recommended": [
-      "Desktop: `<TrostAppBar variant='desktop' logo={...} gnbItems={...} activeKey='home' authItems={...} searchPlaceholder='...' trendingKeywords={...} showAppDownload onAppDownload={...} />`",
-      "Mobile 홈 (웹/앱 공용, 2단): `<TrostAppBar variant='mobile' logo={...} pointChip={{ amount:'123,990', href:'/point' }} showNotificationBell onNotificationClick={...} mobileSearchPlaceholder='심리검사, 상담, 마음챙김을 검색해보세요.' />`",
-      "Webview sub (트로스트 앱 상세): `<TrostAppBar variant='webview' webviewTitle='마음건강 검사' onBack={...} onSettingClick={...} onNotificationClick={...} />`",
-      "Webview sub ((캐시워크)트로스트, 화살표 back): `<TrostAppBar variant='webview' app='cashwalk-trost' webviewTitle='타이틀' onBack={...} onSettingClick={...} onNotificationClick={...} />`",
-      "Webview main (좌측 타이틀 + 검색): `<TrostAppBar variant='webview' webviewLevel='main' webviewTitle='심리상담' onSearchClick={...} onNotificationClick={...} />`",
-      "Webview sub/text (완료 등 텍스트 액션): `<TrostAppBar variant='webview' webviewTitle='타이틀' onBack={...} webviewActionText='완료' onWebviewActionText={...} />`",
-      "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='mobile' active-key='home'>` — base nds-header 손수 조립 금지 (BrandHeader 가이드). 웹뷰는 surface='webview'."
-    ]
-  },
-  "TrostBottomNav": {
-    "name": "TrostBottomNav",
-    "figmaNodeUrl": "https://www.figma.com/design/H0UUl3maspMM2iaoRAsrf7/%ED%8A%B8%EB%A1%9C%EC%8A%A4%ED%8A%B8-Dev?node-id=5-1169",
-    "summary": "Trost BottomNav — 트로스트는 앱이 두 종류라 variant 로 분기. variant='trost'(기본): 트로스트 앱 5탭 (홈/심리상담/커뮤니티/멘탈케어/내공간 — Figma 5:1169). variant='cashwalk-trost': (캐시워크)트로스트 앱 5탭 (홈/사운드/내음악/커뮤니티/마이페이지 — Figma 5:1249·5:1306). 두 variant 모두 5탭 active/inactive 그래픽 분리, active 색은 브랜드색 아닌 검정. HTML 목업은 `<nds-brand-bottom-nav brand='trost'>` — 단, 기본 트로스트 variant 만 커버(cashwalk-trost 미지원).",
-    "pitfalls": [
-      "variant 마다 label 매핑이 다름. trost: 홈/심리상담/커뮤니티/멘탈케어/내공간. cashwalk-trost: 홈/사운드/내음악/커뮤니티/마이페이지. 매핑 실패 시 각 variant 의 홈 아이콘으로 fallback.",
-      "두 앱 모두 '홈/커뮤니티' 탭이 있지만 그래픽이 다름 — 반드시 variant 로 구분. trost 커뮤니티=TrostCommunity(게시판), cashwalk-trost 커뮤니티=TrostMkTalk(말풍선+점).",
-      "active 색 = --semantic-icon-strong-default. 다른 브랜드처럼 brand 색으로 칠하지 말 것 (Figma 정합).",
-      "trost 앱 전용 그래픽 = Trost{Home,Counsel,Community,Mentalcare,My} (전부 stroke 1.5, Figma 5:1169). generic Home/Mentalcare/Mypage·NudgeEAP Counsel(점3개)·빈 말풍선 Comment 와 다름.",
-      "cashwalk-trost 전용 그래픽 = TrostMk{Home,Sound,Mymusic,Talk,Mypage} (Figma 'Mk' 레이어, 5:1249·5:1306). 트로스트 앱 아이콘과 절대 혼용 금지."
-    ],
-    "recommended": [
-      "트로스트 앱: `<TrostBottomNav tabs={[{ key:'home', label:'홈', href:'/' }, ...]} activeTab='home' />` (variant 생략 = 'trost')",
-      "(캐시워크)트로스트 앱: `<TrostBottomNav variant='cashwalk-trost' tabs={[{ key:'home', label:'홈', href:'/' }, { key:'sound', label:'사운드', ... }, ...]} />`",
-      "HTML 목업(vanilla, 기본 트로스트 앱): `<nds-brand-bottom-nav brand='trost' active-key='home'>` — 제네릭 nds-footer-tab-bar 손수 조립 금지."
-    ]
-  },
-  "TrostFooter": {
-    "name": "TrostFooter",
-    "_htmlStatus": "no-html-equivalent",
-    "summary": "Trost 통합 푸터. surface='web' 은 데스크톱(≥1024) dark PC 푸터, surface='app' (default) 은 dark 앱 푸터. 기존 variant='desktop'|'mobile' 은 layout 으로 이름 변경 (surface axis 와 분리).",
-    "pitfalls": [
-      "Trost 화면이면 base `<Footer>` 가 아니라 `<TrostFooter>` 사용.",
-      "기존 Trost App 푸터의 `variant` prop → TrostFooter 에서는 `layout` 으로 rename. surface axis (`'web'|'app'`) 와 명확히 분리.",
-      "surface='web' 은 <1024 viewport 에서 display:none. 모바일에는 surface='app' + layout='mobile' 사용.",
-      "다크 배경(#333 / #464646) 은 DS 가 자동 적용 — 인라인 background 로 덮어쓰지 말 것.",
-      "appStoreLinks / snsLinks (app surface) 는 기본값 (Trost humart CDN) 이 들어있어서 안 넘겨도 됨. 커스텀이 필요할 때만 override."
-    ],
-    "recommended": [
-      "Web (PC): `<TrostFooter surface='web' />` — 기본값 다 갖춤. 커스텀 약관: `<TrostFooter surface='web' termsHref='...' locationTermsHref='...' />`",
-      "App desktop: `<TrostFooter surface='app' layout='desktop' links={...} company={...} extra='긴급 위기상담 ...' logo={...} />`",
-      "App mobile: `<TrostFooter surface='app' layout='mobile' links={...} company={...} />`",
-      "HTML 목업(vanilla): `<nds-brand-footer brand='trost' surface='app'>` (PC 다크 푸터는 surface='web') — Footer 손수 조립 금지 (BrandFooter 가이드)."
-    ]
-  },
-  "TrostWebHeader": {
-    "name": "TrostWebHeader",
-    "_htmlStatus": "no-html-equivalent",
-    "figmaNodeUrl": "https://zpl.io/Dp775xl",
-    "references": [
-      {
-        "label": "Trost 데스크톱 홈 SSOT — 웹 PC 홈 (Zeplin Dp775xl)",
-        "image": "references/trost-web-home.png",
-        "caption": "Trost 데스크톱 홈 풀 캡처. Rectangle 2613 = TrostEAPBanner / Path = TrostUtilityHeader 로고 / Rectangle 2522 = TrostSearchForm 입력 / 하단 탭 = TrostTabNavigation.",
-        "brand": "trost"
-      }
-    ],
-    "summary": "Trost 데스크톱(≥1024) 웹 헤더. 3슬롯 컴파운드 — EAP 배너 (Rectangle 2613) + 유틸리티 헤더 (로고 Path / 검색 Rectangle 2522 / 로그인 / 앱 다운로드) + 탭 네비게이션. `TrostDesktopHeader` 의 alias — brand chrome 5개 슬롯 중 WebHeader 자리. **HTML 목업은 `<nds-brand-header brand='trost' surface='web'>` (brand wrapper — BrandHeader 가이드). base nds-header 손수 조립 금지.**",
-    "pitfalls": [
-      "<1024 viewport 에서는 display:none. 모바일에는 `TrostAppBar variant='mobile'` 사용.",
-      "3슬롯 (banner / utility / tabs) 모두 ReactNode — 호스트 앱이 `TrostEAPBanner` / `TrostUtilityHeader` / `TrostTabNavigation` 을 직접 컴포지션. 단일 prop 으로 데이터 주입하는 형태 아님.",
-      "검색 placeholder 는 `TrostSearchForm` 기본값 '전문가, 상황, 증상 등을 검색해 보세요' — 원본 디자인(Zeplin Dp775xl) 정합. 다른 카피로 덮으려면 placeholder prop 명시.",
-      "EAP 배너의 building/eap-logo/chevron 아이콘은 호스트 앱이 SVG src 를 주입 (DS 가 자산을 들고 있지 않음)."
-    ],
-    "recommended": [
-      "기본: `<TrostWebHeader banner={<TrostEAPBanner eapLogoSrc={nudgeEapSymbolSrc} />} utility={<TrostUtilityHeader logoSrc={trostLogo} searchSlot={<TrostSearchForm onSearch={...} />} loginSlot={<TrostLoginSection ... />} appDownloadSlot={<TrostAppDownloadButton />} />} tabs={<TrostTabNavigation tabs={TROST_TABS} currentPath={pathname} />} />`",
-      "EAP 배너 숨기기: `banner` prop 비워두면 됨.",
-      "sticky 끄기: `<TrostWebHeader sticky={false} ... />` (기본 true).",
-      "HTML 목업(vanilla): `<nds-brand-header brand='trost' surface='web' active-key='counsel'>` — base nds-header 슬롯 손수 조립 금지 (BrandHeader 가이드). 모바일은 surface='mobile'."
-    ]
-  },
   "ValidationChip": {
     "name": "ValidationChip",
     "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
@@ -3515,7 +3206,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "cashwalk-biz-admin-alert-banner": {
     "name": "cashwalk-biz-admin-alert-banner",
     "metrics": {
-      "placement": "본문 최상단(PageHeader 아래·탭/FilterBar 위) · 페이지당 1개 · 조건부 노출",
+      "placement": "본문 최상단(페이지 헤더 아래·탭/FilterBar 위) · 페이지당 1개 · 조건부 노출",
       "box": "bg --semantic-bg-brand-subtle(#FFF4C0) · radius 16 · padding 20/24 · no shadow/border",
       "illustration": "@nudge-design/assets charge-alert-bell(종) · 60×60",
       "title": "Bold 18/30 #383838",
@@ -3524,10 +3215,10 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "relatedPatterns": "cashwalk-biz-page-list, cashwalk-biz-page-form, cashwalk-biz-button, cashwalk-biz-page-patterns"
     },
     "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-21374",
-    "summary": "캐시워크 포 비즈니스 admin **광고비/충전 안내 배너** — 페이지 본문 상단(PageHeader 아래)에 얹는 soft 옐로우 알림 카드. 구성: 좌측 일러스트(@nudge-design/assets `charge-alert-bell`) + 제목/설명 + 우측 단일 CTA(노란 pill). NoticeAlert(48px 인라인 strip)·Banner(우측 이미지)·FloatingCtaBanner(하단 sticky pill)와 구분 — 일러스트 동반 멀티라인 안내 카드. Figma 3001-21374.",
+    "summary": "캐시워크 포 비즈니스 admin **광고비/충전 안내 배너** — 페이지 본문 상단(페이지 헤더 아래)에 얹는 soft 옐로우 알림 카드. 구성: 좌측 일러스트(@nudge-design/assets `charge-alert-bell`) + 제목/설명 + 우측 단일 CTA(노란 pill). NoticeAlert(48px 인라인 strip)·Banner(우측 이미지)·FloatingCtaBanner(하단 sticky pill)와 구분 — 일러스트 동반 멀티라인 안내 카드. Figma 3001-21374.",
     "rules": [
       "**언제 쓰나**: 잔액 소진 임박 등 계정/광고 상태에 대한 능동 안내 + 즉시 행동(충전) 유도가 필요할 때. 단순 정책 안내는 page-form 의 02b 안내 콜아웃(info) 또는 NoticeAlert.",
-      "**배치**: 리스트/폼 페이지 본문 최상단(PageHeader 아래, 탭/FilterBar 위). 페이지당 1개. 상시 노출이 아니라 조건 충족 시(잔액 임박)에만.",
+      "**배치**: 리스트/폼 페이지 본문 최상단(페이지 헤더 아래, 탭/FilterBar 위). 페이지당 1개. 상시 노출이 아니라 조건 충족 시(잔액 임박)에만.",
       "**박스**: bg `--semantic-bg-brand-subtle`(soft 옐로우 #FFF4C0 계열) · radius **16** · padding 20/24 · 그림자·보더 없음 · 그라데이션 금지.",
       "**좌측 일러스트**: `@nudge-design/assets` 의 `charge-alert-bell`(종) — 표시 크기 60×60. 라인 아이콘으로 대체하지 말 것(일러스트 자산).",
       "**텍스트**: 제목 Bold **18/30** `--semantic-text-strong`(#383838) + 설명 Medium **16/24** 동일 계열. 제목에 개수/금액을 직접 박지 말고 본문에서 서술.",
@@ -3739,7 +3430,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**유효성 검사**: 입력 중 에러 표시 X (onBlur/submit). 글자 수 카운터만 실시간."
     ],
     "avoid": [
-      "**타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. PageHeader 컴포넌트면 `bordered` 를 켜지 말 것.",
+      "**타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. `pattern:page-header` 의 하단 보더(rule ⑤)는 캐포비 admin 에서 켜지 말 것.",
       "라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐시워크 포 비즈니스 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.",
       "페이지 헤더 우측에 [저장] 버튼 — 하단 [취소][저장] 액션과 중복.",
       "필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).",
@@ -3927,11 +3618,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "brand": "cashwalk-biz"
       }
     ],
-    "summary": "캐시워크 포 비즈니스 어드민 **Detail 패턴** — 개별 항목의 정보를 보고 액션을 수행하는 화면. 구성: 01 Sidebar → 02 Breadcrumb → 03 PageHeader+Status+Actions → 04 Tab Navigation(underline) → 05 Info Card(key-value). List 에서 row 클릭 후 진입. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-978 / pattern 3614-367 실측 반영.",
+    "summary": "캐시워크 포 비즈니스 어드민 **Detail 패턴** — 개별 항목의 정보를 보고 액션을 수행하는 화면. 구성: 01 Sidebar → 02 Breadcrumb → 03 페이지 헤더+Status+Actions → 04 Tab Navigation(underline) → 05 Info Card(key-value). List 에서 row 클릭 후 진입. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-978 / pattern 3614-367 실측 반영.",
     "rules": [
       "**언제 쓰나**: PRD 에 '상세 / 정보 보기 / 수정 / 편집' 키워드가 있고, List 에서 row 클릭 후 진입하며, 관련 액션(수정/삭제/실행)이 동반될 때.",
       "**02 Breadcrumb (필수)**: 상위 페이지 경로를 명시(예: '배너광고 목록 / 여름 시즌 프로모션 상세'). 타이포 Body3/Subtle, **divider '/' 문자**, itemSpacing **8px**. 상세는 항상 목록에서 진입하므로 경로 생략 금지.",
-      "**03 PageHeader + Status + Actions**: 좌측 제목(Heading1 Bold 32/40) + **상태 ActionChip**(title 과 gap **12px**), 우측 **액션 버튼들**(예: outline 보조 + solid 주). 삭제 같은 위험 액션은 별도 Outlined/Neutral 버튼으로 **우측 끝** 배치.",
+      "**03 페이지 헤더 + Status + Actions**: 좌측 제목(Heading1 Bold 32/40) + **상태 ActionChip**(title 과 gap **12px**), 우측 **액션 버튼들**(예: outline 보조 + solid 주). 삭제 같은 위험 액션은 별도 Outlined/Neutral 버튼으로 **우측 끝** 배치.",
       "**04 Tab Navigation**: **Underline 탭**(예: 기본 정보 / 성과 리포트 / 히스토리). 데이터 항목이 많으면 탭으로 분리.",
       "**05 Info Card**: 정보 블록 = **key-value rows**(또는 FormSection). **key 컬럼 width 240px 고정, value 컬럼 flex**. key-value row padding **16/24**, **border-bottom `--semantic-border-normal-subtle`(#F5F5F5)**. 카드 안 상단에 섹션 제목.",
       "**01 Sidebar**: admin-shell 의 Sidebar 컴포넌트(목록/대시보드와 동일 LNB). ready-made items 는 `pattern:cashwalk-biz-admin-sidebar` 복붙 + activeKey 만 변경.",
@@ -4006,7 +3697,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**Validate — 구조**: Step ≥ 3 → Step Progress 필수 / 필수 필드 → FormField `required=true` / 조건부 노출 → Boolean variant 또는 컨테이너 hide."
     ],
     "avoid": [
-      "**Page Header 타이틀 아래에 라인(divider·border-bottom·hr) 추가 — 금지.** 여백만으로 분리. PageHeader 컴포넌트면 `bordered` 끔.",
+      "**Page Header 타이틀 아래에 라인(divider·border-bottom·hr) 추가 — 금지.** 여백만으로 분리. `pattern:page-header` 의 하단 보더(rule ⑤)는 캐포비 admin 에서 켜지 말 것.",
       "필드 높이·라벨 컬럼·필수 마커 px 를 이 패턴에 중복 정의 (cashwalk-biz-form-layout 이 SSOT)",
       "단건 폼에 불필요한 Step Progress — Step ≥ 3 일 때만",
       "다단계 Footer 를 inline 센터 클러스터로 — 다단계는 좌(이전/임시저장)·우(다음/등록) 분리 sticky Footer + 상단 border",
@@ -4067,11 +3758,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
         "brand": "cashwalk-biz"
       }
     ],
-    "summary": "캐시워크 포 비즈니스 어드민 **List 패턴** — 검색/필터/페이지네이션이 있는 데이터 목록 화면. 구성: 01 Sidebar → 02 PageHeader+Primary Action('등록하기') → 03 FilterBar → 04 Table(썸네일·상태배지·노출토글·수정/삭제) → 05 Pagination. Detail 진입 전 단계. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-915 / pattern 3613-234 실측 반영.",
+    "summary": "캐시워크 포 비즈니스 어드민 **List 패턴** — 검색/필터/페이지네이션이 있는 데이터 목록 화면. 구성: 01 Sidebar → 02 페이지 헤더+Primary Action('등록하기') → 03 FilterBar → 04 Table(썸네일·상태배지·노출토글·수정/삭제) → 05 Pagination. Detail 진입 전 단계. shell 은 `pattern:admin-shell`. 오버뷰 `pattern:cashwalk-biz-page-patterns`. Figma docs 3626-915 / pattern 3613-234 실측 반영.",
     "rules": [
       "**언제 쓰나**: PRD 에 '목록 / 조회 / 검색 / 필터링 / 리포트(테이블)' 키워드가 있고, 여러 row 데이터를 비교·탐색해야 하며, Detail 화면으로 진입하기 전 단계일 때.",
-      "**02 PageHeader + Primary Action**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **'등록하기' Primary Button** 1개(cashwalk-biz Solid/Primary = 노란 #FFD200 + 검정, `pattern:cashwalk-biz-button`). 목록의 주 액션은 헤더 우측에만 둔다.",
-      "**(선택) 광고비/충전 안내 배너**: 잔액 소진 임박 등 조건 충족 시 PageHeader 아래·탭/FilterBar 위에 `pattern:cashwalk-biz-admin-alert-banner`(soft 옐로우 + 종 일러스트 + 노란 pill CTA) 1개. 상시 노출 아님.",
+      "**02 페이지 헤더 + Primary Action**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **'등록하기' Primary Button** 1개(cashwalk-biz Solid/Primary = 노란 #FFD200 + 검정, `pattern:cashwalk-biz-button`). 목록의 주 액션은 헤더 우측에만 둔다.",
+      "**(선택) 광고비/충전 안내 배너**: 잔액 소진 임박 등 조건 충족 시 페이지 헤더 아래·탭/FilterBar 위에 `pattern:cashwalk-biz-admin-alert-banner`(soft 옐로우 + 종 일러스트 + 노란 pill CTA) 1개. 상시 노출 아님.",
       "**03 FilterBar**: 테이블 위 한 줄(`pattern:action-row`) — Search Input + Dropdown 필터(상태 등) + 기간(DateRange). 카드 형태: radius **12px**, padding **20/24**. **상태 필터(활성/정지 등)는 Dropdown 필터 또는 상태 톤 칩으로 — solid 초록(활성)/빨강(정지) 버튼 금지**(테이블 상태 Badge 색과 충돌하고, 필터 선택과 상태 표시가 혼동됨).",
       "**04 Table**: 헤더 행 + 데이터 행. 헤더 행 배경 `--semantic-bg-surface-subtle`(#FAFAFA). 카드 radius **12px**, Row padding **16/24**, Row 사이 **1px border `#F5F5F5`**. 컬럼은 균등 또는 flex.",
       "**행 셀 컴포넌트**: 썸네일(이미지 컬럼) + 핵심 텍스트(클릭 시 Detail 진입 — 링크색) + **상태 = Badge**(진행중=success/green · 진행예정=subtle · 종료=neutral gray) + 숫자 컬럼 우측 정렬 + **노출 = Toggle**(노출 on green / 미노출 off) + **관리 = 수정(pencil)·삭제(trash) 아이콘 액션**. 상태를 raw 텍스트로, 노출을 체크박스로 만들지 않는다.",
@@ -5130,6 +4821,32 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "Lead form 을 별도 페이지로 분리 — 동일 페이지 마지막 섹션에 inline.",
       "Footer 를 200h 미만 라이트로 — 코퍼레이트 랜딩은 dark/dense."
     ]
+  },
+  "page-header": {
+    "name": "page-header",
+    "summary": "페이지 단위 헤더(제목 + 뒤로가기 + 브레드크럼 + 액션 + 하단 탭)는 **DS 컴포넌트가 아니라 조립 패턴**이다. 칠하는 픽셀이 전부 이미 있는 조각(Heading / Breadcrumb / IconButton / Button / Tab)이고, 예전 `<PageHeader title subtitle onBack breadcrumb actions bottom>` 컨테이너는 그 조각을 한 줄로 감싸기만 한 thin wrapper 라 — Figma 가이드 노드 없음 + Heading 합성 셸이라 제거(강등)했다(MultiStepForm 선례와 동일). AppBar(글로벌 네비)와는 다르다 — 이건 **콘텐츠 영역 안의 페이지 제목 블록**이다. 아래 조립 계약을 따른다.",
+    "rules": [
+      "① 제목은 `Heading` 으로(MUST) — `Heading level=\"h2\" as=\"h1\"`. 시각 스케일은 h2, 시맨틱은 페이지 랜드마크 h1. 부제는 Heading 의 `description`. 폰트·제목↔부제 gap·색은 **Heading 이 SSOT** — 따로 박지 말 것. (제목을 FormSection.title 로 흉내내지 말 것 — 그건 폼 섹션 제목.)",
+      "② 구조는 위→아래 3행(MUST 순서) — **(선택)top row → main row → (선택)bottom row**:\n- **top row** (뒤로가기/브레드크럼 있을 때만): ← 뒤로가기(`IconButton`, 원형 32) + `Breadcrumb`. 화면 history 컨텍스트.\n- **main row** (space-between): 좌측 `Heading`(title + description) · 우측 액션 슬롯(`Button`/`IconButton`, pattern:cta-group 의 우측 hug).\n- **bottom row** (선택): `Tab`(탭형 페이지) 또는 `FilterBar`. 컨테이너 좌우 패딩을 상쇄해 풀블리드.",
+      "③ 간격·여백은 토큰으로(MUST) — 컨테이너 `gap: --semantic-gap-comfortable`, `padding: --semantic-inset-card-large --semantic-inset-modal`. raw px 금지.",
+      "④ 배경은 기본 투명(SHOULD) — 콘텐츠 위에 얹히는 제목 블록이라 기본 transparent. 흰 카드로 띄워야 하면 그 컨테이너에만 surface 토큰을 준다(브랜드 admin 합의 따름).",
+      "⑤ 하단 보더는 옵션(SHOULD) — 리스트/디테일 구분이 필요하면 `border-bottom: 1px var(--semantic-border-subtle-default)`. **캐포비 admin 은 끄는 게 규칙**(pattern:cashwalk-biz-page-* 참조).",
+      "⑥ 액션은 우측 정렬 한 행(MUST) — pattern:cta-group 을 따른다. 주 액션 1개 + 보조 0~2개. 액션 폭주 금지.",
+      "⑦ 접근성(MUST) — 페이지 제목은 문서에 h1 하나(Heading as=\"h1\"). 뒤로가기는 `aria-label`. 탭은 Tab 의 role=tablist 그대로.",
+      "⑧ 컴포넌트 승격 기준(governance) — 다시 DS 컴포넌트로 만들려면 **2개 이상 브랜드의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다(예전 셸이 제거된 이유)."
+    ],
+    "avoid": [
+      "진척/조각만 감싸고 어려운 건 없는 **thin wrapper 컴포넌트를 새로 만들기** — 직접 조립 대비 가치가 없어 제거된 안티패턴.",
+      "페이지 제목을 raw `<h1 style>` / `<div>` 로 — 타이포·시맨틱이 Heading 과 어긋난다. 항상 `Heading`.",
+      "AppBar(글로벌 상단 네비)와 혼동 — AppBar 는 앱 셸 상단, 이건 콘텐츠 영역 안 페이지 제목.",
+      "액션을 좌측·중앙에 흩뿌리기 — 우측 한 행(cta-group).",
+      "색·간격 raw hex/px — semantic 토큰으로 5 브랜드 자동 대응.",
+      "캐포비 admin 에서 하단 보더 켜기 — admin 규칙 위반(pattern:cashwalk-biz-page-*)."
+    ],
+    "_readyMade": {
+      "note": "페이지 헤더 조립 골격. 제목은 Heading(h2/as=h1), (선택)뒤로가기+Breadcrumb top row, 우측 actions, (선택)하단 Tab. 색·간격은 전부 토큰.",
+      "html": "<!-- 페이지 헤더 = 조립 패턴. 단일 컴포넌트 아님. -->\n<header style=\"display:flex; flex-direction:column; gap:16px; padding:24px 20px\">\n  <!-- (선택) top row: 뒤로가기 + 브레드크럼 -->\n  <div style=\"display:flex; align-items:center; gap:8px\">\n    <nds-icon-button aria-label=\"뒤로가기\" size=\"small\"></nds-icon-button>\n    <nds-breadcrumb>\n      <nds-breadcrumb-item href=\"/\">홈</nds-breadcrumb-item>\n      <nds-breadcrumb-item href=\"/list\">목록</nds-breadcrumb-item>\n    </nds-breadcrumb>\n  </div>\n\n  <!-- main row: 제목(Heading) + 우측 액션 -->\n  <div style=\"display:flex; align-items:flex-start; justify-content:space-between; gap:16px\">\n    <nds-heading level=\"h2\" as=\"h1\" title=\"주문 상세\" description=\"주문 번호 #10293\"></nds-heading>\n    <div style=\"display:flex; gap:8px\">\n      <nds-button variant=\"outlined\" color=\"neutral\">취소</nds-button>\n      <nds-button>저장</nds-button>\n    </div>\n  </div>\n\n  <!-- (선택) bottom row: 탭 -->\n  <nds-tab active-key=\"info\" items='[{\"key\":\"info\",\"title\":\"정보\"},{\"key\":\"history\",\"title\":\"이력\"}]'></nds-tab>\n</header>"
+    }
   },
   "react-migration": {
     "name": "react-migration",

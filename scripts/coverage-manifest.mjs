@@ -47,7 +47,14 @@ async function readHtmlExports() {
 
 async function readBrandChromeFor(brand) {
   const brandDir = path.join(reactSrcDir, brand);
-  const entries = await fs.readdir(brandDir, { withFileTypes: true });
+  let entries;
+  try {
+    entries = await fs.readdir(brandDir, { withFileTypes: true });
+  } catch (e) {
+    // 브랜드 chrome 통합으로 일부 브랜드 dir(geniet/runmile/cashwalk-biz)은 제거됨 — chrome 0.
+    if (e.code === "ENOENT") return new Set();
+    throw e;
+  }
   const names = new Set();
   for (const e of entries) {
     if (!e.isFile()) continue;

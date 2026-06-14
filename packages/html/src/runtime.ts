@@ -69,7 +69,6 @@ import "./components/nds-audio-player.js";
 import "./components/nds-autocomplete.js";
 import "./components/nds-fab.js";
 import "./components/nds-price-tag.js";
-import "./components/nds-page-header.js";
 import "./components/nds-floating-cta-banner.js";
 import "./components/nds-tag-input.js";
 import "./components/nds-bottom-sheet.js";

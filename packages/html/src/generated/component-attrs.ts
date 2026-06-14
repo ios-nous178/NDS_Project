@@ -904,12 +904,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-page-header": {
-    "observedAttributes": [
-      "bordered"
-    ],
-    "enums": {}
-  },
   "nds-pagination": {
     "observedAttributes": [
       "page",

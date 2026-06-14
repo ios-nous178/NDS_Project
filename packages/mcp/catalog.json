@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T16:26:24.791Z",
+  "generatedAt": "2026-06-14T17:21:14.900Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4119,54 +4119,6 @@
         "variant",
         "message",
         "hide-icon"
-      ]
-    },
-    {
-      "name": "PageHeader",
-      "props": [
-        {
-          "name": "title",
-          "optional": false,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "subtitle",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "onBack",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "breadcrumb",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "actions",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "bottom",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "bordered",
-          "optional": true,
-          "type": "boolean"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/PageHeader.d.ts",
-      "htmlTag": "nds-page-header",
-      "htmlObservedAttrs": [
-        "bordered",
-        "page-title",
-        "subtitle",
-        "show-back"
       ]
     },
     {
@@ -13296,7 +13248,6 @@
     "nds-modal",
     "nds-multi-select",
     "nds-notice-alert",
-    "nds-page-header",
     "nds-pagination",
     "nds-phone-input",
     "nds-popular-posts",
@@ -14199,16 +14150,6 @@
         "variant",
         "message",
         "hide-icon"
-      ]
-    },
-    {
-      "tag": "nds-page-header",
-      "attrs": {},
-      "observedAttrs": [
-        "bordered",
-        "page-title",
-        "subtitle",
-        "show-back"
       ]
     },
     {

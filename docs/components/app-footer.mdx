@@ -5,46 +5,29 @@ description: 하단 푸터 컴포넌트. 브랜드별 단일 진입점({Brand}Fo
 
 # Footer
 
-브랜드 화면에서는 `<{Brand}Footer surface="web"|"app" ... />` 단일 진입점을 사용합니다.
-내부적으로 base `Footer` compound (`.Info` / `.TabBar` / `.Web`) 위에서 surface 별 슬롯을 조립합니다.
+`Footer` 는 브랜드-무관 base compound (`.Info` / `.TabBar` / `.Web`) 입니다. 공개 react 패키지의
+브랜드 chrome 정리로 **브랜드별 푸터 컴포넌트(`NudgeEAPFooter` / `TrostFooter` / `GenietFooter` /
+`CashwalkBizFooter` …)는 제거**됐습니다.
 
-> **Breaking 이력**: 옛 `AppFooter` / `{Brand}AppFooter` / `{Brand}WebFooter` / `TrostDesktopFooter` named export 는 제거됐습니다. `nds-app-footer` className 도 `nds-footer` 로 통일.
+- **목업(html)**: 브랜드 완성형 푸터는 `<nds-brand-footer brand="..." surface="web|app">` 한 줄.
+- **공개 primitive(react)**: 커스텀 푸터는 base `Footer` compound 로 조립 + 브랜드 토큰으로 색 분기.
 
-## 브랜드별 진입점
+> **Breaking 이력**: 옛 `AppFooter` / `{Brand}AppFooter` / `{Brand}WebFooter` / `TrostDesktopFooter` / `{Brand}Footer` named export 는 제거됐습니다. `nds-app-footer` className 도 `nds-footer` 로 통일.
 
-| Brand        | 지원 surface                            | 핵심 slot                                                                          |
-| ------------ | --------------------------------------- | ---------------------------------------------------------------------------------- |
-| NudgeEAP     | `surface='web'` / `surface='app'`       | web: 약관·앱다운로드·ISO·DAIN·poweredBy / app: 회사정보·약관·로고                  |
-| Trost        | `surface='web'` / `surface='app'`       | web: dark PC 푸터 · 약관·SNS·앱다운로드 / app: dark · `layout='desktop'\|'mobile'` |
-| CashwalkBiz     | `surface='web'` (default, app 없음)     | light 톤 · `layout='desktop'\|'mobile'`                                            |
-| Geniet       | `surface='app'` (default, web 없음)     | 커머스 고지 · 통신판매중개자 안내                                                 |
+## 브랜드 완성형 푸터 (목업 전용 `nds-brand-footer`)
 
-```tsx
-import { NudgeEAPFooter, TrostFooter, CashwalkBizFooter, GenietFooter } from "@nudge-design/react";
+| Brand       | 지원 surface          | 핵심 slot                                                          |
+| ----------- | --------------------- | ----------------------------------------------------------------- |
+| NudgeEAP    | `web` / `app`         | web: 약관·앱다운로드·ISO·DAIN·poweredBy / app: 회사정보·약관·로고  |
+| Trost       | `app` (dark)          | dark PC/앱 푸터 · 약관·SNS·앱다운로드                              |
+| CashwalkBiz | `web` (app 없음)      | light 톤                                                          |
+| Geniet      | `app` (web 없음)      | 커머스 고지 · 통신판매중개자 안내                                  |
+| Runmile     | `app`                 | light 톤 · gray700 워드마크                                       |
 
-// NudgeEAP web (Figma 20:13799)
-<NudgeEAPFooter
-  surface="web"
-  links={[...]}
-  company={{ address, bizNumber, phone, fax, email, copyright }}
-  appDownloads={[...]}
-  iso={{ imgSrc, captionLines }}
-  dain={{ logoSrc, label }}
-  poweredBy="powered by Cashwalk"
-  maxWidth={1200}
-/>
-
-// Trost web (≥1024 viewport)
-<TrostFooter surface="web" termsHref="..." />
-
-// Trost app
-<TrostFooter surface="app" layout="desktop" links={[...]} company={...} extra="..." logo={...} />
-
-// CashwalkBiz (web only)
-<CashwalkBizFooter layout="desktop" links={[...]} company={...} maxWidth={1600} />
-
-// Geniet (app only)
-<GenietFooter links={[...]} company={...} extra="..." logo={{ src, width, height }} />
+```html
+<nds-brand-footer brand="nudge-eap" surface="web"></nds-brand-footer>
+<nds-brand-footer brand="trost" surface="app"></nds-brand-footer>
+<nds-brand-footer brand="cashwalk-biz"></nds-brand-footer>
 ```
 
 ## Base Footer compound

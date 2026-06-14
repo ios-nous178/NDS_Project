@@ -53,7 +53,7 @@ references:
 
 ## avoid
 
-- **Page Header 타이틀 아래에 라인(divider·border-bottom·hr) 추가 — 금지.** 여백만으로 분리. PageHeader 컴포넌트면 `bordered` 끔.
+- **Page Header 타이틀 아래에 라인(divider·border-bottom·hr) 추가 — 금지.** 여백만으로 분리. `pattern:page-header` 의 하단 보더(rule ⑤)는 캐포비 admin 에서 켜지 말 것.
 - 필드 높이·라벨 컬럼·필수 마커 px 를 이 패턴에 중복 정의 (cashwalk-biz-form-layout 이 SSOT)
 - 단건 폼에 불필요한 Step Progress — Step ≥ 3 일 때만
 - 다단계 Footer 를 inline 센터 클러스터로 — 다단계는 좌(이전/임시저장)·우(다음/등록) 분리 sticky Footer + 상단 border

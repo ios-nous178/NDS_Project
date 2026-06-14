@@ -222,8 +222,6 @@ export type { FABSize, FABColor, FABPosition } from "./components/nds-fab.js";
 export { NdsPriceTag } from "./components/nds-price-tag.js";
 export type { PriceTagSize } from "./components/nds-price-tag.js";
 
-export { NdsPageHeader } from "./components/nds-page-header.js";
-
 export { NdsFloatingCtaBanner } from "./components/nds-floating-cta-banner.js";
 export type { FloatingCtaBannerSize } from "./components/nds-floating-cta-banner.js";
 

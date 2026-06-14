@@ -82,7 +82,7 @@ references:
 
 ## avoid
 
-- **타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. PageHeader 컴포넌트면 `bordered` 를 켜지 말 것.
+- **타이틀 아래에 라인(divider·border-bottom·hr·밑줄) 추가 — 금지.** 캐시워크 포 비즈니스 폼 헤더는 라인 없이 여백만으로 분리한다. `pattern:page-header` 의 하단 보더(rule ⑤)는 캐포비 admin 에서 켜지 말 것.
 - 라벨을 필드 위에 배치 (label-above 2단 흐름) — 캐시워크 포 비즈니스 admin 은 인라인-좌측 (172px 라벨 컬럼) 패턴.
 - 페이지 헤더 우측에 [저장] 버튼 — 하단 [취소][저장] 액션과 중복.
 - 필수 마커 색을 `#FF4141` 으로 — 캐시워크 포 비즈니스 폼은 `#FC3500` (Coral Red-Orange).

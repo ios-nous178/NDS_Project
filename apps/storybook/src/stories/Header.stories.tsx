@@ -112,7 +112,6 @@ export const CompactTwoTier: Story = {
 
 /* ─── Web (옛 WebHeader) ───
  *
- * web variant 의 브랜드 완성형 데모는 "Brands/Header" (BrandHeader.stories.tsx) 참조:
- *   · NudgeEAP → "Brands/Header" 의 NudgeEAP/* 스토리.
- *   · Trost/Geniet → 2단 이상 브랜드 전용 헤더라 단일 tier web variant 와 1:1 매핑 안 됨.
- * 여기서 base 데모를 중복으로 두지 않습니다. */
+ * 브랜드 완성형 헤더는 목업 전용 `nds-brand-chrome`(`<nds-brand-header brand="..." surface="web">`)
+ * 으로 렌더된다 — 공개 react 패키지의 브랜드 chrome 컴포넌트는 제거됨. 사용 가이드는 MCP
+ * `get_guide({ topic: 'component:BrandHeader' })`. 여기 base Header 는 브랜드-무관 골격만 데모. */

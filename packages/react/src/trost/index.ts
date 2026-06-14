@@ -1,5 +1,10 @@
 /**
- * Trost-branded 컴포넌트 모음.
+ * Trost-branded 서비스 위젯 모음 (chrome 아님).
+ *
+ * 브랜드 chrome(헤더/푸터/바텀네비/데스크톱헤더/유틸리티/탭내비)은 공개 react 패키지에서
+ * 제거됐다(브랜드 분기 금지). 화면 chrome 은 목업 전용 `nds-brand-chrome`
+ * (`<nds-brand-header brand="trost">` 등)으로 만든다. 여기 남는 것은 chrome 이 아닌
+ * 트로스트 서비스 위젯(EAP 배너·검색폼·로그인·앱다운로드)뿐.
  *
  * **4pt 그리드 예외**: 이 디렉토리의 padding/margin (8/11/13/18/20/50 px 등)
  * 은 Trost 웹사이트의 실측 디자인 스펙(colors_and_type.css)을 1:1 으로 옮긴
@@ -14,19 +19,3 @@ export * from "./EAPBanner.js";
 export * from "./SearchForm.js";
 export * from "./LoginSection.js";
 export * from "./AppDownloadButton.js";
-export * from "./UtilityHeader.js";
-export * from "./TabNavigation.js";
-export * from "./DesktopHeader.js";
-
-/* ─── Brand chrome (header / footer / bottom-nav) ─── */
-export * from "./AppBar.js";
-export * from "./Footer.js";
-export * from "./BottomNav.js";
-
-/**
- * WebHeader alias — Trost 데스크톱 헤더.
- * TrostDesktopHeader 구현 재노출 — EAPBanner / UtilityHeader / TabNavigation 3슬롯 컴파운드.
- * Zeplin zpl.io/Dp775xl 정합 (Rectangle 2613 = EAPBanner / Path = Logo / Rectangle 2522 = Search).
- */
-export { TrostDesktopHeader as TrostWebHeader } from "./DesktopHeader.js";
-export type { TrostDesktopHeaderProps as TrostWebHeaderProps } from "./DesktopHeader.js";
