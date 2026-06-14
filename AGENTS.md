@@ -2,7 +2,7 @@
 
 > **생성된 파일.** SSOT 는 루트 `CLAUDE.md` — 이 파일을 직접 고치지 말고 CLAUDE.md 수정 후 `pnpm sync:agents-md`. Codex 전용 추가 내용은 `<!-- codex:begin -->` ~ `<!-- codex:end -->` 블록 안에만 쓰면 재생성 시 보존된다. `pnpm lint` 의 sync-agents-md --check 가 drift 를 차단한다.
 
-EAP 멘탈케어 플랫폼 디자인 시스템 모노레포. 5개 브랜드: **Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile**.
+캐시워크 계열 멀티브랜드 디자인 시스템 모노레포. 도메인·색·톤이 의도적으로 다른 5개 브랜드를 토큰으로 흡수해 코드는 한 벌로 유지한다 (EAP 는 첫 적용 영역일 뿐, EAP 전문 회사가 아님): **Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile**.
 
 ## DS 사용 규칙 SSOT
 
@@ -60,7 +60,7 @@ Windows: PowerShell 권장. `pnpm` 설치 시 실행 정책 문제가 나면
 
 ## 커밋 전 게이트 (CI 안 터지게)
 
-CI 실패의 최다 원인은 **생성물 커밋 누락** — 16개 `--check` 게이트는 검증만 하고 재생성은 안 해준다.
+CI 실패의 최다 원인은 **생성물 커밋 누락** — `--check` 게이트(개수는 `scripts/gates.mjs` 가 SSOT, 현재 23개)는 검증만 하고 재생성은 안 해준다.
 
 1. **커밋 전 `pnpm fix`** — 생성물(guides.generated.ts·catalog.json·metadata/\*·tokens src 등) 일괄 재생성. 출력된 "재생성된 파일" 목록을 변경분과 **같이 커밋**한다.
 2. pre-commit(husky)과 Claude Code hook 이 `scripts/precommit-gate.mjs`(staged 기반 무빌드 선별 게이트, ~1초)를 자동 실행해 drift 를 차단한다. 비상시 `git commit --no-verify`.

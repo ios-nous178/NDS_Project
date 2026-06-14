@@ -419,7 +419,7 @@
     "status": "implemented",
     "description": "주소 검색 + 상세 주소 입력. 외부 API 결과를 results로 받는 패턴",
     "storybookTitle": "Components/Inputs/AddressPicker",
-    "docsPath": "/components/address-search",
+    "docsPath": "/components/address-picker",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "회원가입 주소, 배송 주소, 방문 상담 주소",

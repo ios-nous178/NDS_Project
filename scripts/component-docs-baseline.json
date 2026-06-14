@@ -1,1 +1,11 @@
-{ "skip": {} }
+{
+  "_comment": "component-docs 게이트가 의도적으로 자동화/orphan 검사에서 제외하는 mdx. 키=파일명, 값=사유. react 소스가 없는 손수정 페이지(허브·카탈로그·아이콘·커버리지)나 html 전용 컴포넌트만 등재한다. 제거/리네임된 컴포넌트 페이지는 여기 넣지 말고 삭제/리네임할 것 — 게이트가 orphan 으로 차단한다.",
+  "skip": {
+    "overview.mdx": "손수정 허브 페이지(한눈에 보기) — 단일 react 컴포넌트 대응 없음",
+    "gallery.mdx": "손수정 전체 카탈로그 페이지 — 단일 react 컴포넌트 대응 없음",
+    "icons.mdx": "아이콘 카탈로그 페이지 — react 컴포넌트 아님",
+    "brand-coverage.mdx": "브랜드×컴포넌트 커버리지 표 페이지 — react 컴포넌트 아님",
+    "checkbox-radio.mdx": "Checkbox + Radio 합본 페이지 — 두 컴포넌트를 한 문서에서 설명(단일 title 대응 불가)",
+    "brand-chrome.mdx": "html 전용 컴포넌트(nds-brand-chrome) — react 소스 없음, BrandChrome 가이드만 존재"
+  }
+}

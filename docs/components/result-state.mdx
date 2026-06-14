@@ -1,20 +1,20 @@
 ---
 sidebar_position: 15
-title: EmptyState
+title: ResultState
 description: 데이터가 없는 빈 화면을 안내하는 컴포넌트
 category: 피드백
 related: [Toast]
 ---
 
-import { EmptyState, Button } from "@nudge-design/react";
+import { ResultState, Button } from "@nudge-design/react";
 import ComponentPreview from "@site/src/components/ComponentPreview";
 
-# EmptyState
+# ResultState
 
 빈 상태, 검색 결과 없음, 오류 화면을 표시하는 컴포넌트입니다. 아이콘, 제목, 설명, 액션 슬롯을 제공합니다. Flat API와 Compound API를 모두 지원합니다.
 
 ```tsx
-import { EmptyState } from "@nudge-design/react";
+import { ResultState } from "@nudge-design/react";
 ```
 
 ---
@@ -35,7 +35,7 @@ import { EmptyState } from "@nudge-design/react";
 
 ### 자주 하는 실수
 
-- 데이터 로딩 중에 EmptyState를 잠깐 보여줌 — 로딩 상태와 빈 상태를 구분하세요. 로딩 완료 후 데이터가 없을 때만 표시합니다
+- 데이터 로딩 중에 ResultState를 잠깐 보여줌 — 로딩 상태와 빈 상태를 구분하세요. 로딩 완료 후 데이터가 없을 때만 표시합니다
 - 액션 버튼 없이 "데이터가 없습니다"만 표시 — 사용자가 다음에 무엇을 해야 하는지 안내하세요
 
 ---
@@ -45,13 +45,13 @@ import { EmptyState } from "@nudge-design/react";
 ### 기본 사용법
 
 ```tsx
-<EmptyState title="데이터가 없습니다" description="아직 등록된 내용이 없습니다." />
+<ResultState title="데이터가 없습니다" description="아직 등록된 내용이 없습니다." />
 ```
 
 ### 검색 결과 없음
 
 ```tsx
-<EmptyState
+<ResultState
   icon={<SearchEmptyIcon />}
   title="검색 결과가 없습니다"
   description="다른 검색어로 다시 시도해보세요."
@@ -61,7 +61,7 @@ import { EmptyState } from "@nudge-design/react";
 ### 에러 + 액션 버튼
 
 ```tsx
-<EmptyState
+<ResultState
   icon={<ErrorIcon />}
   title="일시적인 오류가 발생했습니다"
   description="잠시 후 다시 시도해주세요."
@@ -76,7 +76,7 @@ import { EmptyState } from "@nudge-design/react";
 ### 최소 높이 지정
 
 ```tsx
-<EmptyState title="리스트가 없습니다." minHeight={360} />
+<ResultState title="리스트가 없습니다." minHeight={360} />
 ```
 
 ---
@@ -84,16 +84,16 @@ import { EmptyState } from "@nudge-design/react";
 ## Compound API
 
 ```tsx
-<EmptyState.Root minHeight={300}>
-  <EmptyState.Icon>
+<ResultState.Root minHeight={300}>
+  <ResultState.Icon>
     <img src="/images/placeholder.png" alt="empty" />
-  </EmptyState.Icon>
-  <EmptyState.Title>상담 내역이 없습니다</EmptyState.Title>
-  <EmptyState.Description>첫 상담을 예약해보세요.</EmptyState.Description>
-  <EmptyState.Action>
+  </ResultState.Icon>
+  <ResultState.Title>상담 내역이 없습니다</ResultState.Title>
+  <ResultState.Description>첫 상담을 예약해보세요.</ResultState.Description>
+  <ResultState.Action>
     <Button size="sm">상담 예약하기</Button>
-  </EmptyState.Action>
-</EmptyState.Root>
+  </ResultState.Action>
+</ResultState.Root>
 ```
 
 ---
@@ -107,7 +107,7 @@ import { EmptyState } from "@nudge-design/react";
 | `description` | `string`              | —           | 설명 (줄바꿈 지원)  |
 | `action`      | `ReactNode`           | —           | 하단 액션 (버튼 등) |
 | `minHeight`   | `number \| string`    | `200px`     | 최소 높이           |
-| `slotProps`   | `EmptyStateSlotProps` | —           | 슬롯 프롭           |
+| `slotProps`   | `ResultStateSlotProps` | —           | 슬롯 프롭           |
 
 ---
 
@@ -115,11 +115,11 @@ import { EmptyState } from "@nudge-design/react";
 
 | 컴포넌트                 | 역할                      |
 | ------------------------ | ------------------------- |
-| `EmptyState.Root`        | 루트 컨테이너 (중앙 정렬) |
-| `EmptyState.Icon`        | 아이콘/이미지 영역        |
-| `EmptyState.Title`       | 제목                      |
-| `EmptyState.Description` | 설명 문구                 |
-| `EmptyState.Action`      | 하단 액션 영역            |
+| `ResultState.Root`        | 루트 컨테이너 (중앙 정렬) |
+| `ResultState.Icon`        | 아이콘/이미지 영역        |
+| `ResultState.Title`       | 제목                      |
+| `ResultState.Description` | 설명 문구                 |
+| `ResultState.Action`      | 하단 액션 영역            |
 
 ---
 
@@ -158,9 +158,9 @@ div [data-slot="root"]
 <EmptyContent message="검색 결과가 없습니다" />
 
 // After (Design System)
-<EmptyState title="등록된 상담이 없습니다" />
-<EmptyState title="리스트가 없습니다." minHeight={360} />
-<EmptyState title="검색 결과가 없습니다" />
+<ResultState title="등록된 상담이 없습니다" />
+<ResultState title="리스트가 없습니다." minHeight={360} />
+<ResultState title="검색 결과가 없습니다" />
 ```
 
 ---
@@ -196,13 +196,13 @@ Storybook에서 아래 시나리오를 별도 story로 유지합니다.
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
 | `icon` | `ReactNode` | — | 아이콘 또는 이미지 (생략 시 `status` 기본 글리프) |
-| `status` | `EmptyStateStatus` | `"empty"` | 화면 상태 시멘틱 — 기본 아이콘 글리프 + 아이콘 색 |
+| `status` | `ResultStateStatus` | `"empty"` | 화면 상태 시멘틱 — 기본 아이콘 글리프 + 아이콘 색 |
 | `title` | `string` | — | 제목 |
 | `description` | `string` | — | 설명 문구 |
 | `action` | `ReactNode` | — | 하단 액션 (버튼 등) |
 | `minHeight` | `number \| string` | — | 최소 높이 (인라인 placeholder 는 작게, 결과 화면은 `"60vh"` 등 크게) |
 | `className` | `string` | — | 루트 className |
 | `style` | `CSSProperties` | — | 루트 style |
-| `slotProps` | `EmptyStateSlotProps` | — | 슬롯 프롭 |
+| `slotProps` | `ResultStateSlotProps` | — | 슬롯 프롭 |
 
 <!-- AUTO-GEN:props:END -->

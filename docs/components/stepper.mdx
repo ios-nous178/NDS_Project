@@ -22,9 +22,8 @@ import { Stepper } from "@nudge-design/react";
 
 ### 이럴 때 사용하지 마세요
 
-- 값 증감(수량 조절 등) → NumberStepper를 사용하세요
 - 단계별 폼 상태 관리·검증 → **다단계 폼 패턴**으로 조립하세요 (`get_guide({ topic: 'pattern:multi-step-form' })`)
-- 같은 페이지 내 뷰 전환 → [Tabs](/components/tabs)를 사용하세요
+- 같은 페이지 내 뷰 전환 → [Tab](/components/tab)를 사용하세요
 
 > **Stepper vs 다단계 폼 패턴** — Stepper는 진척을 **표시만** 합니다(상태는 `current` 인덱스로 자동 계산, per-step status 없음). 폼 콘텐츠 + 단계 네비게이션 + 검증을 묶는 컨테이너는 DS 컴포넌트가 아니라 **조립 패턴**입니다 — Stepper + Heading + FormSection + cta-group 을 직접 조합하세요(`get_guide({ topic: 'pattern:multi-step-form' })`). 시간순 이벤트 로그는 Timeline.
 

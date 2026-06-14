@@ -1,21 +1,21 @@
 ---
 sidebar_position: 10
-title: Tabs
+title: Tab
 description: 같은 맥락 내에서 뷰를 전환하는 탭 내비게이션 컴포넌트
 category: 내비게이션
 related: []
 ---
 
-import { Tabs } from "@nudge-design/react";
+import { Tab } from "@nudge-design/react";
 import ComponentPreview from "@site/src/components/ComponentPreview";
 import Playground from "@site/src/components/Playground";
 
-# Tabs
+# Tab
 
 탭 내비게이션 컴포넌트입니다. `line`, `chip`, `segment` 세 가지 변형을 지원하고, 사이즈는 `mobile` / `pc`, 톤은 `neutral` / `color`로 조합합니다. `line` 변형은 슬라이딩 인디케이터 애니메이션을 내장하며 Flat API와 Compound API를 모두 지원합니다.
 
 ```tsx
-import { Tabs } from "@nudge-design/react";
+import { Tab } from "@nudge-design/react";
 ```
 
 ---
@@ -53,7 +53,7 @@ import { Tabs } from "@nudge-design/react";
 ## 플레이그라운드
 
 <Playground
-  title="Tabs Playground"
+  title="Tab Playground"
   controls={[
     { name: "variant", type: "select", default: "line", options: ["line", "chip", "segment"] },
     { name: "size", type: "select", default: "pc", options: ["mobile", "pc"] },
@@ -71,7 +71,7 @@ import { Tabs } from "@nudge-design/react";
     ];
     return (
       <div style={{ width: 360 }}>
-        <Tabs
+        <Tab
           items={items}
           activeKey="all"
           onTabChange={() => {}}
@@ -99,7 +99,7 @@ const items = [
   { key: "challenge", title: "챌린지", content: <ChallengeContent /> },
 ];
 
-<Tabs
+<Tab
   items={items}
   activeKey={activeKey}
   onTabChange={setActiveKey}
@@ -113,7 +113,7 @@ const items = [
 가로 스크롤이 가능합니다. 모바일 가로 카테고리 필터로 적합합니다.
 
 ```tsx
-<Tabs
+<Tab
   items={items}
   activeKey={activeKey}
   onTabChange={setActiveKey}
@@ -123,19 +123,19 @@ const items = [
 />
 ```
 
-### 세그먼트 단일 선택 → SegmentedControl
+### Segment 변형 (PC 어드민)
 
-구 `variant="segment"`은 폐지되었습니다. 가로로 균등 분할된 세그먼트에서 **값 하나를 토글**(콘텐츠 패널 전환이 아님)하려면 [`SegmentedControl`](/components/segmented-control)을 사용하세요. PC 어드민 세그먼트는 `size="lg"`, 라벨 앞 아이콘은 옵션의 `icon`으로 지정합니다.
+가로로 균등 분할된 세그먼트 컨트롤입니다. PC 어드민 화면에서 카테고리/뷰를 전환할 때 `variant="segment"`로 사용합니다 (`size`는 `pc`, `tone`은 `neutral`로 고정). 라벨 앞 아이콘은 각 아이템의 `icon`으로 지정합니다.
 
 ```tsx
-<SegmentedControl
-  size="lg"
-  options={[
-    { value: "list", label: "목록", icon: <ListIcon /> },
-    { value: "grid", label: "그리드", icon: <GridIcon /> },
+<Tab
+  items={[
+    { key: "list", title: "목록", icon: <ListIcon />, content: <ListView /> },
+    { key: "grid", title: "그리드", icon: <GridIcon />, content: <GridView /> },
   ]}
-  value={value}
-  onValueChange={setValue}
+  activeKey={activeKey}
+  onTabChange={setActiveKey}
+  variant="segment"
 />;
 ```
 
@@ -149,7 +149,7 @@ const items = [
   { key: "center", title: "센터 검색" },
 ];
 
-<Tabs items={items} activeKey={activeKey} onTabChange={setActiveKey} />;
+<Tab items={items} activeKey={activeKey} onTabChange={setActiveKey} />;
 ```
 
 ---
@@ -159,24 +159,24 @@ const items = [
 각 요소를 직접 조합하여 자유로운 레이아웃을 구성합니다.
 
 ```tsx
-<Tabs.Root
+<Tab.Root
   activeKey={activeKey}
   onTabChange={setActiveKey}
   variant="line"
   size="mobile"
   tone="neutral"
 >
-  <Tabs.List>
-    <Tabs.Trigger tabKey="address">주소 검색</Tabs.Trigger>
-    <Tabs.Trigger tabKey="center">센터 검색</Tabs.Trigger>
-  </Tabs.List>
-  <Tabs.Panel tabKey="address">
-    <AddressSearch />
-  </Tabs.Panel>
-  <Tabs.Panel tabKey="center">
+  <Tab.List>
+    <Tab.Trigger tabKey="address">주소 검색</Tab.Trigger>
+    <Tab.Trigger tabKey="center">센터 검색</Tab.Trigger>
+  </Tab.List>
+  <Tab.Panel tabKey="address">
+    <AddressPicker />
+  </Tab.Panel>
+  <Tab.Panel tabKey="center">
     <CenterSearch />
-  </Tabs.Panel>
-</Tabs.Root>
+  </Tab.Panel>
+</Tab.Root>
 ```
 
 ---
@@ -194,7 +194,7 @@ const items = [
 | `fullWidth`   | `boolean`                           | `true`      | 전체 너비                             |
 | `className`   | `string`                            | —           | 루트 className                        |
 | `style`       | `CSSProperties`                     | —           | 루트 style                            |
-| `slotProps`   | `TabsSlotProps`                     | —           | 슬롯별 props 전달                     |
+| `slotProps`   | `TabSlotProps`                     | —           | 슬롯별 props 전달                     |
 
 ### TabItem
 
@@ -206,7 +206,7 @@ const items = [
 | `icon`     | `ReactNode` | Segment 변형에서 텍스트 앞에 노출되는 아이콘 노드 |
 | `disabled` | `boolean`   | 비활성화 여부                                     |
 
-### TabsSlotProps
+### TabSlotProps
 
 `root` / `list` / `trigger` / `panel` 슬롯에 추가 props를 주입합니다. 각 슬롯은 해당 요소의 `className`, `style` 등을 받습니다.
 
@@ -214,7 +214,7 @@ const items = [
 
 ## Compound 컴포넌트
 
-### Tabs.Root
+### Tab.Root
 
 | Prop          | 타입                            | 기본값      | 설명                  |
 | ------------- | ------------------------------- | ----------- | --------------------- |
@@ -225,11 +225,11 @@ const items = [
 | `tone`        | `"neutral" \| "color"`          | `"neutral"` | 톤                    |
 | `fullWidth`   | `boolean`                       | `true`      | 전체 너비             |
 
-### Tabs.List
+### Tab.List
 
 탭 버튼을 감싸는 `<ul>`. `role="tablist"`. `line` 변형에서는 활성 탭 위치를 측정해 인디케이터가 슬라이딩합니다.
 
-### Tabs.Trigger
+### Tab.Trigger
 
 개별 탭 버튼.
 
@@ -240,7 +240,7 @@ const items = [
 | `icon`     | `ReactNode` | Segment 변형에서 라벨 앞 아이콘       |
 | `disabled` | `boolean`   | 비활성화 여부                         |
 
-### Tabs.Panel
+### Tab.Panel
 
 탭 콘텐츠 패널. 비활성 패널의 children은 렌더되지 않습니다(언마운트).
 
@@ -325,12 +325,12 @@ Storybook에서 아래 시나리오를 별도 story로 유지합니다.
 | `items` *(필수)* | `TabItem[]` | — | 탭 아이템 목록 |
 | `activeKey` *(필수)* | `string` | — | 현재 활성 탭 키 |
 | `onTabChange` *(필수)* | `(key: string) => void` | — | 탭 변경 콜백 |
-| `variant` | `TabsVariant` | `"line"` | 스타일 변형 (`line` \| `chip` \| `segment`). 기본 `line` |
-| `size` | `TabsSize` | `"pc"` | 사이즈 (Mobile / PC). 기본 `pc` |
-| `tone` | `TabsTone` | `"neutral"` | 톤 (활성 강조 색). 기본 `neutral` |
+| `variant` | `TabVariant` | `"line"` | 스타일 변형 (`line` \| `chip` \| `segment`). 기본 `line` |
+| `size` | `TabSize` | `"pc"` | 사이즈 (Mobile / PC). 기본 `pc` |
+| `tone` | `TabTone` | `"neutral"` | 톤 (활성 강조 색). 기본 `neutral` |
 | `fullWidth` | `boolean` | `true` | 전체 너비 |
 | `className` | `string` | — | 루트 className |
 | `style` | `CSSProperties` | — | 루트 style |
-| `slotProps` | `TabsSlotProps` | — | 슬롯 프롭 |
+| `slotProps` | `TabSlotProps` | — | 슬롯 프롭 |
 
 <!-- AUTO-GEN:props:END -->

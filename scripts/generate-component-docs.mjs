@@ -276,7 +276,15 @@ const files = fs
   .filter((f) => f.endsWith(".mdx"))
   .sort();
 
-const results = { written: [], fresh: [], stale: [], skipped: [], noProps: [], missingJsDoc: [] };
+const results = {
+  written: [],
+  fresh: [],
+  stale: [],
+  skipped: [],
+  orphan: [],
+  noProps: [],
+  missingJsDoc: [],
+};
 
 for (const file of files) {
   const mdxPath = path.join(DOCS_DIR, file);
@@ -289,7 +297,10 @@ for (const file of files) {
   }
   const srcPath = path.join(REACT_SRC, `${title}.tsx`);
   if (!fs.existsSync(srcPath)) {
-    results.skipped.push({ file, reason: `packages/react/src/${title}.tsx 없음` });
+    // baseline.skip 에 없는데 react 소스가 없는 mdx = orphan (제거/리네임된 컴포넌트 페이지가 잔존).
+    // 의도적 비-컴포넌트 페이지(overview·gallery·icons·brand-coverage 등)나 html 전용 컴포넌트는
+    // scripts/component-docs-baseline.json 의 skip 에 등재한다(위 286 줄에서 먼저 걸러짐).
+    results.orphan.push({ file, title });
     continue;
   }
 
@@ -371,6 +382,15 @@ if (MODE === "report") {
 }
 
 if (MODE === "check") {
+  if (results.orphan.length) {
+    console.error(
+      `[component-docs] ✗ ${results.orphan.length}개 orphan mdx — react 소스가 없습니다(제거/리네임된 컴포넌트 페이지가 잔존). ` +
+        `삭제하거나, 의도적 비-컴포넌트 페이지면 scripts/component-docs-baseline.json 의 skip 에 등재하세요:`,
+    );
+    for (const o of results.orphan)
+      console.error(`    - docs/components/${o.file} (title: ${o.title})`);
+    process.exit(1);
+  }
   if (results.stale.length) {
     console.error(
       `[component-docs] ✗ ${results.stale.length}개 mdx 의 Props 표가 stale — ` +
@@ -380,7 +400,7 @@ if (MODE === "check") {
     process.exit(1);
   }
   console.log(
-    `[component-docs] ✓ Props 표 fresh (${results.fresh.length}개 · 스킵 ${results.skipped.length} · 미적용 ${results.noProps.length})`,
+    `[component-docs] ✓ Props 표 fresh (${results.fresh.length}개 · 스킵 ${results.skipped.length} · orphan 0 · 미적용 ${results.noProps.length})`,
   );
 } else {
   console.log(
@@ -389,6 +409,12 @@ if (MODE === "check") {
   );
   if (results.written.length) {
     for (const w of results.written) console.log(`    ✎ docs/components/${w.file}`);
+  }
+  if (results.orphan.length) {
+    console.warn(
+      `\n[component-docs] ⚠ orphan mdx ${results.orphan.length}개 — react 소스 없음(제거/리네임된 페이지). 삭제 또는 scripts/component-docs-baseline.json 의 skip 등재 필요:`,
+    );
+    for (const o of results.orphan) console.warn(`    - docs/components/${o.file} (${o.title})`);
   }
 }
 

@@ -1,0 +1,79 @@
+---
+title: AddressPicker
+description: 주소 검색 + 상세 주소 입력. 카카오/네이버 등 외부 API 연동 패턴.
+---
+
+# AddressPicker
+
+도로명/지번 주소를 검색하고 상세 주소(동/호수)를 함께 입력받는 컴포넌트입니다. 검색 자체는 외부에서 처리하고(카카오/네이버 우편번호 API 등), 결과를 `results`로 전달합니다.
+
+## 사용 가이드
+
+### 이럴 때 사용하세요
+- 회원가입 / 배송 주소 등록
+- 방문 상담 신청 (집/회사)
+- 시설 검색의 보조 입력
+
+### 자주 하는 실수
+- `onSearch`는 외부 API 호출 트리거 — 컴포넌트가 직접 검색하지 않음
+- `value`는 주소 + 상세 한 묶음 — 외부 폼 state에서 단일 값으로 관리
+
+## 사용법
+
+```tsx
+import { AddressPicker } from "@nudge-design/react";
+
+const [q, setQ] = useState("");
+const [results, setResults] = useState([]);
+const [value, setValue] = useState(null);
+const [loading, setLoading] = useState(false);
+
+const search = async (query: string) => {
+  setLoading(true);
+  const res = await api.searchAddress(query);
+  setResults(res);
+  setLoading(false);
+};
+
+<AddressPicker
+  label="배송 주소"
+  query={q}
+  onQueryChange={setQ}
+  onSearch={search}
+  results={results}
+  value={value}
+  onValueChange={setValue}
+  loading={loading}
+/>
+```
+
+## Props
+
+<!-- AUTO-GEN:props:START -->
+<!-- 이 표는 packages/react/src 의 Props 인터페이스에서 자동 생성됩니다. 직접 고치지 말고 소스의 타입/JSDoc 을 고친 뒤 `pnpm generate:component-docs` 를 실행하세요. -->
+
+| Prop | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `query` *(필수)* | `string` | — | 검색 키워드 |
+| `onQueryChange` *(필수)* | `(q: string) => void` | — | 키워드 변경 콜백 |
+| `onSearch` *(필수)* | `(q: string) => void` | — | 검색 트리거 (외부에서 API 호출 후 results 갱신) |
+| `results` *(필수)* | `AddressResult[]` | — | 검색 결과 |
+| `value` *(필수)* | `AddressValue \| null` | — | 사용자가 선택한 주소 + 상세 주소 |
+| `onValueChange` *(필수)* | `(v: AddressValue \| null) => void` | — | 변경 콜백 |
+| `label` | `ReactNode` | — | 라벨 |
+| `searchLabel` | `string` | `"검색"` | 검색 버튼 라벨 |
+| `emptyMessage` | `ReactNode` | `"검색 결과가 없어요"` | 빈 결과 메시지 |
+| `loading` | `boolean` | `false` | 로딩 상태 |
+| `helperText` | `ReactNode` | — | 헬퍼 / 에러 |
+| `error` | `boolean` | `false` | 에러 |
+
+<!-- AUTO-GEN:props:END -->
+
+### `AddressResult`
+
+| Prop          | 타입     | 설명                  |
+| ------------- | -------- | --------------------- |
+| `roadAddress` | `string` | 도로명 주소           |
+| `jibunAddress`| `string` | 지번 주소 (선택)      |
+| `postalCode`  | `string` | 우편번호 (선택)       |
+| `meta`        | `string` | 추가 메타 (선택)      |

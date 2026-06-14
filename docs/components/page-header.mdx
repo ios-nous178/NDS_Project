@@ -5,7 +5,7 @@ description: 페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 +
 
 # PageHeader
 
-각 페이지 상단의 **타이틀 영역**을 일관되게 묶는 컴포넌트입니다. 글로벌 네비인 `AppBar`와 다르게 페이지 단위로 사용하고, 뒤로가기·브레드크럼·액션·하단 탭을 한 번에 처리합니다.
+각 페이지 상단의 **타이틀 영역**을 일관되게 묶는 컴포넌트입니다. 글로벌 네비인 `Header`와 다르게 페이지 단위로 사용하고, 뒤로가기·브레드크럼·액션·하단 탭을 한 번에 처리합니다.
 
 ## 사용 가이드
 
@@ -15,7 +15,7 @@ description: 페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 +
 - 하단에 탭/필터가 따라 붙는 화면
 
 ### 이럴 때 사용하지 마세요
-- 글로벌 네비 → `AppBar`
+- 글로벌 네비 → `Header`
 - 사용자가 페이지 안에서 일정 영역만 볼 때 → 그냥 섹션 헤더로 처리
 
 ### 자주 하는 실수
@@ -25,7 +25,7 @@ description: 페이지 단위 헤더. 제목 + 서브타이틀 + 우측 액션 +
 ## 사용법
 
 ```tsx
-import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-design/react";
+import { PageHeader, Button, Breadcrumb, Tab } from "@nudge-design/react";
 
 // 기본
 <PageHeader
@@ -48,7 +48,7 @@ import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-design/react";
 // 하단 탭
 <PageHeader
   title="콘텐츠"
-  bottom={<Tabs ... />}
+  bottom={<Tab ... />}
 />
 ```
 
