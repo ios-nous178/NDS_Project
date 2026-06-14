@@ -1,8 +1,14 @@
 /**
  * <nds-star-rating> — DS StarRating 의 vanilla Web Component 버전.
  *
- * 사용 예:
+ * 사용 예 (표시 전용):
  *   <nds-star-rating value="4" size="24" show-value></nds-star-rating>
+ *
+ * 사용 예 (입력 — 클릭해서 별점 선택):
+ *   <nds-star-rating value="0" interactive></nds-star-rating>
+ *   el.addEventListener("star-rating-change", e => save(e.detail.value));
+ *
+ * 입력 모드: `interactive` 불리언 속성으로 켠다(권장). (레거시: `on-change` 속성도 동일 동작)
  *
  * 이벤트:
  *   star-rating-change (detail: { value }) -> 별 클릭 시 발생
@@ -38,7 +44,7 @@ export class NdsStarRating extends NdsElement {
   static elementName = "nds-star-rating";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-star-rating"].observedAttributes, "readonly"];
+    return [...COMPONENT_ATTRS["nds-star-rating"].observedAttributes, "readonly", "interactive"];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -72,7 +78,10 @@ export class NdsStarRating extends NdsElement {
     const max = parseInt(this.attr("max", "5"), 10);
     const showValue = this.boolAttr("show-value");
     const disabled = this.boolAttr("disabled");
-    const readonly = this.boolAttr("readonly") || !this.hasAttribute("on-change"); // or some other flag
+    // 입력(클릭) 모드 켜기: `interactive` 불리언 속성(권장) 또는 레거시 `on-change` 플래그.
+    // 둘 다 없으면 표시 전용(readonly). React 는 onValueChange 핸들러 유무로 같은 동작.
+    const editable = this.boolAttr("interactive") || this.hasAttribute("on-change");
+    const readonly = this.boolAttr("readonly") || !editable;
 
     const interactive = !disabled && !readonly;
     // 인터랙티브는 반쪽 별 없음(클릭=정수 선택). hover 시엔 hover 값 미리보기.

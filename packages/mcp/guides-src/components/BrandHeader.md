@@ -59,6 +59,8 @@ assetManifest:
 - **손수 조립 금지** — nds-header / nds-header-logo / nds-header-menu / nds-header-menu-item / nds-header-actions / nds-header-auth-button 를 직접 박지 말 것. 메뉴 라벨/href/순서를 손으로 적으면 브랜드 일관성이 깨지고 다음 브랜드 화면에서 또 적게 됨. BrandHeader 한 줄이 BRAND_DATA 에서 전부 자동.
 - **로고는 base64 내장 — 자산 파일·호스팅 불필요.** 5개 브랜드 로고가 BRAND_DATA 에 data URI 로 박혀 있어 `asset-base-url` 없이도 어디서든 안 깨지고 렌더된다 (단일 HTML 목업 그대로 OK). `asset-base-url` 은 **자체 로고로 바꿀 때만** 쓰는 선택적 override — `public/assets/brand/{brand}/logos/` 폴더를 만들 의무는 없다.
 - **surface 별 출력 다름** — `web` (PC GNB · 로고+메뉴+auth), `mobile` (compact 헤더 · 로고+auth), `webview` (뒤로가기 + 타이틀만). 모바일 화면이면 surface='mobile' 명시.
+- **서브페이지(상세/카테고리/폼) 뒤로+타이틀 헤더 = `surface="webview"`** (+ `header-title`). 이게 정답 — `nds-icon-button` + 타이틀로 sticky 앱바를 **손수 조립하지 말 것**(손수조립 안티패턴). webview 헤더는 정상 렌더된다(약 52px).
+- **호스트 엘리먼트는 `display:contents` — 그 자체의 height 는 0 으로 측정된다(정상).** `<nds-brand-header>`/`<nds-header>` 의 `getBoundingClientRect().height` 가 0 이라고 "헤더가 안 뜬다"고 오진하지 말 것. 실제 헤더 박스(내부 `<header class="nds-header">`)가 높이·sticky 를 갖는다. 호스트를 측정/스타일/포지셔닝하려 하지 말고(거기에 `position:sticky`·`height` 걸어도 안 먹음) 컴포넌트가 알아서 한다.
 - active-key 는 BRAND_DATA[brand].webMenu 의 key 와 매칭. 잘못 적으면 활성 메뉴 표시가 안 됨. 각 브랜드 key 목록은 nds-brand-chrome.ts BRAND_DATA 또는 아래 recommended 참고.
 
 ## recommended

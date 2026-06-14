@@ -13,8 +13,8 @@ references:
 ## pitfalls
 
 - single은 라디오와 다름 — 같은 칩 다시 누르면 해제됨.
-- 옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tabs/Drawer 필터 검토.
-- Tabs는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터.
+- 옵션 8개 이상이면 가로 스크롤. 데스크톱은 Tab/Drawer 필터 검토.
+- Tab는 페이지/뷰 전환, FilterBar는 같은 리스트 안의 필터.
 - **상호 배타적 큰 분류(진행중/종료 같은 view 전환)를 FilterBar 로 만들지 말 것 — Tab 사용.** 반대로 날짜 범위·키워드 같은 조건 좁히기를 Tab 으로 만들지 말 것 — FilterBar 사용. (결정 트리: view 바뀌면 Tab / 조건 누적이면 Filter / 2–7개 단일 선택이면 Radio·SelectionButtonGroup.)
 - **배치**: 페이지 타이틀 → Tab → FilterBar → 데이터 영역. Filter 는 쿼리 파라미터로 누적돼 URL 공유 시에도 유지된다.
 - **FilterBar 에 Primary CTA 외 다른 액션 버튼을 여러 개 두지 말 것 — CTA 는 1개만.** 필터 항목이 12개+ 면 별도 `[필터 더보기]` 모달로.

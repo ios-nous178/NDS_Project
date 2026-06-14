@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { PageHeader, Button, Breadcrumb, Tabs } from "@nudge-design/react";
+import { PageHeader, Button, Breadcrumb, Tab } from "@nudge-design/react";
 
 const meta: Meta<typeof PageHeader> = {
   title: "Components/Layout/PageHeader",
@@ -88,7 +88,7 @@ export const WithBottomTabs: Story = {
         title="콘텐츠"
         bottom={
           <div style={{ padding: "0 24px" }}>
-            <Tabs
+            <Tab
               items={[
                 { key: "all", title: "전체" },
                 { key: "meditation", title: "명상" },

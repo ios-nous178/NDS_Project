@@ -1,41 +1,41 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 
-import { getMeasuredIndicatorStyle, getTabsPanelId, getTabsTriggerId } from "./internal/tabs.js";
+import { getMeasuredIndicatorStyle, getTabPanelId, getTabTriggerId } from "./internal/tabs.js";
 
 /* ─── Class names ─── */
 
-const TABS_CLASS = "nds-tabs";
-const TABS_ROOT_CLASS = `${TABS_CLASS}__root`;
-const TABS_LIST_CLASS = `${TABS_CLASS}__list`;
-const TABS_TRIGGER_CLASS = `${TABS_CLASS}__trigger`;
-const TABS_TRIGGER_INNER_CLASS = `${TABS_CLASS}__trigger-inner`;
-const TABS_TRIGGER_ICON_CLASS = `${TABS_CLASS}__trigger-icon`;
-const TABS_INDICATOR_CLASS = `${TABS_CLASS}__indicator`;
-const TABS_PANEL_CLASS = `${TABS_CLASS}__panel`;
+const TAB_CLASS = "nds-tab";
+const TAB_ROOT_CLASS = `${TAB_CLASS}__root`;
+const TAB_LIST_CLASS = `${TAB_CLASS}__list`;
+const TAB_TRIGGER_CLASS = `${TAB_CLASS}__trigger`;
+const TAB_TRIGGER_INNER_CLASS = `${TAB_CLASS}__trigger-inner`;
+const TAB_TRIGGER_ICON_CLASS = `${TAB_CLASS}__trigger-icon`;
+const TAB_INDICATOR_CLASS = `${TAB_CLASS}__indicator`;
+const TAB_PANEL_CLASS = `${TAB_CLASS}__panel`;
 
 /* ─── Types ─── */
 
 /**
- * Tabs 변형.
+ * Tab 변형.
  * - `line`    : 하단 밑줄(언더라인) 탭. Mobile · PC 지원.
  * - `chip`    : 알약(Pill) 탭. Mobile · PC 지원.
  * - `segment` : 연결된 회색 트랙 위 균등 분할 단일선택(iOS 세그먼트). active = 흰색 떠오름.
  *               뷰/기간/상태 토글용. Mobile(36) · PC(40, 아이콘 동반). 구 SegmentedControl 흡수.
  */
-export type TabsVariant = "line" | "chip" | "segment";
+export type TabVariant = "line" | "chip" | "segment";
 
 /**
  * 사이즈 컨텍스트 (Mobile / PC).
  * 높이, 패딩, 폰트가 사이즈별로 다르게 적용된다.
  */
-export type TabsSize = "mobile" | "pc";
+export type TabSize = "mobile" | "pc";
 
 /**
  * 톤 (활성 상태 강조 컬러).
  * - `neutral` : 검정 텍스트/슬레이트 배경 강조.
  * - `color`   : 브랜드 컬러(primary) 강조.
  */
-export type TabsTone = "neutral" | "color";
+export type TabTone = "neutral" | "color";
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -43,43 +43,43 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Context ─── */
 
-interface TabsContextValue {
+interface TabContextValue {
   activeKey: string;
   onTabChange: (key: string) => void;
-  variant: TabsVariant;
-  size: TabsSize;
-  tone: TabsTone;
+  variant: TabVariant;
+  size: TabSize;
+  tone: TabTone;
   baseId: string;
 }
 
-const TabsContext = createContext<TabsContextValue | undefined>(undefined);
+const TabContext = createContext<TabContextValue | undefined>(undefined);
 
-const useTabsContext = () => {
-  const ctx = useContext(TabsContext);
-  if (!ctx) throw new Error("Tabs compound components must be used within Tabs.Root");
+const useTabContext = () => {
+  const ctx = useContext(TabContext);
+  if (!ctx) throw new Error("Tab compound components must be used within Tab.Root");
   return ctx;
 };
 
 /* ─── Compound: Root ─── */
 
-export interface TabsRootProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TabRootProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 현재 활성 탭 키 */
   activeKey: string;
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
   /** 탭 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
-  variant?: TabsVariant;
+  variant?: TabVariant;
   /** 사이즈 (Mobile / PC). 기본 `pc` */
-  size?: TabsSize;
+  size?: TabSize;
   /** 톤 (활성 강조 색). 기본 `neutral` */
-  tone?: TabsTone;
+  tone?: TabTone;
   /** 전체 너비 */
   fullWidth?: boolean;
   /** Root 내부 콘텐츠 (List, Panel 등) */
   children: React.ReactNode;
 }
 
-export const TabsRoot: React.FC<TabsRootProps> = ({
+export const TabRoot: React.FC<TabRootProps> = ({
   activeKey,
   onTabChange,
   variant = "line",
@@ -96,15 +96,15 @@ export const TabsRoot: React.FC<TabsRootProps> = ({
   const resolvedTone = tone;
 
   return (
-    <TabsContext.Provider
+    <TabContext.Provider
       value={{ activeKey, onTabChange, variant, size: resolvedSize, tone: resolvedTone, baseId }}
     >
       <div
         data-slot="root"
-        className={cx(TABS_ROOT_CLASS, className)}
+        className={cx(TAB_ROOT_CLASS, className)}
         style={
           {
-            "--nds-tabs-width": fullWidth ? "100%" : "auto",
+            "--nds-tab-width": fullWidth ? "100%" : "auto",
             ...style,
           } as React.CSSProperties
         }
@@ -112,19 +112,19 @@ export const TabsRoot: React.FC<TabsRootProps> = ({
       >
         {children}
       </div>
-    </TabsContext.Provider>
+    </TabContext.Provider>
   );
 };
 
 /* ─── Compound: List ─── */
 
-export interface TabsListProps extends React.HTMLAttributes<HTMLUListElement> {
-  /** 탭 트리거 목록 (TabsTrigger 컴포넌트들) */
+export interface TabListProps extends React.HTMLAttributes<HTMLUListElement> {
+  /** 탭 트리거 목록 (TabTrigger 컴포넌트들) */
   children: React.ReactNode;
 }
 
-export const TabsList: React.FC<TabsListProps> = ({ children, className, style, ...rest }) => {
-  const { variant, size, tone, activeKey } = useTabsContext();
+export const TabList: React.FC<TabListProps> = ({ children, className, style, ...rest }) => {
+  const { variant, size, tone, activeKey } = useTabContext();
   const listRef = useRef<HTMLUListElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
 
@@ -142,7 +142,7 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className, style, 
       data-size={size}
       data-tone={tone}
       role="tablist"
-      className={cx(TABS_LIST_CLASS, className)}
+      className={cx(TAB_LIST_CLASS, className)}
       style={style}
       {...rest}
     >
@@ -150,7 +150,7 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className, style, 
       {variant === "line" && (
         <span
           data-slot="indicator"
-          className={TABS_INDICATOR_CLASS}
+          className={TAB_INDICATOR_CLASS}
           style={indicatorStyle}
           aria-hidden="true"
         />
@@ -161,7 +161,7 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className, style, 
 
 /* ─── Compound: Trigger ─── */
 
-export interface TabsTriggerProps extends React.LiHTMLAttributes<HTMLLIElement> {
+export interface TabTriggerProps extends React.LiHTMLAttributes<HTMLLIElement> {
   /** 탭 키 (activeKey와 비교) */
   tabKey: string;
   /** 탭 버튼에 표시할 콘텐츠 */
@@ -172,7 +172,7 @@ export interface TabsTriggerProps extends React.LiHTMLAttributes<HTMLLIElement> 
   disabled?: boolean;
 }
 
-export const TabsTrigger: React.FC<TabsTriggerProps> = ({
+export const TabTrigger: React.FC<TabTriggerProps> = ({
   tabKey,
   children,
   icon,
@@ -181,10 +181,10 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
   onClick,
   ...rest
 }) => {
-  const { activeKey, onTabChange, baseId } = useTabsContext();
+  const { activeKey, onTabChange, baseId } = useTabContext();
   const isActive = activeKey === tabKey;
-  const triggerId = getTabsTriggerId(baseId, tabKey);
-  const panelId = getTabsPanelId(baseId, tabKey);
+  const triggerId = getTabTriggerId(baseId, tabKey);
+  const panelId = getTabPanelId(baseId, tabKey);
 
   return (
     <li
@@ -198,7 +198,7 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
       aria-controls={panelId}
       aria-disabled={disabled || undefined}
       tabIndex={disabled ? -1 : isActive ? 0 : -1}
-      className={cx(TABS_TRIGGER_CLASS, className)}
+      className={cx(TAB_TRIGGER_CLASS, className)}
       onClick={(e) => {
         if (disabled) return;
         onTabChange(tabKey);
@@ -250,9 +250,9 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
       }}
       {...rest}
     >
-      <span className={TABS_TRIGGER_INNER_CLASS}>
+      <span className={TAB_TRIGGER_INNER_CLASS}>
         {icon && (
-          <span className={TABS_TRIGGER_ICON_CLASS} aria-hidden="true">
+          <span className={TAB_TRIGGER_ICON_CLASS} aria-hidden="true">
             {icon}
           </span>
         )}
@@ -264,18 +264,18 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({
 
 /* ─── Compound: Panel ─── */
 
-export interface TabsPanelProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 이 패널에 대응하는 탭 키 */
   tabKey: string;
   /** 해당 탭이 활성화될 때 표시할 패널 콘텐츠 */
   children: React.ReactNode;
 }
 
-export const TabsPanel: React.FC<TabsPanelProps> = ({ tabKey, children, className, ...rest }) => {
-  const { activeKey, baseId } = useTabsContext();
+export const TabPanel: React.FC<TabPanelProps> = ({ tabKey, children, className, ...rest }) => {
+  const { activeKey, baseId } = useTabContext();
   const isHidden = activeKey !== tabKey;
-  const triggerId = getTabsTriggerId(baseId, tabKey);
-  const panelId = getTabsPanelId(baseId, tabKey);
+  const triggerId = getTabTriggerId(baseId, tabKey);
+  const panelId = getTabPanelId(baseId, tabKey);
 
   return (
     <div
@@ -285,7 +285,7 @@ export const TabsPanel: React.FC<TabsPanelProps> = ({ tabKey, children, classNam
       role="tabpanel"
       aria-labelledby={triggerId}
       tabIndex={0}
-      className={cx(TABS_PANEL_CLASS, className)}
+      className={cx(TAB_PANEL_CLASS, className)}
       {...rest}
     >
       {!isHidden && children}
@@ -308,21 +308,21 @@ export interface TabItem {
   disabled?: boolean;
 }
 
-export interface TabsSlotProps {
+export interface TabSlotProps {
   /** 루트 `<div>`에 전달할 추가 props */
   root?: Omit<
-    TabsRootProps,
+    TabRootProps,
     "activeKey" | "onTabChange" | "variant" | "size" | "tone" | "children"
   >;
   /** 탭 리스트 `<ul>`에 전달할 추가 props */
-  list?: Omit<TabsListProps, "children">;
+  list?: Omit<TabListProps, "children">;
   /** 각 탭 트리거 `<li>`에 공통으로 전달할 추가 props */
-  trigger?: Omit<TabsTriggerProps, "tabKey" | "children" | "icon" | "disabled">;
+  trigger?: Omit<TabTriggerProps, "tabKey" | "children" | "icon" | "disabled">;
   /** 각 탭 패널 `<div>`에 공통으로 전달할 추가 props */
-  panel?: Omit<TabsPanelProps, "tabKey" | "children">;
+  panel?: Omit<TabPanelProps, "tabKey" | "children">;
 }
 
-export interface TabsProps {
+export interface TabProps {
   /** 탭 아이템 목록 */
   items: TabItem[];
   /** 현재 활성 탭 키 */
@@ -330,11 +330,11 @@ export interface TabsProps {
   /** 탭 변경 콜백 */
   onTabChange: (key: string) => void;
   /** 스타일 변형 (`line` | `chip` | `segment`). 기본 `line` */
-  variant?: TabsVariant;
+  variant?: TabVariant;
   /** 사이즈 (Mobile / PC). 기본 `pc` */
-  size?: TabsSize;
+  size?: TabSize;
   /** 톤 (활성 강조 색). 기본 `neutral` */
-  tone?: TabsTone;
+  tone?: TabTone;
   /** 전체 너비 */
   fullWidth?: boolean;
   /** 루트 className */
@@ -342,10 +342,10 @@ export interface TabsProps {
   /** 루트 style */
   style?: React.CSSProperties;
   /** 슬롯 프롭 */
-  slotProps?: TabsSlotProps;
+  slotProps?: TabSlotProps;
 }
 
-const TabsComponent: React.FC<TabsProps> = ({
+const TabComponent: React.FC<TabProps> = ({
   items,
   activeKey,
   onTabChange,
@@ -357,7 +357,7 @@ const TabsComponent: React.FC<TabsProps> = ({
   style,
   slotProps,
 }) => (
-  <TabsRoot
+  <TabRoot
     activeKey={activeKey}
     onTabChange={onTabChange}
     variant={variant}
@@ -367,9 +367,9 @@ const TabsComponent: React.FC<TabsProps> = ({
     className={cx(slotProps?.root?.className, className)}
     style={{ ...slotProps?.root?.style, ...style }}
   >
-    <TabsList className={slotProps?.list?.className} style={slotProps?.list?.style}>
+    <TabList className={slotProps?.list?.className} style={slotProps?.list?.style}>
       {items.map((item) => (
-        <TabsTrigger
+        <TabTrigger
           key={item.key}
           tabKey={item.key}
           icon={item.icon}
@@ -378,30 +378,30 @@ const TabsComponent: React.FC<TabsProps> = ({
           style={slotProps?.trigger?.style}
         >
           {item.title}
-        </TabsTrigger>
+        </TabTrigger>
       ))}
-    </TabsList>
+    </TabList>
     {items.some((item) => item.content !== undefined) &&
       items.map((item) => (
-        <TabsPanel
+        <TabPanel
           key={item.key}
           tabKey={item.key}
           className={slotProps?.panel?.className}
           style={slotProps?.panel?.style}
         >
           {item.content}
-        </TabsPanel>
+        </TabPanel>
       ))}
-  </TabsRoot>
+  </TabRoot>
 );
 
-TabsComponent.displayName = "Tabs";
+TabComponent.displayName = "Tab";
 
 /* ─── Export: Flat + Compound ─── */
 
-export const Tabs = Object.assign(TabsComponent, {
-  Root: TabsRoot,
-  List: TabsList,
-  Trigger: TabsTrigger,
-  Panel: TabsPanel,
+export const Tab = Object.assign(TabComponent, {
+  Root: TabRoot,
+  List: TabList,
+  Trigger: TabTrigger,
+  Panel: TabPanel,
 });

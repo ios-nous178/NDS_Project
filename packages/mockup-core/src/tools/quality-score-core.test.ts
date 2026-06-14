@@ -170,9 +170,10 @@ test("scoreLabel: D1/D2 키 → 한국어 라벨, 미지 키는 그대로", () =
   assert.equal(scoreLabel("unknown-key"), "unknown-key");
 });
 
-test("formatScoreCard: 헤더 verdict + D1/D2 라벨 + 게이트 안내 포함", () => {
+test("formatScoreCard: 분석 카드 — 항목별 점수 + 감점 사유(→) + 게이트 안내", () => {
   const { text, grade } = formatScoreCard({
     codeScores: { overall: 84, dimensions: { color: 100, layout: 60 } },
+    codeDeductions: { layout: ["카드 중첩 — Section 컨테이너로", "칩 과다(6개)"] },
     llm: {
       ok: true,
       overall: 72,
@@ -182,13 +183,23 @@ test("formatScoreCard: 헤더 verdict + D1/D2 라벨 + 게이트 안내 포함",
         "flow-patterns": 68,
         "form-patterns": 100,
       },
+      reasons: { "flow-patterns": "로딩/에러 상태 패턴 부재" },
       notes: "빈 상태 보완",
     },
   });
   assert.equal(grade.verdict, "warn"); // min(84,72)=72 → warn
   assert.ok(text.includes("주의"));
-  assert.ok(text.includes("색상 100"));
-  assert.ok(text.includes("레이아웃 60"));
-  assert.ok(text.includes("흐름 68"));
+  // 항목별 점수 라인 (라벨: N점)
+  assert.ok(text.includes("색상: 100점"));
+  assert.ok(text.includes("레이아웃: 60점"));
+  assert.ok(text.includes("흐름: 68점"));
+  // verdict 아이콘
+  assert.ok(text.includes("✅ 색상"));
+  assert.ok(text.includes("⚠️ 레이아웃"));
+  // D1 감점 사유("→")
+  assert.ok(text.includes("→ 카드 중첩 — Section 컨테이너로"));
+  assert.ok(text.includes("(감점 2건)"));
+  // D2 항목별 사유("→")
+  assert.ok(text.includes("→ 로딩/에러 상태 패턴 부재"));
   assert.ok(text.includes("개선점: 빈 상태 보완"));
 });

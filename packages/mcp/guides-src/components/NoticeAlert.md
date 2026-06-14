@@ -13,6 +13,7 @@ references:
 
 ## pitfalls
 
+- **특정 입력 필드의 검증 실패(비밀번호 불일치·이메일 형식·중복 등)는 NoticeAlert 가 아니다 → 그 필드의 인라인 에러로.** (★ 자주 하는 오용) Input/FormField 의 `error` + `error-message`(html) / `errorMessage`(React)로 필드 바로 아래 빨간 헬퍼(role=alert 자동). NoticeAlert 는 폼/페이지 단위의 **영구 안내·정책 메시지**용이지 필드 1개의 검증 피드백용이 아니다 — 멀리 떨어진 박스로 띄우면 어느 입력이 틀렸는지 끊긴다.
 - error variant 를 단순 안내용으로 남발하지 말 것 — 의미가 흐려짐. 단순 정보는 info, 주의는 caution.
 - 액션·확인 버튼이 필요한 메시지는 NoticeAlert 가 아님 → Modal/Dialog. 일시적 결과 알림 → Toast. 전역 공지 → Banner.
 - 같은 화면에 색 배경 박스(notice/success/error) 를 여러 개 쌓지 말 것 — notice 패턴 강조 예산(화면당 색 박스 1개 권장). info/caution(회색)은 비교적 자유.

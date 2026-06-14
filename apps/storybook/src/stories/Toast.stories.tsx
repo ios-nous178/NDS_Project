@@ -4,6 +4,7 @@ import { expect, within, waitFor, waitForElementToBeRemoved } from "storybook/te
 import { Toast, Button } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
+import { SheetPreview } from "./sheetPreview";
 
 const { Provider: ToastProvider, useToast } = Toast;
 
@@ -72,49 +73,27 @@ function FeedbackFlowExample() {
   );
 }
 
-/* ─── Position in context (실제 화면 위 노출 위치) ─── */
+/* ─── Position in context (바텀시트 본문 박스 위 노출) ─── */
 
-// Toast viewport 는 position:fixed portal 이라 프레임 안에 가둘 수 없다 → 정적 nds-toast 마크업으로
-// 화면 어디에 어떤 모양으로 뜨는지(상단 pill / 하단 rounded 24)만 보여준다. (position = shape)
-function ToastFrame({
-  label,
-  position,
-  message,
-}: {
-  label: string;
-  position: "top" | "bottom";
-  message: string;
-}) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-      <span style={frameLabel}>{label}</span>
-      <div style={phoneFrame}>
-        <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 10 }} aria-hidden>
-          <div style={{ height: 12, width: 128, borderRadius: 4, background: "#E8E8E8" }} />
-          <div style={{ height: 56, borderRadius: 10, background: "#F3F4F6" }} />
-          <div style={{ height: 56, borderRadius: 10, background: "#F3F4F6" }} />
-        </div>
-        <div
-          className="nds-toast__viewport"
-          data-position={position}
-          style={{ position: "absolute" }}
-        >
-          <div className="nds-toast__item" role="status">
-            <span className="nds-toast__message">{message}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+// Toast viewport 는 position:fixed portal 이라 카드 안에 직접 못 가둔다 → 바텀시트 본문 박스
+// (SheetPreview)를 그대로 가져와 그 폭에 맞춰 하단에 정적 토스트를 띄운다. (실제 앱 맥락 재현)
 export const PositionInContext: Story = {
-  name: "State/노출 위치 (화면 위)",
+  name: "바텀시트 본문 위 하단 노출",
   tags: ["gallery"],
   render: () => (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <ToastFrame label="하단 노출 (rounded 24)" position="bottom" message="저장되었습니다" />
-    </div>
+    <SheetPreview title="감정 기록" floating>
+      {/* data-position=bottom 은 rounded-24 모양을 위해 유지하되, viewport 의 fixed 위치/96px
+          여백은 인라인으로 무력화 — SheetPreview 의 하단 슬롯이 배치를 담당. */}
+      <div
+        className="nds-toast__viewport"
+        data-position="bottom"
+        style={{ position: "static", padding: 0, width: "100%" }}
+      >
+        <div className="nds-toast__item" role="status" style={{ maxWidth: "100%" }}>
+          <span className="nds-toast__message">저장되었습니다</span>
+        </div>
+      </div>
+    </SheetPreview>
   ),
 };
 
@@ -214,21 +193,3 @@ export const ToastStackingLimitEdge: Story = {
   },
 };
 
-/* ─── styles ─── */
-
-const phoneFrame: React.CSSProperties = {
-  position: "relative",
-  width: 260,
-  height: 380,
-  borderRadius: 28,
-  border: "8px solid #1F2937",
-  background: "#FFF",
-  overflow: "hidden",
-  boxSizing: "border-box",
-};
-
-const frameLabel: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  color: "#666",
-};

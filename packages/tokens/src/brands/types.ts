@@ -375,7 +375,7 @@ export interface ComponentOverrides {
    *               default button-bg-disabled(#ddd) + 양쪽 흰 텍스트 bold
    * 다른 브랜드는 fallback (line body3 14/20·indicator 3px, chip pill·subtle gray) 유지.
    */
-  tabs?: {
+  tab?: {
     lineFontSize?: ComponentValue;
     lineLineHeight?: ComponentValue;
     lineDefaultWeight?: ComponentValue;

@@ -7,19 +7,19 @@ metrics:
   boxRadius: 10
   tabVsFilter: Tab = view 전환(상호 배타·URL 경로) / Filter = 현재 view 좁히기(다중 누적·쿼리 파라미터)
   screenOrder: 페이지 타이틀 → Tab → FilterBar → 데이터 영역
-  relatedComponents: Tabs, FilterBar
+  relatedComponents: Tab, FilterBar
   relatedPatterns: cashwalk-biz-step-progress, cashwalk-biz-badge-chip, cashwalk-biz-page-patterns
 ---
 
 ## summary
 
-캐시워크 포 비즈니스 admin 의 Tab 카탈로그 — Underline(line) + Box(chip) 2 변형. DS `Tabs` 컴포넌트로 구현, 브랜드 색·치수는 data-brand="cashwalk-biz" 시 자동 cascade.
+캐시워크 포 비즈니스 admin 의 Tab 카탈로그 — Underline(line) + Box(chip) 2 변형. DS `Tab` 컴포넌트로 구현, 브랜드 색·치수는 data-brand="cashwalk-biz" 시 자동 cascade.
 
 ## rules
 
-- **Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tabs variant="line" size="pc" tone="neutral">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.
-- **Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tabs variant="chip" size="pc" tone="neutral">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).
-- 치수·색은 모두 캐포비 브랜드 토큰(`--nds-tabs-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand="cashwalk-biz"` 만 루트에 있으면 자동 적용된다.
+- **Underline(line)** = 페이지 메인 카테고리·목록 필터·단계 전환. 마크업: `<nds-tab variant="line" size="pc" tone="neutral">`. 텍스트 Subtitle1 16/24, Selected=Strong(#111) Bold + 하단 2px 검정 인디케이터, Default=Subtle(#666) Medium.
+- **Box(chip)** = 상태/좁은 영역 필터(진행중·진행예정·종료 등). 마크업: `<nds-tab variant="chip" size="pc" tone="neutral">`. radius 10, Selected=#111(bg-inverse) bg + 흰 텍스트 Bold, Default=#DDD(button-bg-disabled) bg + 흰 텍스트 Bold (의도된 저대비 — 가이드 명시).
+- 치수·색은 모두 캐포비 브랜드 토큰(`--nds-tab-*`)으로 cascade — 별도 style 오버라이드 금지. `data-brand="cashwalk-biz"` 만 루트에 있으면 자동 적용된다.
 - 동적 상태(진행/종료)는 Box, 페이지 카테고리는 Underline — 혼용 주의. 단계형 진행 표시는 Tab 이 아니라 `pattern:cashwalk-biz-step-progress`.
 - **Tab vs Filter — 역할이 다르다(혼동 금지).** 둘 다 데이터를 분류해 보여주지만: **Tab** = 데이터를 **상호 배타적으로 분류**(한 번에 한 view 만) → **view 자체가 바뀜** → URL **경로** 변경(`/quizzes/active → /quizzes/done`). 예: 진행중/종료/대기, 승인/반려. **Filter**(`pattern:` FilterBar) = **현재 view 안에서 조건을 점진적으로 좁히기** → 같은 view 에 **결과만 변함** → **쿼리 파라미터**로 누적(`?date=…&keyword=…`, URL 공유 시에도 필터 유지). 예: 날짜 범위·키워드·카테고리 다중.
 - **결정 트리** — Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**. Q2. 조건을 누적해서 좁히나(다중 필터)? → YES = **Filter(FilterBar)**. Q3. 옵션 2–7개 단일 선택인가? → YES = **Radio / SelectionButtonGroup**(`get_guide` Selection Components). 그 외 = 다른 컨트롤 검토.

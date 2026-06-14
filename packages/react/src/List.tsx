@@ -4,6 +4,8 @@ import React from "react";
 
 const LIST_CLASS = "nds-list";
 const LIST_ROOT_CLASS = `${LIST_CLASS}__root`;
+const LIST_HEADER_CLASS = `${LIST_CLASS}__header`;
+const LIST_FOOTER_CLASS = `${LIST_CLASS}__footer`;
 const LIST_ITEM_CLASS = `${LIST_CLASS}-item`;
 const LIST_ITEM_LEADING_CLASS = `${LIST_ITEM_CLASS}__leading`;
 const LIST_ITEM_BODY_CLASS = `${LIST_ITEM_CLASS}__body`;
@@ -20,6 +22,10 @@ export type ListItemSize = "sm" | "md" | "lg";
 export interface ListProps extends React.HTMLAttributes<HTMLUListElement> {
   /** 표시 변형 */
   variant?: ListVariant;
+  /** 리스트 상단 슬롯 (섹션 제목·필터 등). 리스트 아이템이 아닌 presentation 영역 */
+  header?: React.ReactNode;
+  /** 리스트 하단 슬롯 (더 보기 버튼·Pagination 등). 리스트 아이템이 아닌 presentation 영역 */
+  footer?: React.ReactNode;
   /** 자식은 ListItem들 */
   children: React.ReactNode;
 }
@@ -53,7 +59,14 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /* ─── Components ─── */
 
-export const List: React.FC<ListProps> = ({ variant = "plain", children, className, ...rest }) => (
+export const List: React.FC<ListProps> = ({
+  variant = "plain",
+  header,
+  footer,
+  children,
+  className,
+  ...rest
+}) => (
   <ul
     data-slot="root"
     data-variant={variant}
@@ -61,7 +74,17 @@ export const List: React.FC<ListProps> = ({ variant = "plain", children, classNa
     className={cx(LIST_ROOT_CLASS, className)}
     {...rest}
   >
+    {header !== undefined && (
+      <li data-slot="header" role="presentation" className={LIST_HEADER_CLASS}>
+        {header}
+      </li>
+    )}
     {children}
+    {footer !== undefined && (
+      <li data-slot="footer" role="presentation" className={LIST_FOOTER_CLASS}>
+        {footer}
+      </li>
+    )}
   </ul>
 );
 

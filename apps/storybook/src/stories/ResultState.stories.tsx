@@ -1,27 +1,27 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { EmptyState, Button, type EmptyStateProps } from "@nudge-design/react";
+import { ResultState, Button, type ResultStateProps } from "@nudge-design/react";
 import { colors } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
-const meta: Meta<EmptyStateProps> = {
-  title: "Components/Feedback/EmptyState",
-  component: EmptyState,
+const meta: Meta<ResultStateProps> = {
+  title: "Components/Feedback/ResultState",
+  component: ResultState,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
     docs: {
       description: {
-        component: getComponentDocsDescription("EmptyState"),
+        component: getComponentDocsDescription("ResultState"),
       },
     },
   },
 };
 
 export default meta;
-type Story = StoryObj<EmptyStateProps>;
+type Story = StoryObj<ResultStateProps>;
 
 function SearchEmptyIcon() {
   return (
@@ -57,7 +57,7 @@ export const Default: Story = {
   name: "State/Default",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState title="데이터가 없습니다" description="아직 등록된 내용이 없습니다." />
+      <ResultState title="데이터가 없습니다" description="아직 등록된 내용이 없습니다." />
     </div>
   ),
 };
@@ -66,7 +66,7 @@ export const SearchEmpty: Story = {
   name: "State/Search Empty",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState
+      <ResultState
         icon={<SearchEmptyIcon />}
         title="검색 결과가 없습니다"
         description="다른 검색어로 다시 시도해보세요."
@@ -80,7 +80,7 @@ export const WithAction: Story = {
   name: "State/With Action",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState
+      <ResultState
         icon={<ErrorIcon />}
         title="일시적인 오류가 발생했습니다"
         description={"잠시 후 다시 시도해주세요.\n문제가 계속되면 고객센터에 문의해주세요."}
@@ -98,7 +98,7 @@ export const ListEmpty: Story = {
   name: "State/List Empty WebView Style",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState title="리스트가 없습니다." minHeight={360} />
+      <ResultState title="리스트가 없습니다." minHeight={360} />
     </div>
   ),
 };
@@ -107,7 +107,7 @@ export const MinimalMessage: Story = {
   name: "State/Minimal Message Only",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState description="등록된 쿠폰이 없습니다." />
+      <ResultState description="등록된 쿠폰이 없습니다." />
     </div>
   ),
 };
@@ -118,7 +118,7 @@ export const StatusVariants: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
       <div style={{ width: 240 }}>
-        <EmptyState
+        <ResultState
           status="success"
           title="결제가 완료됐어요"
           description="이용 내역은 마이페이지에서 확인할 수 있어요."
@@ -126,7 +126,7 @@ export const StatusVariants: Story = {
         />
       </div>
       <div style={{ width: 240 }}>
-        <EmptyState
+        <ResultState
           status="error"
           title="페이지를 찾을 수 없어요"
           description="주소가 바뀌었거나 삭제된 페이지예요."
@@ -134,7 +134,7 @@ export const StatusVariants: Story = {
         />
       </div>
       <div style={{ width: 240 }}>
-        <EmptyState
+        <ResultState
           status="info"
           title="점검 중이에요"
           description="잠시 후 다시 이용해 주세요."
@@ -149,7 +149,7 @@ export const ResultPage: Story = {
   name: "State/Result Page (full-height)",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState
+      <ResultState
         status="success"
         minHeight="60vh"
         title="신청이 완료됐어요"
@@ -168,20 +168,20 @@ export const CompoundAPI: Story = {
   name: "Recipe/Compound API",
   render: () => (
     <div style={{ width: 360 }}>
-      <EmptyState.Root minHeight={300}>
-        <EmptyState.Icon>
+      <ResultState.Root minHeight={300}>
+        <ResultState.Icon>
           <img src="https://placehold.co/64x64/f5f5f5/999999?text=!" alt="empty" />
-        </EmptyState.Icon>
-        <EmptyState.Title>상담 내역이 없습니다</EmptyState.Title>
-        <EmptyState.Description>
+        </ResultState.Icon>
+        <ResultState.Title>상담 내역이 없습니다</ResultState.Title>
+        <ResultState.Description>
           첫 상담을 예약해보세요.
           <br />
           전문 상담사가 도와드립니다.
-        </EmptyState.Description>
-        <EmptyState.Action>
+        </ResultState.Description>
+        <ResultState.Action>
           <Button size="sm">상담 예약하기</Button>
-        </EmptyState.Action>
-      </EmptyState.Root>
+        </ResultState.Action>
+      </ResultState.Root>
     </div>
   ),
 };
@@ -205,7 +205,7 @@ export const FlatVsCompoundParity: Story = {
         <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
           기본 아이콘이 자동으로 렌더링됩니다.
         </p>
-        <EmptyState
+        <ResultState
           title="상담 내역이 없습니다"
           description={"첫 상담을 예약해보세요.\n전문 상담사가 도와드립니다."}
           action={<Button size="sm">상담 예약하기</Button>}
@@ -216,20 +216,20 @@ export const FlatVsCompoundParity: Story = {
         <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
           비교를 위해 동일한 기본 아이콘을 명시적으로 넣었습니다.
         </p>
-        <EmptyState.Root minHeight={200}>
-          <EmptyState.Icon>
+        <ResultState.Root minHeight={200}>
+          <ResultState.Icon>
             <DefaultEmptyIcon />
-          </EmptyState.Icon>
-          <EmptyState.Title>상담 내역이 없습니다</EmptyState.Title>
-          <EmptyState.Description>
+          </ResultState.Icon>
+          <ResultState.Title>상담 내역이 없습니다</ResultState.Title>
+          <ResultState.Description>
             첫 상담을 예약해보세요.
             {"\n"}
             전문 상담사가 도와드립니다.
-          </EmptyState.Description>
-          <EmptyState.Action>
+          </ResultState.Description>
+          <ResultState.Action>
             <Button size="sm">상담 예약하기</Button>
-          </EmptyState.Action>
-        </EmptyState.Root>
+          </ResultState.Action>
+        </ResultState.Root>
       </div>
     </div>
   ),
@@ -249,7 +249,7 @@ export const MultilineDescriptionReview: Story = {
         <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
           문자열의 줄바꿈이 자동으로 렌더링됩니다.
         </p>
-        <EmptyState
+        <ResultState
           title="일시적인 오류가 발생했습니다"
           description={"잠시 후 다시 시도해주세요.\n문제가 계속되면 고객센터에 문의해주세요."}
         />
@@ -261,17 +261,17 @@ export const MultilineDescriptionReview: Story = {
         <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
           비교를 위해 동일한 기본 아이콘과 줄바꿈 표현을 맞췄습니다.
         </p>
-        <EmptyState.Root>
-          <EmptyState.Icon>
+        <ResultState.Root>
+          <ResultState.Icon>
             <DefaultEmptyIcon />
-          </EmptyState.Icon>
-          <EmptyState.Title>일시적인 오류가 발생했습니다</EmptyState.Title>
-          <EmptyState.Description>
+          </ResultState.Icon>
+          <ResultState.Title>일시적인 오류가 발생했습니다</ResultState.Title>
+          <ResultState.Description>
             잠시 후 다시 시도해주세요.
             {"\n"}
             문제가 계속되면 고객센터에 문의해주세요.
-          </EmptyState.Description>
-        </EmptyState.Root>
+          </ResultState.Description>
+        </ResultState.Root>
       </div>
     </div>
   ),
@@ -293,7 +293,7 @@ export const AccessibilityStructureReview: Story = {
     >
       <div style={{ width: 360 }}>
         <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>Flat API</p>
-        <EmptyState
+        <ResultState
           title="상담 내역이 없습니다"
           description={"첫 상담을 예약해보세요.\n전문 상담사가 도와드립니다."}
           action={<Button size="sm">상담 예약하기</Button>}
@@ -301,20 +301,20 @@ export const AccessibilityStructureReview: Story = {
       </div>
       <div style={{ width: 360 }}>
         <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>Compound API</p>
-        <EmptyState.Root>
-          <EmptyState.Icon>
+        <ResultState.Root>
+          <ResultState.Icon>
             <DefaultEmptyIcon />
-          </EmptyState.Icon>
-          <EmptyState.Title>상담 내역이 없습니다</EmptyState.Title>
-          <EmptyState.Description>
+          </ResultState.Icon>
+          <ResultState.Title>상담 내역이 없습니다</ResultState.Title>
+          <ResultState.Description>
             첫 상담을 예약해보세요.
             {"\n"}
             전문 상담사가 도와드립니다.
-          </EmptyState.Description>
-          <EmptyState.Action>
+          </ResultState.Description>
+          <ResultState.Action>
             <Button size="sm">상담 예약하기</Button>
-          </EmptyState.Action>
-        </EmptyState.Root>
+          </ResultState.Action>
+        </ResultState.Root>
       </div>
     </div>
   ),
@@ -325,7 +325,7 @@ export const AccessibilityStructureReview: Story = {
     const compoundSection = canvas.getByText("Compound API").parentElement;
 
     if (!flatSection || !compoundSection) {
-      throw new Error("EmptyState accessibility review sections were not rendered.");
+      throw new Error("ResultState accessibility review sections were not rendered.");
     }
 
     const flat = within(flatSection);
@@ -356,7 +356,7 @@ export const ActionInteraction: Story = {
 
     return (
       <div style={{ width: 360 }}>
-        <EmptyState
+        <ResultState
           icon={<ErrorIcon />}
           title="일시적인 오류가 발생했습니다"
           description="잠시 후 다시 시도해주세요."

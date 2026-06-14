@@ -89,8 +89,9 @@ export const nudgeEapSemantic = {
       default: blue[500], // #2B96ED
       disabled: coolGray[400], // #9CA2AE
     },
-    // Outlined/Weak Neutral enabled 텍스트 — base 는 흰(거의 미사용).
-    neutral: neutral["00"], // #FFFFFF
+    // Outlined/Weak Neutral enabled 텍스트 — 흰/투명 배경 위 → 어두운 톤(가독성).
+    // (이전엔 neutral["00"]=#FFFFFF 로 흰배경+흰글자=안 보임 버그. 가이드 SSOT=#383838)
+    neutral: neutral[800], // #383838
     // Solid Neutral 텍스트 — cool-gray(#9CA2AE) fill 위 흰.
     neutralSolid: neutral["00"], // #FFFFFF
     // Outlined Neutral disabled 텍스트 — 기존 cv.textRole.muted (#999) 매핑 유지.

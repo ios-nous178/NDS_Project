@@ -1,7 +1,7 @@
 /**
  * <nds-selection-button-group> — DS SelectionButtonGroup 의 vanilla Web Component 버전.
  *
- * 폼 내 상호 배타적 옵션의 단일 선택. Tabs variant=segment(연결된 회색 트랙)과 달리
+ * 폼 내 상호 배타적 옵션의 단일 선택. Tab variant=segment(연결된 회색 트랙)과 달리
  * 브랜드색 아웃라인의 개별 버튼을 gap 으로 나열한다. FormField ContentSlot 에 교체.
  *
  * 사용 패턴 (JSON options):

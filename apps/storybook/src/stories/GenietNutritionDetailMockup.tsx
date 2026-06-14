@@ -1,7 +1,7 @@
 /**
  * [GENIET-NUTRITION-DETAIL] 지니어트 식품 영양 백과 상세 페이지 목업
  *
- * DS 컴포넌트: Button, Card, Badge, Chip, Tabs, ProgressBar, Avatar, Divider, Breadcrumb,
+ * DS 컴포넌트: Button, Card, Badge, Chip, Tab, ProgressBar, Avatar, Divider, Breadcrumb,
  *              StarRating, DataTable
  * Layout: MockupLayout (AppBar + AppFooter) — from mockup-layout
  * Inline SVG: ChefHatIcon, CartIcon, HelpIcon, FlameIcon, CheckMarkIcon — DS 아이콘에 없어 신규 생성
@@ -13,7 +13,7 @@ import {
   Card,
   Badge,
   Chip,
-  Tabs,
+  Tab,
   ProgressBar,
   Avatar,
   Divider,
@@ -398,7 +398,7 @@ export default function GenietNutritionDetailMockup() {
 
       {/* ═══ 3. 탭 영역 — 영양정보 / 효능·주의 / 비교 ═══ */}
       <Section noPadding>
-        <Tabs
+        <Tab
           items={[
             { key: "nutrition", title: "영양 정보" },
             { key: "benefits", title: "효능 · 주의사항" },

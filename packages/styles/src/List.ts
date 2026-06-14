@@ -11,6 +11,8 @@ import {
 
 const LIST_CLASS = "nds-list";
 const LIST_ROOT_CLASS = `${LIST_CLASS}__root`;
+const LIST_HEADER_CLASS = `${LIST_CLASS}__header`;
+const LIST_FOOTER_CLASS = `${LIST_CLASS}__footer`;
 const LIST_ITEM_CLASS = `${LIST_CLASS}-item`;
 const LIST_ITEM_LEADING_CLASS = `${LIST_ITEM_CLASS}__leading`;
 const LIST_ITEM_BODY_CLASS = `${LIST_ITEM_CLASS}__body`;
@@ -40,6 +42,38 @@ export const listStyles = `
 
   :where(.${LIST_ROOT_CLASS}[data-variant="card"] .${LIST_ITEM_CLASS} + .${LIST_ITEM_CLASS}),
   :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_ITEM_CLASS} + .${LIST_ITEM_CLASS}) {
+    border-top: 1px solid ${cv.borderRole.subtle};
+  }
+
+  /* ── header/footer 슬롯 (presentation li — 리스트 아이템 아님) ── */
+  :where(.${LIST_HEADER_CLASS}),
+  :where(.${LIST_FOOTER_CLASS}) {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--semantic-inset-input) var(--semantic-inset-card);
+  }
+
+  :where(.${LIST_HEADER_CLASS}) {
+    justify-content: space-between;
+    gap: var(--semantic-gap-comfortable);
+    font-size: ${typeScale.body3.fontSize}px;
+    line-height: ${typeScale.body3.lineHeight}px;
+    font-weight: ${fontWeight.bold};
+    color: ${cv.textRole.subtle};
+  }
+
+  /* footer 는 '더 보기' full-width 버튼·Pagination 을 담는다 — 자식이 폭을 결정 */
+  :where(.${LIST_FOOTER_CLASS}) {
+    justify-content: center;
+  }
+
+  /* card/divided 변형: header↔첫 아이템, 마지막 아이템↔footer 사이 구분선 */
+  :where(.${LIST_ROOT_CLASS}[data-variant="card"] .${LIST_HEADER_CLASS} + .${LIST_ITEM_CLASS}),
+  :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_HEADER_CLASS} + .${LIST_ITEM_CLASS}),
+  :where(.${LIST_ROOT_CLASS}[data-variant="card"] .${LIST_ITEM_CLASS} + .${LIST_FOOTER_CLASS}),
+  :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_ITEM_CLASS} + .${LIST_FOOTER_CLASS}) {
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 

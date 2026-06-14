@@ -166,7 +166,7 @@ const CATEGORIES = [
     title: "피드백 · 텔레메트리",
     blurb:
       "DS 사용 중 느낀 불편/요청을 기록한다. 누적된 피드백은 DS 고도화 루프(telemetry 파이프라인)로 흘러간다.",
-    tools: ["log_feedback"],
+    tools: ["log_feedback", "prompt_satisfaction"],
   },
 ];
 

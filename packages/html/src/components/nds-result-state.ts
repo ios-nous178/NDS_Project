@@ -1,14 +1,14 @@
 /**
- * <nds-empty-state> — DS EmptyState 의 vanilla Web Component 버전.
+ * <nds-result-state> — DS ResultState 의 vanilla Web Component 버전.
  *
  * Flat API:
- *   <nds-empty-state title="내역이 없어요" description="조건을 바꿔 다시 확인해 주세요"></nds-empty-state>
+ *   <nds-result-state title="내역이 없어요" description="조건을 바꿔 다시 확인해 주세요"></nds-result-state>
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
-const EMPTY_CLASS = "nds-empty-state";
+const EMPTY_CLASS = "nds-result-state";
 const EMPTY_ROOT_CLASS = `${EMPTY_CLASS}__root`;
 const EMPTY_ICON_CLASS = `${EMPTY_CLASS}__icon`;
 const EMPTY_TITLE_CLASS = `${EMPTY_CLASS}__title`;
@@ -17,11 +17,11 @@ const EMPTY_ACTION_CLASS = `${EMPTY_CLASS}__action`;
 
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby", "title"] as const;
 
-export class NdsEmptyState extends NdsElement {
-  static elementName = "nds-empty-state";
+export class NdsResultState extends NdsElement {
+  static elementName = "nds-result-state";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-empty-state"].observedAttributes, "action", "hide-icon", ...FORWARDED_ATTRS];
+    return [...COMPONENT_ATTRS["nds-result-state"].observedAttributes, "action", "hide-icon", ...FORWARDED_ATTRS];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -53,8 +53,8 @@ export class NdsEmptyState extends NdsElement {
     this._root.dataset.status = this._status();
 
     const minHeight = this._dimensionAttr("min-height");
-    if (minHeight === undefined) this._root.style.removeProperty("--nds-empty-state-min-height");
-    else this._root.style.setProperty("--nds-empty-state-min-height", minHeight);
+    if (minHeight === undefined) this._root.style.removeProperty("--nds-result-state-min-height");
+    else this._root.style.setProperty("--nds-result-state-min-height", minHeight);
 
     for (const name of FORWARDED_ATTRS) {
       const value = this.getAttribute(name);
@@ -76,10 +76,10 @@ export class NdsEmptyState extends NdsElement {
     }
   }
 
-  private _status(): EmptyStateStatus {
+  private _status(): ResultStateStatus {
     const raw = this.getAttribute("status");
     return raw && (STATUS_PATHS as Record<string, unknown>)[raw]
-      ? (raw as EmptyStateStatus)
+      ? (raw as ResultStateStatus)
       : "empty";
   }
 
@@ -132,14 +132,14 @@ export class NdsEmptyState extends NdsElement {
 
 /* ─── status 글리프 (react STATUS_ICONS 미러 · currentColor) ─── */
 
-type EmptyStateStatus = "empty" | "success" | "error" | "info";
+type ResultStateStatus = "empty" | "success" | "error" | "info";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 /** path 의 d, fill 여부, stroke-width, dasharray 를 선언적으로 표현 */
 type Shape = { tag: "circle" | "path"; attrs: Record<string, string> };
 
-const STATUS_PATHS: Record<EmptyStateStatus, Shape[]> = {
+const STATUS_PATHS: Record<ResultStateStatus, Shape[]> = {
   empty: [
     { tag: "circle", attrs: { cx: "32", cy: "32", r: "30", "stroke-width": "2", "stroke-dasharray": "4 4" } },
     { tag: "path", attrs: { d: "M22 32H42", "stroke-width": "2", "stroke-linecap": "round" } },
@@ -160,7 +160,7 @@ const STATUS_PATHS: Record<EmptyStateStatus, Shape[]> = {
   ],
 };
 
-function createStatusIcon(status: EmptyStateStatus): SVGSVGElement {
+function createStatusIcon(status: ResultStateStatus): SVGSVGElement {
   const svg = document.createElementNS(SVG_NS, "svg");
   svg.setAttribute("viewBox", "0 0 64 64");
   svg.setAttribute("fill", "none");
@@ -174,4 +174,4 @@ function createStatusIcon(status: EmptyStateStatus): SVGSVGElement {
   return svg;
 }
 
-define(NdsEmptyState);
+define(NdsResultState);

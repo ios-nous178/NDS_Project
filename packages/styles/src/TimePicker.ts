@@ -61,6 +61,9 @@ export const tpStyles = `
     box-sizing: border-box;
   }
 
+  :where(.${TP_FIELD_CLASS}:hover:not([data-open="true"]):not([data-error="true"]):not([data-disabled="true"])) {
+    border-color: ${cv.input.borderHover};
+  }
   :where(.${TP_FIELD_CLASS}[data-open="true"]) { border-color: ${cv.input.borderFocus}; }
   :where(.${TP_FIELD_CLASS}[data-error="true"]) { border-color: ${cv.input.borderError}; }
   :where(.${TP_FIELD_CLASS}[data-disabled="true"]) {
@@ -169,19 +172,24 @@ export const tpStyles = `
     align-items: center;
     justify-content: center;
     height: 28px;
+    margin-bottom: ${spacing[4]}px;
+    border-bottom: 1px solid ${cv.borderRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};
     color: ${cv.textRole.subtle};
   }
 
-  /* 시/분 스크롤 리스트 — 약 6칸 높이로 고정, 나머지는 스크롤 */
+  /* 시/분 스크롤 리스트 — 약 6칸 높이로 고정, 나머지는 스크롤. scroll-snap 으로 줄 정렬감. */
   :where(.${TP_COL_LIST_CLASS}) {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    max-height: 216px;
+    max-height: 252px;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y proximity;
+    scroll-padding: ${spacing[4]}px 0;
     /* 스크롤 기능은 유지하되 스크롤바 UI 는 숨김 (시/분 컬럼 시각 정돈) */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* 구 Edge/IE */
@@ -195,8 +203,9 @@ export const tpStyles = `
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    height: 34px;
+    height: 40px;
     min-width: 56px;
+    scroll-snap-align: center;
     border: none;
     background: transparent;
     border-radius: ${radius.sm}px;

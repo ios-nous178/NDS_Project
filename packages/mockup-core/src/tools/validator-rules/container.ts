@@ -214,5 +214,31 @@ export function collectContainerViolations(
             "모달/팝업의 두 버튼은 항상 가로 정렬을 유지하세요. 라벨이 길어 가로로 안 들어가면 세로 스택이 아니라 **라벨 텍스트를 축약**하는 방향으로(예: '비즈니스 그룹 만들기'→'그룹 만들기', '나중에 다시 하기'→'나중에'). flex-direction:column / actions-layout=\"stack\" 을 제거하고 캐포비 기본(우측 hug) 또는 split(가로 분할)을 쓰세요. get_guide({ topic: 'pattern:cta-group' }) 참조.",
         });
       });
+
+    // 모달 footer 버튼은 전부 pill — 보조(취소/아웃라인) 버튼에 shape="pill" 빠뜨려 각진 버튼이
+    //   섞이는 재발 차단 (modal.footerButtonShape="pill" 선언 브랜드만).
+    if (modalPolicy.footerButtonShape === "pill")
+      $("nds-modal").each((_i, el) => {
+        if (el.type !== "tag") return;
+        const $el = $(el);
+        const footerBtns = $el
+          .find('[slot="footer"] nds-button, nds-modal-footer nds-button')
+          .toArray();
+        const buttons = (footerBtns.length
+          ? footerBtns
+          : $el.find("nds-button").toArray()) as unknown as DomElement[];
+        buttons.forEach((btn) => {
+          if ((btn.attribs ?? {}).shape === "pill") return; // 이미 pill 이면 OK
+          const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
+          out.push({
+            rule: "brand-modal-footer-button-shape",
+            line: lineNumberAt(source, offset),
+            selector: describeElement(btn),
+            detail: '캐포비 모달 footer 버튼에 shape="pill" 이 없어 각진(default) 버튼이 됩니다.',
+            suggestion:
+              '캐포비(cashwalk-biz) 모달 버튼은 주·보조 모두 pill 입니다 — 모든 footer 버튼에 shape="pill" 을 명시하세요(예: <nds-button variant="outlined" shape="pill">취소</nds-button> + <nds-button color="neutral" variant="solid" shape="pill">확인</nds-button>). 보조 버튼에 빠뜨리면 pill+각진 버튼이 섞입니다. get_guide({ topic: \'component:Modal\', brand: \'cashwalk-biz\' }) 참조.',
+          });
+        });
+      });
   }
 }

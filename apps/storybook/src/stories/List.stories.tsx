@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { List, ListItem, Avatar, Badge, Toggle } from "@nudge-design/react";
+import { List, ListItem, Avatar, Badge, Toggle, Button } from "@nudge-design/react";
 import { ChevronRightIcon } from "@nudge-design/icons";
 import { getComponentDocsDescription } from "../componentDocs";
 
@@ -151,6 +151,37 @@ function DividedExample() {
     </div>
   );
 }
+
+function HeaderFooterExample() {
+  return (
+    <div style={{ width: 360 }}>
+      <List
+        variant="divided"
+        header={
+          <>
+            <span>공지사항</span>
+            <span style={{ color: "var(--semantic-text-muted-default)" }}>전체 12</span>
+          </>
+        }
+        footer={
+          <Button fullWidth variant="outlined" size="sm">
+            더 보기 (전체 12)
+          </Button>
+        }
+      >
+        <ListItem title="6월 정기 점검 안내" trailing={<Chevron />} onSelect={() => {}} />
+        <ListItem title="개인정보 처리방침 개정 안내" trailing={<Chevron />} onSelect={() => {}} />
+        <ListItem title="신규 상담사 합류 소식" trailing={<Chevron />} onSelect={() => {}} />
+      </List>
+    </div>
+  );
+}
+
+export const HeaderFooter: Story = {
+  tags: ["gallery"],
+  name: "Recipe/header·footer 슬롯 (제목 + 더보기)",
+  render: () => <HeaderFooterExample />,
+};
 
 export const CardWithAvatars: Story = {
   tags: ["gallery"],

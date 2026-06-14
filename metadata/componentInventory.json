@@ -94,12 +94,12 @@
     "notes": "HomePage SearchInput, WebView EapHomeSearchBox 패턴을 통합한 컴포넌트입니다."
   },
   {
-    "name": "Tabs",
+    "name": "Tab",
     "category": "내비게이션",
     "status": "implemented",
     "description": "동일 계층 콘텐츠 전환용 탭 컴포넌트. Line · Chip · Segment 3가지 유형과 Neutral/Color 톤, Mobile/PC 사이즈를 지원합니다.",
-    "storybookTitle": "Components/Navigation/Tabs",
-    "docsPath": "/components/tabs",
+    "storybookTitle": "Components/Navigation/Tab",
+    "docsPath": "/components/tab",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9902",
     "figmaNodeId": "171:9902",
     "figmaSynced": true,
@@ -172,16 +172,16 @@
     "notes": "액션(되돌리기/다시시도)·닫기·브랜드 카드가 필요하면 Snackbar 사용 — Toast 는 자동 사라짐 전용이라 action API 가 없다."
   },
   {
-    "name": "EmptyState",
+    "name": "ResultState",
     "category": "피드백",
     "status": "implemented",
-    "description": "빈 상태 화면. 아이콘, 제목, 설명, 액션 슬롯을 지원하는 빈 콘텐츠 표시 컴포넌트",
-    "storybookTitle": "Components/Feedback/EmptyState",
-    "docsPath": "/components/empty-state",
+    "description": "빈 상태(empty) + 결과 화면(성공·에러·정보)을 한 anatomy 로 표시. 아이콘·제목·설명·액션 슬롯과 status(empty/success/error/info)를 지원하는 상태 표시 컴포넌트",
+    "storybookTitle": "Components/Feedback/ResultState",
+    "docsPath": "/components/result-state",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "빈 리스트, 검색 결과 없음, 에러 상태, 첫 사용 안내",
-    "notes": "HomePage EmptyContent, WebView NoneEmpty/NoneList/NoneError 패턴을 통합한 컴포넌트입니다."
+    "usageSummary": "빈 리스트, 검색 결과 없음, 결제 성공·404·권한 없음 결과 화면, 첫 사용 안내",
+    "notes": "HomePage EmptyContent, WebView NoneEmpty/NoneList/NoneError 패턴 통합 + status 변형으로 결과 화면까지 일반화한 컴포넌트입니다."
   },
   {
     "name": "Card",

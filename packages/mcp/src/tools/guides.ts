@@ -1410,6 +1410,8 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] 목업에 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황이 visible 하게 포함됨. 풋터 뱃지는 \`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태를 기본으로 하되, MCP/package 버전까지 함께 보이게 한다. 주석만으로는 부족.
 - [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
 - [ ] 최종 응답에 Google Sheets POST 상태를 명시함: \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\`.
+- [ ] **품질/검증 결과는 분석적으로 제시 — "종합 N점" 한 줄 요약 금지.** \`build_singlefile_html\`/\`validate_html_mockup\` 의 \`scoreGate.scoreCard\` 와 \`score_mockup_quality\` 의 \`card\` 를 **항목별 점수 + 각 항목의 감점 사유("→")까지 그대로** 보여준다(낮은 항목·사유 발췌·생략 금지). **첫 목업 생성과 피드백 후 재생성 모두** 동일 형식으로. 점수만 던지지 말고 "어디서 왜 깎였는지"를 사용자가 보게 할 것.
+- [ ] **만족도(👍/👎)는 객관 점수의 짝 — 결과를 보여준 "다음"에 묻는다.** 흐름: \`build_singlefile_html\` 결과(점수·\`dist/index.html\` 경로)를 사용자에게 **먼저 보여준 뒤**, **깨끗한 빌드(DS 에러 0)** 면 이어서 \`prompt_satisfaction({ screen, scoreOverall, brand })\` 를 호출한다 → 사용자에게 👍/👎 **클릭 다이얼로그**가 뜨고(빌드는 이미 끝나 안 막힘), 클릭하면 객관 점수와 함께 자동 기록된다. **화면당 세션 1회만**(같은 화면 재빌드해도 다시 호출 X), 에러 있는 중간 빌드엔 호출 X. 결과 \`supported:false\`(호스트 미지원)면 \`satisfactionOffer.prompt\` 텍스트로 안내하고, 사용자가 **명시적으로** 👍/👎(또는 '좋다'/'별로') 말하면 \`log_feedback({ category:'satisfaction', sentiment, scoreOverall })\` 로 기록(모호 반응 추측·자동 감정분석 금지). AI 가 텍스트로 "어떠세요?"라고 캐묻지 말 것 — 다이얼로그(또는 satisfactionOffer 안내)가 그 역할.
 - [ ] 최종 응답에 간격 점검 결과, 텍스트 기호 아이콘 잔존 여부, 요청 범위 누락 항목을 명시함.
 - [ ] 최종 응답에 산출물 full 절대경로를 포함함 (상대경로 \`dist/index.html\` 만으로 끝내지 않음).
 - [ ] 가이드 호출은 단계별로만 — 시작 시점에 12개씩 병렬 fetch 하지 않음.
@@ -1463,7 +1465,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## 작업 원칙
 
 - 백오피스는 정보 밀도가 높고 스캔하기 쉬운 레이아웃이 우선. 마케팅/장식 톤 금지.
-- antd 컴포넌트를 직접 만들지 말고 그대로 사용 (\`Button\`, \`Form\`, \`Input\`, \`Select\`, \`DatePicker\`, \`Table\`, \`Modal\`, \`Tabs\`, \`Tag\`, \`Space\`, \`Card\`, \`Pagination\`).
+- antd 컴포넌트를 직접 만들지 말고 그대로 사용 (\`Button\`, \`Form\`, \`Input\`, \`Select\`, \`DatePicker\`, \`Table\`, \`Modal\`, \`Tab\`, \`Tag\`, \`Space\`, \`Card\`, \`Pagination\`).
 - 색/타이포/외형은 antd 기본값 유지. \`ConfigProvider\` 토큰은 색·폰트·라디우스 정도만.
 
 ## 시각 컨벤션 (NudgeEAPCMS 기반)
@@ -1576,8 +1578,9 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - 사용자가 "DS 컴포넌트를 고쳐줘 / 레포에 푸시해줘 / PR 만들어줘" 같이 요청하면, **이 프로젝트의 역할이 아님을 알리고 DS 레포에서 직접 작업하라고 안내**할 것.
 - 이 프로젝트는 DS를 '소비'하는 쪽이고, DS 레포는 별도로 관리된다.
 
-## 분기 (먼저 확인)
+## 분기 (먼저 확인) — ★ 하드스톱
 
+- **운영자 키워드(어드민/admin/백오피스/CMS/운영툴/관리자)가 보이면 코드 작성 전 작업 중단 + 첫 응답에서 반드시 질문.** 키워드만으로 admin/backoffice 를 **추측하지 말 것** — "어드민"이라고 적혀 있어도 사내 백오피스인지 외부 제공 b2b 어드민인지 사람만 안다(둘은 워크플로우·DS·antd 사용 여부가 통째로 다름). *"운영자 화면으로 보입니다. ① 사내 백오피스인가요, ② 외부에 제공하는 b2b 어드민 서비스인가요?"* 라고 묻고 **확답 전엔 진행 금지.** 추측해서 만들었다가 영역이 틀리면 처음부터 다시 만들어야 한다(실제 회귀). 확답 후:
 - **운영자 화면(어드민/CMS/운영툴/백오피스)이라면 이 CLAUDE.md를 따르지 말 것.** 영역을 추측하지 말고 사용자에게 확답을 받은 뒤 분기:
   - **사내 백오피스** → \`get_setup({ step: "claude-md", intent: "backoffice" })\` 로 다시 호출. antd v5 를 사용하고 \`get_guide({ topic: "backoffice" })\` 로 컨벤션 확인.
   - **외부 제공(b2b) 어드민 서비스** → ${DS_ADMIN_BRANDS.join(" / ")} 만 지원(하드게이트). \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` 로 다시 호출하면 DS(html) 워크플로우로 우회. 그 외 브랜드는 미지원 — 백오피스로 진행하거나 DS 팀에 편입 요청.
@@ -1600,6 +1603,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
 
+- [ ] 운영자 키워드(어드민/admin/백오피스/CMS/운영툴)가 있었으면 **사내 백오피스 vs 외부 b2b 어드민**을 사용자에게 물어 확답받았다(추측 금지).
 - [ ] 워크스페이스 루트에 \`references.md\` (또는 \`.references/\` 폴더) 가 존재하고, 정답 1장 + 오답 1장 이상의 시각 기준이 캡션과 함께 적혀 있다.
 - [ ] 새 목업 요청에서 같은 기획으로 보이는 기존 작업폴더가 명백히 보이면 v2 생성 여부를 물었고, 답변 전 기존 폴더를 수정하지 않았다.
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.

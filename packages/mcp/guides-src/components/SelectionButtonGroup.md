@@ -8,7 +8,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-
 
 ## pitfalls
 
-- Tabs variant='segment' 와 혼동 — segment 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.
+- Tab variant='segment' 와 혼동 — segment 는 연결된 회색 트랙(뷰/상태 전환), SelectionButtonGroup 은 폼 입력(개별 브랜드색 버튼). 폼 안 단일선택이면 이 컴포넌트.
 - 옵션 4개 이상 — 가로 폭 부족. Select 또는 SelectionCard 사용.
 - 라벨+설명+아이콘이 필요한 카드형 선택 — SelectionCard 가 적합.
 - 선택색을 hex 로 박지 말 것 — selected 는 --semantic-bg-brand-subtle / --semantic-border-brand-default 캐스케이드로 5개 브랜드 자동 대응.
@@ -25,6 +25,6 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3555-
 ## examplesHtml.dont
 
 ```html
-<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. Tabs variant=segment 사용 -->
+<!-- 뷰 전환에 SelectionButtonGroup — 폼 입력 컴포넌트라 위계가 어색. Tab variant=segment 사용 -->
 <nds-selection-button-group options='[{"value":"list","label":"목록"},{"value":"grid","label":"그리드"}]'></nds-selection-button-group>
 ```

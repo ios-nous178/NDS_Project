@@ -906,8 +906,13 @@ export function ensureCssMinifyDisabled(source: string): string {
   return source.slice(0, closeBraceIdx) + insertion + source.slice(closeBraceIdx);
 }
 
-function getHtmlUsageBadgeSummary(cwd: string, source: string): string {
-  const counts = countHtmlUsage(source);
+function getHtmlUsageBadgeSummary(
+  cwd: string,
+  source: string,
+  precomputed?: ReturnType<typeof countHtmlUsage>,
+): string {
+  // precomputed 가 있으면 재집계 생략 — injectHtmlUsageSummary 가 같은 html 을 두 번 세던 것 방지.
+  const counts = precomputed ?? countHtmlUsage(source);
   const version = detectDsVersions(cwd).primary ?? "unknown";
   return `DS@${version} · DS ${counts.ndsTags.total} (${counts.dsRatio}%)`;
 }
@@ -945,7 +950,7 @@ export function injectHtmlUsageSummary(cwd: string, outputPath: string): string 
   try {
     const html = fs.readFileSync(outputPath, "utf-8");
     const counts = countHtmlUsage(html);
-    const badgeSummary = getHtmlUsageBadgeSummary(cwd, html);
+    const badgeSummary = getHtmlUsageBadgeSummary(cwd, html, counts);
     const commentSummary =
       `Nudge DS usage: ${badgeSummary} · ` +
       `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total}`;

@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { NdsInput } from "../src/components/nds-input.js";
 import { NdsModal } from "../src/components/nds-modal.js";
 import { NdsSelect, NdsSelectOption } from "../src/components/nds-select.js";
-import { NdsTabs, NdsTabsList, NdsTabsPanel, NdsTabsTrigger } from "../src/components/nds-tabs.js";
+import { NdsTab, NdsTabList, NdsTabPanel, NdsTabTrigger } from "../src/components/nds-tab.js";
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 const twice = async () => {
@@ -104,54 +104,54 @@ describe("nds-input", () => {
   });
 });
 
-describe("nds-tabs", () => {
+describe("nds-tab", () => {
   it("registers all four sub-elements", () => {
-    expect(customElements.get("nds-tabs")).toBe(NdsTabs);
-    expect(customElements.get("nds-tabs-list")).toBe(NdsTabsList);
-    expect(customElements.get("nds-tabs-trigger")).toBe(NdsTabsTrigger);
-    expect(customElements.get("nds-tabs-panel")).toBe(NdsTabsPanel);
+    expect(customElements.get("nds-tab")).toBe(NdsTab);
+    expect(customElements.get("nds-tab-list")).toBe(NdsTabList);
+    expect(customElements.get("nds-tab-trigger")).toBe(NdsTabTrigger);
+    expect(customElements.get("nds-tab-panel")).toBe(NdsTabPanel);
   });
 
   it("marks active trigger + hides non-active panel", async () => {
     document.body.innerHTML = `
-      <nds-tabs active-key="b" variant="line">
-        <nds-tabs-list>
-          <nds-tabs-trigger key="a">A</nds-tabs-trigger>
-          <nds-tabs-trigger key="b">B</nds-tabs-trigger>
-        </nds-tabs-list>
-        <nds-tabs-panel key="a">aaa</nds-tabs-panel>
-        <nds-tabs-panel key="b">bbb</nds-tabs-panel>
-      </nds-tabs>
+      <nds-tab active-key="b" variant="line">
+        <nds-tab-list>
+          <nds-tab-trigger key="a">A</nds-tab-trigger>
+          <nds-tab-trigger key="b">B</nds-tab-trigger>
+        </nds-tab-list>
+        <nds-tab-panel key="a">aaa</nds-tab-panel>
+        <nds-tab-panel key="b">bbb</nds-tab-panel>
+      </nds-tab>
     `;
     await twice();
 
-    const a = document.querySelector('nds-tabs-trigger[key="a"]')!;
-    const b = document.querySelector('nds-tabs-trigger[key="b"]')!;
+    const a = document.querySelector('nds-tab-trigger[key="a"]')!;
+    const b = document.querySelector('nds-tab-trigger[key="b"]')!;
     expect((a.querySelector("li") as HTMLLIElement).dataset.active).toBe("false");
     expect((b.querySelector("li") as HTMLLIElement).dataset.active).toBe("true");
 
-    const aPanel = document.querySelector('nds-tabs-panel[key="a"]')!;
-    const bPanel = document.querySelector('nds-tabs-panel[key="b"]')!;
+    const aPanel = document.querySelector('nds-tab-panel[key="a"]')!;
+    const bPanel = document.querySelector('nds-tab-panel[key="b"]')!;
     expect((aPanel.querySelector("div") as HTMLDivElement).dataset.hidden).toBe("true");
     expect((bPanel.querySelector("div") as HTMLDivElement).dataset.hidden).toBe("false");
   });
 
   it("trigger click changes active-key + dispatches tabs-change", async () => {
     document.body.innerHTML = `
-      <nds-tabs active-key="a">
-        <nds-tabs-list>
-          <nds-tabs-trigger key="a">A</nds-tabs-trigger>
-          <nds-tabs-trigger key="b">B</nds-tabs-trigger>
-        </nds-tabs-list>
-      </nds-tabs>
+      <nds-tab active-key="a">
+        <nds-tab-list>
+          <nds-tab-trigger key="a">A</nds-tab-trigger>
+          <nds-tab-trigger key="b">B</nds-tab-trigger>
+        </nds-tab-list>
+      </nds-tab>
     `;
     await twice();
 
-    const tabs = document.querySelector("nds-tabs")!;
+    const tabs = document.querySelector("nds-tab")!;
     let event: CustomEvent<{ activeKey: string }> | null = null;
     tabs.addEventListener("tabs-change", (e) => (event = e as CustomEvent));
 
-    const triggerB = document.querySelector('nds-tabs-trigger[key="b"] li') as HTMLLIElement;
+    const triggerB = document.querySelector('nds-tab-trigger[key="b"] li') as HTMLLIElement;
     triggerB.click();
     await twice();
 
@@ -165,17 +165,17 @@ describe("nds-tabs", () => {
     // 이전엔 클릭 리스너를 inner li 에 달아둬서 재mount 가드 때문에 다시 안 달려 무반응이었음.
     // 이제 host element 자체에 달아서 light DOM bubble 로 잡힌다.
     document.body.innerHTML = `
-      <nds-tabs active-key="a">
-        <nds-tabs-list>
-          <nds-tabs-trigger key="a">A</nds-tabs-trigger>
-          <nds-tabs-trigger key="b">B</nds-tabs-trigger>
-        </nds-tabs-list>
-      </nds-tabs>
+      <nds-tab active-key="a">
+        <nds-tab-list>
+          <nds-tab-trigger key="a">A</nds-tab-trigger>
+          <nds-tab-trigger key="b">B</nds-tab-trigger>
+        </nds-tab-list>
+      </nds-tab>
     `;
     await twice();
 
-    const tabs = document.querySelector("nds-tabs")!;
-    const triggerBHost = document.querySelector('nds-tabs-trigger[key="b"]') as HTMLElement;
+    const tabs = document.querySelector("nds-tab")!;
+    const triggerBHost = document.querySelector('nds-tab-trigger[key="b"]') as HTMLElement;
     triggerBHost.click();
     await twice();
 

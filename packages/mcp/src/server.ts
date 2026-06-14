@@ -34,6 +34,7 @@ export { validateMockupSource } from "./tools/mockup-validator.js";
 import {
   configureHtmlValidator,
   validateHtmlMockup,
+  deductionsByDimension,
 } from "@nudge-design/mockup-core/tools/html-validator";
 export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validator";
 // 품질 점수 SSOT(데스크톱 하네스와 공유) — D2 정성 채점 + verdict/포맷.
@@ -707,6 +708,18 @@ function extractCodeScores(
   return { overall: scores.overall, dimensions };
 }
 
+/** 결과(또는 .validation)의 violations[] → 차원별 감점 사유. 분석 카드의 "→" 줄 소스. */
+function extractCodeDeductions(result: unknown): Record<string, string[]> {
+  if (!result || typeof result !== "object") return {};
+  const r = result as Record<string, unknown>;
+  const v = (r.validation && typeof r.validation === "object" ? r.validation : r) as Record<
+    string,
+    unknown
+  >;
+  const violations = Array.isArray(v.violations) ? v.violations : [];
+  return deductionsByDimension(violations as never) as Record<string, string[]>;
+}
+
 /**
  * validate/build 응답에 score 게이트 + **풀 스코어카드**를 부착한다.
  * 데스크톱 design-score 카드와 같은 임계값/verdict 규칙(gradeQuality SSOT)을 쓰고,
@@ -714,11 +727,24 @@ function extractCodeScores(
  * 회고: 에이전트가 좋은 차원 5개만 발췌하고 낮은 icon 차원을 빼서 "왜 81?" 이 안 보였음.
  * mustSurface 로 카드를 발췌 없이 그대로 노출하게 강제. 정성(D2)은 score_mockup_quality.
  */
+// 만족도 다이얼로그를 이미 띄운 화면(=세션 내 1회 제한). MCP 서버 프로세스 수명 = 세션.
+const ELICITED_SCREENS = new Set<string>();
+
+// 객관 점수 옆 주관 만족도(👍/👎) 수집 안내 — build/validate 결과에 동봉. 질문이 아니라 '안내'다.
+// 동기 부여(기록하면 다음 목업이 더 좋아짐)를 붙여 자발적 평가를 유도하되, 강요하지 않는다.
+const SATISFACTION_OFFER = {
+  prompt:
+    "수정이 더 필요하면 그냥 말씀해 주세요. 이 결과가 괜찮으면 👍 / 아쉬우면 👎 를 한 줄 남겨 주시면 — 객관 품질 점수와 함께 쌓여서 다음 목업이 점점 더 정확해집니다.",
+  howToLog:
+    "권장: 이 결과(점수·파일경로)를 사용자에게 보여준 뒤, 깨끗한 빌드면 prompt_satisfaction({ screen, scoreOverall }) 를 호출해 👍/👎 클릭 다이얼로그를 띄운다(화면당 1회·빌드 안 막힘). 호스트가 미지원(supported:false)이거나 사용자가 그냥 '좋다/별로'로 말하면 log_feedback({ category:'satisfaction', sentiment, scoreOverall }) 로 기록. AI 가 텍스트로 먼저 캐묻지 말 것 · 모호 반응 추측 금지.",
+};
+
 function attachScoreGate<T>(result: T): T {
   const codeScores = extractCodeScores(result);
   if (codeScores == null) return result;
   const card = formatScoreCard({
     codeScores,
+    codeDeductions: extractCodeDeductions(result),
     llm: { ok: false, error: "미채점 — 정성(D2)까지 보려면 score_mockup_quality 호출" },
   });
   const grade = card.grade;
@@ -731,12 +757,12 @@ function attachScoreGate<T>(result: T): T {
     thresholds: SCORE_THRESHOLDS,
     scoreCard: card.text,
     mustSurface:
-      "이 scoreCard 를 사용자에게 그대로 보여주세요 — D1 6개 차원(color/typography/spacing/layout/component/icon)을 빠짐없이. 점수가 낮은 차원을 발췌·생략하지 말 것(특히 icon).",
+      "이 scoreCard 를 사용자에게 **그대로(항목별 점수 + '→' 감점 사유 포함)** 보여주세요 — '종합 N점' 한 줄로 요약하지 말 것. D1 6개 차원(color/typography/spacing/layout/component/icon)을 빠짐없이, 점수 낮은 차원·감점 사유를 발췌·생략하지 말 것(특히 icon). 첫 생성·재생성 모두 동일하게.",
     guidance: gateGuidance(grade.verdict),
     note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
   };
   if (result && typeof result === "object" && !Array.isArray(result)) {
-    return { ...(result as Record<string, unknown>), scoreGate } as T;
+    return { ...(result as Record<string, unknown>), scoreGate, satisfactionOffer: SATISFACTION_OFFER } as T;
   }
   return result;
 }
@@ -922,13 +948,72 @@ export const toolHandlers = {
   // 핸들러는 ack 만 반환 — 실제 수집은 afterCall → captureTelemetry → projectFeedback 가 처리.
   log_feedback: (args: ToolArgs) => {
     const text = typeof args.text === "string" ? args.text.trim() : "";
-    if (!text) return { ok: false, error: "text 가 비어 있습니다." };
+    const sentiment = args.sentiment === "up" || args.sentiment === "down" ? args.sentiment : null;
+    // 만족도(👍/👎)만 있고 text 가 없어도 허용 — sentiment 자체가 신호. 둘 다 없으면 거절.
+    if (!text && !sentiment) return { ok: false, error: "text 또는 sentiment 중 하나는 필요합니다." };
     return {
       ok: true,
       logged: true,
-      category: (args.category as string) ?? null,
-      message: "피드백이 기록되었습니다.",
+      category: (args.category as string) ?? (sentiment ? "satisfaction" : null),
+      sentiment,
+      message: sentiment ? "만족도가 기록되었습니다." : "피드백이 기록되었습니다.",
     };
+  },
+  // 목업 만족도(👍/👎)를 클릭 다이얼로그(elicitation)로 물어 기록한다. 빌드와 분리된 별도 도구 —
+  // 빌드 결과를 먼저 보여준 뒤 호출하면 다이얼로그가 그 다음에 떠 "보고 나서 평가"가 된다.
+  // 화면당 세션 1회만(중복 호출 가드). 미지원 호스트는 supported:false 로 텍스트 폴백.
+  prompt_satisfaction: async (args: ToolArgs) => {
+    const screen = typeof args.screen === "string" && args.screen ? args.screen : "(목업)";
+    const scoreOverall = typeof args.scoreOverall === "number" ? args.scoreOverall : null;
+    const brand = typeof args.brand === "string" ? args.brand : undefined;
+
+    if (!server.getClientCapabilities()?.elicitation) {
+      return {
+        ok: true,
+        supported: false,
+        recorded: false,
+        message:
+          "이 호스트는 클릭 다이얼로그(elicitation)를 지원하지 않습니다. satisfactionOffer 텍스트로 안내하고, 사용자가 평가하면 log_feedback({ category:'satisfaction', sentiment }) 로 기록하세요.",
+      };
+    }
+    if (ELICITED_SCREENS.has(screen)) {
+      return { ok: true, recorded: false, alreadyAsked: true, message: "이 화면은 세션 내 이미 만족도를 물었습니다." };
+    }
+    ELICITED_SCREENS.add(screen);
+
+    const scoreLabel = scoreOverall != null ? `품질 ${scoreOverall}점 · ` : "";
+    let res: Awaited<ReturnType<typeof server.elicitInput>>;
+    try {
+      res = await server.elicitInput({
+        mode: "form",
+        message: `${scoreLabel}${screen} — 결과 확인하셨나요? 이 목업 어떠셨어요? (평가는 선택이에요. 안 하시려면 닫기/취소)`,
+        requestedSchema: {
+          type: "object",
+          properties: {
+            sentiment: {
+              type: "string",
+              enum: ["up", "down"],
+              enumNames: ["👍 좋아요", "👎 아쉬워요"],
+              title: "만족도",
+              description: "이 목업 결과에 대한 만족도",
+            },
+          },
+          required: ["sentiment"],
+        },
+      });
+    } catch (e) {
+      return { ok: false, recorded: false, error: `elicitation 실패: ${(e as Error).message}` };
+    }
+
+    const sentiment =
+      res.action === "accept" && (res.content?.sentiment === "up" || res.content?.sentiment === "down")
+        ? (res.content.sentiment as "up" | "down")
+        : undefined;
+    if (!sentiment) {
+      return { ok: true, recorded: false, action: res.action, message: "만족도 스킵됨." };
+    }
+    // recorded:true + sentiment → afterCall captureTelemetry 가 feedback 이벤트로 적재(객관점수 페어링).
+    return { ok: true, recorded: true, sentiment, scoreOverall, screen, ...(brand ? { brand } : {}) };
   },
   get_guide: (args: ToolArgs) =>
     withVisualReferencePrompt(
@@ -1126,11 +1211,13 @@ export const toolHandlers = {
     }
     if (!html) return { ok: false, error: "html 또는 filePath 중 하나가 필요합니다." };
 
-    // D1 코드 점수 — 정적 검증으로 차원별 점수를 뽑아 데스크톱 D3 카드와 동일 구성으로 합친다.
+    // D1 코드 점수 — 정적 검증으로 차원별 점수 + 감점 사유를 뽑아 분석 카드에 싣는다.
     let codeScores: { overall: number; dimensions: Record<string, number> } | null = null;
+    let codeDeductions: Record<string, string[]> = {};
     try {
       const v = validateHtmlMockup({ source: html, cwd: typed.cwd });
       codeScores = v.scores ?? null;
+      codeDeductions = deductionsByDimension(v.violations ?? []) as Record<string, string[]>;
     } catch {
       /* D1 실패해도 D2 는 진행 */
     }
@@ -1153,7 +1240,7 @@ export const toolHandlers = {
       });
     }
 
-    const { text, grade } = formatScoreCard({ codeScores, llm });
+    const { text, grade } = formatScoreCard({ codeScores, codeDeductions, llm });
     // observability 적재는 afterCall 단일 choke-point 로 이관됨.
     return {
       ok: true,

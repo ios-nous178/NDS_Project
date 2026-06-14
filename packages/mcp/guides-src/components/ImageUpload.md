@@ -67,6 +67,11 @@ usagePolicy:
 ## examplesHtml.dont
 
 ```html
-<!-- auto-preview 없이 state 를 그대로 두면 upload 끝나도 미리보기 안 뜸 -->
+<!-- ① auto-preview 없이 state 를 그대로 두면 upload 끝나도 미리보기 안 뜸 -->
 <nds-image-upload state="empty"></nds-image-upload>  <!-- file-select 만 듣고 image-url/state 미갱신 → 영영 empty -->
+
+<!-- ② 사진 첨부를 버튼+숨김 input 으로 직접 조립 — 미리보기/사이즈안내/상태를 다시 짜야 한다.
+     → nds-image-upload(auto-preview) 한 줄로 끝. 직접 만들지 말 것 -->
+<button onclick="document.querySelector('#file').click()">사진 첨부</button>
+<input id="file" type="file" hidden>
 ```

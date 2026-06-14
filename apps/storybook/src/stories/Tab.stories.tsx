@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Tabs, type TabsProps } from "@nudge-design/react";
+import { Tab, type TabProps } from "@nudge-design/react";
 import { colors } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
-const meta: Meta<TabsProps> = {
-  title: "Components/Navigation/Tabs",
-  component: Tabs,
+const meta: Meta<TabProps> = {
+  title: "Components/Navigation/Tab",
+  component: Tab,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
     docs: {
       description: {
-        component: getComponentDocsDescription("Tabs"),
+        component: getComponentDocsDescription("Tab"),
       },
     },
   },
@@ -36,7 +36,7 @@ const meta: Meta<TabsProps> = {
 };
 
 export default meta;
-type Story = StoryObj<TabsProps>;
+type Story = StoryObj<TabProps>;
 
 const mobileFrame: React.CSSProperties = { width: 390 };
 const pcFrame: React.CSSProperties = { width: 720 };
@@ -108,49 +108,58 @@ function PlatformLabel({ text }: { text: string }) {
  * Gallery preview — 카탈로그 카드용 컴팩트 프리뷰
  * ════════════════════════════════════════════ */
 
-function GalleryPreviewDemo() {
-  const [lineKey, setLineKey] = useState("home");
-  const [chipKey, setChipKey] = useState("all");
-  const [segmentKey, setSegmentKey] = useState("week");
+// 카탈로그(AllComponents)는 gallery 변형이 2개↑일 때 각 프리뷰 위에 storyName 을 라벨로
+// 단다. variant 별로 스토리를 나눠 "어떤 variant 인지"를 카드에서 바로 읽히게 한다.
+function GalleryLineDemo() {
+  const [key, setKey] = useState("home");
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "var(--semantic-gap-comfortable)",
-        width: 300,
-      }}
-    >
-      <Tabs
+    <div style={{ width: 280 }}>
+      <Tab
         variant="line"
         size="pc"
         tone="neutral"
-        activeKey={lineKey}
-        onTabChange={setLineKey}
+        activeKey={key}
+        onTabChange={setKey}
         items={[
           { key: "home", title: "홈" },
           { key: "list", title: "목록" },
           { key: "info", title: "정보" },
         ]}
       />
-      <Tabs
+    </div>
+  );
+}
+
+function GalleryChipDemo() {
+  const [key, setKey] = useState("all");
+  return (
+    <div style={{ width: 280 }}>
+      <Tab
         variant="chip"
         size="mobile"
         tone="color"
         fullWidth={false}
-        activeKey={chipKey}
-        onTabChange={setChipKey}
+        activeKey={key}
+        onTabChange={setKey}
         items={[
           { key: "all", title: "전체" },
           { key: "recent", title: "최근" },
           { key: "saved", title: "저장됨" },
         ]}
       />
-      <Tabs
+    </div>
+  );
+}
+
+function GallerySegmentDemo() {
+  const [key, setKey] = useState("week");
+  return (
+    <div style={{ width: 280 }}>
+      <Tab
         variant="segment"
         size="mobile"
-        activeKey={segmentKey}
-        onTabChange={setSegmentKey}
+        activeKey={key}
+        onTabChange={setKey}
         items={[
           { key: "day", title: "일간" },
           { key: "week", title: "주간" },
@@ -161,11 +170,25 @@ function GalleryPreviewDemo() {
   );
 }
 
-export const GalleryPreview: Story = {
+export const GalleryLine: Story = {
   tags: ["gallery"],
-  name: "Recipe/Gallery Preview",
+  name: "variant=line (콘텐츠 전환)",
   parameters: { layout: "centered" },
-  render: () => <GalleryPreviewDemo />,
+  render: () => <GalleryLineDemo />,
+};
+
+export const GalleryChip: Story = {
+  tags: ["gallery"],
+  name: "variant=chip (필터)",
+  parameters: { layout: "centered" },
+  render: () => <GalleryChipDemo />,
+};
+
+export const GallerySegment: Story = {
+  tags: ["gallery"],
+  name: "variant=segment (단일 토글)",
+  parameters: { layout: "centered" },
+  render: () => <GallerySegmentDemo />,
 };
 
 /* ════════════════════════════════════════════
@@ -178,12 +201,12 @@ const sampleItems = [
   { key: "challenge", title: "챌린지", content: <div style={panelStyle}>챌린지 콘텐츠</div> },
 ];
 
-function PlaygroundDemo({ variant, size, tone }: Pick<TabsProps, "variant" | "size" | "tone">) {
+function PlaygroundDemo({ variant, size, tone }: Pick<TabProps, "variant" | "size" | "tone">) {
   const [activeKey, setActiveKey] = useState("all");
   const frame = size === "mobile" ? mobileFrame : pcFrame;
   return (
     <div style={frame}>
-      <Tabs
+      <Tab
         items={sampleItems}
         activeKey={activeKey}
         onTabChange={setActiveKey}
@@ -300,7 +323,7 @@ function LineDemo({ size, tone }: { size: "mobile" | "pc"; tone: "neutral" | "co
   const [active, setActive] = useState(items[0].key);
   return (
     <div style={size === "mobile" ? mobileFrame : pcFrame}>
-      <Tabs
+      <Tab
         items={items}
         activeKey={active}
         onTabChange={setActive}
@@ -380,7 +403,7 @@ function ChipDemo({ size, tone }: { size: "mobile" | "pc"; tone: "neutral" | "co
   const [active, setActive] = useState(items[0].key);
   return (
     <div style={size === "mobile" ? mobileFrame : pcFrame}>
-      <Tabs
+      <Tab
         items={items}
         activeKey={active}
         onTabChange={setActive}
@@ -446,7 +469,7 @@ function SegmentedDemo({ size }: { size: "mobile" | "pc" }) {
   const [value, setValue] = useState("all");
   return (
     <div style={{ width: size === "pc" ? 520 : 280 }}>
-      <Tabs
+      <Tab
         variant="segment"
         size={size}
         activeKey={value}
@@ -532,7 +555,7 @@ function MiniLineTab({ state }: { state: "default" | "active" | "hover" | "disab
         ];
   return (
     <div style={{ width: 200 }} data-state={state}>
-      <Tabs
+      <Tab
         items={items}
         activeKey={state === "active" || state === "hover" ? "a" : "b"}
         onTabChange={() => undefined}
@@ -768,7 +791,7 @@ export const DoDont: Story = {
   name: "Recipe/DO & Don't",
   parameters: { layout: "padded" },
   render: () => (
-    <ShowcaseSection title="DO / Don't" description="Tabs 컴포넌트 사용 시 권장/지양 케이스입니다.">
+    <ShowcaseSection title="DO / Don't" description="Tab 컴포넌트 사용 시 권장/지양 케이스입니다.">
       <div style={{ display: "flex", gap: "var(--semantic-gap-loose)" }}>
         <GuideCard
           variant="do"
@@ -804,28 +827,28 @@ function CompoundAPIDemo() {
 
   return (
     <div style={mobileFrame}>
-      <Tabs.Root
+      <Tab.Root
         activeKey={activeKey}
         onTabChange={setActiveKey}
         variant="line"
         size="mobile"
         tone="neutral"
       >
-        <Tabs.List>
-          <Tabs.Trigger tabKey="address">주소 검색</Tabs.Trigger>
-          <Tabs.Trigger tabKey="center">센터 검색</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Panel tabKey="address">
+        <Tab.List>
+          <Tab.Trigger tabKey="address">주소 검색</Tab.Trigger>
+          <Tab.Trigger tabKey="center">센터 검색</Tab.Trigger>
+        </Tab.List>
+        <Tab.Panel tabKey="address">
           <div style={{ ...panelStyle, color: colors.neutral[700] }}>
             주소로 가까운 상담 센터를 찾아보세요.
           </div>
-        </Tabs.Panel>
-        <Tabs.Panel tabKey="center">
+        </Tab.Panel>
+        <Tab.Panel tabKey="center">
           <div style={{ ...panelStyle, color: colors.neutral[700] }}>
             센터 이름으로 검색할 수 있습니다.
           </div>
-        </Tabs.Panel>
-      </Tabs.Root>
+        </Tab.Panel>
+      </Tab.Root>
     </div>
   );
 }
@@ -856,7 +879,7 @@ function FlatVsCompoundParityDemo() {
         style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
       >
         <strong>Flat API</strong>
-        <Tabs
+        <Tab
           items={sampleItems}
           activeKey={flatActiveKey}
           onTabChange={setFlatActiveKey}
@@ -868,27 +891,27 @@ function FlatVsCompoundParityDemo() {
         style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
       >
         <strong>Compound API</strong>
-        <Tabs.Root
+        <Tab.Root
           activeKey={compoundActiveKey}
           onTabChange={setCompoundActiveKey}
           variant="line"
           size="mobile"
         >
-          <Tabs.List>
-            <Tabs.Trigger tabKey="all">전체</Tabs.Trigger>
-            <Tabs.Trigger tabKey="counsel">상담</Tabs.Trigger>
-            <Tabs.Trigger tabKey="challenge">챌린지</Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Panel tabKey="all">
+          <Tab.List>
+            <Tab.Trigger tabKey="all">전체</Tab.Trigger>
+            <Tab.Trigger tabKey="counsel">상담</Tab.Trigger>
+            <Tab.Trigger tabKey="challenge">챌린지</Tab.Trigger>
+          </Tab.List>
+          <Tab.Panel tabKey="all">
             <div style={panelStyle}>전체 콘텐츠</div>
-          </Tabs.Panel>
-          <Tabs.Panel tabKey="counsel">
+          </Tab.Panel>
+          <Tab.Panel tabKey="counsel">
             <div style={panelStyle}>상담 콘텐츠</div>
-          </Tabs.Panel>
-          <Tabs.Panel tabKey="challenge">
+          </Tab.Panel>
+          <Tab.Panel tabKey="challenge">
             <div style={panelStyle}>챌린지 콘텐츠</div>
-          </Tabs.Panel>
-        </Tabs.Root>
+          </Tab.Panel>
+        </Tab.Root>
       </div>
     </div>
   );
@@ -916,7 +939,7 @@ function ManyChipsDemo() {
   const [activeKey, setActiveKey] = useState("all");
   return (
     <div style={mobileFrame}>
-      <Tabs
+      <Tab
         items={items}
         activeKey={activeKey}
         onTabChange={setActiveKey}
@@ -929,7 +952,7 @@ function ManyChipsDemo() {
 }
 
 export const ScrollableChips: Story = {
-  name: "Interaction/Scrollable Chip Tabs",
+  name: "Interaction/Scrollable Chip Tab",
   parameters: {
     chromatic: { disableSnapshot: true },
   },
@@ -952,7 +975,7 @@ function KeyboardNavigationReviewDemo() {
         Tab으로 활성 탭에 포커스한 뒤 Enter 또는 Space로 전환을 확인합니다. 좌우 화살표 이동과 aria
         연결은 컴포넌트 테스트로 보강이 필요한 항목입니다.
       </p>
-      <Tabs
+      <Tab
         items={sampleItems}
         activeKey={activeKey}
         onTabChange={setActiveKey}

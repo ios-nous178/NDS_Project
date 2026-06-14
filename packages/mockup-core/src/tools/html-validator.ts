@@ -198,6 +198,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "brand-modal-confirm-cta": { severity: "error", kind: "brand-policy" },
   // 모달 footer 의 두 버튼이 세로로 스택됨 — 라벨이 길어도 가로 유지 + 라벨 축약이 원칙(세로 금지).
   "brand-modal-footer-stacked": { severity: "warn", kind: "brand-policy" },
+  // 캐포비 모달 footer 버튼에 shape="pill" 누락 — 주·보조 모두 pill 이어야 하는데 보조에 빠뜨려 각진 버튼 섞임.
+  "brand-modal-footer-button-shape": { severity: "warn", kind: "brand-policy" },
   // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
   "unknown-brand-slug": { severity: "error", kind: "model-guard" },
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
@@ -2164,6 +2166,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "brand-modal-single-button-fullwidth": "layout",
   "brand-modal-confirm-cta": "layout",
   "brand-modal-footer-stacked": "layout",
+  "brand-modal-footer-button-shape": "layout",
   "raw-landmark": "layout",
   "nested-card": "layout",
   "card-badge-overuse": "layout",
@@ -2253,6 +2256,37 @@ export function computeScores(byRule: ValidateHtmlMockupResult["violationsByRule
     SCORE_DIMENSIONS.reduce((s, d) => s + dimensions[d], 0) / SCORE_DIMENSIONS.length,
   );
   return { overall, dimensions };
+}
+
+/**
+ * 위반(violations[]) → 차원별 감점 사유 문자열 배열. 분석 카드의 "→" 줄 소스.
+ * 차원당 최대 maxPerDim 건(중복 detail 제거), 초과분은 "+N건 더" 로 요약.
+ * computeScores 와 같은 RULE_DIMENSION 매핑을 써서 점수↔사유가 같은 차원에 붙는다.
+ */
+export function deductionsByDimension(
+  violations: HtmlViolation[],
+  maxPerDim = 3,
+): Partial<Record<ScoreDimension, string[]>> {
+  const acc: Partial<Record<ScoreDimension, string[]>> = {};
+  const seen: Partial<Record<ScoreDimension, Set<string>>> = {};
+  const extra: Partial<Record<ScoreDimension, number>> = {};
+  for (const v of violations) {
+    const dim = RULE_DIMENSION[v.rule];
+    if (!dim) continue;
+    const detail = (v.detail ?? v.rule).trim();
+    if (!detail) continue;
+    const set = (seen[dim] ??= new Set());
+    if (set.has(detail)) continue;
+    set.add(detail);
+    const list = (acc[dim] ??= []);
+    if (list.length < maxPerDim) list.push(detail);
+    else extra[dim] = (extra[dim] ?? 0) + 1;
+  }
+  for (const dim of Object.keys(extra) as ScoreDimension[]) {
+    const n = extra[dim] ?? 0;
+    if (n > 0) acc[dim]?.push(`그 외 ${n}건 더`);
+  }
+  return acc;
 }
 
 /** validate 가 실행 못 됐을 때(빌드 폴백 등) 쓰는 중립 만점 스코어. */

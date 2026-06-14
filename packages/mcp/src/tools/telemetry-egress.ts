@@ -104,6 +104,10 @@ interface FeedbackEvent {
   ts?: string;
   /** 수집 출처 — "tool"(log_feedback) | "transcript"(afterCall 자동 캡처). */
   source?: "tool" | "transcript";
+  /** 목업 만족도 — 사용자가 명시적으로 남긴 👍(up)/👎(down). 객관 점수(scoreOverall)와 페어링. */
+  sentiment?: "up" | "down";
+  /** 평가 시점의 객관 품질 점수(score_mockup_quality/build overall) — 주관↔객관 비교용. */
+  scoreOverall?: number;
 }
 
 type TelemetryEvent =
@@ -163,9 +167,38 @@ function project(name: string, args: ToolArgs, result: unknown): TelemetryEvent[
       return projectQuality(args, result);
     case "get_guide":
       return projectGuideDemand(args, result);
+    case "prompt_satisfaction":
+      return projectSatisfaction(args, result);
     default:
       return [];
   }
+}
+
+/**
+ * prompt_satisfaction → 만족도(👍/👎) feedback 이벤트. sentiment 는 elicitation **결과**(사용자 클릭)에서
+ * 온다(args 아님). recorded:true 일 때만 적재 — 스킵(decline/cancel)/미지원은 이벤트 없음.
+ */
+function projectSatisfaction(args: ToolArgs, result: unknown): FeedbackEvent[] {
+  const obj = asObject(result);
+  if (!obj || obj.recorded !== true) return [];
+  const sentiment = obj.sentiment === "up" || obj.sentiment === "down" ? obj.sentiment : undefined;
+  if (!sentiment) return [];
+  const scoreOverall = typeof obj.scoreOverall === "number" ? obj.scoreOverall : undefined;
+  const screen = strField(obj.screen) ?? strField(args.screen);
+  return [
+    {
+      kind: "feedback",
+      uuid: randomUUID(),
+      sessionId: SESSION_ID,
+      text: sentiment === "up" ? "👍 (만족)" : "👎 (불만족)",
+      source: "tool",
+      category: "satisfaction",
+      sentiment,
+      ...(scoreOverall !== undefined ? { scoreOverall } : {}),
+      ...(screen ? { target: screen } : {}),
+      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+    },
+  ];
 }
 
 /** validate_html_mockup → validation 이벤트(룰별 위반 집계 + 코드 점수). */
@@ -224,17 +257,23 @@ function projectGuideDemand(args: ToolArgs, result: unknown): GuideDemandEvent[]
 /** log_feedback → feedback 이벤트. 호출마다 uuid 생성(idempotency), 세션=MCP SESSION_ID. */
 function projectFeedback(args: ToolArgs): FeedbackEvent[] {
   const text = strField(args.text);
-  if (!text) return [];
+  const sentiment = args.sentiment === "up" || args.sentiment === "down" ? args.sentiment : undefined;
+  // 만족도(👍/👎)만 있고 text 가 없어도 기록한다 — sentiment 자체가 신호. 둘 다 없으면 스킵.
+  if (!text && !sentiment) return [];
+  const finalText = text || (sentiment === "up" ? "👍 (만족)" : "👎 (불만족)");
+  const scoreOverall = typeof args.scoreOverall === "number" ? args.scoreOverall : undefined;
   return [
     {
       kind: "feedback",
       uuid: randomUUID(),
       sessionId: SESSION_ID,
-      text: text.slice(0, MAX_PROMPT_CHARS),
+      text: finalText.slice(0, MAX_PROMPT_CHARS),
       source: "tool",
       ...(strField(args.category) ? { category: strField(args.category) } : {}),
       ...(strField(args.target) ? { target: strField(args.target) } : {}),
       ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(sentiment ? { sentiment } : {}),
+      ...(scoreOverall !== undefined ? { scoreOverall } : {}),
     },
   ];
 }

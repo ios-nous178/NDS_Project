@@ -10,7 +10,7 @@
  *   >
  *     <nds-breadcrumb slot="breadcrumb">…</nds-breadcrumb>
  *     <nds-button slot="actions">필터</nds-button>
- *     <nds-tabs slot="bottom">…</nds-tabs>
+ *     <nds-tab slot="bottom">…</nds-tab>
  *   </nds-page-header>
  *
  * 이벤트:

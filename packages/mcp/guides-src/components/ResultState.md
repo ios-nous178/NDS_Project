@@ -23,14 +23,14 @@
 
 ```html
 <!-- 인라인 빈 상태 -->
-<nds-empty-state title="아직 작성한 일기가 없어요" description="오늘의 감정을 기록해 보세요" action="작성하기"></nds-empty-state>
+<nds-result-state title="아직 작성한 일기가 없어요" description="오늘의 감정을 기록해 보세요" action="작성하기"></nds-result-state>
 <!-- 풀페이지 결과(성공) -->
-<nds-empty-state status="success" min-height="60vh" title="결제가 완료됐어요" description="이용 내역은 마이페이지에서 확인할 수 있어요" action="홈으로"></nds-empty-state>
+<nds-result-state status="success" min-height="60vh" title="결제가 완료됐어요" description="이용 내역은 마이페이지에서 확인할 수 있어요" action="홈으로"></nds-result-state>
 ```
 
 ## examplesHtml.dont
 
 ```html
 <!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->
-<nds-empty-state title="페이지를 찾을 수 없어요"></nds-empty-state>
+<nds-result-state title="페이지를 찾을 수 없어요"></nds-result-state>
 ```

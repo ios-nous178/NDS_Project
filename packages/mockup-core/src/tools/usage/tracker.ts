@@ -250,15 +250,14 @@ export async function flushUsageWebhookQueue(
   const failedEntries: UsageWebhookQueueEntry[] = [];
   let succeeded = 0;
 
-  for (const entry of retryNow) {
-    try {
-      const res = await postUsageToWebhook(entry.usage, url, opts);
-      if (res.ok) succeeded += 1;
-      else failedEntries.push(entry);
-    } catch {
-      failedEntries.push(entry);
-    }
-  }
+  // 큐 항목들은 서로 독립이므로 병렬 전송 — 직렬 await 누적(N×timeout+retry) 제거.
+  const outcomes = await Promise.allSettled(
+    retryNow.map((entry) => postUsageToWebhook(entry.usage, url, opts)),
+  );
+  outcomes.forEach((o, i) => {
+    if (o.status === "fulfilled" && o.value.ok) succeeded += 1;
+    else failedEntries.push(retryNow[i]);
+  });
 
   const remainingEntries = [...failedEntries, ...untouched];
   if (remainingEntries.length === 0) {

@@ -4,6 +4,7 @@ import { expect, within } from "storybook/test";
 import { Snackbar } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
+import { SheetPreview } from "./sheetPreview";
 
 const { Provider: SnackbarProvider, useSnackbar } = Snackbar;
 
@@ -51,19 +52,13 @@ export const Playground: Story = {
   ),
 };
 
+// variant(info/success/warning/error) 유지 + 바텀시트 본문 박스(SheetPreview)에 담아
+// 실제 폭에 맞춰 노출. 스낵바가 곧 본문이라 스켈레톤은 끈다.
 export const Variants: Story = {
   name: "Variant/info success warning error",
   tags: ["gallery"],
   render: () => (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "var(--semantic-gap-comfortable)",
-        width: 320,
-      }}
-    >
+    <SheetPreview title="알림" width={360} showSkeleton={false}>
       <Snackbar variant="info" title="알려드려요" description="상담사 일정이 변경됐어요." />
       <Snackbar variant="success" title="저장 완료" description="다음 단계로 이동합니다." />
       <Snackbar variant="warning" title="주의" description="네트워크 연결이 불안정해요." />
@@ -73,7 +68,7 @@ export const Variants: Story = {
         description="잠시 후 다시 시도해주세요."
         actionLabel="다시 시도"
       />
-    </div>
+    </SheetPreview>
   ),
 };
 

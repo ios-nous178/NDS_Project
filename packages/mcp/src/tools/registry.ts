@@ -608,7 +608,14 @@ const TOOLS = [
       "═══ WORKED EXAMPLE ═══ " +
       "User: '캐포비 스텝은 numbered 말고 bar 아니야?' → you check the guide, realize bar is right → FIRST call " +
       "log_feedback({ text: '캐포비 어드민 단계 진행은 numbered(원형) 말고 bar variant 가 맞다 — 가이드 혼동', category: 'guide', target: 'Stepper', brand: 'cashwalk-biz' }) " +
-      "THEN switch the code to bar. Never the reverse.",
+      "THEN switch the code to bar. Never the reverse. " +
+      "═══ SATISFACTION (👍/👎) — 별개 용도 ═══ " +
+      "목업 결과에 대한 사용자 만족도도 이 도구로 기록한다(객관 점수 옆 주관 신호). 규칙: " +
+      "(1) **먼저 묻지 말 것** — AI 가 '어떠세요?' 라고 능동적으로 질문 금지. build 응답의 satisfactionOffer 안내만 한 번 노출하고, 결정은 사용자에게 맡긴다. " +
+      "(2) **명시 평가일 때만** — 사용자가 그 목업에 대해 '좋다/맘에든다/👍' 또는 '별로/어색해/👎' 라고 **분명히** 말할 때만 호출. 모호하면('음…','글쎄') 기록 X. 추측·감정분석 금지. " +
+      "(3) 빌드 횟수와 무관 — build 가 여러 번 돌아도 만족도는 사용자가 평가하는 그 순간 1회만(평가 행위 = '이게 최종'이라는 선언). " +
+      "(4) 호출 시 sentiment(up|down) + category:'satisfaction' + text(한 줄 사유나 평가요지) + scoreOverall(직전 객관 점수, 알면) 을 넘긴다. " +
+      "예: log_feedback({ text: '소셜 로그인 배치가 깔끔하다', category: 'satisfaction', sentiment: 'up', scoreOverall: 89, brand: 'cashwalk-biz' })",
     inputSchema: {
       type: "object",
       properties: {
@@ -618,9 +625,20 @@ const TOOLS = [
         },
         category: {
           type: "string",
-          enum: ["component", "token", "guide", "pattern", "bug", "other"],
+          enum: ["component", "token", "guide", "pattern", "bug", "satisfaction", "other"],
           description:
-            "What kind of DS issue: component(없거나 잘못된 컴포넌트) / token(색·간격 등 토큰) / guide(가이드 혼동·오류) / pattern(화면 패턴) / bug / other.",
+            "What kind: component(없거나 잘못된 컴포넌트) / token(색·간격 등 토큰) / guide(가이드 혼동·오류) / pattern(화면 패턴) / bug / satisfaction(목업 결과 만족도 👍/👎) / other.",
+        },
+        sentiment: {
+          type: "string",
+          enum: ["up", "down"],
+          description:
+            "목업 결과에 대한 사용자 만족도 — 👍=up / 👎=down. **사용자가 명시적으로 평가했을 때만** 채운다(category='satisfaction' 와 함께). 추측·자동질문 금지.",
+        },
+        scoreOverall: {
+          type: "number",
+          description:
+            "만족도 평가 시점의 객관 품질 점수(직전 score_mockup_quality/build 의 overall). 주관↔객관을 한 레코드에 페어링.",
         },
         target: {
           type: "string",
@@ -633,6 +651,30 @@ const TOOLS = [
         },
       },
       required: ["text"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "prompt_satisfaction",
+    description:
+      "목업 결과 만족도(👍/👎)를 사용자에게 클릭 다이얼로그로 물어 기록한다(elicitation). " +
+      "═══ WHEN ═══ " +
+      "build_singlefile_html 결과(점수·파일위치)를 사용자에게 **보여준 직후**, 깨끗한 빌드(DS 에러 0)일 때 호출한다. " +
+      "**화면당 세션 1회만** — 같은 화면을 재빌드해도 다시 호출하지 말 것(서버도 중복을 막지만 호출 자체를 아끼는 게 맞다). " +
+      "에러가 있는 중간(수정 루프) 빌드에는 호출하지 않는다. " +
+      "═══ HOW ═══ " +
+      "빌드 도구를 막지 않으려고 분리된 도구다 — 결과를 먼저 렌더한 뒤 이 도구를 호출하면 다이얼로그가 그 다음에 뜬다. " +
+      "👍/👎 클릭 시 객관 점수와 함께 자동 기록되고, 사용자가 닫으면(decline/cancel) 스킵된다. " +
+      "호스트가 elicitation 미지원이면 결과에 supported:false 가 와서 텍스트 안내(satisfactionOffer)로 폴백하면 된다. " +
+      "═══ ARGS ═══ scoreOverall = 방금 빌드/검증의 overall 점수. screen = 목업 파일/화면명. brand = 브랜드 슬러그.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        screen: { type: "string", description: "평가 대상 목업 파일/화면명 (예: dist/index.html)." },
+        scoreOverall: { type: "number", description: "직전 빌드/검증의 객관 품질 점수(overall)." },
+        brand: { type: "string", description: "브랜드 슬러그 (예: 'cashwalk-biz')." },
+      },
+      required: [],
       additionalProperties: false,
     },
   },
@@ -663,8 +705,10 @@ const FEEDBACK_CATEGORY_VALUES = [
   "guide",
   "pattern",
   "bug",
+  "satisfaction",
   "other",
 ] as const;
+const SENTIMENT_VALUES = ["up", "down"] as const;
 const DEV_SERVER_ACTION_VALUES = ["start", "stop"] as const;
 const GUIDE_TARGET_VALUES = ["react", "html"] as const;
 const GUIDE_VIEW_VALUES = ["examples", "rules", "full"] as const;
@@ -881,7 +925,15 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
       return {
         text: optionalString(args, "text", toolName),
         category: optionalEnum(args, "category", FEEDBACK_CATEGORY_VALUES, toolName),
+        sentiment: optionalEnum(args, "sentiment", SENTIMENT_VALUES, toolName),
+        scoreOverall: optionalNumber(args, "scoreOverall", toolName),
         target: optionalString(args, "target", toolName),
+        brand: optionalString(args, "brand", toolName),
+      };
+    case "prompt_satisfaction":
+      return {
+        screen: optionalString(args, "screen", toolName),
+        scoreOverall: optionalNumber(args, "scoreOverall", toolName),
         brand: optionalString(args, "brand", toolName),
       };
     default:

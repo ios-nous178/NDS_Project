@@ -85,6 +85,7 @@ export class NdsInput extends NdsElement {
       "helper-text",
       "size",
       "error",
+      "error-message",
       "disabled",
       "readonly",
       "full-width",
@@ -188,7 +189,8 @@ export class NdsInput extends NdsElement {
 
     const inputId = this.attr("input-id", this._inputId);
     const size = this._normalizedSize();
-    const error = this.boolAttr("error");
+    // error-message 가 있으면 error 상태로 간주(빨간 보더+aria-invalid) — React errorMessage prop 미러.
+    const error = this.boolAttr("error") || this.getAttribute("error-message") !== null;
     const disabled = this.boolAttr("disabled");
     const readOnly = this.boolAttr("readonly");
     const fullWidth = this.boolAttr("full-width");
@@ -318,8 +320,10 @@ export class NdsInput extends NdsElement {
 
   private _syncHelper(): void {
     if (!this._root || !this._field) return;
-    const text = this.getAttribute("helper-text");
-    const error = this.boolAttr("error");
+    // error-message 가 있으면 그걸 헬퍼로(빨간색) — helper-text 보다 우선. (React errorMessage 미러)
+    const errorMessage = this.getAttribute("error-message");
+    const text = errorMessage ?? this.getAttribute("helper-text");
+    const error = this.boolAttr("error") || errorMessage !== null;
     const helperId = `${this._inputId}-helper`;
     if (text === null) {
       this._helper?.remove();

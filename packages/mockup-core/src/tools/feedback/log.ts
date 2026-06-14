@@ -31,6 +31,8 @@ export function buildFeedbackEntry(input: FeedbackInput): FeedbackEntry {
     reviewer: input.reviewer ?? null,
     dsVersion: input.dsVersion ?? null,
     mockupFile: input.mockupFile,
+    ...(input.sentiment ? { sentiment: input.sentiment } : {}),
+    ...(input.scoreOverall != null ? { scoreOverall: input.scoreOverall } : {}),
     timestamp: new Date().toISOString(),
   };
 }

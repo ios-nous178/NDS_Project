@@ -28,6 +28,9 @@ export const inputStyles = `
     display: flex;
     flex-direction: column;
     width: var(--nds-input-width, 100%);
+    /* host 가 display:contents 라 이 root 가 부모 flex 의 실제 아이템 — flex-row 에서 full-width
+       일 때 긴 값이 줄어들 수 있도록 min-width:0(아니면 콘텐츠 최소폭이 shrink 를 막아 넘침). */
+    min-width: 0;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }

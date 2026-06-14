@@ -595,22 +595,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-empty-state": {
-    "observedAttributes": [
-      "description",
-      "min-height",
-      "status",
-      "title"
-    ],
-    "enums": {
-      "status": [
-        "empty",
-        "success",
-        "error",
-        "info"
-      ]
-    }
-  },
   "nds-fab": {
     "observedAttributes": [
       "aria-label",
@@ -1027,6 +1011,22 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
+  "nds-result-state": {
+    "observedAttributes": [
+      "description",
+      "min-height",
+      "status",
+      "title"
+    ],
+    "enums": {
+      "status": [
+        "empty",
+        "success",
+        "error",
+        "info"
+      ]
+    }
+  },
   "nds-review-card": {
     "observedAttributes": [
       "rating",
@@ -1241,7 +1241,7 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-tabs": {
+  "nds-tab": {
     "observedAttributes": [
       "active-key",
       "full-width",

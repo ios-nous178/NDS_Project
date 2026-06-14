@@ -1,15 +1,15 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { EmptyState } from "../../src/EmptyState";
+import { ResultState } from "../../src/ResultState";
 
-describe("EmptyState 사용자 시나리오", () => {
+describe("ResultState 사용자 시나리오", () => {
   it("데이터가 없을 때 안내 메시지와 액션 버튼이 보인다", async () => {
     const user = userEvent.setup();
     const onAdd = vi.fn();
 
     render(
-      <EmptyState
+      <ResultState
         title="등록된 일정이 없습니다"
         description="새로운 일정을 추가해보세요"
         action={<button onClick={onAdd}>일정 추가</button>}
@@ -27,7 +27,7 @@ describe("EmptyState 사용자 시나리오", () => {
 
   it("줄바꿈이 포함된 설명이 올바르게 표시된다", () => {
     render(
-      <EmptyState
+      <ResultState
         title="검색 결과 없음"
         description={"검색어를 확인해주세요\n다른 키워드로 시도해보세요"}
       />,
@@ -44,18 +44,18 @@ describe("EmptyState 사용자 시나리오", () => {
     const onRetry = vi.fn();
 
     render(
-      <EmptyState.Root>
-        <EmptyState.Icon>
+      <ResultState.Root>
+        <ResultState.Icon>
           <svg role="img" aria-label="에러 아이콘">
             <circle r="10" />
           </svg>
-        </EmptyState.Icon>
-        <EmptyState.Title>문제가 발생했습니다</EmptyState.Title>
-        <EmptyState.Description>잠시 후 다시 시도해주세요</EmptyState.Description>
-        <EmptyState.Action>
+        </ResultState.Icon>
+        <ResultState.Title>문제가 발생했습니다</ResultState.Title>
+        <ResultState.Description>잠시 후 다시 시도해주세요</ResultState.Description>
+        <ResultState.Action>
           <button onClick={onRetry}>다시 시도</button>
-        </EmptyState.Action>
-      </EmptyState.Root>,
+        </ResultState.Action>
+      </ResultState.Root>,
     );
 
     expect(screen.getByRole("heading", { name: "문제가 발생했습니다" })).toBeVisible();
@@ -66,14 +66,14 @@ describe("EmptyState 사용자 시나리오", () => {
   });
 });
 
-describe("EmptyState 접근성", () => {
+describe("ResultState 접근성", () => {
   it("제목이 heading(h3) 요소로 문서 구조에 포함된다", () => {
-    render(<EmptyState title="비어 있음" />);
+    render(<ResultState title="비어 있음" />);
     expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("비어 있음");
   });
 
   it("장식용 아이콘은 스크린리더에서 숨겨진다 (aria-hidden)", () => {
-    const { container } = render(<EmptyState title="테스트" />);
+    const { container } = render(<ResultState title="테스트" />);
 
     // 기본 아이콘(SVG)이 들어있는 아이콘 영역이 aria-hidden
     const iconWrapper = container.querySelector("[aria-hidden='true']");
@@ -86,7 +86,7 @@ describe("EmptyState 접근성", () => {
     const onCreate = vi.fn();
 
     render(
-      <EmptyState
+      <ResultState
         title="프로젝트 없음"
         action={<button onClick={onCreate}>프로젝트 만들기</button>}
       />,
@@ -100,40 +100,40 @@ describe("EmptyState 접근성", () => {
   });
 });
 
-describe("EmptyState 엣지 케이스 & slotProps", () => {
+describe("ResultState 엣지 케이스 & slotProps", () => {
   it("minHeight가 숫자로 설정되면 px 단위의 CSS 변수가 적용된다", () => {
-    const { container } = render(<EmptyState title="높이" minHeight={400} />);
+    const { container } = render(<ResultState title="높이" minHeight={400} />);
     const root = container.querySelector("[data-slot='root']") as HTMLElement;
-    expect(root.style.getPropertyValue("--nds-empty-state-min-height")).toBe("400px");
+    expect(root.style.getPropertyValue("--nds-result-state-min-height")).toBe("400px");
   });
 
   it("minHeight가 문자열로 설정되면 그대로 CSS 변수에 적용된다", () => {
-    const { container } = render(<EmptyState title="높이" minHeight="50vh" />);
+    const { container } = render(<ResultState title="높이" minHeight="50vh" />);
     const root = container.querySelector("[data-slot='root']") as HTMLElement;
-    expect(root.style.getPropertyValue("--nds-empty-state-min-height")).toBe("50vh");
+    expect(root.style.getPropertyValue("--nds-result-state-min-height")).toBe("50vh");
   });
 
   it("title만 제공하면 description과 action이 렌더링되지 않는다", () => {
-    const { container } = render(<EmptyState title="제목만" />);
+    const { container } = render(<ResultState title="제목만" />);
     expect(container.querySelector("[data-slot='description']")).not.toBeInTheDocument();
     expect(container.querySelector("[data-slot='action']")).not.toBeInTheDocument();
   });
 
   it("description만 제공하면 title이 렌더링되지 않는다", () => {
-    const { container } = render(<EmptyState description="설명만" />);
+    const { container } = render(<ResultState description="설명만" />);
     expect(container.querySelector("[data-slot='title']")).not.toBeInTheDocument();
     expect(screen.getByText("설명만")).toBeVisible();
   });
 
   it("아무 props 없이도 기본 아이콘과 함께 크래시 없이 렌더링된다", () => {
-    const { container } = render(<EmptyState />);
+    const { container } = render(<ResultState />);
     expect(container.querySelector("[data-slot='root']")).toBeInTheDocument();
     expect(container.querySelector("[data-slot='icon'] svg")).toBeInTheDocument();
   });
 
   it("slotProps로 각 슬롯에 className을 전달할 수 있다", () => {
     const { container } = render(
-      <EmptyState
+      <ResultState
         title="슬롯"
         description="설명"
         action={<button>액션</button>}
@@ -158,7 +158,7 @@ describe("EmptyState 엣지 케이스 & slotProps", () => {
 
   it("className과 style이 root에 직접 적용된다", () => {
     const { container } = render(
-      <EmptyState title="스타일" className="my-empty" style={{ padding: 32 }} />,
+      <ResultState title="스타일" className="my-empty" style={{ padding: 32 }} />,
     );
     const root = container.querySelector("[data-slot='root']") as HTMLElement;
     expect(root.className).toContain("my-empty");
