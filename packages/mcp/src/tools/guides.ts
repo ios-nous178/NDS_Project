@@ -1411,6 +1411,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
 - [ ] 최종 응답에 Google Sheets POST 상태를 명시함: \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\`.
 - [ ] **품질/검증 결과는 분석적으로 제시 — "종합 N점" 한 줄 요약 금지.** \`build_singlefile_html\`/\`validate_html_mockup\` 의 \`scoreGate.scoreCard\` 와 \`score_mockup_quality\` 의 \`card\` 를 **항목별 점수 + 각 항목의 감점 사유("→")까지 그대로** 보여준다(낮은 항목·사유 발췌·생략 금지). **첫 목업 생성과 피드백 후 재생성 모두** 동일 형식으로. 점수만 던지지 말고 "어디서 왜 깎였는지"를 사용자가 보게 할 것.
+- [ ] **만족도(👍/👎)는 객관 점수의 짝 — 묻지 말고 안내만, 명시 평가일 때만 기록.** 목업을 전달할 때 \`satisfactionOffer.prompt\`(객관 점수 옆 주관 신호 · "기록하면 다음 목업이 더 정확해진다")를 **처음 전달 시 한 번만** 가볍게 노출한다. AI 가 "어떠세요?"라고 능동적으로 캐묻지 말 것(빌드가 여러 번 돌아도 반복 질문 X). 사용자가 **명시적으로** 👍/👎(또는 '좋다'/'별로')로 평가하면 그때만 \`log_feedback({ category:'satisfaction', sentiment:'up'|'down', text:'한 줄 사유', scoreOverall:<직전 overall> })\` 로 기록(모호한 반응 추측·자동 감정분석 금지). 평가가 곧 "이게 최종"이라는 신호이므로 별도로 "다 했냐"를 묻지 않는다.
 - [ ] 최종 응답에 간격 점검 결과, 텍스트 기호 아이콘 잔존 여부, 요청 범위 누락 항목을 명시함.
 - [ ] 최종 응답에 산출물 full 절대경로를 포함함 (상대경로 \`dist/index.html\` 만으로 끝내지 않음).
 - [ ] 가이드 호출은 단계별로만 — 시작 시점에 12개씩 병렬 fetch 하지 않음.

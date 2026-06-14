@@ -104,6 +104,10 @@ interface FeedbackEvent {
   ts?: string;
   /** 수집 출처 — "tool"(log_feedback) | "transcript"(afterCall 자동 캡처). */
   source?: "tool" | "transcript";
+  /** 목업 만족도 — 사용자가 명시적으로 남긴 👍(up)/👎(down). 객관 점수(scoreOverall)와 페어링. */
+  sentiment?: "up" | "down";
+  /** 평가 시점의 객관 품질 점수(score_mockup_quality/build overall) — 주관↔객관 비교용. */
+  scoreOverall?: number;
 }
 
 type TelemetryEvent =
@@ -224,17 +228,23 @@ function projectGuideDemand(args: ToolArgs, result: unknown): GuideDemandEvent[]
 /** log_feedback → feedback 이벤트. 호출마다 uuid 생성(idempotency), 세션=MCP SESSION_ID. */
 function projectFeedback(args: ToolArgs): FeedbackEvent[] {
   const text = strField(args.text);
-  if (!text) return [];
+  const sentiment = args.sentiment === "up" || args.sentiment === "down" ? args.sentiment : undefined;
+  // 만족도(👍/👎)만 있고 text 가 없어도 기록한다 — sentiment 자체가 신호. 둘 다 없으면 스킵.
+  if (!text && !sentiment) return [];
+  const finalText = text || (sentiment === "up" ? "👍 (만족)" : "👎 (불만족)");
+  const scoreOverall = typeof args.scoreOverall === "number" ? args.scoreOverall : undefined;
   return [
     {
       kind: "feedback",
       uuid: randomUUID(),
       sessionId: SESSION_ID,
-      text: text.slice(0, MAX_PROMPT_CHARS),
+      text: finalText.slice(0, MAX_PROMPT_CHARS),
       source: "tool",
       ...(strField(args.category) ? { category: strField(args.category) } : {}),
       ...(strField(args.target) ? { target: strField(args.target) } : {}),
       ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(sentiment ? { sentiment } : {}),
+      ...(scoreOverall !== undefined ? { scoreOverall } : {}),
     },
   ];
 }

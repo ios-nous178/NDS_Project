@@ -727,6 +727,15 @@ function extractCodeDeductions(result: unknown): Record<string, string[]> {
  * 회고: 에이전트가 좋은 차원 5개만 발췌하고 낮은 icon 차원을 빼서 "왜 81?" 이 안 보였음.
  * mustSurface 로 카드를 발췌 없이 그대로 노출하게 강제. 정성(D2)은 score_mockup_quality.
  */
+// 객관 점수 옆 주관 만족도(👍/👎) 수집 안내 — build/validate 결과에 동봉. 질문이 아니라 '안내'다.
+// 동기 부여(기록하면 다음 목업이 더 좋아짐)를 붙여 자발적 평가를 유도하되, 강요하지 않는다.
+const SATISFACTION_OFFER = {
+  prompt:
+    "수정이 더 필요하면 그냥 말씀해 주세요. 이 결과가 괜찮으면 👍 / 아쉬우면 👎 를 한 줄 남겨 주시면 — 객관 품질 점수와 함께 쌓여서 다음 목업이 점점 더 정확해집니다.",
+  howToLog:
+    "사용자가 명시적으로 👍/👎(또는 '좋다'/'별로')로 평가하면 그때만 log_feedback({ category:'satisfaction', sentiment:'up'|'down', text:'한 줄 사유', scoreOverall:<직전 overall> }) 로 기록. AI 가 먼저 '어떠세요?'라고 묻지 말 것(안내만 1회) · 모호한 반응은 추측하지 말 것 · 빌드가 여러 번 돌아도 사용자가 평가하는 순간 1회만.",
+};
+
 function attachScoreGate<T>(result: T): T {
   const codeScores = extractCodeScores(result);
   if (codeScores == null) return result;
@@ -750,7 +759,7 @@ function attachScoreGate<T>(result: T): T {
     note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
   };
   if (result && typeof result === "object" && !Array.isArray(result)) {
-    return { ...(result as Record<string, unknown>), scoreGate } as T;
+    return { ...(result as Record<string, unknown>), scoreGate, satisfactionOffer: SATISFACTION_OFFER } as T;
   }
   return result;
 }
@@ -936,12 +945,15 @@ export const toolHandlers = {
   // 핸들러는 ack 만 반환 — 실제 수집은 afterCall → captureTelemetry → projectFeedback 가 처리.
   log_feedback: (args: ToolArgs) => {
     const text = typeof args.text === "string" ? args.text.trim() : "";
-    if (!text) return { ok: false, error: "text 가 비어 있습니다." };
+    const sentiment = args.sentiment === "up" || args.sentiment === "down" ? args.sentiment : null;
+    // 만족도(👍/👎)만 있고 text 가 없어도 허용 — sentiment 자체가 신호. 둘 다 없으면 거절.
+    if (!text && !sentiment) return { ok: false, error: "text 또는 sentiment 중 하나는 필요합니다." };
     return {
       ok: true,
       logged: true,
-      category: (args.category as string) ?? null,
-      message: "피드백이 기록되었습니다.",
+      category: (args.category as string) ?? (sentiment ? "satisfaction" : null),
+      sentiment,
+      message: sentiment ? "만족도가 기록되었습니다." : "피드백이 기록되었습니다.",
     };
   },
   get_guide: (args: ToolArgs) =>
