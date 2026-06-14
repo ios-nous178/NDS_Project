@@ -34,6 +34,7 @@ export { validateMockupSource } from "./tools/mockup-validator.js";
 import {
   configureHtmlValidator,
   validateHtmlMockup,
+  deductionsByDimension,
 } from "@nudge-design/mockup-core/tools/html-validator";
 export { validateHtmlSource } from "@nudge-design/mockup-core/tools/html-validator";
 // 품질 점수 SSOT(데스크톱 하네스와 공유) — D2 정성 채점 + verdict/포맷.
@@ -707,6 +708,18 @@ function extractCodeScores(
   return { overall: scores.overall, dimensions };
 }
 
+/** 결과(또는 .validation)의 violations[] → 차원별 감점 사유. 분석 카드의 "→" 줄 소스. */
+function extractCodeDeductions(result: unknown): Record<string, string[]> {
+  if (!result || typeof result !== "object") return {};
+  const r = result as Record<string, unknown>;
+  const v = (r.validation && typeof r.validation === "object" ? r.validation : r) as Record<
+    string,
+    unknown
+  >;
+  const violations = Array.isArray(v.violations) ? v.violations : [];
+  return deductionsByDimension(violations as never) as Record<string, string[]>;
+}
+
 /**
  * validate/build 응답에 score 게이트 + **풀 스코어카드**를 부착한다.
  * 데스크톱 design-score 카드와 같은 임계값/verdict 규칙(gradeQuality SSOT)을 쓰고,
@@ -719,6 +732,7 @@ function attachScoreGate<T>(result: T): T {
   if (codeScores == null) return result;
   const card = formatScoreCard({
     codeScores,
+    codeDeductions: extractCodeDeductions(result),
     llm: { ok: false, error: "미채점 — 정성(D2)까지 보려면 score_mockup_quality 호출" },
   });
   const grade = card.grade;
@@ -731,7 +745,7 @@ function attachScoreGate<T>(result: T): T {
     thresholds: SCORE_THRESHOLDS,
     scoreCard: card.text,
     mustSurface:
-      "이 scoreCard 를 사용자에게 그대로 보여주세요 — D1 6개 차원(color/typography/spacing/layout/component/icon)을 빠짐없이. 점수가 낮은 차원을 발췌·생략하지 말 것(특히 icon).",
+      "이 scoreCard 를 사용자에게 **그대로(항목별 점수 + '→' 감점 사유 포함)** 보여주세요 — '종합 N점' 한 줄로 요약하지 말 것. D1 6개 차원(color/typography/spacing/layout/component/icon)을 빠짐없이, 점수 낮은 차원·감점 사유를 발췌·생략하지 말 것(특히 icon). 첫 생성·재생성 모두 동일하게.",
     guidance: gateGuidance(grade.verdict),
     note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
   };
@@ -1126,11 +1140,13 @@ export const toolHandlers = {
     }
     if (!html) return { ok: false, error: "html 또는 filePath 중 하나가 필요합니다." };
 
-    // D1 코드 점수 — 정적 검증으로 차원별 점수를 뽑아 데스크톱 D3 카드와 동일 구성으로 합친다.
+    // D1 코드 점수 — 정적 검증으로 차원별 점수 + 감점 사유를 뽑아 분석 카드에 싣는다.
     let codeScores: { overall: number; dimensions: Record<string, number> } | null = null;
+    let codeDeductions: Record<string, string[]> = {};
     try {
       const v = validateHtmlMockup({ source: html, cwd: typed.cwd });
       codeScores = v.scores ?? null;
+      codeDeductions = deductionsByDimension(v.violations ?? []) as Record<string, string[]>;
     } catch {
       /* D1 실패해도 D2 는 진행 */
     }
@@ -1153,7 +1169,7 @@ export const toolHandlers = {
       });
     }
 
-    const { text, grade } = formatScoreCard({ codeScores, llm });
+    const { text, grade } = formatScoreCard({ codeScores, codeDeductions, llm });
     // observability 적재는 afterCall 단일 choke-point 로 이관됨.
     return {
       ok: true,

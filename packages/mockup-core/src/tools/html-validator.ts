@@ -2237,6 +2237,37 @@ export function computeScores(byRule: ValidateHtmlMockupResult["violationsByRule
   return { overall, dimensions };
 }
 
+/**
+ * 위반(violations[]) → 차원별 감점 사유 문자열 배열. 분석 카드의 "→" 줄 소스.
+ * 차원당 최대 maxPerDim 건(중복 detail 제거), 초과분은 "+N건 더" 로 요약.
+ * computeScores 와 같은 RULE_DIMENSION 매핑을 써서 점수↔사유가 같은 차원에 붙는다.
+ */
+export function deductionsByDimension(
+  violations: HtmlViolation[],
+  maxPerDim = 3,
+): Partial<Record<ScoreDimension, string[]>> {
+  const acc: Partial<Record<ScoreDimension, string[]>> = {};
+  const seen: Partial<Record<ScoreDimension, Set<string>>> = {};
+  const extra: Partial<Record<ScoreDimension, number>> = {};
+  for (const v of violations) {
+    const dim = RULE_DIMENSION[v.rule];
+    if (!dim) continue;
+    const detail = (v.detail ?? v.rule).trim();
+    if (!detail) continue;
+    const set = (seen[dim] ??= new Set());
+    if (set.has(detail)) continue;
+    set.add(detail);
+    const list = (acc[dim] ??= []);
+    if (list.length < maxPerDim) list.push(detail);
+    else extra[dim] = (extra[dim] ?? 0) + 1;
+  }
+  for (const dim of Object.keys(extra) as ScoreDimension[]) {
+    const n = extra[dim] ?? 0;
+    if (n > 0) acc[dim]?.push(`그 외 ${n}건 더`);
+  }
+  return acc;
+}
+
 /** validate 가 실행 못 됐을 때(빌드 폴백 등) 쓰는 중립 만점 스코어. */
 export const NEUTRAL_SCORES: MockupScores = {
   overall: 100,

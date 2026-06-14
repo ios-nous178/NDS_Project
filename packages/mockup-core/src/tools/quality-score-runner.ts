@@ -139,6 +139,7 @@ export function scoreMockupQuality(args: ScoreMockupArgs): Promise<LlmScoreResul
         ok: true,
         scores: parsed.scores,
         overall: llmOverall(parsed.scores),
+        reasons: parsed.reasons,
         notes: parsed.notes,
       });
     });

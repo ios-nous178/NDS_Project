@@ -30,6 +30,8 @@ export interface LlmScoreResult {
   scores?: Record<LlmScoreKey, number>;
   /** 4개 항목 평균(반올림). */
   overall?: number;
+  /** 항목별 감점/개선 사유 1줄(분석 카드의 "→" 줄). 누락 키는 생략. */
+  reasons?: Partial<Record<LlmScoreKey, string>>;
   notes?: string;
   error?: string;
   /** 실패 진단용 원본(앞부분만). */
@@ -81,8 +83,9 @@ export function buildScoringPrompt(brand?: string, surface?: string): string {
     "- flow-patterns: 사용자 흐름의 자연스러움·단계 연결·CTA 위계",
     "- form-patterns: 폼이 있으면 라벨/도움말/에러/검증 흐름의 완성도(폼이 없으면 100)",
     brand || surface ? `맥락 — 브랜드:${brand ?? "?"} / 표면:${surface ?? "?"}` : "",
+    "각 항목마다 점수와 함께 **감점 사유(왜 만점이 아닌가)를 한국어 1-2문장**으로 reasons 에 적으세요(만점이면 빈 문자열). 가장 큰 개선점은 notes 에.",
     "도구를 절대 사용하지 말고(파일을 읽거나 명령 실행 금지), 출력은 오직 아래 형태의 JSON 한 개만(코드펜스·설명 없이):",
-    '{"ux-patterns":0,"interaction-quality":0,"flow-patterns":0,"form-patterns":0,"notes":"한국어 1-3문장, 가장 큰 개선점 1가지"}',
+    '{"ux-patterns":0,"interaction-quality":0,"flow-patterns":0,"form-patterns":0,"reasons":{"ux-patterns":"감점 사유","interaction-quality":"감점 사유","flow-patterns":"감점 사유","form-patterns":"감점 사유"},"notes":"한국어 1-3문장, 가장 큰 개선점 1가지"}',
   ]
     .filter(Boolean)
     .join("\n");
@@ -138,7 +141,7 @@ function extractScoreObjects(text: string): Record<string, unknown>[] {
  */
 export function parseScores(
   stdout: string,
-): { scores: Record<LlmScoreKey, number>; notes: string } | null {
+): { scores: Record<LlmScoreKey, number>; notes: string; reasons: Partial<Record<LlmScoreKey, string>> } | null {
   let resultText = stdout.trim();
   if (!resultText) return null;
   try {
@@ -155,7 +158,15 @@ export function parseScores(
   if (!LLM_SCORE_KEYS.every((k) => isScoreValue(obj[k]))) return null;
   const scores = {} as Record<LlmScoreKey, number>;
   for (const k of LLM_SCORE_KEYS) scores[k] = clampScore(obj[k]);
-  return { scores, notes: typeof obj.notes === "string" ? obj.notes : "" };
+  const reasons: Partial<Record<LlmScoreKey, string>> = {};
+  const rawReasons = obj.reasons;
+  if (rawReasons && typeof rawReasons === "object" && !Array.isArray(rawReasons)) {
+    for (const k of LLM_SCORE_KEYS) {
+      const r = (rawReasons as Record<string, unknown>)[k];
+      if (typeof r === "string" && r.trim()) reasons[k] = r.trim();
+    }
+  }
+  return { scores, notes: typeof obj.notes === "string" ? obj.notes : "", reasons };
 }
 
 /** 4개 항목 평균(반올림). */
@@ -200,6 +211,13 @@ export const VERDICT_LABELS: Record<ScoreVerdict, string> = {
   pass: "통과",
   warn: "주의",
   fail: "미달",
+};
+
+/** verdict 별 아이콘 — 분석 카드의 항목 머리표(데스크톱 칩 색과 같은 임계값). */
+export const VERDICT_ICON: Record<ScoreVerdict, string> = {
+  pass: "✅",
+  warn: "⚠️",
+  fail: "❌",
 };
 
 /** 점수 0~100 → verdict. ≥80 통과 / ≥60 주의 / <60 미달. */
@@ -252,40 +270,54 @@ export function gateGuidance(verdict: ScoreVerdict): string {
 
 /* ───────────────────────── 표시 포맷 (MCP 텍스트 카드 SSOT) ───────────────────────── */
 
-function chips(entries: [string, number][]): string {
-  return entries.map(([k, n]) => `${scoreLabel(k)} ${n}`).join(" · ");
+/** 한 차원 줄 + 감점 사유("→") 줄들을 분석 카드 형식으로. */
+function dimensionLines(label: string, score: number, reasons: string[]): string[] {
+  const icon = VERDICT_ICON[verdictFor(score)];
+  const head = `${icon} ${label}: ${score}점${reasons.length ? ` (감점 ${reasons.length}건)` : ""}`;
+  return [head, ...reasons.map((r) => `   → ${r}`)];
 }
 
 /**
- * 품질 스코어를 사람이 읽는 한 덩어리 텍스트 카드로. MCP 도구 응답에 그대로 싣고,
- * 데스크톱 렌더러도 같은 라벨/verdict 를 쓰므로 양쪽 표시가 일치한다.
+ * 품질 스코어를 사람이 읽는 **분석 카드**로 — 항목별(✅/⚠️/❌) 점수 + 감점 사유("→").
+ * 점수만 던지지 않고 어디서 왜 깎였는지까지 보여, 첫 생성·재생성 모두 같은 형식으로 설명한다.
+ * MCP 도구 응답에 그대로 싣고, 데스크톱 렌더러도 같은 라벨/verdict/아이콘을 쓴다.
  */
 export function formatScoreCard(input: {
   codeScores?: { overall: number; dimensions: Record<string, number> } | null;
+  /** D1 차원별 감점 사유(위반 detail). 키 = ScoreDimension, 값 = 사유 문자열 배열. */
+  codeDeductions?: Record<string, string[]>;
   llm: LlmScoreResult;
 }): { text: string; grade: QualityGrade } {
   const code = input.codeScores ?? null;
+  const ded = input.codeDeductions ?? {};
   const llm = input.llm;
   const grade = gradeQuality({
     codeOverall: code?.overall,
     llmOk: llm.ok,
     llmOverall: llm.overall,
   });
-  const header =
+  const lines: string[] = [
     `📊 품질 점수 — ${VERDICT_LABELS[grade.verdict]}` +
-    (grade.overall != null ? ` (종합 ${grade.overall})` : "");
-  const lines: string[] = [header];
+      (grade.overall != null ? ` (종합 ${grade.overall})` : ""),
+  ];
+
   if (code) {
-    lines.push(`· D1 코드(결정적) ${code.overall}: ${chips(Object.entries(code.dimensions))}`);
+    lines.push("", `[코드(결정적) ${code.overall}점]`);
+    for (const [dim, score] of Object.entries(code.dimensions)) {
+      lines.push(...dimensionLines(scoreLabel(dim), score, ded[dim] ?? []));
+    }
   }
+
   if (llm.ok && llm.scores) {
-    lines.push(
-      `· D2 정성(LLM) ${llm.overall ?? llmOverall(llm.scores)}: ${chips(Object.entries(llm.scores))}`,
-    );
-    if (llm.notes) lines.push(`· 개선점: ${llm.notes}`);
+    lines.push("", `[정성·UX(LLM) ${llm.overall ?? llmOverall(llm.scores)}점]`);
+    for (const [key, score] of Object.entries(llm.scores)) {
+      const reason = llm.reasons?.[key as LlmScoreKey];
+      lines.push(...dimensionLines(scoreLabel(key), score, reason ? [reason] : []));
+    }
+    if (llm.notes) lines.push("", `· 핵심 개선점: ${llm.notes}`);
   } else if (!llm.ok) {
-    lines.push(`· D2 정성(LLM): 채점 불가 — ${llm.error ?? "사유 미상"} (코드 점수만 반영)`);
+    lines.push("", `· 정성(LLM): 채점 불가 — ${llm.error ?? "사유 미상"} (코드 점수만 반영)`);
   }
-  lines.push(`· ${gateGuidance(grade.verdict)}`);
+  lines.push("", `· ${gateGuidance(grade.verdict)}`);
   return { text: lines.join("\n"), grade };
 }
