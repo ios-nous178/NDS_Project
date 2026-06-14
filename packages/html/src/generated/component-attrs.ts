@@ -1121,21 +1121,6 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
-  "nds-sidebar": {
-    "observedAttributes": [
-      "account",
-      "active-key",
-      "collapsed",
-      "collapsed-width",
-      "footer-actions",
-      "full-height",
-      "items",
-      "logo",
-      "user",
-      "width"
-    ],
-    "enums": {}
-  },
   "nds-skeleton": {
     "observedAttributes": [
       "height",

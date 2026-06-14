@@ -278,7 +278,8 @@ export { NdsFileUpload } from "./components/nds-file-upload.js";
 
 export { NdsImageUpload } from "./components/nds-image-upload.js";
 
-export { NdsSidebar } from "./components/nds-sidebar.js";
+// Sidebar(admin chrome)는 nds-brand-chrome 로 흡수됨 — element 명은 <nds-sidebar> 유지.
+export { NdsSidebar } from "./components/nds-brand-chrome.js";
 
 export { NdsVideoPlayer } from "./components/nds-video-player.js";
 

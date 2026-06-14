@@ -732,66 +732,6 @@
       "since": "2026-06"
     },
     {
-      "key": "Sidebar::prop-name::html attr \"brand\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-alt\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-height\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-href\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-src\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"logo-width\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::html attr \"show-toggle\" 에 대응하는 react prop 이 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::prop-name::react prop → \"logo\" 가 html observedAttributes 에 없음",
-      "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::html slot=\"account\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "html 사이드바는 <script slot> JSON 스펙 기반(모지바케 가드) — react 는 props 배열. 모델 차이 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::html slot=\"items\" 에 대응하는 react ReactNode prop 이 없음",
-      "reason": "html 사이드바는 <script slot> JSON 스펙 기반(모지바케 가드) — react 는 props 배열. 모델 차이 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
-      "reason": "html 사이드바는 JSON 스펙 렌더 — footer 커스텀 노드는 react 전용(어드민 한정). 의도적",
-      "since": "2026-06"
-    },
-    {
-      "key": "Sidebar::slot::react ReactNode prop \"header\" 에 대응하는 html slot=\"header\" 구현이 없음",
-      "reason": "html 사이드바는 JSON 스펙 렌더 — header 커스텀 노드는 react 전용(어드민 한정). 의도적",
-      "since": "2026-06"
-    },
-    {
       "key": "Snackbar::prop-name::html attr \"hide-icon\" 에 대응하는 react prop 이 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase prop ↔ kebab attr · ReactNode ↔ string attr) — advisory 일괄 흡수분",
       "since": "2026-06"

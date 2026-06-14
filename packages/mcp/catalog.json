@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T17:21:14.900Z",
+  "generatedAt": "2026-06-14T17:50:18.180Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -5257,118 +5257,6 @@
         "name",
         "value",
         "values"
-      ]
-    },
-    {
-      "name": "Sidebar",
-      "props": [
-        {
-          "name": "items",
-          "optional": false,
-          "type": "SidebarItem[] | SidebarSection[]"
-        },
-        {
-          "name": "activeKey",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "onItemClick",
-          "optional": true,
-          "type": "(item: SidebarItem) => void"
-        },
-        {
-          "name": "width",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "collapsedWidth",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "collapsed",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "onToggleCollapse",
-          "optional": true,
-          "type": "() => void"
-        },
-        {
-          "name": "logo",
-          "optional": true,
-          "type": "SidebarLogo"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "subtitle",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "header",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "account",
-          "optional": true,
-          "type": "SidebarAccount"
-        },
-        {
-          "name": "footer",
-          "optional": true,
-          "type": "React.ReactNode"
-        },
-        {
-          "name": "footerActions",
-          "optional": true,
-          "type": "SidebarAction[]"
-        },
-        {
-          "name": "user",
-          "optional": true,
-          "type": "SidebarUser"
-        },
-        {
-          "name": "fullHeight",
-          "optional": true,
-          "type": "boolean"
-        },
-        {
-          "name": "as",
-          "optional": true,
-          "type": "keyof React.JSX.IntrinsicElements"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/Sidebar.d.ts",
-      "htmlTag": "nds-sidebar",
-      "htmlObservedAttrs": [
-        "items",
-        "active-key",
-        "collapsed",
-        "show-toggle",
-        "width",
-        "collapsed-width",
-        "brand",
-        "logo-src",
-        "logo-alt",
-        "logo-width",
-        "logo-height",
-        "logo-href",
-        "title",
-        "subtitle",
-        "user",
-        "account",
-        "footer-actions",
-        "full-height"
       ]
     },
     {
@@ -14387,30 +14275,6 @@
         "name",
         "value",
         "values"
-      ]
-    },
-    {
-      "tag": "nds-sidebar",
-      "attrs": {},
-      "observedAttrs": [
-        "items",
-        "active-key",
-        "collapsed",
-        "show-toggle",
-        "width",
-        "collapsed-width",
-        "brand",
-        "logo-src",
-        "logo-alt",
-        "logo-width",
-        "logo-height",
-        "logo-href",
-        "title",
-        "subtitle",
-        "user",
-        "account",
-        "footer-actions",
-        "full-height"
       ]
     },
     {

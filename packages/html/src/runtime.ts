@@ -94,7 +94,6 @@ import "./components/nds-date-range-picker.js";
 import "./components/nds-ds-highlight.js";
 import "./components/nds-file-upload.js";
 import "./components/nds-image-upload.js";
-import "./components/nds-sidebar.js";
 import "./components/nds-video-player.js";
 import "./components/nds-inspector.js";
 import "./components/nds-add-button.js";

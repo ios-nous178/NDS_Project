@@ -104,7 +104,7 @@ export * from "./MediaCard.js";
 export * from "./FilterBar.js";
 export * from "./ProductCard.js";
 export * from "./SummaryCard.js";
-export * from "./Sidebar.js";
+// Sidebar(브랜드-aware admin 셸)는 공개 react 에서 제거 — 목업 전용 html <nds-sidebar>(nds-brand-chrome 흡수)로.
 
 /* ────────────────────────────────────
    Brand chrome (header / footer / bottom-nav)
