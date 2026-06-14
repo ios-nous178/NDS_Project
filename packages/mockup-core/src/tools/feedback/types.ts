@@ -9,7 +9,8 @@
  * `kind` 판별자로 Apps Script 가 별도 시트/탭에 적재해야 usage 통계가 오염되지 않는다.
  * (그 분기가 준비되기 전까지 데스크탑은 로컬 JSONL 저장만 하고 전송은 OFF.)
  */
-export type FeedbackKind = "revision-request" | "feedback";
+// satisfaction = 목업 결과 👍/👎 만족도(객관 점수 옆 주관 신호). comment 없이 sentiment 만으로 성립.
+export type FeedbackKind = "revision-request" | "feedback" | "satisfaction";
 
 export interface FeedbackEntry {
   /** webhook consumer 용 idempotency 키. */
@@ -24,6 +25,10 @@ export interface FeedbackEntry {
   dsVersion: string | null;
   /** 프로젝트 루트 기준 목업 파일 rel 경로. */
   mockupFile: string;
+  /** 만족도(satisfaction) — 👍=up / 👎=down. 일반 피드백이면 생략. */
+  sentiment?: "up" | "down";
+  /** 평가 시점의 객관 품질 점수(validate scores.overall) — 주관↔객관 페어링. */
+  scoreOverall?: number | null;
   /** ISO timestamp. */
   timestamp: string;
 }
@@ -36,4 +41,6 @@ export interface FeedbackInput {
   reviewer?: string | null;
   dsVersion?: string | null;
   mockupFile: string;
+  sentiment?: "up" | "down";
+  scoreOverall?: number | null;
 }

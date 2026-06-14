@@ -72,6 +72,8 @@ export function App(): React.JSX.Element {
   const [validating, setValidating] = useState(false);
   const [bust, setBust] = useState(0);
   const [previewRel, setPreviewRel] = useState<string | null>(null);
+  // 결과 만족도(👍/👎) — 화면당 1회, 안 누르면 스킵. 화면 바뀌면 리셋.
+  const [rated, setRated] = useState<"up" | "down" | null>(null);
   // 미리보기 칼럼
   const [tab, setTab] = useState<PreviewTab>("preview");
   const [viewport, setViewport] = useState<Viewport>("web");
@@ -372,6 +374,31 @@ export function App(): React.JSX.Element {
 
   const isAdminCms = activeIntent === "admin-cms";
   const feedbackTarget = viewing ? previewRel : (selected ?? previewRel);
+
+  // 결과가 바뀌면(다른 화면/재빌드) 만족도 상태를 리셋해 새로 평가받을 수 있게.
+  useEffect(() => {
+    setRated(null);
+  }, [feedbackTarget, bust]);
+
+  // 👍/👎 — 안 누르면 그냥 스킵. 누르면 객관 점수(validate overall)와 함께 기록.
+  const rateSatisfaction = useCallback(
+    (sentiment: "up" | "down") => {
+      if (!previewBase || !feedbackTarget) return;
+      setRated(sentiment);
+      void window.harness
+        .submitFeedback({
+          projectPath: previewBase,
+          kind: "satisfaction",
+          screen: feedbackTarget,
+          mockupFile: feedbackTarget,
+          comment: "",
+          sentiment,
+          scoreOverall: result?.scores?.overall ?? null,
+        })
+        .catch(() => setRated(null));
+    },
+    [previewBase, feedbackTarget, result],
+  );
   // "생성 중" 뱃지 = 지금 미리보기에 뜬 목업이 라이브 출력을 실제로 따라가는 중일 때만.
   // (과거 세션 보는 중이거나 사용자가 특정 목업을 직접 고르면 자동추적이 꺼져 뱃지도 꺼진다.)
   const previewLive = liveSessionId !== null && autoFollow && !viewing;
@@ -834,6 +861,58 @@ export function App(): React.JSX.Element {
               </pre>
             )}
           </div>
+
+          {/* 만족도 바 — 결과 뷰 하단에 항상. 안 누르면 스킵. 누르면 객관 점수와 함께 기록. */}
+          {feedbackTarget && !isAdminCms && (
+            <div
+              style={{
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "8px 14px",
+                borderTop: `1px solid ${c.border}`,
+                background: c.bg,
+                fontSize: 12,
+                color: c.textMuted,
+              }}
+            >
+              <span style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {rated
+                  ? `만족도 기록됨 ${rated === "up" ? "👍" : "👎"} — 객관 점수와 함께 쌓입니다.`
+                  : "이 결과 어떠세요? 평가를 남기면 객관 점수와 함께 쌓여 다음 목업이 더 정확해져요. (안 누르면 스킵)"}
+              </span>
+              <span style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                <button
+                  onClick={() => rateSatisfaction("up")}
+                  title="만족"
+                  aria-label="만족 (좋아요)"
+                  style={{
+                    ...pillBtn,
+                    padding: "4px 10px",
+                    opacity: rated === "down" ? 0.4 : 1,
+                    borderColor: rated === "up" ? c.green : c.border,
+                  }}
+                >
+                  👍
+                </button>
+                <button
+                  onClick={() => rateSatisfaction("down")}
+                  title="아쉬움"
+                  aria-label="아쉬움 (별로예요)"
+                  style={{
+                    ...pillBtn,
+                    padding: "4px 10px",
+                    opacity: rated === "up" ? 0.4 : 1,
+                    borderColor: rated === "down" ? c.red : c.border,
+                  }}
+                >
+                  👎
+                </button>
+              </span>
+            </div>
+          )}
         </section>
 
         {/* 드래그 핸들 — 경계에 겹쳐 깔린다(absolute). 1↔2, 2↔3 경계. */}

@@ -18,6 +18,10 @@ export interface SubmitFeedbackArgs {
   comment: string;
   /** 프로젝트 루트 기준 목업 파일 rel 경로. */
   mockupFile: string;
+  /** 만족도(👍/👎) — kind:"satisfaction" 일 때. comment 없이 sentiment 만으로 성립. */
+  sentiment?: "up" | "down";
+  /** 평가 시점의 객관 품질 점수(validate scores.overall). */
+  scoreOverall?: number | null;
 }
 
 export interface SubmitFeedbackResult {
@@ -49,16 +53,20 @@ function currentReviewer(): string | null {
  */
 export function submitFeedback(args: SubmitFeedbackArgs): SubmitFeedbackResult {
   const comment = args.comment.trim();
-  if (!comment) return { ok: false, error: "내용이 비어 있습니다." };
+  const sentiment = args.sentiment === "up" || args.sentiment === "down" ? args.sentiment : undefined;
+  // 만족도(👍/👎)는 comment 없이도 성립 — sentiment 자체가 신호. 일반 피드백은 comment 필수.
+  if (!comment && !sentiment) return { ok: false, error: "내용이 비어 있습니다." };
 
   const dir = resolveWritableLogDir({ cwd: args.projectPath });
   const entry = buildFeedbackEntry({
     kind: args.kind,
     screen: args.screen,
-    comment,
+    comment: comment || (sentiment === "up" ? "👍" : sentiment === "down" ? "👎" : ""),
     reviewer: currentReviewer(),
     dsVersion: detectDsVersions(args.projectPath).primary,
     mockupFile: args.mockupFile,
+    sentiment,
+    scoreOverall: args.scoreOverall ?? null,
   });
 
   const res = safeAppendFeedbackToLog(entry, feedbackLogPath(dir));
