@@ -67,6 +67,46 @@ describe("nds-button — DOM parity with React Button", () => {
     expect((label as HTMLElement).dataset.slot).toBe("label");
   });
 
+  it("survives el.textContent set AFTER mount (회귀: '재전송'/검색 버튼이 맨 텍스트로 깨짐)", async () => {
+    const el = document.createElement("nds-button");
+    el.setAttribute("color", "neutral");
+    el.textContent = "인증번호 받기";
+    document.body.appendChild(el);
+    await flush();
+    expect(el.querySelector(".nds-button__label")!.textContent).toBe("인증번호 받기");
+
+    // 인라인 토글: 버튼 라벨을 textContent 로 바꾼다 (mockup 의 흔한 idiom)
+    el.textContent = "재전송";
+    await flush();
+
+    const inner = el.querySelector("button");
+    expect(inner, "inner button must survive textContent change").toBeTruthy();
+    expect(inner!.classList.contains("nds-button")).toBe(true);
+    const label = el.querySelector(".nds-button__label");
+    expect(label, "label must be re-established").toBeTruthy();
+    expect(label!.textContent).toBe("재전송");
+    // host 직속 자식은 inner 버튼 하나뿐 — 맨 텍스트 노드가 남으면 안 됨
+    expect(el.childNodes.length).toBe(1);
+    expect(el.firstChild).toBe(inner);
+  });
+
+  it("survives el.innerHTML set after mount, absorbing markup into the label", async () => {
+    const el = document.createElement("nds-button");
+    el.textContent = "처음";
+    document.body.appendChild(el);
+    await flush();
+
+    el.innerHTML = '<span class="ico"></span>다시 시도';
+    await flush();
+
+    const inner = el.querySelector("button");
+    expect(inner).toBeTruthy();
+    const label = el.querySelector(".nds-button__label")!;
+    expect(label.querySelector(".ico")).toBeTruthy();
+    expect(label.textContent).toBe("다시 시도");
+    expect(el.firstChild).toBe(inner);
+  });
+
   it("sets all 14 CSS variables that React Button injects inline", async () => {
     const el = document.createElement("nds-button");
     el.setAttribute("color", "primary");

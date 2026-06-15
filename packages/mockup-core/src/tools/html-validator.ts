@@ -2307,33 +2307,61 @@ export function computeScores(byRule: ValidateHtmlMockupResult["violationsByRule
   return { overall, dimensions };
 }
 
+/** 같은 detail 이 여러 번 나면 발생 횟수 + 줄 위치를 붙여 "어디서 왜" 까지 보여준다(line 5개까지 + 나머지 요약). */
+function formatDeduction(detail: string, count: number, lines: number[]): string {
+  const parts: string[] = [];
+  if (count > 1) parts.push(`${count}회`);
+  if (lines.length) {
+    const shown = lines.slice(0, 5).join(", ");
+    parts.push(`line ${shown}${lines.length > 5 ? ` 외 ${lines.length - 5}` : ""}`);
+  }
+  return parts.length ? `${detail} (${parts.join(" · ")})` : detail;
+}
+
 /**
  * 위반(violations[]) → 차원별 감점 사유 문자열 배열. 분석 카드의 "→" 줄 소스.
- * 차원당 최대 maxPerDim 건(중복 detail 제거), 초과분은 "+N건 더" 로 요약.
+ * 같은 detail 은 합쳐 **발생 횟수 + 줄 위치**(line a, b…)를 붙이고, 감점이 큰(잦은) 사유부터 정렬한다 —
+ * 점수만 보고 "어디를 왜 깎였나" 를 모르던 문제(특히 SPA 누적집계)를 줄 위치로 짚어준다.
+ * 차원당 최대 maxPerDim 종, 초과분은 "그 외 N건 더" 로 요약.
  * computeScores 와 같은 RULE_DIMENSION 매핑을 써서 점수↔사유가 같은 차원에 붙는다.
  */
 export function deductionsByDimension(
   violations: HtmlViolation[],
-  maxPerDim = 3,
+  maxPerDim = 5,
 ): Partial<Record<ScoreDimension, string[]>> {
-  const acc: Partial<Record<ScoreDimension, string[]>> = {};
-  const seen: Partial<Record<ScoreDimension, Set<string>>> = {};
-  const extra: Partial<Record<ScoreDimension, number>> = {};
+  // dim → detail → { count, lines }
+  const byDim = new Map<ScoreDimension, Map<string, { count: number; lines: number[] }>>();
   for (const v of violations) {
     const dim = RULE_DIMENSION[v.rule];
     if (!dim) continue;
     const detail = (v.detail ?? v.rule).trim();
     if (!detail) continue;
-    const set = (seen[dim] ??= new Set());
-    if (set.has(detail)) continue;
-    set.add(detail);
-    const list = (acc[dim] ??= []);
-    if (list.length < maxPerDim) list.push(detail);
-    else extra[dim] = (extra[dim] ?? 0) + 1;
+    let details = byDim.get(dim);
+    if (!details) byDim.set(dim, (details = new Map()));
+    let entry = details.get(detail);
+    if (!entry) details.set(detail, (entry = { count: 0, lines: [] }));
+    entry.count++;
+    if (typeof v.line === "number" && v.line > 0 && !entry.lines.includes(v.line)) {
+      entry.lines.push(v.line);
+    }
   }
-  for (const dim of Object.keys(extra) as ScoreDimension[]) {
-    const n = extra[dim] ?? 0;
-    if (n > 0) acc[dim]?.push(`그 외 ${n}건 더`);
+
+  const acc: Partial<Record<ScoreDimension, string[]>> = {};
+  for (const [dim, details] of byDim) {
+    // 잦은 사유(감점 큰 순) → 줄 번호 오름차순
+    const entries = [...details.entries()].sort((a, b) => b[1].count - a[1].count);
+    const list: string[] = [];
+    let extra = 0;
+    for (const [detail, e] of entries) {
+      if (list.length >= maxPerDim) {
+        extra++;
+        continue;
+      }
+      e.lines.sort((a, b) => a - b);
+      list.push(formatDeduction(detail, e.count, e.lines));
+    }
+    if (extra > 0) list.push(`그 외 ${extra}건 더`);
+    acc[dim] = list;
   }
   return acc;
 }

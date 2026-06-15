@@ -26,6 +26,10 @@ export abstract class NdsElement extends HTMLElement {
 
   private _renderScheduled = false;
   private _ndsMounted = false;
+  /** `[hidden]` 토글을 감지해 재렌더를 트리거하는 관찰자(observedAttributes 는 자식별이라 누락 가능). */
+  private _hiddenObserver: MutationObserver | null = null;
+  /** 베이스가 `[hidden]` 때문에 display:none 을 강제했는지 — 자기가 박은 것만 되돌리기 위함. */
+  private _hiddenForced = false;
 
   /** mount() 가 이미 실행됐는지. 자식 클래스 가드/디버깅용. */
   protected get mounted(): boolean {
@@ -44,6 +48,14 @@ export abstract class NdsElement extends HTMLElement {
     if (!this._ndsMounted) {
       this._ndsMounted = true;
       this.mount();
+    }
+    // `[hidden]` 존중(아래 scheduleUpdate 참고). 다수 컴포넌트가 update() 에서
+    // `style.display = "contents"` 를 강제해 UA 기본 `[hidden]{display:none}` 을 덮으므로,
+    // hidden 토글을 관찰해 재렌더 → 베이스가 마지막에 display 를 교정한다.
+    // (observedAttributes 는 자식 클래스별 정의라 "hidden" 이 빠질 수 있어 베이스가 직접 관찰.)
+    if (!this._hiddenObserver && typeof MutationObserver !== "undefined") {
+      this._hiddenObserver = new MutationObserver(() => this.scheduleUpdate());
+      this._hiddenObserver.observe(this, { attributes: true, attributeFilter: ["hidden"] });
     }
     this.scheduleUpdate();
   }
@@ -65,7 +77,18 @@ export abstract class NdsElement extends HTMLElement {
     this._renderScheduled = true;
     queueMicrotask(() => {
       this._renderScheduled = false;
-      if (this.isConnected) this.update();
+      if (!this.isConnected) return;
+      this.update();
+      // `[hidden]` 교정 — update() 가 display 를 강제(contents 등)한 뒤 마지막에 적용한다.
+      if (this.hasAttribute("hidden")) {
+        this.style.display = "none";
+        this._hiddenForced = true;
+      } else if (this._hiddenForced) {
+        this._hiddenForced = false;
+        // 베이스가 박았던 none 만 되돌린다. update() 가 이미 자기 display 로 덮었으면 건드리지 않음
+        // (자체 display:none 으로 닫힘을 표현하는 modal/popup 등을 강제로 열지 않기 위함).
+        if (this.style.display === "none") this.style.removeProperty("display");
+      }
     });
   }
 

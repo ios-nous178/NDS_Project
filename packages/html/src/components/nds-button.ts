@@ -77,6 +77,8 @@ export class NdsButton extends NdsElement {
 
   private _inner: HTMLButtonElement | null = null;
   private _label: HTMLSpanElement | null = null;
+  /** host 에 직접 다시 들어온 라벨 콘텐츠를 흡수하기 위한 관찰자(아래 _rewrapStrayChildren 참고). */
+  private _childObserver: MutationObserver | null = null;
 
   /**
    * 네이티브 <button> 처럼 `.disabled` / `.fullWidth` 프로퍼티로도 토글 가능하게 한다.
@@ -126,6 +128,36 @@ export class NdsButton extends NdsElement {
 
     this._inner = inner;
     this._label = label;
+
+    // ── 라벨 복원 관찰자 (회귀: el.textContent='재전송' 이 버튼을 통째로 날려 맨 텍스트만 남던 버그) ──
+    // children 을 inner <button> 안으로 옮긴 뒤 host 의 유일한 직속 자식은 inner 다.
+    // 이후 `host.textContent = ...` / `host.innerHTML = ...` / `host.append(...)` 로 host 에
+    // 직접 노드가 들어오면 inner 가 detach 되고 맨 텍스트만 남는다(검색버튼·재전송 버튼 깨짐).
+    // 그 stray 노드를 새 라벨 콘텐츠로 흡수하고 inner 를 다시 붙여 항상 버튼 구조를 유지한다.
+    if (typeof MutationObserver !== "undefined") {
+      this._childObserver = new MutationObserver(() => this._rewrapStrayChildren());
+      this._childObserver.observe(this, { childList: true });
+    }
+  }
+
+  /**
+   * host 직속에 들어온 stray 노드(textContent/innerHTML/append 로 추가된 라벨 콘텐츠)를
+   * inner 버튼의 __label 로 흡수하고 inner 를 host 의 유일한 직속 자식으로 복원한다.
+   * inner 를 다시 붙이는 동작이 관찰자를 한 번 더 깨우지만, 그때는 stray 가 없어 즉시 빠진다(무한루프 없음).
+   */
+  private _rewrapStrayChildren(): void {
+    const inner = this._inner;
+    const label = this._label;
+    if (!inner || !label) return;
+
+    const stray = Array.from(this.childNodes).filter((n) => n !== inner);
+    const innerDetached = inner.parentNode !== this;
+    if (stray.length === 0 && !innerDetached) return; // 우리 자신의 re-append 등 — 할 일 없음
+
+    if (stray.length > 0) label.replaceChildren(...stray);
+    else label.replaceChildren(); // textContent='' → 빈 라벨로 복원
+
+    if (innerDetached) this.appendChild(inner);
   }
 
   protected update(): void {
