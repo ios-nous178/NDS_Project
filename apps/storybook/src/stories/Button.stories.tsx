@@ -23,7 +23,7 @@ const meta: Meta<typeof Button> = {
       control: "radio",
       options: ["solid", "soft", "outlined"],
     },
-    size: { control: "radio", options: ["xl", "lg", "md", "sm", "xs", "field"] },
+    size: { control: "radio", options: ["xl", "lg", "md", "sm", "xs", "mini", "field"] },
     color: {
       control: "radio",
       options: ["primary", "secondary", "neutral"],
@@ -112,8 +112,9 @@ const SPEC_ROWS: Array<{
     gap: "var(--semantic-gap-default)",
   },
   { size: "md", height: "44px", font: "15 / 22px", paddingX: "24px", icon: "20px", gap: "8px" },
-  { size: "sm", height: "42px", font: "14 / 20px", paddingX: "16px", icon: "20px", gap: "8px" },
-  { size: "xs", height: "38px", font: "13 / 18px", paddingX: "16px", icon: "18px", gap: "6px" },
+  { size: "sm", height: "42px (Geniet 40)", font: "14 / 20px", paddingX: "16px", icon: "20px", gap: "8px" },
+  { size: "xs", height: "38px (Geniet 36)", font: "13 / 18px", paddingX: "16px", icon: "18px", gap: "6px" },
+  { size: "mini", height: "32px", font: "13 / 18px", paddingX: "12px", icon: "16px", gap: "4px" },
   { size: "field", height: "48px", font: "15 / 22px", paddingX: "16px", icon: "20px", gap: "8px" },
 ];
 
@@ -344,8 +345,9 @@ export const SizeScale: Story = {
       <Button size="xl">XL (56px)</Button>
       <Button size="lg">LG (48px)</Button>
       <Button size="md">MD (44px)</Button>
-      <Button size="sm">SM (42px)</Button>
-      <Button size="xs">XS (38px)</Button>
+      <Button size="sm">SM (42px · Geniet 40)</Button>
+      <Button size="xs">XS (38px · Geniet 36)</Button>
+      <Button size="mini">Mini (32px)</Button>
       <Button size="field">Field (48px)</Button>
     </div>
   ),
