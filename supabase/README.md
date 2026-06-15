@@ -56,7 +56,7 @@ curl -s "https://<ref>.supabase.co/rest/v1/mcp_events?select=*" -H "apikey: $ANO
 # 5) 원문 drop: artifacts body 에 content 를 넣어 POST → obs_records.record 에 content 없음 확인 (Studio)
 ```
 
-대시보드(`apps/web-server`)의 읽기 API 를 Supabase 조회로 바꾸는 건 후속 작업 — 수집과 표시는 분리한다.
+표시(대시보드): 구 `apps/web-server` 의 in-memory 수집/대시보드(`/dashboard`·`/api/*`·`POST /*/import`)는 제거됐다 — 그 서버는 이제 Storybook/Docs 정적 호스팅 전용. 텔레메트리 표시는 당분간 Supabase Studio + `learning_*` 뷰(아래)로 본다. 웹 대시보드가 다시 필요하면 service_role 로 Supabase 를 조회하는 **인증 있는** 화면으로 새로 짓는다(anon key 는 RLS 로 읽기 0 — 브라우저로 내보내면 안 됨). 수집과 표시는 분리한다.
 
 ## Learning 분석 레이어 (0002)
 

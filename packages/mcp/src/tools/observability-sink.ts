@@ -54,7 +54,6 @@ interface RecordQualityArgs extends RecordBase {
   overall?: number | null;
 }
 
-const DEFAULT_MOCKUP_API_URL = "http://127.0.0.1:8090";
 const POST_TIMEOUT_MS = 1500;
 
 function isFlagOff(value: string | undefined): boolean {
@@ -64,16 +63,6 @@ function isFlagOff(value: string | undefined): boolean {
 function isEnabled(): boolean {
   const flag = process.env.NUDGE_MOCKUP_API_LOG ?? process.env.NUDGE_OBSERVABILITY_LOG;
   return !isFlagOff(flag ?? "1");
-}
-
-function baseUrl(): string | null {
-  if (!isEnabled()) return null;
-  const raw =
-    process.env.NUDGE_MOCKUP_API_URL ??
-    process.env.NUDGE_DASHBOARD_API_URL ??
-    process.env.NUDGE_OBSERVABILITY_API_URL ??
-    DEFAULT_MOCKUP_API_URL;
-  return raw.replace(/\/+$/, "");
 }
 
 function isLoopback(url: string): boolean {
@@ -87,8 +76,8 @@ function isLoopback(url: string): boolean {
 
 /**
  * PRD/HTML **원문(raw content)** 전송 게이트. 정책은 "원문은 머신 밖으로 안 나간다":
- *   - loopback(127.0.0.1/localhost) sink → **기본 ON**. 사내 대시보드가 같은 머신에 있으므로
- *     env 없이 바로 원문이 보인다. NUDGE_OBSERVABILITY_ARTIFACTS=0 으로 끌 수 있다.
+ *   - loopback(127.0.0.1/localhost) sink → **기본 ON**. 로컬 Supabase(`supabase start`)
+ *     ingest 가 같은 머신에 있으므로 env 없이 바로 원문이 보인다. ARTIFACTS=0 으로 끌 수 있다.
  *   - 원격(non-loopback) sink → **기본 OFF**. 명시 opt-in(ARTIFACTS=1) + ARTIFACTS_REMOTE=1
  *     둘 다 켜야만 본문이 나간다. 안 켜면 메타데이터(kind/source/hash/bytes)만 송신.
  */
@@ -99,11 +88,6 @@ function artifactsContentEnabled(base: string): boolean {
   // 원격 타깃: 명시 opt-in + ARTIFACTS_REMOTE 둘 다 켜야 본문 송신.
   if (flag === undefined) return false;
   return !isFlagOff(process.env.NUDGE_OBSERVABILITY_ARTIFACTS_REMOTE ?? "0");
-}
-
-/** 선택적 공유 시크릿 — 설정 시 모든 sink POST 에 Authorization 헤더로 붙는다(무인증 평문 완화). */
-function authToken(): string | null {
-  return process.env.NUDGE_OBSERVABILITY_TOKEN?.trim() || null;
 }
 
 function now(): string {
@@ -201,33 +185,11 @@ function buildRunId(kind: string, cwd: string | undefined, filePath: string | nu
   return `run_${hash(`${kind}\n${cwd ?? ""}\n${filePath ?? ""}\n${now()}`, 20)}`;
 }
 
-async function postEndpoint(base: string, endpoint: SinkEndpoint): Promise<SinkPostResult> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), POST_TIMEOUT_MS);
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = authToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
-  try {
-    const res = await fetch(`${base}${endpoint.path}`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(endpoint.body),
-      signal: controller.signal,
-    });
-    return { target: base, path: endpoint.path, ok: res.ok, status: res.status };
-  } catch (err) {
-    return { target: base, path: endpoint.path, ok: false, error: (err as Error).message };
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
 /* ───────────── observability raw → Supabase ingest ─────────────
- * 기본 sink. raw 레코드(sessions/runs/events/violations/quality/artifacts)를
+ * 유일 sink. raw 레코드(sessions/runs/events/violations/quality/artifacts)를
  * `{kind:"observability", records:[{path, body}]}` 봉투 그대로 Supabase Edge Function
  * `ingest` 로 보낸다 — 함수가 path 별로 obs_records 컬렉션에 분배한다(supabase/README.md).
- * (이전의 TEMP Google Sheets 경로와 로컬 대시보드 API 기본값을 대체. 로컬 대시보드
- * 적재로 되돌리려면 env `NUDGE_OBSERVABILITY_DASHBOARD=1`.)
+ * (이전의 TEMP Google Sheets 경로와 로컬 web-server 대시보드 API 적재를 대체.)
  */
 async function sendRawToIngest(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
   const url = ingestUrl();
@@ -262,37 +224,16 @@ async function sendRawToIngest(endpoints: SinkEndpoint[]): Promise<SinkPostResul
 }
 
 /**
- * 기존 대시보드 API 적재 — 임시로 기본 비활성. `NUDGE_OBSERVABILITY_DASHBOARD=1` 로 복구.
- * 엔드포인트를 **병렬** 전송한다(Promise.allSettled). 직렬이면 죽은 sink 에서 N×timeout 만큼
- * 툴 호출이 지연되므로(빌드는 최대 6 엔드포인트) worst-case 를 단일 timeout 으로 bound.
- */
-async function sendToDashboard(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
-  const base = baseUrl();
-  if (!base) return [];
-  const settled = await Promise.allSettled(endpoints.map((e) => postEndpoint(base, e)));
-  return settled.map((s, i) =>
-    s.status === "fulfilled"
-      ? s.value
-      : { target: base, path: endpoints[i].path, ok: false, error: String(s.reason) },
-  );
-}
-
-/**
- * 실제 적재가 향하는 sink URL — artifacts 원문 게이트(loopback 판정)는 반드시 이 URL 로
- * 평가해야 한다. (대시보드 기본값 127.0.0.1 로 판정하면 원격 Supabase 로 보내면서
- * loopback 기본 ON 이 적용되는 원문 유출 버그가 된다.)
+ * 실제 적재가 향하는 sink URL = Supabase ingest. artifacts 원문 게이트(loopback 판정)는
+ * 반드시 이 URL 로 평가해야 한다 — 로컬 Supabase(`supabase start`) 면 loopback 으로 잡혀
+ * 원문이 허용되고, 원격(배포 Supabase)이면 기본 OFF 가 적용된다.
  */
 function effectiveSinkUrl(): string | null {
-  if (!isFlagOff(process.env.NUDGE_OBSERVABILITY_DASHBOARD ?? "0")) return baseUrl();
   return ingestUrl();
 }
 
 async function send(endpoints: SinkEndpoint[]): Promise<SinkPostResult[]> {
   if (!isEnabled() || endpoints.length === 0) return [];
-  // 기본은 raw → Supabase ingest. 로컬 대시보드 API 는 env 로만 켠다(디버그용).
-  if (!isFlagOff(process.env.NUDGE_OBSERVABILITY_DASHBOARD ?? "0")) {
-    return sendToDashboard(endpoints);
-  }
   return sendRawToIngest(endpoints);
 }
 

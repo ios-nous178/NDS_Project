@@ -5,40 +5,40 @@ import path from "node:path";
 import type { BuildSinglefileHtmlResult } from "@nudge-design/mockup-core/tools/build-html";
 import { recordBuildObservability, recordObservability } from "../src/tools/observability-sink";
 
-// 보안 게이트 회귀 가드("원문은 머신 밖으로 안 나간다"):
-//  - loopback sink → 원문 기본 ON. NUDGE_OBSERVABILITY_ARTIFACTS=0 으로만 끈다. 메타(hash/bytes)는 항상.
-//  - 원격(non-loopback) sink → 기본 OFF. ARTIFACTS=1 + ARTIFACTS_REMOTE=1 둘 다라야 본문이 나간다.
-//  - send() 는 병렬(allSettled) — 한 엔드포인트가 죽어도 나머지 결과가 돌아온다.
+// 유일 sink = Supabase Edge Function `ingest`. 한 번의 POST 로 `{kind:"observability",
+// records:[{path, body}]}` 봉투를 보낸다(supabase/README.md). 이 스위트가 지키는 계약:
+//  - 원문 게이트("원문은 머신 밖으로 안 나간다"): loopback ingest(로컬 supabase)면 기본 ON,
+//    원격(배포 supabase)이면 기본 OFF + ARTIFACTS=1 & ARTIFACTS_REMOTE=1 이라야 본문 송신.
+//  - 수집 실패(POST throw)가 툴 호출을 깨뜨리지 않는다 — endpoint 별 ok:false 로 돌려준다.
 //  - recordObservability 디스패처는 툴 이름으로 라우팅(미지원 툴/이상 result → null).
 
 const ENV_KEYS = [
   "NUDGE_MOCKUP_API_LOG",
   "NUDGE_OBSERVABILITY_LOG",
-  "NUDGE_MOCKUP_API_URL",
-  "NUDGE_DASHBOARD_API_URL",
-  "NUDGE_OBSERVABILITY_API_URL",
+  "NUDGE_CONTEXT_COLLECTION",
+  "NUDGE_TELEMETRY_URL",
+  "NUDGE_TELEMETRY_TOKEN",
   "NUDGE_OBSERVABILITY_ARTIFACTS",
   "NUDGE_OBSERVABILITY_ARTIFACTS_REMOTE",
-  "NUDGE_OBSERVABILITY_TOKEN",
   "NUDGE_MOCKUP_SESSION_ID",
   "NUDGE_AGENT_SESSION_ID",
   "NUDGE_SESSION_ID",
-  "NUDGE_OBSERVABILITY_DASHBOARD",
 ] as const;
 
 const saved: Record<string, string | undefined> = {};
 for (const k of ENV_KEYS) saved[k] = process.env[k];
 
 type Row = Record<string, unknown>;
+type Envelope = { kind?: string; records?: { path: string; body: unknown }[] };
 let posts: { url: string; body: unknown; headers: Record<string, string> }[] = [];
 let tmpDir: string;
 
-function fakeFetch(failPath?: string) {
+function fakeFetch(fail = false) {
   return vi.fn(async (url: string, init: { body: string; headers?: Record<string, string> }) => {
     const body: unknown = JSON.parse(init.body);
     posts.push({ url, body, headers: init.headers ?? {} });
-    if (failPath && url.endsWith(failPath)) throw new Error("boom");
-    return { ok: true, status: 200 } as Response;
+    if (fail) throw new Error("boom");
+    return { ok: true, status: 200, text: async () => "" } as unknown as Response;
   });
 }
 
@@ -58,24 +58,25 @@ function buildResult() {
   } as unknown as BuildSinglefileHtmlResult;
 }
 
-function artifactsRows(): Row[] {
-  const ep = posts.find((p) => p.url.endsWith("/artifacts/import"));
-  return (ep?.body as Row[] | undefined) ?? [];
+/** 단일 ingest 봉투의 records — sink 가 한 번의 POST 로 묶어 보낸다. */
+function records(): { path: string; body: unknown }[] {
+  return (posts[0]?.body as Envelope | undefined)?.records ?? [];
 }
 
-function postBody(pathname: string): Row | undefined {
-  return posts.find((p) => p.url.endsWith(pathname))?.body as Row | undefined;
+function artifactsRows(): Row[] {
+  return (records().find((r) => r.path === "/artifacts/import")?.body as Row[] | undefined) ?? [];
+}
+
+function recordBody(pathname: string): Row | undefined {
+  return records().find((r) => r.path === pathname)?.body as Row | undefined;
 }
 
 beforeEach(() => {
   posts = [];
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "obs-sink-"));
   for (const k of ENV_KEYS) delete process.env[k];
-  process.env.NUDGE_MOCKUP_API_URL = "http://127.0.0.1:9999";
-  // 이 스위트는 dashboard sink 계약(엔드포인트별 POST · 보안 게이트 · auth 헤더)을
-  // 검증한다. send() 기본값은 raw→Google Sheets webhook 으로 바뀌었으므로(임시),
-  // dashboard 경로를 명시적으로 켜서 검증 대상을 고정한다.
-  process.env.NUDGE_OBSERVABILITY_DASHBOARD = "1";
+  // 로컬 Supabase(loopback) ingest 를 가정 — 원문 게이트 기본 ON 경로를 검증 대상으로 고정.
+  process.env.NUDGE_TELEMETRY_URL = "http://127.0.0.1:9999/ingest";
 });
 
 afterEach(() => {
@@ -88,7 +89,7 @@ afterEach(() => {
 });
 
 describe("artifact 원문 게이트", () => {
-  it("loopback 은 기본 ON — 원문을 포함하고 메타(hash/bytes)도 붙는다", async () => {
+  it("loopback ingest 는 기본 ON — 원문을 포함하고 메타(hash/bytes)도 붙는다", async () => {
     vi.stubGlobal("fetch", fakeFetch());
     await recordBuildObservability({
       tool: "build_singlefile_html",
@@ -121,8 +122,8 @@ describe("artifact 원문 게이트", () => {
     expect(JSON.stringify(rows)).not.toContain("ABC123");
   });
 
-  it("원격 sink 는 기본 OFF, ARTIFACTS=1 이어도 본문을 빼고 ARTIFACTS_REMOTE=1 이라야 보낸다", async () => {
-    process.env.NUDGE_MOCKUP_API_URL = "http://10.0.0.5:9999";
+  it("원격 ingest 는 기본 OFF, ARTIFACTS=1 이어도 본문을 빼고 ARTIFACTS_REMOTE=1 이라야 보낸다", async () => {
+    process.env.NUDGE_TELEMETRY_URL = "http://10.0.0.5:9999/ingest";
     vi.stubGlobal("fetch", fakeFetch());
     // env 없음 → 원격 기본 OFF
     await recordBuildObservability({
@@ -153,21 +154,33 @@ describe("artifact 원문 게이트", () => {
   });
 });
 
-describe("send 병렬/내성 + 인증", () => {
-  it("한 엔드포인트가 throw 해도 나머지 결과를 돌려준다", async () => {
-    vi.stubGlobal("fetch", fakeFetch("/events/import"));
+describe("ingest 봉투 + 내성", () => {
+  it("모든 레코드를 한 번의 POST 로 묶어 ingest 봉투(kind:observability)로 보낸다", async () => {
+    vi.stubGlobal("fetch", fakeFetch());
+    await recordBuildObservability({
+      tool: "build_singlefile_html",
+      cwd: tmpDir,
+      result: buildResult(),
+    });
+    expect(posts).toHaveLength(1);
+    expect(posts[0].url).toBe("http://127.0.0.1:9999/ingest");
+    expect((posts[0].body as Envelope).kind).toBe("observability");
+    expect(records().some((r) => r.path === "/mockup-runs/import")).toBe(true);
+  });
+
+  it("POST 가 throw 해도 던지지 않고 endpoint 별 ok:false 결과를 돌려준다", async () => {
+    vi.stubGlobal("fetch", fakeFetch(true));
     const results = await recordBuildObservability({
       tool: "build_singlefile_html",
       cwd: tmpDir,
       result: buildResult(),
     });
     expect(results.length).toBeGreaterThan(1);
-    expect(results.some((r) => r.ok)).toBe(true);
-    expect(results.some((r) => !r.ok && r.path === "/events/import")).toBe(true);
+    expect(results.every((r) => !r.ok)).toBe(true);
   });
 
-  it("NUDGE_OBSERVABILITY_TOKEN 설정 시 Authorization 헤더가 붙는다", async () => {
-    process.env.NUDGE_OBSERVABILITY_TOKEN = "s3cret";
+  it("NUDGE_TELEMETRY_TOKEN 설정 시 Authorization 헤더(anon key)가 붙는다", async () => {
+    process.env.NUDGE_TELEMETRY_TOKEN = "s3cret";
     vi.stubGlobal("fetch", fakeFetch());
     await recordBuildObservability({
       tool: "build_singlefile_html",
@@ -187,7 +200,7 @@ describe("세션 연결", () => {
       result: buildResult(),
     });
 
-    const session = postBody("/sessions/import");
+    const session = recordBody("/sessions/import");
     expect(session?.clientId).toMatch(/^mcp_[a-f0-9]+$/);
     expect(session?.metadata).toMatchObject({
       mockupFile: "out/mockup.html",
@@ -195,8 +208,8 @@ describe("세션 연결", () => {
     });
 
     const sessionId = session?.clientId;
-    expect(postBody("/mockup-runs/import")?.sessionId).toBe(sessionId);
-    expect(postBody("/events/import")?.sessionId).toBe(sessionId);
+    expect(recordBody("/mockup-runs/import")?.sessionId).toBe(sessionId);
+    expect(recordBody("/events/import")?.sessionId).toBe(sessionId);
     expect(artifactsRows().every((r) => r.sessionId === sessionId)).toBe(true);
   });
 
@@ -209,8 +222,8 @@ describe("세션 연결", () => {
       result: buildResult(),
     });
 
-    expect(postBody("/sessions/import")?.clientId).toBe("claude-desktop-session-1");
-    expect(postBody("/mockup-runs/import")?.sessionId).toBe("claude-desktop-session-1");
+    expect(recordBody("/sessions/import")?.clientId).toBe("claude-desktop-session-1");
+    expect(recordBody("/mockup-runs/import")?.sessionId).toBe("claude-desktop-session-1");
   });
 });
 
@@ -223,7 +236,7 @@ describe("recordObservability 디스패처", () => {
       result: buildResult(),
     });
     expect(out && out.length).toBeGreaterThan(0);
-    expect(posts.some((p) => p.url.endsWith("/mockup-runs/import"))).toBe(true);
+    expect(records().some((r) => r.path === "/mockup-runs/import")).toBe(true);
   });
 
   it("미지원 툴이면 null(무동작)", async () => {
