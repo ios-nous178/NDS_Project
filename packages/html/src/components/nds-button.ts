@@ -167,7 +167,8 @@ export class NdsButton extends NdsElement {
 
     // React Button.tsx 의 인라인 CSS 변수 키와 1:1 동일
     const vars: Record<string, string | number> = {
-      "--nds-button-height": `${cfg.height}px`,
+      // 높이는 브랜드가 size별로 override 가능 (지니어트 sm 40·xs 36). 미설정 시 base 토큰. (react 미러)
+      "--nds-button-height": `var(--nds-button-height-${size}, ${cfg.height}px)`,
       "--nds-button-padding-x": `${cfg.px}px`,
       "--nds-button-gap": `${cfg.gap}px`,
       "--nds-button-font-size": `${cfg.fontSize}px`,

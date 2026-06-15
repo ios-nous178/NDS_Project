@@ -255,6 +255,7 @@
         "md",
         "sm",
         "xs",
+        "mini",
         "field"
       ],
       "color": [

@@ -92,6 +92,7 @@ export const sizing = {
     md: 44,
     sm: 42,
     xs: 38,
+    mini: 32,
     field: 48,
   },
   tabs: {

@@ -158,6 +158,8 @@ export const genietTheme: BrandTheme = {
       extraColor: genietGray[500], // #999999 (구 gray[600])
     },
     input: { borderColor: genietGray[300] },
+    // Button 가이드(3047:1032): S 40·XS 36 (base 42·38). Mini 는 base 32 그대로 사용.
+    button: { heightSm: 40, heightXs: 36 },
     // Radius 가이드(3134:2): Card = Shape/LG = 12px. border 1px #ECECEC.
     card: { radius: 12, borderColor: genietGray[200] },
     // Radius 가이드: Modal = Shape/XL = 16px. (그림자는 elevation.shadow[3] = E3 Overlay)

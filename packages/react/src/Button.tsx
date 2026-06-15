@@ -2,7 +2,7 @@ import React from "react";
 import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-design/tokens";
 
 export type ButtonVariant = "solid" | "soft" | "outlined";
-export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
+export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "mini" | "field";
 export type ButtonColor = "primary" | "secondary" | "neutral";
 /**
  * Button shape.
@@ -75,6 +75,14 @@ const sizeConfig = {
     lineHeight: typeScale.caption1.lineHeight,
     iconSize: 18,
     gap: spacing[6],
+  },
+  mini: {
+    height: sizing.button.mini,
+    px: spacing[12],
+    fontSize: typeScale.caption1.fontSize,
+    lineHeight: typeScale.caption1.lineHeight,
+    iconSize: sizing.icon.xs,
+    gap: spacing[4],
   },
   field: {
     height: sizing.button.field,
@@ -432,7 +440,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cx(BUTTON_CLASS, className)}
         style={
           {
-            "--nds-button-height": `${sizeStyle.height}px`,
+            // 높이는 브랜드가 size별로 override 가능 (지니어트 sm 40·xs 36). 미설정 시 base 토큰.
+            "--nds-button-height": `var(--nds-button-height-${size}, ${sizeStyle.height}px)`,
             "--nds-button-padding-x": `${sizeStyle.px}px`,
             "--nds-button-gap": `${sizeStyle.gap}px`,
             "--nds-button-font-size": `${sizeStyle.fontSize}px`,

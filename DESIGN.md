@@ -312,6 +312,7 @@ sizing:
     md: 44px
     sm: 42px
     xs: 38px
+    mini: 32px # 아주 작은 인박·압축 영역 (지니어트 ButtonGuide 3047:1032)
     field: 48px # 폼 옆 버튼 — 인풋 행 높이(input.default 48)와 맞춤
   tabs:
     line:

@@ -259,6 +259,7 @@ export const COMPONENT_ATTRS = {
         "md",
         "sm",
         "xs",
+        "mini",
         "field"
       ],
       "color": [

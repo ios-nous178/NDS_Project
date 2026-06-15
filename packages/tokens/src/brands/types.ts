@@ -382,6 +382,19 @@ export interface ComponentOverrides {
     radius?: ComponentValue;
   };
   /**
+   * Button 높이 size별 override (`--nds-button-height-{size}`). 지니어트 ButtonGuide(3047:1032):
+   * S 40·XS 36 (base 42·38). mini(32)는 base. 미설정 size 는 base sizing.button fallback.
+   */
+  button?: {
+    heightXl?: ComponentValue;
+    heightLg?: ComponentValue;
+    heightMd?: ComponentValue;
+    heightSm?: ComponentValue;
+    heightXs?: ComponentValue;
+    heightMini?: ComponentValue;
+    heightField?: ComponentValue;
+  };
+  /**
    * Badge(Label) 시각 변형. 캐포비 ChipGuide(3782:20558 · Rounded Square):
    *   radius 5 · padding 4/10 · Caption 12/16 · Medium(500) (base 는 bold·radius 4/6).
    *   톤(색)은 ghost 변형 + semantic 색이 이미 캐포비값으로 cascade → 별도 색 override 불필요.

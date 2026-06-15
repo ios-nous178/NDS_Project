@@ -11,12 +11,12 @@
 import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-design/tokens";
 
 export type ButtonVariant = "solid" | "soft" | "outlined";
-export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "field";
+export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "mini" | "field";
 export type ButtonColor = "primary" | "secondary" | "neutral";
 export type ButtonShape = "default" | "pill";
 
 export const BUTTON_VARIANTS: readonly ButtonVariant[] = ["solid", "soft", "outlined"] as const;
-export const BUTTON_SIZES: readonly ButtonSize[] = ["xl", "lg", "md", "sm", "xs", "field"] as const;
+export const BUTTON_SIZES: readonly ButtonSize[] = ["xl", "lg", "md", "sm", "xs", "mini", "field"] as const;
 export const BUTTON_COLORS: readonly ButtonColor[] = ["primary", "secondary", "neutral"] as const;
 export const BUTTON_SHAPES: readonly ButtonShape[] = ["default", "pill"] as const;
 
@@ -65,6 +65,14 @@ export const sizeConfig = {
     lineHeight: typeScale.caption1.lineHeight,
     iconSize: 18,
     gap: spacing[6],
+  },
+  mini: {
+    height: sizing.button.mini,
+    px: spacing[12],
+    fontSize: typeScale.caption1.fontSize,
+    lineHeight: typeScale.caption1.lineHeight,
+    iconSize: sizing.icon.xs,
+    gap: spacing[4],
   },
   field: {
     height: sizing.button.field,
