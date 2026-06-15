@@ -199,8 +199,12 @@ export const genietTheme: BrandTheme = {
       arrowSize: 24,
       arrowColor: genietGray[600], // #777777
     },
-    // 토스트는 Elevation 가이드(3031:6) 의 E1 Subtle 사용 ("작은 토스트")
-    toast: { shadow: "0 2px 6px rgba(221, 221, 221, 0.6)" },
+    // Toast 가이드(1330:2): bg Black/0.92, shadow drop y8·blur24·18% black.
+    // (Elevation 가이드는 토스트를 E1로 분류하지만, 전용 Toast 가이드의 명시 그림자가 우선.)
+    toast: {
+      bg: "rgba(17, 17, 17, 0.92)", // Black(#111)/0.92
+      shadow: "0 8px 24px rgba(0, 0, 0, 0.18)",
+    },
     // Radius 가이드(3134:2): Bottom Sheet = Shape/XL = 16px (상단 모서리만)
     "bottom-sheet": {
       radius: 16,
