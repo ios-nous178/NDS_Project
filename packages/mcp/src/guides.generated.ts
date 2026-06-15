@@ -4935,14 +4935,20 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**아이콘**: `find_icon({ name })` 가 준 **inline SVG** 를 넣는다(이름 문자열·이모지 금지 — 이모지는 emoji-banned 위반). 아이콘 뒤 tint 배경이 필요하면 `--semantic-bg-*`/surface 토큰으로, raw hex 금지.",
       "**라벨**: 4글자 이하 권장(길면 줄바꿈). 색은 tone 토큰(`--semantic-text-*`)만.",
       "**배지**: 미읽음 카운트(숫자) 또는 짧은 라벨('N','NEW'). `Badge` 컴포넌트를 셀 우상단에 absolute 로 얹는다. 셀당 1개. 긴 텍스트 금지.",
-      "**이벤트**: 셀 클릭 → 라우팅. 각 셀에 안정적인 key/data 속성을 둬 핸들러가 구분한다."
+      "**이벤트**: 셀 클릭 → 라우팅. 각 셀에 안정적인 key/data 속성을 둬 핸들러가 구분한다.",
+      "**칩이 아니다 (진입 ≠ 선택)**: 탭하면 화면이 전환되는 \"고민/카테고리 진입\" 그리드는 chip 토글 그룹이 **아니다**. chip 은 폼 안에서 값/필터를 고르는 용도다(→ `pattern:selection-controls`). 진입 그리드는 셀 전체가 라우팅되는 Card 그리드 — 텍스트 칩 wrap 으로 바꾸면 한눈 스캔성과 좌/우 레이아웃 균형을 둘 다 잃는다.",
+      "**단일 활성(선택) 상태가 필요하면 Card 토큰으로**: 진입 그리드가 \"현재 선택된 고민\"을 강조해야 하면 활성 셀의 배경/보더는 `--semantic-bg-brand-subtle` / `--semantic-border-brand-default` 캐스케이드로 — raw hex(틸 등) 박지 말 것. 5개 브랜드가 토큰으로 자동 대응한다.",
+      "**아이콘은 한 그리드 한 스타일**: 모든 셀 아이콘을 동일 스타일 세트로 통일한다(전부 모노 라인 등). 혼색 브랜드 글리프 + 모노 라인 **혼용 금지**. 브랜드 컬러 아이콘이 일부 고민만 커버하면 전체를 단일 모노 세트(예: `Mockup*` 라인 아이콘)로 통일한다."
     ],
     "avoid": [
       "❌ `QuickActionGrid`/`nds-quick-action-grid` 를 찾아 쓰기 — 제거됐다. Card 그리드로 조립한다.",
       "❌ 5칸 배치(어색) — 3 또는 4칸으로. 8개는 4×2.",
       "❌ 아이콘에 이름(\"home\")·이모지 — inline SVG 여야 한다.",
       "❌ 긴 라벨/긴 배지 텍스트, 셀당 배지 2개 이상.",
-      "❌ 간격·배경·radius 를 raw hex/px 로 — Card·gap 토큰만."
+      "❌ 간격·배경·radius 를 raw hex/px 로 — Card·gap 토큰만.",
+      "❌ 진입 그리드를 nds-chip 토글 wrap 으로 대체 — chip 은 폼 선택/필터값용(`pattern:selection-controls`). 스캔성·레이아웃 균형 상실.",
+      "❌ 커스텀 `.tile` div 로 셀 재발명 — Card 셀 grid 가 표준. 토큰 우회·\"DS 채택률\" 착시.",
+      "❌ 한 그리드에 혼색 브랜드 아이콘 + 모노 라인 아이콘 섞기."
     ],
     "_readyMade": {
       "note": "빠른 액션 4칸 그리드 — Card 셀의 CSS grid. 아이콘은 `find_icon({ name })` inline SVG, 셀 배경/보더/radius 는 Card 토큰, 간격은 `--semantic-gap-*`. raw hex/px 금지.",
@@ -5069,6 +5075,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "name": "selection-controls",
     "summary": "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tab(variant=segment) / Dropdown 중 하나로 매핑한다.",
     "rules": [
+      "⓪ **먼저 — '선택'인가 '진입'인가**: 탭하면 화면이 전환되는 카테고리/고민 **진입** 그리드(예: 홈의 건강고민 타일)는 선택 UI 가 아니다 → `pattern:quick-action-grid`(아이콘+라벨 Card 셀 그리드). chip·SelectionButton 으로 만들지 말 것. 아래 ①~⑤ 는 폼 안에서 값/필터를 고르는 **선택**에만 적용.",
       "① 다중 선택 + 짧은 라벨(연령대·시군구·태그·관심사) → SelectChip (`<nds-chip selected interactive>`, 캐포비=노란 채움/검정 텍스트).",
       "② 단일 선택 + 설명 없는 짧은 옵션 2~3개(OS 전체/Android/iOS·성별·노출 구분) → SelectionButtonGroup.",
       "③ 단일 선택 + 설명/아이콘 있는 카드(캠페인 목표·유형·소진 방식) → SelectionCard(mode=single) — 라디오 도트 내장, 커스텀 카드 금지.",
@@ -5076,6 +5083,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "⑤ 단일 선택 옵션 4개 초과 → Dropdown."
     ],
     "avoid": [
+      "진입(탭→화면 전환) 그리드를 chip 토글 wrap 으로 만들기 — 그건 선택이 아니라 네비게이션. 아이콘+라벨 스캔성과 레이아웃 균형을 잃는다 → `pattern:quick-action-grid`.",
       "같은 용도(예: 연령=다중·짧은 라벨, 지역 시군구=다중·짧은 라벨)인데 화면마다 다른 컴포넌트로 만들기 — 둘 다 SelectChip 으로 통일."
     ]
   },

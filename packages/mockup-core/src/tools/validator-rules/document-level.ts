@@ -48,6 +48,34 @@ export function collectDocumentLevelViolations(
     });
   }
 
+  // chip-as-entry-grid (model-guard): nds-chip 을 '타일 그리드'처럼 다수 나열 = '카테고리/고민 진입'
+  //   그리드를 chip 으로 잘못 만든 신호. 진입(탭→화면 전환) 그리드는 pattern:quick-action-grid
+  //   (아이콘+라벨 Card 셀)이고, chip 은 폼 선택/필터값용이다. (회귀: 지니어트 건강고민 아이콘 타일을
+  //   nds-chip 그리드로 바꾼 패착 — 스캔성·레이아웃 균형 상실.) 텍스트-only flex-wrap 다중선택
+  //   (연령/지역/태그)은 정상이므로 '그리드 레이아웃' 또는 '아이콘 단 칩 다수' 신호로만 한정해 오탐을 줄인다.
+  const ENTRY_CHIP_MIN = 6;
+  const seenChipGridParents = new Set<unknown>();
+  $("nds-chip").each((_i, el) => {
+    const $parent = $(el).parent();
+    const parentNode = $parent.get(0);
+    if (!parentNode || seenChipGridParents.has(parentNode)) return;
+    seenChipGridParents.add(parentNode);
+    const chips = $parent.children("nds-chip");
+    if (chips.length < ENTRY_CHIP_MIN) return;
+    const style = ($parent.attr("style") ?? "").toLowerCase();
+    const looksGrid = /grid-template|display\s*:\s*grid/.test(style);
+    const iconChips = chips.filter((_j, c) => $(c).find("svg, [slot='icon']").length > 0).length;
+    if (!looksGrid && iconChips < ENTRY_CHIP_MIN) return;
+    out.push({
+      rule: "chip-as-entry-grid",
+      line: lineNumberAt(source, (parentNode as unknown as { startIndex?: number }).startIndex ?? 0),
+      selector: describeElement(parentNode as unknown as DomElement),
+      detail: `<nds-chip> ${chips.length}개를 ${looksGrid ? "그리드" : "아이콘 타일"}로 나열했습니다 — '카테고리/고민 진입' 그리드를 chip 으로 만든 신호일 수 있습니다.`,
+      suggestion:
+        "탭하면 화면이 전환되는 '카테고리/고민 진입' 그리드는 chip 이 아니라 pattern:quick-action-grid (아이콘+라벨 Card 셀 그리드)로 — 스캔성·레이아웃 균형 회복. 폼 안에서 값/필터를 고르는 선택이면 SelectChip 유지가 맞습니다. get_guide({ topic: 'pattern:quick-action-grid' }) / get_guide({ topic: 'pattern:selection-controls' }) 참조.",
+    });
+  });
+
   const isCashwalkBizAdmin = isPagePatternAdminScope(scope);
 
   if (isCashwalkBizAdmin) {

@@ -41,6 +41,7 @@
  *  - brand-modal-footer-stacked : 모달 footer 두 버튼 세로 스택 (가로 유지 + 라벨 축약)
  *  - primary-cta-overuse        : 페이지 레벨 primary solid nds-button > 1
  *  - chip-overuse               : nds-chip > 8
+ *  - chip-as-entry-grid         : nds-chip ≥ 6 을 그리드/아이콘 타일로 나열 (진입 그리드를 chip 으로 오용 → quick-action-grid)
  *  - card-everything            : nds-card ≥ 5
  *  - repeated-h1                : <h1> ≥ 2
  *  - repeated-h2                : <h2> ≥ 4
@@ -284,6 +285,7 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "primary-cta-per-container": { severity: "warn", kind: "invariant" },
   "primary-cta-overuse": { severity: "warn", kind: "invariant" },
   "chip-overuse": { severity: "warn", kind: "invariant" },
+  "chip-as-entry-grid": { severity: "warn", kind: "model-guard" },
   "card-everything": { severity: "warn", kind: "invariant" },
   "repeated-h1": { severity: "error", kind: "invariant" },
   "repeated-h2": { severity: "warn", kind: "invariant" },
@@ -2223,6 +2225,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "primary-cta-per-container": "layout",
   "primary-cta-overuse": "layout",
   "chip-overuse": "layout",
+  "chip-as-entry-grid": "layout",
   "region-as-chip": "layout",
   "selected-item-add-affordance-duplicated": "layout",
   "selected-item-row-duplicated": "layout",
