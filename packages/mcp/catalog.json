@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T21:08:24.327Z",
+  "generatedAt": "2026-06-14T23:59:54.343Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -8791,7 +8791,8 @@
       "value": "#91CAF6",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#B8DCFF"
+        "cashwalk-biz": "#B8DCFF",
+        "geniet": "#CFEDFF"
       }
     },
     {
@@ -8799,7 +8800,8 @@
       "value": "#67B5F2",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#80BFFF"
+        "cashwalk-biz": "#80BFFF",
+        "geniet": "#A8DDFF"
       }
     },
     {
@@ -8816,7 +8818,8 @@
       "value": "#F1F8FD",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#F5FAFF"
+        "cashwalk-biz": "#F5FAFF",
+        "geniet": "#F0F9FF"
       }
     },
     {
@@ -8834,7 +8837,8 @@
       "value": "#017EE4",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#006FE6"
+        "cashwalk-biz": "#006FE6",
+        "geniet": "#1488D3"
       }
     },
     {
@@ -8842,7 +8846,8 @@
       "value": "#0E71CF",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#0058B8"
+        "cashwalk-biz": "#0058B8",
+        "geniet": "#0E6DAD"
       }
     },
     {
@@ -8850,7 +8855,8 @@
       "value": "#1B65BA",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#00428C"
+        "cashwalk-biz": "#00428C",
+        "geniet": "#0A5287"
       }
     },
     {
@@ -8858,7 +8864,8 @@
       "value": "#0F52A0",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#002D60"
+        "cashwalk-biz": "#002D60",
+        "geniet": "#06375E"
       }
     },
     {
@@ -9150,7 +9157,7 @@
     },
     {
       "name": "--color-gray-500",
-      "value": "#BBBBBB",
+      "value": "#999999",
       "group": "color",
       "brands": [
         "geniet",
@@ -9162,7 +9169,7 @@
     },
     {
       "name": "--color-gray-600",
-      "value": "#999999",
+      "value": "#777777",
       "group": "color",
       "brands": [
         "geniet",
@@ -9174,7 +9181,7 @@
     },
     {
       "name": "--color-gray-700",
-      "value": "#777777",
+      "value": "#555555",
       "group": "color",
       "brands": [
         "geniet",
@@ -9186,7 +9193,7 @@
     },
     {
       "name": "--color-gray-800",
-      "value": "#666666",
+      "value": "#333333",
       "group": "color",
       "brands": [
         "geniet",
@@ -9198,7 +9205,7 @@
     },
     {
       "name": "--color-gray-900",
-      "value": "#333333",
+      "value": "#111111",
       "group": "color",
       "brands": [
         "geniet",
@@ -9214,7 +9221,7 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#C7F0D8",
-        "geniet": "#F1FBF6"
+        "geniet": "#DBF8EA"
       }
     },
     {
@@ -9223,7 +9230,7 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#8CE0B0",
-        "geniet": "#DBF8EA"
+        "geniet": "#BFEFD8"
       }
     },
     {
@@ -9232,7 +9239,7 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#4DD089",
-        "geniet": "#80E9B4"
+        "geniet": "#8AE0BA"
       }
     },
     {
@@ -9249,7 +9256,8 @@
       "value": "#E5F7F4",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#E5F8EE"
+        "cashwalk-biz": "#E5F8EE",
+        "geniet": "#F1FBF6"
       }
     },
     {
@@ -9275,7 +9283,8 @@
       "value": "#005640",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#009240"
+        "cashwalk-biz": "#009240",
+        "geniet": "#149354"
       }
     },
     {
@@ -9283,7 +9292,8 @@
       "value": "#003F2E",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#007030"
+        "cashwalk-biz": "#007030",
+        "geniet": "#0F7440"
       }
     },
     {
@@ -9291,7 +9301,8 @@
       "value": "#002B1E",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#004D20"
+        "cashwalk-biz": "#004D20",
+        "geniet": "#0A5630"
       }
     },
     {
@@ -9346,7 +9357,23 @@
     },
     {
       "name": "--color-mint-100",
-      "value": "#ECF8F9",
+      "value": "#ECF5F9",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-mint-200",
+      "value": "#CAF2F5",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-mint-300",
+      "value": "#B1E5E5",
       "group": "color",
       "brands": [
         "geniet"
@@ -9355,6 +9382,14 @@
     {
       "name": "--color-mint-400",
       "value": "#7ED4D6",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-mint-50",
+      "value": "#F2FAFA",
       "group": "color",
       "brands": [
         "geniet"
@@ -9371,6 +9406,30 @@
     {
       "name": "--color-mint-600",
       "value": "#00A8AC",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-mint-700",
+      "value": "#008286",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-mint-800",
+      "value": "#005A5C",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-mint-900",
+      "value": "#003234",
       "group": "color",
       "brands": [
         "geniet"
@@ -9581,6 +9640,22 @@
       ]
     },
     {
+      "name": "--color-purple-200",
+      "value": "#C5CFFF",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-purple-300",
+      "value": "#9DA8FF",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
       "name": "--color-purple-400",
       "value": "#7A8EFF",
       "group": "color",
@@ -9589,8 +9664,48 @@
       ]
     },
     {
+      "name": "--color-purple-50",
+      "value": "#F2F4FF",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
       "name": "--color-purple-500",
       "value": "#546EFD",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-purple-600",
+      "value": "#3D55DA",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-purple-700",
+      "value": "#2D40B3",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-purple-800",
+      "value": "#1F2D8C",
+      "group": "color",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--color-purple-900",
+      "value": "#131D66",
       "group": "color",
       "brands": [
         "geniet"
@@ -9609,13 +9724,17 @@
       "value": "#FF875D",
       "group": "color",
       "brandValues": {
+        "geniet": "#FFCDD4",
         "runmile": "#FFE9E9"
       }
     },
     {
       "name": "--color-red-300",
       "value": "#FF6B35",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#FFA0AA"
+      }
     },
     {
       "name": "--color-red-400",
@@ -9628,7 +9747,10 @@
     {
       "name": "--color-red-50",
       "value": "#FEE9E6",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#FFF0F2"
+      }
     },
     {
       "name": "--color-red-500",
@@ -9650,17 +9772,26 @@
     {
       "name": "--color-red-700",
       "value": "#E33800",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#D9263F"
+      }
     },
     {
       "name": "--color-red-800",
       "value": "#CB2700",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#B41C2F"
+      }
     },
     {
       "name": "--color-red-900",
       "value": "#A01C00",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "geniet": "#8C0F1E"
+      }
     },
     {
       "name": "--color-status-blue",
@@ -9716,7 +9847,7 @@
         "runmile"
       ],
       "brandValues": {
-        "geniet": "#1FA3F9"
+        "geniet": "#1488D3"
       }
     },
     {
@@ -9736,7 +9867,7 @@
         "geniet"
       ],
       "brandValues": {
-        "geniet": "#49CA89"
+        "geniet": "#18B264"
       }
     },
     {
@@ -9753,7 +9884,8 @@
       "value": "#FFE282",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#FFF0AC"
+        "cashwalk-biz": "#FFF0AC",
+        "geniet": "#FFF3D0"
       }
     },
     {
@@ -9761,7 +9893,8 @@
       "value": "#FFD84F",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#FFE673"
+        "cashwalk-biz": "#FFE673",
+        "geniet": "#FFE489"
       }
     },
     {
@@ -9778,7 +9911,8 @@
       "value": "#FFFAE8",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#FFFEF5"
+        "cashwalk-biz": "#FFFEF5",
+        "geniet": "#FFFBE6"
       }
     },
     {
@@ -9804,7 +9938,8 @@
       "value": "#E08200",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#FEAF01"
+        "cashwalk-biz": "#FEAF01",
+        "geniet": "#CC8400"
       }
     },
     {
@@ -9812,7 +9947,8 @@
       "value": "#C06800",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#FD9B02"
+        "cashwalk-biz": "#FD9B02",
+        "geniet": "#996300"
       }
     },
     {
@@ -9820,7 +9956,8 @@
       "value": "#9B5000",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#FC8703"
+        "cashwalk-biz": "#FC8703",
+        "geniet": "#664200"
       }
     },
     {
@@ -10541,7 +10678,7 @@
     },
     {
       "name": "--nds-chip-selected-background",
-      "value": "#48C2C5",
+      "value": "#00A8AC",
       "group": "nds",
       "brands": [
         "geniet",
@@ -10555,7 +10692,7 @@
     },
     {
       "name": "--nds-chip-selected-border",
-      "value": "#48C2C5",
+      "value": "#00A8AC",
       "group": "nds",
       "brands": [
         "geniet",
@@ -11307,7 +11444,7 @@
         "trost"
       ],
       "brandValues": {
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "trost": "#333333"
       }
     },
@@ -11503,7 +11640,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFD200",
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#FFF42E"
       }
@@ -11514,7 +11651,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFFAE5",
-        "geniet": "#ECF8F9",
+        "geniet": "#F2FAFA",
         "runmile": "#FFF7F5",
         "trost": "#FFF8B8"
       }
@@ -11554,7 +11691,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FAFAFA",
-        "geniet": "#F5F5F5",
+        "geniet": "#FAFAFA",
         "runmile": "#FFFFFF",
         "trost": "#FFFFFF"
       }
@@ -11576,7 +11713,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFFAE5",
-        "geniet": "#FFF8DF",
+        "geniet": "#FFFBE6",
         "trost": "#FFF8E6"
       }
     },
@@ -11586,7 +11723,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFF5F5",
-        "geniet": "#FFEBEE",
+        "geniet": "#FFF0F2",
         "runmile": "#FFE9E9"
       }
     },
@@ -11596,7 +11733,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFFAE5",
-        "geniet": "#E4F5FF",
+        "geniet": "#F0F9FF",
         "runmile": "#FFF7F5",
         "trost": "#EDF0FF"
       }
@@ -11631,7 +11768,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFD200",
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#FFE600"
       }
@@ -11642,7 +11779,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#CCCCCC",
+        "geniet": "#DDDDDD",
         "runmile": "#E5E8EB",
         "trost": "#D8D8D8"
       }
@@ -11663,7 +11800,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFD200",
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#4968FF"
       }
@@ -11674,7 +11811,6 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#EEEEEE",
-        "geniet": "#DDDDDD",
         "runmile": "#D1D6DB",
         "trost": "#E5E5E5"
       }
@@ -11706,7 +11842,6 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#BBBBBB",
         "runmile": "#B0B8C1",
         "trost": "#979797"
       }
@@ -11716,7 +11851,6 @@
       "value": "#F5F5F5",
       "group": "semantic",
       "brandValues": {
-        "geniet": "#ECECEC",
         "runmile": "#E5E8EB",
         "trost": "#F2F2F2"
       }
@@ -11751,7 +11885,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFD200",
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#FFF42E"
       }
@@ -11762,7 +11896,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#CCCCCC",
+        "geniet": "#DDDDDD",
         "runmile": "#E5E8EB",
         "trost": "#E5E5E5"
       }
@@ -11773,7 +11907,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFC400",
-        "geniet": "#00A8AC",
+        "geniet": "#008286",
         "runmile": "#FF805C",
         "trost": "#FFE600"
       }
@@ -11794,7 +11928,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#CCCCCC",
+        "geniet": "#DDDDDD",
         "runmile": "#D1D6DB"
       }
     },
@@ -11824,7 +11958,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFFEF5",
-        "geniet": "#FAFAFA",
+        "geniet": "#F2FAFA",
         "runmile": "#FFF7F5",
         "trost": "#FFF8B8"
       }
@@ -11835,7 +11969,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FEAF01",
-        "geniet": "#00A8AC",
+        "geniet": "#005A5C",
         "runmile": "#D33E20",
         "trost": "#E6D200"
       }
@@ -11846,7 +11980,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#111111",
-        "geniet": "#333333",
+        "geniet": "#F2FAFA",
         "runmile": "#221E1F",
         "trost": "#F6F7FF"
       }
@@ -11857,7 +11991,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#CCCCCC",
+        "geniet": "#ECECEC",
         "runmile": "#E5E8EB",
         "trost": "#E5E5E5"
       }
@@ -11868,7 +12002,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#333333",
-        "geniet": "#666666",
+        "geniet": "#ECF5F9",
         "runmile": "#333D4B",
         "trost": "#EDF0FF"
       }
@@ -11890,7 +12024,6 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#E7E7E7",
-        "geniet": "#DDDDDD",
         "runmile": "#D1D6DB",
         "trost": "#E5E5E5"
       }
@@ -11923,7 +12056,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#111111",
-        "geniet": "#00A8AC",
+        "geniet": "#008286",
         "runmile": "#FF805C",
         "trost": "#FFE600"
       }
@@ -11965,7 +12098,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#111111",
-        "geniet": "#666666",
+        "geniet": "#555555",
         "runmile": "#4E5968"
       }
     },
@@ -11983,7 +12116,7 @@
       "value": "#FFFFFF",
       "group": "semantic",
       "brandValues": {
-        "geniet": "#666666",
+        "geniet": "#555555",
         "runmile": "#4E5968"
       }
     },
@@ -11993,7 +12126,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFFFFF",
-        "geniet": "#FFFFFF",
+        "geniet": "#00A8AC",
         "runmile": "#FFFFFF",
         "trost": "#4968FF"
       }
@@ -12047,7 +12180,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFD200",
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#FFF42E"
       }
@@ -12068,7 +12201,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FFC400",
-        "geniet": "#00A8AC",
+        "geniet": "#008286",
         "runmile": "#E84A28",
         "trost": "#FFE600"
       }
@@ -12079,7 +12212,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FEAF01",
-        "geniet": "#00A8AC",
+        "geniet": "#005A5C",
         "runmile": "#D33E20",
         "trost": "#E6D200"
       }
@@ -12095,7 +12228,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#333333",
-        "geniet": "#666666",
+        "geniet": "#333333",
         "runmile": "#333D4B",
         "trost": "#333333"
       }
@@ -12219,7 +12352,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#BBBBBB",
+        "geniet": "#CCCCCC",
         "runmile": "#D1D6DB"
       }
     },
@@ -12241,6 +12374,7 @@
       "value": "#666666",
       "group": "semantic",
       "brandValues": {
+        "geniet": "#555555",
         "runmile": "#4E5968",
         "trost": "#606060"
       }
@@ -12272,7 +12406,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#00CC5B",
-        "geniet": "#49CA89",
+        "geniet": "#18B264",
         "trost": "#00BC78"
       }
     },
@@ -12282,7 +12416,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#333333",
-        "geniet": "#333333",
+        "geniet": "#111111",
         "runmile": "#221E1F",
         "trost": "#333333"
       }
@@ -12297,7 +12431,6 @@
       "value": "#FAFAFA",
       "group": "semantic",
       "brandValues": {
-        "geniet": "#F5F5F5",
         "runmile": "#F9FAFB",
         "trost": "#F6F6F6"
       }
@@ -12341,7 +12474,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#111111",
-        "geniet": "#48C2C5",
+        "geniet": "#00A8AC",
         "runmile": "#FF5B37",
         "trost": "#4968FF"
       }
@@ -12362,7 +12495,6 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#666666",
-        "geniet": "#666666",
         "runmile": "#6B7684",
         "trost": "#979797"
       }
@@ -12373,7 +12505,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
-        "geniet": "#BBBBBB",
+        "geniet": "#CCCCCC",
         "runmile": "#D1D6DB"
       }
     },
@@ -12467,7 +12599,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FD9B02",
-        "geniet": "#00A8AC",
+        "geniet": "#008286",
         "runmile": "#FF5B37",
         "trost": "#FF9D00"
       }
@@ -12478,7 +12610,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#BBBBBB",
-        "geniet": "#BBBBBB",
+        "geniet": "#CCCCCC",
         "runmile": "#B0B8C1"
       }
     },
@@ -12522,7 +12654,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#FD9B02",
-        "geniet": "#FFA500",
+        "geniet": "#FFB700",
         "trost": "#FF9D00"
       }
     },
@@ -12543,7 +12675,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#006FE6",
-        "geniet": "#1FA3F9",
+        "geniet": "#1488D3",
         "runmile": "#007AFF",
         "trost": "#4968FF"
       }
@@ -12572,7 +12704,7 @@
       "value": "#666666",
       "group": "semantic",
       "brandValues": {
-        "geniet": "#777777",
+        "geniet": "#555555",
         "runmile": "#4E5968",
         "trost": "#606060"
       }

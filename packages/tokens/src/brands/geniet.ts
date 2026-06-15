@@ -121,27 +121,27 @@ export const genietTheme: BrandTheme = {
       navLabelFontSize: 10,
       navLabelLineHeight: 12,
       navActiveLabelWeight: "700",
-      companyColor: genietGray[600],
-      mutedColor: genietGray[700],
-      extraColor: genietGray[600],
+      companyColor: genietGray[500], // #999999 (gray 램프 리넘버: 구 gray[600])
+      mutedColor: genietGray[600], // #777777 (구 gray[700])
+      extraColor: genietGray[500], // #999999 (구 gray[600])
     },
     input: { borderColor: genietGray[300] },
     // DESIGN.md card-default — 8px radius, 1px #ECECEC border
     card: { radius: 8, borderColor: genietGray[200] },
     // DESIGN.md — 8px radius, Material 3-layer shadow 는 elevation.shadow[3]
     modal: { radius: 8 },
-    // DESIGN.md chip-active — selected = primary mint + 흰색
+    // DESIGN.md chip-active — selected = brand action 색 (mint/600) + 흰색
     chip: {
-      selectedBackground: genietMint[500],
+      selectedBackground: genietMint[600],
       selectedText: genietNeutral.white,
-      selectedBorder: genietMint[500],
+      selectedBorder: genietMint[600],
     },
-    // Geniet 패턴 — track gray/200, active mint
+    // Geniet 패턴 — track gray/200, active = brand mint/600
     toggle: {
       trackW: 40,
       trackH: 24,
       trackBg: genietGray[200],
-      trackActiveBg: genietMint[500],
+      trackActiveBg: genietMint[600],
     },
     toast: { shadow: "0 2px 6px rgba(0, 0, 0, 0.15)" },
     // DESIGN.md — 18px 상단 radius (rounded-t-[18px])

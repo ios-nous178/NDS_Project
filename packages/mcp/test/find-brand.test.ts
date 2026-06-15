@@ -35,7 +35,7 @@ describe("find_token brand scoping", () => {
       brand?: string;
     }>;
     expect(g.name).toBe("--semantic-button-bg-default");
-    expect(g.value).toBe("#48C2C5"); // geniet
+    expect(g.value).toBe("#00A8AC"); // geniet — 브랜드 액션 색 = mint/600
     expect(g.baseValue).toBe("#2B96ED"); // nudge base
     expect(g.brand).toBe("geniet");
   });

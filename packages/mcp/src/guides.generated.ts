@@ -703,7 +703,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "color='neutral' + variant='solid' 은 **brand 별로 다름** — base/NudgeEAP·Trost·Geniet·Runmile 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)는 neutral solid = #111 검정 CTA(Figma Neutral tone)로 정당** — 캐포비 한정 예외(글자는 fill 명도 대비 자동: 검정 fill→흰글자).",
       "**캐포비(cashwalk-biz)는 Secondary tone 이 없음** — Figma ButtonGuide(3098:1032) tone = Primary + Neutral 둘뿐. 캐포비 검정/회색 CTA 는 반드시 `color=\"neutral\"` (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). `color=\"secondary\"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡음. (secondary 는 다른 브랜드 전용 tone)",
       "Geniet 브랜드에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
-      "Geniet Solid/Secondary 는 #333333(gray-900) dark inverse 패턴 + 흰 텍스트 — 다른 브랜드의 옅은 톤 secondary 와 다름. 'dark fill' 이 의도된 결과.",
+      "Geniet Solid/Secondary 는 옅은 mint subtle(#F2FAFA) 배경 + brand mint(#00A8AC) 텍스트 — 다른 브랜드 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)",
       "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
       "다른 페이지로 이동하는 CTA라고 해서 모든 Button에 화살표 아이콘을 붙이지 말 것. ArrowNext/ChevronRight 류 아이콘은 대표 전진 액션 1개에만 사용.",
       "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
@@ -4245,7 +4245,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "examples": [
       {
         "verdict": "good",
-        "source": "{ \"screen\": { \"brand\": \"geniet\", \"surface\": \"app\", \"intent\": \"리뷰 상세 — 평점·본문·도움돼요\" }, \"tree\": [ { \"component\": \"Card\", \"role\": \"리뷰 본문\", \"tokens\": [\"--semantic-bg-default\",\"--semantic-text-default\"], \"children\": [ { \"component\": \"Button\", \"role\": \"primary CTA\", \"props\": { \"color\": \"secondary\" }, \"rationale\": \"Geniet secondary = dark inverse\" } ] } ], \"decisions\": [\"primary CTA 1개만\", \"raw hex 없음 — 전부 --semantic-*\"] }",
+        "source": "{ \"screen\": { \"brand\": \"geniet\", \"surface\": \"app\", \"intent\": \"리뷰 상세 — 평점·본문·도움돼요\" }, \"tree\": [ { \"component\": \"Card\", \"role\": \"리뷰 본문\", \"tokens\": [\"--semantic-bg-default\",\"--semantic-text-default\"], \"children\": [ { \"component\": \"Button\", \"role\": \"primary CTA\", \"props\": { \"color\": \"primary\" }, \"rationale\": \"Geniet primary CTA = brand mint/600 (#00A8AC)\" } ] } ], \"decisions\": [\"primary CTA 1개만\", \"raw hex 없음 — 전부 --semantic-*\"] }",
         "caption": "의도·컴포넌트·시멘틱 토큰 이름·근거만. 좌표/색값/px 없음. component 는 DS 이름 또는 nds-tag."
       },
       {

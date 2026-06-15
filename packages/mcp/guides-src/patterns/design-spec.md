@@ -6,7 +6,7 @@ metrics:
   semanticTokensOnly: true
 examples:
   - verdict: good
-    source: '{ "screen": { "brand": "geniet", "surface": "app", "intent": "리뷰 상세 — 평점·본문·도움돼요" }, "tree": [ { "component": "Card", "role": "리뷰 본문", "tokens": ["--semantic-bg-default","--semantic-text-default"], "children": [ { "component": "Button", "role": "primary CTA", "props": { "color": "secondary" }, "rationale": "Geniet secondary = dark inverse" } ] } ], "decisions": ["primary CTA 1개만", "raw hex 없음 — 전부 --semantic-*"] }'
+    source: '{ "screen": { "brand": "geniet", "surface": "app", "intent": "리뷰 상세 — 평점·본문·도움돼요" }, "tree": [ { "component": "Card", "role": "리뷰 본문", "tokens": ["--semantic-bg-default","--semantic-text-default"], "children": [ { "component": "Button", "role": "primary CTA", "props": { "color": "primary" }, "rationale": "Geniet primary CTA = brand mint/600 (#00A8AC)" } ] } ], "decisions": ["primary CTA 1개만", "raw hex 없음 — 전부 --semantic-*"] }'
     caption: 의도·컴포넌트·시멘틱 토큰 이름·근거만. 좌표/색값/px 없음. component 는 DS 이름 또는 nds-tag.
   - verdict: bad
     source: '{ "tree": [ { "component": "Button", "props": { "background": "#1A1A1A" }, "x": 24, "y": 600 } ] }'
