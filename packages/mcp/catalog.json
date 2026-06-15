@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T01:28:04.615Z",
+  "generatedAt": "2026-06-15T02:06:17.501Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -4694,33 +4694,6 @@
         "max",
         "size",
         "value"
-      ]
-    },
-    {
-      "name": "QuickActionGrid",
-      "props": [
-        {
-          "name": "actions",
-          "optional": false,
-          "type": "QuickAction[]"
-        },
-        {
-          "name": "columns",
-          "optional": true,
-          "type": "2 | 3 | 4"
-        },
-        {
-          "name": "gap",
-          "optional": true,
-          "type": "number"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/QuickActionGrid.d.ts",
-      "htmlTag": "nds-quick-action-grid",
-      "htmlObservedAttrs": [
-        "actions",
-        "columns",
-        "gap"
       ]
     },
     {
@@ -13493,7 +13466,6 @@
     "nds-price-tag",
     "nds-product-card",
     "nds-progress-bar",
-    "nds-quick-action-grid",
     "nds-quick-menu",
     "nds-radio",
     "nds-region-row",
@@ -14509,15 +14481,6 @@
         "max",
         "size",
         "value"
-      ]
-    },
-    {
-      "tag": "nds-quick-action-grid",
-      "attrs": {},
-      "observedAttrs": [
-        "actions",
-        "columns",
-        "gap"
       ]
     },
     {

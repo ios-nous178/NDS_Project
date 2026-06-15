@@ -20,3 +20,6 @@ chromatic.log
 
 # MCP transcript 피드백 캡처 커서(로컬 관측 아티팩트)
 .ds-feedback-cursor.json
+
+# git worktrees (절대 커밋 금지 — 순환 gitlink)
+.claude/worktrees/

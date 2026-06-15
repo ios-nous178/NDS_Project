@@ -8,11 +8,6 @@
     },
     {
       "surface": "inventory",
-      "name": "Header",
-      "reason": "TODO — 브랜드 셸 성격이라 inventory 분류 보류. 결정 후 등록 또는 사유 확정."
-    },
-    {
-      "surface": "inventory",
       "name": "BrandLogo",
       "reason": "TODO — 게이트 도입 전 inventory 미등록. 등록 대기."
     },

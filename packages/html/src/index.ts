@@ -187,7 +187,6 @@ export { NdsSummaryCard } from "./components/nds-summary-card.js";
 export { NdsChatBubble } from "./components/nds-chat-bubble.js";
 export type { ChatRole, ChatGroupPosition } from "./components/nds-chat-bubble.js";
 
-export { NdsQuickActionGrid } from "./components/nds-quick-action-grid.js";
 export { NdsQuickMenu } from "./components/nds-quick-menu.js";
 
 export { NdsLikertScale } from "./components/nds-likert-scale.js";

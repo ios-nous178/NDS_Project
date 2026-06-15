@@ -79,7 +79,7 @@ export const tiStyles = `
   :where(.${TI_INPUT_CLASS}::placeholder) { color: ${cv.input.placeholder}; }
 
   /* 추가 버튼 — 입력칸에 붙는 정사각 affordance: 높이/라운드는 입력 슬롯을 그대로 추종
-     (캐포비 40/4, base 48/8). 색은 button 시멘틱(검정 채움 CTA). */
+     (캐포비 40/4, base 48/8). 색은 button primary(추가 어포던스). */
   :where(.${TI_ADD_CLASS}) {
     flex: 0 0 auto;
     width: var(--nds-input-height, ${sizing.input.default}px);
@@ -89,9 +89,9 @@ export const tiStyles = `
     justify-content: center;
     border: none;
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    /* 캐포비는 Secondary tone 부재 → 검정 neutral 로 통일(브랜드 슬롯 override). 타 브랜드 base secondary. */
-    background: var(--nds-tag-input-add-bg, ${cv.button.bgSecondary});
-    color: var(--nds-tag-input-add-color, ${cv.button.textSecondary});
+    /* 기본 primary 채움(추가 어포던스). 캐포비는 primary(yellow)를 CTA 로 안 써 neutral(#111)로 브랜드 슬롯 override. */
+    background: var(--nds-tag-input-add-bg, ${cv.button.bgDefault});
+    color: var(--nds-tag-input-add-color, ${cv.button.textDefault});
     cursor: pointer;
     transition: background-color ${transition.default}, opacity ${transition.default};
   }

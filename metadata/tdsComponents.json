@@ -325,7 +325,7 @@
       "platforms": ["mobile", "rn"],
       "category": "layout",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/grid-list/",
-      "nds": "QuickActionGrid",
+      "nds": "",
       "figmaByBrand": {}
     },
     {

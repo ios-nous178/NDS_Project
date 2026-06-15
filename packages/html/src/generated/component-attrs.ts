@@ -1012,14 +1012,6 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
-  "nds-quick-action-grid": {
-    "observedAttributes": [
-      "actions",
-      "columns",
-      "gap"
-    ],
-    "enums": {}
-  },
   "nds-quick-menu": {
     "observedAttributes": [
       "fixed",

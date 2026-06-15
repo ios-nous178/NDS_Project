@@ -85,7 +85,6 @@ export * from "./PhoneInput.js";
 export * from "./Sparkline.js";
 export * from "./Text.js";
 export * from "./Heading.js";
-export * from "./QuickActionGrid.js";
 export * from "./QuickMenu.js";
 export * from "./TagInput.js";
 export * from "./AvatarGroup.js";
