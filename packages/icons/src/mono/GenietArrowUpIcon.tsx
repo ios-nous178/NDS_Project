@@ -16,9 +16,7 @@ export const GenietArrowUpIcon = React.forwardRef<SVGSVGElement, GenietArrowUpIc
       color={color}
       {...props}
     >
-      <g fill="none" fillRule="evenodd">
-<path d="m6.603 13.653 4.89-4.95a.598.598 0 0 1 .846-.008l5.09 4.95a.6.6 0 1 1-.836.86l-4.665-4.534-4.471 4.526a.6.6 0 1 1-.854-.844z" fill="currentColor" fillRule="nonzero"/>
-    </g>
+      <path fill="currentColor" d="M4.4 16.1a.849.849 0 0 1 0-1.2l7-7a.849.849 0 0 1 1.2 0l7 7a.849.849 0 1 1-1.2 1.2L12 9.702l-6.4 6.4a.849.849 0 0 1-1.2 0Z"/>
     </svg>
   )
 );

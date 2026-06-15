@@ -1,0 +1,45 @@
+import React from "react";
+
+export interface GenietInviteIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietInviteIcon = React.forwardRef<SVGSVGElement, GenietInviteIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#a)">
+    <path fill="url(#b)" d="M16.757 33.79c9.255 0 16.758-7.502 16.758-16.757 0-9.255-7.503-16.758-16.758-16.758C7.502.275 0 7.778 0 17.033 0 26.288 7.503 33.79 16.757 33.79Z"/>
+    <path fill="currentColor" fillRule="evenodd" d="M16.362 18.145c-6.095.297-8.076 4.247-7.878 6.304.253 2.608 15.613 3.026 16.504 0 .22-.759-.715-6.227-8.626-6.305Z" clipRule="evenodd"/>
+    <path fill="currentColor" d="M16.735 16.769a4.128 4.128 0 0 0 4.127-4.126 4.128 4.128 0 0 0-4.127-4.126 4.128 4.128 0 0 0-4.126 4.126 4.128 4.128 0 0 0 4.126 4.126Z"/>
+    <path fill="url(#c)" d="M29.53 10.937A5.468 5.468 0 1 0 29.53 0a5.468 5.468 0 0 0 0 10.937Z"/>
+    <path fill="currentColor" d="M31.832 4.687h-1.508V3.168a.763.763 0 0 0-.77-.759c-.43 0-.77.341-.77.76v1.518H27.22a.77.77 0 0 0-.77.759c0 .418.341.76.77.76h1.563v1.55c0 .419.34.76.77.76s.77-.341.77-.76v-1.55h1.508a.77.77 0 0 0 .77-.76.763.763 0 0 0-.77-.76Z"/>
+  </g>
+  <defs>
+    <linearGradient id="b" x1="3.807" x2="32.986" y1="7.559" y2="28.905" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00C2FF"/>
+      <stop offset=".87" stop-color="#00A4FF"/>
+      <stop offset="1" stop-color="#009FFF"/>
+    </linearGradient>
+    <linearGradient id="c" x1="25.119" x2="33.943" y1="2.234" y2="8.692" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFD96A"/>
+      <stop offset=".39" stop-color="#FFCF4C"/>
+      <stop offset="1" stop-color="#FFBD15"/>
+    </linearGradient>
+    <clipPath id="a">
+      <path fill="currentColor" d="M0 0h35v33.779H0z"/>
+    </clipPath>
+  </defs>
+    </svg>
+  )
+);
+
+GenietInviteIcon.displayName = "GenietInviteIcon";

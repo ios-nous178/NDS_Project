@@ -1,0 +1,25 @@
+import React from "react";
+
+export interface GenietCalendarIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietCalendarIcon = React.forwardRef<SVGSVGElement, GenietCalendarIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path fill="currentColor" d="M17 1.75a3 3 0 0 1 3 3v13a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3v-13a3 3 0 0 1 3-3h14Zm0 1.5H3a1.5 1.5 0 0 0-1.5 1.5v13a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5v-13a1.5 1.5 0 0 0-1.5-1.5Z"/>
+  <path fill="currentColor" d="M1.18 8.556h17.802V7H1.18v1.556ZM5.028 0c.43 0 .778.336.778.75V4.6c0 .414-.349.75-.778.75a.764.764 0 0 1-.778-.75V.75c0-.414.348-.75.778-.75Zm10 0c.43 0 .778.336.778.75V4.6c0 .414-.349.75-.778.75a.764.764 0 0 1-.778-.75V.75c0-.414.348-.75.778-.75Z"/>
+    </svg>
+  )
+);
+
+GenietCalendarIcon.displayName = "GenietCalendarIcon";

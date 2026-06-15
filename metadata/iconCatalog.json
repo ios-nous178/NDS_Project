@@ -377,6 +377,11 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietArrowRightLineIcon",
+      "kebab": "geniet-arrow-right-line",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietArrowRightStepperIcon",
       "kebab": "geniet-arrow-right-stepper",
       "brand": "geniet"
@@ -392,6 +397,11 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietCalendarIcon",
+      "kebab": "geniet-calendar",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietCashreviewIcon",
       "kebab": "geniet-cashreview",
       "brand": "geniet"
@@ -399,6 +409,11 @@
     {
       "name": "GenietCheckcircleIcon",
       "kebab": "geniet-checkcircle",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietCloverIcon",
+      "kebab": "geniet-clover",
       "brand": "geniet"
     },
     {
@@ -432,6 +447,11 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietInviteIcon",
+      "kebab": "geniet-invite",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietLoginIcon",
       "kebab": "geniet-login",
       "brand": "geniet"
@@ -442,8 +462,18 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietLottomachineIcon",
+      "kebab": "geniet-lottomachine",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietMenuIcon",
       "kebab": "geniet-menu",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietMoneypouchIcon",
+      "kebab": "geniet-moneypouch",
       "brand": "geniet"
     },
     {
@@ -454,6 +484,11 @@
     {
       "name": "GenietPlayIcon",
       "kebab": "geniet-play",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietQuizIcon",
+      "kebab": "geniet-quiz",
       "brand": "geniet"
     },
     {
@@ -474,6 +509,16 @@
     {
       "name": "GenietSearchIcon",
       "kebab": "geniet-search",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietShoeIcon",
+      "kebab": "geniet-shoe",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietStarIcon",
+      "kebab": "geniet-star",
       "brand": "geniet"
     },
     {
