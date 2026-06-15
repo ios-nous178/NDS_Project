@@ -73,7 +73,7 @@ import { captureTelemetry } from "./tools/telemetry-egress.js";
 import { captureTranscriptFeedback } from "./tools/feedback-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
-import { getGuide, listFigmaSyncStatus } from "./tools/guides.js";
+import { getGuide, listFigmaSyncStatus, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { recordObservability } from "./tools/observability-sink.js";
@@ -88,9 +88,6 @@ import {
   principlesCalledAt,
   visualRefEmitted,
 } from "./tools/session-state.js";
-
-const VISUAL_REFERENCE_QUESTION =
-  "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요.";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

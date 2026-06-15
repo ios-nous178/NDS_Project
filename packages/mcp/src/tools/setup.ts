@@ -32,7 +32,7 @@ import {
   type IntentRouting,
 } from "../guides.js";
 import type { BrandDef, Manifest, McpbManifest, PackageMeta } from "../types/manifest.js";
-import { createAgentsMd, createClaudeMd } from "./guides.js";
+import { createAgentsMd, createClaudeMd, VISUAL_REFERENCE_QUESTION } from "./guides.js";
 import { ensureInspectorInMainTsx } from "./inspector-installer.js";
 import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
 
@@ -691,8 +691,8 @@ function getSetupInstructionsHtml(args: { brand?: string; tgzDir?: string }) {
       "[good] source=<figma-url-or-image-name> caption=<why this is the target tone>\n" +
       "[bad] source=<figma-url-or-image-name> caption=<what to avoid>\n",
     note:
-      "프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 코드 작성 전에 항상 사용자에게 확인 질문: " +
-      '"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
+      "프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 코드 작성 전에 항상 사용자에게 확인 질문(레퍼런스+영역 함께): " +
+      '"' + VISUAL_REFERENCE_QUESTION + '" ' +
       "또한 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 " +
       '"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?" 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지는 말 것. ' +
       "references.md 또는 .references/ 가 없으면 build_singlefile_html 이 missing-visual-references 로 빌드를 차단한다.",

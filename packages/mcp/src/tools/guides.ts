@@ -144,9 +144,19 @@ function resolvePatternReferenceImages(
   });
 }
 
+/**
+ * 첫 응답 게이트 질문(SSOT) — 목업/화면 생성 요청 시 **레퍼런스(①)와 화면 영역(②)을 한 번에**
+ * 묻고 멈춘다. server.ts(requiredFirstResponseQuestion) · setup.ts · ENTRY_TOOL_ADVISORY 가 공유.
+ * 영역(admin/backoffice/service)은 레퍼런스와 동급 — 틀리면 DS vs antd 자체가 어긋난다.
+ */
+export const VISUAL_REFERENCE_QUESTION =
+  "두 가지만 먼저 확인할게요. ① 시각 기준 — Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료로 진행해도 될지, 정답/오답 레퍼런스가 있으면 함께(정답 1-2장·피해야 할 오답 1-2장 + 각 1줄 캡션) 알려 주세요. ② 화면 영역 — 이 화면이 (a) 외부 제공 B2B 어드민[Nudge DS], (b) 사내 백오피스·운영툴/CMS[antd v5], (c) 일반 서비스(앱/웹)[Nudge DS] 중 무엇인가요? 캐포비처럼 어드민·서비스가 함께 있는 브랜드면 어느 쪽인지, 어드민이면 페이지패턴 5종(onboarding/dashboard/list/detail/form) 중 어디에 가까운지도 알려 주세요.";
+
 export const ENTRY_TOOL_ADVISORY =
-  "FIRST RESPONSE GATE: If the user asks to create, generate, revise, or build any mockup/screen/page, ask for visual references before any tool lookup or code work. " +
-  'Use this exact question and stop: "시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요." ' +
+  "FIRST RESPONSE GATE: If the user asks to create, generate, revise, or build any mockup/screen/page, ask BOTH (1) visual references AND (2) the screen area together in ONE message, then stop — before any tool lookup or code work. Never ask only references and start building; the area question (admin/backoffice/service) is co-equal because getting it wrong picks the wrong design system entirely (DS vs antd). " +
+  'Use this exact question and stop: "' +
+  VISUAL_REFERENCE_QUESTION +
+  '" ' +
   "시각 소스 신뢰 위계: **사용자가 채팅에 붙여넣은 스크린샷·이미지는 레이아웃·구성·의도 참고용으로만** 쓰고, 정확한 색/여백/치수/컴포넌트 선택의 근거로 삼지 마세요(거칠고 비공식적인 자료라 그대로 베끼면 회귀의 원인). 픽셀·색·치수·매트릭스의 SSOT 는 **MCP에 저장된 레퍼런스**(get_guide 의 references[].imageAbsolutePath · figmaNodeUrl)이며 더 신뢰합니다 — 사용자 스크린샷과 MCP 레퍼런스가 어긋나면 **MCP 레퍼런스가 우선**입니다. " +
   "Before creating/editing mockup files, do a shallow current-workspace collision check only; if an obvious same-PRD/same-screen work folder is found, ask whether to create a v2 instead and stop. Do not modify the existing folder without that answer. Do not exhaustive-search. " +
   "Every completed mockup response must include the final artifact full absolute path, not only a relative dist/index.html path. " +
@@ -154,8 +164,7 @@ export const ENTRY_TOOL_ADVISORY =
   "DS 레포 소스 수정, git commit/push, GitHub 레포 변경, npm publish 같은 작업은 이 MCP의 역할이 아닙니다. " +
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
   "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile) 컴포넌트만 노출합니다. " +
-  "운영자 화면(어드민/CMS/운영툴/백오피스)이라면 영역을 추측하지 말고 사용자 확답부터: " +
-  "사내 백오피스면 antd v5 + get_guide({ topic: 'backoffice' }), 외부 제공(b2b) 어드민이면 " +
+  "위 게이트 ②(영역) 답에 따라 라우팅(추측 금지): 사내 백오피스/운영툴이면 antd v5 + get_guide({ topic: 'backoffice' }), 외부 제공(b2b) 어드민이면 " +
   "하드게이트 브랜드(cashwalk-biz/nudge-eap)만 DS 로 지원 — get_setup({ intent: 'admin', brand: '<slug>' }). " +
   "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
 
