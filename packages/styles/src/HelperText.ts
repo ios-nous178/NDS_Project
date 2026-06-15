@@ -10,7 +10,7 @@
  *
  * 에러 신호는 두 마크업을 모두 받는다: Input(react)=`data-variant="error"`(success/disabled
  * variant 도 표현) · Textarea/Select/FormField(+html nds-input)=`data-error="true"`. */
-import { cv, fontWeight, spacing, typeScale } from "@nudge-design/tokens";
+import { cv, spacing } from "@nudge-design/tokens";
 
 const HELPER_TEXT_CLASS = "nds-helper-text";
 
@@ -20,16 +20,16 @@ export const helperTextStyles = `
    *   success  = Input/HelperText/Success  (폼 검증 통과 — brand 톤, 일반 success 녹색과 구분)
    *   error    = Input/HelperText/Error    (nudge #F13F00 · capo #FC3500)
    *   disabled = Input/HelperText/Disabled
-   * 폰트는 caption2(12/16) 로 4종 통일(2026-06-13 결정). */
+   * 폰트는 Input Typography 표준 helper(13/18 · Regular)로 4종 통일
+   * (Figma 4247:1964, 2026-06-15 — 구 caption2 12/16 대체). size+lineHeight 는
+   * --semantic-input-typography-helper 묶음, weight 는 분리 토큰으로 font shorthand 합성. */
   :where(.${HELPER_TEXT_CLASS}) {
     display: inline-flex;
     align-items: center;
     gap: ${spacing[6]}px;
     /* 헬퍼 element 가 <p> 여도 UA margin(1em) 이 새지 않게 — 간격은 부모 레이아웃(root gap / margin-top)이 소유 */
     margin: 0;
-    font-size: ${typeScale.caption2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.caption2.lineHeight}px;
+    font: ${cv.inputTypography.helper.font};
     color: ${cv.input.helpertextDefault};
   }
 

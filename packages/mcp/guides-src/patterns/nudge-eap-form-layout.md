@@ -8,7 +8,7 @@ metrics:
   webHeaderHeight: 80px
   pageTitle: "Pretendard Bold 28/38 #111"
   labelLayout: label-above (single column 800px)
-  labelTypography: "Pretendard Medium 16/24 #383838"
+  labelTypography: "Pretendard Medium 13/18 #383838 (Input Typography 표준, Figma 4247:1964 · 브랜드 무관)"
   requiredMarker: "라벨 옆 ' *' #F13F00"
   fieldHeight: 48px
   fieldRadius: 8px
@@ -18,7 +18,7 @@ metrics:
   interFieldGap: 36px
   labelToFieldGap: 12px
   helperToLabelGap: 4px
-  helperTypography: "Pretendard Regular 13/18 #383838 or 14/20 #666"
+  helperTypography: "Pretendard Regular 13/18 #383838 (Input Typography 표준, Figma 4247:1964)"
   ctaPosition: inline at page-end, center
   ctaSize: w-328 h-48 rounded-8
   ctaPrimary: "#2b96ed + white Bold 16/24"
@@ -46,10 +46,10 @@ NudgeEAP 고객사용(B2B EAP customer) 폼 페이지 레이아웃 — 'WebHeade
 - **WebHeader**: 80h 풀폭 white + bottom border `#ECECEC`. 좌측 로고 + 센터 6 nav (`Bold 18/26 #111`) + 우측 [로그인 #2b96ed]/[앱 다운로드 #F5F5F5 + blue 텍스트].
 - **페이지 헤더**: 타이틀 Pretendard **Bold 28/38** (Headline 2) #111. step/progress indicator 없음.
 - **필드 레이아웃 = 라벨-위 (label-above) 단일 컬럼** — 캐시워크 포 비즈니스 admin (인라인-좌측) 과 정반대. 800px rail 안 세로 흐름.
-- **라벨 타이포**: Pretendard **Medium 16/24 #383838**. 필수 마커: 별표 `*` **`#F13F00`** (Coral Red) 라벨 뒤 인라인.
+- **라벨 타이포**: Pretendard **Medium 13/18** (Input Typography 표준, Figma 4247:1964 · 브랜드 무관) #383838. 필수 마커: 별표 `*` **`#F13F00`** (Coral Red) 라벨 뒤 인라인.
 - **필드 컴포넌트**: 높이 **48px**, `radius 8px`, border 1px `#D8D8D8`, **bg `#FAFAFA`** (soft off-white — 멘탈케어 톤. 캐시워크 포 비즈니스 pure white 와 차이). padding 16×14.
 - **그룹 간격**: 그룹↔그룹 **36px**, 라벨↔필드 **12px**, helper↔라벨 **4px**.
-- **Helper 텍스트**: Pretendard Regular **13/18 #383838** 또는 14/20 #666.
+- **Helper 텍스트**: Pretendard Regular **13/18** (Input Typography 표준, Figma 4247:1964 · 색 #383838).
 - **CTA**: 페이지 끝 inline + 센터. 단일 primary 버튼 (`신청서 제출하기`) **w-328 h-48 rounded-8 padding 12**, Bold 16/24 white. 활성 `#2b96ed`, disabled `#9CA2AE` + 흰.
 - **비밀유지 안내 타일**: CTA 위 형제로 — bg `#FAFAFA`, `rounded-8 p-16 w-800`, InfoIcon + Medium 14/20 #666. 멘탈케어 폼의 시그니처 (e.g. '기관에서 연락드린 후 상담사가 최종 확정됩니다. 상담 신청 내용은 비밀이 보장되며, 회사에는 전달되지 않습니다.').
 - **Mood slider (마음체크)**: 5점 horizontal color bar — 선택 `#2b96ed`, 미선택 `#13BFA2` (green/300), 셀 gap 2px, 양끝 라벨 Medium 14.

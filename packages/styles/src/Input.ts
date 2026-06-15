@@ -2,7 +2,6 @@
 import {
   cv,
   fontFamily,
-  fontWeight,
   radius,
   sizing,
   spacing,
@@ -45,12 +44,10 @@ export const inputStyles = `
   }
 
   :where(.${INPUT_LABEL_CLASS}) {
-    /* 입력 패밀리 라벨 통일 — 14px(body3) · Text/Strong(#111).
-     * (구 Figma Section_Input(1399-143/1413-478) 주석은 caption1 13px 였으나,
-     *  "입력 라벨 14px 통일" 결정으로 body3 로 갱신) */
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    /* 입력 패밀리 라벨 — Input Typography 표준 label(13/18 · Medium) · Text/Strong(#111).
+     * (Figma 4247:1964, 2026-06-15 합의 — 구 "입력 라벨 14px 통일" 을 13/18 로 환원).
+     *  size+lineHeight 묶음(--semantic-input-typography-label) + weight 분리 토큰을 font shorthand 로 합성. */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.strong};
   }
 
@@ -98,10 +95,9 @@ export const inputStyles = `
     border: none;
     outline: none;
     background: transparent;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). placeholder 도 같은 타이포
+     * (색만 ::placeholder 에서 muted). size+lh 묶음 + weight 분리 토큰을 font shorthand 로 합성. */
+    font: ${cv.inputTypography.value.font};
     /* Figma --color-label-normal = #111 (neutral/900) */
     color: ${cv.textRole.strong};
     padding: 0;
@@ -128,7 +124,8 @@ export const inputStyles = `
   :where(.${INPUT_COUNT_CLASS}) {
     flex-shrink: 0;
     white-space: nowrap;
-    font-size: ${typeScale.caption2.fontSize}px;
+    /* 글자수 카운터 — helper 와 동일 Input Typography 13/18(caption1) 크기. 색만 muted. */
+    font-size: ${typeScale.caption1.fontSize}px;
     line-height: 1;
     color: ${cv.textRole.muted};
     font-variant-numeric: tabular-nums;

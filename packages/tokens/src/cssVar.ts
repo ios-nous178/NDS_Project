@@ -134,6 +134,31 @@ export const cv = {
     helpertextError: v("--semantic-input-helpertext-error"),
     helpertextDisabled: v("--semantic-input-helpertext-disabled"),
   },
+  // ── Input Typography (Figma 4247:1964 · 브랜드 무관) ───────
+  // 입력 패밀리(Input·Textarea·Select·FormField·TagInput·Phone·DatePicker…)의 라벨/값/
+  // 헬퍼 타이포를 통일하는 시멘틱 토큰. size+lineHeight 는 한 토큰으로 묶고, weight 는 분리.
+  //   · `.font`  — `font` shorthand 한 줄(weight + size/lh + family)을 합성. 라벨/값/헬퍼의
+  //                size·lineHeight·weight·family 를 longhand 3~4개 대신 한 번에 박는다.
+  //   · `.sizeLineHeight` / `.weight` — weight 를 따로 갈아끼우거나 size/lh 만 필요할 때.
+  // 역할: label(13/18·Medium) · value(15/22·Regular, placeholder 동일·색만 muted) ·
+  //       helper(13/18·Regular, error 동일·색만 status-error).
+  inputTypography: {
+    label: {
+      font: `var(--semantic-input-typography-label-weight) var(--semantic-input-typography-label) var(--font-family-default)`,
+      sizeLineHeight: v("--semantic-input-typography-label"),
+      weight: v("--semantic-input-typography-label-weight"),
+    },
+    value: {
+      font: `var(--semantic-input-typography-value-weight) var(--semantic-input-typography-value) var(--font-family-default)`,
+      sizeLineHeight: v("--semantic-input-typography-value"),
+      weight: v("--semantic-input-typography-value-weight"),
+    },
+    helper: {
+      font: `var(--semantic-input-typography-helper-weight) var(--semantic-input-typography-helper) var(--font-family-default)`,
+      sizeLineHeight: v("--semantic-input-typography-helper"),
+      weight: v("--semantic-input-typography-helper-weight"),
+    },
+  },
 } as const;
 
 export type CssVarRef = typeof cv;

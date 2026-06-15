@@ -33,9 +33,8 @@ export const tiStyles = `
   :where(.${TI_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 
   :where(.${TI_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -59,8 +58,8 @@ export const tiStyles = `
     border: 1px solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: ${cv.input.bg};
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.normal};
     outline: none;
     transition: border-color ${transition.default};

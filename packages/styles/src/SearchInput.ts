@@ -1,14 +1,5 @@
 /* Auto-generated from packages/react/src/SearchInput.tsx during the @nudge-design/styles split. */
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  sizing,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-design/tokens";
+import { cv, fontFamily, radius, sizing, spacing, transition } from "@nudge-design/tokens";
 
 const SEARCH_CLASS = "nds-search-input";
 const SEARCH_ROOT_CLASS = `${SEARCH_CLASS}__root`;
@@ -29,9 +20,8 @@ export const searchInputStyles = `
   }
 
   :where(.${SEARCH_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -73,10 +63,8 @@ export const searchInputStyles = `
     border: none;
     outline: none;
     background: transparent;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.normal};
     padding: 0;
   }

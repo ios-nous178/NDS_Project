@@ -38,9 +38,8 @@ export const selectStyles = `
   /* label↔trigger · trigger↔helper 모두 8 — 단일 root gap(--semantic-gap-label). */
 
   :where(.${SELECT_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -239,7 +238,7 @@ export const selectStyles = `
     cursor: not-allowed;
   }
 
-  /* helper 폰트(→12px)·색·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text
+  /* helper 폰트(→13/18 · Input Typography 표준)·색·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text
    * (HelperText.ts) 소유 — element 에 nds-helper-text 클래스가 함께 붙는다. Select 헬퍼는
    * 레이아웃을 root gap(위)에서 받으므로 여기 별도 규칙 없음. */
 

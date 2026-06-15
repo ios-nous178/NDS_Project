@@ -51,9 +51,8 @@ export const formFieldStyles = `
     display: inline-flex;
     align-items: center;
     gap: var(--semantic-gap-tight);
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). admin density 는 아래서 16/24 로 override. */
+    font: ${cv.inputTypography.label.font};
     color: var(--nds-form-field-label-color, ${cv.textRole.normal});
   }
 
@@ -87,7 +86,7 @@ export const formFieldStyles = `
    * density="admin" — 캐포비 Cashwalk for Business 어드민 폼 표준
    *   · FormField 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871)
    *   · label Subtitle1 16/24
-   *   · helper/error 는 공용 .nds-helper-text 12px(caption2) — admin 도 base 와 동일(Figma 정합)
+   *   · helper/error 는 공용 .nds-helper-text(Input Typography 표준 helper 13/18) — admin 도 base 와 동일
    *   · label↔control gap 16, control 내부 input↔helper gap 8
    * ────────────────────────────────────────────────────────────── */
   :where(.${FF_ROOT_CLASS}[data-density="admin"]) {
@@ -102,9 +101,9 @@ export const formFieldStyles = `
   :where(.${FF_ROOT_CLASS}[data-density="admin"]) > .${FF_CONTROL_CLASS} {
     gap: ${spacing[8]}px;
   }
-  /* admin 도 helper/error 폰트는 공용 .nds-helper-text 12px 를 그대로 따른다(Figma 정합).
-   * (구버전엔 여기 helper/error/counter 14px override 가 있었으나 source-order 로 죽어
-   *  실제 13px 였고, Figma 가 12px 라 제거 — base 12px 로 통일.) */
+  /* admin 도 helper/error 폰트는 공용 .nds-helper-text(Input Typography 표준 helper 13/18)를 그대로 따른다.
+   * (구버전엔 여기 helper/error/counter 14px override 가 있었으나 source-order 로 죽어 제거 —
+   *  base 와 동일하게 Input Typography helper 13/18 로 통일.) */
 
   :where(.${FF_FOOTER_CLASS}) {
     display: flex;
@@ -123,9 +122,10 @@ export const formFieldStyles = `
 
   :where(.${FF_COUNTER_CLASS}) {
     flex-shrink: 0;
-    /* char 카운터 — helper/error(공용 .nds-helper-text=caption2 12px)와 같은 footer 행이라 12px 로 정합 */
-    font-size: ${typeScale.caption2.fontSize}px;
-    line-height: ${typeScale.caption2.lineHeight}px;
+    /* char 카운터 — 같은 footer 행의 helper 와 동일하게 Input Typography 표준 13/18(caption1) 로 정렬
+     * (행 내 크기 통일, 2026-06-15 결정). 색만 muted 로 de-emphasize. */
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.muted};
     text-align: right;
   }

@@ -37,9 +37,8 @@ export const phoneInputStyles = `
   }
 
   :where(.${PI_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -179,9 +178,8 @@ export const phoneInputStyles = `
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.input.bg});
     outline: none;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.strong};
     box-sizing: border-box;
     transition: border-color ${transition.default};

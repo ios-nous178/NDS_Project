@@ -191,6 +191,19 @@ typography:
       fontSize: 11px
       lineHeight: 14px
       letterSpacing: 0
+  # ── Input Typography 표준 (Figma 4247:1964 · 브랜드 무관) ───────────────
+  # 입력 패밀리(Label·Input Value·Placeholder·Helper·Error)의 타이포를 브랜드와 무관하게
+  # 통일하는 시멘틱 토큰. size+lineHeight 를 한 토큰으로 묶고(`--semantic-input-typography-
+  # {role}` = `{size}px/{lh}px`), weight 는 분리 토큰(`--semantic-input-typography-{role}-
+  # weight` → --font-weight-*)으로 적용한다. 값은 base typeScale 에서 파생하되 literal 로
+  # 박아 브랜드 typeScale override 의 영향을 받지 않는다(= 브랜드 무관 보장). 컴포넌트는
+  # cv.inputTypography.{role}.font(= font shorthand) 로 소비. 정의/emit 은 코드가 SSOT:
+  # packages/tokens/scripts/generate-css.cjs(INPUT_TYPOGRAPHY) + cssVar.ts(cv.inputTypography).
+  #   label  : 13/18 · Medium  (= typeScale.caption1 · 필수* 는 색만 status-error)
+  #   value  : 15/22 · Regular (= typeScale.body2 · placeholder 동일, 색만 muted)
+  #   helper : 13/18 · Regular (= typeScale.caption1 · error 동일, 색만 status-error)
+  # + 제너릭 묶음 토큰 `--font-{scale}` = `{size}px/{lineHeight}px` (전 14 스케일) 도 함께
+  #   emit — `font` shorthand 한 칸에 size/line-height 를 넣고 weight·family 를 분리 조합.
 
 # ── Spacing (Primitive Scale, 4pt grid) ────────────────────
 # Figma · ┗ Grid / Border / Radius · SpacingGuide

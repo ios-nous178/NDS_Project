@@ -102,9 +102,8 @@ export const chatInputStyles = `
     background: transparent;
     resize: none;
     outline: none;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.normal};
     padding: var(--semantic-inset-chip) 4px;
     max-height: var(--nds-chat-input-max, 120px);
@@ -136,7 +135,8 @@ export const chatInputStyles = `
 
   :where(.${CC_COUNT_CLASS}) {
     text-align: right;
-    font-size: ${typeScale.caption2.fontSize}px;
+    /* 글자수 카운터 — Input Typography 표준 helper 와 동일 13/18(caption1). */
+    font-size: ${typeScale.caption1.fontSize}px;
     color: ${cv.textRole.subtle};
   }
 `;

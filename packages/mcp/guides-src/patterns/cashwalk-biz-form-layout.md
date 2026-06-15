@@ -28,7 +28,7 @@ metrics:
   fieldBorder: "1px #D8D8D8"
   fieldBg: white
   placeholderColor: "#999"
-  helperTypography: "Pretendard Regular 14/20 #666 (counter #999)"
+  helperTypography: "Pretendard Regular 13/18 #666 (Input Typography 표준, Figma 4247:1964 · counter #999)"
   actionBarPosition: 콘텐츠 하단 인라인 액션 (별도 흰 배경 바·sticky/fixed 고정·풀폭 상단 border 없음 · 페이지 배경 위)
   actionBarAlignment: right
   ctaSize: cashwalk-biz-button BottomCTA 참조 (저장=primary solid, 취소=outlined)
@@ -70,7 +70,7 @@ references:
 - **라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.
 - **필드 컴포넌트**: 높이 **48px** (`nds-input`/`nds-select` 동일 — size 미지정이면 캐포비 brand :root 가 `--nds-input-height` 48 로 cascade 해 자동 정렬. **`size="compact"`(40) 는 폐기·제거됐으니 admin 에 쓰지 말 것** — 단일 필드 48 과 어긋남), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.
 - **행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.
-- **Helper text**: Pretendard Regular **14 / lh 20, #666**. 글자 수 카운터(`0/30`) 는 14 Medium #999 우측 정렬.
+- **Helper text**: Pretendard Regular **13 / lh 18, #666** (Input Typography 표준, Figma 4247:1964). 글자 수 카운터(`0/30`) 는 helper 와 동일 13/18 #999 우측 정렬.
 - **필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.
 - **액션바 = 콘텐츠 하단 우측 정렬 [취소][저장] 인라인 액션**: 폼 콘텐츠 맨 끝에 **페이지 배경 위로 우측 정렬** 배치 — **별도 흰 배경 바(`--semantic-bg-surface-default`)·풀폭 상단 border·sticky/fixed 고정을 두지 않는다.** 저장=primary solid, 취소=outlined — CTA shape/색 실측은 `pattern:cashwalk-biz-button` (BottomCTA) 가 SSOT. Disabled: `#D8D8D8` neutral.
 - **액션 위계**: primary solid CTA 1개. 파괴(삭제) 액션은 별도 위치(헤더 우측 또는 카드 우측 상단) 분리.
