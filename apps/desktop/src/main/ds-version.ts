@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
  *
  * 번들러리스 목업 폴더(node_modules 없음)에선 detectDsVersions 가 비므로, 앱이 동봉한
  * @nudge-design/react 패키지 버전을 진리로 쓴다 — 이게 곧 inline 되는 DS runtime/CSS 의 버전이다.
- * assets 는 동봉 MCP manifest 의 asset_version 을 쓴다.
+ * assets 는 동봉 MCP manifest 의 server.mcp_config.env.NUDGE_DS_ASSET_VERSION 을 쓴다.
  * 1회 resolve 후 캐시. 못 찾으면 null(스탬프는 "—" 로 폴백).
  */
 export interface BundledDsVersions {
@@ -75,11 +75,15 @@ function readBundledManifestVersions(): BundledDsVersions | null {
       const m = JSON.parse(readFileSync(p, "utf8")) as {
         version?: string;
         asset_version?: string;
+        server?: { mcp_config?: { env?: { NUDGE_DS_ASSET_VERSION?: string } } };
       };
-      if (m.version || m.asset_version) {
+      // 신규 번들은 env 블록(NUDGE_DS_ASSET_VERSION), 옛 번들은 top-level asset_version.
+      const assetVersion =
+        m.server?.mcp_config?.env?.NUDGE_DS_ASSET_VERSION ?? m.asset_version ?? null;
+      if (m.version || assetVersion) {
         return {
           dsVersion: m.version ?? null,
-          assetVersion: m.asset_version ?? null,
+          assetVersion,
         };
       }
     } catch {

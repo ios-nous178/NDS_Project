@@ -105,6 +105,15 @@ export interface Manifest extends Catalog {
 export interface McpbManifest {
   name: string;
   version: string;
+  /**
+   * @deprecated 옛 번들 호환용 폴백. MCPB 스키마가 커스텀 top-level 키를 거부하므로
+   * 신규 번들은 `server.mcp_config.env.NUDGE_DS_ASSET_VERSION` 으로 싣는다.
+   */
   asset_version?: string;
+  server?: {
+    mcp_config?: {
+      env?: Record<string, string>;
+    };
+  };
   repository?: { type?: string; url?: string };
 }

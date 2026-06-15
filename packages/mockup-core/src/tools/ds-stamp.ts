@@ -17,7 +17,7 @@ export const DS_STAMP_MARKER = "data-nds-stamp";
 export interface DsStampInfo {
   /** DS 버전(detectDsVersions().primary). null/빈 값이면 "—". */
   dsVersion?: string | null;
-  /** @nudge-design/assets version. MCPB 에서는 manifest.asset_version. */
+  /** @nudge-design/assets version. MCPB 에서는 server.mcp_config.env.NUDGE_DS_ASSET_VERSION. */
   assetVersion?: string | null;
   /** NDS 전체 사용률 0–100 (overallRatio == 기존 dsRatio). 항상 표기되는 하한값. */
   ratio: number;

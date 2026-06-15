@@ -3,7 +3,6 @@
   "name": "nudge-ds",
   "display_name": "Nudge Design System",
   "version": "0.0.3",
-  "asset_version": "0.0.1",
   "description": "Nudge Design System MCP — 5개 브랜드의 컴포넌트/아이콘/토큰·가이드 조회, HTML 목업 검증과 단일파일 빌드를 제공합니다.",
   "long_description": "Trost/Geniet/NudgeEAP/CashwalkBiz/Runmile 5개 브랜드 디자인시스템 메타데이터(컴포넌트·아이콘·토큰·가이드)를 Claude에게 노출합니다. 작성한 HTML 목업의 인라인 컬러/스페이싱/금지 패턴을 validate_html_mockup 으로 자동 검증하고, build_singlefile_html 로 DS 자산이 인라인된 무번들러 단일 HTML 미리보기를 생성합니다. react/admin-cms 목업 프로젝트에는 dev_server 로 미리보기를 띄웁니다.",
   "author": {
@@ -41,7 +40,8 @@
         "NUDGE_DS_INSTALL_MODE": "mcpb",
         "NUDGE_DS_STANDALONE_DIR": "${__dirname}/dist/standalone",
         "NUDGE_DS_ASSETS_DIR": "${__dirname}/dist/assets",
-        "NUDGE_DS_ICONS_VANILLA": "${__dirname}/dist/icons/vanilla.js"
+        "NUDGE_DS_ICONS_VANILLA": "${__dirname}/dist/icons/vanilla.js",
+        "NUDGE_DS_ASSET_VERSION": "0.0.1"
       }
     }
   },

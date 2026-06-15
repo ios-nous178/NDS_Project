@@ -250,7 +250,7 @@ export interface ReportHtmlMockupUsageArgs {
    * 실측(node_modules/package.json)이 잡히면 그쪽이 우선이므로 override 가 아니라 fallback.
    */
   dsVersionFallback?: string;
-  /** MCPB manifest.asset_version fallback for bundled @nudge-design/assets. */
+  /** MCPB server.mcp_config.env.NUDGE_DS_ASSET_VERSION fallback for bundled @nudge-design/assets. */
   assetVersionFallback?: string;
 }
 

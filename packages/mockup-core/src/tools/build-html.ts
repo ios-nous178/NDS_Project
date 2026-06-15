@@ -107,7 +107,7 @@ export interface BuildSinglefileHtmlArgs {
    * 하네스 목업처럼 node_modules 가 없어 자동 감지가 비는 경우 호스트가 직접 주입한다.
    */
   dsVersion?: string;
-  /** 스탬프/usage fallback 용 @nudge-design/assets 버전. MCPB manifest.asset_version. */
+  /** 스탬프/usage fallback 용 @nudge-design/assets 버전. MCPB server.mcp_config.env.NUDGE_DS_ASSET_VERSION. */
   assetVersion?: string;
 }
 

@@ -28,8 +28,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
 // changeset `fixed` 그룹과 동일한 DS 코드 집합을 본다. assets 는 별도
-// 버전 트랙이라 root/MCPB version anchor 에서 제외하고 manifest 의 asset_version
-// 에만 기록한다. 아이콘은 정적 npm 패키지로만 배포하므로 여기서 추적하지 않는다.
+// 버전 트랙이라 root/MCPB version anchor 에서 제외하고 manifest 의
+// server.mcp_config.env.NUDGE_DS_ASSET_VERSION 에만 기록한다 (MCPB 스키마가 커스텀
+// top-level 키를 거부하므로 env 블록에 싣는다). 아이콘은 정적 npm 패키지로만 배포하므로
+// 여기서 추적하지 않는다.
 const DS_PACKAGE_DIRS = [
   "packages/react",
   "packages/tokens",
@@ -98,13 +100,18 @@ const mirrors = [
 const drift = mirrors.filter((m) => m.obj.version !== targetVersion);
 const manifestVersionFields = [
   {
-    key: "asset_version",
-    label: "packages/mcp/manifest.json asset_version",
-    have: manifest.asset_version,
+    label: "packages/mcp/manifest.json server.mcp_config.env.NUDGE_DS_ASSET_VERSION",
+    get: () => manifest.server?.mcp_config?.env?.NUDGE_DS_ASSET_VERSION,
+    set: (v) => {
+      manifest.server ??= {};
+      manifest.server.mcp_config ??= {};
+      manifest.server.mcp_config.env ??= {};
+      manifest.server.mcp_config.env.NUDGE_DS_ASSET_VERSION = v;
+    },
     expected: assetPkg.version,
   },
 ];
-const manifestFieldDrift = manifestVersionFields.filter((m) => m.have !== m.expected);
+const manifestFieldDrift = manifestVersionFields.filter((m) => m.get() !== m.expected);
 
 if (drift.length === 0 && manifestFieldDrift.length === 0) {
   console.log(
@@ -121,7 +128,7 @@ if (mode === "check") {
     console.error(`  - ${m.label}: have ${m.obj.version}, expected ${targetVersion}`);
   }
   for (const m of manifestFieldDrift) {
-    console.error(`  - ${m.label}: have ${m.have ?? "(missing)"}, expected ${m.expected}`);
+    console.error(`  - ${m.label}: have ${m.get() ?? "(missing)"}, expected ${m.expected}`);
   }
   console.error(`  Run \`pnpm sync:mcpb-version\` to fix.`);
   process.exit(1);
@@ -138,8 +145,8 @@ for (const m of drift) {
 
 if (manifestFieldDrift.length > 0) {
   for (const field of manifestFieldDrift) {
-    const before = manifest[field.key];
-    manifest[field.key] = field.expected;
+    const before = field.get();
+    field.set(field.expected);
     console.log(`[sync-mcpb-version] ${field.label} ${before ?? "(missing)"} → ${field.expected}`);
   }
   writeJson(MANIFEST_PATH, manifest);
