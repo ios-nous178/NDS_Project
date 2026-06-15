@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FloatingCtaBanner } from "@nudge-design/react";
-import { MockupLinearData2Icon } from "@nudge-design/icons/multicolor";
+import { GenietSaladIcon } from "@nudge-design/icons/multicolor";
 import React from "react";
 
 const meta: Meta<typeof FloatingCtaBanner> = {
@@ -38,7 +38,7 @@ export const Overview: Story = {
       <FloatingCtaBanner
         caption="찾는 항목이 없나요?"
         ctaText="직접 추가하기"
-        leadingIcon={<MockupLinearData2Icon size={32} />}
+        leadingIcon={<GenietSaladIcon size={32} />}
         size="mobile"
         floating={false}
       />
@@ -66,7 +66,7 @@ export const Default: Story = {
   args: {
     caption: "찾는 항목이 없나요?",
     ctaText: "직접 추가하기",
-    leadingIcon: <MockupLinearData2Icon size={32} />,
+    leadingIcon: <GenietSaladIcon size={32} />,
     size: "pc",
     floating: false,
   },
@@ -77,7 +77,7 @@ export const Mobile: Story = {
   args: {
     caption: "찾는 항목이 없나요?",
     ctaText: "직접 추가하기",
-    leadingIcon: <MockupLinearData2Icon size={32} />,
+    leadingIcon: <GenietSaladIcon size={32} />,
     size: "mobile",
     floating: false,
   },
@@ -138,7 +138,7 @@ function FloatingShowcase() {
       <FloatingCtaBanner
         caption="찾는 항목이 없나요?"
         ctaText="직접 추가하기"
-        leadingIcon={<MockupLinearData2Icon size={32} />}
+        leadingIcon={<GenietSaladIcon size={32} />}
         size="mobile"
         floating
         style={{ position: "absolute" }}
