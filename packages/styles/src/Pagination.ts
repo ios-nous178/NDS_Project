@@ -83,10 +83,12 @@ export const paginationStyles = `
 
   :where(.${PG_ITEM_CLASS}[data-type="arrow"]) {
     font-size: 0;
+    /* 화살표 아이콘 색은 슬롯으로 — 브랜드가 숫자 셀과 다른 톤을 줄 수 있다(예: 지니어트 gray/600). */
+    color: var(--nds-pagination-arrow-color, ${cv.textRole.subtle});
   }
 
   :where(.${PG_ITEM_CLASS}[data-type="arrow"] svg) {
-    width: 16px;
-    height: 16px;
+    width: var(--nds-pagination-arrow-size, 16px);
+    height: var(--nds-pagination-arrow-size, 16px);
   }
 `;

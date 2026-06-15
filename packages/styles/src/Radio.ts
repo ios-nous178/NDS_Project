@@ -45,8 +45,8 @@ export const radioStyles = `
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: var(--nds-radio-size, 20px);
+    height: var(--nds-radio-size, 20px);
     margin-top: 1px;
     border: 2px solid ${cv.borderRole.normal};
     border-radius: ${radius.pill}px;

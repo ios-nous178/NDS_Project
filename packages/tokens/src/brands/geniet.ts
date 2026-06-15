@@ -164,12 +164,33 @@ export const genietTheme: BrandTheme = {
       selectedText: genietMint[600], // #00A8AC
       selectedBorder: genietMint[50], // bg 와 동일 — borderless 라이트 칩
     },
-    // Geniet 패턴 — track gray/200, active = brand mint/600
+    // Control 가이드(171:9904): toggle 51×31, on=brand mint, off=gray/200.
+    // 썸 27 + 상하 여백 2 → 트랙(31)에 꽉 차고, travel = 51-27-2*2 = 20.
     toggle: {
-      trackW: 40,
-      trackH: 24,
+      trackW: 51,
+      trackH: 31,
       trackBg: genietGray[200],
       trackActiveBg: genietMint[600],
+      thumbSize: 27,
+      thumbOffset: 2,
+      thumbTravel: 20,
+    },
+    // Control 가이드(171:9904): checkcircle/radio = 24×24, on=brand mint.
+    checkbox: { size: 24 },
+    radio: { size: 24 },
+    // Tab 가이드(3132:94585): Chip 스타일 active = 흑백(#111). Underline 은 tone=color 로 mint(시멘틱 자동).
+    tab: {
+      chipSelectedBg: "var(--semantic-bg-inverse-default)", // #111
+    },
+    // Pagination 가이드(3216:1930): active 페이지 = 흑백(#111) + radius 4, cell 28,
+    // 화살표 아이콘 24×24 gray/600.
+    pagination: {
+      activeBg: "var(--semantic-bg-inverse-default)", // #111
+      activeBgHover: "var(--semantic-bg-inverse-default)",
+      itemHeight: 28,
+      itemRadius: 4,
+      arrowSize: 24,
+      arrowColor: genietGray[600], // #777777
     },
     // 토스트는 Elevation 가이드(3031:6) 의 E1 Subtle 사용 ("작은 토스트")
     toast: { shadow: "0 2px 6px rgba(221, 221, 221, 0.6)" },

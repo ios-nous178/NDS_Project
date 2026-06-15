@@ -313,6 +313,10 @@ export interface ComponentOverrides {
     trackH?: ComponentValue;
     trackBg?: ComponentValue;
     trackActiveBg?: ComponentValue;
+    /** 썸(knob) 치수·여백·이동거리 — 트랙 크기를 키울 때 함께 조정. 미설정 시 18 / 3 / 20 fallback. */
+    thumbSize?: ComponentValue;
+    thumbOffset?: ComponentValue;
+    thumbTravel?: ComponentValue;
     thumbShadow?: ComponentValue;
     /** checked 트랙 위 내장 라벨 색 (`--nds-toggle-label-active-color`). base button.textDefault. */
     labelActiveColor?: ComponentValue;
@@ -334,6 +338,9 @@ export interface ComponentOverrides {
     activeBgHover?: ComponentValue;
     activeText?: ComponentValue;
     activeWeight?: ComponentValue;
+    /** 이전/다음 화살표 아이콘 치수·색 (`--nds-pagination-arrow-size/-color`). 미설정 시 16px / textRole.subtle. */
+    arrowSize?: ComponentValue;
+    arrowColor?: ComponentValue;
     disabledOpacity?: ComponentValue;
     disabledBg?: ComponentValue;
     disabledColor?: ComponentValue;
@@ -352,6 +359,10 @@ export interface ComponentOverrides {
     disabledBorderColor?: ComponentValue;
     disabledCheckedBg?: ComponentValue;
     disabledCheckedBorderColor?: ComponentValue;
+  };
+  /** Radio 외경 치수(`--nds-radio-size`). 미설정 시 20px fallback. */
+  radio?: {
+    size?: ComponentValue;
   };
   /**
    * Badge(Label) 시각 변형. 캐포비 ChipGuide(3782:20558 · Rounded Square):
