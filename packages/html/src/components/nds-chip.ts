@@ -143,6 +143,10 @@ export class NdsChip extends NdsElement {
     // 여기서는 data-* attr 만 set, 인라인 색은 박지 않는다.
     const st = SIZE_TOKENS[size];
     const paddingRight = removable ? Math.max(st.paddingX - 4, 6) : st.paddingX;
+    // 치수는 --nds-chip-* 슬롯로 합성 (react Chip.tsx 미러) — 브랜드가 토큰 맵에서 override.
+    const chipPadY = `var(--nds-chip-padding-y, ${st.paddingY}px)`;
+    const chipPadX = `var(--nds-chip-padding-x, ${st.paddingX}px)`;
+    const chipPadRight = removable ? `${paddingRight}px` : chipPadX;
 
     const root = this._root;
     root.dataset.variant = variant;
@@ -169,15 +173,15 @@ export class NdsChip extends NdsElement {
       display: "inline-flex",
       alignItems: "center",
       gap: "var(--semantic-gap-tight)",
-      height: `${st.height}px`,
-      padding: `${st.paddingY}px ${paddingRight}px ${st.paddingY}px ${st.paddingX}px`,
+      height: `var(--nds-chip-height, ${st.height}px)`,
+      padding: `${chipPadY} ${chipPadRight} ${chipPadY} ${chipPadX}`,
       borderRadius: "9999px",
       // 색(background/color/border)은 styles/src/Chip.ts 의 [data-variant][data-color] /
       // [data-selected] CSS 룰이 슬롯에 주입 — 여기서 인라인으로 박지 않는다.
       fontFamily: "var(--font-family-web, 'Pretendard', -apple-system, sans-serif)",
-      fontSize: `${st.fontSize}px`,
-      lineHeight: `${st.lineHeight}px`,
-      fontWeight: "700",
+      fontSize: `var(--nds-chip-font-size, ${st.fontSize}px)`,
+      lineHeight: `var(--nds-chip-line-height, ${st.lineHeight}px)`,
+      fontWeight: `var(--nds-chip-font-weight, 700)`,
       boxSizing: "border-box",
       userSelect: "none",
       whiteSpace: "nowrap",

@@ -85,19 +85,25 @@ export const Chip: React.FC<ChipProps> = ({
   const hasRemove = !!onRemove && !disabled;
   const paddingRight = hasRemove ? Math.max(sizeTokens.paddingX - 4, 6) : sizeTokens.paddingX;
 
+  // 치수는 --nds-chip-* 슬롯로 합성 — 브랜드(지니어트: h32·padding6/14·Medium 13)가 토큰 맵에서
+  // override. 미설정 브랜드는 size(sm/md) 토큰값 fallback 유지.
+  const chipPadY = `var(--nds-chip-padding-y, ${sizeTokens.paddingY}px)`;
+  const chipPadX = `var(--nds-chip-padding-x, ${sizeTokens.paddingX}px)`;
+  const chipPadRight = hasRemove ? `${paddingRight}px` : chipPadX;
+
   const rootStyle: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
     gap: "var(--semantic-gap-tight)",
-    height: sizeTokens.height,
-    padding: `${sizeTokens.paddingY}px ${paddingRight}px ${sizeTokens.paddingY}px ${sizeTokens.paddingX}px`,
+    height: `var(--nds-chip-height, ${sizeTokens.height}px)`,
+    padding: `${chipPadY} ${chipPadRight} ${chipPadY} ${chipPadX}`,
     borderRadius: radius.pill,
     // 색(background/color/border)은 styles/src/Chip.ts 의 [data-variant][data-color] /
     // [data-selected] CSS 룰이 슬롯에 주입 — 여기서 인라인으로 박지 않는다.
     fontFamily: fontFamily.web,
-    fontSize: sizeTokens.fontSize,
-    lineHeight: `${sizeTokens.lineHeight}px`,
-    fontWeight: fontWeight.bold,
+    fontSize: `var(--nds-chip-font-size, ${sizeTokens.fontSize}px)`,
+    lineHeight: `var(--nds-chip-line-height, ${sizeTokens.lineHeight}px)`,
+    fontWeight: `var(--nds-chip-font-weight, ${fontWeight.bold})`,
     boxSizing: "border-box",
     userSelect: "none",
     whiteSpace: "nowrap",

@@ -279,6 +279,16 @@ export interface ComponentOverrides {
     selectedBackground?: ComponentValue;
     selectedText?: ComponentValue;
     selectedBorder?: ComponentValue;
+    /**
+     * 치수 override (`--nds-chip-*`). 지니어트 가이드(3058:84): h32 · padding 6/14 ·
+     * Medium(500) 13. 미설정 브랜드는 size(sm/md) 토큰값 fallback 유지.
+     */
+    height?: ComponentValue;
+    paddingX?: ComponentValue;
+    paddingY?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+    fontWeight?: ComponentValue;
   };
   /**
    * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,

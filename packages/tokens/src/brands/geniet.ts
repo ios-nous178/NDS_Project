@@ -163,6 +163,13 @@ export const genietTheme: BrandTheme = {
       selectedBackground: genietMint[50], // #F2FAFA
       selectedText: genietMint[600], // #00A8AC
       selectedBorder: genietMint[50], // bg 와 동일 — borderless 라이트 칩
+      // 치수 — 가이드(3058:84): h32 고정(다른 크기는 padding 조절) · padding 6/14 · Medium 13.
+      height: 32,
+      paddingY: 6,
+      paddingX: 14,
+      fontSize: 13,
+      lineHeight: 18,
+      fontWeight: "500",
     },
     // Control 가이드(171:9904): toggle 51×31, on=brand mint, off=gray/200.
     // 썸 27 + 상하 여백 2 → 트랙(31)에 꽉 차고, travel = 51-27-2*2 = 20.

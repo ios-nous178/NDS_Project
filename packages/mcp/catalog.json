@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T00:34:19.702Z",
+  "generatedAt": "2026-06-15T00:40:21.959Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10657,6 +10657,54 @@
       "brandValues": {
         "geniet": "24px"
       }
+    },
+    {
+      "name": "--nds-chip-font-size",
+      "value": "13px",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--nds-chip-font-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--nds-chip-height",
+      "value": "32px",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--nds-chip-line-height",
+      "value": "18px",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--nds-chip-padding-x",
+      "value": "14px",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
+      "name": "--nds-chip-padding-y",
+      "value": "6px",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
     },
     {
       "name": "--nds-chip-selected-background",
