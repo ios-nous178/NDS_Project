@@ -16,7 +16,8 @@ export const noticeAlertStyles = `
     width: 100%;
     min-height: 48px;
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
-    border-radius: ${radius.lg}px;
+    /* radius 슬롯 — 브랜드(지니어트 Alert 가이드 1054:30 = Shape/MD 8)가 override. 기본 lg(12). */
+    border-radius: var(--nds-notice-alert-radius, ${radius.lg}px);
     box-sizing: border-box;
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;

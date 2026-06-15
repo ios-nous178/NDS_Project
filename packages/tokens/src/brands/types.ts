@@ -375,6 +375,13 @@ export interface ComponentOverrides {
     size?: ComponentValue;
   };
   /**
+   * NoticeAlert(인라인 Alert) 컨테이너 radius(`--nds-notice-alert-radius`).
+   * 지니어트 Alert/Radius 가이드 = Shape/MD 8. 미설정 브랜드는 radius.lg(12) fallback.
+   */
+  "notice-alert"?: {
+    radius?: ComponentValue;
+  };
+  /**
    * Badge(Label) 시각 변형. 캐포비 ChipGuide(3782:20558 · Rounded Square):
    *   radius 5 · padding 4/10 · Caption 12/16 · Medium(500) (base 는 bold·radius 4/6).
    *   톤(색)은 ghost 변형 + semantic 색이 이미 캐포비값으로 cascade → 별도 색 override 불필요.

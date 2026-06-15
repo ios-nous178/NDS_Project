@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T00:46:48.211Z",
+  "generatedAt": "2026-06-15T01:00:11.728Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10207,7 +10207,10 @@
     {
       "name": "--grid-content-pc",
       "value": "1200px",
-      "group": "grid"
+      "group": "grid",
+      "brandValues": {
+        "geniet": "1280px"
+      }
     },
     {
       "name": "--grid-gutter-mobile",
@@ -10959,6 +10962,14 @@
       "brandValues": {
         "trost": "12px"
       }
+    },
+    {
+      "name": "--nds-notice-alert-radius",
+      "value": "8px",
+      "group": "nds",
+      "brands": [
+        "geniet"
+      ]
     },
     {
       "name": "--nds-pagination-active-bg",

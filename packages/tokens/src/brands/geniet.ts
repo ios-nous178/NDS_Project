@@ -118,6 +118,11 @@ export const genietTheme: BrandTheme = {
       "2xl": 24, // Shape/2XL — Hero·Banner
       pill: 9999, // Shape/Full — Avatar·FAB·Pill
     },
+    // Section/Container 가이드(1385:13): PC max-width 1280 · side padding 40, Mobile 16.
+    // (side padding 40 = base desktop.minMargin, mobile margin 16 = base — contentWidth만 1200→1280.)
+    grid: {
+      desktop: { contentWidth: 1280 },
+    },
   },
   elevation: {
     // SSOT: Figma 지니어트 Library / Elevation (3031:6) — 4 levels E0~E3.
@@ -199,6 +204,8 @@ export const genietTheme: BrandTheme = {
       arrowSize: 24,
       arrowColor: genietGray[600], // #777777
     },
+    // Alert 가이드(1054:30) + Radius 가이드(3134:2): Alert = Shape/MD 8 (base lg 12).
+    "notice-alert": { radius: 8 },
     // Toast 가이드(1330:2): bg Black/0.92, shadow drop y8·blur24·18% black.
     // (Elevation 가이드는 토스트를 E1로 분류하지만, 전용 Toast 가이드의 명시 그림자가 우선.)
     toast: {
