@@ -29,9 +29,8 @@ export const aiStyles = `
   }
 
   :where(.${AI_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -64,11 +63,8 @@ export const aiStyles = `
     border: none;
     background: transparent;
     outline: none;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body2.lineHeight}px;
-    /* base Input 필드와 동일 — Figma --color-label-normal = #111 (neutral/900) */
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). base Input 필드 #111(neutral/900). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.strong};
     text-align: right;
     font-variant-numeric: tabular-nums;

@@ -41,9 +41,8 @@ export const tpStyles = `
   :where(.${TP_ROOT_CLASS}[data-full-width="true"]) { width: 100%; }
 
   :where(.${TP_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -83,8 +82,8 @@ export const tpStyles = `
     border: none;
     background: transparent;
     cursor: pointer;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). 트리거 텍스트 = 선택 값. */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.normal};
     font-variant-numeric: tabular-nums;
   }

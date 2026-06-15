@@ -1,5 +1,5 @@
 /* Auto-generated from packages/react/src/Textarea.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, fontWeight, radius, transition, typeScale } from "@nudge-design/tokens";
+import { cv, fontFamily, radius, transition, typeScale } from "@nudge-design/tokens";
 
 const TA_CLASS = "nds-textarea";
 const TA_ROOT_CLASS = `${TA_CLASS}__root`;
@@ -21,9 +21,8 @@ export const textareaStyles = `
   }
 
   :where(.${TA_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.body3.lineHeight}px;
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -65,10 +64,8 @@ export const textareaStyles = `
     border: none;
     outline: none;
     background: transparent;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). placeholder 동일(색만 muted). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.normal};
     padding: 0;
     resize: var(--nds-textarea-resize, vertical);
@@ -85,7 +82,7 @@ export const textareaStyles = `
     resize: none;
   }
 
-  /* helper 폰트(→12px)·색·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text
+  /* helper 폰트(→13/18 · Input Typography 표준)·색·에러색·캐포비 에러아이콘 ::before 는 공용 .nds-helper-text
    * (HelperText.ts) 소유 — element 에 nds-helper-text 클래스가 함께 붙는다.
    * 여기엔 footer 레이아웃 통합(아래 .${TA_FOOTER_CLASS} > .${TA_HELPER_CLASS})만 남긴다. */
 
@@ -105,8 +102,9 @@ export const textareaStyles = `
   :where(.${TA_COUNT_CLASS}) {
     flex: 0 0 auto;
     margin-left: auto;
-    font-size: ${typeScale.caption2.fontSize}px;
-    line-height: ${typeScale.caption2.lineHeight}px;
+    /* 글자수 카운터 — 같은 footer 행 helper 와 동일 Input Typography 13/18(caption1). 색만 muted. */
+    font-size: ${typeScale.caption1.fontSize}px;
+    line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.muted};
   }
 

@@ -18,7 +18,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3080-
 - **FormSection** = 제목(Headline3 24 Bold) + 보더 카드(radius 16 cascade · border #EEE · 좌우 padding 24)로 여러 `FormField` 를 묶는 폼 그룹. 마크업: `<nds-form-section title="기본 정보"><nds-form-field density="admin" label-position="left">…</nds-form-field></nds-form-section>`. 세로 리듬은 자식 `FormField density="admin"`(py-24) 이 만든다 — FormSection 에 따로 py 주지 말 것. radius·색은 `data-brand="cashwalk-biz"` cascade.
 - Input/Border/Focus 는 ★ Neutral/900 (#111111) 검정 — 다른 브랜드(brand 색 focus) 와 달리 캐시워크 포 비즈니스 admin 은 검정 outline.
 - Input/BG/Disabled = Neutral/50 (#FAFAFA), Input/Border/Default = Neutral/200 (#EEEEEE).
-- Input·Dropdown·DateInput 의 입력 텍스트는 Body2 14/20 (base DS 의 Select/DateInput 13/18 보다 큼 — 캐시워크 포 비즈니스 전용).
+- 입력 타이포는 **Input Typography 표준(Figma 4247:1964 · 브랜드 무관)** — 라벨 13/18 Medium · 값/placeholder 15/22 Regular · 헬퍼/에러 13/18 Regular. 옛 캐포비 전용 "표준/좁은공간(14·15)" 분기는 폐지하고 `--semantic-input-typography-*` 토큰으로 통일(캐포비도 동일 값). DateInput(DatePicker·DateRangePicker)·TimePicker 트리거는 value 토큰으로 통일. Dropdown(Select) 트리거·옵션은 옛 캐포비 dense 14/20 → 15/22 (브랜드 폰트 override 제거, base body2 cascade). 모두 브랜드 무관 15/22.
 - Dropdown 선택(Selected) 항목은 ★ 회색 배경(Section #F5F5F5) + Strong 텍스트 + Medium 500 + 우측 체크 — 다른 브랜드의 brand-tint 선택과 다름. 메뉴 항목 radius 6 / inset 패딩.
 - Checkbox 의 'on-green' SVG 가 별도 — success 표시(이미 처리 완료) 의미. 일반 checked 와 구분.
 - ImageUpload 는 캐시워크 포 비즈니스 admin 표준 — Empty/Uploaded/Error 3 상태. user-app 의 ImageUpload 와 별도 컴포넌트로 취급.

@@ -65,6 +65,10 @@
       "types": "./dist/nudge-eap-image-metadata.d.ts",
       "import": "./dist/nudge-eap-image-metadata.js"
     },
+    "./geniet-assets": {
+      "types": "./dist/geniet-asset-metadata.d.ts",
+      "import": "./dist/geniet-asset-metadata.js"
+    },
     "./remote-url": {
       "types": "./dist/remote-url.d.ts",
       "import": "./dist/remote-url.js"

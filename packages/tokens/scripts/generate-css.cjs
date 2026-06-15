@@ -212,11 +212,36 @@ function generateBaseTokens() {
   // Type Scale — Figma 가이드 변수명(--font-size-body-1 / --line-height-body-1)에 정합.
   // fontWeight 는 스케일에 묶지 않고(스케일당 default 없음), --font-weight-* 토큰을
   // 사용처에서 직접 조합한다.
+  //
+  // size+lineHeight 묶음 토큰 `--font-{scale}`(= `{size}px/{lineHeight}px`)도 함께 emit.
+  // `font` shorthand 한 칸에 size/line-height 를 넣고 weight·family 는 분리 토큰으로
+  // 조합하는 용도 — `font: var(--font-weight-medium) var(--font-body-2) var(--font-family-default)`.
   lines.push("");
   for (const [key, value] of Object.entries(typeScale)) {
     const figmaKey = typeScaleKeyToFigma(key);
     lines.push(`  --font-size-${figmaKey}: ${value.fontSize}px;`);
     lines.push(`  --line-height-${figmaKey}: ${value.lineHeight}px;`);
+    lines.push(`  --font-${figmaKey}: ${value.fontSize}px/${value.lineHeight}px;`);
+  }
+
+  // Input Typography 표준 (Figma 4247:1964) — 입력 패밀리(Label·Input Value·Placeholder·
+  // Helper·Error) 타이포를 브랜드 무관하게 통일하는 시멘틱 토큰.
+  //   · size+lineHeight 는 한 토큰(`--semantic-input-typography-{role}` = `{size}px/{lh}px`)으로 묶고,
+  //   · weight 는 분리 토큰(`--semantic-input-typography-{role}-weight` → --font-weight-*)으로 적용한다.
+  //   · placeholder=value(타이포 동일, 색만 muted) / error=helper(타이포 동일, 색만 status-error)
+  //     라 타이포 역할은 label·value·helper 3종만 둔다.
+  //   · 값은 base typeScale 에서 파생하되 **literal** 로 박아 브랜드 typeScale override 의 영향을
+  //     받지 않는다(= 브랜드 무관 보장). 브랜드 css 는 이 토큰을 재-emit 하지 않는다.
+  const INPUT_TYPOGRAPHY = {
+    label: { scale: typeScale.caption1, weight: "medium" }, // 13/18 · Medium
+    value: { scale: typeScale.body2, weight: "regular" }, // 15/22 · Regular (placeholder 동일)
+    helper: { scale: typeScale.caption1, weight: "regular" }, // 13/18 · Regular (error 동일)
+  };
+  lines.push("");
+  lines.push("  /* ── Semantic / Input Typography (Figma 4247:1964 · 브랜드 무관) ── */");
+  for (const [role, { scale, weight }] of Object.entries(INPUT_TYPOGRAPHY)) {
+    lines.push(`  --semantic-input-typography-${role}: ${scale.fontSize}px/${scale.lineHeight}px;`);
+    lines.push(`  --semantic-input-typography-${role}-weight: var(--font-weight-${weight});`);
   }
 
   // Shadow — Figma · ElevationGuide(556:2). E0 ~ E3 → --shadow-0 ~ --shadow-3
@@ -306,6 +331,8 @@ function generateBrandTokens({ theme, title, cssImport }) {
         const figmaKey = typeScaleKeyToFigma(key);
         lines.push(`  --font-size-${figmaKey}: ${value.fontSize}px;`);
         lines.push(`  --line-height-${figmaKey}: ${value.lineHeight}px;`);
+        // size+lineHeight 묶음 토큰도 함께 override (브랜드가 typeScale 을 덮으면 같이 따라감).
+        lines.push(`  --font-${figmaKey}: ${value.fontSize}px/${value.lineHeight}px;`);
       }
     }
   }

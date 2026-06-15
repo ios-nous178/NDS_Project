@@ -29,9 +29,8 @@ export const apStyles = `
   }
 
   :where(.${AS_LABEL_CLASS}) {
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    font-weight: ${fontWeight.medium};
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -49,8 +48,8 @@ export const apStyles = `
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     transition: border-color ${transition.default};
     /* border-box: height 토큰(48)이 곧 실제 높이가 되도록 — 없으면 1px border 가 더해져
        옆의 검색 Button(border-box 48) 과 2px 어긋난다. */
@@ -126,8 +125,8 @@ export const apStyles = `
     border: 1px solid ${cv.input.borderDefault};
     border-radius: ${radius.md}px;
     background: ${cv.surface.default};
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     margin-top: ${spacing[4]}px;
   }
 

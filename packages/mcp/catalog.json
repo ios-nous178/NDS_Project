@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T04:08:10.535Z",
+  "generatedAt": "2026-06-15T04:52:53.924Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10018,6 +10018,65 @@
       ]
     },
     {
+      "name": "--font-body-1",
+      "value": "16px/24px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "15px/22px",
+        "runmile": "14px/20px"
+      }
+    },
+    {
+      "name": "--font-body-2",
+      "value": "15px/22px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "14px/20px",
+        "runmile": "13px/18px"
+      }
+    },
+    {
+      "name": "--font-body-3",
+      "value": "14px/20px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "13px/18px",
+        "runmile": "13px/18px"
+      }
+    },
+    {
+      "name": "--font-caption-1",
+      "value": "13px/18px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "12px/16px",
+        "runmile": "12px/16px"
+      }
+    },
+    {
+      "name": "--font-caption-2",
+      "value": "12px/16px",
+      "group": "font",
+      "brandValues": {
+        "trost": "12px/18px"
+      }
+    },
+    {
+      "name": "--font-display-1",
+      "value": "52px/74px",
+      "group": "font"
+    },
+    {
+      "name": "--font-display-2",
+      "value": "48px/62px",
+      "group": "font"
+    },
+    {
+      "name": "--font-display-3",
+      "value": "40px/52px",
+      "group": "font"
+    },
+    {
       "name": "--font-family-default",
       "value": "'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif",
       "group": "font",
@@ -10037,6 +10096,63 @@
         "geniet": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
         "runmile": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif",
         "trost": "system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif"
+      }
+    },
+    {
+      "name": "--font-headline-1",
+      "value": "36px/48px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "32px/40px",
+        "runmile": "24px/30px",
+        "trost": "26px/38px"
+      }
+    },
+    {
+      "name": "--font-headline-2",
+      "value": "28px/38px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "24px/32px",
+        "runmile": "20px/24px",
+        "trost": "24px/34px"
+      }
+    },
+    {
+      "name": "--font-headline-3",
+      "value": "24px/32px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "20px/28px",
+        "runmile": "18px/24px",
+        "trost": "22px/30px"
+      }
+    },
+    {
+      "name": "--font-headline-4",
+      "value": "20px/28px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "18px/26px",
+        "runmile": "16px/24px",
+        "trost": "18px/26px"
+      }
+    },
+    {
+      "name": "--font-headline-5",
+      "value": "18px/26px",
+      "group": "font",
+      "brandValues": {
+        "cashwalk-biz": "16px/24px",
+        "runmile": "15px/22px"
+      }
+    },
+    {
+      "name": "--font-label",
+      "value": "11px/14px",
+      "group": "font",
+      "brandValues": {
+        "trost": "12px/18px"
       }
     },
     {
@@ -10803,24 +10919,8 @@
       }
     },
     {
-      "name": "--nds-datepicker-font-size",
-      "value": "14px",
-      "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
-    },
-    {
       "name": "--nds-datepicker-height",
       "value": "var(--nds-input-height)",
-      "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
-    },
-    {
-      "name": "--nds-datepicker-line-height",
-      "value": "20px",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -11200,24 +11300,8 @@
       ]
     },
     {
-      "name": "--nds-select-font-size",
-      "value": "14px",
-      "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
-    },
-    {
       "name": "--nds-select-height",
       "value": "var(--nds-input-height)",
-      "group": "nds",
-      "brands": [
-        "cashwalk-biz"
-      ]
-    },
-    {
-      "name": "--nds-select-line-height",
-      "value": "20px",
       "group": "nds",
       "brands": [
         "cashwalk-biz"
@@ -12707,6 +12791,36 @@
         "runmile": "#B0B8C1",
         "trost": "#979797"
       }
+    },
+    {
+      "name": "--semantic-input-typography-helper",
+      "value": "13px/18px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-input-typography-helper-weight",
+      "value": "var(--font-weight-regular)",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-input-typography-label",
+      "value": "13px/18px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-input-typography-label-weight",
+      "value": "var(--font-weight-medium)",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-input-typography-value",
+      "value": "15px/22px",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-input-typography-value-weight",
+      "value": "var(--font-weight-regular)",
+      "group": "semantic"
     },
     {
       "name": "--semantic-inset-button",

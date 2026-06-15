@@ -36,8 +36,8 @@ export const autocompleteStyles = `
   }
 
   :where(.${AC_ROOT_CLASS}) > label {
-    font-size: ${typeScale.body3.fontSize}px;
-    font-weight: ${fontWeight.medium};
+    /* Input Typography 표준 label(13/18 · Medium, Figma 4247:1964). */
+    font: ${cv.inputTypography.label.font};
     color: ${cv.textRole.normal};
   }
 
@@ -49,9 +49,8 @@ export const autocompleteStyles = `
     border-radius: var(--nds-input-radius, ${radius.md}px);
     background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     transition: border-color ${transition.default};
     box-sizing: border-box;
   }

@@ -57,9 +57,9 @@ export const dateRangeStyles = `
     border-radius: var(--nds-datepicker-radius, ${radius.md}px);
     background: ${cv.input.bg};
     cursor: pointer;
-    font-family: inherit;
-    font-size: var(--nds-datepicker-font-size, ${typeScale.body3.fontSize}px);
-    line-height: var(--nds-datepicker-line-height, ${typeScale.body3.lineHeight}px);
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). 트리거 텍스트 = 입력 값.
+     * (구 body3 14/20 → 15/22 정렬. font-size/line-height override 슬롯은 미사용이라 제거.) */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.normal};
     transition: border-color ${transition.default};
     box-sizing: border-box;

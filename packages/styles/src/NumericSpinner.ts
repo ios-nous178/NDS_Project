@@ -1,14 +1,5 @@
 /* Auto-generated from packages/react/src/NumericSpinner.tsx during the @nudge-design/styles split. */
-import {
-  cv,
-  fontFamily,
-  fontWeight,
-  radius,
-  sizing,
-  spacing,
-  transition,
-  typeScale,
-} from "@nudge-design/tokens";
+import { cv, fontFamily, radius, sizing, spacing, transition } from "@nudge-design/tokens";
 
 const NS_CLASS = "nds-numeric-spinner";
 const NS_BUTTON_CLASS = `${NS_CLASS}__button`;
@@ -66,10 +57,8 @@ export const numericSpinnerStyles = `
     background: transparent;
     outline: none;
     text-align: center;
-    font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body2.lineHeight}px;
+    /* Input Value — Input Typography 표준 value(15/22 · Regular). */
+    font: ${cv.inputTypography.value.font};
     color: ${cv.textRole.strong};
     font-variant-numeric: tabular-nums;
     -moz-appearance: textfield;
