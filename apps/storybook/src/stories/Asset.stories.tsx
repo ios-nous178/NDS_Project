@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import type { CSSProperties } from "react";
 import { Asset, Badge } from "@nudge-design/react";
 import { CalendarIcon, CounselIcon } from "@nudge-design/icons/mono";
-import { GenietPlayIcon, TrostMentalDepressionIcon } from "@nudge-design/icons/multicolor";
+import { GenietSaladIcon, TrostMentalDepressionIcon } from "@nudge-design/icons/multicolor";
 
 const meta: Meta<typeof Asset> = {
   title: "Components/Display/Asset",
@@ -137,7 +137,7 @@ export const BrandSignature: Story = {
   name: "Recipe/브랜드 시그니처 (Geniet/Trost)",
   render: () => (
     <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-      <Asset size="xl" shape="rounded" content={{ type: "icon", icon: <GenietPlayIcon /> }} />
+      <Asset size="xl" shape="rounded" content={{ type: "icon", icon: <GenietSaladIcon /> }} />
       <Asset
         size="xl"
         shape="rounded"

@@ -1130,8 +1130,6 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   GenietLoginIcon: { category: "action", style: "line" },
   GenietLogoutIcon: { category: "action", style: "line" },
   GenietRecordIcon: { category: "action", style: "filled" },
-  GenietPlayIcon: { category: "media", style: "filled" },
-  GenietCheckcircleIcon: { category: "state-reaction", style: "filled" },
   GenietConfettiIcon: { category: "state-reaction", style: "filled" },
   GenietCouponIcon: { category: "location", style: "line" },
   GenietCashreviewIcon: { category: "eap-service", style: "filled" },

@@ -432,11 +432,6 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietCheckcircleIcon",
-      "kebab": "geniet-checkcircle",
-      "brand": "geniet"
-    },
-    {
       "name": "GenietCheckIcon",
       "kebab": "geniet-check",
       "brand": "geniet"
@@ -577,11 +572,6 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietMealGrayIcon",
-      "kebab": "geniet-meal-gray",
-      "brand": "geniet"
-    },
-    {
       "name": "GenietMealIcon",
       "kebab": "geniet-meal",
       "brand": "geniet"
@@ -629,11 +619,6 @@
     {
       "name": "GenietPillIcon",
       "kebab": "geniet-pill",
-      "brand": "geniet"
-    },
-    {
-      "name": "GenietPlayIcon",
-      "kebab": "geniet-play",
       "brand": "geniet"
     },
     {
