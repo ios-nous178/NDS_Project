@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T23:59:54.343Z",
+  "generatedAt": "2026-06-15T00:10:35.323Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10012,7 +10012,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "15px",
-        "geniet": "15px",
         "runmile": "14px"
       }
     },
@@ -10022,7 +10021,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "14px",
-        "geniet": "14px",
         "runmile": "13px"
       }
     },
@@ -10032,7 +10030,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "13px",
-        "geniet": "13px",
         "runmile": "13px"
       }
     },
@@ -10042,7 +10039,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "12px",
-        "geniet": "12px",
         "runmile": "12px"
       }
     },
@@ -10072,7 +10068,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "32px",
-        "geniet": "22px",
         "runmile": "24px",
         "trost": "26px"
       }
@@ -10083,7 +10078,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "24px",
-        "geniet": "22px",
         "runmile": "20px",
         "trost": "24px"
       }
@@ -10094,7 +10088,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "20px",
-        "geniet": "18px",
         "runmile": "18px",
         "trost": "22px"
       }
@@ -10105,7 +10098,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "18px",
-        "geniet": "18px",
         "runmile": "16px",
         "trost": "18px"
       }
@@ -10116,7 +10108,6 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "16px",
-        "geniet": "16px",
         "runmile": "15px"
       }
     },
@@ -10309,7 +10300,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "22px",
-        "geniet": "22px",
         "runmile": "20px"
       }
     },
@@ -10319,7 +10309,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "20px",
-        "geniet": "20px",
         "runmile": "18px"
       }
     },
@@ -10329,7 +10318,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "18px",
-        "geniet": "18px",
         "runmile": "18px"
       }
     },
@@ -10339,7 +10327,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "16px",
-        "geniet": "16px",
         "runmile": "16px"
       }
     },
@@ -10372,7 +10359,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "40px",
-        "geniet": "28px",
         "runmile": "30px",
         "trost": "38px"
       }
@@ -10383,7 +10369,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "32px",
-        "geniet": "28px",
         "runmile": "24px",
         "trost": "34px"
       }
@@ -10394,7 +10379,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "28px",
-        "geniet": "26px",
         "runmile": "24px",
         "trost": "30px"
       }
@@ -10405,7 +10389,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "26px",
-        "geniet": "26px",
         "runmile": "24px",
         "trost": "26px"
       }
@@ -10416,7 +10399,6 @@
       "group": "line",
       "brandValues": {
         "cashwalk-biz": "24px",
-        "geniet": "24px",
         "runmile": "22px"
       }
     },
@@ -11414,7 +11396,7 @@
       "value": "0px 8px 12px rgba(0, 0, 0, 0.18)",
       "group": "nds",
       "brandValues": {
-        "geniet": "0 2px 6px rgba(0, 0, 0, 0.15)",
+        "geniet": "0 2px 6px rgba(221, 221, 221, 0.6)",
         "trost": "0px 4px 16px rgba(0,0,0,0.15)"
       }
     },
@@ -12271,7 +12253,10 @@
     {
       "name": "--semantic-gap-default",
       "value": "10px",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "8px"
+      }
     },
     {
       "name": "--semantic-gap-label",
@@ -12282,6 +12267,14 @@
       "name": "--semantic-gap-loose",
       "value": "16px",
       "group": "semantic"
+    },
+    {
+      "name": "--semantic-gap-section",
+      "value": "40px",
+      "group": "semantic",
+      "brands": [
+        "geniet"
+      ]
     },
     {
       "name": "--semantic-gap-tight",
@@ -12542,6 +12535,14 @@
       }
     },
     {
+      "name": "--semantic-inset-button",
+      "value": "14px",
+      "group": "semantic",
+      "brands": [
+        "geniet"
+      ]
+    },
+    {
       "name": "--semantic-inset-card",
       "value": "16px",
       "group": "semantic"
@@ -12554,7 +12555,10 @@
     {
       "name": "--semantic-inset-chip",
       "value": "8px",
-      "group": "semantic"
+      "group": "semantic",
+      "brandValues": {
+        "geniet": "6px"
+      }
     },
     {
       "name": "--semantic-inset-input",
@@ -12579,8 +12583,12 @@
       "value": "30px",
       "group": "semantic",
       "brands": [
-        "cashwalk-biz"
-      ]
+        "cashwalk-biz",
+        "geniet"
+      ],
+      "brandValues": {
+        "geniet": "32px"
+      }
     },
     {
       "name": "--semantic-text-brand-default",
@@ -12719,7 +12727,7 @@
       "value": "0px 1px 4px rgba(0, 0, 0, 0.08)",
       "group": "shadow",
       "brandValues": {
-        "geniet": "0 0 6px rgba(0, 0, 0, 0.04)",
+        "geniet": "0 2px 6px rgba(221, 221, 221, 0.6)",
         "runmile": "0 1px 2px rgba(0, 0, 0, 0.04)",
         "trost": "0px 2px 16px rgba(0, 0, 0, 0.12)"
       }
@@ -12729,7 +12737,7 @@
       "value": "0px 4px 12px rgba(0, 0, 0, 0.10)",
       "group": "shadow",
       "brandValues": {
-        "geniet": "0 2px 6px rgba(0, 0, 0, 0.15)",
+        "geniet": "0 3px 15px rgba(0, 0, 0, 0.1)",
         "runmile": "0 2px 8px rgba(0, 0, 0, 0.08)"
       }
     },
@@ -12738,7 +12746,7 @@
       "value": "0px 8px 24px rgba(0, 0, 0, 0.12)",
       "group": "shadow",
       "brandValues": {
-        "geniet": "0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.14)",
+        "geniet": "0 12px 32px rgba(0, 0, 0, 0.16)",
         "runmile": "0 8px 24px rgba(0, 0, 0, 0.12)"
       }
     },
