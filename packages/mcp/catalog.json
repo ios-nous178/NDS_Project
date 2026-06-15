@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T00:10:35.323Z",
+  "generatedAt": "2026-06-15T00:21:14.080Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10525,7 +10525,7 @@
         "trost"
       ],
       "brandValues": {
-        "geniet": "18px",
+        "geniet": "16px",
         "runmile": "16px",
         "trost": "16px"
       }
@@ -10544,17 +10544,13 @@
     },
     {
       "name": "--nds-card-radius",
-      "value": "8px",
+      "value": "12px",
       "group": "nds",
       "brands": [
         "geniet",
         "runmile",
         "trost"
-      ],
-      "brandValues": {
-        "runmile": "12px",
-        "trost": "12px"
-      }
+      ]
     },
     {
       "name": "--nds-chart-1",
@@ -10660,7 +10656,7 @@
     },
     {
       "name": "--nds-chip-selected-background",
-      "value": "#00A8AC",
+      "value": "#F2FAFA",
       "group": "nds",
       "brands": [
         "geniet",
@@ -10674,7 +10670,7 @@
     },
     {
       "name": "--nds-chip-selected-border",
-      "value": "#00A8AC",
+      "value": "#F2FAFA",
       "group": "nds",
       "brands": [
         "geniet",
@@ -10697,7 +10693,7 @@
         "trost"
       ],
       "brandValues": {
-        "geniet": "#FFFFFF",
+        "geniet": "#00A8AC",
         "runmile": "#FFFFFF",
         "trost": "#FFFFFF"
       }
@@ -10902,7 +10898,7 @@
     },
     {
       "name": "--nds-modal-radius",
-      "value": "8px",
+      "value": "16px",
       "group": "nds",
       "brands": [
         "geniet",
@@ -11523,7 +11519,7 @@
     },
     {
       "name": "--radius-2xl",
-      "value": "23px",
+      "value": "24px",
       "group": "radius",
       "brands": [
         "geniet"
@@ -11584,14 +11580,13 @@
       "value": "4px",
       "group": "radius",
       "brandValues": {
-        "geniet": "6px",
         "runmile": "6px",
         "trost": "6px"
       }
     },
     {
       "name": "--radius-xl",
-      "value": "18px",
+      "value": "16px",
       "group": "radius",
       "brands": [
         "geniet",
@@ -11599,13 +11594,12 @@
         "trost"
       ],
       "brandValues": {
-        "runmile": "16px",
         "trost": "20px"
       }
     },
     {
       "name": "--radius-xs",
-      "value": "4px",
+      "value": "2px",
       "group": "radius",
       "brands": [
         "geniet",
@@ -11613,6 +11607,7 @@
         "trost"
       ],
       "brandValues": {
+        "runmile": "4px",
         "trost": "6px"
       }
     },

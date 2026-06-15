@@ -105,17 +105,18 @@ export const genietTheme: BrandTheme = {
       modal: 24, // Modal·Bottom Sheet·Drawer
       section: 32, // 페이지 Section·큰 영역 padding (신규)
     },
-    // DESIGN.md (brands/geniet) — 8px md 기본, xl=18 / 2xl=23 은 Geniet 고유 곡률
-    // (radius 는 Spacing 가이드 범위 밖 — 기존 유지)
+    // Radius/Shape — SSOT: Figma 지니어트 Library / Radius (3134:2).
+    // Shape 시멘틱 스케일(none~full)로 표준화 — 구 Geniet 고유 곡률(xs:4·sm:6·xl:18·2xl:23) 폐기.
+    // (DS 컨벤션상 full 키는 pill 로 노출.)
     radius: {
-      none: 0,
-      xs: 4,
-      sm: 6,
-      md: 8,
-      lg: 12,
-      xl: 18,
-      "2xl": 23,
-      pill: 9999,
+      none: 0, // Shape/None — 0px
+      xs: 2, // Shape/XS — Pill·Toggle
+      sm: 4, // Shape/SM — Tag·Chip·Thumbnail
+      md: 8, // Shape/MD — Button·Input·Toast
+      lg: 12, // Shape/LG — Card·Section
+      xl: 16, // Shape/XL — Modal·Sheet
+      "2xl": 24, // Shape/2XL — Hero·Banner
+      pill: 9999, // Shape/Full — Avatar·FAB·Pill
     },
   },
   elevation: {
@@ -152,15 +153,16 @@ export const genietTheme: BrandTheme = {
       extraColor: genietGray[500], // #999999 (구 gray[600])
     },
     input: { borderColor: genietGray[300] },
-    // DESIGN.md card-default — 8px radius, 1px #ECECEC border
-    card: { radius: 8, borderColor: genietGray[200] },
-    // DESIGN.md — 8px radius, Material 3-layer shadow 는 elevation.shadow[3]
-    modal: { radius: 8 },
-    // DESIGN.md chip-active — selected = brand action 색 (mint/600) + 흰색
+    // Radius 가이드(3134:2): Card = Shape/LG = 12px. border 1px #ECECEC.
+    card: { radius: 12, borderColor: genietGray[200] },
+    // Radius 가이드: Modal = Shape/XL = 16px. (그림자는 elevation.shadow[3] = E3 Overlay)
+    modal: { radius: 16 },
+    // Badge&Chip 가이드(3058:84): Chip Selected = Mint/50 bg + Mint/600 text (옅은 필터 칩).
+    // (Pill 형태는 컴포넌트 기본 radius.pill. 구 mint/600 solid+흰 텍스트는 과교정이라 환원.)
     chip: {
-      selectedBackground: genietMint[600],
-      selectedText: genietNeutral.white,
-      selectedBorder: genietMint[600],
+      selectedBackground: genietMint[50], // #F2FAFA
+      selectedText: genietMint[600], // #00A8AC
+      selectedBorder: genietMint[50], // bg 와 동일 — borderless 라이트 칩
     },
     // Geniet 패턴 — track gray/200, active = brand mint/600
     toggle: {
@@ -171,9 +173,9 @@ export const genietTheme: BrandTheme = {
     },
     // 토스트는 Elevation 가이드(3031:6) 의 E1 Subtle 사용 ("작은 토스트")
     toast: { shadow: "0 2px 6px rgba(221, 221, 221, 0.6)" },
-    // DESIGN.md — 18px 상단 radius (rounded-t-[18px])
+    // Radius 가이드(3134:2): Bottom Sheet = Shape/XL = 16px (상단 모서리만)
     "bottom-sheet": {
-      radius: 18,
+      radius: 16,
       handleWidth: 50,
       handleHeight: 4,
       handleColor: genietGray[300],
