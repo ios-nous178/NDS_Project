@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface GenietNavHomeIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietNavHomeIcon = React.forwardRef<SVGSVGElement, GenietNavHomeIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path fill="currentColor" fillRule="evenodd" d="M14.258 18.955H9.78a.833.833 0 1 1 0-1.667h4.478a.833.833 0 1 1 0 1.667Zm6.085-10.849-7.174-5.705a1.847 1.847 0 0 0-2.3 0L3.696 8.106a2.9 2.9 0 0 0-1.095 2.27v8.142A2.682 2.682 0 0 0 5.282 21.2h13.474a2.683 2.683 0 0 0 2.682-2.683v-8.14a2.9 2.9 0 0 0-1.095-2.27Z" clipRule="evenodd"/>
+    </svg>
+  )
+);
+
+GenietNavHomeIcon.displayName = "GenietNavHomeIcon";

@@ -24,8 +24,8 @@ export const CashdealPointIcon = React.forwardRef<SVGSVGElement, CashdealPointIc
 </g>
 <defs>
 <linearGradient id="cashdeal_point_grad" x1="-3.9674" y1="5.48148" x2="5.24024" y2="16.5755" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FF7F60"/>
-<stop offset="1" stop-color="#E53000"/>
+<stop stopColor="#FF7F60"/>
+<stop offset="1" stopColor="#E53000"/>
 </linearGradient>
 </defs>
     </svg>

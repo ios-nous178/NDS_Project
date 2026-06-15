@@ -29,9 +29,11 @@ function toPascalCase(str) {
 }
 
 function svgToComponent(svgContent, componentName) {
-  const svgMatch = svgContent.match(/<svg[^>]*>([\s\S]*?)<\/svg>/);
+  const svgMatch = svgContent.match(/<svg([^>]*)>([\s\S]*?)<\/svg>/);
   if (!svgMatch) throw new Error("Invalid SVG");
-  const innerSvg = svgMatch[1].trim();
+  // 소스 viewBox 보존 — 24×24 가 아닌 아이콘(체중계·쿠폰·바텀네비 등)이 잘리지 않게.
+  const viewBox = svgMatch[1].match(/\sviewBox="([^"]+)"/)?.[1] ?? "0 0 24 24";
+  const innerSvg = svgMatch[2].trim();
 
   const jsxInner = innerSvg
     .replace(/stroke-width/g, "strokeWidth")
@@ -42,6 +44,9 @@ function svgToComponent(svgContent, componentName) {
     .replace(/fill-rule/g, "fillRule")
     .replace(/clip-rule/g, "clipRule")
     .replace(/clip-path/g, "clipPath")
+    .replace(/gradient-units/g, "gradientUnits")
+    .replace(/stop-color/g, "stopColor")
+    .replace(/stop-opacity/g, "stopOpacity")
     .replace(/mask-type/g, "maskType")
     .replace(/xmlns:xlink/g, "xmlnsXlink")
     .replace(/xlink:href/g, "xlinkHref")
@@ -59,7 +64,7 @@ export const ${componentName} = React.forwardRef<SVGSVGElement, ${componentName}
       ref={ref}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="${viewBox}"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color={color}

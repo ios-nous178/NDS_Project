@@ -2,12 +2,10 @@
 "@nudge-design/icons": patch
 ---
 
-지니어트 아이콘 갱신/추가 — Figma 지니어트 Library export
+지니어트 아이콘 전수 갱신/추가 — Figma 지니어트 Library export
 
-다색 변형(arrow·calendar 등)은 **블랙만** 가져와 `currentColor` mono 로, 컬러 일러스트는 multicolor 로 임포트.
+다색 변형(arrow·calendar·bottomnavi on/off·G배지)은 **블랙/대표 1종만** `currentColor` mono 로, 그라디언트·컬러 일러스트는 색 보존 multicolor 로 임포트.
 
-- **mono(currentColor) 갱신**: `geniet-arrow-back`·`geniet-arrow-up`·`geniet-arrow-down`·`geniet-coupon`
-- **mono 신규**: `geniet-arrow-right-line`·`geniet-calendar`·`geniet-star`·`geniet-invite`
-- **multicolor 갱신**: `geniet-gpoint`(mint→currentColor)
-- **multicolor 신규**: `geniet-clover`·`geniet-lottomachine`·`geniet-moneypouch`·`geniet-shoe`·`geniet-quiz`
-- 바텀네비 아이콘은 이번 범위 제외(nav 셋 변경 동반이라 별도).
+- **mono(currentColor)**: `geniet-arrow-back/up/down`·`geniet-arrow-right-line`·`geniet-calendar`·`geniet-coupon`·`geniet-star`·`geniet-heart-solid`·`geniet-shoe-fill`·`geniet-basket`·`geniet-eye-off`·`geniet-gpoint-badge`·`geniet-nav-home/write/review/community/shopping` (흰색 디테일 보존)
+- **multicolor**: `geniet-gpoint`(mint→currentColor)·`geniet-clover`·`geniet-lottomachine`·`geniet-moneypouch`·`geniet-shoe`·`geniet-quiz`·`geniet-invite`·`geniet-ticket`·`geniet-scale`
+- **생성기 수정**: `svgToComponent` 가 소스 viewBox 보존(기존 24×24 하드코딩) — 비-24 아이콘(체중계·쿠폰·바텀네비·invite 등) 잘림 해결. 그라디언트 `stop-color`→`stopColor` 등 React 속성 변환 추가.

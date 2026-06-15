@@ -392,6 +392,11 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietBasketIcon",
+      "kebab": "geniet-basket",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietBenefitIcon",
       "kebab": "geniet-benefit",
       "brand": "geniet"
@@ -437,8 +442,23 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietEyeOffIcon",
+      "kebab": "geniet-eye-off",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietGpointBadgeIcon",
+      "kebab": "geniet-gpoint-badge",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietGpointIcon",
       "kebab": "geniet-gpoint",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietHeartSolidIcon",
+      "kebab": "geniet-heart-solid",
       "brand": "geniet"
     },
     {
@@ -482,6 +502,31 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietNavCommunityIcon",
+      "kebab": "geniet-nav-community",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietNavHomeIcon",
+      "kebab": "geniet-nav-home",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietNavReviewIcon",
+      "kebab": "geniet-nav-review",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietNavShoppingIcon",
+      "kebab": "geniet-nav-shopping",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietNavWriteIcon",
+      "kebab": "geniet-nav-write",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietPlayIcon",
       "kebab": "geniet-play",
       "brand": "geniet"
@@ -502,6 +547,11 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietScaleIcon",
+      "kebab": "geniet-scale",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietSearchDeleteIcon",
       "kebab": "geniet-search-delete",
       "brand": "geniet"
@@ -512,6 +562,11 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietShoeFillIcon",
+      "kebab": "geniet-shoe-fill",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietShoeIcon",
       "kebab": "geniet-shoe",
       "brand": "geniet"
@@ -519,6 +574,11 @@
     {
       "name": "GenietStarIcon",
       "kebab": "geniet-star",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietTicketIcon",
+      "kebab": "geniet-ticket",
       "brand": "geniet"
     },
     {

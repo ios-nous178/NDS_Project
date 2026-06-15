@@ -10,7 +10,7 @@ export const GenietQuizIcon = React.forwardRef<SVGSVGElement, GenietQuizIconProp
       ref={ref}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="0 0 39 34"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color={color}
@@ -25,17 +25,17 @@ export const GenietQuizIcon = React.forwardRef<SVGSVGElement, GenietQuizIconProp
   </g>
   <defs>
     <linearGradient id="b" x1="-6.16" x2="38.653" y1="-2.801" y2="29.77" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#CEE321"/>
-      <stop offset="1" stop-color="#56D620"/>
+      <stop stopColor="#CEE321"/>
+      <stop offset="1" stopColor="#56D620"/>
     </linearGradient>
     <linearGradient id="c" x1="30.737" x2="37.12" y1="1.058" y2="8.94" gradientUnits="userSpaceOnUse">
-      <stop offset=".09" stop-color="#FFE16A"/>
-      <stop offset=".53" stop-color="#FFDF52"/>
-      <stop offset=".99" stop-color="#FFDE3F"/>
+      <stop offset=".09" stopColor="#FFE16A"/>
+      <stop offset=".53" stopColor="#FFDF52"/>
+      <stop offset=".99" stopColor="#FFDE3F"/>
     </linearGradient>
     <linearGradient id="d" x1="31.729" x2="37.019" y1="2.274" y2="8.815" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFD355"/>
-      <stop offset=".89" stop-color="#FFC800"/>
+      <stop stopColor="#FFD355"/>
+      <stop offset=".89" stopColor="#FFC800"/>
     </linearGradient>
     <clipPath id="a">
       <path fill="#fff" d="M0 0h39v33.422H0z"/>
