@@ -10,13 +10,13 @@ export const GenietArrowUpIcon = React.forwardRef<SVGSVGElement, GenietArrowUpIc
       ref={ref}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="601.56 298.56 18.89 18.89"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color={color}
       {...props}
     >
-      <path fill="currentColor" d="M4.4 16.1a.849.849 0 0 1 0-1.2l7-7a.849.849 0 0 1 1.2 0l7 7a.849.849 0 1 1-1.2 1.2L12 9.702l-6.4 6.4a.849.849 0 0 1-1.2 0Z"/>
+      <path id="ic_arrow_up" d="M603.399 312.101C603.067 311.769 603.067 311.231 603.399 310.899L610.399 303.899C610.731 303.568 611.269 303.568 611.601 303.899L618.601 310.899C618.932 311.231 618.932 311.769 618.601 312.101C618.269 312.433 617.731 312.433 617.399 312.101L611 305.701L604.601 312.101C604.269 312.433 603.731 312.433 603.399 312.101Z" fill="currentColor"/>
     </svg>
   )
 );

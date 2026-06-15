@@ -1,0 +1,32 @@
+import React from "react";
+
+export interface GenietPillIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietPillIcon = React.forwardRef<SVGSVGElement, GenietPillIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="-0.43 -0.43 24.85 24.85"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_3062_8880)">
+<path d="M20.4848 3.51405C22.4374 5.46667 22.4374 8.6325 20.4848 10.5851L15.535 15.5349L8.46394 8.4638L13.4137 3.51405C15.3663 1.56143 18.5321 1.56143 20.4848 3.51405Z" fill="#FFEBA9"/>
+<path d="M3.51525 20.485C1.56263 18.5324 1.56263 15.3665 3.51525 13.4139L8.46499 8.46416L15.5361 15.5352L10.5863 20.485C8.63369 22.4376 5.46787 22.4376 3.51525 20.485Z" fill="#FFBA60"/>
+</g>
+<defs>
+<clipPath id="clip0_3062_8880">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+GenietPillIcon.displayName = "GenietPillIcon";

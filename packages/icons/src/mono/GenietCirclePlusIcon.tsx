@@ -1,0 +1,32 @@
+import React from "react";
+
+export interface GenietCirclePlusIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietCirclePlusIcon = React.forwardRef<SVGSVGElement, GenietCirclePlusIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="661.10 936.10 23.81 23.81"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g id="stroke_6">
+<circle id="Ellipse 505" cx="673" cy="948" r="9.25" stroke="currentColor" strokeWidth="1.5"/>
+<path id="Vector 316" d="M673 944L673 952" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+<path id="Vector 317" d="M677.006 947.995L669.006 947.995" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+</g>
+<g id="ic_circleplus_storke">
+<path id="Ellipse 505 (Stroke)" d="M681.5 948C681.5 943.306 677.694 939.5 673 939.5C668.306 939.5 664.5 943.306 664.5 948C664.5 952.694 668.306 956.5 673 956.5V958C667.477 958 663 953.523 663 948C663 942.477 667.477 938 673 938C678.523 938 683 942.477 683 948C683 953.523 678.523 958 673 958V956.5C677.694 956.5 681.5 952.694 681.5 948Z" fill="currentColor"/>
+<path id="Union_56" d="M672.999 943.25C673.413 943.25 673.749 943.586 673.749 944V947.245H677.004C677.418 947.245 677.754 947.581 677.754 947.995C677.754 948.409 677.418 948.745 677.004 948.745H673.749V952C673.749 952.414 673.413 952.75 672.999 952.75C672.585 952.75 672.249 952.414 672.249 952V948.745H669.004C668.59 948.745 668.254 948.409 668.254 947.995C668.254 947.581 668.59 947.245 669.004 947.245H672.249V944C672.249 943.586 672.585 943.25 672.999 943.25Z" fill="currentColor"/>
+</g>
+    </svg>
+  )
+);
+
+GenietCirclePlusIcon.displayName = "GenietCirclePlusIcon";

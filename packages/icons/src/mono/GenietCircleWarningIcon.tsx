@@ -1,0 +1,28 @@
+import React from "react";
+
+export interface GenietCircleWarningIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietCircleWarningIcon = React.forwardRef<SVGSVGElement, GenietCircleWarningIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="775.10 936.10 23.81 23.81"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g id="ic_circlewarinig_stroke">
+<path id="Union_61" d="M787 938C792.523 938 797 942.477 797 948C797 953.523 792.523 958 787 958C781.477 958 777 953.523 777 948C777 942.477 781.477 938 787 938ZM787 939.5C782.306 939.5 778.5 943.306 778.5 948C778.5 952.694 782.306 956.5 787 956.5C791.694 956.5 795.5 952.694 795.5 948C795.5 943.306 791.694 939.5 787 939.5Z" fill="currentColor"/>
+<path id="Rectangle 5" d="M785.703 943.805C785.666 943.066 786.256 942.446 786.996 942.446C787.74 942.446 788.331 943.071 788.289 943.813L787.988 949.243C787.958 949.779 787.515 950.198 786.979 950.198C786.44 950.198 785.996 949.775 785.969 949.237L785.703 943.805Z" fill="currentColor"/>
+<path id="Rectangle 6" d="M785.801 952.277C785.801 951.614 786.338 951.077 787.001 951.077C787.664 951.077 788.201 951.614 788.201 952.277C788.201 952.94 787.664 953.477 787.001 953.477C786.338 953.477 785.801 952.94 785.801 952.277Z" fill="currentColor"/>
+</g>
+    </svg>
+  )
+);
+
+GenietCircleWarningIcon.displayName = "GenietCircleWarningIcon";

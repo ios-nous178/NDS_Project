@@ -10,34 +10,34 @@ export const GenietInviteIcon = React.forwardRef<SVGSVGElement, GenietInviteIcon
       ref={ref}
       width={size}
       height={size}
-      viewBox="0 0 35 34"
+      viewBox="2.00 1.06 41.67 41.67"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color={color}
       {...props}
     >
-      <g clipPath="url(#a)">
-    <path fill="url(#b)" d="M16.757 33.79c9.255 0 16.758-7.502 16.758-16.757 0-9.255-7.503-16.758-16.758-16.758C7.502.275 0 7.778 0 17.033 0 26.288 7.503 33.79 16.757 33.79Z"/>
-    <path fill="#fff" fillRule="evenodd" d="M16.362 18.145c-6.095.297-8.076 4.247-7.878 6.304.253 2.608 15.613 3.026 16.504 0 .22-.759-.715-6.227-8.626-6.305Z" clipRule="evenodd"/>
-    <path fill="#fff" d="M16.735 16.769a4.128 4.128 0 0 0 4.127-4.126 4.128 4.128 0 0 0-4.127-4.126 4.128 4.128 0 0 0-4.126 4.126 4.128 4.128 0 0 0 4.126 4.126Z"/>
-    <path fill="url(#c)" d="M29.53 10.937A5.468 5.468 0 1 0 29.53 0a5.468 5.468 0 0 0 0 10.937Z"/>
-    <path fill="#fff" d="M31.832 4.687h-1.508V3.168a.763.763 0 0 0-.77-.759c-.43 0-.77.341-.77.76v1.518H27.22a.77.77 0 0 0-.77.759c0 .418.341.76.77.76h1.563v1.55c0 .419.34.76.77.76s.77-.341.77-.76v-1.55h1.508a.77.77 0 0 0 .77-.76.763.763 0 0 0-.77-.76Z"/>
-  </g>
-  <defs>
-    <linearGradient id="b" x1="3.807" x2="32.986" y1="7.559" y2="28.905" gradientUnits="userSpaceOnUse">
-      <stop stopColor="#00C2FF"/>
-      <stop offset=".87" stopColor="#00A4FF"/>
-      <stop offset="1" stopColor="#009FFF"/>
-    </linearGradient>
-    <linearGradient id="c" x1="25.119" x2="33.943" y1="2.234" y2="8.692" gradientUnits="userSpaceOnUse">
-      <stop stopColor="#FFD96A"/>
-      <stop offset=".39" stopColor="#FFCF4C"/>
-      <stop offset="1" stopColor="#FFBD15"/>
-    </linearGradient>
-    <clipPath id="a">
-      <path fill="#fff" d="M0 0h35v33.779H0z"/>
-    </clipPath>
-  </defs>
+      <g clipPath="url(#clip0_3062_8876)">
+<path d="M22.0913 38.79C31.3461 38.79 38.8486 31.2875 38.8486 22.0327C38.8486 12.7779 31.3461 5.27539 22.0913 5.27539C12.8365 5.27539 5.33398 12.7779 5.33398 22.0327C5.33398 31.2875 12.8365 38.79 22.0913 38.79Z" fill="url(#paint0_linear_3062_8876)"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M21.696 23.1445C15.6005 23.4416 13.62 27.3916 13.818 29.4492C14.0711 32.0568 29.431 32.4749 30.3223 29.4492C30.5423 28.69 29.6071 23.2216 21.696 23.1445Z" fill="white"/>
+<path d="M22.0694 21.7687C24.347 21.7687 26.1955 19.9202 26.1955 17.6427C26.1955 15.3651 24.347 13.5166 22.0694 13.5166C19.7918 13.5166 17.9434 15.3651 17.9434 17.6427C17.9434 19.9202 19.7918 21.7687 22.0694 21.7687Z" fill="white"/>
+<path d="M34.8649 15.9368C37.885 15.9368 40.3333 13.4885 40.3333 10.4684C40.3333 7.44829 37.885 5 34.8649 5C31.8448 5 29.3965 7.44829 29.3965 10.4684C29.3965 13.4885 31.8448 15.9368 34.8649 15.9368Z" fill="url(#paint1_linear_3062_8876)"/>
+<path d="M37.1655 9.68677H35.6582V8.16838C35.6582 7.75027 35.3171 7.40918 34.888 7.40918C34.4588 7.40918 34.1178 7.75027 34.1178 8.16838V9.68677H32.5554C32.1372 9.68677 31.7852 10.0279 31.7852 10.446C31.7852 10.8641 32.1262 11.2052 32.5554 11.2052H34.1178V12.7566C34.1178 13.1747 34.4588 13.5158 34.888 13.5158C35.3171 13.5158 35.6582 13.1747 35.6582 12.7566V11.2052H37.1655C37.5836 11.2052 37.9357 10.8641 37.9357 10.446C37.9357 10.0279 37.5946 9.68677 37.1655 9.68677Z" fill="white"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_3062_8876" x1="9.14096" y1="12.5593" x2="38.3205" y2="33.9048" gradientUnits="userSpaceOnUse">
+<stop stopColor="#00C2FF"/>
+<stop offset="0.87" stopColor="#00A4FF"/>
+<stop offset="1" stopColor="#009FFF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_3062_8876" x1="30.4528" y1="7.23357" x2="39.277" y2="13.6922" gradientUnits="userSpaceOnUse">
+<stop stopColor="#FFD96A"/>
+<stop offset="0.39" stopColor="#FFCF4C"/>
+<stop offset="1" stopColor="#FFBD15"/>
+</linearGradient>
+<clipPath id="clip0_3062_8876">
+<rect width="35" height="33.7787" fill="white" transform="translate(5.33398 5)"/>
+</clipPath>
+</defs>
     </svg>
   )
 );

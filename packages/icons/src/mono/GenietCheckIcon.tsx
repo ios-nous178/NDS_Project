@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface GenietCheckIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietCheckIcon = React.forwardRef<SVGSVGElement, GenietCheckIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="685.54 598.50 18.91 18.91"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g id="ic_check">
+<path id="ic_check (Stroke)" d="M701.379 602.42C701.699 602.077 702.237 602.059 702.58 602.379C702.923 602.699 702.942 603.237 702.621 603.58L693.288 613.58C693.126 613.754 692.898 613.852 692.659 613.85C692.421 613.848 692.195 613.746 692.035 613.569L687.368 608.381C687.055 608.032 687.083 607.495 687.432 607.181C687.781 606.867 688.318 606.896 688.632 607.244L692.678 611.741L701.379 602.42Z" fill="currentColor"/>
+</g>
+    </svg>
+  )
+);
+
+GenietCheckIcon.displayName = "GenietCheckIcon";

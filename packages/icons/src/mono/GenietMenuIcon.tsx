@@ -10,15 +10,17 @@ export const GenietMenuIcon = React.forwardRef<SVGSVGElement, GenietMenuIconProp
       ref={ref}
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="432.46 605.46 21.07 21.07"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       color={color}
       {...props}
     >
-      <g fill="currentColor" fillRule="evenodd">
-        <path d="M3 19h9v-2H3zM3 13h18v-2H3zM3 5v2h18V5z"/>
-    </g>
+      <g id="ic_menu">
+<path id="Vector" d="M451 609.15C451.469 609.15 451.85 609.531 451.85 610C451.85 610.469 451.469 610.85 451 610.85H435C434.531 610.85 434.15 610.469 434.15 610C434.15 609.531 434.531 609.15 435 609.15H451Z" fill="currentColor"/>
+<path id="Vector_2" d="M451 615.15C451.469 615.15 451.85 615.531 451.85 616C451.85 616.469 451.469 616.85 451 616.85H435C434.531 616.85 434.15 616.469 434.15 616C434.15 615.531 434.531 615.15 435 615.15H451Z" fill="currentColor"/>
+<path id="Vector_3" d="M443 621.15C443.469 621.15 443.85 621.531 443.85 622C443.85 622.469 443.469 622.85 443 622.85H435C434.531 622.85 434.15 622.469 434.15 622C434.15 621.531 434.531 621.15 435 621.15H443Z" fill="currentColor"/>
+</g>
     </svg>
   )
 );

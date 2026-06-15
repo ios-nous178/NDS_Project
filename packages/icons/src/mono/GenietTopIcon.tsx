@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface GenietTopIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietTopIcon = React.forwardRef<SVGSVGElement, GenietTopIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="770.17 297.37 21.17 21.17"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g id="ic_back_6">
+<path id="Union_6" d="M787.351 305.399C787.683 305.731 787.683 306.269 787.351 306.601C787.019 306.932 786.481 306.932 786.149 306.601L781.6 302.051L781.6 316C781.6 316.469 781.219 316.85 780.75 316.85C780.281 316.85 779.9 316.469 779.9 316L779.9 302.051L775.351 306.601C775.019 306.932 774.481 306.932 774.149 306.601C773.818 306.269 773.818 305.731 774.149 305.399L780.149 299.399C780.481 299.067 781.019 299.067 781.351 299.399L787.351 305.399Z" fill="currentColor"/>
+</g>
+    </svg>
+  )
+);
+
+GenietTopIcon.displayName = "GenietTopIcon";

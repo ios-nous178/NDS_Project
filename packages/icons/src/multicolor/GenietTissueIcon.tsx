@@ -1,0 +1,43 @@
+import React from "react";
+
+export interface GenietTissueIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietTissueIcon = React.forwardRef<SVGSVGElement, GenietTissueIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="-2.50 -1.38 28.85 28.85"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_3062_8856)">
+<g clipPath="url(#clip1_3062_8856)">
+<path d="M16.9744 20.9622C21.5262 20.9192 22.8175 19.488 23.065 19.1436C23.0973 19.1006 23.1081 19.036 23.1081 18.9822V3.84167C23.1081 3.57265 22.8175 3.41124 22.5808 3.52961C20.1703 4.75635 17.7276 4.6595 16.8775 4.57341C16.6946 4.55189 16.5547 4.68102 16.5547 4.86396C16.5762 6.98385 16.6623 18.7024 16.6731 20.6717C16.6731 20.8331 16.8129 20.9515 16.9744 20.9515V20.9622Z" fill="url(#paint0_linear_3062_8856)"/>
+<path d="M0.746094 4.88536V19.574C0.746094 20.4779 1.24109 21.328 2.04816 21.7369C4.59849 23.039 10.5815 25.1589 17.5115 21.0697C17.6192 21.0052 17.6837 20.8868 17.6837 20.7684L17.5761 4.8746C17.5761 4.69167 17.4255 4.54102 17.2425 4.54102H1.09044C0.907507 4.54102 0.756855 4.69167 0.756855 4.8746L0.746094 4.88536Z" fill="#E3F4F5"/>
+<path d="M9.1611 8.15709C13.8086 8.15709 17.5761 6.53831 17.5761 4.54144C17.5761 2.54457 13.8086 0.925781 9.1611 0.925781C4.51362 0.925781 0.746094 2.54457 0.746094 4.54144C0.746094 6.53831 4.51362 8.15709 9.1611 8.15709Z" fill="#EFF7F7"/>
+<path d="M9.16197 5.96197C10.9805 5.96197 12.4548 5.32602 12.4548 4.54153C12.4548 3.75704 10.9805 3.12109 9.16197 3.12109C7.34339 3.12109 5.86914 3.75704 5.86914 4.54153C5.86914 5.32602 7.34339 5.96197 9.16197 5.96197Z" fill="#B0D0D1"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_3062_8856" x1="298.126" y1="779.365" x2="450.119" y2="754.406" gradientUnits="userSpaceOnUse">
+<stop offset="0.000819493" stopColor="#D8F0F3"/>
+<stop offset="1" stopColor="#E8FFFD"/>
+</linearGradient>
+<clipPath id="clip0_3062_8856">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+<clipPath id="clip1_3062_8856">
+<rect width="23.8519" height="23" fill="white" transform="translate(0 0.5)"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+GenietTissueIcon.displayName = "GenietTissueIcon";

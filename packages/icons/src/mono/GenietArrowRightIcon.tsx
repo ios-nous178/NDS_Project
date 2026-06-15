@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface GenietArrowRightIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietArrowRightIcon = React.forwardRef<SVGSVGElement, GenietArrowRightIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="350.21 298.56 18.89 18.89"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path id="ic_arrow_left" d="M355.55 300.399C355.882 300.067 356.419 300.067 356.751 300.399L363.751 307.399C364.083 307.731 364.083 308.269 363.751 308.601L356.751 315.601C356.419 315.932 355.882 315.932 355.55 315.601C355.218 315.269 355.218 314.731 355.55 314.399L361.949 308L355.55 301.601C355.218 301.269 355.218 300.731 355.55 300.399Z" fill="currentColor"/>
+    </svg>
+  )
+);
+
+GenietArrowRightIcon.displayName = "GenietArrowRightIcon";

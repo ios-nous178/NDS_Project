@@ -1,0 +1,50 @@
+import React from "react";
+
+export interface GenietCashhomtIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietCashhomtIcon = React.forwardRef<SVGSVGElement, GenietCashhomtIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="-0.84 -0.04 45.28 45.28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M35.6063 8.2168H25.4863V39.5558H35.6063V8.2168Z" fill="url(#paint0_linear_3062_8878)"/>
+<path d="M36.6512 3.94922H24.4522C22.1497 3.94922 20.2832 5.81574 20.2832 8.11822V12.1442C20.2832 14.4467 22.1497 16.3132 24.4522 16.3132H36.6512C38.9537 16.3132 40.8202 14.4467 40.8202 12.1442V8.11822C40.8202 5.81574 38.9537 3.94922 36.6512 3.94922Z" fill="url(#paint1_linear_3062_8878)"/>
+<path d="M36.1246 28.3916H24.9706C22.8564 28.3916 21.1426 30.1055 21.1426 32.2196V35.8826C21.1426 37.9967 22.8564 39.7106 24.9706 39.7106H36.1246C38.2387 39.7106 39.9526 37.9967 39.9526 35.8826V32.2196C39.9526 30.1055 38.2387 28.3916 36.1246 28.3916Z" fill="url(#paint2_linear_3062_8878)"/>
+<path d="M21.5382 28.1929L18.0622 27.5659L19.1292 21.6699C19.3712 20.3279 19.0632 18.9749 18.2932 18.0509C17.8752 17.5449 17.1272 16.9509 15.9392 16.9509H10.3292C9.14118 16.9509 8.39318 17.5559 7.97518 18.0509C7.20518 18.9749 6.89718 20.3279 7.13918 21.6699L8.20618 27.5659L4.73018 28.1929L3.66318 22.2969C3.23418 19.8989 3.81718 17.5229 5.26918 15.7849C6.54518 14.2559 8.34918 13.4199 10.3402 13.4199H15.9502C17.9412 13.4199 19.7342 14.2559 21.0212 15.7849C22.4732 17.5229 23.0562 19.8989 22.6272 22.2969L21.5602 28.1929H21.5382Z" fill="url(#paint3_linear_3062_8878)"/>
+<path d="M22.9787 29.876C23.4847 35.321 20.7897 40.018 14.0357 40.634C7.2817 41.25 3.7727 37.125 3.2777 31.691C2.7827 26.257 6.7867 21.428 12.2207 20.933C17.6547 20.438 22.4837 24.442 22.9787 29.876Z" fill="url(#paint4_linear_3062_8878)"/>
+<defs>
+<linearGradient id="paint0_linear_3062_8878" x1="8.07333" y1="6.1598" x2="43.9773" y2="34.4738" gradientUnits="userSpaceOnUse">
+<stop stopColor="#FF9B5C"/>
+<stop offset="1" stopColor="#FF6522"/>
+</linearGradient>
+<linearGradient id="paint1_linear_3062_8878" x1="13.7822" y1="-3.10178" x2="40.5672" y2="18.0292" gradientUnits="userSpaceOnUse">
+<stop offset="0.06" stopColor="#FF9B5C"/>
+<stop offset="0.81" stopColor="#FF6522"/>
+</linearGradient>
+<linearGradient id="paint2_linear_3062_8878" x1="15.1916" y1="21.9456" x2="39.7216" y2="41.2946" gradientUnits="userSpaceOnUse">
+<stop offset="0.06" stopColor="#FF9B5C"/>
+<stop offset="1" stopColor="#FF6522"/>
+</linearGradient>
+<linearGradient id="paint3_linear_3062_8878" x1="0.737178" y1="17.3139" x2="23.0342" y2="24.9919" gradientUnits="userSpaceOnUse">
+<stop stopColor="#FFDC5E"/>
+<stop offset="1" stopColor="#FFB527"/>
+</linearGradient>
+<linearGradient id="paint4_linear_3062_8878" x1="-3.82163" y1="20.4065" x2="24.8029" y2="38.3178" gradientUnits="userSpaceOnUse">
+<stop stopColor="#FFFA4D"/>
+<stop offset="1" stopColor="#FFA80B"/>
+</linearGradient>
+</defs>
+    </svg>
+  )
+);
+
+GenietCashhomtIcon.displayName = "GenietCashhomtIcon";

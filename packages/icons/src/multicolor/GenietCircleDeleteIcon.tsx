@@ -1,0 +1,25 @@
+import React from "react";
+
+export interface GenietCircleDeleteIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const GenietCircleDeleteIcon = React.forwardRef<SVGSVGElement, GenietCircleDeleteIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="-1.07 -1.07 26.13 26.13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M4.92893 4.92893C8.83418 1.02369 15.1663 1.02369 19.0715 4.92893C22.9765 8.83419 22.9767 15.1663 19.0715 19.0715C15.1663 22.9767 8.83419 22.9765 4.92893 19.0715C1.02369 15.1663 1.02369 8.83418 4.92893 4.92893Z" fill="#111111" fill-opacity="0.4"/>
+<path d="M15.5319 8.43229C15.8402 8.7406 15.8402 9.24047 15.5319 9.54877L13.1165 11.9642L15.5392 14.3869C15.8475 14.6952 15.8475 15.195 15.5392 15.5034C15.2309 15.8116 14.731 15.8116 14.4227 15.5034L12 13.0807L9.57732 15.5034C9.26901 15.8117 8.76914 15.8117 8.46083 15.5034C8.15253 15.195 8.15252 14.6952 8.46083 14.3869L10.8835 11.9642L8.4681 9.54877C8.15992 9.24048 8.15991 8.74057 8.4681 8.43229C8.77638 8.12401 9.27627 8.12408 9.58458 8.43229L12 10.8477L14.4154 8.43229C14.7237 8.12398 15.2236 8.12399 15.5319 8.43229Z" fill="white"/>
+    </svg>
+  )
+);
+
+GenietCircleDeleteIcon.displayName = "GenietCircleDeleteIcon";
