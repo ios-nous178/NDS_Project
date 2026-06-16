@@ -114,7 +114,7 @@ const TOOLS = [
   {
     name: "find_asset",
     description:
-      "Search @nudge-design/assets **brand images** (food photos, illustrations, profiles, marathon posters, logos — NOT icons; for icons use find_icon). No args→brand×category index; `{ query }`(+`brand`/`category` filter)→matched assets with paste-ready `inlineRef`; `{ id }`→exact asset. Need an image in a mockup? Call this FIRST and paste the `inlineRef` into <img src> (build_singlefile_html base64-inlines it). On miss: use a grey/empty-state placeholder + a '에셋 없음' note — do NOT AI-generate brand imagery. Always pass `userRequest` with the user's original intent.",
+      "Search @nudge-design/assets **brand images** (food, illustrations, profiles, posters, logos — NOT icons; for icons use find_icon). Returns a paste-ready `inlineRef` to drop into `<img src>` (build_singlefile_html base64-inlines it). Need a mockup image? Call this FIRST. On miss: grey/empty-state placeholder + '에셋 없음' note — never AI-generate brand imagery. Pass `userRequest` (the original intent).",
     inputSchema: {
       type: "object",
       properties: {
@@ -631,27 +631,15 @@ const TOOLS = [
     description:
       "Log a user's design-system correction into DS telemetry so recurring DS gaps get fixed automatically. " +
       "═══ HARD SEQUENCING RULE (not optional) ═══ " +
-      "If the user objects to a DS choice and you are ABOUT TO CHANGE IT, you MUST call log_feedback FIRST, then make the change. " +
-      "The correction itself is the trigger — the instant you think 'oh they're right, let me fix that', STOP and log it before touching code. " +
-      "Logging-after-the-fix is forgotten almost every time (you get absorbed in fixing). Do NOT ask permission to log — just call it (fire-and-forget, one call per distinct correction, near-zero cost). " +
-      "═══ WHEN to call ═══ " +
-      "The user signals the DESIGN SYSTEM ITSELF is wrong: '이거 틀렸어 / 아니야 / 왜 이래 / 이거 말고 / 저거 쓰는 게 맞아? / 시안이랑 달라', a wrong component/variant/token/color/spacing, a guide that misled you, or a component that doesn't exist. " +
-      "ALSO when the user merely QUESTIONS a choice ('저거 맞아?', '이게 맞나?') and you then CONCLUDE you were wrong — log your conclusion (the questioning + your realization IS the feedback). " +
-      "═══ NOT when ═══ " +
-      "Plain task instructions ('다음 화면 만들어줘', '여기 버튼 추가해') or your own stylistic preference. Only genuine 'the DS got it wrong' signals. " +
+      "If the user objects to a DS choice and you are ABOUT TO CHANGE IT, call log_feedback FIRST, then make the change — the correction itself is the trigger, and logging-after-the-fix gets forgotten (you get absorbed in fixing). Don't ask permission; just call it (fire-and-forget, one call per distinct correction). " +
+      "═══ WHEN ═══ " +
+      "The DS itself is wrong: a wrong component/variant/token/color/spacing, a guide that misled you, or a component that doesn't exist ('이거 틀렸어 / 아니야 / 이거 말고 / 시안이랑 달라'). ALSO when the user merely QUESTIONS a choice ('이게 맞나?') and you then CONCLUDE you were wrong — log the conclusion. " +
+      "═══ NOT ═══ " +
+      "Plain task instructions ('다음 화면 만들어줘', '버튼 추가해') or your own stylistic preference. Only genuine 'the DS got it wrong' signals. " +
       "═══ ARGS ═══ " +
-      "text = the correction in one line (what was wrong → what's right). category = component|token|guide|pattern|bug|other. target = the component/token/screen. brand = brand slug. " +
-      "═══ WORKED EXAMPLE ═══ " +
-      "User: '캐포비 스텝은 numbered 말고 bar 아니야?' → you check the guide, realize bar is right → FIRST call " +
-      "log_feedback({ text: '캐포비 어드민 단계 진행은 numbered(원형) 말고 bar variant 가 맞다 — 가이드 혼동', category: 'guide', target: 'Stepper', brand: 'cashwalk-biz' }) " +
-      "THEN switch the code to bar. Never the reverse. " +
-      "═══ SATISFACTION (👍/👎) — 별개 용도 ═══ " +
-      "목업 결과에 대한 사용자 만족도도 이 도구로 기록한다(객관 점수 옆 주관 신호). 규칙: " +
-      "(1) **먼저 묻지 말 것** — AI 가 '어떠세요?' 라고 능동적으로 질문 금지. build 응답의 satisfactionOffer 안내만 한 번 노출하고, 결정은 사용자에게 맡긴다. " +
-      "(2) **명시 평가일 때만** — 사용자가 그 목업에 대해 '좋다/맘에든다/👍' 또는 '별로/어색해/👎' 라고 **분명히** 말할 때만 호출. 모호하면('음…','글쎄') 기록 X. 추측·감정분석 금지. " +
-      "(3) 빌드 횟수와 무관 — build 가 여러 번 돌아도 만족도는 사용자가 평가하는 그 순간 1회만(평가 행위 = '이게 최종'이라는 선언). " +
-      "(4) 호출 시 sentiment(up|down) + category:'satisfaction' + text(한 줄 사유나 평가요지) + scoreOverall(직전 객관 점수, 알면) 을 넘긴다. " +
-      "예: log_feedback({ text: '소셜 로그인 배치가 깔끔하다', category: 'satisfaction', sentiment: 'up', scoreOverall: 89, brand: 'cashwalk-biz' })",
+      "text = the correction in one line (wrong → right). category = component|token|guide|pattern|bug|satisfaction|other. target = component/token/screen. brand = slug. " +
+      "═══ SATISFACTION (👍/👎) ═══ " +
+      "목업 만족도도 이 도구로 기록 — category:'satisfaction' + sentiment(up|down)(+scoreOverall). 단 사용자가 **명시적으로** 평가할 때만, 먼저 묻지 말 것(추측·감정분석 금지). 전체 흐름·prompt_satisfaction 연계는 워크플로우 가이드 참조.",
     inputSchema: {
       type: "object",
       properties: {
