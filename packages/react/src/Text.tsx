@@ -28,6 +28,8 @@ const TONE_CLASS: Record<TextTone, string> = {
   inverse: "nds-text-tone-inverse",
   brand: "nds-text-tone-brand",
   brandStrong: "nds-text-tone-brand-strong",
+  point: "nds-text-tone-point",
+  pointStrong: "nds-text-tone-point-strong",
   statusSuccess: "nds-text-tone-status-success",
   statusError: "nds-text-tone-status-error",
   statusCaution: "nds-text-tone-status-caution",

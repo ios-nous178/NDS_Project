@@ -41,7 +41,8 @@ function loadCssVarRefs() {
     .replace(/^\/\/.*$/gm, "")
     .replace(/export\s+type\s+.*$/gm, "")
     .replace(/export\s+const\s+cv\s*=/, "const cv =")
-    .replace(/\(name:\s*string\)/g, "(name)")
+    // 헬퍼(v/vf 등) 화살표 함수 파라미터의 `: string` 타입 주석 제거 (new Function 은 순수 JS).
+    .replace(/:\s*string/g, "")
     .replace(/\s+as\s+const/g, "");
 
   const evalCv = new Function(`

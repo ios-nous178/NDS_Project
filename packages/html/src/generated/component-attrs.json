@@ -136,6 +136,7 @@
       "color",
       "shape",
       "size",
+      "type",
       "variant"
     ],
     "enums": {
@@ -160,6 +161,11 @@
       "shape": [
         "default",
         "pill"
+      ],
+      "type": [
+        "label",
+        "dot",
+        "count"
       ]
     }
   },

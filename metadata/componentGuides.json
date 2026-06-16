@@ -288,6 +288,12 @@
           "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20558",
           "caption": "Cashwalk for Business · Label & Chip(ChipGuide). Badge 두 shape — RoundedSquare(shape=\"default\", radius 4~6, 동적 상태값 충전·사용·적립·만료·취소) / Pill(shape=\"pill\", radius full, 정적 식별 태그 일반 계정·프리미엄·신규). 톤은 ghost 변형으로 매핑(충전=brand·사용=info·적립=success·만료=neutral·취소=error). SelectChip 은 Badge 아니라 Chip 컴포넌트.",
           "brand": "cashwalk-biz"
+        },
+        {
+          "label": "Trost Badge Guide — type(label/dot/count) · 5톤(ghost)",
+          "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5107-130",
+          "caption": "Trost Library · Badge. 유형(type) 3종 — label(텍스트 배지, 기본) / dot(8×8 상태 점, 텍스트 없음) / count(min 18px 원형 숫자 카운터). 5톤(neutral·brand·success·error·info)은 variant=\"ghost\" 의 subtle 룩으로 표현(brand=#FFFDD9 bg/#FF9D00 text 등). dot·count 의 색은 variant=fill 룰(예: color=\"error\" → 빨강).",
+          "brand": "trost"
         }
       ],
       "usagePolicy": {
@@ -325,7 +331,7 @@
           "maxPerCard": 2
         }
       },
-      "summary": "상태/속성을 한눈에 알려주는 보조 라벨. variant: fill/ghost/line · color: brand/neutral/success/error/caution/info · shape: default(라운드 사각)/pill(완전 둥근). Figma 171:10856 (캐포비 admin ChipGuide 3782-20558). label prop 필수. 콘텐츠가 아니라 콘텐츠를 보조하는 메타 정보만 담는다. **shape 로 의미 구분 — 동적 상태값=default(사각), 정적 식별 태그=pill.**",
+      "summary": "상태/속성을 한눈에 알려주는 보조 라벨. variant: fill/ghost/line · color: brand/neutral/success/error/caution/info · shape: default(라운드 사각)/pill(완전 둥근) · **type: label/dot/count**. Figma 171:10856 (캐포비 admin ChipGuide 3782-20558 · 트로스트 5107-130). label prop 필수. 콘텐츠가 아니라 콘텐츠를 보조하는 메타 정보만 담는다. **shape 로 의미 구분 — 동적 상태값=default(사각), 정적 식별 태그=pill.** **type 축**(트로스트 5107-130, 기본 label·하위호환): label=텍스트 배지 · dot=8×8 점(텍스트 없음·활성/미확인) · count=min 18px 원형 숫자 카운터(99 초과 `99+`); dot·count 색은 ghost 가 아니라 variant=fill 룰을 따른다(예: `color=\"error\"`→빨강). 가이드 5톤(neutral/brand/success/error/info)은 variant=\"ghost\" subtle 룩(brand=#FFFDD9 bg/#FF9D00 text), caution 은 앰버 경고용으로 enum 유지.",
       "pitfalls": [
         "Badge 는 강조 요소가 아니라 보조 정보 — 본문 텍스트보다 시선을 끌면 안 된다.",
         "Fill Badge 남용 금지 — 한 카드/리스트 Row 에 Fill Badge 가 2개 이상 보이면 위계가 무너진다. 일반 카테고리는 ghost/line 우선.",
@@ -335,11 +341,12 @@
         "Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 중첩 금지.",
         "Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.",
         "Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.",
-        "**shape 로 동적/정적 의미 구분 (캐포비 admin · Figma 3782-20558)**: `shape=\"default\"`(라운드 사각)=거래/처리 상태·카테고리 같은 **동적 상태값**(충전·사용·적립·만료·취소), `shape=\"pill\"`(완전 둥근)=계정 유형·식별성 같은 **정적 속성 태그**(일반 계정·프리미엄·신규). 둘을 혼용하지 말 것 — 동적 상태값에 pill, 정적 식별에 사각을 쓰면 의미 신호가 깨진다. 데이터 테이블 셀에는 default 사각이 기본."
+        "**shape 로 동적/정적 의미 구분 (캐포비 admin · Figma 3782-20558)**: `shape=\"default\"`(라운드 사각)=거래/처리 상태·카테고리 같은 **동적 상태값**(충전·사용·적립·만료·취소), `shape=\"pill\"`(완전 둥근)=계정 유형·식별성 같은 **정적 속성 태그**(일반 계정·프리미엄·신규). 둘을 혼용하지 말 것 — 동적 상태값에 pill, 정적 식별에 사각을 쓰면 의미 신호가 깨진다. 데이터 테이블 셀에는 default 사각이 기본.",
+        "**type 혼동 금지 (트로스트 5107-130)**: `dot` 은 텍스트 없는 8×8 점이라 children 을 넣어도 의미가 없다 — 텍스트가 필요하면 `label`. `count` 는 숫자 카운터 전용(min 18px 원형), 라벨 텍스트를 넣지 말 것. dot·count 의 색은 ghost 톤이 아니라 variant=fill 룰을 따른다(color 로 의미색 지정)."
       ],
       "examplesHtml": {
-        "do": "<nds-badge variant=\"fill\" color=\"brand\" size=\"md\">NEW</nds-badge>\n<nds-badge variant=\"ghost\" color=\"success\" size=\"sm\">완료</nds-badge>\n<!-- 캐포비 admin: 동적 상태값 = 라운드 사각(shape 기본) ghost 톤 -->\n<nds-badge variant=\"ghost\" color=\"brand\" size=\"sm\">충전</nds-badge>\n<nds-badge variant=\"ghost\" color=\"info\" size=\"sm\">사용</nds-badge>\n<nds-badge variant=\"ghost\" color=\"success\" size=\"sm\">적립</nds-badge>\n<nds-badge variant=\"ghost\" color=\"neutral\" size=\"sm\">만료</nds-badge>\n<nds-badge variant=\"ghost\" color=\"error\" size=\"sm\">취소</nds-badge>\n<!-- 캐포비 admin: 정적 식별 태그 = pill -->\n<nds-badge variant=\"ghost\" color=\"neutral\" shape=\"pill\" size=\"sm\">일반 계정</nds-badge>\n<nds-badge variant=\"ghost\" color=\"brand\" shape=\"pill\" size=\"sm\">프리미엄</nds-badge>",
-        "dont": "<!-- hex 인라인. 시멘틱 컬러 토큰을 잃음 -->\n<nds-badge style=\"background:#FFD400;color:#000\">NEW</nds-badge>\n<!-- 안내문/섹션 제목에 Badge 도배 — Badge 는 상태/짧은 속성용 -->\n<nds-badge color=\"brand\">오늘의 미션</nds-badge>\n<!-- 동적 상태값(적립/충전/만료…)에 pill — pill 은 정적 식별 태그 전용이라 의미 신호가 깨짐 -->\n<nds-badge variant=\"ghost\" color=\"success\" shape=\"pill\">적립</nds-badge>"
+        "do": "<nds-badge variant=\"fill\" color=\"brand\" size=\"md\">NEW</nds-badge>\n<nds-badge variant=\"ghost\" color=\"success\" size=\"sm\">완료</nds-badge>\n<!-- 캐포비 admin: 동적 상태값 = 라운드 사각(shape 기본) ghost 톤 -->\n<nds-badge variant=\"ghost\" color=\"brand\" size=\"sm\">충전</nds-badge>\n<nds-badge variant=\"ghost\" color=\"info\" size=\"sm\">사용</nds-badge>\n<nds-badge variant=\"ghost\" color=\"success\" size=\"sm\">적립</nds-badge>\n<nds-badge variant=\"ghost\" color=\"neutral\" size=\"sm\">만료</nds-badge>\n<nds-badge variant=\"ghost\" color=\"error\" size=\"sm\">취소</nds-badge>\n<!-- 캐포비 admin: 정적 식별 태그 = pill -->\n<nds-badge variant=\"ghost\" color=\"neutral\" shape=\"pill\" size=\"sm\">일반 계정</nds-badge>\n<nds-badge variant=\"ghost\" color=\"brand\" shape=\"pill\" size=\"sm\">프리미엄</nds-badge>\n<!-- 트로스트: type 축 — dot(8×8 점, 텍스트 없음) / count(원형 숫자 카운터) -->\n<nds-badge type=\"dot\" variant=\"fill\" color=\"error\"></nds-badge>\n<nds-badge type=\"count\" variant=\"fill\" color=\"error\">12</nds-badge>\n<nds-badge type=\"count\" variant=\"fill\" color=\"brand\">99+</nds-badge>",
+        "dont": "<!-- hex 인라인. 시멘틱 컬러 토큰을 잃음 -->\n<nds-badge style=\"background:#FFD400;color:#000\">NEW</nds-badge>\n<!-- 안내문/섹션 제목에 Badge 도배 — Badge 는 상태/짧은 속성용 -->\n<nds-badge color=\"brand\">오늘의 미션</nds-badge>\n<!-- 동적 상태값(적립/충전/만료…)에 pill — pill 은 정적 식별 태그 전용이라 의미 신호가 깨짐 -->\n<nds-badge variant=\"ghost\" color=\"success\" shape=\"pill\">적립</nds-badge>\n<!-- count 에 라벨 텍스트 — count 는 숫자 카운터 전용 -->\n<nds-badge type=\"count\" color=\"error\">신규</nds-badge>"
       }
     },
     "Banner": {
@@ -635,6 +642,14 @@
     "Button": {
       "name": "Button",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385",
+      "references": [
+        {
+          "label": "Trost Button Guide — 4 styles (Primary / Yellow / Secondary / Outlined)",
+          "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5043-108",
+          "caption": "트로스트 Library · ButtonGuide. 4스타일을 DS 3축(color×variant)으로 매핑 — Primary(검정 #1A1A1A)=color=\"neutral\" variant=\"solid\", Yellow(노랑 #FFF42E, Positive/구독/확인)=color=\"primary\" variant=\"solid\", Secondary(옅은 블루 bg #EDF0FF / text #4968FF Point)=color=\"secondary\" variant=\"solid\", Outlined(흰+gray border / text #333, 취소·닫기)=color=\"neutral\" variant=\"outlined\". 사이즈 Large=lg(48)/Medium=md(44)/Small=sm(40 트로스트 override)/Bottom CTA=lg fullWidth shape=\"pill\"(전용 56 사이즈 없음, 풀너비 lg 근사). disabled bg #D8D8D8. 본문 ## trostStyleMapping 표 참조.",
+          "brand": "trost"
+        }
+      ],
       "usagePolicy": {
         "useFor": [
           "화면의 대표 CTA, 명확한 실행 액션, 중요한 폼 제출",
@@ -689,7 +704,7 @@
           }
         }
       },
-      "summary": "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).",
+      "summary": "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).\n\n### 트로스트 스타일 → DS color × variant 매핑 (Figma 5043:108)\n\n트로스트 ButtonGuide 는 **4스타일**로 정의돼 있지만, DS Button 은 `color={primary,secondary,neutral} × variant{solid,soft,outlined}` 3축이다. 트로스트 스타일을 그대로 박지 말고 아래 매핑으로 옮긴다 — 색은 트로스트 brand 토큰이 슬롯에 흘려주므로 `data-brand=\"trost\"` 컨텍스트만 있으면 된다(색 하드코딩 금지).\n\n| 트로스트 스타일 | 용도 | DS props | 색 (트로스트 토큰) |\n| --- | --- | --- | --- |\n| **Primary** | 메인 CTA · 한 화면 1개 | `color=\"neutral\" variant=\"solid\"` | 검정 #1A1A1A (buttonBg.neutral 신설) + 흰 텍스트 |\n| **Yellow** | Positive · 구독 · 확인 | `color=\"primary\" variant=\"solid\"` | 노랑 #FFF42E (트로스트 brand) |\n| **Secondary** | 보조 액션 | `color=\"secondary\" variant=\"solid\"` | bg #EDF0FF / text #4968FF (Point) |\n| **Outlined** | 취소 · 닫기 | `color=\"neutral\" variant=\"outlined\"` | 흰 배경 + gray border / text #333 |\n\n**사이즈**: Large=`size=\"lg\"`(48) / Medium=`size=\"md\"`(44) / Small=`size=\"sm\"`(40 — 트로스트 override, base sm 42 → 40) / **Bottom CTA = `size=\"lg\" fullWidth shape=\"pill\"`**. 트로스트 Bottom CTA 의 56px 전용 사이즈는 두지 않기로 결정 — 풀너비 lg(48)로 근사한다. disabled 배경은 #D8D8D8.\n\n**주의** — 트로스트 \"Primary\"(검정)는 DS `color=\"primary\"`(=노랑)가 **아니다**. Primary=`color=\"neutral\" variant=\"solid\"`, Yellow 가 `color=\"primary\"` 다. 직관과 반대이므로 매핑 표를 그대로 따를 것. DO: 한 화면에 Primary(검정) 1개 / 확인·취소는 Primary + Outlined 페어. DON'T: Primary 검정 버튼 2개 이상, 서로 다른 사이즈 가로 병치, 한 줄 넘는 긴 라벨.",
       "pitfalls": [
         "**라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**",
         "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
@@ -1011,6 +1026,15 @@
     },
     "Chip": {
       "name": "Chip",
+      "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5107-130",
+      "references": [
+        {
+          "label": "Trost Chip — 필터칩 가이드 (TrostLibrary)",
+          "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5107-130",
+          "caption": "트로스트 필터칩 가이드. default = color=\"neutral\"(회색 보더 #E5E5E5 + 회색 텍스트 #606060), selected = 브랜드 노랑 강조(보더 #FFF42E + subtle bg #FFFDD9 + 오렌지 텍스트 #FF9D00), disabled = opacity 낮춤. height 30 · 좌우 padding 10. leading icon=icon prop · 삭제 X=onRemove. (색은 컴포넌트에 박지 않고 트로스트 토큰 override 로 슬롯 주입.)",
+          "brand": "trost"
+        }
+      ],
       "usagePolicy": {
         "useFor": [
           "상태: 진행중, 완료, 마감",
@@ -1036,6 +1060,7 @@
         "**HTML 한정** — `<nds-chip label='...' />` 처럼 label attribute 쓰지 말 것. nds-chip 은 label attribute 가 없고 children/text content 만 받음 (nds-chip.ts L189: `while (this.firstChild) label.appendChild(this.firstChild)`).",
         "**HTML 토글은 attribute 로** — `nds-chip` 은 `selected`/`color`/`variant` 등을 observedAttributes 로 감지해 자동 리렌더한다(NdsElement base 가 attributeChangedCallback→update). `setAttribute(\"selected\",\"\")` / `removeAttribute(\"selected\")` 로 토글하면 색이 즉시 바뀐다 — **칩 노드를 통째로 교체하는 워크어라운드는 불필요**. 단 **property 대입(`el.selected = true`)은 무시됨**(setter 없음, attribute 만 읽음) → 이게 '클릭해도 색이 안 변한다'의 진짜 원인. 삭제는 `removable` + `chip-remove` 이벤트로 연결.",
         "**좌측 아이콘/체크/도트** — React 는 `icon` prop, HTML 은 `slot=\"icon\"` 자식: `<nds-chip selected><svg slot=\"icon\">…</svg>30대</nds-chip>` (slot 없는 자식은 전부 label 로 들어감). 아이콘은 `currentColor` 를 따르므로 텍스트색(=선택 시 채움 위 텍스트색)으로 렌더된다. brand-subtle 등 다른 선택 톤/텍스트색은 hex 말고 `--nds-chip-selected-background/text/border` override(예: 캐포비는 노랑 위 검정 텍스트로 `--nds-chip-selected-text` override).",
+        "**트로스트 필터칩** — `color=\"neutral\"` 기본(회색: 보더 #E5E5E5 + 텍스트 #606060), `selected` 시 브랜드 노랑 강조(보더 #FFF42E + subtle bg #FFFDD9 + 오렌지 텍스트 #FF9D00, outlined-selected 룩 — 구 다크 채움 #333 폐기). 높이 30 · 좌우 padding 10. leading icon=`icon` prop, 삭제 X=`onRemove`, 선택 토글=`selected` prop. 색은 컴포넌트에 박지 말고 트로스트 토큰 override 가 슬롯에 주입한다(matrixOverrides.trost 참조).",
         "Chip은 상태/분류/짧은 속성 표시용이다. 새 섹션을 강조하거나 일반 안내문을 꾸미는 장식으로 쓰지 말 것.",
         "모든 카드/섹션 제목 앞에 Chip을 붙이면 위계가 무너진다. 카드당 최대 1-2개, 섹션당 최대 2개 수준으로 제한.",
         "긴 문장이나 CTA 보조 문구를 Chip에 넣지 말 것. 8자 안팎의 짧은 라벨만 자연스럽다.",
@@ -2729,6 +2754,12 @@
           "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206",
           "caption": "Tab(Underline/Box)으로 view 전환 · Filter(FilterBar)로 현재 view 좁히기. 결정 트리·배치 순서·DO/Don't 요약은 pitfalls, 캐포비 admin 풀 스펙은 pattern:cashwalk-biz-tab.",
           "brand": "cashwalk-biz"
+        },
+        {
+          "label": "Trost Tabs — Line/Chip/Segment 가이드 (TrostLibrary)",
+          "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5301-108",
+          "caption": "트로스트 탭 가이드. tone=\"color\" 활성 강조색은 Point 코발트(#4968FF) — brand=노랑은 면적 채움 전용이라 탭 강조는 Point 로 분리. Line=mobile50/pc56, Chip=mobile36/pc44, Segment=PC.",
+          "brand": "trost"
         }
       ],
       "usagePolicy": {
@@ -2758,6 +2789,7 @@
         "세그먼트 모양의 단일 값 선택(뷰/기간/상태 토글)은 Tab variant='segment' (mobile/pc). line/chip 은 패널 전환(tablist) 전용.",
         "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
         "캐포비(cashwalk-biz)는 chip 치수만 브랜드 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것.",
+        "**트로스트(trost) tone=\"color\" 강조색 = Point 코발트(#4968FF) — brand 색 아님**: 트로스트 brand 는 노랑이라 면적 채움 전용(텍스트·인디케이터로 쓰면 가독성↓)이다. 그래서 탭 활성 강조색만 `--nds-tab-accent-*` 슬롯을 거쳐 Point 코발트로 분리된다. Line=neutral(다크 #333/#1A1A1A 텍스트·인디케이터)/color(코발트 텍스트·인디케이터), Chip=neutral(다크 채움)/color(코발트 채움, 채움 위 텍스트는 흰색), Segment(PC)도 color 면 코발트 채움. **다른 브랜드는 brand 색으로 폴백**(슬롯 미설정 → `cv.surface.brand`/`cv.textRole.brand`)이라 무변. 트로스트 `<Tab tone=\"color\">` 가 노랑/오렌지로 보이면 회귀(구 버그).",
         "**Underline(line) vs Box(chip) 용도 구분 (Figma DesignGuide/Tab 3544-206)**: Underline=페이지 메인 카테고리·목록 필터·단계 전환, Box=상태/좁은 영역 필터(진행중·진행예정·종료). **한 화면에 Tab 종류는 1개로 통일 — Underline 과 Box 를 같은 화면에서 혼용하지 말 것.** Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select 검토).",
         "**Tab vs Filter 결정 트리 (혼동 금지)**: Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**(URL 경로 변경). Q2. 조건을 누적해 좁히나(다중 필터)? → YES = **Filter(FilterBar)**(쿼리 파라미터 누적). Q3. 옵션 2–7개 단일 선택? → YES = **Radio / SelectionButtonGroup**. 큰 분류(상호 배타)를 Filter 로, 조건 좁히기를 Tab 으로 만들지 말 것.",
         "**화면 배치 순서**: 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 좁히는 흐름. Tab 안에 또 Tab 중첩 금지(Sub-section 은 Accordion/Anchor). 캐포비 admin 풀 스펙·치수는 `pattern:cashwalk-biz-tab`."

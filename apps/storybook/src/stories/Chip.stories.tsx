@@ -225,6 +225,62 @@ export const WithIcon: Story = {
   ),
 };
 
+export const TrostFilterChips: Story = {
+  name: "Spec/Trost Filter Chips",
+  tags: ["gallery"],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "트로스트 필터칩(5107-130). color='neutral' 기본 = 회색(보더 #E5E5E5 + 텍스트 #606060), selected 시 브랜드 노랑 강조(보더 #FFF42E + subtle bg #FFFDD9 + 오렌지 텍스트 #FF9D00, outlined-selected 룩). height 30 · 좌우 padding 10. 색은 컴포넌트가 아니라 트로스트 토큰 override 가 슬롯에 주입(데모용 data-brand='trost' 래퍼).",
+      },
+    },
+  },
+  render: () => <TrostFilterChipsExample />,
+};
+
+function TrostFilterChipsExample() {
+  const initial = ["대면", "전화", "화상"];
+  const [selected, setSelected] = useState<Set<string>>(new Set(["대면"]));
+  const [filters, setFilters] = useState(initial);
+
+  const toggle = (s: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(s)) {
+        next.delete(s);
+      } else {
+        next.add(s);
+      }
+      return next;
+    });
+
+  return (
+    // data-brand="trost" → 트로스트 토큰이 Chip 슬롯(보더/bg/텍스트색·치수)을 override (데모용 래퍼)
+    <div data-brand="trost" style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)", maxWidth: 360 }}>
+      {filters.map((f) => (
+        <Chip
+          key={f}
+          label={f}
+          variant="outlined"
+          color="neutral"
+          selected={selected.has(f)}
+          icon={<PinIcon size={14} color="currentColor" />}
+          onClick={() => toggle(f)}
+          onRemove={() => {
+            setFilters((prev) => prev.filter((x) => x !== f));
+            setSelected((prev) => {
+              const next = new Set(prev);
+              next.delete(f);
+              return next;
+            });
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export const ToggleInteraction: Story = {
   name: "Interaction/Toggle Chip",
   render: () => <ToggleChipsExample />,

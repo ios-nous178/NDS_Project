@@ -4,6 +4,13 @@ export type BadgeVariant = "fill" | "ghost" | "line";
 export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
 export type BadgeSize = "sm" | "md" | "lg";
 export type BadgeShape = "default" | "pill";
+/**
+ * Badge 유형 (Figma "type", 가이드 5107:130):
+ * - `label` (기본) : 텍스트 배지 — NEW·상태 라벨 등 (size/variant/color/shape 적용)
+ * - `dot`          : 8×8 상태 점 — 텍스트 없음, 활성·미확인 표시 (색은 variant=fill 룰)
+ * - `count`        : min 18 원형 숫자 카운터 — 알림·메시지 개수 (색은 variant=fill 룰)
+ */
+export type BadgeType = "label" | "dot" | "count";
 
 const BADGE_CLASS = "nds-badge";
 const BADGE_LABEL_CLASS = `${BADGE_CLASS}__label`;
@@ -28,6 +35,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: BadgeSize;
   /** 모서리 모양 (Figma "Shape"): default=size별 라운드 사각(동적 상태값) · pill=완전 둥근(정적 식별 태그) */
   shape?: BadgeShape;
+  /** 유형 (Figma "type"): label=텍스트 배지(기본) · dot=8×8 점 · count=원형 숫자 카운터 */
+  type?: BadgeType;
   /** 라벨 래퍼에 추가할 클래스 */
   labelClassName?: string;
   /** 내부 슬롯별 props 전달 */
@@ -41,6 +50,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       color = "neutral",
       size = "md",
       shape = "default",
+      type = "label",
       className,
       style,
       labelClassName,
@@ -58,6 +68,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         data-color={color}
         data-size={size}
         data-shape={shape}
+        data-type={type}
         className={cx(BADGE_CLASS, className)}
         style={style}
         {...rest}

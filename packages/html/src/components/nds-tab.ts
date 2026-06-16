@@ -100,7 +100,8 @@ export class NdsTab extends NdsElement {
     if (!this._root) return;
     const activeKey = this.getAttribute("active-key") ?? "";
     const variant = this._norm("variant", VARIANTS, "line");
-    const size = this._norm("size", SIZES, "mobile");
+    // 기본 size = "pc" (react Tab.tsx 기본값과 미러 일치 — 구 "mobile" 은 react 와 drift).
+    const size = this._norm("size", SIZES, "pc");
     const tone = this._norm("tone", TONES, "neutral");
 
     // list 와 trigger 들
@@ -150,7 +151,7 @@ export class NdsTabList extends NdsElement {
   private _ul: HTMLUListElement | null = null;
   private _indicator: HTMLSpanElement | null = null;
   private _variant: TabVariant = "line";
-  private _size: TabSize = "mobile";
+  private _size: TabSize = "pc"; // react 미러 일치 (구 "mobile" drift 수정)
   private _tone: TabTone = "neutral";
 
   override connectedCallback(): void {

@@ -507,6 +507,97 @@ export const Segmented: Story = {
 };
 
 /* ════════════════════════════════════════════
+ * Trost · tone="color" 강조 = Point 코발트(#4968FF)
+ * ────────────────────────────────────────────
+ * 트로스트 brand 는 노랑(면적 채움 전용)이라 탭 tone="color" 활성 강조색은
+ * --nds-tab-accent-* 슬롯을 거쳐 Point 코발트로 분리된다. data-brand="trost"
+ * 래퍼 안에서 Line(코발트 텍스트·인디케이터) / Chip(코발트 채움, 흰 텍스트) /
+ * Segment(코발트 채움)가 노랑이 아니라 코발트로 보여야 한다(노랑/오렌지면 회귀).
+ * 다른 브랜드는 슬롯 미설정 → brand 색 폴백이라 무변.
+ * ════════════════════════════════════════════ */
+
+function TrostColorDemo() {
+  const lineItems = [
+    { key: "work", title: "직장" },
+    { key: "love", title: "연애" },
+    { key: "family", title: "가족" },
+    { key: "anxiety", title: "불안장애" },
+  ];
+  const chipItems = [
+    { key: "all", title: "전체" },
+    { key: "work", title: "직장" },
+    { key: "love", title: "연애" },
+    { key: "family", title: "가족" },
+  ];
+  const segmentItems = [
+    { key: "all", title: "전체" },
+    { key: "ongoing", title: "진행중" },
+    { key: "done", title: "완료" },
+  ];
+  const [lineKey, setLineKey] = useState("work");
+  const [chipKey, setChipKey] = useState("all");
+  const [segmentKey, setSegmentKey] = useState("all");
+  return (
+    // data-brand="trost" → 브랜드 토큰이 --nds-tab-accent-* 를 코발트로 emit (데모용 래퍼)
+    <div data-brand="trost" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+        <PlatformLabel text="Line · color (활성 텍스트·인디케이터 = 코발트)" />
+        <div style={pcFrame}>
+          <Tab
+            items={lineItems}
+            activeKey={lineKey}
+            onTabChange={setLineKey}
+            variant="line"
+            size="pc"
+            tone="color"
+          />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+        <PlatformLabel text="Chip · color (활성 채움 = 코발트, 텍스트 = 흰색)" />
+        <div style={pcFrame}>
+          <Tab
+            items={chipItems}
+            activeKey={chipKey}
+            onTabChange={setChipKey}
+            variant="chip"
+            size="pc"
+            tone="color"
+            fullWidth={false}
+          />
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
+        <PlatformLabel text="Segment · color (PC, 활성 채움 = 코발트)" />
+        <div style={{ width: 520 }}>
+          <Tab
+            items={segmentItems}
+            activeKey={segmentKey}
+            onTabChange={setSegmentKey}
+            variant="segment"
+            size="pc"
+            tone="color"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const TrostColorAccent: Story = {
+  name: "Brand/Trost · Color (Point 코발트)",
+  parameters: { layout: "padded" },
+  render: () => (
+    <ShowcaseSection
+      title="Trost · tone=&quot;color&quot; = Point 코발트(#4968FF)"
+      description="트로스트 brand 는 노랑(면적 채움 전용)이라 탭 활성 강조색은 --nds-tab-accent-* 슬롯을 거쳐 Point 코발트로 분리됩니다. Line=코발트 텍스트·인디케이터, Chip/Segment=코발트 채움(채움 위 텍스트는 흰색). 다른 브랜드는 brand 색으로 폴백합니다."
+    >
+      <TrostColorDemo />
+    </ShowcaseSection>
+  ),
+};
+
+/* ════════════════════════════════════════════
  * States — Default / Active / Hover / Disabled
  * ════════════════════════════════════════════ */
 

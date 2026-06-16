@@ -1,5 +1,10 @@
 ---
 figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-8385
+references:
+  - label: Trost Button Guide — 4 styles (Primary / Yellow / Secondary / Outlined)
+    url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5043-108
+    caption: '트로스트 Library · ButtonGuide. 4스타일을 DS 3축(color×variant)으로 매핑 — Primary(검정 #1A1A1A)=color="neutral" variant="solid", Yellow(노랑 #FFF42E, Positive/구독/확인)=color="primary" variant="solid", Secondary(옅은 블루 bg #EDF0FF / text #4968FF Point)=color="secondary" variant="solid", Outlined(흰+gray border / text #333, 취소·닫기)=color="neutral" variant="outlined". 사이즈 Large=lg(48)/Medium=md(44)/Small=sm(40 트로스트 override)/Bottom CTA=lg fullWidth shape="pill"(전용 56 사이즈 없음, 풀너비 lg 근사). disabled bg #D8D8D8. 본문 ## trostStyleMapping 표 참조.'
+    brand: trost
 usagePolicy:
   useFor:
     - 화면의 대표 CTA, 명확한 실행 액션, 중요한 폼 제출
@@ -47,6 +52,21 @@ matrixOverrides:
 ## summary
 
 1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).
+
+### 트로스트 스타일 → DS color × variant 매핑 (Figma 5043:108)
+
+트로스트 ButtonGuide 는 **4스타일**로 정의돼 있지만, DS Button 은 `color={primary,secondary,neutral} × variant{solid,soft,outlined}` 3축이다. 트로스트 스타일을 그대로 박지 말고 아래 매핑으로 옮긴다 — 색은 트로스트 brand 토큰이 슬롯에 흘려주므로 `data-brand="trost"` 컨텍스트만 있으면 된다(색 하드코딩 금지).
+
+| 트로스트 스타일 | 용도 | DS props | 색 (트로스트 토큰) |
+| --- | --- | --- | --- |
+| **Primary** | 메인 CTA · 한 화면 1개 | `color="neutral" variant="solid"` | 검정 #1A1A1A (buttonBg.neutral 신설) + 흰 텍스트 |
+| **Yellow** | Positive · 구독 · 확인 | `color="primary" variant="solid"` | 노랑 #FFF42E (트로스트 brand) |
+| **Secondary** | 보조 액션 | `color="secondary" variant="solid"` | bg #EDF0FF / text #4968FF (Point) |
+| **Outlined** | 취소 · 닫기 | `color="neutral" variant="outlined"` | 흰 배경 + gray border / text #333 |
+
+**사이즈**: Large=`size="lg"`(48) / Medium=`size="md"`(44) / Small=`size="sm"`(40 — 트로스트 override, base sm 42 → 40) / **Bottom CTA = `size="lg" fullWidth shape="pill"`**. 트로스트 Bottom CTA 의 56px 전용 사이즈는 두지 않기로 결정 — 풀너비 lg(48)로 근사한다. disabled 배경은 #D8D8D8.
+
+**주의** — 트로스트 "Primary"(검정)는 DS `color="primary"`(=노랑)가 **아니다**. Primary=`color="neutral" variant="solid"`, Yellow 가 `color="primary"` 다. 직관과 반대이므로 매핑 표를 그대로 따를 것. DO: 한 화면에 Primary(검정) 1개 / 확인·취소는 Primary + Outlined 페어. DON'T: Primary 검정 버튼 2개 이상, 서로 다른 사이즈 가로 병치, 한 줄 넘는 긴 라벨.
 
 ## pitfalls
 

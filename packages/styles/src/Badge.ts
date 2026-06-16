@@ -2,6 +2,7 @@
 import { cv, fontFamily, fontWeight } from "@nudge-design/tokens";
 
 const BADGE_CLASS = "nds-badge";
+const BADGE_LABEL_CLASS = `${BADGE_CLASS}__label`;
 
 export const badgeStyles = `
   :where(.${BADGE_CLASS}) {
@@ -44,6 +45,29 @@ export const badgeStyles = `
   /* shape=pill 은 size 라운드를 완전 둥근으로 덮는다 (size 룰 뒤 source-order). */
   :where(.${BADGE_CLASS}[data-shape="pill"]) {
     border-radius: var(--nds-badge-radius, 9999px);
+  }
+
+  /* ── type: dot / count — geometry override (색은 variant=fill 룰에서 받음).
+     size/shape 룰 뒤(source-order)라 :where() 동일 특정성에서 이긴다. 가이드 5107:130. */
+  /* dot — 8×8 상태 점, 텍스트 없음 */
+  :where(.${BADGE_CLASS}[data-type="dot"]) {
+    width: 8px;
+    min-width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 9999px;
+  }
+  :where(.${BADGE_CLASS}[data-type="dot"] .${BADGE_LABEL_CLASS}) {
+    display: none;
+  }
+  /* count — min 18 원형 숫자 카운터 */
+  :where(.${BADGE_CLASS}[data-type="count"]) {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 var(--nds-badge-count-padding-x, 5px);
+    border-radius: 9999px;
+    font-size: var(--nds-badge-font-size, 11px);
+    line-height: 1;
   }
 
   /* variant × color → bg/fg/border 슬롯 합성. react/html 은 data-variant/data-color 만 set, 색은 여기서. */

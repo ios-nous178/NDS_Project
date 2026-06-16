@@ -72,11 +72,20 @@ export const trostSemantic = {
     default: trostYellow[500], // #FFF42E
     hover: trostYellow[600], // #E5D820 (가이드 Fill/Brand/Hover)
     pressed: trostYellow[700], // #B8AC15 (가이드 Fill/Brand/Pressed)
-    disabled: trostNeutral[200],
+    disabled: trostNeutral[300], // #D8D8D8 — 가이드 Fill/Action/Primary/Disabled (구 #E5E5E5)
+    // Solid/Secondary — 가이드 "옅은 블루" = BG/Point/Subtle(cobalt-100 #EDF0FF) + cobalt 텍스트.
+    // (구: default=cobalt-50 #F6F7FF 로 가이드보다 한 stop 옅었음 — #EDF0FF 는 hover 에 있었다.)
     secondary: {
-      default: trostCobalt[50], // Point/Surface 위 cobalt 텍스트 (Solid/Secondary)
-      hover: trostCobalt[100],
+      default: trostCobalt[100], // #EDF0FF (가이드 BG/Point/Subtle)
+      hover: trostCobalt[200], // #C9D3FF (한 stop 진한 틴트)
       disabled: trostNeutral[200],
+    },
+    // Solid/Neutral — 가이드 "Primary(검정 Solid)" 메인 CTA. 트로스트 primary=노랑(brand)이라
+    // 검정 메인 액션은 color="neutral" 로 매핑한다(캐포비 검정 CTA=neutral 선례와 동일).
+    neutral: {
+      default: trostNeutral[900], // #1A1A1A (가이드 Fill/Action/Primary/Default)
+      hover: trostNeutral[800], // #333333
+      disabled: trostNeutral[300], // #D8D8D8
     },
     outlined: {
       default: trostNeutral["00"],
@@ -89,11 +98,15 @@ export const trostSemantic = {
     default: trostNeutral[800], // #333333
     // text.brand / icon.brand 와 동일한 brand-as-text 의미 — orange.
     brand: trostYellow.text,
-    // Solid/Secondary 텍스트 — cobalt-50 배경 위에 cobalt 텍스트.
+    // Solid/Secondary 텍스트 — cobalt 틴트 배경 위에 cobalt 텍스트.
     secondary: {
       default: trostCobalt[500],
       disabled: trostNeutral[500],
     },
+    // Neutral — Solid/Neutral(검정 CTA) 텍스트=흰(neutralSolid), Outlined/Neutral enabled=#333(neutral).
+    neutral: trostNeutral[800], // #333333 — Outlined/Neutral enabled (가이드 Outlined 텍스트 Text/Strong)
+    neutralSolid: trostNeutral["00"], // #FFFFFF — Solid/Neutral (검정 #1A1A1A fill 위 흰 텍스트)
+    neutralDisabled: trostNeutral[500], // #979797 — Outlined/Neutral disabled
     disabled: trostNeutral[500],
   },
   buttonBorder: {

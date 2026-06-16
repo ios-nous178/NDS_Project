@@ -58,6 +58,7 @@ export const radius = {
   sm: 4,
   md: 8,
   lg: 12,
+  xl: 16,
   pill: 9999,
 } as const;
 
@@ -65,6 +66,7 @@ export const shape = {
   sm: 4,
   md: 8,
   lg: 12,
+  xl: 16,
   pill: 9999,
 } as const;
 
@@ -131,6 +133,11 @@ export const sizing = {
     md: 56,
     lg: 72,
     xl: 96,
+    compactPc: 42,
+    tablePc: 64,
+    avatarPc: 80,
+    thumbnailPc: 106,
+    thumbnailMobile: 124,
   },
 } as const;
 

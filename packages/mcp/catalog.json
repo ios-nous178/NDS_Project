@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T05:55:32.202Z",
+  "generatedAt": "2026-06-16T06:20:57.877Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -809,6 +809,16 @@
           ]
         },
         {
+          "name": "type",
+          "optional": true,
+          "type": "BadgeType",
+          "allowedValues": [
+            "label",
+            "dot",
+            "count"
+          ]
+        },
+        {
           "name": "labelClassName",
           "optional": true,
           "type": "string"
@@ -845,6 +855,7 @@
         "color",
         "shape",
         "size",
+        "type",
         "variant"
       ]
     },
@@ -10814,7 +10825,8 @@
       "value": "40px",
       "group": "nds",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
       ]
     },
     {
@@ -11003,8 +11015,12 @@
       "value": "32px",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "trost"
+      ],
+      "brandValues": {
+        "trost": "30px"
+      }
     },
     {
       "name": "--nds-chip-line-height",
@@ -11019,8 +11035,12 @@
       "value": "14px",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "trost"
+      ],
+      "brandValues": {
+        "trost": "10px"
+      }
     },
     {
       "name": "--nds-chip-padding-y",
@@ -11041,7 +11061,7 @@
       ],
       "brandValues": {
         "runmile": "#FF5B37",
-        "trost": "#333333"
+        "trost": "#FFFDD9"
       }
     },
     {
@@ -11055,7 +11075,7 @@
       ],
       "brandValues": {
         "runmile": "#FF5B37",
-        "trost": "#333333"
+        "trost": "#FFF42E"
       }
     },
     {
@@ -11071,7 +11091,7 @@
       "brandValues": {
         "geniet": "#00A8AC",
         "runmile": "#FFFFFF",
-        "trost": "#FFFFFF"
+        "trost": "#FF9D00"
       }
     },
     {
@@ -11610,6 +11630,30 @@
       ]
     },
     {
+      "name": "--nds-tab-accent-fill",
+      "value": "#4968FF",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--nds-tab-accent-on",
+      "value": "#FFFFFF",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--nds-tab-accent-text",
+      "value": "#4968FF",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--nds-tab-chip-default-bg",
       "value": "var(--semantic-bg-surface-subtle)",
       "group": "nds",
@@ -12051,11 +12095,6 @@
       "name": "--radius-xl",
       "value": "16px",
       "group": "radius",
-      "brands": [
-        "geniet",
-        "runmile",
-        "trost"
-      ],
       "brandValues": {
         "trost": "12px"
       }
@@ -12377,7 +12416,7 @@
         "cashwalk-biz": "#DDDDDD",
         "geniet": "#DDDDDD",
         "runmile": "#E5E8EB",
-        "trost": "#E5E5E5"
+        "trost": "#D8D8D8"
       }
     },
     {
@@ -12398,7 +12437,8 @@
       "brandValues": {
         "cashwalk-biz": "#111111",
         "geniet": "#ECECEC",
-        "runmile": "#F2F4F6"
+        "runmile": "#F2F4F6",
+        "trost": "#1A1A1A"
       }
     },
     {
@@ -12408,7 +12448,8 @@
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
         "geniet": "#DDDDDD",
-        "runmile": "#D1D6DB"
+        "runmile": "#D1D6DB",
+        "trost": "#D8D8D8"
       }
     },
     {
@@ -12418,7 +12459,8 @@
       "brandValues": {
         "cashwalk-biz": "#333333",
         "geniet": "#F5F5F5",
-        "runmile": "#E5E8EB"
+        "runmile": "#E5E8EB",
+        "trost": "#333333"
       }
     },
     {
@@ -12461,7 +12503,7 @@
         "cashwalk-biz": "#111111",
         "geniet": "#F2FAFA",
         "runmile": "#221E1F",
-        "trost": "#F6F7FF"
+        "trost": "#EDF0FF"
       }
     },
     {
@@ -12483,7 +12525,7 @@
         "cashwalk-biz": "#333333",
         "geniet": "#ECF5F9",
         "runmile": "#333D4B",
-        "trost": "#EDF0FF"
+        "trost": "#C9D3FF"
       }
     },
     {
@@ -12578,7 +12620,8 @@
       "brandValues": {
         "cashwalk-biz": "#111111",
         "geniet": "#555555",
-        "runmile": "#4E5968"
+        "runmile": "#4E5968",
+        "trost": "#333333"
       }
     },
     {
@@ -12587,7 +12630,8 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#BBBBBB",
-        "runmile": "#919CAA"
+        "runmile": "#919CAA",
+        "trost": "#979797"
       }
     },
     {
@@ -13406,6 +13450,11 @@
       ]
     },
     {
+      "name": "--shadow-e2",
+      "value": "0px 2px 4px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04)",
+      "group": "shadow"
+    },
+    {
       "name": "--shape-lg",
       "value": "12px",
       "group": "shape"
@@ -13423,6 +13472,11 @@
     {
       "name": "--shape-sm",
       "value": "4px",
+      "group": "shape"
+    },
+    {
+      "name": "--shape-xl",
+      "value": "16px",
       "group": "shape"
     },
     {
@@ -13526,6 +13580,16 @@
       "group": "size"
     },
     {
+      "name": "--size-listRow-avatarPc",
+      "value": "80px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-compactPc",
+      "value": "42px",
+      "group": "size"
+    },
+    {
       "name": "--size-listRow-lg",
       "value": "72px",
       "group": "size"
@@ -13538,6 +13602,21 @@
     {
       "name": "--size-listRow-sm",
       "value": "40px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-tablePc",
+      "value": "64px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-thumbnailMobile",
+      "value": "124px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-thumbnailPc",
+      "value": "106px",
       "group": "size"
     },
     {
@@ -14266,6 +14345,7 @@
         "color",
         "shape",
         "size",
+        "type",
         "variant"
       ]
     },
