@@ -17,3 +17,4 @@ export * from "./nudge-eap-image-metadata.js";
 export * from "./nudge-img-metadata.js";
 export * from "./cashwalk-biz-asset-metadata.js";
 export * from "./geniet-asset-metadata.js";
+export * from "./trost-asset-metadata.js";

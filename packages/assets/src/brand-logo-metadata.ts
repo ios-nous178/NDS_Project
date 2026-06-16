@@ -22,6 +22,7 @@ export type LogoVariant =
   // 색상 차원 (구조와 별도) — 단색 인쇄/저강조 UI 등에서 사용.
   | "mono" // 단색 (보통 검정)
   | "muted" // 저강조 (보통 회색)
+  | "white" // 흰색 (어두운 배경 위 — black 의 반전 변종)
   // NudgeEAP 공식 로고 가이드 (Figma Library MqR7O3uvBvH5tVngwzbqGH, 698:87)
   | "koHorizontal" // 심볼 + 한글 / 가로 — 국내 서비스·한국어 자료
   | "koEnHorizontal" // 심볼 + 한글+영문 / 가로 — 대표 로고
@@ -42,9 +43,11 @@ export type BrandLogoMetaSet = Partial<Record<LogoVariant, BrandLogoMeta>>;
  * variant → 파일명 매핑. filename 은 `@nudge-design/assets/files/` 아래 public path.
  */
 export const BRAND_LOGO_METADATA: Record<BrandSlug, BrandLogoMetaSet> = {
+  // default(검정 워드마크, 밝은 배경) + white(흰 워드마크, 어두운 배경) — 디자이너 Figma 로고 가이드.
   trost: {
     default: { filename: "brand/trost/logos/trost-logo.svg", mimeType: "image/svg+xml" },
     mobile: { filename: "brand/trost/logos/trost-logo-mobile.webp", mimeType: "image/webp" },
+    white: { filename: "brand/trost/logos/trost-logo-white.svg", mimeType: "image/svg+xml" },
   },
 
   geniet: {
