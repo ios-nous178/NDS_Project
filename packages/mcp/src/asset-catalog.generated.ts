@@ -3,6 +3,7 @@
  *
  * 에셋 추가/이름변경 → packages/assets/src/files/ 를 고치고
  * `pnpm --filter @nudge-design/mcp build:assets` 로 재생성해 함께 커밋한다.
+ * 한글 검색 태그는 packages/mcp/asset-tags.ko.json(id→[태그]) 에서 search 토큰으로 머지된다.
  * (check-ssot 의 asset-catalog --check 가 stale 을 차단한다.)
  */
 
@@ -19,7 +20,7 @@ export interface AssetCatalogEntry {
   mimeType: string;
   /** 보유 레티나 변형(예: ["3x"]). 없으면 키 자체가 없음. */
   retina?: string[];
-  /** 소문자 검색 토큰(brand·category·id). */
+  /** 소문자 검색 토큰(brand·category·id 영문 + asset-tags.ko.json 한글 태그). */
   search: string[];
 }
 
@@ -37,7 +38,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "illustrations",
       "charge",
       "alert",
-      "bell"
+      "bell",
+      "충전알림",
+      "알림벨"
     ]
   },
   {
@@ -99,7 +102,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "asian"
+      "asian",
+      "아시안",
+      "아시아음식"
     ]
   },
   {
@@ -117,7 +122,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "beverage"
+      "beverage",
+      "음료"
     ]
   },
   {
@@ -135,7 +141,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "chinese"
+      "chinese",
+      "중식",
+      "중국음식"
     ]
   },
   {
@@ -155,7 +163,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "heroes",
       "dairy",
       "baby",
-      "food"
+      "food",
+      "유제품",
+      "이유식"
     ]
   },
   {
@@ -173,7 +183,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "diet"
+      "diet",
+      "다이어트",
+      "식단"
     ]
   },
   {
@@ -192,7 +204,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "category",
       "heroes",
       "fast",
-      "food"
+      "food",
+      "패스트푸드"
     ]
   },
   {
@@ -211,7 +224,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "category",
       "heroes",
       "health",
-      "food"
+      "food",
+      "건강식품"
     ]
   },
   {
@@ -229,7 +243,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "japanese"
+      "japanese",
+      "일식",
+      "일본음식"
     ]
   },
   {
@@ -247,7 +263,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "korean"
+      "korean",
+      "한식",
+      "한국음식"
     ]
   },
   {
@@ -265,7 +283,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "livestock"
+      "livestock",
+      "축산",
+      "정육"
     ]
   },
   {
@@ -283,7 +303,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "marine"
+      "marine",
+      "수산",
+      "해산물"
     ]
   },
   {
@@ -304,7 +326,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "noodle",
       "can",
       "oil",
-      "sauce"
+      "sauce",
+      "면류",
+      "통조림",
+      "소스"
     ]
   },
   {
@@ -322,7 +347,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "produce"
+      "produce",
+      "농산물",
+      "채소"
     ]
   },
   {
@@ -343,7 +370,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "rice",
       "cake",
       "bakery",
-      "snack"
+      "snack",
+      "떡",
+      "베이커리",
+      "간식"
     ]
   },
   {
@@ -362,7 +392,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "category",
       "heroes",
       "snack",
-      "food"
+      "food",
+      "간식",
+      "과자"
     ]
   },
   {
@@ -380,7 +412,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "category",
       "heroes",
-      "western"
+      "western",
+      "양식",
+      "서양음식"
     ]
   },
   {
@@ -398,7 +432,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "empty",
       "states",
-      "coupon"
+      "coupon",
+      "쿠폰없음",
+      "빈쿠폰"
     ]
   },
   {
@@ -417,7 +453,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "empty",
       "states",
       "error",
-      "thumbnail"
+      "thumbnail",
+      "에러",
+      "오류"
     ]
   },
   {
@@ -435,7 +473,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "empty",
       "states",
-      "food"
+      "food",
+      "음식없음"
     ]
   },
   {
@@ -454,7 +493,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "empty",
       "states",
       "food",
-      "thumbnail"
+      "thumbnail",
+      "음식없음"
     ]
   },
   {
@@ -472,7 +512,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "empty",
       "states",
-      "heart"
+      "heart",
+      "찜없음",
+      "좋아요없음"
     ]
   },
   {
@@ -490,7 +532,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "empty",
       "states",
-      "memo"
+      "memo",
+      "메모없음"
     ]
   },
   {
@@ -509,7 +552,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "empty",
       "states",
       "pill",
-      "thumbnail"
+      "thumbnail",
+      "영양제없음",
+      "약없음"
     ]
   },
   {
@@ -527,7 +572,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "alcohol"
+      "alcohol",
+      "술",
+      "주류"
     ]
   },
   {
@@ -545,7 +592,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "all"
+      "all",
+      "전체",
+      "모두"
     ]
   },
   {
@@ -564,7 +613,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "baby",
-      "formula"
+      "formula",
+      "분유",
+      "이유식"
     ]
   },
   {
@@ -582,7 +633,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "bakery"
+      "bakery",
+      "베이커리",
+      "빵집",
+      "제과"
     ]
   },
   {
@@ -600,7 +654,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "beef"
+      "beef",
+      "소고기",
+      "한우",
+      "쇠고기"
     ]
   },
   {
@@ -618,7 +675,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "bibimbap"
+      "bibimbap",
+      "비빔밥"
     ]
   },
   {
@@ -638,7 +696,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "types",
       "braised",
       "pigs",
-      "feet"
+      "feet",
+      "족발",
+      "돼지족발"
     ]
   },
   {
@@ -656,7 +716,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "bread"
+      "bread",
+      "빵"
     ]
   },
   {
@@ -674,7 +735,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "broth"
+      "broth",
+      "육수",
+      "국물"
     ]
   },
   {
@@ -692,7 +755,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "burger"
+      "burger",
+      "버거",
+      "햄버거"
     ]
   },
   {
@@ -710,7 +775,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "candy"
+      "candy",
+      "사탕",
+      "캔디"
     ]
   },
   {
@@ -728,7 +795,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "canned"
+      "canned",
+      "통조림",
+      "캔"
     ]
   },
   {
@@ -746,7 +815,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "cheese"
+      "cheese",
+      "치즈"
     ]
   },
   {
@@ -764,7 +834,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "chicken"
+      "chicken",
+      "닭고기",
+      "치킨"
     ]
   },
   {
@@ -783,7 +855,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "chicken",
-      "breast"
+      "breast",
+      "닭가슴살"
     ]
   },
   {
@@ -801,7 +874,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "coffee"
+      "coffee",
+      "커피"
     ]
   },
   {
@@ -820,7 +894,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "cooking",
-      "oil"
+      "oil",
+      "식용유",
+      "기름"
     ]
   },
   {
@@ -838,7 +914,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "curry"
+      "curry",
+      "카레"
     ]
   },
   {
@@ -857,7 +934,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "curry",
-      "indian"
+      "indian",
+      "인도카레",
+      "커리"
     ]
   },
   {
@@ -875,7 +954,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "diet"
+      "diet",
+      "다이어트",
+      "식단"
     ]
   },
   {
@@ -894,7 +975,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "dim",
-      "sum"
+      "sum",
+      "딤섬"
     ]
   },
   {
@@ -913,7 +995,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "dried",
-      "seafood"
+      "seafood",
+      "건어물"
     ]
   },
   {
@@ -931,7 +1014,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "duck"
+      "duck",
+      "오리고기",
+      "오리"
     ]
   },
   {
@@ -949,7 +1034,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "egg"
+      "egg",
+      "계란",
+      "달걀"
     ]
   },
   {
@@ -967,7 +1054,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "enzyme"
+      "enzyme",
+      "효소"
     ]
   },
   {
@@ -985,7 +1073,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "etc"
+      "etc",
+      "기타"
     ]
   },
   {
@@ -1003,7 +1092,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "fish"
+      "fish",
+      "생선",
+      "물고기"
     ]
   },
   {
@@ -1022,7 +1113,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "fish",
-      "cake"
+      "cake",
+      "어묵",
+      "오뎅"
     ]
   },
   {
@@ -1040,7 +1133,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "fried"
+      "fried",
+      "튀김"
     ]
   },
   {
@@ -1059,7 +1153,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "fried",
-      "chicken"
+      "chicken",
+      "후라이드치킨",
+      "치킨",
+      "닭튀김"
     ]
   },
   {
@@ -1078,7 +1175,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "fried",
-      "rice"
+      "rice",
+      "볶음밥"
     ]
   },
   {
@@ -1096,7 +1194,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "fritters"
+      "fritters",
+      "튀김",
+      "부침"
     ]
   },
   {
@@ -1114,7 +1214,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "fruit"
+      "fruit",
+      "과일"
     ]
   },
   {
@@ -1133,7 +1234,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "functional",
-      "health"
+      "health",
+      "건강기능식품",
+      "건기식"
     ]
   },
   {
@@ -1151,7 +1254,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "gimbap"
+      "gimbap",
+      "김밥"
     ]
   },
   {
@@ -1170,7 +1274,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "grain",
-      "shake"
+      "shake",
+      "미숫가루",
+      "곡물쉐이크"
     ]
   },
   {
@@ -1188,7 +1294,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "gratin"
+      "gratin",
+      "그라탕"
     ]
   },
   {
@@ -1206,7 +1313,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "grilled"
+      "grilled",
+      "구이"
     ]
   },
   {
@@ -1225,7 +1333,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "health",
-      "juice"
+      "juice",
+      "건강주스"
     ]
   },
   {
@@ -1244,7 +1353,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "health",
-      "snack"
+      "snack",
+      "건강간식"
     ]
   },
   {
@@ -1263,7 +1373,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "hot",
-      "dog"
+      "dog",
+      "핫도그"
     ]
   },
   {
@@ -1282,7 +1393,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "ice",
-      "cream"
+      "cream",
+      "아이스크림"
     ]
   },
   {
@@ -1300,7 +1412,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "jjajangmyeon"
+      "jjajangmyeon",
+      "짜장면",
+      "짜장"
     ]
   },
   {
@@ -1318,7 +1432,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "jjamppong"
+      "jjamppong",
+      "짬뽕"
     ]
   },
   {
@@ -1336,7 +1451,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "juice"
+      "juice",
+      "주스"
     ]
   },
   {
@@ -1354,7 +1470,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "kimchi"
+      "kimchi",
+      "김치"
     ]
   },
   {
@@ -1373,7 +1490,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "korean",
-      "pancake"
+      "pancake",
+      "전",
+      "부침개",
+      "파전"
     ]
   },
   {
@@ -1392,7 +1512,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "low",
-      "sugar"
+      "sugar",
+      "저당식품",
+      "저당"
     ]
   },
   {
@@ -1411,7 +1533,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "meal",
-      "plan"
+      "plan",
+      "식단",
+      "밀플랜"
     ]
   },
   {
@@ -1429,7 +1553,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "milk"
+      "milk",
+      "우유"
     ]
   },
   {
@@ -1447,7 +1572,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "multigrain"
+      "multigrain",
+      "잡곡"
     ]
   },
   {
@@ -1466,7 +1592,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "nasi",
-      "goreng"
+      "goreng",
+      "나시고렝"
     ]
   },
   {
@@ -1484,7 +1611,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "nuts"
+      "nuts",
+      "견과류",
+      "너트"
     ]
   },
   {
@@ -1503,7 +1632,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "pad",
-      "thai"
+      "thai",
+      "팟타이"
     ]
   },
   {
@@ -1521,7 +1651,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "pasta"
+      "pasta",
+      "파스타"
     ]
   },
   {
@@ -1539,7 +1670,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "pizza"
+      "pizza",
+      "피자"
     ]
   },
   {
@@ -1557,7 +1689,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "pork"
+      "pork",
+      "돼지고기"
     ]
   },
   {
@@ -1576,7 +1709,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "pork",
-      "cutlet"
+      "cutlet",
+      "돈까스",
+      "돈가스"
     ]
   },
   {
@@ -1594,7 +1729,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "pottage"
+      "pottage",
+      "포타주",
+      "수프"
     ]
   },
   {
@@ -1612,7 +1749,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "powder"
+      "powder",
+      "가루",
+      "분말"
     ]
   },
   {
@@ -1630,7 +1769,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "probiotics"
+      "probiotics",
+      "유산균",
+      "프로바이오틱스"
     ]
   },
   {
@@ -1649,7 +1790,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "processed",
-      "seafood"
+      "seafood",
+      "수산가공품",
+      "가공수산물"
     ]
   },
   {
@@ -1667,7 +1810,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "ramen"
+      "ramen",
+      "라멘"
     ]
   },
   {
@@ -1685,7 +1829,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "ramyeon"
+      "ramyeon",
+      "라면"
     ]
   },
   {
@@ -1704,7 +1849,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "red",
-      "ginseng"
+      "ginseng",
+      "홍삼"
     ]
   },
   {
@@ -1722,7 +1868,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "rice"
+      "rice",
+      "밥",
+      "쌀"
     ]
   },
   {
@@ -1741,7 +1889,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "rice",
-      "bowl"
+      "bowl",
+      "덮밥"
     ]
   },
   {
@@ -1760,7 +1909,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "rice",
-      "cake"
+      "cake",
+      "떡"
     ]
   },
   {
@@ -1779,7 +1929,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "rice",
-      "grain"
+      "grain",
+      "쌀",
+      "곡물"
     ]
   },
   {
@@ -1798,7 +1950,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "rice",
-      "noodle"
+      "noodle",
+      "쌀국수"
     ]
   },
   {
@@ -1816,7 +1969,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "risotto"
+      "risotto",
+      "리조또"
     ]
   },
   {
@@ -1835,7 +1989,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "royal",
-      "jelly"
+      "jelly",
+      "로열젤리"
     ]
   },
   {
@@ -1853,7 +2008,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "salad"
+      "salad",
+      "샐러드"
     ]
   },
   {
@@ -1872,7 +2028,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "salted",
-      "seafood"
+      "seafood",
+      "젓갈"
     ]
   },
   {
@@ -1890,7 +2047,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "sandwich"
+      "sandwich",
+      "샌드위치"
     ]
   },
   {
@@ -1908,7 +2066,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "sashimi"
+      "sashimi",
+      "회",
+      "사시미"
     ]
   },
   {
@@ -1926,7 +2086,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "sauce"
+      "sauce",
+      "소스",
+      "양념"
     ]
   },
   {
@@ -1944,7 +2106,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "seafood"
+      "seafood",
+      "해산물",
+      "수산물"
     ]
   },
   {
@@ -1962,7 +2126,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "seaweed"
+      "seaweed",
+      "김",
+      "해조류"
     ]
   },
   {
@@ -1980,7 +2146,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "shake"
+      "shake",
+      "쉐이크"
     ]
   },
   {
@@ -1999,7 +2166,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "side",
-      "dish"
+      "dish",
+      "반찬"
     ]
   },
   {
@@ -2017,7 +2185,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "smoothie"
+      "smoothie",
+      "스무디"
     ]
   },
   {
@@ -2035,7 +2204,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "snack"
+      "snack",
+      "과자",
+      "간식"
     ]
   },
   {
@@ -2053,7 +2224,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "soda"
+      "soda",
+      "탄산음료",
+      "소다"
     ]
   },
   {
@@ -2071,7 +2244,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "soup"
+      "soup",
+      "국",
+      "수프"
     ]
   },
   {
@@ -2090,7 +2265,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "sports",
-      "drink"
+      "drink",
+      "스포츠음료",
+      "이온음료"
     ]
   },
   {
@@ -2108,7 +2285,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "steamed"
+      "steamed",
+      "찜"
     ]
   },
   {
@@ -2127,7 +2305,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "stir",
-      "fry"
+      "fry",
+      "볶음"
     ]
   },
   {
@@ -2146,7 +2325,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "sundae",
-      "sausage"
+      "sausage",
+      "순대"
     ]
   },
   {
@@ -2166,7 +2346,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "types",
       "sweet",
       "sour",
-      "pork"
+      "pork",
+      "탕수육"
     ]
   },
   {
@@ -2184,7 +2365,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "syrup"
+      "syrup",
+      "시럽"
     ]
   },
   {
@@ -2202,7 +2384,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "tea"
+      "tea",
+      "차"
     ]
   },
   {
@@ -2221,7 +2404,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "food",
       "types",
       "tom",
-      "yum"
+      "yum",
+      "똠얌",
+      "똠얌꿍"
     ]
   },
   {
@@ -2239,7 +2424,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "tteokbokki"
+      "tteokbokki",
+      "떡볶이"
     ]
   },
   {
@@ -2257,7 +2443,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "udon"
+      "udon",
+      "우동"
     ]
   },
   {
@@ -2275,7 +2462,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "vegetable"
+      "vegetable",
+      "채소",
+      "야채"
     ]
   },
   {
@@ -2293,7 +2482,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "vitamin"
+      "vitamin",
+      "비타민"
     ]
   },
   {
@@ -2311,7 +2501,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "water"
+      "water",
+      "물",
+      "생수"
     ]
   },
   {
@@ -2329,7 +2521,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "food",
       "types",
-      "yogurt"
+      "yogurt",
+      "요거트",
+      "요구르트"
     ]
   },
   {
@@ -2346,7 +2540,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "geniet",
       "images",
       "misc",
-      "alert"
+      "alert",
+      "알림",
+      "경고"
     ]
   },
   {
@@ -2363,7 +2559,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "geniet",
       "images",
       "misc",
-      "cashlotto"
+      "cashlotto",
+      "캐시로또",
+      "로또"
     ]
   },
   {
@@ -2380,7 +2578,10 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "geniet",
       "images",
       "misc",
-      "pill"
+      "pill",
+      "영양제",
+      "약",
+      "알약"
     ]
   },
   {
@@ -2793,7 +2994,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "circle",
       "icons",
       "bubbles",
-      "blue"
+      "blue",
+      "버블",
+      "말풍선"
     ]
   },
   {
@@ -2813,7 +3016,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "circle",
       "icons",
       "bubbles",
-      "white"
+      "white",
+      "버블",
+      "말풍선"
     ]
   },
   {
@@ -2833,7 +3038,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "circle",
       "icons",
       "location",
-      "white"
+      "white",
+      "위치"
     ]
   },
   {
@@ -2853,7 +3059,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "circle",
       "icons",
       "notice",
-      "blue"
+      "blue",
+      "공지",
+      "알림"
     ]
   },
   {
@@ -2873,7 +3081,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "circle",
       "icons",
       "search",
-      "white"
+      "white",
+      "검색"
     ]
   },
   {
@@ -2891,7 +3100,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "consult",
-      "calendar"
+      "calendar",
+      "캘린더",
+      "일정"
     ]
   },
   {
@@ -2910,7 +3121,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "consult",
       "inquiry",
-      "form"
+      "form",
+      "문의",
+      "신청서"
     ]
   },
   {
@@ -2929,7 +3142,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "consult",
       "sentence",
-      "test"
+      "test",
+      "문장검사",
+      "문장완성"
     ]
   },
   {
@@ -2947,7 +3162,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "gift",
-      "cafe"
+      "cafe",
+      "카페",
+      "커피"
     ]
   },
   {
@@ -2965,7 +3182,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "gift",
-      "culture"
+      "culture",
+      "문화상품권",
+      "컬처"
     ]
   },
   {
@@ -2983,7 +3202,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "gift",
-      "market"
+      "market",
+      "마트",
+      "상품권"
     ]
   },
   {
@@ -3001,7 +3222,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "gift",
-      "pizza"
+      "pizza",
+      "피자"
     ]
   },
   {
@@ -3019,7 +3241,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "gift",
-      "shoppingcart"
+      "shoppingcart",
+      "쇼핑",
+      "장바구니"
     ]
   },
   {
@@ -3038,7 +3262,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "chat"
+      "chat",
+      "채팅",
+      "대화"
     ]
   },
   {
@@ -3057,7 +3283,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "counseling"
+      "counseling",
+      "상담"
     ]
   },
   {
@@ -3076,7 +3303,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "courthouse"
+      "courthouse",
+      "법률",
+      "법원"
     ]
   },
   {
@@ -3095,7 +3324,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "emotion"
+      "emotion",
+      "감정"
     ]
   },
   {
@@ -3114,7 +3344,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "life"
+      "life",
+      "생활",
+      "라이프"
     ]
   },
   {
@@ -3133,7 +3365,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "location"
+      "location",
+      "위치",
+      "지도"
     ]
   },
   {
@@ -3153,7 +3387,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "menu",
       "app",
       "one",
-      "to"
+      "to",
+      "일대일",
+      "1대1"
     ]
   },
   {
@@ -3172,7 +3408,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "menu",
       "app",
-      "routine"
+      "routine",
+      "루틴",
+      "생활습관"
     ]
   },
   {
@@ -3192,7 +3430,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "menu",
       "app",
       "sound",
-      "therapy"
+      "therapy",
+      "사운드테라피",
+      "소리치료"
     ]
   },
   {
@@ -3252,7 +3492,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "menu",
       "web",
       "challenge",
-      "default"
+      "default",
+      "챌린지",
+      "도전"
     ]
   },
   {
@@ -3272,7 +3514,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "menu",
       "web",
       "challenge",
-      "selected"
+      "selected",
+      "챌린지",
+      "도전"
     ]
   },
   {
@@ -3330,7 +3574,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "menu",
       "web",
       "life",
-      "default"
+      "default",
+      "라이프",
+      "생활"
     ]
   },
   {
@@ -3350,7 +3596,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "menu",
       "web",
       "life",
-      "selected"
+      "selected",
+      "라이프",
+      "생활"
     ]
   },
   {
@@ -3369,7 +3617,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "depression"
+      "depression",
+      "우울",
+      "우울증"
     ]
   },
   {
@@ -3388,7 +3638,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "dsi"
+      "dsi",
+      "스트레스"
     ]
   },
   {
@@ -3407,7 +3658,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "finance"
+      "finance",
+      "재정",
+      "금융"
     ]
   },
   {
@@ -3426,7 +3679,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "happy"
+      "happy",
+      "행복"
     ]
   },
   {
@@ -3446,7 +3700,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "psych",
       "tests",
       "job",
-      "stress"
+      "stress",
+      "직무스트레스",
+      "직장스트레스"
     ]
   },
   {
@@ -3465,7 +3721,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "koss"
+      "koss",
+      "직무스트레스",
+      "스트레스"
     ]
   },
   {
@@ -3484,7 +3742,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "love"
+      "love",
+      "연애",
+      "사랑"
     ]
   },
   {
@@ -3503,7 +3763,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "marriage"
+      "marriage",
+      "결혼",
+      "부부"
     ]
   },
   {
@@ -3522,7 +3784,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "mbti"
+      "mbti",
+      "성격유형"
     ]
   },
   {
@@ -3541,7 +3804,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "personality"
+      "personality",
+      "성격",
+      "성격검사"
     ]
   },
   {
@@ -3559,7 +3824,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "psych",
-      "tests"
+      "tests",
+      "심리",
+      "심리검사"
     ]
   },
   {
@@ -3578,7 +3845,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "selfesteem"
+      "selfesteem",
+      "자존감"
     ]
   },
   {
@@ -3596,7 +3864,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "rank",
-      "01"
+      "01",
+      "1등",
+      "1위"
     ]
   },
   {
@@ -3614,7 +3884,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "rank",
-      "02"
+      "02",
+      "2등",
+      "2위"
     ]
   },
   {
@@ -3632,7 +3904,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "eap",
       "images",
       "rank",
-      "03"
+      "03",
+      "3등",
+      "3위"
     ]
   },
   {
@@ -3651,7 +3925,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "three",
       "d",
-      "shopping"
+      "shopping",
+      "쇼핑"
     ]
   },
   {
@@ -3670,7 +3945,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "three",
       "d",
-      "walkranking"
+      "walkranking",
+      "걷기랭킹",
+      "워크랭킹"
     ]
   },
   {
@@ -4010,7 +4287,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     "search": [
       "runmile",
       "illustrations",
-      "alram"
+      "alram",
+      "알림"
     ]
   },
   {
@@ -4024,7 +4302,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "runmile",
       "illustrations",
       "chatting",
-      "default"
+      "default",
+      "채팅"
     ]
   },
   {
@@ -4038,7 +4317,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "runmile",
       "illustrations",
       "chatting",
-      "white"
+      "white",
+      "채팅"
     ]
   },
   {
@@ -4051,7 +4331,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     "search": [
       "runmile",
       "illustrations",
-      "community"
+      "community",
+      "커뮤니티"
     ]
   },
   {
@@ -4079,7 +4360,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "illustrations",
       "no",
       "result",
-      "default"
+      "default",
+      "결과없음",
+      "검색결과없음"
     ]
   },
   {
@@ -4094,7 +4377,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "illustrations",
       "no",
       "result",
-      "white"
+      "white",
+      "결과없음",
+      "검색결과없음"
     ]
   },
   {
@@ -4108,7 +4393,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "runmile",
       "illustrations",
       "page",
-      "error"
+      "error",
+      "페이지오류",
+      "에러"
     ]
   },
   {
@@ -4121,7 +4408,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     "search": [
       "runmile",
       "illustrations",
-      "qa"
+      "qa",
+      "문의",
+      "질문"
     ]
   },
   {
@@ -4134,7 +4423,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     "search": [
       "runmile",
       "illustrations",
-      "shoe"
+      "shoe",
+      "신발",
+      "운동화"
     ]
   },
   {
@@ -4193,7 +4484,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "marathon",
       "events",
       "animal",
-      "run"
+      "run",
+      "동물런",
+      "애니멀런"
     ]
   },
   {
@@ -4211,7 +4504,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "marathon",
       "events",
       "bomkkot",
-      "run"
+      "run",
+      "봄꽃런"
     ]
   },
   {
@@ -4229,7 +4523,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "marathon",
       "events",
       "dangdangi",
-      "race"
+      "race",
+      "당당이레이스"
     ]
   },
   {
@@ -4264,7 +4559,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "marathon",
       "events",
       "gaenari",
-      "run"
+      "run",
+      "개나리런"
     ]
   },
   {
@@ -4283,7 +4579,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "events",
       "hangang",
       "night",
-      "run"
+      "run",
+      "한강야간런",
+      "한강런"
     ]
   },
   {
@@ -4301,7 +4599,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "marathon",
       "events",
       "pokemon",
-      "run"
+      "run",
+      "포켓몬런"
     ]
   },
   {
@@ -4320,7 +4619,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "events",
       "santa",
       "claus",
-      "run"
+      "run",
+      "산타런",
+      "산타클로스런"
     ]
   },
   {
@@ -4339,7 +4640,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "events",
       "seokchon",
       "night",
-      "run"
+      "run",
+      "석촌야간런"
     ]
   },
   {
@@ -4358,7 +4660,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "events",
       "shinhan",
       "donghaeng",
-      "run"
+      "run",
+      "신한동행런"
     ]
   },
   {
@@ -4376,7 +4679,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "marathon",
       "events",
       "yeontan",
-      "run"
+      "run",
+      "연탄런"
     ]
   },
   {
@@ -4559,7 +4863,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "apple",
-      "black"
+      "black",
+      "애플"
     ]
   },
   {
@@ -4574,7 +4879,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "apple",
-      "white"
+      "white",
+      "애플"
     ]
   },
   {
@@ -4589,7 +4895,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "google",
-      "main"
+      "main",
+      "구글"
     ]
   },
   {
@@ -4604,7 +4911,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "google",
-      "white"
+      "white",
+      "구글"
     ]
   },
   {
@@ -4619,7 +4927,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "kakao",
-      "black"
+      "black",
+      "카카오"
     ]
   },
   {
@@ -4634,7 +4943,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "kakao",
-      "main"
+      "main",
+      "카카오"
     ]
   },
   {
@@ -4649,7 +4959,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "naver",
-      "main"
+      "main",
+      "네이버"
     ]
   },
   {
@@ -4664,7 +4975,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "sns",
       "logos",
       "naver",
-      "white"
+      "white",
+      "네이버"
     ]
   },
   {
@@ -4718,7 +5030,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "center"
+      "center",
+      "센터",
+      "상담센터"
     ]
   },
   {
@@ -4736,7 +5050,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "corona"
+      "corona",
+      "코로나"
     ]
   },
   {
@@ -4755,7 +5070,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "psych",
       "tests",
       "d",
-      "type"
+      "type",
+      "d유형",
+      "디타입"
     ]
   },
   {
@@ -4773,7 +5090,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "depression"
+      "depression",
+      "우울",
+      "우울증"
     ]
   },
   {
@@ -4791,7 +5110,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "emotion"
+      "emotion",
+      "감정"
     ]
   },
   {
@@ -4809,7 +5129,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "employment"
+      "employment",
+      "취업"
     ]
   },
   {
@@ -4827,7 +5148,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "event"
+      "event",
+      "이벤트"
     ]
   },
   {
@@ -4846,7 +5168,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "psych",
       "tests",
       "job",
-      "stress"
+      "stress",
+      "직무스트레스",
+      "직장스트레스"
     ]
   },
   {
@@ -4864,7 +5188,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "mbti"
+      "mbti",
+      "성격유형"
     ]
   },
   {
@@ -4882,7 +5207,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "medicine"
+      "medicine",
+      "약",
+      "의학"
     ]
   },
   {
@@ -4900,7 +5227,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "panic"
+      "panic",
+      "공황",
+      "공황장애"
     ]
   },
   {
@@ -4918,7 +5247,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "personality"
+      "personality",
+      "성격",
+      "성격검사"
     ]
   },
   {
@@ -4935,7 +5266,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "trost",
       "images",
       "psych",
-      "tests"
+      "tests",
+      "심리",
+      "심리검사"
     ]
   },
   {
@@ -4953,7 +5286,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "routine"
+      "routine",
+      "루틴",
+      "생활습관"
     ]
   },
   {
@@ -4972,7 +5307,8 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "psych",
       "tests",
       "self",
-      "esteem"
+      "esteem",
+      "자존감"
     ]
   },
   {
@@ -4990,7 +5326,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "images",
       "psych",
       "tests",
-      "sound"
+      "sound",
+      "소리",
+      "사운드"
     ]
   },
   {

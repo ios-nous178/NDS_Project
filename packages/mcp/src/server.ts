@@ -579,6 +579,16 @@ const ASSET_SEARCH_ALIASES: Record<string, string[]> = {
   카테고리: ["category", "category-heroes"],
   심리검사: ["psych", "psych-tests"],
   선물: ["gift"],
+  음료: ["beverage", "juice", "soda"],
+  영양제: ["pill", "vitamin", "probiotics"],
+  약: ["pill", "medicine"],
+  상담: ["counseling", "consult"],
+  채팅: ["chat", "chatting"],
+  // 카테고리-히어로(geniet) 요리 분류 — per-id 한글 태그도 있으나, 넓은 "X 음식" 질의용 가산.
+  한식: ["korean"],
+  중식: ["chinese"],
+  일식: ["japanese"],
+  양식: ["western"],
 };
 
 function scoreAsset(query: string, entry: AssetCatalogEntry): number {
@@ -631,7 +641,7 @@ export function findAsset(args: {
   limit?: number;
 }) {
   const limit = clampLimit(args.limit, 20, 60);
-  const brand = args.brand ? canonicalBrandSlug(args.brand) ?? args.brand : undefined;
+  const brand = args.brand ? (canonicalBrandSlug(args.brand) ?? args.brand) : undefined;
   let pool = ASSET_CATALOG;
   if (brand) pool = pool.filter((e) => e.brand === brand || e.brand === "shared");
   if (args.category) {
@@ -649,7 +659,11 @@ export function findAsset(args: {
         _policy: ASSET_POLICY,
       };
     }
-    return { count: hits.length, assets: hits.slice(0, limit).map(slimAsset), _policy: ASSET_POLICY };
+    return {
+      count: hits.length,
+      assets: hits.slice(0, limit).map(slimAsset),
+      _policy: ASSET_POLICY,
+    };
   }
 
   if (args.query) {
@@ -667,7 +681,11 @@ export function findAsset(args: {
         _policy: ASSET_POLICY,
       };
     }
-    return { count: matches.length, assets: matches.map((m) => slimAsset(m.e)), _policy: ASSET_POLICY };
+    return {
+      count: matches.length,
+      assets: matches.map((m) => slimAsset(m.e)),
+      _policy: ASSET_POLICY,
+    };
   }
 
   if (args.category || brand) {
@@ -909,7 +927,11 @@ function attachScoreGate<T>(result: T): T {
     note: "D1(코드) 점수 기준. 정성(D2·ux/interaction/flow/form)까지 채점하려면 score_mockup_quality 를 호출하세요.",
   };
   if (result && typeof result === "object" && !Array.isArray(result)) {
-    return { ...(result as Record<string, unknown>), scoreGate, satisfactionOffer: SATISFACTION_OFFER } as T;
+    return {
+      ...(result as Record<string, unknown>),
+      scoreGate,
+      satisfactionOffer: SATISFACTION_OFFER,
+    } as T;
   }
   return result;
 }
@@ -1104,7 +1126,8 @@ export const toolHandlers = {
     const text = typeof args.text === "string" ? args.text.trim() : "";
     const sentiment = args.sentiment === "up" || args.sentiment === "down" ? args.sentiment : null;
     // 만족도(👍/👎)만 있고 text 가 없어도 허용 — sentiment 자체가 신호. 둘 다 없으면 거절.
-    if (!text && !sentiment) return { ok: false, error: "text 또는 sentiment 중 하나는 필요합니다." };
+    if (!text && !sentiment)
+      return { ok: false, error: "text 또는 sentiment 중 하나는 필요합니다." };
     return {
       ok: true,
       logged: true,
@@ -1131,7 +1154,12 @@ export const toolHandlers = {
       };
     }
     if (ELICITED_SCREENS.has(screen)) {
-      return { ok: true, recorded: false, alreadyAsked: true, message: "이 화면은 세션 내 이미 만족도를 물었습니다." };
+      return {
+        ok: true,
+        recorded: false,
+        alreadyAsked: true,
+        message: "이 화면은 세션 내 이미 만족도를 물었습니다.",
+      };
     }
     ELICITED_SCREENS.add(screen);
 
@@ -1160,14 +1188,22 @@ export const toolHandlers = {
     }
 
     const sentiment =
-      res.action === "accept" && (res.content?.sentiment === "up" || res.content?.sentiment === "down")
+      res.action === "accept" &&
+      (res.content?.sentiment === "up" || res.content?.sentiment === "down")
         ? (res.content.sentiment as "up" | "down")
         : undefined;
     if (!sentiment) {
       return { ok: true, recorded: false, action: res.action, message: "만족도 스킵됨." };
     }
     // recorded:true + sentiment → afterCall captureTelemetry 가 feedback 이벤트로 적재(객관점수 페어링).
-    return { ok: true, recorded: true, sentiment, scoreOverall, screen, ...(brand ? { brand } : {}) };
+    return {
+      ok: true,
+      recorded: true,
+      sentiment,
+      scoreOverall,
+      screen,
+      ...(brand ? { brand } : {}),
+    };
   },
   get_guide: (args: ToolArgs) =>
     withVisualReferencePrompt(

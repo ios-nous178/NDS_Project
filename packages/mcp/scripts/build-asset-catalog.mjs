@@ -21,7 +21,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PKG = path.join(__dirname, "..");
 const FILES_DIR = path.resolve(PKG, "../assets/src/files");
 const OUT_PATH = path.join(PKG, "src/asset-catalog.generated.ts");
+const KO_TAGS_PATH = path.join(PKG, "asset-tags.ko.json");
 const CHECK = process.argv.includes("--check");
+
+// 한글 검색 태그 사이드카(id → [한글 동의어]) — 영문 파일명만으론 한글 질의가 안 잡히는 걸 보강한다.
+// 누락돼도 영문 검색은 그대로 동작하므로 파일이 없으면 경고만 하고 빈 맵으로 진행.
+const KO_TAGS_BY_ID = (() => {
+  if (!fs.existsSync(KO_TAGS_PATH)) {
+    console.warn(
+      `[asset-catalog] ⚠ 한글 태그 사이드카 없음(${path.basename(KO_TAGS_PATH)}) — 영문 토큰만으로 진행`,
+    );
+    return {};
+  }
+  const raw = JSON.parse(fs.readFileSync(KO_TAGS_PATH, "utf8"));
+  return raw.byId ?? {};
+})();
 
 const MIME_BY_EXT = {
   ".png": "image/png",
@@ -36,9 +50,9 @@ const IMAGE_EXTS = new Set(Object.keys(MIME_BY_EXT));
 
 function walk(dir, base = dir) {
   const out = [];
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-    a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
-  )) {
+  for (const entry of fs
+    .readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))) {
     const abs = path.join(dir, entry.name);
     if (entry.isDirectory()) out.push(...walk(abs, base));
     else if (entry.isFile()) out.push(path.relative(base, abs).split(path.sep).join("/"));
@@ -50,7 +64,11 @@ function walk(dir, base = dir) {
 function classify(relParts) {
   const dirs = relParts.slice(0, -1); // 파일명 제외
   if (dirs[0] === "brand") {
-    return { scope: "brand", brand: dirs[1] ?? "unknown", category: dirs.slice(2).join("/") || "root" };
+    return {
+      scope: "brand",
+      brand: dirs[1] ?? "unknown",
+      category: dirs.slice(2).join("/") || "root",
+    };
   }
   if (dirs[0] === "shared") {
     return { scope: "shared", brand: "shared", category: dirs.slice(1).join("/") || "root" };
@@ -127,6 +145,17 @@ for (const rel of walk(FILES_DIR)) {
   }
 }
 
+// 검색 토큰 = 영문 path 토큰(brand·category·id) + 한글 사이드카 태그(id 매칭).
+// 영문 토큰을 먼저(기존 순서 유지 → catalog churn 최소), 한글을 뒤에 append. 결정적.
+function buildSearch(e) {
+  const set = new Set(tokenize(e.brand, e.category, e.id));
+  for (const tag of KO_TAGS_BY_ID[e.id] ?? []) {
+    set.add(tag.toLowerCase()); // 구절 전체(예: "돼지족발")
+    for (const sub of tokenize(tag)) set.add(sub); // 분절 토큰(공백/기호 포함 태그 대비)
+  }
+  return [...set];
+}
+
 // 2) 정렬 + 검색 토큰 부여 → 직렬화 형태로 정규화.
 const catalog = [...groups.values()]
   .map((e) => ({
@@ -137,7 +166,7 @@ const catalog = [...groups.values()]
     inlineRef: e.inlineRef,
     mimeType: e.mimeType,
     ...(e.retina.length ? { retina: [...new Set(e.retina)].sort() } : {}),
-    search: tokenize(e.brand, e.category, e.id),
+    search: buildSearch(e),
   }))
   .sort((a, b) =>
     `${a.brand}/${a.category}/${a.id}` < `${b.brand}/${b.category}/${b.id}` ? -1 : 1,
@@ -155,6 +184,7 @@ const generated = `/**
  *
  * 에셋 추가/이름변경 → packages/assets/src/files/ 를 고치고
  * \`pnpm --filter @nudge-design/mcp build:assets\` 로 재생성해 함께 커밋한다.
+ * 한글 검색 태그는 packages/mcp/asset-tags.ko.json(id→[태그]) 에서 search 토큰으로 머지된다.
  * (check-ssot 의 asset-catalog --check 가 stale 을 차단한다.)
  */
 
@@ -171,7 +201,7 @@ export interface AssetCatalogEntry {
   mimeType: string;
   /** 보유 레티나 변형(예: ["3x"]). 없으면 키 자체가 없음. */
   retina?: string[];
-  /** 소문자 검색 토큰(brand·category·id). */
+  /** 소문자 검색 토큰(brand·category·id 영문 + asset-tags.ko.json 한글 태그). */
   search: string[];
 }
 

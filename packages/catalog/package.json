@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/catalog",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Shared catalog UI (icons / gallery / coverage) consumed by both the Docusaurus docs site and Storybook. Not published — internal tooling.",
   "type": "module",
