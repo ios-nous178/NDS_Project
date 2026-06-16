@@ -294,9 +294,14 @@ export const COMPONENT_ATTRS = {
       "clickable",
       "description",
       "divider",
+      "elevation",
       "footer-no-border",
       "footer-text",
       "metadata",
+      "platform",
+      "show-divider",
+      "show-header",
+      "show-icon",
       "subtitle",
       "thumbnail-height",
       "thumbnail-ratio",
@@ -307,6 +312,14 @@ export const COMPONENT_ATTRS = {
       "variant": [
         "outlined",
         "flat"
+      ],
+      "elevation": [
+        "outline",
+        "elevated"
+      ],
+      "platform": [
+        "pc",
+        "mobile"
       ]
     }
   },
@@ -817,6 +830,7 @@ export const COMPONENT_ATTRS = {
   },
   "nds-list": {
     "observedAttributes": [
+      "platform",
       "variant"
     ],
     "enums": {
@@ -824,6 +838,10 @@ export const COMPONENT_ATTRS = {
         "plain",
         "card",
         "divided"
+      ],
+      "platform": [
+        "mobile",
+        "pc"
       ]
     }
   },

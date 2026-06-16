@@ -5,6 +5,10 @@ references:
     url: https://www.figma.com/design/0LLw2nSq9AUhXww7pWFRlm/?node-id=3056-125
     caption: 지니어트 Library · CardGuide. 배치/크기/radius 축의 Horizontal(328·r8) / Vertical(240×280·r12) / Grid(160×210·r8) / Container(440·r16+shadow, PC) 4 Layout. 콘텐츠 축(List/Thumb/Cover)과 직교 — 같이 읽는다. radius 스케일은 base sizeMatrix(8/10/12/14)와 다른 지니어트 단순화본(8/12/8/16).
     brand: geniet
+  - label: Trost Card Guide — Container card (platform · elevation · header)
+    url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5123-136
+    caption: 트로스트 Container card. platform(pc=padding28·r16·title20·subtitle14 / mobile=padding20·r14·title17·subtitle13) + elevation(outline=보더 / elevated=shadow E2 + 보더 제거) + 헤더 행(리딩 아이콘 24px + 10px gap + title/subtitle 정보 컬럼, gap 2px) + 헤더↔본문 divider. point(코발트) 액센트 아이콘. 컴포넌트는 opt-in(platform/elevation/icon/showDivider) — 미지정 시 현행 렌더 그대로.
+    brand: trost
 usagePolicy:
   useFor:
     - 분류된 식품·콘텐츠 텍스트 나열 (List · 10개 이상 / 페이지)
@@ -55,6 +59,11 @@ sizeMatrix:
   geniLayoutGrid: "지니어트 배치형 — 160×210 · radius 8 · padding 0/4 · 작은 그리드 카드. 카테고리 2·3열(Mobile). ≈ 작은 Cover."
   geniLayoutContainer: "지니어트 배치형 — 440×auto · radius 16 · padding 24 · shadow(E2) · PC 큰 카드(메인 콘텐츠·모달·Hero). Mobile=border / PC Container=shadow."
   geniLayoutNote: "위 4 Layout 은 '배치·크기·radius' 축으로 콘텐츠 축(List/Thumb/Cover)과 직교 — 함께 읽는다(Horizontal≈Thumb · Vertical/Grid≈Cover · Container=PC 큰 카드). radius 8/12/8/16 은 지니어트 Library 단순화본이라 base sizeMatrix(mobile 8/10/12 · pc 10/12/14)와 다름 — 한 스케일로 통일할지는 결정 필요."
+  trostPlatformPc: "트로스트 Container card (platform='pc') — padding 28 · radius 16(radius.xl) · title 20(Headline 4) · subtitle 14(Body 3). PC 메인/모달 큰 카드."
+  trostPlatformMobile: "트로스트 Container card (platform='mobile') — padding 20 · radius 14 · title 17 · subtitle 13(Caption 1). 모바일 화면."
+  trostElevation: "트로스트 elevation — outline=현행(보더 1px, shadow 없음, 기본값) / elevated=box-shadow E2(shadow.e2) + 보더 제거. 한 화면 한 elevation 유지."
+  trostHeaderRow: "트로스트 헤더 행 — 리딩 아이콘(24px, point/코발트 액센트) + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px). icon prop 지정 시 활성. showHeader 로 아이콘 없이 컬럼만 묶기도 가능."
+  trostBodyDivider: "트로스트 헤더/텍스트 ↔ 본문(children) 사이 hairline — showDivider prop. cta/footerText 위 divider(divider prop) 와 별개. 둘 다 1px cv.borderRole.subtle."
   cardGapMobile: 16px
   cardGapWebCMS: 24px
   elementGapTitleMeta: 4px
@@ -74,6 +83,8 @@ stateMatrix:
 **브랜드 분기 (먼저 확인)**: 아래 "[Figma 권위 룰]" 다수는 Geniet 도메인 카드(식품·영양, figma 131:1769) 기준이다. **넛지EAP 서비스 카드는 규칙이 다르다 — `pattern:nudge-eap-card`(Figma 713:2) 를 따른다**: ① 내부 CTA 허용(카드 최하단 Primary CTA 1개 — 상담 예약·전문가·프로그램 카드. Geniet 의 'CTA 금지'·`maxCtaButtonsInsideCard:0` 은 NudgeEAP 에 적용 안 됨), ② shadow 전면 금지·border-only(Geniet 의 'Elevation 0 또는 1 택1' 과 달리 NudgeEAP 는 elevation 미사용), ③ border-radius 12px 고정. 컴포넌트는 양쪽을 모두 지원(Card.Cta/Card.Footer 슬롯 존재) — 차이는 브랜드별 사용 규칙이다.
 
 동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1-2종만 함께 사용. List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). 도메인 출처: 지니어트(Geniet) 칼로리계산기 허브 페이지의 식품 리스트·영양 토픽·커뮤니티 카드. Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. Anatomy 슬롯 (Figma SSOT, 한 카드 안에서 동일 위치 = 항상 같은 의미): Media(썸네일/커버, Thumb=정사각·Cover=4:3·단색 폴백 허용) · Title(필수, 카드 식별 핵심 라벨, 최대 2줄 + ellipsis, Body 2~H4 Bold) · Meta(보조 정보, 1줄, ' · ' 구분자, Caption Regular) · Status(상태 Badge, Success/Caution/Error 중 1개만) · Action(탭/이동 트리거 — 카드 전체 클릭이 기본, 내부 CTA 버튼 X) · Composition(optional, 도메인 카드가 Base 위에 얹는 슬롯). 도메인 카드(헬시딜·식품 검색·커뮤니티·랭킹·리뷰·식단 추천 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯을 얹어 표현 — 슬롯 카탈로그 16종(kcal chip · star rating · promotion badge · nutrition tag row · like overlay · author meta · discount badge · strikethrough price · shipping chip · certification chip · ranking leading · macro nutrition bar · category banner header · friend social proof · trending count · forum meta row)은 `get_guide({ topic: 'pattern:card-composition' })` 에서 슬롯별 사용 룰·위치·한도·금지 조합을 확인. Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.
+
+**Trost Container card (Figma 5123:136) — platform · elevation · 헤더 행 (모두 opt-in, 미지정 시 현행 렌더 그대로).** 트로스트 컨테이너 카드는 다음 3 축을 추가한다(전부 additive — 기존 카드 사용에는 영향 없음): ① **platform** (`platform="pc"` = padding 28 · radius 16 · title 20 · subtitle 14 / `platform="mobile"` = padding 20 · radius 14 · title 17 · subtitle 13). 슬롯을 root 에 set 해 브랜드 상속값을 이긴다. ② **elevation** (`elevation="outline"` 기본 = 보더, shadow 없음 / `elevation="elevated"` = box-shadow E2 + 보더 제거 — Geniet 와 마찬가지로 한 화면 한 elevation). ③ **헤더 행** — `icon` prop(24px 리딩 아이콘, point/코발트 액센트) 지정 시 `title`/`subtitle` 좌측에 아이콘 + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px) 행으로 렌더. `showHeader` 로 아이콘 없이 컬럼만 묶기, `showIcon=false` 로 아이콘 숨김 가능. ④ **헤더↔본문 divider** — `showDivider` prop 으로 헤더/텍스트와 본문(children) 사이 1px hairline(cv.borderRole.subtle). cta/footerText 위 divider(`divider` prop) 와 별개. point 색은 `cv.iconRole.point`/`cv.textRole.point`/`cv.borderRole.point` — 비-point 브랜드는 brand 토큰으로 자동 폴백. HTML 미러: `<nds-card platform elevation>` + `<nds-card-header-row>` / `<nds-card-header-icon>` / `<nds-card-header-info>` / `<nds-card-divider>` 서브 엘리먼트.
 
 ## pitfalls
 
@@ -110,6 +121,7 @@ stateMatrix:
 - Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.
 - Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.
 - 지니어트 배치 매핑 (Geniet CardGuide 3056-125) — 음식 검색·식단 리스트(Mobile) → Horizontal(328·r8) / 홈 인기·추천 가로스크롤 → Vertical(240×280·r12) / 카테고리 그리드 2·3열 → Grid(160×210·r8) / PC 메인·모달 → Container(440·r16) / Hero 강조 → Container + shadow(E2). Mobile 은 border, PC Container 만 shadow — 한 화면 한 elevation 유지(위 Figma 권위 룰).
+- Trost Container card (Figma 5123:136) — 트로스트 PC/모바일 큰 카드는 `platform` + `elevation` + `icon`/`showDivider` 로 표현. PC: `<Card platform='pc' elevation='outline' icon={<Icon/>} title=… subtitle=… showDivider>본문</Card>` (padding 28·r16·title 20·subtitle 14). Hero/모달 강조는 `elevation='elevated'`(shadow E2 + 보더 제거). Mobile: `<Card platform='mobile' elevation='outline' …>` (padding 20·r14·title 17·subtitle 13, border 권장). 리딩 아이콘은 point/코발트(cv.iconRole.point) 액센트. HTML: `<nds-card platform='pc' elevation='elevated'><nds-card-header-row><nds-card-header-icon>…</nds-card-header-icon><nds-card-header-info><h3 class='nds-card__title'>…</h3><p class='nds-card__description'>…</p></nds-card-header-info></nds-card-header-row><nds-card-divider></nds-card-divider><nds-card-body>본문</nds-card-body></nds-card>`.
 
 ## accessibility
 

@@ -172,6 +172,21 @@
       "since": "2026-06"
     },
     {
+      "key": "Card::prop-name::react prop → \"show-divider\" 가 html observedAttributes 에 없음",
+      "reason": "react flat-API 편의 토글 — html 은 nds-card-divider 서브 컴포넌트 유무로 헤더↔본문 구분선을 표현(컴파운드 패턴). 미러 동등, attr 불필요. 의도적",
+      "since": "2026-06"
+    },
+    {
+      "key": "Card::prop-name::react prop → \"show-header\" 가 html observedAttributes 에 없음",
+      "reason": "react flat-API 편의 토글 — html 은 nds-card-header-row 서브 컴포넌트 유무로 헤더 표시/숨김 표현(컴파운드 패턴). 미러 동등, attr 불필요. 의도적",
+      "since": "2026-06"
+    },
+    {
+      "key": "Card::prop-name::react prop → \"show-icon\" 가 html observedAttributes 에 없음",
+      "reason": "react flat-API 편의 토글 — html 은 nds-card-header-icon 서브 컴포넌트 유무로 헤더 아이콘 표시/숨김 표현(컴파운드 패턴). 미러 동등, attr 불필요. 의도적",
+      "since": "2026-06"
+    },
+    {
       "key": "Card::prop-name::react prop → \"subtitle\" 가 html observedAttributes 에 없음",
       "reason": "react↔html 표현 패러다임 차이(camelCase↔kebab · ReactNode↔string attr · 콜백↔토글 · 불리언 극성 · JSON↔typed model 등) — baseline 일괄 흡수분(진짜 기능 갭 아님).",
       "since": "2026-06"
@@ -199,6 +214,11 @@
     {
       "key": "Card::slot::react ReactNode prop \"footer\" 에 대응하는 html slot=\"footer\" 구현이 없음",
       "reason": "html 은 nds-card-footer 서브 컴포넌트로 제공 — slot 아닌 컴파운드 패턴. 의도적",
+      "since": "2026-06"
+    },
+    {
+      "key": "Card::slot::react ReactNode prop \"icon\" 에 대응하는 html slot=\"icon\" 구현이 없음",
+      "reason": "html 은 nds-card-header-icon 서브 컴포넌트로 헤더 아이콘 제공 — slot 아닌 컴파운드 패턴(Card 의 다른 slot 들과 동일 부류). 의도적",
       "since": "2026-06"
     },
     {
@@ -504,6 +524,41 @@
     {
       "key": "Input::slot::react ReactNode prop \"suffix\" 에 대응하는 html slot=\"suffix\" 구현이 없음",
       "reason": "DRIFT — followup: nds-input suffix(단위 등) 미구현 — prefix 와 동일",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::html attr \"active\" 에 대응하는 react prop 이 없음",
+      "reason": "nds-list-item(=ListItem) 속성 — ListItem 은 nds-list 와 한 파일·별도 catalog 엔트리가 아니라 emit-manifest 가 item observedAttributes 를 List 의 htmlObservedAttrs 로 집계해 react List(ul) prop 과 비교돼 발생. react ListItem 에 동일 prop 존재. 미러 동등, 기능 갭 아님.",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::html attr \"disabled\" 에 대응하는 react prop 이 없음",
+      "reason": "nds-list-item(=ListItem) 속성 — ListItem 은 nds-list 와 한 파일·별도 catalog 엔트리가 아니라 emit-manifest 가 item observedAttributes 를 List 의 htmlObservedAttrs 로 집계해 react List(ul) prop 과 비교돼 발생. react ListItem 에 동일 prop 존재. 미러 동등, 기능 갭 아님.",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::html attr \"interactive\" 에 대응하는 react prop 이 없음",
+      "reason": "nds-list-item(=ListItem) 속성 — react ListItem 의 onSelect 콜백이 interactive(=button role) 를 결정(콜백↔불리언 attr 패러다임 차이). ListItem 이 별도 catalog 엔트리가 아니라 List 와 비교돼 발생. 미러 동등.",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::html attr \"layout\" 에 대응하는 react prop 이 없음",
+      "reason": "nds-list-item(=ListItem) 의 신규 layout 속성 — react ListItem.layout(default/avatar/thumbnail/action/compact/table) 과 동일. ListItem 이 별도 catalog 엔트리가 아니라 List 와 비교돼 발생. 미러 동등.",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::html attr \"size\" 에 대응하는 react prop 이 없음",
+      "reason": "nds-list-item(=ListItem) 속성 — react ListItem.size(deprecated alias of layout) 와 동일. ListItem 이 별도 catalog 엔트리가 아니라 List 와 비교돼 발생. 미러 동등.",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::react prop → \"platform\" 가 html observedAttributes 에 없음",
+      "reason": "html nds-list 는 platform 을 runtime observe(COMPONENT_ATTRS+인라인, 정상 동작) — emit-manifest 가 동일 파일의 nds-list-item attrs 를 List 의 htmlObservedAttrs 로 집계해 nds-list 쪽 attr(platform/variant)이 누락 집계됨. 미러 동등.",
+      "since": "2026-06"
+    },
+    {
+      "key": "List::prop-name::react prop → \"variant\" 가 html observedAttributes 에 없음",
+      "reason": "html nds-list 는 variant 를 runtime observe(COMPONENT_ATTRS, 정상 동작) — emit-manifest 가 동일 파일의 nds-list-item attrs 를 List 의 htmlObservedAttrs 로 집계해 nds-list 쪽 attr 이 누락 집계됨. 미러 동등.",
       "since": "2026-06"
     },
     {

@@ -55,6 +55,7 @@ import { List, ListItem } from "@nudge-design/react";
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
 | `variant` | `ListVariant` | `"plain"` | 표시 변형 |
+| `platform` | `ListPlatform` | `"mobile"` | 플랫폼 밀도 (Trost 가이드). "mobile"(기본·터치 48 floor) \| "pc"(마우스 고밀도). data-platform 으로 내려가 PC 는 horizontal padding 24 + table/compact 밀도를 연다. 기존 사용은 platform 미지정 = "mobile" 이라 렌더링 불변. |
 | `header` | `ReactNode` | — | 리스트 상단 슬롯 (섹션 제목·필터 등). 리스트 아이템이 아닌 presentation 영역 |
 | `footer` | `ReactNode` | — | 리스트 하단 슬롯 (더 보기 버튼·Pagination 등). 리스트 아이템이 아닌 presentation 영역 |
 | `children` *(필수)* | `ReactNode` | — | 자식은 ListItem들 |

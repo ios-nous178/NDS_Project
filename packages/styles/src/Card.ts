@@ -4,6 +4,7 @@ import {
   fontFamily,
   fontWeight,
   radius,
+  shadow,
   spacing,
   transition,
   typeScale,
@@ -15,6 +16,9 @@ const CARD_THUMBNAIL_CLASS = `${CARD_CLASS}__thumbnail`;
 const CARD_AVATAR_CLASS = `${CARD_CLASS}__avatar`;
 const CARD_CHIPS_CLASS = `${CARD_CLASS}__chips`;
 const CARD_HEADER_CLASS = `${CARD_CLASS}__header`;
+const CARD_HEADER_ROW_CLASS = `${CARD_CLASS}__header-row`;
+const CARD_HEADER_ICON_CLASS = `${CARD_CLASS}__header-icon`;
+const CARD_HEADER_INFO_CLASS = `${CARD_CLASS}__header-info`;
 const CARD_TEXT_CONTENT_CLASS = `${CARD_CLASS}__text-content`;
 const CARD_TITLE_DESC_CLASS = `${CARD_CLASS}__title-desc`;
 const CARD_BODY_CLASS = `${CARD_CLASS}__body`;
@@ -46,6 +50,33 @@ export const cardStyles = `
 
   :where(.${CARD_ROOT_CLASS}[data-variant="outlined"]) {
     border: 1px solid var(--nds-card-border-color, ${cv.borderRole.subtle});
+  }
+
+  /* Elevation (Trost container card) — outline=현행(보더, shadow 없음) / elevated=shadow + 보더 제거.
+     data-elevation 기본값은 react/html 둘 다 "outline" 이라 기존 렌더는 그대로. */
+  :where(.${CARD_ROOT_CLASS}[data-elevation="elevated"]) {
+    box-shadow: ${shadow.e2};
+    border: none;
+  }
+
+  /* Platform 사이즈 프리셋 (Trost) — 슬롯을 ROOT 에 set 해 브랜드 상속값을 이긴다.
+     data-platform 미지정이면 어떤 룰도 매칭 안 되므로 현행 렌더 유지. */
+  :where(.${CARD_ROOT_CLASS}[data-platform="pc"]) {
+    --nds-card-padding: ${spacing[28]}px;
+    --nds-card-radius: ${radius.xl}px;
+    --nds-card-title-size: ${typeScale.headline4.fontSize}px;
+    --nds-card-title-line: ${typeScale.headline4.lineHeight}px;
+    --nds-card-subtitle-size: ${typeScale.body3.fontSize}px;
+    --nds-card-subtitle-line: ${typeScale.body3.lineHeight}px;
+  }
+
+  :where(.${CARD_ROOT_CLASS}[data-platform="mobile"]) {
+    --nds-card-padding: ${spacing[20]}px;
+    --nds-card-radius: 14px;
+    --nds-card-title-size: 17px;
+    --nds-card-title-line: 24px;
+    --nds-card-subtitle-size: ${typeScale.caption1.fontSize}px;
+    --nds-card-subtitle-line: ${typeScale.caption1.lineHeight}px;
   }
 
   :where(.${CARD_ROOT_CLASS}[data-clickable="true"]) {
@@ -121,11 +152,46 @@ export const cardStyles = `
     width: 100%;
   }
 
+  /* Trost container-card header row — 리딩 아이콘(24px) + 10px gap + 정보 컬럼 */
+  :where(.${CARD_HEADER_ROW_CLASS}) {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: ${spacing[10]}px;
+    width: 100%;
+  }
+
+  :where(.${CARD_HEADER_ICON_CLASS}) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--nds-card-header-icon-size, ${spacing[24]}px);
+    height: var(--nds-card-header-icon-size, ${spacing[24]}px);
+    color: ${cv.iconRole.point};
+  }
+
+  :where(.${CARD_HEADER_ICON_CLASS} svg),
+  :where(.${CARD_HEADER_ICON_CLASS} img) {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 정보 컬럼 — title 위 subtitle, 2px gap */
+  :where(.${CARD_HEADER_INFO_CLASS}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${spacing[2]}px;
+    min-width: 0;
+    flex: 1;
+  }
+
   :where(.${CARD_TITLE_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.headline5.fontSize}px;
+    /* 기본값 = 현행 Headline 5/Bold. platform 프리셋이 슬롯만 덮어 크기 변경. */
+    font-size: var(--nds-card-title-size, ${typeScale.headline5.fontSize}px);
     font-weight: ${fontWeight.bold};
-    line-height: ${typeScale.headline5.lineHeight}px;
+    line-height: var(--nds-card-title-line, ${typeScale.headline5.lineHeight}px);
     color: ${cv.textRole.strong};
     word-break: break-word;
   }
@@ -134,9 +200,9 @@ export const cardStyles = `
   :where(.${CARD_SUBTITLE_CLASS}),
   :where(.${CARD_DESCRIPTION_CLASS}) {
     margin: 0;
-    font-size: ${typeScale.body3.fontSize}px;
+    font-size: var(--nds-card-subtitle-size, ${typeScale.body3.fontSize}px);
     font-weight: ${fontWeight.regular};
-    line-height: ${typeScale.body3.lineHeight}px;
+    line-height: var(--nds-card-subtitle-line, ${typeScale.body3.lineHeight}px);
     color: ${cv.textRole.subtle};
     word-break: break-word;
   }
