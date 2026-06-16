@@ -126,6 +126,12 @@ export const sizing = {
     lg: 400,
     xl: 488,
   },
+  listRow: {
+    sm: 40,
+    md: 56,
+    lg: 72,
+    xl: 96,
+  },
 } as const;
 
 export const grid = {

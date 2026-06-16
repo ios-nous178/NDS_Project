@@ -754,6 +754,14 @@
     "Card": {
       "name": "Card",
       "figmaNodeUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769",
+      "references": [
+        {
+          "label": "Geniet Card Guide — 4 Layouts (배치·크기)",
+          "url": "https://www.figma.com/design/0LLw2nSq9AUhXww7pWFRlm/?node-id=3056-125",
+          "caption": "지니어트 Library · CardGuide. 배치/크기/radius 축의 Horizontal(328·r8) / Vertical(240×280·r12) / Grid(160×210·r8) / Container(440·r16+shadow, PC) 4 Layout. 콘텐츠 축(List/Thumb/Cover)과 직교 — 같이 읽는다. radius 스케일은 base sizeMatrix(8/10/12/14)와 다른 지니어트 단순화본(8/12/8/16).",
+          "brand": "geniet"
+        }
+      ],
       "usagePolicy": {
         "useFor": [
           "분류된 식품·콘텐츠 텍스트 나열 (List · 10개 이상 / 페이지)",
@@ -803,6 +811,11 @@
         "pc.list": "Width Fill · Padding 20/16 · Image — · Radius 10 · Title Body 2 Bold",
         "pc.thumb": "Width Fill · Padding 24/20 · Image 72×72 · Radius 12 · Title Body 2 Bold",
         "pc.cover": "Width Fill · Padding 0/16 · Image AR 4:3 · Radius 14 · Title H4 Bold",
+        "geniLayoutHorizontal": "지니어트 배치형(Geniet Library) — 328×auto · radius 8 · padding 12 · 좌측 썸네일 행 카드. 음식 리스트·검색결과(Mobile). ≈ Thumb variant.",
+        "geniLayoutVertical": "지니어트 배치형 — 240×280 · radius 12 · padding 0/12 · 상단 이미지 세로 카드. 추천·인기 카테고리 가로스크롤(Mobile). ≈ Cover variant.",
+        "geniLayoutGrid": "지니어트 배치형 — 160×210 · radius 8 · padding 0/4 · 작은 그리드 카드. 카테고리 2·3열(Mobile). ≈ 작은 Cover.",
+        "geniLayoutContainer": "지니어트 배치형 — 440×auto · radius 16 · padding 24 · shadow(E2) · PC 큰 카드(메인 콘텐츠·모달·Hero). Mobile=border / PC Container=shadow.",
+        "geniLayoutNote": "위 4 Layout 은 '배치·크기·radius' 축으로 콘텐츠 축(List/Thumb/Cover)과 직교 — 함께 읽는다(Horizontal≈Thumb · Vertical/Grid≈Cover · Container=PC 큰 카드). radius 8/12/8/16 은 지니어트 Library 단순화본이라 base sizeMatrix(mobile 8/10/12 · pc 10/12/14)와 다름 — 한 스케일로 통일할지는 결정 필요.",
         "cardGapMobile": "16px",
         "cardGapWebCMS": "24px",
         "elementGapTitleMeta": "4px",
@@ -849,7 +862,8 @@
         "도메인 카드 예시 매핑 (Figma SSOT) — 헬시딜 랭킹 카드 = Cover + Slot7(discount badge) + Slot8(strikethrough+sale price) + Slot2(star rating) + Slot9(shipping chip) + Slot10(certification chip). 음식 리뷰 카드 = Cover + Slot5(like overlay) + Slot6(author meta) + Slot2(star rating). 다이어트·혈당 추천 카드 = Cover + Slot13(category banner header) + Slot4(nutrition tag row) + Slot12(macro nutrition bar) + Slot14(friend social proof). 지금 뜨는 한식 = List + Slot11(ranking leading) + Slot1(kcal chip) + Slot15(trending count). 커뮤니티 게시글 = List + Slot16(forum meta row).",
         "Section/Group Card (카드 안에 list rows 묶음 — 예: '루테인 포함 영양제 · 총 84개 제품') — 단일 Card 의 variant 가 아니라 별도 컨테이너 패턴. 룰·메트릭은 `get_guide({ topic: 'pattern:card-section' })`.",
         "Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.",
-        "Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘."
+        "Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.",
+        "지니어트 배치 매핑 (Geniet CardGuide 3056-125) — 음식 검색·식단 리스트(Mobile) → Horizontal(328·r8) / 홈 인기·추천 가로스크롤 → Vertical(240×280·r12) / 카테고리 그리드 2·3열 → Grid(160×210·r8) / PC 메인·모달 → Container(440·r16) / Hero 강조 → Container + shadow(E2). Mobile 은 border, PC Container 만 shadow — 한 화면 한 elevation 유지(위 Figma 권위 룰)."
       ],
       "accessibility": [
         "clickable Card 는 <Card.Root clickable onClick> — 키보드 포커스/Enter 자동. raw <div onClick> 대체 금지.",
@@ -1661,15 +1675,24 @@
     "List": {
       "name": "List",
       "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=501-96",
+      "references": [
+        {
+          "label": "Geniet List Guide — 4 Layouts",
+          "url": "https://www.figma.com/design/0LLw2nSq9AUhXww7pWFRlm/?node-id=3060-82",
+          "caption": "지니어트 Library · ListGuide. Default / Avatar / Thumbnail(xl·h96) / Action 4 Layout + Usage·Composition·Do/Don't. 구조는 브랜드 무관 base 와 동일.",
+          "brand": "geniet"
+        }
+      ],
       "usagePolicy": {
         "useFor": [
           "텍스트+상태+날짜로 구성된 단순 데이터 (상담 내역·예약·알림·설정·검색 결과)",
           "10개 이상 항목의 수직 스크롤 탐색",
           "시간순 연속 정보 (알림 센터)",
-          "동질적인 항목의 반복 배치 (멤버 목록, 옵션 목록)"
+          "동질적인 항목의 반복 배치 (멤버 목록, 옵션 목록)",
+          "좌측 작은 썸네일 + 제목 + 메타 행 (음식·콘텐츠 검색 결과 · Thumbnail 레이아웃 size='xl')"
         ],
         "doNotUseFor": [
-          "이미지/썸네일 중심의 시각 탐색 → Card",
+          "큰 이미지 중심의 그리드 시각 탐색 → Card (작은 좌측 썸네일+텍스트 한 줄 행은 List Thumbnail 레이아웃)",
           "2열 이상 그리드 비교 → Card 그리드",
           "컬럼별 비교가 핵심 → Table",
           "탭·필터·내비게이션 → Chip / Navigation",
@@ -1691,9 +1714,12 @@
         "gapDescriptionToMetadata": "2px",
         "minTouchTarget": "48px (모바일 필수)",
         "densityCompact": "40px height (size='sm') · PC only · 정보 밀도 우선 (설정·관리자)",
-        "densityDefault": "56px height (size='md') · 표준 · 일반 목록·검색 결과",
-        "densityComfortable": "72px height (size='lg') · 여백 강조 · Avatar+Title+Description 조합",
-        "typoTitle": "Body 1 Bold 16px / LH 24px — var(--font-size-body-1) · Text/Strong/Default",
+        "densityDefault": "56px height (size='md') · 표준 · 일반 목록·검색 결과·Action(Toggle/Checkbox)",
+        "densityComfortable": "72px height (size='lg') · 여백 강조 · Avatar(48 원형)+Title+Description",
+        "densityThumbnail": "96px height (size='xl') · 썸네일 강조 · 72×72 radius8 Thumbnail leading + Title/Description/Metadata (음식·콘텐츠)",
+        "layouts": "4 Layout = Default(md · 텍스트+Chevron · h56) / Avatar(lg · 48 원형+이름+액션 · h72) / Thumbnail(xl · 72 사각+제목+메타 · h96) / Action(md · 텍스트+Toggle·Checkbox·Button · h56). Default·Action 은 같은 md 밀도이고 trailing 만 다르다 — Layout 은 (size + leading/trailing 슬롯)의 조합.",
+        "paddingByDensity": "px16 / py12 / gap12 통일(sm 만 px12 py8 gap10). 높이는 min-height floor(sizing.listRow 40/56/72/96) — 짧은 행은 floor 높이, leading 이 더 크면 그만큼 자란다: lg=Avatar48+py24=72 · xl=Thumb72+py24=96 으로 floor 와 일치.",
+        "typoTitle": "Body 1 Bold 16px / LH 24px — var(--font-size-body-1) · Text/Strong/Default (지니어트 Figma 목업은 15px 로 보이나 List 는 브랜드 무관 base 표준 16px 유지 — 브랜드 타이포 차이가 필요하면 토큰 cascade 로)",
         "typoDescription": "Body 3 Regular 14px / LH 20px — var(--font-size-body-3) · Text/Subtle/Default",
         "typoMetadata": "Caption 2 Regular 12px / LH 16px — var(--font-size-caption-2) · Text/Muted/Default",
         "dividerInsetWithLeading": "padding(16) + Leading 폭 + gap(12) — 예: Avatar 36 → 64px 인셋",
@@ -1708,7 +1734,7 @@
         "focus": "BG Surface/Default · Border var(--semantic-border-focus-default) 2px",
         "note": "총 6 상태. 시멘틱 컬러 토큰만 사용 — raw hex/임의 색 금지."
       },
-      "summary": "수직 정렬된 동질 항목의 컨테이너. <List variant='plain|card|divided'> + <ListItem leading title description metadata trailing onSelect />. Row Anatomy 3 zone: Leading(Optional · Avatar/Thumbnail/Icon/Checkbox/Radio) + Content(Required · Title 최소 1행) + Trailing(Optional · IconButton/Badge/Toggle/Chevron/TextButton, 항상 우측 정렬). 임의 스타일 변형 차단이 목적 — Card 와 달리 단순 hierarchy 를 유지.",
+      "summary": "수직 정렬된 동질 항목의 컨테이너. <List variant='plain|card|divided'> + <ListItem leading title description metadata trailing onSelect />. Row Anatomy 3 zone: Leading(Optional · Avatar/Thumbnail/Icon/Checkbox/Radio) + Content(Required · Title 최소 1행) + Trailing(Optional · IconButton/Badge/Toggle/Chevron/TextButton, 항상 우측 정렬). 임의 스타일 변형 차단이 목적 — Card 와 달리 단순 hierarchy 를 유지.\n\n정보 종류에 따라 **4가지 표준 Layout** 을 쓴다 (각 Layout = `size` 밀도 + leading/trailing 슬롯 조합):\n\n- **Default** (`size='md'` · h56) — 메뉴·네비·설정 항목. 텍스트 + 우측 Chevron. leading 없음.\n- **Avatar** (`size='lg'` · h72) — 사용자·친구 목록. 48 원형 Avatar leading + 이름 + (액션 텍스트/버튼 trailing).\n- **Thumbnail** (`size='xl'` · h96) — 음식·콘텐츠. 72×72 radius8 썸네일 leading + 제목 + 메타(Title/Description/Metadata). trailing 없음.\n- **Action** (`size='md'` · h56) — 설정 토글·체크박스. 텍스트 + 우측 Toggle·Checkbox·Button.",
       "pitfalls": [
         "[Figma 권위 룰 #1] 리스트는 카드보다 단순 hierarchy 유지 — Row 에 카드 수준의 elevation/shadow/border 적용 금지.",
         "[Figma 권위 룰 #2] Trailing 요소는 항상 우측 정렬. Content 영역을 침범하는 레이아웃 금지.",
@@ -1717,7 +1743,10 @@
         "[Figma 권위 룰 #5] 카드형 리스트 남발 금지 — 각 Row 에 독립 card 스타일(radius + shadow) 적용 X. 그룹화가 필요하면 variant='card' 또는 'divided' 로.",
         "[Figma 권위 룰 #6] Random Padding 금지 — Spacing 규칙(아래 sizeMatrix) 외 임의 padding/margin 적용 X.",
         "[Figma 권위 룰 #7] Decorative List 금지 — 정보 전달 목적 없는 장식 요소를 Row 에 추가하지 말 것.",
-        "[Figma 권위 룰 #8] 같은 리스트 내 Density 혼용 금지 — Compact(40)/Default(56)/Comfortable(72) 3가지 중 하나로 통일.",
+        "[Figma 권위 룰 #8] 같은 리스트 내 Density·Layout 혼용 금지 — Compact(40)/Default(56)/Comfortable(72)/Thumbnail(96) 중 하나로, 그리고 같은 Layout(예: Thumbnail)로 통일. Default + Thumbnail 같은 혼용은 시각 혼란.",
+        "[Figma 권위 룰 #9] 리스트 Row 안에 다른 컴포넌트(Card 등) 끼워넣기 금지 — List 는 동질 행의 단순 반복. 카드형 시각 탐색이 필요하면 Card 그리드로 분리.",
+        "[Figma 권위 룰 #10] 한 Row 에 액션 버튼 2개 이상 금지 — 명확한 단일 액션. (Trailing 슬롯 1종 원칙 #4 의 연장.)",
+        "Avatar/Thumbnail leading 은 정사각(1:1) 비율만 — 다른 비율 사용 금지. Thumbnail 은 72×72 radius8, Avatar 는 원형 48.",
         "Compact(40px)는 PC only — 모바일 Min Touch Target 48px 미달이므로 모바일에선 Default(56px) 이상.",
         "Title 은 Content 의 Required 요소 — Description/Metadata 만 있는 Row 금지. 최소 Title 한 줄.",
         "Avatar + Thumbnail 같은 Leading 슬롯 안에 2종 동시 배치 금지 — Leading 은 단일 식별자.",
@@ -1730,8 +1759,11 @@
         "PC 설정 화면 (Compact 40): <List variant='plain'><ListItem size='sm' leading={<Icon/>} title='설정 항목' trailing={<Toggle/>} /></List> — 정보 밀도 우선.",
         "검색 결과 (Default 56): <List variant='divided'><ListItem leading={<Avatar/>} title='이름' trailing={<ChevronRightIcon/>} onSelect={…} /></List>",
         "프로필 목록 (Comfortable 72, Avatar+Title+Description): <List variant='divided'><ListItem size='lg' leading={<Avatar size='lg'/>} title='이름' description='역할 · 메타' trailing={<TextButton/>} onSelect={…} /></List>",
+        "음식·콘텐츠 (Thumbnail 96): <List variant='divided'><ListItem size='xl' leading={<썸네일 72×72 radius8/>} title='음식 이름' description='상세 설명 한 줄' metadata='320 kcal · 4.5 ★ · 리뷰 128' onSelect={…} /></List> — 좌측 72 썸네일 + Title/Description/Metadata. trailing 비움.",
         "알림/일정 등 날짜 보조 정보: <ListItem leading={<Avatar/>} title='제목' description='설명' metadata='2026.05.20' trailing={<ChevronRightIcon/>} onSelect={…} /> — metadata 는 Caption 2/Muted 로 description 아래에 작게 표시.",
-        "그룹화: variant='card' (외곽 보더+radius) 또는 'divided' (Row 간 inset divider). Row 마다 개별 card 스타일은 금지(#5)."
+        "그룹화: variant='card' (외곽 보더+radius) 또는 'divided' (Row 간 inset divider). Row 마다 개별 card 스타일은 금지(#5). 의미 그룹 사이는 Section Header(Body3 Medium · Text/Muted · 좌측 16 padding) + Gap/Section(40) 또는 분리 배경으로 끊는다.",
+        "상황 → Layout 매핑: 마이페이지·설정 메뉴·FAQ·약관 → Default / 친구·팔로워 목록 → Avatar / 음식 검색·식단·콘텐츠 → Thumbnail / 알림·다크모드 ON·OFF → Action(Toggle) / 관심사·필터 체크 → Action(Checkbox).",
+        "빈 상태 / 로딩: Empty 는 placeholder 이미지 + 안내 문구, Loading 은 Skeleton(Gray/100 BG) 으로 행 자리를 차지."
       ],
       "accessibility": [
         "onSelect 가 있는 ListItem 은 자동으로 button 시멘틱 + 키보드 Enter/Space 핸들링. raw <li onClick> 대체 금지.",
@@ -4324,6 +4356,54 @@
         "html": "<!-- ① Input + ValidationChip (비밀번호 실시간 검증) -->\n<div style=\"display:flex; flex-direction:column; gap:8px; max-width:332px\">\n  <nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>\n  <div style=\"display:flex; gap:12px\">\n    <nds-validation-chip state=\"complete\">6자 이상</nds-validation-chip>\n    <nds-validation-chip state=\"incomplete\">영문+숫자</nds-validation-chip>\n  </div>\n</div>\n\n<!-- ② Input + Inline Button (인증번호 받기) — FormField > InputGroup(align=\"start\") -->\n<nds-form-field label=\"휴대폰 번호\">\n  <nds-input-group align=\"start\">\n    <nds-input placeholder=\"010-0000-0000\"></nds-input>\n    <nds-button variant=\"outlined\">인증번호 받기</nds-button>\n  </nds-input-group>\n</nds-form-field>\n\n<!-- ③ Input + Eye Icon (비밀번호 표시·숨김) — type=\"password\" 면 눈 토글 자동, 별도 마크업 불필요 -->\n<nds-input type=\"password\" placeholder=\"비밀번호\"></nds-input>"
       }
     },
+    "geniet-screens": {
+      "name": "geniet-screens",
+      "metrics": {
+        "brand": "geniet (헬시밀·다이어트 식단 커머스 — 샐러드/도시락)",
+        "homeWeb": "데스크탑 — 상단 글로벌 nav + 검색 → cream 히어로 프로모 배너 → '랭킹' 음식 카드 그리드(4-up 행, 썸네일+제목+가격+브랜드 배지) 섹션 반복 → 전문가 칼럼/매거진 카드 → 푸터",
+        "reviewAppDetail": "모바일 — 음식 사진 히어로 → 리뷰 본문 → 연관 상품 카드(2~3-up 썸네일+가격) → 텍스트 리뷰 list",
+        "reviewWebModal": "웹 — '전체 음식 리뷰' list(음식 사진 + 리뷰 텍스트 카드) 위에 '리뷰 작성' Modal: 음식 검색 → 사진/영상 업로드 → 별점 → 목적/시간대(선택 Chip) → 조리방식(checkbox) → 등록 CTA",
+        "card": "음식 카드 = 정사각 썸네일 + 제목 2줄 + 가격 + 브랜드/할인 배지. 그리드는 4-up(web) 반복 랭킹 섹션.",
+        "accent": "청록(teal) 브랜드 컬러 — 로고/CTA/링크. 식품 사진이 주인공이라 UI 채도는 낮게.",
+        "status": "스크린샷 레퍼런스 카탈로그 (레이아웃·구성 SSOT). 정확한 색/여백/치수 토큰은 component 가이드 + 브랜드 토큰이 SSOT."
+      },
+      "references": [
+        {
+          "label": "Geniet 웹 홈 — 헬시밀 커머스 (desktop)",
+          "image": "references/geniet-web-home.png",
+          "caption": "상단 글로벌 nav + 검색, cream 히어로 프로모 배너, 음식 카드 4-up 랭킹 섹션 반복, 전문가 매거진 카드, 푸터.",
+          "brand": "geniet"
+        },
+        {
+          "label": "Geniet 앱 리뷰 상세 — 후기 (mobile)",
+          "image": "references/geniet-app-review-detail.png",
+          "caption": "음식 사진 히어로 → 리뷰 본문 → 연관 상품 카드 → 텍스트 리뷰 list 의 모바일 후기 상세.",
+          "brand": "geniet"
+        },
+        {
+          "label": "Geniet 웹 리뷰 작성 모달 (desktop)",
+          "image": "references/geniet-web-review-modal.png",
+          "caption": "'전체 음식 리뷰' list 위 '리뷰 작성' Modal — 음식 검색·사진 업로드·별점·목적/시간대 Chip·조리방식 checkbox·등록 CTA.",
+          "brand": "geniet"
+        }
+      ],
+      "summary": "Geniet(헬시밀·다이어트 식단 커머스) 화면의 **시각 레퍼런스 카탈로그** — 웹 홈 / 앱 리뷰 상세 / 웹 리뷰 작성 모달 3종 스크린샷을 담는다. Geniet 은 샐러드·도시락 같은 식품 사진이 주인공이라 UI 채도는 낮추고 청록(teal) 브랜드 컬러를 로고·CTA·링크에만 쓴다. 화면을 새로 짤 때 **레이아웃·구성·위계의 출처**로 이 스크린샷들을 먼저 보고(`references[].imageAbsolutePath`), 정확한 색·여백·치수·컴포넌트 선택은 해당 `component:*` 가이드와 브랜드 토큰을 SSOT 로 따른다.",
+      "rules": [
+        "**음식 카드 그리드 = '카드 1장 = 상품 1건'.** 정사각 썸네일 + 제목(2줄) + 가격 + 브랜드/할인 배지. 웹 홈은 이 카드를 4-up 행으로 묶은 '랭킹' 섹션을 반복한다 → 섹션 컨테이너는 헤더(섹션명 + 더보기)를 소유하는 `pattern:card-section` / `List` 정합.",
+        "**리뷰는 `pattern:review-list` 를 따른다** — '카드 1장 = 리뷰 1건'(`ReviewCard`), 도움돼요/별점/신고는 카드 `footer` 슬롯, 더보기는 리스트 `footer`. 앱 리뷰 상세·웹 리뷰 list 둘 다 동일.",
+        "**리뷰 작성은 Modal + 폼 패턴.** 음식 검색(Input) → 사진/영상 업로드 → 별점 → 목적·시간대는 **단일/다중 선택 `Chip`**(토글), 조리방식은 **`checkbox` list**, 하단 등록 CTA 1개. → `pattern:multi-step-form` / `selection-controls` / `component:Chip` 정합. 모달 본문만 스크롤(`popover-portal-and-modal-scroll`).",
+        "**브랜드 컬러는 토큰으로만.** 청록 accent 는 `--semantic-*`(brand) 토큰 cascade 로 흐른다 — 컴포넌트/목업에 hex 하드코딩 금지(`get_guide({ topic: 'principles' })`).",
+        "**사진이 주인공** — 카드/히어로의 시각 무게는 식품 사진이 갖고, 텍스트·버튼 UI 는 보조. primary solid CTA 는 화면당 최소화(`pattern:cta-group`).",
+        "새 Geniet 화면 작업 전 이 카탈로그의 해당 스크린샷을 `references.md` 의 `[good]` 소스로 먼저 등록(`pattern:visual-reference` 게이트)."
+      ],
+      "avoid": [
+        "스크린샷의 색·여백·치수를 픽셀 단위로 그대로 베끼기 — 이 카탈로그는 **레이아웃·구성 참고용**이고, 정확한 값은 component 가이드 + 브랜드 토큰이 SSOT(어긋나면 토큰이 우선).",
+        "음식 카드를 `ListItem` 의 leading/title row 로 욱여넣기 — 썸네일+제목+가격+배지 카드는 `Card`/상품 카드. (리뷰는 `ReviewCard`)",
+        "리뷰 작성 모달의 목적/시간대 선택을 라디오/드롭다운으로 치환 — 토글형 다중·단일 선택은 `Chip`.",
+        "청록 accent 를 UI 전반에 칠하기 — 식품 사진 채도와 충돌. accent 는 로고·CTA·링크 한정.",
+        "Geniet 전용이라며 컴포넌트에 `[data-brand=\"geniet\"]` 색 분기 추가 — 브랜드 차이는 브랜드 토큰 파일에서 값만 override(`CLAUDE.md` 브랜드 분기 금지 규칙)."
+      ]
+    },
     "host-spacing": {
       "name": "host-spacing",
       "metrics": {
@@ -4880,14 +4960,20 @@
         "**아이콘**: `find_icon({ name })` 가 준 **inline SVG** 를 넣는다(이름 문자열·이모지 금지 — 이모지는 emoji-banned 위반). 아이콘 뒤 tint 배경이 필요하면 `--semantic-bg-*`/surface 토큰으로, raw hex 금지.",
         "**라벨**: 4글자 이하 권장(길면 줄바꿈). 색은 tone 토큰(`--semantic-text-*`)만.",
         "**배지**: 미읽음 카운트(숫자) 또는 짧은 라벨('N','NEW'). `Badge` 컴포넌트를 셀 우상단에 absolute 로 얹는다. 셀당 1개. 긴 텍스트 금지.",
-        "**이벤트**: 셀 클릭 → 라우팅. 각 셀에 안정적인 key/data 속성을 둬 핸들러가 구분한다."
+        "**이벤트**: 셀 클릭 → 라우팅. 각 셀에 안정적인 key/data 속성을 둬 핸들러가 구분한다.",
+        "**칩이 아니다 (진입 ≠ 선택)**: 탭하면 화면이 전환되는 \"고민/카테고리 진입\" 그리드는 chip 토글 그룹이 **아니다**. chip 은 폼 안에서 값/필터를 고르는 용도다(→ `pattern:selection-controls`). 진입 그리드는 셀 전체가 라우팅되는 Card 그리드 — 텍스트 칩 wrap 으로 바꾸면 한눈 스캔성과 좌/우 레이아웃 균형을 둘 다 잃는다.",
+        "**단일 활성(선택) 상태가 필요하면 Card 토큰으로**: 진입 그리드가 \"현재 선택된 고민\"을 강조해야 하면 활성 셀의 배경/보더는 `--semantic-bg-brand-subtle` / `--semantic-border-brand-default` 캐스케이드로 — raw hex(틸 등) 박지 말 것. 5개 브랜드가 토큰으로 자동 대응한다.",
+        "**아이콘은 한 그리드 한 스타일**: 모든 셀 아이콘을 동일 스타일 세트로 통일한다(전부 모노 라인 등). 혼색 브랜드 글리프 + 모노 라인 **혼용 금지**. 브랜드 컬러 아이콘이 일부 고민만 커버하면 전체를 단일 모노 세트(예: `Mockup*` 라인 아이콘)로 통일한다."
       ],
       "avoid": [
         "❌ `QuickActionGrid`/`nds-quick-action-grid` 를 찾아 쓰기 — 제거됐다. Card 그리드로 조립한다.",
         "❌ 5칸 배치(어색) — 3 또는 4칸으로. 8개는 4×2.",
         "❌ 아이콘에 이름(\"home\")·이모지 — inline SVG 여야 한다.",
         "❌ 긴 라벨/긴 배지 텍스트, 셀당 배지 2개 이상.",
-        "❌ 간격·배경·radius 를 raw hex/px 로 — Card·gap 토큰만."
+        "❌ 간격·배경·radius 를 raw hex/px 로 — Card·gap 토큰만.",
+        "❌ 진입 그리드를 nds-chip 토글 wrap 으로 대체 — chip 은 폼 선택/필터값용(`pattern:selection-controls`). 스캔성·레이아웃 균형 상실.",
+        "❌ 커스텀 `.tile` div 로 셀 재발명 — Card 셀 grid 가 표준. 토큰 우회·\"DS 채택률\" 착시.",
+        "❌ 한 그리드에 혼색 브랜드 아이콘 + 모노 라인 아이콘 섞기."
       ],
       "_readyMade": {
         "note": "빠른 액션 4칸 그리드 — Card 셀의 CSS grid. 아이콘은 `find_icon({ name })` inline SVG, 셀 배경/보더/radius 는 Card 토큰, 간격은 `--semantic-gap-*`. raw hex/px 금지.",
@@ -4940,6 +5026,54 @@
         "카드마다 elevation/색 배경 반복 — `pattern:dense-list` 위반."
       ]
     },
+    "runmile-screens": {
+      "name": "runmile-screens",
+      "metrics": {
+        "brand": "runmile (러닝 대회·레이스 모집/참가 + 러너 커뮤니티)",
+        "homeWeb": "데스크탑 — 상단 글로벌 nav(대회 정보/커뮤니티) + 검색 → '모집중인 대회' 일러스트 대회 카드 3-up 그리드(포스터 썸네일 + 제목 + 기간 + 해시태그 + New/모집중 배지) + 우측 커뮤니티/랭킹 사이드 → '진행중인 대회' 그리드 → 푸터",
+        "homeChatWeb": "홈 위에 우측 '채팅' 드로어 패널 — 참여중인 채팅방 list + 인기 채팅방(아바타 + 방 제목 + 미읽음 카운트 배지)",
+        "competitionDetailWeb": "대회 상세 — 포스터 + 정보 테이블(기간/참가비/거리 등) + 신청 CTA(coral) → 코스 안내 지도 → 대회 안내 본문 → 기념품/리워드 상품 그리드",
+        "card": "대회 카드 = 일러스트 포스터 썸네일(4:5 안팎) + 제목 + 기간 + 해시태그 + New/모집중 상태 배지. 그리드 3-up 반복 섹션.",
+        "accent": "코랄·핑크 브랜드 컬러 — CTA(신청)/배지/링크. 대회 포스터 일러스트가 시각 주인공.",
+        "status": "스크린샷 레퍼런스 카탈로그 (레이아웃·구성 SSOT). 정확한 색/여백/치수 토큰은 component 가이드 + 브랜드 토큰이 SSOT."
+      },
+      "references": [
+        {
+          "label": "Runmile 웹 홈 — 대회 모집 (desktop)",
+          "image": "references/runmile-web-home.png",
+          "caption": "상단 nav + 검색, '모집중인 대회' 일러스트 대회 카드 3-up 그리드 + 우측 커뮤니티/랭킹 사이드, '진행중인 대회' 그리드, 푸터.",
+          "brand": "runmile"
+        },
+        {
+          "label": "Runmile 웹 홈 + 채팅 드로어 (desktop)",
+          "image": "references/runmile-web-home-chat.png",
+          "caption": "홈 위 우측 '채팅' 드로어 — 참여중인 채팅방 list + 인기 채팅방(아바타 + 제목 + 미읽음 배지).",
+          "brand": "runmile"
+        },
+        {
+          "label": "Runmile 대회 상세 (desktop)",
+          "image": "references/runmile-web-competition-detail.png",
+          "caption": "포스터 + 정보 테이블 + 신청 CTA(coral) → 코스 지도 → 대회 안내 본문 → 기념품/리워드 상품 그리드.",
+          "brand": "runmile"
+        }
+      ],
+      "summary": "Runmile(러닝 대회·레이스 모집/참가 + 러너 커뮤니티) 화면의 **시각 레퍼런스 카탈로그** — 웹 홈(대회 모집) / 홈+채팅 드로어 / 대회 상세 3종 스크린샷을 담는다. Runmile 은 대회 포스터 일러스트가 시각 주인공이라 UI 채도는 낮추고 코랄·핑크 브랜드 컬러를 신청 CTA·상태 배지·링크에만 쓴다. 화면을 새로 짤 때 **레이아웃·구성·위계의 출처**로 이 스크린샷들을 먼저 보고(`references[].imageAbsolutePath`), 정확한 색·여백·치수·컴포넌트 선택은 해당 `component:*` 가이드와 브랜드 토큰을 SSOT 로 따른다.",
+      "rules": [
+        "**대회 카드 그리드 = '카드 1장 = 대회 1건'.** 일러스트 포스터 썸네일 + 제목 + 기간 + 해시태그 + 상태 배지(New/모집중/마감). 홈은 이 카드를 3-up 행으로 묶은 '모집중/진행중' 섹션을 반복 → 섹션 컨테이너는 헤더(섹션명 + 더보기)를 소유하는 `pattern:card-section` / `List` 정합.",
+        "**상태 배지는 `Chip`/배지 토큰으로.** New·모집중·마감 같은 상태 라벨은 카드 위 일관된 badge — 임의 색 박스 금지, `component:Chip`/배지 시멘틱.",
+        "**대회 상세는 detail 패턴** — 포스터 + 정보 테이블(기간/참가비/거리) + 신청 CTA 1개 → 코스 지도 → 안내 본문 → 기념품 그리드. 신청 CTA 는 화면당 primary solid 1개(`pattern:cta-group`).",
+        "**채팅 드로어는 우측 패널(오버레이) 구조.** 참여중인 채팅방 list + 인기 채팅방 — 미읽음 카운트는 배지. 본문 위에 떠도 본문 레이아웃은 유지(`popover-portal-and-modal-scroll` 정합, 드로어 내부만 스크롤).",
+        "**브랜드 컬러는 토큰으로만.** 코랄·핑크 accent 는 `--semantic-*`(brand) 토큰 cascade 로 흐른다 — 컴포넌트/목업에 hex 하드코딩 금지(`get_guide({ topic: 'principles' })`).",
+        "새 Runmile 화면 작업 전 이 카탈로그의 해당 스크린샷을 `references.md` 의 `[good]` 소스로 먼저 등록(`pattern:visual-reference` 게이트)."
+      ],
+      "avoid": [
+        "스크린샷의 색·여백·치수를 픽셀 단위로 그대로 베끼기 — 이 카탈로그는 **레이아웃·구성 참고용**이고, 정확한 값은 component 가이드 + 브랜드 토큰이 SSOT(어긋나면 토큰이 우선).",
+        "대회 카드를 `ListItem` row 로 욱여넣기 — 포스터+제목+기간+해시태그+배지 카드는 `Card`.",
+        "상태 배지(New/모집중)를 임의 색 인라인 박스로 — `Chip`/배지 시멘틱 토큰.",
+        "코랄·핑크 accent 를 UI 전반에 칠하기 — 대회 포스터 일러스트와 충돌. accent 는 CTA·배지·링크 한정.",
+        "Runmile 전용이라며 컴포넌트에 `[data-brand=\"runmile\"]` 색 분기 추가 — 브랜드 차이는 브랜드 토큰 파일에서 값만 override(`CLAUDE.md` 브랜드 분기 금지 규칙)."
+      ]
+    },
     "scroll-rail": {
       "name": "scroll-rail",
       "metrics": {
@@ -4966,6 +5100,7 @@
       "name": "selection-controls",
       "summary": "선택 UI 결정 트리 — 같은 용도는 화면이 달라도 같은 컴포넌트로 통일(★ 일관성 SSOT). 용도별로 SelectChip / SelectionButtonGroup / SelectionCard / Tab(variant=segment) / Dropdown 중 하나로 매핑한다.",
       "rules": [
+        "⓪ **먼저 — '선택'인가 '진입'인가**: 탭하면 화면이 전환되는 카테고리/고민 **진입** 그리드(예: 홈의 건강고민 타일)는 선택 UI 가 아니다 → `pattern:quick-action-grid`(아이콘+라벨 Card 셀 그리드). chip·SelectionButton 으로 만들지 말 것. 아래 ①~⑤ 는 폼 안에서 값/필터를 고르는 **선택**에만 적용.",
         "① 다중 선택 + 짧은 라벨(연령대·시군구·태그·관심사) → SelectChip (`<nds-chip selected interactive>`, 캐포비=노란 채움/검정 텍스트).",
         "② 단일 선택 + 설명 없는 짧은 옵션 2~3개(OS 전체/Android/iOS·성별·노출 구분) → SelectionButtonGroup.",
         "③ 단일 선택 + 설명/아이콘 있는 카드(캠페인 목표·유형·소진 방식) → SelectionCard(mode=single) — 라디오 도트 내장, 커스텀 카드 금지.",
@@ -4973,6 +5108,7 @@
         "⑤ 단일 선택 옵션 4개 초과 → Dropdown."
       ],
       "avoid": [
+        "진입(탭→화면 전환) 그리드를 chip 토글 wrap 으로 만들기 — 그건 선택이 아니라 네비게이션. 아이콘+라벨 스캔성과 레이아웃 균형을 잃는다 → `pattern:quick-action-grid`.",
         "같은 용도(예: 연령=다중·짧은 라벨, 지역 시군구=다중·짧은 라벨)인데 화면마다 다른 컴포넌트로 만들기 — 둘 다 SelectChip 으로 통일."
       ]
     },
@@ -5052,6 +5188,40 @@
         "decorative 목적의 색 배경 (의미 전달 없는 단순 시각 분리)",
         "Brand bg 위에 다시 brand chip / brand icon / brand button 을 중첩 (tone-on-tone)",
         "안내문에 gradient + icon + badge + bold headline 을 동시에 적용"
+      ]
+    },
+    "trost-screens": {
+      "name": "trost-screens",
+      "metrics": {
+        "brand": "trost (심리상담·멘탈케어 EAP — 상담/콘텐츠/칼럼)",
+        "homeWeb": "데스크탑 — 상단 헤더(Trost. 로고 + nav + 검색) → 사진 배경 다크 히어로 배너(헤드라인 + 검색) → 추천 심리상담/인기글 2카드 → 'ASMR plus' 등 콘텐츠 미디어 카드 그리드 → 마음 안내 배너 → 카테고리 아이콘 그리드 → 인기 칼럼/상담사 칼럼 카드 → 푸터",
+        "card": "콘텐츠/칼럼 카드 = 썸네일(미디어/사진) + 제목 + 메타. 미디어 카드는 play 오버레이. 카테고리는 아이콘 + 라벨 그리드.",
+        "accent": "블루 브랜드 컬러 — 로고/CTA/링크/배너. 다크 히어로는 사진 위 white 텍스트.",
+        "status": "스크린샷 레퍼런스 카탈로그 (레이아웃·구성 SSOT). Trost 웹은 Zeplin 이 디자인 SSOT — 정확한 색/여백/치수는 Zeplin + 브랜드 토큰."
+      },
+      "figmaNodeUrl": "https://zpl.io/Dp775xl",
+      "references": [
+        {
+          "label": "Trost 웹 홈 — 심리상담·멘탈케어 (desktop)",
+          "image": "references/trost-web-home.png",
+          "caption": "헤더 + 다크 히어로 배너 → 추천 상담/인기글 카드 → 콘텐츠 미디어 카드 그리드 → 마음 안내 배너 → 카테고리 아이콘 그리드 → 칼럼 카드 → 푸터. (Zeplin SSOT zpl.io/Dp775xl)",
+          "brand": "trost"
+        }
+      ],
+      "summary": "Trost(심리상담·멘탈케어 EAP) 웹 홈의 **시각 레퍼런스 카탈로그** — 사진 배경 다크 히어로 + 콘텐츠/칼럼 카드 그리드 구조의 데스크탑 홈 스크린샷을 담는다. Trost 웹은 **Zeplin 이 디자인 SSOT**(zpl.io/Dp775xl)이고, 블루 브랜드 컬러를 로고·CTA·링크·배너에만 쓴다. 화면을 새로 짤 때 **레이아웃·구성·위계의 출처**로 이 스크린샷을 먼저 보고(`references[].imageAbsolutePath`), 정확한 색·여백·치수·컴포넌트 선택은 Zeplin 과 브랜드 토큰을 SSOT 로 따른다.",
+      "rules": [
+        "**콘텐츠/칼럼 카드 그리드 = '카드 1장 = 콘텐츠 1건'.** 썸네일(미디어/사진) + 제목 + 메타. 섹션마다 헤더(섹션명 + 더보기)를 소유하는 `pattern:card-section` / `List` 정합. 미디어(ASMR 등) 카드는 play 오버레이.",
+        "**다크 히어로 배너**는 사진 배경 + white 텍스트 + 검색/CTA. 본문(라이트) 과 대비되는 진입 영역 — 색은 토큰(`--semantic-*`)으로, 사진 위 텍스트 대비 확보(`get_guide({ topic: 'principles' })` 접근성).",
+        "**카테고리는 아이콘 + 라벨 그리드** — 균일 셀의 quick-action 성격(`pattern:quick-action-grid` 정합). 아이콘은 DS 아이콘 세트(`find_icon`), 임의 이미지 금지.",
+        "**브랜드 컬러는 토큰으로만.** 블루 accent 는 `--semantic-*`(brand) 토큰 cascade 로 흐른다 — 컴포넌트/목업에 hex 하드코딩 금지.",
+        "새 Trost 화면 작업 전 이 카탈로그의 스크린샷을 `references.md` 의 `[good]` 소스로 먼저 등록(`pattern:visual-reference` 게이트). 정확한 픽셀은 Zeplin(zpl.io/Dp775xl) 병행 확인."
+      ],
+      "avoid": [
+        "스크린샷의 색·여백·치수를 픽셀 단위로 그대로 베끼기 — 이 카탈로그는 **레이아웃·구성 참고용**이고, 정확한 값은 Zeplin + 브랜드 토큰이 SSOT(어긋나면 SSOT 우선).",
+        "콘텐츠 카드를 `ListItem` row 로 욱여넣기 — 썸네일+제목+메타 카드는 `Card`.",
+        "카테고리 아이콘에 임의 이미지/이모지 사용 — DS 아이콘 세트(`find_icon`).",
+        "블루 accent 를 UI 전반에 칠하기 — accent 는 로고·CTA·링크·배너 한정.",
+        "Trost 전용이라며 컴포넌트에 `[data-brand=\"trost\"]` 색 분기 추가 — 브랜드 차이는 브랜드 토큰 파일에서 값만 override(`CLAUDE.md` 브랜드 분기 금지 규칙)."
       ]
     },
     "ui-direction-proposal": {

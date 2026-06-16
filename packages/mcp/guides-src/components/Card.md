@@ -1,5 +1,10 @@
 ---
 figmaNodeUrl: https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=131-1769
+references:
+  - label: Geniet Card Guide — 4 Layouts (배치·크기)
+    url: https://www.figma.com/design/0LLw2nSq9AUhXww7pWFRlm/?node-id=3056-125
+    caption: 지니어트 Library · CardGuide. 배치/크기/radius 축의 Horizontal(328·r8) / Vertical(240×280·r12) / Grid(160×210·r8) / Container(440·r16+shadow, PC) 4 Layout. 콘텐츠 축(List/Thumb/Cover)과 직교 — 같이 읽는다. radius 스케일은 base sizeMatrix(8/10/12/14)와 다른 지니어트 단순화본(8/12/8/16).
+    brand: geniet
 usagePolicy:
   useFor:
     - 분류된 식품·콘텐츠 텍스트 나열 (List · 10개 이상 / 페이지)
@@ -45,6 +50,11 @@ sizeMatrix:
   pc.list: Width Fill · Padding 20/16 · Image — · Radius 10 · Title Body 2 Bold
   pc.thumb: Width Fill · Padding 24/20 · Image 72×72 · Radius 12 · Title Body 2 Bold
   pc.cover: Width Fill · Padding 0/16 · Image AR 4:3 · Radius 14 · Title H4 Bold
+  geniLayoutHorizontal: "지니어트 배치형(Geniet Library) — 328×auto · radius 8 · padding 12 · 좌측 썸네일 행 카드. 음식 리스트·검색결과(Mobile). ≈ Thumb variant."
+  geniLayoutVertical: "지니어트 배치형 — 240×280 · radius 12 · padding 0/12 · 상단 이미지 세로 카드. 추천·인기 카테고리 가로스크롤(Mobile). ≈ Cover variant."
+  geniLayoutGrid: "지니어트 배치형 — 160×210 · radius 8 · padding 0/4 · 작은 그리드 카드. 카테고리 2·3열(Mobile). ≈ 작은 Cover."
+  geniLayoutContainer: "지니어트 배치형 — 440×auto · radius 16 · padding 24 · shadow(E2) · PC 큰 카드(메인 콘텐츠·모달·Hero). Mobile=border / PC Container=shadow."
+  geniLayoutNote: "위 4 Layout 은 '배치·크기·radius' 축으로 콘텐츠 축(List/Thumb/Cover)과 직교 — 함께 읽는다(Horizontal≈Thumb · Vertical/Grid≈Cover · Container=PC 큰 카드). radius 8/12/8/16 은 지니어트 Library 단순화본이라 base sizeMatrix(mobile 8/10/12 · pc 10/12/14)와 다름 — 한 스케일로 통일할지는 결정 필요."
   cardGapMobile: 16px
   cardGapWebCMS: 24px
   elementGapTitleMeta: 4px
@@ -99,6 +109,7 @@ stateMatrix:
 - Section/Group Card (카드 안에 list rows 묶음 — 예: '루테인 포함 영양제 · 총 84개 제품') — 단일 Card 의 variant 가 아니라 별도 컨테이너 패턴. 룰·메트릭은 `get_guide({ topic: 'pattern:card-section' })`.
 - Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.
 - Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.
+- 지니어트 배치 매핑 (Geniet CardGuide 3056-125) — 음식 검색·식단 리스트(Mobile) → Horizontal(328·r8) / 홈 인기·추천 가로스크롤 → Vertical(240×280·r12) / 카테고리 그리드 2·3열 → Grid(160×210·r8) / PC 메인·모달 → Container(440·r16) / Hero 강조 → Container + shadow(E2). Mobile 은 border, PC Container 만 shadow — 한 화면 한 elevation 유지(위 Figma 권위 룰).
 
 ## accessibility
 

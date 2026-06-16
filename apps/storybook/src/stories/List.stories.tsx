@@ -138,6 +138,43 @@ function MetadataExample() {
   );
 }
 
+function ThumbnailExample() {
+  const Thumb = () => (
+    <div
+      aria-hidden="true"
+      style={{
+        width: 72,
+        height: 72,
+        borderRadius: 8,
+        background: "var(--semantic-bg-surface-subtle)",
+        flexShrink: 0,
+      }}
+    />
+  );
+  return (
+    <div style={{ width: 360 }}>
+      <List variant="divided">
+        <ListItem
+          size="xl"
+          leading={<Thumb />}
+          title="단호박 닭가슴살 샐러드"
+          description="포만감 높은 저칼로리 한 끼"
+          metadata="320 kcal · 4.5 ★ · 리뷰 128"
+          onSelect={() => {}}
+        />
+        <ListItem
+          size="xl"
+          leading={<Thumb />}
+          title="그릭요거트 볼"
+          description="단백질 가득 아침 식단"
+          metadata="210 kcal · 4.7 ★ · 리뷰 86"
+          onSelect={() => {}}
+        />
+      </List>
+    </div>
+  );
+}
+
 function DividedExample() {
   return (
     <div style={{ width: 360 }}>
@@ -197,6 +234,11 @@ export const PlainNav: Story = {
   render: () => <PlainNavExample />,
 };
 export const Divided: Story = { name: "Recipe/Divided (메뉴)", render: () => <DividedExample /> };
+export const Thumbnail: Story = {
+  tags: ["gallery"],
+  name: "Recipe/Thumbnail (xl · 72×72 이미지 + 메타)",
+  render: () => <ThumbnailExample />,
+};
 export const WithMetadata: Story = {
   tags: ["gallery"],
   name: "Recipe/Metadata 포함 (Title + Description + Metadata)",

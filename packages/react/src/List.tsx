@@ -17,7 +17,7 @@ const LIST_ITEM_TRAILING_CLASS = `${LIST_ITEM_CLASS}__trailing`;
 /* ─── Types ─── */
 
 export type ListVariant = "plain" | "card" | "divided";
-export type ListItemSize = "sm" | "md" | "lg";
+export type ListItemSize = "sm" | "md" | "lg" | "xl";
 
 export interface ListProps extends React.HTMLAttributes<HTMLUListElement> {
   /** 표시 변형 */
@@ -47,7 +47,7 @@ export interface ListItemProps extends Omit<React.LiHTMLAttributes<HTMLLIElement
   disabled?: boolean;
   /** 활성/선택 상태 */
   active?: boolean;
-  /** 패딩 크기 */
+  /** 패딩 크기 (sm 40 · md 56 · lg 72 Avatar · xl 96 Thumbnail) */
   size?: ListItemSize;
   /** custom body 렌더 (title/description 대신) */
   children?: React.ReactNode;

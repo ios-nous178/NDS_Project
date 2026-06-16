@@ -1,13 +1,19 @@
 ---
 figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=501-96
+references:
+  - label: Geniet List Guide — 4 Layouts
+    url: https://www.figma.com/design/0LLw2nSq9AUhXww7pWFRlm/?node-id=3060-82
+    caption: 지니어트 Library · ListGuide. Default / Avatar / Thumbnail(xl·h96) / Action 4 Layout + Usage·Composition·Do/Don't. 구조는 브랜드 무관 base 와 동일.
+    brand: geniet
 usagePolicy:
   useFor:
     - 텍스트+상태+날짜로 구성된 단순 데이터 (상담 내역·예약·알림·설정·검색 결과)
     - 10개 이상 항목의 수직 스크롤 탐색
     - 시간순 연속 정보 (알림 센터)
     - 동질적인 항목의 반복 배치 (멤버 목록, 옵션 목록)
+    - 좌측 작은 썸네일 + 제목 + 메타 행 (음식·콘텐츠 검색 결과 · Thumbnail 레이아웃 size='xl')
   doNotUseFor:
-    - 이미지/썸네일 중심의 시각 탐색 → Card
+    - 큰 이미지 중심의 그리드 시각 탐색 → Card (작은 좌측 썸네일+텍스트 한 줄 행은 List Thumbnail 레이아웃)
     - 2열 이상 그리드 비교 → Card 그리드
     - 컬럼별 비교가 핵심 → Table
     - 탭·필터·내비게이션 → Chip / Navigation
@@ -26,9 +32,12 @@ sizeMatrix:
   gapDescriptionToMetadata: 2px
   minTouchTarget: 48px (모바일 필수)
   densityCompact: 40px height (size='sm') · PC only · 정보 밀도 우선 (설정·관리자)
-  densityDefault: 56px height (size='md') · 표준 · 일반 목록·검색 결과
-  densityComfortable: 72px height (size='lg') · 여백 강조 · Avatar+Title+Description 조합
-  typoTitle: Body 1 Bold 16px / LH 24px — var(--font-size-body-1) · Text/Strong/Default
+  densityDefault: 56px height (size='md') · 표준 · 일반 목록·검색 결과·Action(Toggle/Checkbox)
+  densityComfortable: 72px height (size='lg') · 여백 강조 · Avatar(48 원형)+Title+Description
+  densityThumbnail: 96px height (size='xl') · 썸네일 강조 · 72×72 radius8 Thumbnail leading + Title/Description/Metadata (음식·콘텐츠)
+  layouts: "4 Layout = Default(md · 텍스트+Chevron · h56) / Avatar(lg · 48 원형+이름+액션 · h72) / Thumbnail(xl · 72 사각+제목+메타 · h96) / Action(md · 텍스트+Toggle·Checkbox·Button · h56). Default·Action 은 같은 md 밀도이고 trailing 만 다르다 — Layout 은 (size + leading/trailing 슬롯)의 조합."
+  paddingByDensity: "px16 / py12 / gap12 통일(sm 만 px12 py8 gap10). 높이는 min-height floor(sizing.listRow 40/56/72/96) — 짧은 행은 floor 높이, leading 이 더 크면 그만큼 자란다: lg=Avatar48+py24=72 · xl=Thumb72+py24=96 으로 floor 와 일치."
+  typoTitle: Body 1 Bold 16px / LH 24px — var(--font-size-body-1) · Text/Strong/Default (지니어트 Figma 목업은 15px 로 보이나 List 는 브랜드 무관 base 표준 16px 유지 — 브랜드 타이포 차이가 필요하면 토큰 cascade 로)
   typoDescription: Body 3 Regular 14px / LH 20px — var(--font-size-body-3) · Text/Subtle/Default
   typoMetadata: Caption 2 Regular 12px / LH 16px — var(--font-size-caption-2) · Text/Muted/Default
   dividerInsetWithLeading: "padding(16) + Leading 폭 + gap(12) — 예: Avatar 36 → 64px 인셋"
@@ -47,6 +56,13 @@ stateMatrix:
 
 수직 정렬된 동질 항목의 컨테이너. <List variant='plain|card|divided'> + <ListItem leading title description metadata trailing onSelect />. Row Anatomy 3 zone: Leading(Optional · Avatar/Thumbnail/Icon/Checkbox/Radio) + Content(Required · Title 최소 1행) + Trailing(Optional · IconButton/Badge/Toggle/Chevron/TextButton, 항상 우측 정렬). 임의 스타일 변형 차단이 목적 — Card 와 달리 단순 hierarchy 를 유지.
 
+정보 종류에 따라 **4가지 표준 Layout** 을 쓴다 (각 Layout = `size` 밀도 + leading/trailing 슬롯 조합):
+
+- **Default** (`size='md'` · h56) — 메뉴·네비·설정 항목. 텍스트 + 우측 Chevron. leading 없음.
+- **Avatar** (`size='lg'` · h72) — 사용자·친구 목록. 48 원형 Avatar leading + 이름 + (액션 텍스트/버튼 trailing).
+- **Thumbnail** (`size='xl'` · h96) — 음식·콘텐츠. 72×72 radius8 썸네일 leading + 제목 + 메타(Title/Description/Metadata). trailing 없음.
+- **Action** (`size='md'` · h56) — 설정 토글·체크박스. 텍스트 + 우측 Toggle·Checkbox·Button.
+
 ## pitfalls
 
 - [Figma 권위 룰 #1] 리스트는 카드보다 단순 hierarchy 유지 — Row 에 카드 수준의 elevation/shadow/border 적용 금지.
@@ -56,7 +72,10 @@ stateMatrix:
 - [Figma 권위 룰 #5] 카드형 리스트 남발 금지 — 각 Row 에 독립 card 스타일(radius + shadow) 적용 X. 그룹화가 필요하면 variant='card' 또는 'divided' 로.
 - [Figma 권위 룰 #6] Random Padding 금지 — Spacing 규칙(아래 sizeMatrix) 외 임의 padding/margin 적용 X.
 - [Figma 권위 룰 #7] Decorative List 금지 — 정보 전달 목적 없는 장식 요소를 Row 에 추가하지 말 것.
-- [Figma 권위 룰 #8] 같은 리스트 내 Density 혼용 금지 — Compact(40)/Default(56)/Comfortable(72) 3가지 중 하나로 통일.
+- [Figma 권위 룰 #8] 같은 리스트 내 Density·Layout 혼용 금지 — Compact(40)/Default(56)/Comfortable(72)/Thumbnail(96) 중 하나로, 그리고 같은 Layout(예: Thumbnail)로 통일. Default + Thumbnail 같은 혼용은 시각 혼란.
+- [Figma 권위 룰 #9] 리스트 Row 안에 다른 컴포넌트(Card 등) 끼워넣기 금지 — List 는 동질 행의 단순 반복. 카드형 시각 탐색이 필요하면 Card 그리드로 분리.
+- [Figma 권위 룰 #10] 한 Row 에 액션 버튼 2개 이상 금지 — 명확한 단일 액션. (Trailing 슬롯 1종 원칙 #4 의 연장.)
+- Avatar/Thumbnail leading 은 정사각(1:1) 비율만 — 다른 비율 사용 금지. Thumbnail 은 72×72 radius8, Avatar 는 원형 48.
 - Compact(40px)는 PC only — 모바일 Min Touch Target 48px 미달이므로 모바일에선 Default(56px) 이상.
 - Title 은 Content 의 Required 요소 — Description/Metadata 만 있는 Row 금지. 최소 Title 한 줄.
 - Avatar + Thumbnail 같은 Leading 슬롯 안에 2종 동시 배치 금지 — Leading 은 단일 식별자.
@@ -71,8 +90,11 @@ stateMatrix:
 - PC 설정 화면 (Compact 40): <List variant='plain'><ListItem size='sm' leading={<Icon/>} title='설정 항목' trailing={<Toggle/>} /></List> — 정보 밀도 우선.
 - 검색 결과 (Default 56): <List variant='divided'><ListItem leading={<Avatar/>} title='이름' trailing={<ChevronRightIcon/>} onSelect={…} /></List>
 - 프로필 목록 (Comfortable 72, Avatar+Title+Description): <List variant='divided'><ListItem size='lg' leading={<Avatar size='lg'/>} title='이름' description='역할 · 메타' trailing={<TextButton/>} onSelect={…} /></List>
+- 음식·콘텐츠 (Thumbnail 96): <List variant='divided'><ListItem size='xl' leading={<썸네일 72×72 radius8/>} title='음식 이름' description='상세 설명 한 줄' metadata='320 kcal · 4.5 ★ · 리뷰 128' onSelect={…} /></List> — 좌측 72 썸네일 + Title/Description/Metadata. trailing 비움.
 - 알림/일정 등 날짜 보조 정보: <ListItem leading={<Avatar/>} title='제목' description='설명' metadata='2026.05.20' trailing={<ChevronRightIcon/>} onSelect={…} /> — metadata 는 Caption 2/Muted 로 description 아래에 작게 표시.
-- 그룹화: variant='card' (외곽 보더+radius) 또는 'divided' (Row 간 inset divider). Row 마다 개별 card 스타일은 금지(#5).
+- 그룹화: variant='card' (외곽 보더+radius) 또는 'divided' (Row 간 inset divider). Row 마다 개별 card 스타일은 금지(#5). 의미 그룹 사이는 Section Header(Body3 Medium · Text/Muted · 좌측 16 padding) + Gap/Section(40) 또는 분리 배경으로 끊는다.
+- 상황 → Layout 매핑: 마이페이지·설정 메뉴·FAQ·약관 → Default / 친구·팔로워 목록 → Avatar / 음식 검색·식단·콘텐츠 → Thumbnail / 알림·다크모드 ON·OFF → Action(Toggle) / 관심사·필터 체크 → Action(Checkbox).
+- 빈 상태 / 로딩: Empty 는 placeholder 이미지 + 안내 문구, Loading 은 Skeleton(Gray/100 BG) 으로 행 자리를 차지.
 
 ## accessibility
 

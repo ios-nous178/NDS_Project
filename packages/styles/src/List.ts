@@ -4,6 +4,7 @@ import {
   fontFamily,
   fontWeight,
   radius,
+  sizing,
   spacing,
   transition,
   typeScale,
@@ -77,11 +78,15 @@ export const listStyles = `
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 
+  /* 밀도 = min-height floor (sizing.listRow). 짧은 행은 이 높이로 맞추고, leading(Avatar 48 ·
+     Thumbnail 72)이 더 크면 그만큼 자란다. 모든 밀도가 py12/px16/gap12 로 통일되어 Figma 와
+     일치한다 (md 56 / lg 72 = Avatar 48 + py24 / xl 96 = Thumb 72 + py24). sm 만 compact. */
   :where(.${LIST_ITEM_CLASS}) {
     display: flex;
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
+    min-height: ${sizing.listRow.md}px;
     background: transparent;
     border: none;
     width: 100%;
@@ -93,11 +98,18 @@ export const listStyles = `
   :where(.${LIST_ITEM_CLASS}[data-size="sm"]) {
     padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     gap: var(--semantic-gap-default);
+    min-height: ${sizing.listRow.sm}px;
   }
 
+  /* lg = Avatar 레이아웃 (h72) — 48 원형 + 이름 + (액션). py12 로 48 아바타 + 24 = 72. */
   :where(.${LIST_ITEM_CLASS}[data-size="lg"]) {
-    padding: var(--semantic-inset-card) var(--semantic-inset-card);
-    gap: var(--semantic-gap-loose);
+    min-height: ${sizing.listRow.lg}px;
+  }
+
+  /* xl = Thumbnail 레이아웃 (h96) — 72×72 radius8 썸네일 + Title/Description/Metadata.
+     py12 로 72 썸네일 + 24 = 96. */
+  :where(.${LIST_ITEM_CLASS}[data-size="xl"]) {
+    min-height: ${sizing.listRow.xl}px;
   }
 
   :where(.${LIST_ITEM_CLASS}[data-interactive="true"]) {

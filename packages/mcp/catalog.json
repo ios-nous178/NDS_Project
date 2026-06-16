@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T06:08:45.946Z",
+  "generatedAt": "2026-06-16T00:02:31.890Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3668,7 +3668,8 @@
         "size": [
           "sm",
           "md",
-          "lg"
+          "lg",
+          "xl"
         ]
       },
       "htmlObservedAttrs": [
@@ -13156,6 +13157,26 @@
       "group": "size"
     },
     {
+      "name": "--size-listRow-lg",
+      "value": "72px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-md",
+      "value": "56px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-sm",
+      "value": "40px",
+      "group": "size"
+    },
+    {
+      "name": "--size-listRow-xl",
+      "value": "96px",
+      "group": "size"
+    },
+    {
       "name": "--size-tabs-chip-mobile",
       "value": "36px",
       "group": "size"
@@ -14454,7 +14475,8 @@
         "size": [
           "sm",
           "md",
-          "lg"
+          "lg",
+          "xl"
         ]
       },
       "observedAttrs": [

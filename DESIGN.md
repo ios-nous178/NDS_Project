@@ -350,6 +350,11 @@ sizing:
     md: 304px # 폼 내부 일반 입력 (이메일·이름·계정명) — default, 가장 흔함
     lg: 400px # 모달 내부 메인 입력·단독 검색바
     xl: 488px # 와이드 페이지 필터·상세 폼 강조
+  listRow: # List 행 밀도별 최소 높이 floor (Figma ListGuide 3060-82). 짧은 행은 이 높이로 맞추고, leading(Avatar/Thumbnail)이 크면 그만큼 자란다.
+    sm: 40px # Compact · PC only (정보 밀도 우선 · 모바일 min touch 48 미달)
+    md: 56px # Default · 표준 (텍스트 + Chevron/Toggle·Checkbox)
+    lg: 72px # Avatar · 48 원형 + 이름 + 액션
+    xl: 96px # Thumbnail · 72×72 썸네일 + 제목 + 메타
 
 # ── Elevation ───────────────────────────────────────────────
 elevation:

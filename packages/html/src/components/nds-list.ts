@@ -32,10 +32,10 @@ import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 export type ListVariant = "plain" | "card" | "divided";
-export type ListItemSize = "sm" | "md" | "lg";
+export type ListItemSize = "sm" | "md" | "lg" | "xl";
 
 const LIST_VARIANTS: readonly ListVariant[] = ["plain", "card", "divided"];
-const ITEM_SIZES: readonly ListItemSize[] = ["sm", "md", "lg"];
+const ITEM_SIZES: readonly ListItemSize[] = ["sm", "md", "lg", "xl"];
 
 export class NdsList extends NdsElement {
   static elementName = "nds-list";
