@@ -1,5 +1,5 @@
 ---
-figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547
+figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5158-108
 ---
 
 ## summary
@@ -12,6 +12,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-
 - Toggle 변경 후 별도 '저장' 버튼이 필요한 UI 라면 Checkbox 가 맞음 — Toggle 은 즉시 반영 시그널.
 - size='sm' 을 본문 안 inline 텍스트와 함께 — 시각 위계 부족, baseline 어색.
 - 노출/활성 status 토글의 켜짐 초록을 raw hex(#60be34 등)로 박지 말 것 — tone='success' 가 semantic status-success 토큰으로 5 브랜드 자동 대응. 라벨 내장 status 토글은 size 무시(고정 30 / thumb 25).
+- **트로스트(Controls 가이드 5158:108)**: 트랙 50×30, on=다크(#333). 즉시 적용 설정에만(저장 버튼 필요한 곳 금지). 라벨은 명사·상태형("푸시 알림" ⭕, "받기"/"활성화" ❌ — 동사 금지). 라벨 좌측·컨트롤 우측.
 
 ## examplesHtml.do
 

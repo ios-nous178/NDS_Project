@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T01:05:15.169Z",
+  "generatedAt": "2026-06-16T05:55:32.202Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3898,6 +3898,15 @@
           "name": "actionsLayout",
           "optional": true,
           "type": "ActionsLayout"
+        },
+        {
+          "name": "confirmTone",
+          "optional": true,
+          "type": "\"default\" | \"destructive\"",
+          "allowedValues": [
+            "default",
+            "destructive"
+          ]
         },
         {
           "name": "maxWidth",
@@ -8738,6 +8747,14 @@
   ],
   "tokens": [
     {
+      "name": "--border-bold",
+      "value": "2px",
+      "group": "border",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--border-default",
       "value": "1px",
       "group": "border"
@@ -8748,9 +8765,25 @@
       "group": "border"
     },
     {
+      "name": "--border-hairline",
+      "value": "1px",
+      "group": "border",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--border-none",
       "value": "0px",
       "group": "border"
+    },
+    {
+      "name": "--border-strong",
+      "value": "1.5px",
+      "group": "border",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--border-thin",
@@ -8816,7 +8849,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#E5F2FF",
-        "geniet": "#E4F5FF"
+        "geniet": "#E4F5FF",
+        "trost": "#D4E9FF"
       }
     },
     {
@@ -8825,7 +8859,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#B8DCFF",
-        "geniet": "#CFEDFF"
+        "geniet": "#CFEDFF",
+        "trost": "#ABD2FF"
       }
     },
     {
@@ -8834,7 +8869,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#80BFFF",
-        "geniet": "#A8DDFF"
+        "geniet": "#A8DDFF",
+        "trost": "#7DB7FF"
       }
     },
     {
@@ -8843,7 +8879,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#4BA1FF",
-        "geniet": "#62BEFA"
+        "geniet": "#62BEFA",
+        "trost": "#519DFF"
       }
     },
     {
@@ -8852,7 +8889,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#F5FAFF",
-        "geniet": "#F0F9FF"
+        "geniet": "#F0F9FF",
+        "trost": "#ECF5FF"
       }
     },
     {
@@ -8862,7 +8900,8 @@
       "brandValues": {
         "cashwalk-biz": "#007AFF",
         "geniet": "#1FA3F9",
-        "runmile": "#007AFF"
+        "runmile": "#007AFF",
+        "trost": "#2C91FF"
       }
     },
     {
@@ -8871,7 +8910,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#006FE6",
-        "geniet": "#1488D3"
+        "geniet": "#1488D3",
+        "trost": "#1A78E5"
       }
     },
     {
@@ -8880,7 +8920,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#0058B8",
-        "geniet": "#0E6DAD"
+        "geniet": "#0E6DAD",
+        "trost": "#105FB8"
       }
     },
     {
@@ -8889,7 +8930,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#00428C",
-        "geniet": "#0A5287"
+        "geniet": "#0A5287",
+        "trost": "#074280"
       }
     },
     {
@@ -8898,7 +8940,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#002D60",
-        "geniet": "#06375E"
+        "geniet": "#06375E",
+        "trost": "#03284D"
       }
     },
     {
@@ -8990,8 +9033,24 @@
       ]
     },
     {
+      "name": "--color-cobalt-200",
+      "value": "#C9D3FF",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--color-cobalt-300",
       "value": "#A3B3FF",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-cobalt-400",
+      "value": "#7589FF",
       "group": "color",
       "brands": [
         "trost"
@@ -9008,6 +9067,38 @@
     {
       "name": "--color-cobalt-500",
       "value": "#4968FF",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-cobalt-600",
+      "value": "#3050E5",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-cobalt-700",
+      "value": "#2138B8",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-cobalt-800",
+      "value": "#152582",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-cobalt-900",
+      "value": "#0A1352",
       "group": "color",
       "brands": [
         "trost"
@@ -9254,7 +9345,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#C7F0D8",
-        "geniet": "#DBF8EA"
+        "geniet": "#DBF8EA",
+        "trost": "#C4F0E0"
       }
     },
     {
@@ -9263,7 +9355,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#8CE0B0",
-        "geniet": "#BFEFD8"
+        "geniet": "#BFEFD8",
+        "trost": "#94E2C3"
       }
     },
     {
@@ -9272,7 +9365,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#4DD089",
-        "geniet": "#8AE0BA"
+        "geniet": "#8AE0BA",
+        "trost": "#5CD2A0"
       }
     },
     {
@@ -9281,7 +9375,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#1ACC6E",
-        "geniet": "#55D695"
+        "geniet": "#55D695",
+        "trost": "#2BC489"
       }
     },
     {
@@ -9290,7 +9385,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#E5F8EE",
-        "geniet": "#F1FBF6"
+        "geniet": "#F1FBF6",
+        "trost": "#E5F9F1"
       }
     },
     {
@@ -9299,7 +9395,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#00CC5B",
-        "geniet": "#49CA89"
+        "geniet": "#49CA89",
+        "trost": "#00BC78"
       }
     },
     {
@@ -9308,7 +9405,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#00B350",
-        "geniet": "#18B264"
+        "geniet": "#18B264",
+        "trost": "#00A06A"
       }
     },
     {
@@ -9317,7 +9415,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#009240",
-        "geniet": "#149354"
+        "geniet": "#149354",
+        "trost": "#008055"
       }
     },
     {
@@ -9326,7 +9425,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#007030",
-        "geniet": "#0F7440"
+        "geniet": "#0F7440",
+        "trost": "#005A3C"
       }
     },
     {
@@ -9335,7 +9435,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#004D20",
-        "geniet": "#0A5630"
+        "geniet": "#0A5630",
+        "trost": "#00362B"
       }
     },
     {
@@ -9538,7 +9639,8 @@
       "value": "#777777",
       "group": "color",
       "brandValues": {
-        "cashwalk-biz": "#999999"
+        "cashwalk-biz": "#999999",
+        "trost": "#7D7D7D"
       }
     },
     {
@@ -9561,7 +9663,10 @@
     {
       "name": "--color-neutral-900",
       "value": "#111111",
-      "group": "color"
+      "group": "color",
+      "brandValues": {
+        "trost": "#1A1A1A"
+      }
     },
     {
       "name": "--color-neutral-black",
@@ -9641,8 +9746,24 @@
       ]
     },
     {
+      "name": "--color-pink-200",
+      "value": "#FFD7E0",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--color-pink-300",
       "value": "#FFC1CE",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-pink-400",
+      "value": "#FB85A0",
       "group": "color",
       "brands": [
         "trost"
@@ -9659,6 +9780,38 @@
     {
       "name": "--color-pink-500",
       "value": "#F93E67",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-pink-600",
+      "value": "#DD2B57",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-pink-700",
+      "value": "#B01C44",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-pink-800",
+      "value": "#7F1131",
+      "group": "color",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--color-pink-900",
+      "value": "#4D0A1E",
       "group": "color",
       "brands": [
         "trost"
@@ -9749,7 +9902,8 @@
       "value": "#FFA98C",
       "group": "color",
       "brandValues": {
-        "geniet": "#FFEBEE"
+        "geniet": "#FFEBEE",
+        "trost": "#FFDDD0"
       }
     },
     {
@@ -9758,7 +9912,8 @@
       "group": "color",
       "brandValues": {
         "geniet": "#FFCDD4",
-        "runmile": "#FFE9E9"
+        "runmile": "#FFE9E9",
+        "trost": "#FFBFA5"
       }
     },
     {
@@ -9766,7 +9921,8 @@
       "value": "#FF6B35",
       "group": "color",
       "brandValues": {
-        "geniet": "#FFA0AA"
+        "geniet": "#FFA0AA",
+        "trost": "#FF9C72"
       }
     },
     {
@@ -9774,7 +9930,8 @@
       "value": "#FF4E0C",
       "group": "color",
       "brandValues": {
-        "geniet": "#FF8192"
+        "geniet": "#FF8192",
+        "trost": "#FF6E37"
       }
     },
     {
@@ -9782,7 +9939,8 @@
       "value": "#FEE9E6",
       "group": "color",
       "brandValues": {
-        "geniet": "#FFF0F2"
+        "geniet": "#FFF0F2",
+        "trost": "#FFF1EC"
       }
     },
     {
@@ -9791,7 +9949,8 @@
       "group": "color",
       "brandValues": {
         "geniet": "#FF6177",
-        "runmile": "#FF2428"
+        "runmile": "#FF2428",
+        "trost": "#FF4111"
       }
     },
     {
@@ -9799,7 +9958,8 @@
       "value": "#EA3C00",
       "group": "color",
       "brandValues": {
-        "geniet": "#FF3258"
+        "geniet": "#FF3258",
+        "trost": "#E62F00"
       }
     },
     {
@@ -9807,7 +9967,8 @@
       "value": "#E33800",
       "group": "color",
       "brandValues": {
-        "geniet": "#D9263F"
+        "geniet": "#D9263F",
+        "trost": "#B82500"
       }
     },
     {
@@ -9815,7 +9976,8 @@
       "value": "#CB2700",
       "group": "color",
       "brandValues": {
-        "geniet": "#B41C2F"
+        "geniet": "#B41C2F",
+        "trost": "#801A00"
       }
     },
     {
@@ -9823,16 +9985,9 @@
       "value": "#A01C00",
       "group": "color",
       "brandValues": {
-        "geniet": "#8C0F1E"
+        "geniet": "#8C0F1E",
+        "trost": "#4D1000"
       }
-    },
-    {
-      "name": "--color-status-blue",
-      "value": "#2C91FF",
-      "group": "color",
-      "brands": [
-        "trost"
-      ]
     },
     {
       "name": "--color-status-caution",
@@ -9853,22 +10008,12 @@
       "brands": [
         "cashwalk-biz",
         "geniet",
-        "runmile",
-        "trost"
+        "runmile"
       ],
       "brandValues": {
         "geniet": "#FF3258",
-        "runmile": "#FF2428",
-        "trost": "#FF4111"
+        "runmile": "#FF2428"
       }
-    },
-    {
-      "name": "--color-status-green",
-      "value": "#00BC78",
-      "group": "color",
-      "brands": [
-        "trost"
-      ]
     },
     {
       "name": "--color-status-info",
@@ -9882,14 +10027,6 @@
       "brandValues": {
         "geniet": "#1488D3"
       }
-    },
-    {
-      "name": "--color-status-orange",
-      "value": "#FF9D00",
-      "group": "color",
-      "brands": [
-        "trost"
-      ]
     },
     {
       "name": "--color-status-success",
@@ -9909,7 +10046,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFFAE5",
-        "geniet": "#FFF8DF"
+        "geniet": "#FFF8DF",
+        "trost": "#FFFDD9"
       }
     },
     {
@@ -9918,7 +10056,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFF0AC",
-        "geniet": "#FFF3D0"
+        "geniet": "#FFF3D0",
+        "trost": "#FFF8B8"
       }
     },
     {
@@ -9927,7 +10066,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFE673",
-        "geniet": "#FFE489"
+        "geniet": "#FFE489",
+        "trost": "#FFF785"
       }
     },
     {
@@ -9936,7 +10076,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFDC39",
-        "geniet": "#FFD54C"
+        "geniet": "#FFD54C",
+        "trost": "#FFF552"
       }
     },
     {
@@ -9945,7 +10086,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFFEF5",
-        "geniet": "#FFFBE6"
+        "geniet": "#FFFBE6",
+        "trost": "#FFFFEE"
       }
     },
     {
@@ -9954,7 +10096,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFD200",
-        "geniet": "#FFB700"
+        "geniet": "#FFB700",
+        "trost": "#FFF42E"
       }
     },
     {
@@ -9963,7 +10106,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FFC400",
-        "geniet": "#FFA500"
+        "geniet": "#FFA500",
+        "trost": "#E5D820"
       }
     },
     {
@@ -9972,7 +10116,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FEAF01",
-        "geniet": "#CC8400"
+        "geniet": "#CC8400",
+        "trost": "#B8AC15"
       }
     },
     {
@@ -9981,7 +10126,8 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FD9B02",
-        "geniet": "#996300"
+        "geniet": "#996300",
+        "trost": "#807800"
       }
     },
     {
@@ -9990,28 +10136,13 @@
       "group": "color",
       "brandValues": {
         "cashwalk-biz": "#FC8703",
-        "geniet": "#664200"
+        "geniet": "#664200",
+        "trost": "#4D4800"
       }
     },
     {
-      "name": "--color-yellow-border",
-      "value": "#FFE600",
-      "group": "color",
-      "brands": [
-        "trost"
-      ]
-    },
-    {
-      "name": "--color-yellow-light",
-      "value": "#FFF8B8",
-      "group": "color",
-      "brands": [
-        "trost"
-      ]
-    },
-    {
-      "name": "--color-yellow-primary",
-      "value": "#FFF42E",
+      "name": "--color-yellow-text",
+      "value": "#FF9D00",
       "group": "color",
       "brands": [
         "trost"
@@ -10135,7 +10266,7 @@
       "brandValues": {
         "cashwalk-biz": "18px/26px",
         "runmile": "16px/24px",
-        "trost": "18px/26px"
+        "trost": "20px/30px"
       }
     },
     {
@@ -10152,7 +10283,7 @@
       "value": "11px/14px",
       "group": "font",
       "brandValues": {
-        "trost": "12px/18px"
+        "trost": "11px/18px"
       }
     },
     {
@@ -10247,8 +10378,7 @@
       "group": "font",
       "brandValues": {
         "cashwalk-biz": "18px",
-        "runmile": "16px",
-        "trost": "18px"
+        "runmile": "16px"
       }
     },
     {
@@ -10263,10 +10393,7 @@
     {
       "name": "--font-size-label",
       "value": "11px",
-      "group": "font",
-      "brandValues": {
-        "trost": "12px"
-      }
+      "group": "font"
     },
     {
       "name": "--font-web",
@@ -10542,7 +10669,7 @@
       "brandValues": {
         "cashwalk-biz": "26px",
         "runmile": "24px",
-        "trost": "26px"
+        "trost": "30px"
       }
     },
     {
@@ -10679,7 +10806,7 @@
       "brandValues": {
         "geniet": "16px",
         "runmile": "16px",
-        "trost": "16px"
+        "trost": "24px"
       }
     },
     {
@@ -10718,7 +10845,10 @@
         "geniet",
         "runmile",
         "trost"
-      ]
+      ],
+      "brandValues": {
+        "trost": "8px"
+      }
     },
     {
       "name": "--nds-chart-1",
@@ -10764,6 +10894,30 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-checkbox-check-color",
+      "value": "#FFFFFF",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--nds-checkbox-checked-bg",
+      "value": "#333333",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--nds-checkbox-checked-border",
+      "value": "#333333",
+      "group": "nds",
+      "brands": [
+        "trost"
       ]
     },
     {
@@ -10820,10 +10974,12 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
+        "geniet",
+        "trost"
       ],
       "brandValues": {
-        "geniet": "24px"
+        "geniet": "24px",
+        "trost": "24px"
       }
     },
     {
@@ -11097,7 +11253,19 @@
       "value": "10px",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
+        "cashwalk-biz",
+        "trost"
+      ],
+      "brandValues": {
+        "trost": "6px"
+      }
+    },
+    {
+      "name": "--nds-modal-pad-top",
+      "value": "24px",
+      "group": "nds",
+      "brands": [
+        "trost"
       ]
     },
     {
@@ -11107,10 +11275,7 @@
       "brands": [
         "geniet",
         "trost"
-      ],
-      "brandValues": {
-        "trost": "12px"
-      }
+      ]
     },
     {
       "name": "--nds-notice-alert-radius",
@@ -11266,11 +11431,20 @@
       ]
     },
     {
+      "name": "--nds-radio-checked-color",
+      "value": "#333333",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--nds-radio-size",
       "value": "24px",
       "group": "nds",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
       ]
     },
     {
@@ -11626,7 +11800,7 @@
       "group": "nds",
       "brandValues": {
         "geniet": "0 8px 24px rgba(0, 0, 0, 0.18)",
-        "trost": "0px 4px 16px rgba(0,0,0,0.15)"
+        "trost": "0px 8px 24px rgba(0,0,0,0.18)"
       }
     },
     {
@@ -11642,8 +11816,12 @@
       "value": "2px",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "trost"
+      ],
+      "brandValues": {
+        "trost": "3px"
+      }
     },
     {
       "name": "--nds-toggle-thumb-shadow",
@@ -11658,15 +11836,20 @@
       "value": "27px",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "trost"
+      ],
+      "brandValues": {
+        "trost": "24px"
+      }
     },
     {
       "name": "--nds-toggle-thumb-travel",
       "value": "20px",
       "group": "nds",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
       ]
     },
     {
@@ -11704,7 +11887,7 @@
         "trost"
       ],
       "brandValues": {
-        "trost": "24px"
+        "trost": "30px"
       }
     },
     {
@@ -11716,7 +11899,7 @@
         "trost"
       ],
       "brandValues": {
-        "trost": "40px"
+        "trost": "50px"
       }
     },
     {
@@ -11785,7 +11968,19 @@
       "value": "24px",
       "group": "radius",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
+      ],
+      "brandValues": {
+        "trost": "16px"
+      }
+    },
+    {
+      "name": "--radius-3xl",
+      "value": "24px",
+      "group": "radius",
+      "brands": [
+        "trost"
       ]
     },
     {
@@ -11815,12 +12010,18 @@
     {
       "name": "--radius-lg",
       "value": "12px",
-      "group": "radius"
+      "group": "radius",
+      "brandValues": {
+        "trost": "8px"
+      }
     },
     {
       "name": "--radius-md",
       "value": "8px",
-      "group": "radius"
+      "group": "radius",
+      "brandValues": {
+        "trost": "6px"
+      }
     },
     {
       "name": "--radius-none",
@@ -11843,8 +12044,7 @@
       "value": "4px",
       "group": "radius",
       "brandValues": {
-        "runmile": "6px",
-        "trost": "6px"
+        "runmile": "6px"
       }
     },
     {
@@ -11857,7 +12057,7 @@
         "trost"
       ],
       "brandValues": {
-        "trost": "20px"
+        "trost": "12px"
       }
     },
     {
@@ -11866,12 +12066,10 @@
       "group": "radius",
       "brands": [
         "geniet",
-        "runmile",
-        "trost"
+        "runmile"
       ],
       "brandValues": {
-        "runmile": "4px",
-        "trost": "6px"
+        "runmile": "4px"
       }
     },
     {
@@ -11893,7 +12091,7 @@
         "cashwalk-biz": "#FFFAE5",
         "geniet": "#F2FAFA",
         "runmile": "#FFF7F5",
-        "trost": "#FFF8B8"
+        "trost": "#FFFDD9"
       }
     },
     {
@@ -11911,7 +12109,8 @@
       "value": "#111111",
       "group": "semantic",
       "brandValues": {
-        "runmile": "#221E1F"
+        "runmile": "#221E1F",
+        "trost": "#1A1A1A"
       }
     },
     {
@@ -11935,6 +12134,30 @@
         "runmile": "#FFFFFF",
         "trost": "#FFFFFF"
       }
+    },
+    {
+      "name": "--semantic-bg-point-default",
+      "value": "#4968FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-bg-point-subtle",
+      "value": "#EDF0FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-bg-point-surface",
+      "value": "#F6F7FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--semantic-bg-section-default",
@@ -11964,7 +12187,8 @@
       "brandValues": {
         "cashwalk-biz": "#FFF5F5",
         "geniet": "#FFF0F2",
-        "runmile": "#FFE9E9"
+        "runmile": "#FFE9E9",
+        "trost": "#FFF1EC"
       }
     },
     {
@@ -11975,7 +12199,7 @@
         "cashwalk-biz": "#FFFAE5",
         "geniet": "#F0F9FF",
         "runmile": "#FFF7F5",
-        "trost": "#EDF0FF"
+        "trost": "#ECF5FF"
       }
     },
     {
@@ -11985,7 +12209,7 @@
       "brandValues": {
         "cashwalk-biz": "#E5F8EE",
         "geniet": "#F1FBF6",
-        "trost": "#E6F9F2"
+        "trost": "#E5F9F1"
       }
     },
     {
@@ -11998,8 +12222,7 @@
       "value": "#FAFAFA",
       "group": "semantic",
       "brandValues": {
-        "runmile": "#F2F4F6",
-        "trost": "#F6F6F6"
+        "runmile": "#F2F4F6"
       }
     },
     {
@@ -12010,7 +12233,7 @@
         "cashwalk-biz": "#FFD200",
         "geniet": "#00A8AC",
         "runmile": "#FF5B37",
-        "trost": "#FFE600"
+        "trost": "#FFF42E"
       }
     },
     {
@@ -12031,7 +12254,7 @@
       "brandValues": {
         "cashwalk-biz": "#EEEEEE",
         "runmile": "#E5E8EB",
-        "trost": "#E5E5E5"
+        "trost": "#F2F2F2"
       }
     },
     {
@@ -12056,6 +12279,14 @@
       }
     },
     {
+      "name": "--semantic-border-point-default",
+      "value": "#4968FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--semantic-border-status-caution",
       "value": "#FFC303",
       "group": "semantic",
@@ -12077,13 +12308,21 @@
       }
     },
     {
+      "name": "--semantic-border-status-success",
+      "value": "#00BC78",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--semantic-border-strong-default",
       "value": "#999999",
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
         "runmile": "#B0B8C1",
-        "trost": "#979797"
+        "trost": "#C7C7C7"
       }
     },
     {
@@ -12149,7 +12388,7 @@
         "cashwalk-biz": "#FFC400",
         "geniet": "#008286",
         "runmile": "#FF805C",
-        "trost": "#FFE600"
+        "trost": "#E5D820"
       }
     },
     {
@@ -12200,7 +12439,7 @@
         "cashwalk-biz": "#FFFEF5",
         "geniet": "#F2FAFA",
         "runmile": "#FFF7F5",
-        "trost": "#FFF8B8"
+        "trost": "#FFFDD9"
       }
     },
     {
@@ -12211,7 +12450,7 @@
         "cashwalk-biz": "#FEAF01",
         "geniet": "#005A5C",
         "runmile": "#D33E20",
-        "trost": "#E6D200"
+        "trost": "#B8AC15"
       }
     },
     {
@@ -12276,7 +12515,7 @@
         "cashwalk-biz": "#111111",
         "geniet": "#00A8AC",
         "runmile": "#FF5B37",
-        "trost": "#FFE600"
+        "trost": "#FFF42E"
       }
     },
     {
@@ -12298,7 +12537,7 @@
         "cashwalk-biz": "#111111",
         "geniet": "#008286",
         "runmile": "#FF805C",
-        "trost": "#FFE600"
+        "trost": "#FFF42E"
       }
     },
     {
@@ -12318,7 +12557,7 @@
       "group": "semantic",
       "brandValues": {
         "cashwalk-biz": "#000000",
-        "trost": "#000000"
+        "trost": "#333333"
       }
     },
     {
@@ -12443,7 +12682,7 @@
         "cashwalk-biz": "#FFC400",
         "geniet": "#008286",
         "runmile": "#E84A28",
-        "trost": "#FFE600"
+        "trost": "#E5D820"
       }
     },
     {
@@ -12454,8 +12693,16 @@
         "cashwalk-biz": "#FEAF01",
         "geniet": "#005A5C",
         "runmile": "#D33E20",
-        "trost": "#E6D200"
+        "trost": "#B8AC15"
       }
+    },
+    {
+      "name": "--semantic-fill-brand-subtle",
+      "value": "#FFFDD9",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--semantic-fill-inverse-default",
@@ -12483,6 +12730,38 @@
       }
     },
     {
+      "name": "--semantic-fill-point-default",
+      "value": "#4968FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-fill-point-hover",
+      "value": "#3050E5",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-fill-point-pressed",
+      "value": "#2138B8",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-fill-point-subtle",
+      "value": "#EDF0FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--semantic-fill-status-caution",
       "value": "#FFC303",
       "group": "semantic",
@@ -12504,6 +12783,22 @@
       }
     },
     {
+      "name": "--semantic-fill-status-info",
+      "value": "#2C91FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-fill-status-success",
+      "value": "#00BC78",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--semantic-gap-comfortable",
       "value": "12px",
       "group": "semantic"
@@ -12513,7 +12808,8 @@
       "value": "10px",
       "group": "semantic",
       "brandValues": {
-        "geniet": "8px"
+        "geniet": "8px",
+        "trost": "8px"
       }
     },
     {
@@ -12531,7 +12827,8 @@
       "value": "40px",
       "group": "semantic",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
       ]
     },
     {
@@ -12631,6 +12928,22 @@
       }
     },
     {
+      "name": "--semantic-icon-on-brand-default",
+      "value": "#333333",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-icon-point-default",
+      "value": "#4968FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--semantic-icon-status-caution",
       "value": "#FFC303",
       "group": "semantic",
@@ -12658,7 +12971,7 @@
       "brandValues": {
         "cashwalk-biz": "#00CC5B",
         "geniet": "#18B264",
-        "trost": "#00BC78"
+        "trost": "#00A06A"
       }
     },
     {
@@ -12671,6 +12984,14 @@
         "runmile": "#221E1F",
         "trost": "#333333"
       }
+    },
+    {
+      "name": "--semantic-icon-subtle-default",
+      "value": "#979797",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--semantic-input-bg",
@@ -12827,7 +13148,8 @@
       "value": "14px",
       "group": "semantic",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
       ]
     },
     {
@@ -12845,7 +13167,8 @@
       "value": "8px",
       "group": "semantic",
       "brandValues": {
-        "geniet": "6px"
+        "geniet": "6px",
+        "trost": "6px"
       }
     },
     {
@@ -12872,10 +13195,12 @@
       "group": "semantic",
       "brands": [
         "cashwalk-biz",
-        "geniet"
+        "geniet",
+        "trost"
       ],
       "brandValues": {
-        "geniet": "32px"
+        "geniet": "32px",
+        "trost": "32px"
       }
     },
     {
@@ -12930,7 +13255,7 @@
       "brandValues": {
         "cashwalk-biz": "#BBBBBB",
         "runmile": "#6B7684",
-        "trost": "#979797"
+        "trost": "#C7C7C7"
       }
     },
     {
@@ -12941,8 +13266,32 @@
         "cashwalk-biz": "#333333",
         "geniet": "#333333",
         "runmile": "#333D4B",
-        "trost": "#333333"
+        "trost": "#606060"
       }
+    },
+    {
+      "name": "--semantic-text-on-brand-default",
+      "value": "#333333",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-text-point-default",
+      "value": "#4968FF",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--semantic-text-point-strong",
+      "value": "#3050E5",
+      "group": "semantic",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--semantic-text-status-caution",
@@ -12973,7 +13322,7 @@
         "cashwalk-biz": "#006FE6",
         "geniet": "#1488D3",
         "runmile": "#007AFF",
-        "trost": "#4968FF"
+        "trost": "#1A78E5"
       }
     },
     {
@@ -12983,7 +13332,7 @@
       "brandValues": {
         "cashwalk-biz": "#00B350",
         "geniet": "#18B264",
-        "trost": "#00BC78"
+        "trost": "#00A06A"
       }
     },
     {
@@ -12992,7 +13341,7 @@
       "group": "semantic",
       "brandValues": {
         "runmile": "#221E1F",
-        "trost": "#000000"
+        "trost": "#333333"
       }
     },
     {
@@ -13002,7 +13351,7 @@
       "brandValues": {
         "geniet": "#555555",
         "runmile": "#4E5968",
-        "trost": "#606060"
+        "trost": "#979797"
       }
     },
     {
@@ -13017,7 +13366,7 @@
       "brandValues": {
         "geniet": "0 2px 6px rgba(221, 221, 221, 0.6)",
         "runmile": "0 1px 2px rgba(0, 0, 0, 0.04)",
-        "trost": "0px 2px 16px rgba(0, 0, 0, 0.12)"
+        "trost": "0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 1px 0 rgba(0, 0, 0, 0.04)"
       }
     },
     {
@@ -13026,7 +13375,8 @@
       "group": "shadow",
       "brandValues": {
         "geniet": "0 3px 15px rgba(0, 0, 0, 0.1)",
-        "runmile": "0 2px 8px rgba(0, 0, 0, 0.08)"
+        "runmile": "0 2px 8px rgba(0, 0, 0, 0.08)",
+        "trost": "0 2px 4px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)"
       }
     },
     {
@@ -13035,8 +13385,25 @@
       "group": "shadow",
       "brandValues": {
         "geniet": "0 12px 32px rgba(0, 0, 0, 0.16)",
-        "runmile": "0 8px 24px rgba(0, 0, 0, 0.12)"
+        "runmile": "0 8px 24px rgba(0, 0, 0, 0.12)",
+        "trost": "0 4px 12px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.06)"
       }
+    },
+    {
+      "name": "--shadow-4",
+      "value": "0 8px 24px 0 rgba(0, 0, 0, 0.16), 0 4px 8px 0 rgba(0, 0, 0, 0.08)",
+      "group": "shadow",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--shadow-5",
+      "value": "0 12px 32px 0 rgba(0, 0, 0, 0.2), 0 6px 12px 0 rgba(0, 0, 0, 0.1)",
+      "group": "shadow",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--shape-lg",
@@ -13337,6 +13704,14 @@
       "group": "spacing"
     },
     {
+      "name": "--stroke-bold",
+      "value": "2px",
+      "group": "stroke",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--stroke-default",
       "value": "1px",
       "group": "stroke"
@@ -13347,9 +13722,25 @@
       "group": "stroke"
     },
     {
+      "name": "--stroke-hairline",
+      "value": "1px",
+      "group": "stroke",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--stroke-none",
       "value": "0px",
       "group": "stroke"
+    },
+    {
+      "name": "--stroke-strong",
+      "value": "1.5px",
+      "group": "stroke",
+      "brands": [
+        "trost"
+      ]
     },
     {
       "name": "--stroke-thin",

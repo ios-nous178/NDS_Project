@@ -328,8 +328,11 @@ export interface ComponentOverrides {
   };
   /** Card 셸 — radius / 테두리. 미설정 시 radius.lg / borderRole.normal fallback. */
   card?: { radius?: ComponentValue; borderColor?: ComponentValue };
-  /** Modal 컨테이너 radius. 미설정 시 radius.md fallback. */
-  modal?: { radius?: ComponentValue };
+  /**
+   * Modal 컨테이너 radius(`--nds-modal-radius`) + 상단 패딩(`--nds-modal-pad-top`).
+   * 미설정 시 radius.md / spacing.28 fallback. 트로스트 가이드(171:9899)는 top 24.
+   */
+  modal?: { radius?: ComponentValue; padTop?: ComponentValue };
   /** BottomSheet — 상단 radius / drag handle 치수·색. */
   "bottom-sheet"?: {
     radius?: ComponentValue;
@@ -384,15 +387,28 @@ export interface ComponentOverrides {
     borderWidth?: ComponentValue;
     radius?: ComponentValue;
     borderColor?: ComponentValue;
+    /**
+     * checked/indeterminate 채움·테두리·체크아이콘 색
+     * (`--nds-checkbox-checked-bg/-checked-border/-check-color`). 미설정 시 fill.brand(채움) /
+     * button.textDefault(체크) fallback. 트로스트 Controls 가이드(5158:108)는 on 상태를 brand
+     * 노랑이 아닌 다크(#333) + 흰 체크로 — 노랑 위 가독성.
+     */
+    checkedBg?: ComponentValue;
+    checkedBorder?: ComponentValue;
+    checkColor?: ComponentValue;
     disabledOpacity?: ComponentValue;
     disabledBg?: ComponentValue;
     disabledBorderColor?: ComponentValue;
     disabledCheckedBg?: ComponentValue;
     disabledCheckedBorderColor?: ComponentValue;
   };
-  /** Radio 외경 치수(`--nds-radio-size`). 미설정 시 20px fallback. */
+  /**
+   * Radio 외경 치수(`--nds-radio-size`) + checked 색(`--nds-radio-checked-color` — 테두리+점 공용).
+   * 미설정 시 20px / fill.brand fallback. 트로스트는 24px·다크(#333) on 상태.
+   */
   radio?: {
     size?: ComponentValue;
+    checkedColor?: ComponentValue;
   };
   /**
    * NoticeAlert(인라인 Alert) 컨테이너 radius(`--nds-notice-alert-radius`).

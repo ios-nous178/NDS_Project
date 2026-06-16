@@ -1007,11 +1007,13 @@ function ModalStaticPreview({
   body,
   confirmText,
   cancelText,
+  confirmTone,
 }: {
   title: string;
   body: React.ReactNode;
   confirmText: string;
   cancelText?: string;
+  confirmTone?: "default" | "destructive";
 }) {
   const dual = cancelText != null;
   return (
@@ -1032,7 +1034,11 @@ function ModalStaticPreview({
             {cancelText}
           </button>
         )}
-        <button type="button" className="nds-modal__footer-action nds-modal__footer-confirm">
+        <button
+          type="button"
+          className="nds-modal__footer-action nds-modal__footer-confirm"
+          data-confirm-tone={confirmTone === "destructive" ? "destructive" : undefined}
+        >
           {confirmText}
         </button>
       </div>
@@ -1061,6 +1067,46 @@ export const DualAction: Story = {
       confirmText="변경"
     />
   ),
+};
+
+/* confirmTone — positive(기본·브랜드 confirm 색) vs destructive(검정 Neutral CTA + 흰 텍스트).
+   브랜드 툴바를 trost 로 두면 positive=노랑+검은글씨 / destructive=검정+흰글씨 로 확인. */
+export const ConfirmTone: Story = {
+  name: "State/Confirm Tone (Positive vs Destructive)",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <ModalStaticPreview
+        title="기록을 저장할까요?"
+        body="Positive — confirmTone 생략(기본). 브랜드 confirm 색(트로스트=노랑+검은 글씨)."
+        cancelText="취소"
+        confirmText="저장"
+      />
+      <ModalStaticPreview
+        title="댓글을 차단할까요?"
+        body={'Destructive — confirmTone="destructive". 비가역 액션은 검정 Neutral CTA + 흰 텍스트(브랜드 무관).'}
+        cancelText="취소"
+        confirmText="차단"
+        confirmTone="destructive"
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      source: {
+        code: `<Modal
+  open={open}
+  onClose={() => setOpen(false)}
+  title="댓글을 차단할까요?"
+  closeText="취소"
+  confirmText="차단"
+  confirmTone="destructive"   // 비가역 액션 → 검정 Neutral CTA
+  onConfirm={(close) => close()}
+>
+  차단 시 댓글이 보이지 않습니다.
+</Modal>`,
+      },
+    },
+  },
 };
 
 export const CompoundCustom: Story = {

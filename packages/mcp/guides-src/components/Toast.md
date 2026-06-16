@@ -1,5 +1,5 @@
 ---
-figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1330-2
+figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=806-1277
 ---
 
 ## summary
@@ -14,6 +14,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1330-
 - duration 0 으로 영구 표시 금지 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.
 - Toast 안에 input/form/액션 두지 말 것 — interactive 영역이면 Drawer/Modal, 액션·닫기가 필요하면 Snackbar.
 - **캐포비(cashwalk-biz)에서는 Toast 자체를 쓰지 않는다 — Snackbar 만 사용**(순수 일시 메시지여도 예외 없음). validator `brand-banned-notification` 룰이 `<nds-toast>` 를 error 로 막는다.
+- **트로스트(Toast 가이드 806:1277)**: bg Black 0.92 · Top=pill(PC ≥1024 상단 중앙·safe-top 80) / Bottom=rounded 24(모바일 <1024 하단 중앙·safe-bottom 96·좌우 16). 본문 14 White 1줄 권장 · padding Bottom 12/20·Top 16/32 · shadow y8 blur24 18% · auto-dismiss 2~3s · z-index 1500+. 비가역형(액션 버튼 없음) — 액션 필요하면 Snackbar/Modal.
 
 ## examplesHtml.do
 

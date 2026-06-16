@@ -1,5 +1,5 @@
 ---
-figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903
+figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9903
 sizeMatrix:
   default: height 48 / padding 16·13 / wrapper gap 10 / radius 8
   field: height 48 / 같은 토큰, label-gap 8 — 폼-행 변형(라벨갭만 타이트). 캐포비 admin TextField 도 48(Figma 3082:846).

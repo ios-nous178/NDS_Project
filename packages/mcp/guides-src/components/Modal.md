@@ -1,6 +1,10 @@
 ---
-figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947
+figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9899
 references:
+  - label: Trost Modal & Popup Guide — 4 variants (Compact/Default × Destructive/Positive)
+    url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9899
+    caption: 트로스트 모달 가이드. Positive=브랜드 노랑 #FFF42E + 검은 텍스트(저장·구독·확인), Destructive=검정 #000 + 흰 텍스트(삭제·차단·해지). radius 16 · 상단 패딩 24 · 버튼 2개 가로(우측 primary, h44 r8) · backdrop 0.4. mint(서플 색) 금지 — 노랑 유지.
+    brand: trost
   - label: CashwalkBiz Admin Modal Guide — 4 patterns
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3418-471
     caption: Cashwalk for Business · ModalGuide. Single / Dual / With Close / Confirm+Slot 4가지 슬롯 기반 admin 패턴 SSOT.
@@ -29,6 +33,13 @@ matrixOverrides:
       selectionModal: "**⑥ 선택/피커 모달 (대형·다중 선택)**: 항목을 검색·다중 선택해 적용하는 대형 모달(예: 지역·카테고리·타겟 선택). **width ~960 · radius 16 · padding 48 · 흰 배경**. 헤더 = 제목 Bold 24 #383838(좌) + Close X 28(#999, 우). 본문 = **2컬럼(각 ~422 · 높이 ~652 · gap 20)**: 좌 = 필터(검색 input + '전체 선택' 체크박스 + 시/도▸시/군/구 체크박스 트리, 선택 시 옐로우 체크) / 우 = `SelectedItemsPanel`(component:SelectedItemsPanel · SelectedItemRow) — '선택한 N개' + '선택 해제'(reset) + 제거 가능한 선택 항목 리스트. **모달 안 패널은 '선택 해제'만 — '추가 선택' 버튼 노출 금지(HTML `hide-add` 속성 필수 · React `onAdd` 미전달). '추가 선택'은 모달 밖 페이지/타겟팅 폼에서만 쓰며 secondary Button + plus(+) 아이콘.** 푸터 = **본문 풀폭 단일 '적용' CTA**: Solid/Primary(옐로우 #FFD200·검정 텍스트, **pill**) · 비활성 = Neutral/400 #DDD. ⚠️ 확인팝업(①~④)의 '우측 hug 검정 pill' 규칙을 적용하지 말 것 — 선택 적용은 **풀폭 옐로우**. 버튼 shape 는 모달 BottomCTA 라 pill 이며, 시안 3001:50787(빈 셸)의 radius10·400centered 적용 버튼은 오류 — 채워진 SSOT 는 **3001:50116**(풀폭 적용). Figma 3001-50116."
       dataLoaderModal: "**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + 'N개씩 보기' 드롭다운. 푸터 = **취소(color=\"neutral\" outlined) + 불러오기(color=\"secondary\" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822."
       activationCondition: '`<html data-brand="cashwalk-biz">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지'
+  trost:
+    dimensions:
+      radius: 16px (가이드 171:9899 Radius/2xl · base 8 → 트로스트 토큰 modal.radius)
+      padding: 24px(top) / 16 좌우·하단 (base 28/16/16 → 트로스트 토큰 modal.padTop=24)
+      buttons: 2개 가로(우측 primary) · width 130 · height 44 · radius 8 · backdrop rgba(0,0,0,0.4)
+      confirmCta: 'Positive(저장·구독·확인) = 브랜드 노랑 #FFF42E + 검은 텍스트(confirmCta 토큰이 브랜드별 자기 값 — 트로스트=검정 자동, 별도 설정 불필요). 비가역(삭제·차단·해지) = confirmTone="destructive"(react) / 검정 nds-button color="neutral"(html) → 검정 #1A1A1A + 흰 텍스트. ⚠️ mint(서플 primary) 색 쓰지 말 것 — 트로스트는 노랑 유지.'
+      activationCondition: '<html data-brand="trost"> — base 토큰 cascade 로 자동 (radius/padTop 은 트로스트 컴포넌트 토큰)'
 usagePolicy:
   useFor:
     - 즉각적 판단/응답이 필요한 확인 (삭제 확인, 결제 확인)
@@ -57,6 +68,7 @@ usagePolicy:
 - ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.
 - 단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.
 - Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.
+- **확인 CTA 색은 confirmCta 토큰이 자동 — 브랜드별 자기 값으로 합성된다.** Modal/Popup 의 기본 confirm(positive) 버튼은 bg=confirmCta(브랜드 색: 트로스트=노랑·나머지=brand·캐포비=검정) + **텍스트=confirmCta.text(트로스트=검정/나머지=흰/캐포비=흰)**. 노랑 위 흰 글씨 회귀는 해소됨 — Modal footer 에 `color`/text 를 직접 박지 말 것. **비가역(파괴적) 액션은 `confirmTone="destructive"`**(react `<Modal confirmTone="destructive">` / ModalFooter) → 검정 Neutral CTA + 흰 텍스트(브랜드 무관, neutral-solid 토큰). HTML `<nds-modal>` 은 footer 가 consumer slot 이라 destructive = `<nds-button color="neutral" variant="solid">삭제</nds-button>` 로 표현(별도 속성 없음). 트로스트: 저장·구독=기본(노랑) / 삭제·차단=destructive(검정).
 - 캐포비 admin 모달의 주 action(확인/적용)은 color="neutral" variant="solid" — 브랜드 시그니처 **검정 CTA**(#111·흰 텍스트). 취소/닫기는 color="neutral" variant="outlined", 파괴적 확정만 color="error". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. **★ footer 버튼은 주·보조(취소/아웃라인) 가리지 않고 전부 `shape="pill"`** — 보조 버튼에 빠뜨려 pill+각진 버튼이 섞이는 게 흔한 회귀. validator `brand-modal-footer-button-shape`(brand-profiles cashwalk-biz.modal.footerButtonShape="pill") 가 pill 누락 버튼을 잡는다. (캐포비는 secondary tone 이 없어 Button/validator 가 경고하니 검정은 neutral 로. 검정인데 색이 틀리면 data-brand="cashwalk-biz" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)
 - **★ 캐포비 확인/팝업 모달 버튼에 `color` 를 절대 생략하지 말 것 — 생략하면 노랑(primary)이 된다.** Button/<nds-button> 의 기본 color 는 `primary`(노랑)라, 모달 footer 에 `<nds-button>비즈니스 그룹 만들기</nds-button>` 처럼 color 를 안 적으면 캐포비 검정 CTA 가 아니라 노랑 버튼이 렌더된다(5회+ 재발한 회귀의 근본). **반드시 `color="neutral" variant="solid" shape="pill"` 를 명시**한다. validator `brand-modal-confirm-cta` 가 확인/팝업 모달의 primary/색생략 footer 버튼을 error 로 잡는다. (본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/피커(⑥)·데이터로더(⑦) 같은 대형 모달뿐 — max-width 720+.)
 - **모달/팝업 버튼이 2개일 때는 항상 가로 정렬을 유지한다 — 라벨이 길어 안 들어가도 세로 스택 금지.** 좁아서 한 줄에 안 들어가면 세로로 쌓지 말고 **라벨 텍스트를 줄인다**(예: "비즈니스 그룹 만들기"→"그룹 만들기", "나중에 다시 하기"→"나중에", "지금 확인할게요"→"확인"). 모달 footer 에 `flex-direction:column` / `actions-layout="stack"` 을 넣지 말 것 — validator `brand-modal-footer-stacked` 가 warn. (모달 버튼 라벨은 1~2 단어로.)

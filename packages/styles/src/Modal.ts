@@ -49,7 +49,7 @@ export const modalStyles = `
     display: flex;
     flex-direction: column;
     gap: var(--semantic-gap-default);
-    padding: ${spacing[28]}px var(--semantic-inset-card) var(--semantic-inset-card);
+    padding: var(--nds-modal-pad-top, ${spacing[28]}px) var(--semantic-inset-card) var(--semantic-inset-card);
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
     background-color: ${cv.surface.default};
@@ -189,13 +189,15 @@ export const modalStyles = `
     background-color: ${cv.surface.subtle};
   }
 
-  /* confirm = 주 액션 CTA. confirmCta 토큰은 base 에서 brand 색을 var() 로 참조하므로
-     브랜드별 자기 brand 색이 되고, 캐포비만 neutral 검정으로 override 된다(토큰 :root 로 흘러
-     data-brand 속성 없는 standalone 목업에서도 적용 — 옛 [data-brand] 캐스케이드 회귀 해소). */
+  /* confirm = 주 액션 CTA(positive/기본). confirmCta 토큰은 base 에서 brand 색을 var() 로 참조하므로
+     브랜드별 자기 brand 색이 되고(트로스트=노랑), 캐포비만 neutral 검정으로 override 된다(토큰 :root 로 흘러
+     data-brand 속성 없는 standalone 목업에서도 적용 — 옛 [data-brand] 캐스케이드 회귀 해소).
+     텍스트색은 confirmCta.text(브랜드별 자기 값: 트로스트=검정/나머지=흰/캐포비=흰) — 노랑 위 검은글씨
+     회귀 해소. Popup 은 이미 동일, Modal 도 text-inverse 하드코딩 제거해 정렬. */
   :where(.${FOOTER_CONFIRM_CLASS}) {
     background-color: ${cv.confirmCta.bg};
     border-color: ${cv.confirmCta.bg};
-    color: ${cv.textRole.inverse};
+    color: ${cv.confirmCta.text};
     font-weight: 700;
   }
 
@@ -207,6 +209,21 @@ export const modalStyles = `
   :where(.${FOOTER_CONFIRM_CLASS}:active) {
     background-color: ${cv.confirmCta.active};
     border-color: ${cv.confirmCta.active};
+  }
+
+  /* confirmTone="destructive" — 비가역 액션(삭제·차단·해지)은 검정 Neutral CTA + 흰 텍스트.
+     트로스트 모달 가이드(171:9899): Destructive=Black, Positive=Yellow. 브랜드 무관히
+     neutral-solid 버튼 토큰으로 합성(트로스트 #1A1A1A, 캐포비도 동일 검정과 일치). */
+  :where(.${FOOTER_CONFIRM_CLASS}[data-confirm-tone="destructive"]) {
+    background-color: ${cv.button.bgNeutral};
+    border-color: ${cv.button.bgNeutral};
+    color: ${cv.button.textNeutralSolid};
+  }
+
+  :where(.${FOOTER_CONFIRM_CLASS}[data-confirm-tone="destructive"]:hover),
+  :where(.${FOOTER_CONFIRM_CLASS}[data-confirm-tone="destructive"]:active) {
+    background-color: ${cv.button.bgNeutralHover};
+    border-color: ${cv.button.bgNeutralHover};
   }
 
   /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).

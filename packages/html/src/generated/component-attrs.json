@@ -855,6 +855,7 @@
       "closable",
       "close-text",
       "confirm-text",
+      "confirm-tone",
       "device",
       "is-mask-close",
       "mask",
@@ -867,6 +868,10 @@
       "device": [
         "pc",
         "mobile"
+      ],
+      "confirm-tone": [
+        "default",
+        "destructive"
       ]
     }
   },

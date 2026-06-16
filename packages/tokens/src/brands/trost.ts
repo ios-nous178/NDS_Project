@@ -117,23 +117,37 @@ export const trostTheme: BrandTheme = {
     input: { borderColor: trostNeutral[200], radius: 6 }, // 가이드 Input = Radius/Md 6
     // 카드 테두리 #E0E0E0 — neutral 스케일 밖 실측값 (200 #E5E5E5 / 300 #D8D8D8 사이)
     card: { radius: 8, borderColor: "#E0E0E0" }, // 가이드 Card = Radius/Lg 8
-    modal: { radius: 16 }, // 가이드 Modal = Radius/2xl 16
+    modal: { radius: 16, padTop: 24 }, // 가이드 Modal(171:9899) = Radius/2xl 16 · 상단 패딩 24
     // 노란 브랜드 위 셀렉트 칩은 다크 채움 (fill.brand 노랑 fallback 과 의도적으로 다름)
     chip: {
       selectedBackground: trostNeutral[800],
       selectedText: trostNeutral["00"],
       selectedBorder: trostNeutral[800],
     },
-    // Toggle 40×24 — unchecked #EEE(스케일 밖 실측), checked 다크, material-like 썸 그림자
+    // Controls 가이드(5158:108) — Checkbox·Radio 컨트롤 24×24, on 상태는 brand 노랑이 아닌
+    // 다크(#333) + 흰 체크/점(노랑 위 가독성). 칩 선택색과 동일 톤.
+    checkbox: {
+      size: 24,
+      checkedBg: trostNeutral[800],
+      checkedBorder: trostNeutral[800],
+      checkColor: trostNeutral["00"],
+    },
+    radio: { size: 24, checkedColor: trostNeutral[800] },
+    // Toggle 50×30 (Controls 가이드 5158:108) — unchecked #EEE(스케일 밖 실측), checked 다크,
+    // 썸 24·offset 3·travel 20(=50-24-3-3), material-like 그림자
     toggle: {
-      trackW: 40,
-      trackH: 24,
+      trackW: 50,
+      trackH: 30,
       trackBg: "#EEEEEE",
       trackActiveBg: trostNeutral[800],
+      thumbSize: 24,
+      thumbOffset: 3,
+      thumbTravel: 20,
       thumbShadow:
         "0 1px 1px 0 rgba(0,0,0,0.24), 0 0 1px 0 rgba(0,0,0,0.12), 0 2.4px 0.8px rgba(0,0,0,0.06), 0 2.4px 6.4px rgba(0,0,0,0.15)",
     },
-    toast: { shadow: "0px 4px 16px rgba(0,0,0,0.15)" },
+    // 토스트 가이드(806:1277) — drop y8 · blur24 · 18% black
+    toast: { shadow: "0px 8px 24px rgba(0,0,0,0.18)" },
     "bottom-sheet": {
       radius: 24, // 가이드 BottomSheet = Radius/3xl 24
       handleWidth: 50,

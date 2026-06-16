@@ -965,7 +965,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Checkbox": {
     "name": "Checkbox",
-    "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5158-108",
     "summary": "다중 선택 / on-off / 약관 동의 체크. 라벨이 함께 와야 의미가 전달되고, 단일 선택 그룹은 Radio 가 맞음. `indeterminate` 로 '일부 자식만 선택됨'(부모/전체선택)을 옐로우 마이너스로 표시.",
     "pitfalls": [
       "약관/필수 동의에 disabled 로 잠가두면 시각 위계가 모호 — required 또는 별도 안내문으로 명시.",
@@ -974,7 +974,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "`indeterminate` 는 `checked` 보다 우선 표시되고, 클릭하면 네이티브와 동일하게 `checked=true` 로 전이된다(부분→전체). '부모/전체선택' 행에만 쓰고 leaf 엔 쓰지 말 것.",
       "상태 SSOT 는 호스트의 `checked` **프로퍼티** — `el.checked = true` 로 코드에서 바꿔도 `change` 는 발생하지 않는다(네이티브 동일, 사용자 입력에만 발화). 전체선택 헤더는 ①헤더 `change` → 자식 `.checked` 를 일괄 set, ②자식 `change` → 선택 수로 헤더 `checked`/`indeterminate` 3상태 재계산, 두 방향을 직접 잇는다. `onclick` 시점엔 아직 토글 전이라 상태가 안 settled — 반드시 `change` 를 들을 것. (`.click()` 만으론 호스트 토글이 안 됨.)",
       "**시/도 ▸ 시/군구 같은 계층 트리는 CheckboxTree** 가 부모 indeterminate 를 자동 계산 — 직접 indeterminate 를 손계산해 트리를 손조립하지 말 것. component:CheckboxTree.",
-      "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)"
+      "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)",
+      "**트로스트(Controls 가이드 5158:108)**: 컨트롤 박스 24×24, on(checked) 상태는 브랜드 노랑이 아닌 **다크 #333 채움 + 흰 체크**(노랑 위 가독성 — 트로스트 토큰 checkbox.checkedBg/checkColor). 라벨 우측 gap 12. 그룹은 vertical stack 행간 12. 필수면 그룹 라벨에 * , 미선택 시 그룹 하단 Helper 로 에러."
     ],
     "examplesHtml": {
       "do": "<nds-checkbox name=\"agree-terms\" label=\"이용약관에 동의합니다\" required></nds-checkbox>\n<nds-checkbox name=\"optional-marketing\" label=\"마케팅 정보 수신 (선택)\"></nds-checkbox>",
@@ -1132,6 +1133,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "DatePicker": {
     "name": "DatePicker",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9903",
     "summary": "단일 날짜 선택. 캘린더 팝업 + 키보드 grid 이동(Arrow/Home/End/PageUp/PageDown) + clear/open/status 제어. 시간까지 필요하면 별도 TimePicker 또는 DateTimePicker 조합. (폼에서 날짜 고르기는 항상 DatePicker — Calendar 는 마커가 있는 독립 인라인 월 뷰로 용도가 다르다.)",
     "pitfalls": [
       "min/max 누락 — 사용자가 과거/먼 미래 날짜를 선택해 데이터 검증 실패.",
@@ -1579,7 +1581,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Input": {
     "name": "Input",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9903",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9903",
     "sizeMatrix": {
       "default": "height 48 / padding 16·13 / wrapper gap 10 / radius 8",
       "field": "height 48 / 같은 토큰, label-gap 8 — 폼-행 변형(라벨갭만 타이트). 캐포비 admin TextField 도 48(Figma 3082:846)."
@@ -1831,8 +1833,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Modal": {
     "name": "Modal",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9947",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9899",
     "references": [
+      {
+        "label": "Trost Modal & Popup Guide — 4 variants (Compact/Default × Destructive/Positive)",
+        "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9899",
+        "caption": "트로스트 모달 가이드. Positive=브랜드 노랑",
+        "brand": "trost"
+      },
       {
         "label": "CashwalkBiz Admin Modal Guide — 4 patterns",
         "url": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3418-471",
@@ -1869,6 +1877,15 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           "dataLoaderModal": "**⑦ 데이터 로더 모달 (⑤ Data Modal 의 선택형)**: 기존 항목을 표에서 골라 불러오는 대형 모달(예: 소재 불러오기). ⑤ 구조 + **행 선택(radio/check) + 페이지네이션 + 푸터 액션**. 헤더 = 제목 Bold 24 + 검색 input + Close X. 본문 = 선택형 DataTable(상태칩·이미지·텍스트 컬럼 등) + 하단 페이지네이션 + 'N개씩 보기' 드롭다운. 푸터 = **취소(color=\"neutral\" outlined) + 불러오기(color=\"secondary\" solid · 검정 pill)** 각 ~170×56 (확인팝업 dual 푸터와 동일). 조회 전용 ⑤ 와 달리 선택·확정 액션이 있다. Figma 3001-32822.",
           "activationCondition": "`<html data-brand=\"cashwalk-biz\">` 가 박힌 환경에서만 자동 적용 — 그 외에서는 base 모바일 스펙 유지"
         }
+      },
+      "trost": {
+        "dimensions": {
+          "radius": "16px (가이드 171:9899 Radius/2xl · base 8 → 트로스트 토큰 modal.radius)",
+          "padding": "24px(top) / 16 좌우·하단 (base 28/16/16 → 트로스트 토큰 modal.padTop=24)",
+          "buttons": "2개 가로(우측 primary) · width 130 · height 44 · radius 8 · backdrop rgba(0,0,0,0.4)",
+          "confirmCta": "Positive(저장·구독·확인) = 브랜드 노랑 #FFF42E + 검은 텍스트(confirmCta 토큰이 브랜드별 자기 값 — 트로스트=검정 자동, 별도 설정 불필요). 비가역(삭제·차단·해지) = confirmTone=\"destructive\"(react) / 검정 nds-button color=\"neutral\"(html) → 검정 #1A1A1A + 흰 텍스트. ⚠️ mint(서플 primary) 색 쓰지 말 것 — 트로스트는 노랑 유지.",
+          "activationCondition": "<html data-brand=\"trost\"> — base 토큰 cascade 로 자동 (radius/padTop 은 트로스트 컴포넌트 토큰)"
+        }
       }
     },
     "usagePolicy": {
@@ -1896,6 +1913,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "ModalHeader/Body/Footer 자체에 padding 을 더하지 말 것 — 카드 패딩은 ModalContent 가 담당.",
       "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 사용자의 즉각적 판단/응답이 필요할 때만.",
       "Modal 내부 강조 최소화: 핵심 action 1개 + 보조 action 1개 구조가 기본. Body 안에 또 다른 Card·Brand BG·Chip 그룹을 쌓지 말 것.",
+      "**확인 CTA 색은 confirmCta 토큰이 자동 — 브랜드별 자기 값으로 합성된다.** Modal/Popup 의 기본 confirm(positive) 버튼은 bg=confirmCta(브랜드 색: 트로스트=노랑·나머지=brand·캐포비=검정) + **텍스트=confirmCta.text(트로스트=검정/나머지=흰/캐포비=흰)**. 노랑 위 흰 글씨 회귀는 해소됨 — Modal footer 에 `color`/text 를 직접 박지 말 것. **비가역(파괴적) 액션은 `confirmTone=\"destructive\"`**(react `<Modal confirmTone=\"destructive\">` / ModalFooter) → 검정 Neutral CTA + 흰 텍스트(브랜드 무관, neutral-solid 토큰). HTML `<nds-modal>` 은 footer 가 consumer slot 이라 destructive = `<nds-button color=\"neutral\" variant=\"solid\">삭제</nds-button>` 로 표현(별도 속성 없음). 트로스트: 저장·구독=기본(노랑) / 삭제·차단=destructive(검정).",
       "캐포비 admin 모달의 주 action(확인/적용)은 color=\"neutral\" variant=\"solid\" — 브랜드 시그니처 **검정 CTA**(#111·흰 텍스트). 취소/닫기는 color=\"neutral\" variant=\"outlined\", 파괴적 확정만 color=\"error\". 모달 버튼 shape 는 **pill 유지가 맞다**(Figma ModalGuide 3418-471) — default 사각으로 바꾸지 말 것. **★ footer 버튼은 주·보조(취소/아웃라인) 가리지 않고 전부 `shape=\"pill\"`** — 보조 버튼에 빠뜨려 pill+각진 버튼이 섞이는 게 흔한 회귀. validator `brand-modal-footer-button-shape`(brand-profiles cashwalk-biz.modal.footerButtonShape=\"pill\") 가 pill 누락 버튼을 잡는다. (캐포비는 secondary tone 이 없어 Button/validator 가 경고하니 검정은 neutral 로. 검정인데 색이 틀리면 data-brand=\"cashwalk-biz\" 미설정 — 색 hex 를 직접 박지 말고 cascade 로 해결.)",
       "**★ 캐포비 확인/팝업 모달 버튼에 `color` 를 절대 생략하지 말 것 — 생략하면 노랑(primary)이 된다.** Button/<nds-button> 의 기본 color 는 `primary`(노랑)라, 모달 footer 에 `<nds-button>비즈니스 그룹 만들기</nds-button>` 처럼 color 를 안 적으면 캐포비 검정 CTA 가 아니라 노랑 버튼이 렌더된다(5회+ 재발한 회귀의 근본). **반드시 `color=\"neutral\" variant=\"solid\" shape=\"pill\"` 를 명시**한다. validator `brand-modal-confirm-cta` 가 확인/팝업 모달의 primary/색생략 footer 버튼을 error 로 잡는다. (본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/피커(⑥)·데이터로더(⑦) 같은 대형 모달뿐 — max-width 720+.)",
       "**모달/팝업 버튼이 2개일 때는 항상 가로 정렬을 유지한다 — 라벨이 길어 안 들어가도 세로 스택 금지.** 좁아서 한 줄에 안 들어가면 세로로 쌓지 말고 **라벨 텍스트를 줄인다**(예: \"비즈니스 그룹 만들기\"→\"그룹 만들기\", \"나중에 다시 하기\"→\"나중에\", \"지금 확인할게요\"→\"확인\"). 모달 footer 에 `flex-direction:column` / `actions-layout=\"stack\"` 을 넣지 말 것 — validator `brand-modal-footer-stacked` 가 warn. (모달 버튼 라벨은 1~2 단어로.)",
@@ -2106,6 +2124,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Popup": {
     "name": "Popup",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9899",
     "summary": "단순 확인/거부(취소·삭제·종료) 1-액션 다이얼로그. 본문이 긴 경우엔 Modal, 비차단 알림은 Snackbar. 버튼 배치는 actionsLayout('split'=2버튼 50/50·1버튼 세로 스택 | 'end'=우측 hug)으로 제어하고, 생략 시 브랜드 기본(캐포비=end, 그 외=split)이 강제된다(react=actionsLayout prop, html=actions-layout 속성). 색/pill 모양은 브랜드 토큰이 별도 결정.",
     "pitfalls": [
       "Popup 본문에 form / 멀티 입력을 두지 말 것 — Modal 이 맞음.",
@@ -2268,11 +2287,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Radio": {
     "name": "Radio",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5158-108",
     "summary": "단일 선택 입력. 단독으로 쓸 일은 거의 없고, RadioGroup + RadioGroupItem 조합으로 사용.",
     "pitfalls": [
       "Radio를 단독으로 여러 개 두고 same name만 맞추는 패턴은 동기화 버그가 잦음. 무조건 RadioGroup으로 감쌀 것.",
       "RadioGroupItem은 RadioGroupContext 안에서만 동작. throw가 나면 RadioGroup으로 감싸지지 않은 것.",
-      "value prop은 string. 숫자/객체 쓸 거면 String(value)로 직렬화하고 onValueChange에서 다시 파싱."
+      "value prop은 string. 숫자/객체 쓸 거면 String(value)로 직렬화하고 onValueChange에서 다시 파싱.",
+      "**트로스트(Controls 가이드 5158:108)**: 컨트롤 24×24, on 상태 = **다크 #333 테두리+점**(브랜드 노랑 아님 — 트로스트 토큰 radio.checkedColor). 라벨 우측 gap 12, 그룹 vertical stack 행간 12. 상호배타 옵션에만(독립 다중은 Checkbox). 필수면 그룹 라벨 * + 미선택 시 하단 Helper 에러."
     ],
     "recommended": [
       "<RadioGroup name=\"freq\" value={v} onValueChange={setV}> <RadioGroupItem value=\"daily\" label=\"매일\" /> ... </RadioGroup>",
@@ -2357,6 +2378,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Select": {
     "name": "Select",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9903",
     "summary": "드롭다운. options + value + onValueChange. 옵션이 많으면 `searchable`(검색형, Ant showSearch 모델)로 label 필터 — 단, 값은 항상 옵션 중에서만 선택된다(자유 입력 X).",
     "pitfalls": [
       "**폭은 기본 전체너비(fullWidth/full-width=true)** — 폼/FormField 안에서 트리거가 100% 를 채운다(캐포비 어드민 폼 기본 규칙). 좁게 써야 하는 경우(어드민 검색 필터 등)에만 `full-width=\"false\"`(React `fullWidth={false}`)를 명시. 드롭다운 메뉴 폭은 전체너비면 트리거 폭으로 고정, auto(좁은) 셀렉트는 가장 넓은 옵션까지 grow 후 캡(360px) — 캡/트리거폭에 닿으면 옵션 라벨이 줄바꿈 대신 말줄임. 메뉴를 트리거보다 임의로 넓게 만들지 말 것.",
@@ -2830,6 +2852,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Textarea": {
     "name": "Textarea",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9903",
     "summary": "여러 줄 자유 입력. 일기 / 후기 / 메모. 자체 max-length / min-height 가이드 있음.",
     "pitfalls": [
       "raw <textarea> 직접 사용 — placeholder/스타일/포커스 ring 토큰 미적용.",
@@ -2877,7 +2900,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Toast": {
     "name": "Toast",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1330-2",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=806-1277",
     "summary": "**비차단형 단일 다크 일시 메시지** 전용 (저장 완료 / 복사됨 / 전송됨 등). 확인·클릭 없이 자동으로 사라지는(2~3초, 오류 4초까지) 가벼운 결과 피드백 — 다크 배경(#212121·0.92) + 흰 텍스트 하나의 스타일만 있다. **색 변형(success/error/warning/info)은 없다** — 심각한 오류·결정 요청은 Toast 대신 Modal/Alert. 위치가 곧 형태다: `position=\"top\"` = PC·상단 중앙·**pill**·패딩 16/32·body2, `position=\"bottom\"` = 모바일·하단·**rounded 24**·패딩 12/20·body3. **동시에 1개만 노출이 기본**(maxCount 기본 1 — 새 토스트가 기존을 즉시 대체); 스택이 필요하면 `maxCount` 를 올려 opt-in. 자동으로 사라지므로 **액션(되돌리기/다시시도)·닫기 버튼·브랜드 카드(캐포비 흰 카드)는 두지 않는다** — 그런 알림은 Snackbar 를 사용한다. **캐시워크 포 비즈니스(cashwalk-biz/캐포비)는 알림을 Snackbar 만 사용한다 — Toast 를 쓰지 않는다(예외 없음).** 캐포비 화면의 `<nds-toast>` 는 validator 가 `brand-banned-notification` error 로 차단한다. get_guide({ topic: 'component:Snackbar', brand: 'cashwalk-biz' }).",
     "pitfalls": [
       "**색 변형을 기대하지 말 것** — Toast 는 단일 다크 스타일이다. `variant` prop 은 없다(제거됨). 심각도 위계가 필요하면 Modal/Alert 또는 inline notice 패턴.",
@@ -2885,7 +2908,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "위치는 형태를 바꾼다 — `top` 은 PC pill, `bottom` 은 모바일 rounded 24. 디바이스 컨벤션(PC 상단 / 모바일 하단)을 따른다.",
       "duration 0 으로 영구 표시 금지 — 차단 의도면 Modal/Popup, 영구 알림이면 Banner.",
       "Toast 안에 input/form/액션 두지 말 것 — interactive 영역이면 Drawer/Modal, 액션·닫기가 필요하면 Snackbar.",
-      "**캐포비(cashwalk-biz)에서는 Toast 자체를 쓰지 않는다 — Snackbar 만 사용**(순수 일시 메시지여도 예외 없음). validator `brand-banned-notification` 룰이 `<nds-toast>` 를 error 로 막는다."
+      "**캐포비(cashwalk-biz)에서는 Toast 자체를 쓰지 않는다 — Snackbar 만 사용**(순수 일시 메시지여도 예외 없음). validator `brand-banned-notification` 룰이 `<nds-toast>` 를 error 로 막는다.",
+      "**트로스트(Toast 가이드 806:1277)**: bg Black 0.92 · Top=pill(PC ≥1024 상단 중앙·safe-top 80) / Bottom=rounded 24(모바일 <1024 하단 중앙·safe-bottom 96·좌우 16). 본문 14 White 1줄 권장 · padding Bottom 12/20·Top 16/32 · shadow y8 blur24 18% · auto-dismiss 2~3s · z-index 1500+. 비가역형(액션 버튼 없음) — 액션 필요하면 Snackbar/Modal."
     ],
     "examplesHtml": {
       "do": "<!-- 모바일: 하단 rounded 24 -->\n<nds-toast message=\"저장되었습니다\" position=\"bottom\" duration=\"2500\" open></nds-toast>\n<!-- PC: 상단 pill -->\n<nds-toast message=\"링크가 복사되었습니다\" position=\"top\" duration=\"2500\" open></nds-toast>",
@@ -2894,13 +2918,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Toggle": {
     "name": "Toggle",
-    "figmaNodeUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3295-547",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5158-108",
     "summary": "즉시 적용되는 on/off 스위치. 설정 페이지 / 알림 토글에 사용. 폼 제출 후 적용되는 binary 는 Checkbox 가 맞음. **라벨 내장 status 변형** — onLabel/offLabel(HTML on-label/off-label)을 주면 트랙 **안**에 텍스트(예: 노출/미노출)가 들어가고 폭이 auto 로 넓어진다. tone='success' 면 켜짐 트랙이 초록(노출/활성 status). 어드민 리스트의 노출 토글에 사용.",
     "pitfalls": [
       "label 없는 단독 Toggle — 무엇을 켜고 끄는지 시각만으론 불명확. (라벨 내장 status 변형이면 on-label/off-label 자체가 안내 역할.)",
       "Toggle 변경 후 별도 '저장' 버튼이 필요한 UI 라면 Checkbox 가 맞음 — Toggle 은 즉시 반영 시그널.",
       "size='sm' 을 본문 안 inline 텍스트와 함께 — 시각 위계 부족, baseline 어색.",
-      "노출/활성 status 토글의 켜짐 초록을 raw hex(#60be34 등)로 박지 말 것 — tone='success' 가 semantic status-success 토큰으로 5 브랜드 자동 대응. 라벨 내장 status 토글은 size 무시(고정 30 / thumb 25)."
+      "노출/활성 status 토글의 켜짐 초록을 raw hex(#60be34 등)로 박지 말 것 — tone='success' 가 semantic status-success 토큰으로 5 브랜드 자동 대응. 라벨 내장 status 토글은 size 무시(고정 30 / thumb 25).",
+      "**트로스트(Controls 가이드 5158:108)**: 트랙 50×30, on=다크(#333). 즉시 적용 설정에만(저장 버튼 필요한 곳 금지). 라벨은 명사·상태형(\"푸시 알림\" ⭕, \"받기\"/\"활성화\" ❌ — 동사 금지). 라벨 좌측·컨트롤 우측."
     ],
     "examplesHtml": {
       "do": "<nds-toggle name=\"push-notification\" label=\"푸시 알림 받기\" checked></nds-toggle>\n<!-- 어드민 리스트 노출 토글: 라벨 내장 + 초록 status -->\n<nds-toggle on-label=\"노출\" off-label=\"미노출\" tone=\"success\" checked></nds-toggle>\n<script>el.addEventListener(\"change\", e => savePref(e.target.checked));</script>",
@@ -2909,13 +2934,14 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "Tooltip": {
     "name": "Tooltip",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1380-13",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=806-1278",
     "summary": "trigger 에 마우스 hover / focus 시 보조 설명(Figma 1380:13). **단일 다크 톤** — 배경 `--nds-tooltip-bg`(#333333, 전 브랜드 동일) + 흰 텍스트(Caption1 Medium 13), padding 14/16, radius 8, **꼬리 12×8 triangle**(본체 외부 가운데). Position 4종(Top/Bottom/Left/Right, 트리거 기준), trigger=Hover·Focus, delay Show 200ms·Hide 0ms(플리커 방지), z-index 1400(모달·토스트보다 아래), **동시 1개만 노출**. **두 줄·여러 줄 본문 허용** — 짧은 힌트는 `content` 속성(자동 줄바꿈, 1줄 권장·최대 2줄), 제목+불릿 같은 **리치 안내**(예: 캐포비 '권한 안내')는 `<template slot=\"content\">` 로 넣고 `max-width` 로 폭 조절. 모바일/터치 only 환경에선 사실상 안 보이므로 핵심 정보는 본문에 둘 것.",
     "pitfalls": [
       "Tooltip 안에 인터랙티브 요소(링크/버튼) — 모바일/터치에서는 도달 불가.",
       "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
       "본문 길이/줄 수 제한은 없음 — 두 줄·여러 줄·제목+불릿 리치까지 허용(`<template slot=\"content\">` + 필요 시 `max-width`). 단 (a) 사용자의 응답/결정이 필요하면 component:ConfirmTooltip(가벼운 인라인 확인) 또는 Modal/Popup(차단형), (b) 한 화면을 채울 만큼 길면 Modal — Tooltip 은 어디까지나 hover 보조 안내. (이전의 '한 문장 초과 금지' 규칙은 폐기.)",
-      "리치 본문은 `content` 속성(평문)이 아니라 **`<template slot=\"content\">`** 로 — HTML(제목 `<p style=\"font-weight:700\">` · 불릿 `<ul><li>` · 강조 `<strong>`)을 넣어야 렌더된다. content 속성에 태그 문자열을 넣으면 그대로 escape 됨."
+      "리치 본문은 `content` 속성(평문)이 아니라 **`<template slot=\"content\">`** 로 — HTML(제목 `<p style=\"font-weight:700\">` · 불릿 `<ul><li>` · 강조 `<strong>`)을 넣어야 렌더된다. content 속성에 태그 문자열을 넣으면 그대로 escape 됨.",
+      "**트로스트(Tooltip 가이드 806:1278)**: bg #333 · 흰 텍스트 Caption1 Medium 13 · padding 14/16 · radius 8 · tail 12×8 삼각형(본체 외부 가운데). Position 4종(Top/Bottom/Left/Right, 화면 가장자리면 반대 방향). delay show 200ms·hide 0 · trigger Hover·Focus(터치=long-press) · z-index 1400(모달·토스트 1500 아래). 액션 버튼·링크 금지 → Modal/Notice. 본문 1줄(최대 2)."
     ],
     "examplesHtml": {
       "do": "<!-- ① 짧은 힌트(자동 줄바꿈) -->\n<nds-tooltip content=\"삭제하면 복구할 수 없어요\" placement=\"top\" trigger-label=\"?\"></nds-tooltip>\n<!-- ② 리치 안내(제목+불릿·멀티라인) — 캐포비 권한 안내 형태 -->\n<nds-tooltip trigger-label=\"?\" placement=\"top\" max-width=\"346\" open>\n  <template slot=\"content\">\n    <p style=\"font-weight:700\">권한 안내</p>\n    <ul>\n      <li>비즈니스 계정 : <strong>모든 광고 계정</strong>에 접근할 수 있으며, 광고 계정 생성 및 수정 권한을 가집니다.</li>\n      <li>일반 계정 : <strong>초대된 광고 계정</strong>에 한해 광고 조회 및 관리가 가능합니다.</li>\n    </ul>\n  </template>\n</nds-tooltip>",
@@ -2937,7 +2963,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "ValidationChip": {
     "name": "ValidationChip",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9903",
     "standalone": false,
     "composeWith": [
       "Input",

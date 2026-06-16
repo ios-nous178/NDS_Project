@@ -859,6 +859,7 @@ export const COMPONENT_ATTRS = {
       "closable",
       "close-text",
       "confirm-text",
+      "confirm-tone",
       "device",
       "is-mask-close",
       "mask",
@@ -871,6 +872,10 @@ export const COMPONENT_ATTRS = {
       "device": [
         "pc",
         "mobile"
+      ],
+      "confirm-tone": [
+        "default",
+        "destructive"
       ]
     }
   },
