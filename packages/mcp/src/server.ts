@@ -29,6 +29,11 @@ import {
   type IconCategory,
 } from "./guides.js";
 import type { Catalog, Manifest, McpbManifest } from "./types/manifest.js";
+import {
+  ASSET_CATALOG,
+  ASSET_CATALOG_SUMMARY,
+  type AssetCatalogEntry,
+} from "./asset-catalog.generated.js";
 import { configureMockupValidator } from "./tools/mockup-validator.js";
 export { validateMockupSource } from "./tools/mockup-validator.js";
 import {
@@ -552,6 +557,135 @@ export async function findIcon(args: {
   };
 }
 
+/* ───────────── find_asset (브랜드 이미지 검색) ───────────── */
+
+// 브랜드 콘텐츠 이미지는 **원칙적으로 항상 pull**. 미스 시 AI 생성 금지 → placeholder + 경고.
+// 이 정책 문자열을 모든 find_asset 응답에 동봉해 "뭐가 있는지 몰라 못 가져옴 → 헛삽질/AI생성" 재발 차단.
+const ASSET_POLICY =
+  "에셋 정책: 이미지가 필요하면 ① 먼저 find_asset 으로 찾아 inlineRef 를 <img src> 에 그대로 박는다(build_singlefile_html 이 base64 인라인). ② 에셋에 없으면 회색 박스/empty-state placeholder 로 두고 '에셋 없음 — 추가 검토' 주석을 남긴다. ③ 브랜드 음식·일러스트·사진을 AI 로 생성하지 않는다(off-brand drift).";
+
+// 한글/약어 → 카테고리·id 보조 검색어. 가산만 — 기존 매치를 제거하지 않으므로 오탐 최악은 "후보 1개 증가".
+const ASSET_SEARCH_ALIASES: Record<string, string[]> = {
+  음식: ["food", "food-types"],
+  사진: ["image", "images"],
+  이미지: ["image", "images"],
+  프로필: ["profile", "profiles"],
+  로고: ["logo", "logos"],
+  일러스트: ["illustration", "illustrations"],
+  대회: ["marathon", "event", "marathon-events"],
+  마라톤: ["marathon", "marathon-events"],
+  빈상태: ["empty", "empty-states"],
+  플레이스홀더: ["empty", "empty-states", "placeholder"],
+  카테고리: ["category", "category-heroes"],
+  심리검사: ["psych", "psych-tests"],
+  선물: ["gift"],
+};
+
+function scoreAsset(query: string, entry: AssetCatalogEntry): number {
+  const q = query.toLowerCase().trim();
+  if (!q) return 0;
+  let best = Math.max(scoreMatch(q, entry.id), scoreMatch(q, entry.category));
+  for (const tok of entry.search) {
+    if (tok === q) best = Math.max(best, 90);
+    else if (tok.includes(q) || q.includes(tok)) best = Math.max(best, 55);
+  }
+  for (const [alias, targets] of Object.entries(ASSET_SEARCH_ALIASES)) {
+    if (!q.includes(alias)) continue;
+    for (const t of targets) {
+      if (entry.search.includes(t) || entry.category.includes(t)) best = Math.max(best, 50);
+    }
+  }
+  return best;
+}
+
+function slimAsset(e: AssetCatalogEntry) {
+  return {
+    brand: e.brand,
+    category: e.category,
+    id: e.id,
+    inlineRef: e.inlineRef,
+    mimeType: e.mimeType,
+    ...(e.retina ? { retina: e.retina } : {}),
+  };
+}
+
+/**
+ * find_asset 통합 라우터 — @nudge-design/assets 브랜드 이미지 검색(아이콘 아님).
+ *  - 인자 없음 → 브랜드×카테고리 인덱스
+ *  - { query } (+ brand/category 필터) → 점수 매치 top N (inlineRef 포함)
+ *  - { id } → 정확/근접 id 매치
+ *  - { brand } / { category } 만 → 해당 풀 목록
+ * 모든 응답에 _policy(pull-first · 미스 placeholder · AI 브랜드이미지 금지) 동봉.
+ */
+export function findAsset(args: {
+  query?: string;
+  brand?: string;
+  category?: string;
+  id?: string;
+  limit?: number;
+}) {
+  const limit = clampLimit(args.limit, 20, 60);
+  const brand = args.brand ? canonicalBrandSlug(args.brand) ?? args.brand : undefined;
+  let pool = ASSET_CATALOG;
+  if (brand) pool = pool.filter((e) => e.brand === brand || e.brand === "shared");
+  if (args.category) {
+    const c = args.category.toLowerCase();
+    pool = pool.filter((e) => e.category.toLowerCase().includes(c));
+  }
+
+  if (args.id) {
+    const exact = pool.filter((e) => e.id === args.id);
+    const hits = exact.length ? exact : pool.filter((e) => e.id.includes(args.id as string));
+    if (!hits.length) {
+      return {
+        error: `에셋 id '${args.id}' 를 찾지 못했습니다${brand ? ` (brand=${brand})` : ""}. find_asset({ query }) 로 검색하거나 인자 없이 호출해 카테고리 인덱스를 보세요.`,
+        miss: true,
+        _policy: ASSET_POLICY,
+      };
+    }
+    return { count: hits.length, assets: hits.slice(0, limit).map(slimAsset), _policy: ASSET_POLICY };
+  }
+
+  if (args.query) {
+    const matches = pool
+      .map((e) => ({ e, score: scoreAsset(args.query as string, e) }))
+      .filter((m) => m.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
+    if (!matches.length) {
+      return {
+        error: `No asset matched '${args.query}'${brand ? ` (brand=${brand})` : ""}. 인자 없이 find_asset 을 호출하면 브랜드×카테고리 인덱스를 볼 수 있습니다. 더 일반적인 키워드(food/profile/logo…)로 다시 시도하세요.`,
+        miss: true,
+        _onMiss:
+          "에셋에 없는 이미지입니다 — AI 생성하지 말고 회색 박스/empty-state placeholder + '에셋 없음' 주석으로 두세요.",
+        _policy: ASSET_POLICY,
+      };
+    }
+    return { count: matches.length, assets: matches.map((m) => slimAsset(m.e)), _policy: ASSET_POLICY };
+  }
+
+  if (args.category || brand) {
+    return {
+      brand: brand ?? "(all)",
+      category: args.category ?? "(all)",
+      count: pool.length,
+      assets: pool.slice(0, limit).map(slimAsset),
+      ...(pool.length > limit
+        ? { _hint: `${pool.length}개 중 ${limit}개만 표시. query 로 좁히거나 limit 를 키우세요.` }
+        : {}),
+      _policy: ASSET_POLICY,
+    };
+  }
+
+  return {
+    _hint:
+      "이미지가 필요하면 find_asset({ query, brand }) 로 검색해 inlineRef 를 <img src> 에 박으세요(build_singlefile_html 이 base64 인라인). brand/category 로 필터, id 로 정확 매치.",
+    total: ASSET_CATALOG.length,
+    brands: ASSET_CATALOG_SUMMARY,
+    _policy: ASSET_POLICY,
+  };
+}
+
 /**
  * find_token 통합 라우터.
  *  - 인자 없음 → 그룹별 카운트 summary
@@ -941,6 +1075,13 @@ export const toolHandlers = {
       "find_icon",
       await findIcon(
         args as { name?: string; query?: string; category?: string; limit?: number; size?: number },
+      ),
+    ),
+  find_asset: (args: ToolArgs) =>
+    withVisualReferencePrompt(
+      "find_asset",
+      findAsset(
+        args as { query?: string; brand?: string; category?: string; id?: string; limit?: number },
       ),
     ),
   find_token: (args: ToolArgs) =>

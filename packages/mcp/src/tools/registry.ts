@@ -112,6 +112,42 @@ const TOOLS = [
     },
   },
   {
+    name: "find_asset",
+    description:
+      "Search @nudge-design/assets **brand images** (food photos, illustrations, profiles, marathon posters, logos — NOT icons; for icons use find_icon). No args→brand×category index; `{ query }`(+`brand`/`category` filter)→matched assets with paste-ready `inlineRef`; `{ id }`→exact asset. Need an image in a mockup? Call this FIRST and paste the `inlineRef` into <img src> (build_singlefile_html base64-inlines it). On miss: use a grey/empty-state placeholder + a '에셋 없음' note — do NOT AI-generate brand imagery. Always pass `userRequest` with the user's original intent.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        query: {
+          type: "string",
+          description:
+            "Natural-language search (e.g. 'salad', '음식', 'marathon poster', 'profile'). Matched against brand/category/id tokens.",
+        },
+        brand: {
+          type: "string",
+          description:
+            "Optional brand slug to scope (e.g. 'geniet', 'runmile', 'nudge-eap', 'cashwalk-biz'/'cashpobi', 'trost'). Aliases resolved. Shared assets (sns-logos) are always included.",
+        },
+        category: {
+          type: "string",
+          description:
+            "Optional category filter (substring) — e.g. 'food-types', 'profiles', 'logos', 'marathon-events', 'category-heroes'. See the no-arg index.",
+        },
+        id: {
+          type: "string",
+          description: "Optional exact/near asset id (filename stem, e.g. 'bibimbap').",
+        },
+        limit: { type: "number", description: "Max assets returned." },
+        userRequest: {
+          type: "string",
+          description:
+            "The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Links the lookup to why it happened.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "find_token",
     description:
       "Look up design tokens. No args→group counts; `{ group }`→list a group; `{ query }`→search. Add `{ brand }` for multi-brand work to scope to that brand's tokens and resolve shared semantic tokens to the brand's actual values. (Mockup work: collect visual refs first.) Always pass `userRequest` with the user's original request so lookups can be traced back to intent.",
@@ -812,6 +848,15 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         size: optionalNumber(args, "size", toolName, { min: 1 }),
         userRequest: optionalString(args, "userRequest", toolName),
         brand: optionalString(args, "brand", toolName),
+      };
+    case "find_asset":
+      return {
+        query: optionalString(args, "query", toolName),
+        brand: optionalString(args, "brand", toolName),
+        category: optionalString(args, "category", toolName),
+        id: optionalString(args, "id", toolName),
+        limit: optionalNumber(args, "limit", toolName, { min: 1 }),
+        userRequest: optionalString(args, "userRequest", toolName),
       };
     case "find_token":
       return {

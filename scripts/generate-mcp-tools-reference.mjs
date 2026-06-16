@@ -121,10 +121,10 @@ function extractTools(src) {
  */
 const CATEGORIES = [
   {
-    title: "브랜드 · 컴포넌트 · 아이콘 · 토큰 조회",
+    title: "브랜드 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회",
     blurb:
-      "작업 전 어떤 브랜드/컴포넌트/아이콘/토큰을 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)",
-    tools: ["get_brand", "find_component", "find_icon", "find_token"],
+      "작업 전 어떤 브랜드/컴포넌트/아이콘/토큰/이미지를 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. 브랜드 이미지(음식·일러스트·프로필·대회 포스터 등)가 필요하면 `find_asset` 을 먼저 호출해 `inlineRef` 를 `<img src>` 에 박는다(에셋에 없으면 placeholder + 경고, AI 생성 금지). (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)",
+    tools: ["get_brand", "find_component", "find_icon", "find_token", "find_asset"],
   },
   {
     title: "가이드 · 패턴 · 원칙",

@@ -17,12 +17,13 @@
   ],
   "scripts": {
     "build:manifest": "node scripts/emit-manifest.mjs",
-    "build": "rm -rf dist && pnpm run build:guides && pnpm run build:manifest && tsc",
+    "build": "rm -rf dist && pnpm run build:guides && pnpm run build:assets && pnpm run build:manifest && tsc",
     "start": "node dist/server.js",
     "dev": "pnpm run build:manifest && tsc --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build:guides": "node scripts/build-guides.mjs"
+    "build:guides": "node scripts/build-guides.mjs",
+    "build:assets": "node scripts/build-asset-catalog.mjs"
   },
   "dependencies": {
     "@babel/parser": "^7.25.0",

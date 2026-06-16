@@ -1293,6 +1293,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
   - \`get_guide({ topic: "component:<Name>", target: "html", brand: "trost|geniet|nudge-eap|cashwalk-biz" })\` — brand 별 변형 자동 적용. 응답에 \`_brandApplied\` (service overlay), \`_matrixOverrideApplied\` (spec 차이), \`_brandAwareApplied\` (validPropValues/assetManifest/forcedProps) 메타로 어느 layer 가 적용됐는지 명시. brand 미지정 호출은 \`_brandVariants\` 슬림 요약 첨부 — 어느 brand 에 overlay 가 있는지 확인 후 다시 호출. **task 슬러그가 brand 를 알려주면 (예: \`task: geniet-diary-hub\`) 컴포넌트 가이드 호출 시 \`brand: "geniet"\` 같이 지정.**
   - \`get_guide({ topic: "pattern:<name>" })\` — 패턴 가이드 (cta-group, dark-patterns 등)
   - \`find_component\` / \`find_icon\` / \`find_token\` — DS 자산 조회
+  - \`find_asset({ query, brand })\` — **브랜드 이미지**(음식·일러스트·프로필·대회 포스터 등) 검색 → \`inlineRef\` 를 \`<img src>\` 에 박으면 base64 inline. 이미지 필요 시 **먼저 호출**. 에셋에 없으면 placeholder + '에셋 없음' 주석, 브랜드 이미지 AI 생성 금지.
   - \`validate_html_mockup({ filePath })\` — HTML 정적 검증 (위반 0 통과 시 채택 비율 \`stats.counts.dsRatio\` 자동 동봉)
   - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
   - \`build_singlefile_html\` — vanilla HTML 워크플로우도 1급 지원. inline 산출물 1개 \`.html\` (JS · CSS · nds-* runtime 전부 inline) 로 디자이너/PM 에게 dnd 전달 가능.

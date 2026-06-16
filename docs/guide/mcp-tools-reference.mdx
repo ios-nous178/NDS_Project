@@ -1,7 +1,7 @@
 ---
 sidebar_position: 10
 title: MCP 도구 레퍼런스
-description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
+description: nudge-ds MCP 서버가 제공하는 20개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
 ---
 
 <!-- AUTO-GENERATED FILE. SSOT: packages/mcp/src/tools/registry.ts (TOOLS 배열). 본문을 바꾸려면 registry.ts 를 고치고 `pnpm generate:mcp-tools` 를 다시 실행하세요. 손으로 편집하지 마세요. -->
@@ -9,7 +9,7 @@ description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 
 
 # MCP 도구 레퍼런스
 
-`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **19개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
+`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **20개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
 
 > 사용 흐름과 환경 설치는 [MCP 사용 가이드](/NUDGE_DS_MCP_USAGE) 를 먼저 참고하세요.
 >
@@ -17,22 +17,22 @@ description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 
 
 ## 한눈에 보기
 
-| 카테고리                               | 개수   | 도구                                                                                                                                                    |
-| -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 브랜드 · 컴포넌트 · 아이콘 · 토큰 조회 | 4      | `get_brand` · `find_component` · `find_icon` · `find_token`                                                                                             |
-| 가이드 · 패턴 · 원칙                   | 2      | `get_guide` · `list_figma_sync_status`                                                                                                                  |
-| 설계 보조 (DesignSpec · 페이지 패턴)   | 3      | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
-| 목업 빌드 · 검증 · 변환                | 6      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
-| Dev 서버 / 미리보기                    | 1      | `dev_server`                                                                                                                                            |
-| 외부 프로젝트 셋업                     | 1      | `get_setup`                                                                                                                                             |
-| 피드백 · 텔레메트리                    | 2      | `log_feedback` · `prompt_satisfaction`                                                                                                                  |
-| **합계**                               | **19** |                                                                                                                                                         |
+| 카테고리                                      | 개수   | 도구                                                                                                                                                    |
+| --------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 브랜드 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회 | 5      | `get_brand` · `find_component` · `find_icon` · `find_token` · `find_asset`                                                                              |
+| 가이드 · 패턴 · 원칙                          | 2      | `get_guide` · `list_figma_sync_status`                                                                                                                  |
+| 설계 보조 (DesignSpec · 페이지 패턴)          | 3      | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
+| 목업 빌드 · 검증 · 변환                       | 6      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
+| Dev 서버 / 미리보기                           | 1      | `dev_server`                                                                                                                                            |
+| 외부 프로젝트 셋업                            | 1      | `get_setup`                                                                                                                                             |
+| 피드백 · 텔레메트리                           | 2      | `log_feedback` · `prompt_satisfaction`                                                                                                                  |
+| **합계**                                      | **20** |                                                                                                                                                         |
 
 ---
 
-## 브랜드 · 컴포넌트 · 아이콘 · 토큰 조회
+## 브랜드 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회
 
-작업 전 어떤 브랜드/컴포넌트/아이콘/토큰을 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)
+작업 전 어떤 브랜드/컴포넌트/아이콘/토큰/이미지를 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. 브랜드 이미지(음식·일러스트·프로필·대회 포스터 등)가 필요하면 `find_asset` 을 먼저 호출해 `inlineRef` 를 `<img src>` 에 박는다(에셋에 없으면 placeholder + 경고, AI 생성 금지). (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)
 
 ### `get_brand`
 
@@ -81,6 +81,19 @@ Look up design tokens. No args→group counts; `{ group }`→list a group; `{ qu
 - `query` `string` — Optional name/value query (e.g. '#FF5722').
 - `brand` `string` — Optional brand slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + brand-specific tokens and shows brand-specific values for shared semantic tokens. Omit for NudgeEAP/base.
 - `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
+
+### `find_asset`
+
+Search @nudge-design/assets **brand images** (food photos, illustrations, profiles, marathon posters, logos — NOT icons; for icons use find_icon). No args→brand×category index; `{ query }`(+`brand`/`category` filter)→matched assets with paste-ready `inlineRef`; `{ id }`→exact asset. Need an image in a mockup? Call this FIRST and paste the `inlineRef` into &lt;img src&gt; (build_singlefile_html base64-inlines it). On miss: use a grey/empty-state placeholder + a '에셋 없음' note — do NOT AI-generate brand imagery. Always pass `userRequest` with the user's original intent.
+
+**인자**
+
+- `query` `string` — Natural-language search (e.g. 'salad', '음식', 'marathon poster', 'profile'). Matched against brand/category/id tokens.
+- `brand` `string` — Optional brand slug to scope (e.g. 'geniet', 'runmile', 'nudge-eap', 'cashwalk-biz'/'cashpobi', 'trost'). Aliases resolved. Shared assets (sns-logos) are always included.
+- `category` `string` — Optional category filter (substring) — e.g. 'food-types', 'profiles', 'logos', 'marathon-events', 'category-heroes'. See the no-arg index.
+- `id` `string` — Optional exact/near asset id (filename stem, e.g. 'bibimbap').
+- `limit` `number` — Max assets returned.
+- `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Links the lookup to why it happened.
 
 ---
 

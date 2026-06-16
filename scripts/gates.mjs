@@ -39,6 +39,15 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "asset-catalog",
+    label: "asset catalog (@nudge-design/assets/src/files → asset-catalog.generated.ts)",
+    check: ["node", "packages/mcp/scripts/build-asset-catalog.mjs", "--check"],
+    fix: ["node", "packages/mcp/scripts/build-asset-catalog.mjs"],
+    watch: ["packages/assets/src/files/", "packages/mcp/src/asset-catalog.generated.ts"],
+    buildFree: true,
+    ssot: true,
+  },
+  {
     id: "mcp-catalog",
     label: "MCP catalog freshness",
     check: ["node", "scripts/check-mcp-catalog.mjs", "--no-build"],
