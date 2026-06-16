@@ -39,3 +39,12 @@
 
 - 꽉 찬 화살표: `GenietBackIcon` → `GenietArrowLeftIcon` · `GenietNextIcon` → `GenietArrowRightIcon` · `GenietTopIcon` → `GenietArrowUpIcon`
 - 셰브론: `GenietArrowBackIcon` → `GenietChevronLeftIcon` · `GenietArrowRightIcon` → `GenietChevronRightIcon` · `GenietArrowUpIcon` → `GenietChevronUpIcon` · `GenietArrowDownIcon` → `GenietChevronDownIcon`
+
+**runmile 방향 아이콘 — 모양 정합 + 방향 교정**
+
+geniet 와 같은 셰브론/화살표 혼동에 더해, `arrow-left`/`arrow-right` 의 **글리프 방향이 이름과 반대**였음(좌우 뒤바뀜). 실제 글리프 기준으로 교정:
+
+- 꽉 찬 화살표: `RunmileBackIcon` → `RunmileArrowLeftIcon` · `RunmileTopIcon` → `RunmileArrowUpIcon` · `RunmileBottomIcon` → `RunmileArrowDownIcon`
+- 셰브론(방향 교정): `RunmileArrowLeftIcon`(글리프=우향) → `RunmileChevronRightIcon` · `RunmileArrowRightIcon`(글리프=좌향) → `RunmileChevronLeftIcon` · `RunmileArrowUpIcon` → `RunmileChevronUpIcon` · `RunmileArrowDownIcon` → `RunmileChevronDownIcon`
+
+> 글리프는 그대로(렌더 동일), import 이름만 변경. 만약 셰브론 글리프 자체의 좌우가 디자인 의도와 다르면 별도 글리프 수정 필요.

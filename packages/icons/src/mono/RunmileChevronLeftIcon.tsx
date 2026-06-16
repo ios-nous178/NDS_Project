@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface RunmileArrowRightIconProps extends React.SVGProps<SVGSVGElement> {
+export interface RunmileChevronLeftIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const RunmileArrowRightIcon = React.forwardRef<SVGSVGElement, RunmileArrowRightIconProps>(
+export const RunmileChevronLeftIcon = React.forwardRef<SVGSVGElement, RunmileChevronLeftIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -23,4 +23,4 @@ export const RunmileArrowRightIcon = React.forwardRef<SVGSVGElement, RunmileArro
   )
 );
 
-RunmileArrowRightIcon.displayName = "RunmileArrowRightIcon";
+RunmileChevronLeftIcon.displayName = "RunmileChevronLeftIcon";

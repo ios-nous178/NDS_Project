@@ -9877,18 +9877,8 @@
       "brand": "runmile"
     },
     {
-      "name": "RunmileArrowRightIcon",
-      "kebab": "runmile-arrow-right",
-      "brand": "runmile"
-    },
-    {
       "name": "RunmileArrowUpIcon",
       "kebab": "runmile-arrow-up",
-      "brand": "runmile"
-    },
-    {
-      "name": "RunmileBackIcon",
-      "kebab": "runmile-back",
       "brand": "runmile"
     },
     {
@@ -9904,11 +9894,6 @@
     {
       "name": "RunmileBookmarkIcon",
       "kebab": "runmile-bookmark",
-      "brand": "runmile"
-    },
-    {
-      "name": "RunmileBottomIcon",
-      "kebab": "runmile-bottom",
       "brand": "runmile"
     },
     {
@@ -9984,6 +9969,26 @@
     {
       "name": "RunmileCheckCircleIcon",
       "kebab": "runmile-check-circle",
+      "brand": "runmile"
+    },
+    {
+      "name": "RunmileChevronDownIcon",
+      "kebab": "runmile-chevron-down",
+      "brand": "runmile"
+    },
+    {
+      "name": "RunmileChevronLeftIcon",
+      "kebab": "runmile-chevron-left",
+      "brand": "runmile"
+    },
+    {
+      "name": "RunmileChevronRightIcon",
+      "kebab": "runmile-chevron-right",
+      "brand": "runmile"
+    },
+    {
+      "name": "RunmileChevronUpIcon",
+      "kebab": "runmile-chevron-up",
       "brand": "runmile"
     },
     {
@@ -10234,11 +10239,6 @@
     {
       "name": "RunmileThumbIcon",
       "kebab": "runmile-thumb",
-      "brand": "runmile"
-    },
-    {
-      "name": "RunmileTopIcon",
-      "kebab": "runmile-top",
       "brand": "runmile"
     },
     {
