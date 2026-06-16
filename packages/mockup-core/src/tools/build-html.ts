@@ -258,7 +258,7 @@ export async function buildSinglefileHtml(
               : "위반 파일을 폐기하고 .tsx 기반으로 다시 작성하세요."
           } ` +
           `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ skipAudit: true }) 로 재호출하세요 — ` +
-          `이 경우 MCP 검증 파이프라인(validate_mockup·report_mockup_usage)이 무력화됨을 사용자에게 먼저 경고할 것.`;
+          `이 경우 MCP 검증 파이프라인(validate_html_mockup)이 무력화됨을 사용자에게 먼저 경고할 것.`;
       return {
         ...fail(msg),
         intent,
@@ -1164,7 +1164,7 @@ export function auditMockupWorkspace(
         files: htmlInSrc.map((f) => path.relative(cwd, f)),
         detail:
           "src/ 하위에 손으로 작성한 .html 파일이 있습니다. dist/index.html 외에는 .html 직접 작성 금지 — " +
-          "DS prop API · validate_mockup AST · report_mockup_usage 집계가 모두 무력화됩니다.",
+          "DS prop API · validate_html_mockup 정적 검증 · DS 사용량 집계가 모두 무력화됩니다.",
       });
     }
   }

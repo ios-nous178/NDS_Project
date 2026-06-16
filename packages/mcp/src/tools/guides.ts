@@ -365,7 +365,7 @@ export function getPatternGuide(name: string) {
   // hasRef 분기 제거 — "있으면" 조건부 단일 문구로 통일해 패턴 배치에서도 _shared hoist.
   return {
     _advisory:
-      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_mockup 경고 수정 시 참고하세요. references[] 가 있으면 픽셀·여백·상태가 의심될 때 references[].imageAbsolutePath 스크린샷을 우선 확인하세요.",
+      "컴포넌트 API가 아니라 배치/위계/강조 사용량 기준입니다. 목업 작성 전 또는 validate_html_mockup 경고 수정 시 참고하세요. references[] 가 있으면 픽셀·여백·상태가 의심될 때 references[].imageAbsolutePath 스크린샷을 우선 확인하세요.",
     ...guide,
     references: resolvedReferences ?? guide.references,
   };
@@ -1075,7 +1075,7 @@ export function getInspectorSetup() {
     summary:
       "외부 mockup 프로젝트의 dev 화면 우하단에 floating 버튼을 띄워, DS / antd / native 요소를 색깔별로 outline + 카운트로 시각화. Ctrl/Cmd+Shift+D 토글. dev-only.",
     rationale:
-      "AI 생성 화면이 'DS 적용처럼 보이지만 실은 antd/native 잔존' 인지 사용자가 한눈에 검증할 수 있게 함. validate_mockup 의 정적 검증과 보완 — 정적 검증은 코드를, Inspector 는 런타임 DOM 을 봄.",
+      "AI 생성 화면이 'DS 적용처럼 보이지만 실은 antd/native 잔존' 인지 사용자가 한눈에 검증할 수 있게 함. validate_html_mockup 의 정적 검증과 보완 — 정적 검증은 코드를, Inspector 는 런타임 DOM 을 봄.",
     package: "@nudge-design/react",
     subpath: "@nudge-design/react/inspector",
     install:
@@ -1099,7 +1099,7 @@ function Root() {
       "dev 화면 우하단 'DS Inspector' 버튼 클릭 (또는 Ctrl/Cmd+Shift+D)",
       "Inspector 패널 펼침: DS(초록) / antd(주황) / native(빨강) 카운트 + 총합 + DS 비율 (%) 표시",
       "'outline 표시' 체크박스 켜면 각 요소에 분류별 outline 표시 (DS=실선 초록, antd=실선 주황, native=점선 빨강)",
-      "DS 비율 낮거나 antd/native 가 보이면 → validate_mockup 으로 정적 검증 + 코드 재구성",
+      "DS 비율 낮거나 antd/native 가 보이면 → validate_html_mockup 으로 정적 검증 + 코드 재구성",
     ],
     classification: {
       ds: "className 에 `nds-` prefix → @nudge-design/react 컴포넌트",

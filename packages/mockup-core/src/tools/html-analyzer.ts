@@ -227,8 +227,8 @@ export function analyzeHtmlMockup(args: AnalyzeHtmlMockupArgs): AnalyzeHtmlMocku
     humanReadable,
     recommendations,
     jsxOnlyNotice:
-      "prop 의미 검증 (Card.Header 이중 padding, IconButton size union 등) 은 .tsx 시점에서만 가능합니다. " +
-      "수정이 prop 의미와 관련되면 .tsx 로 돌아가서 validate_mockup / report_mockup_usage 를 사용하세요.",
+      "prop 의미 검증 (Card.Header 이중 padding, IconButton size union 등) 은 HTML 정적 검사 범위 밖입니다. " +
+      "해당 컴포넌트 가이드 get_guide({ topic: 'component:<Name>' }) 의 prop 매트릭스로 확인하세요.",
   };
 }
 

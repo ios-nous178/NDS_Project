@@ -349,7 +349,7 @@ export function validateMockupSource(
   // 6.5. invalid-prop-value — string-literal union prop 의 잘못된 값 검출.
   // 예: <IconButton size="md"> (유효: x-large/large/medium/small),
   //     <Card variant="content"> (유효: outlined/elevated/flat)
-  // validate_mockup 은 패턴 검사이므로 tsc 가 잡는 타입 오류를 자체 룰로 흉내낸다.
+  // 이 검사는 패턴 검사이므로 tsc 가 잡는 타입 오류를 자체 룰로 흉내낸다.
   if (context.propAllowedValues && context.propAllowedValues.size > 0) {
     for (const [compName, propMap] of context.propAllowedValues) {
       // `<CompName ` 또는 `<CompName/` 또는 `<CompName>` 만 매칭 — `<CompName.Sub` namespace 제외
