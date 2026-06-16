@@ -78,7 +78,7 @@ import { captureTelemetry } from "./tools/telemetry-egress.js";
 import { captureTranscriptFeedback } from "./tools/feedback-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
-import { getGuide, listFigmaSyncStatus, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
+import { getGuide, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { recordObservability } from "./tools/observability-sink.js";
@@ -195,7 +195,7 @@ const iconSet = new Set(manifest.icons);
 const tokenSet = new Set(manifest.tokens.map((t) => t.name));
 
 // 컴포넌트별 prop union 허용값 맵. 카탈로그에서 allowedValues 가 있는 prop 만 채워서
-// validate_mockup 이 invalid-prop-value 룰로 검출할 수 있게 한다.
+// validate_html_mockup 이 invalid-prop-value 룰로 검출할 수 있게 한다.
 const propAllowedValues = new Map<string, Map<string, string[]>>();
 for (const comp of manifest.components) {
   const propMap = new Map<string, string[]>();
@@ -949,7 +949,7 @@ function isRawPaletteQuery(query: string) {
   return /\b(?:neutral|coolgray|cool-gray|blue|magenta|yellow|red|green)\b/.test(query);
 }
 
-/* ───────────── validate_mockup ───────────── */
+/* ───────────── suggest_replacement ───────────── */
 
 function suggestReplacement(args: { snippet: string; rule?: string }) {
   const { snippet } = args;
@@ -1186,7 +1186,6 @@ export const toolHandlers = {
         },
       ),
     ),
-  list_figma_sync_status: () => listFigmaSyncStatus(),
   get_setup: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_setup",

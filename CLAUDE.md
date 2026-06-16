@@ -168,7 +168,7 @@ background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv
 ### 가이드 · 패턴 · 원칙만 추가
 
 - 컴포넌트/패턴 본문: `packages/mcp/guides-src/{components,patterns}/<Name>.md` (+ `pnpm --filter @nudge-design/mcp build:guides`) · 원칙: `guides.ts` 의 `DESIGN_PRINCIPLES`
-- 컴포넌트 가이드에는 가능하면 `figmaNodeUrl` 까지 — `list_figma_sync_status` 로 sync 누락 점검
+- 컴포넌트 가이드에는 가능하면 `figmaNodeUrl` 까지 — `get_guide({ topic: 'figma-sync' })` 로 sync 누락 점검
 
 ### 외부 전파 (MCPB 릴리즈) → `/ds-release`
 

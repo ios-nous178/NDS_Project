@@ -2509,7 +2509,7 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
     severitySummary,
     scores: computeScores(violationsByRule),
     jsxOnlyNotice:
-      "이 검사는 HTML 정적 룰만 — JSX 전용(antd/외부 아이콘 import 잔존, Chip.label 속성, 화살표 아이콘 식별, IconButton size 등 prop 의미)은 .tsx 의 validate_mockup 으로 별도 확인하세요. " +
+      "이 검사는 HTML 정적 룰만 — prop 의미(Chip.label 속성, 화살표 아이콘 식별, IconButton size 등)·잔존 antd/외부 import 는 이 검사 범위 밖이니 컴포넌트 가이드 get_guide 의 prop 매트릭스로 확인하세요. " +
       "응답 cap: 같은 룰 첫 " +
       FULL_SAMPLES_PER_RULE +
       "건만 full, 그 뒤는 rule/line/severity 만(selector·detail 생략 — 룰별 총계·전체 line 은 violationsByRule).",

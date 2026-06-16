@@ -189,7 +189,6 @@ export async function reportMockupUsage(args: {
  */
 
 const POST_CREATION_TOOLS = new Set<string>([
-  "validate_mockup",
   "validate_html_mockup",
   "dev_server",
   "build_singlefile_html",

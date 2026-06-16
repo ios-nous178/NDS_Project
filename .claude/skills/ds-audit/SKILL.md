@@ -38,7 +38,7 @@ description: >-
 
 ### 4. Figma sync
 
-- `COMPONENT_GUIDES.{C}.figmaNodeUrl` 누락/깨짐. `list_figma_sync_status`(MCP)로 sync 안 된 컴포넌트 목록.
+- `COMPONENT_GUIDES.{C}.figmaNodeUrl` 누락/깨짐. `get_guide({ topic: 'figma-sync' })`(MCP)로 sync 안 된 컴포넌트 목록.
 
 ### 5. 브랜드 × 컴포넌트 커버리지
 
