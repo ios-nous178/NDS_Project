@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T00:02:31.890Z",
+  "generatedAt": "2026-06-16T00:08:26.433Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -6720,6 +6720,8 @@
     "GenietHealthydealIcon",
     "GenietHeartIcon",
     "GenietHeartSolidIcon",
+    "GenietHeartSolidWhiteShadowIcon",
+    "GenietHeartWhiteShadowIcon",
     "GenietHomeIcon",
     "GenietHomemenuShoppingIcon",
     "GenietImgErrorIcon",

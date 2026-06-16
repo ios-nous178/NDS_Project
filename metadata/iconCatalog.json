@@ -522,6 +522,16 @@
       "brand": "geniet"
     },
     {
+      "name": "GenietHeartSolidWhiteShadowIcon",
+      "kebab": "geniet-heart-solid-white-shadow",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietHeartWhiteShadowIcon",
+      "kebab": "geniet-heart-white-shadow",
+      "brand": "geniet"
+    },
+    {
       "name": "GenietHomeIcon",
       "kebab": "geniet-home",
       "brand": "geniet"

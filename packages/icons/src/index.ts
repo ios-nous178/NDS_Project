@@ -2079,6 +2079,8 @@ export { GenietConfettiIcon } from "./multicolor/GenietConfettiIcon.js";
 export { GenietGoldmedalIcon } from "./multicolor/GenietGoldmedalIcon.js";
 export { GenietGpointIcon } from "./multicolor/GenietGpointIcon.js";
 export { GenietHealthydealIcon } from "./multicolor/GenietHealthydealIcon.js";
+export { GenietHeartSolidWhiteShadowIcon } from "./multicolor/GenietHeartSolidWhiteShadowIcon.js";
+export { GenietHeartWhiteShadowIcon } from "./multicolor/GenietHeartWhiteShadowIcon.js";
 export { GenietHomemenuShoppingIcon } from "./multicolor/GenietHomemenuShoppingIcon.js";
 export { GenietImgGroupIcon } from "./multicolor/GenietImgGroupIcon.js";
 export { GenietInviteIcon } from "./multicolor/GenietInviteIcon.js";
@@ -4191,6 +4193,8 @@ export type { GenietConfettiIconProps } from "./multicolor/GenietConfettiIcon.js
 export type { GenietGoldmedalIconProps } from "./multicolor/GenietGoldmedalIcon.js";
 export type { GenietGpointIconProps } from "./multicolor/GenietGpointIcon.js";
 export type { GenietHealthydealIconProps } from "./multicolor/GenietHealthydealIcon.js";
+export type { GenietHeartSolidWhiteShadowIconProps } from "./multicolor/GenietHeartSolidWhiteShadowIcon.js";
+export type { GenietHeartWhiteShadowIconProps } from "./multicolor/GenietHeartWhiteShadowIcon.js";
 export type { GenietHomemenuShoppingIconProps } from "./multicolor/GenietHomemenuShoppingIcon.js";
 export type { GenietImgGroupIconProps } from "./multicolor/GenietImgGroupIcon.js";
 export type { GenietInviteIconProps } from "./multicolor/GenietInviteIcon.js";
