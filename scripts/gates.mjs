@@ -219,6 +219,22 @@ export const GATES = [
     ssot: true,
   },
   {
+    id: "icon-naming",
+    label: "아이콘 파일명 명명 규칙 (kebab·철자·-solid·*-circle)",
+    check: ["node", "scripts/check-icon-naming.mjs"],
+    fix: null,
+    fixHint:
+      "svg 파일명을 packages/icons/README.md '명명 규칙' 에 맞춰 rename + 소비처(guides.ts 등) " +
+      "동기화 + changeset(minor) + pnpm fix. 의도된 예외는 scripts/icon-naming-baseline.json 에 등재.",
+    watch: [
+      "packages/icons/svg/",
+      "scripts/check-icon-naming.mjs",
+      "scripts/icon-naming-baseline.json",
+    ],
+    buildFree: true, // svg 파일명만 읽음 — dist 불필요
+    ssot: true,
+  },
+  {
     id: "guide-docs",
     label: "guide markdown docs",
     check: ["node", "scripts/generate-guide-docs.mjs", "--check"],

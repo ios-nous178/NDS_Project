@@ -1,0 +1,4 @@
+{
+  "_note": "아이콘 명명 규칙(check-icon-naming.mjs)의 의도된 예외. waivers 에 { name, reason } 추가. name 은 svg 파일명(확장자 제외, 예: 'geniet-cashhomt'). 규칙 SSOT=packages/icons/README.md.",
+  "waivers": []
+}
