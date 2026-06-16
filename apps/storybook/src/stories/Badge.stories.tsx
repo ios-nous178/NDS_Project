@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
-import { Badge, type BadgeColor, type BadgeVariant } from "@nudge-design/react";
+import { Badge, type BadgeColor, type BadgeType, type BadgeVariant } from "@nudge-design/react";
 import { getComponentDocsDescription } from "../componentDocs";
 import { DesignGuideBadge } from "../components/DesignGuideBadge";
 import { coreGuideMeta } from "../components/guideMeta";
@@ -10,6 +10,7 @@ const badgeGuideMeta = coreGuideMeta("Badge");
 
 const VARIANTS: BadgeVariant[] = ["fill", "ghost", "line"];
 const COLORS: BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
+const TYPES: BadgeType[] = ["label", "dot", "count"];
 
 const COLOR_USAGE: Record<BadgeColor, string> = {
   brand: "주요 액션, 브랜드 강조",
@@ -60,6 +61,12 @@ const meta: Meta<typeof Badge> = {
       options: ["default", "pill"],
       description:
         "Figma `Shape` — default(라운드 사각, 동적 상태값) / pill(완전 둥근, 정적 식별 태그)",
+    },
+    type: {
+      control: "select",
+      options: TYPES,
+      description:
+        "Figma `type`(트로스트 5107-130) — label(텍스트 배지, 기본) / dot(8×8 상태 점) / count(min 18px 원형 숫자 카운터)",
     },
   },
   args: {
@@ -182,6 +189,75 @@ export const ShapeScale: Story = {
 
     const pill = canvas.getByText("pill").closest('[data-slot="root"]');
     await expect(pill).toHaveAttribute("data-shape", "pill");
+  },
+};
+
+export const TypeAxis: Story = {
+  name: "Spec/Type (label · dot · count)",
+  tags: ["gallery"],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "트로스트 가이드(5107-130) type 축. label(텍스트 배지, 기본) / dot(8×8 상태 점, 텍스트 없음) / count(min 18px 원형 숫자 카운터). dot·count 의 색은 variant=fill 룰에서 나온다(color 로 의미색 지정).",
+      },
+    },
+  },
+  render: () => (
+    <div
+      data-brand="trost"
+      style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-loose)" }}>
+        <span style={{ minWidth: 56, fontSize: 13, fontWeight: 700 }}>label</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
+          <Badge type="label" variant="fill" color="brand">
+            NEW
+          </Badge>
+          <Badge type="label" variant="ghost" color="success">
+            완료
+          </Badge>
+          <Badge type="label" variant="ghost" color="neutral">
+            태그
+          </Badge>
+        </div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-loose)" }}>
+        <span style={{ minWidth: 56, fontSize: 13, fontWeight: 700 }}>dot</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
+          <Badge type="dot" variant="fill" color="error" aria-label="미확인" />
+          <Badge type="dot" variant="fill" color="success" aria-label="활성" />
+          <Badge type="dot" variant="fill" color="brand" aria-label="강조" />
+          <Badge type="dot" variant="fill" color="neutral" aria-label="기본" />
+        </div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-loose)" }}>
+        <span style={{ minWidth: 56, fontSize: 13, fontWeight: 700 }}>count</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
+          <Badge type="count" variant="fill" color="error">
+            1
+          </Badge>
+          <Badge type="count" variant="fill" color="error">
+            12
+          </Badge>
+          <Badge type="count" variant="fill" color="brand">
+            99+
+          </Badge>
+        </div>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const dot = canvas.getByLabelText("미확인").closest('[data-slot="root"]');
+    await expect(dot).toHaveAttribute("data-type", "dot");
+
+    const count = canvas.getByText("12").closest('[data-slot="root"]');
+    await expect(count).toHaveAttribute("data-type", "count");
+
+    const label = canvas.getByText("NEW").closest('[data-slot="root"]');
+    await expect(label).toHaveAttribute("data-type", "label");
   },
 };
 

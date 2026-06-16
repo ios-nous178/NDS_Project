@@ -115,14 +115,27 @@ export const trostTheme: BrandTheme = {
   // (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용)
   components: {
     input: { borderColor: trostNeutral[200], radius: 6 }, // 가이드 Input = Radius/Md 6
+    // Button — 가이드 Button(5043:108): Small 40 (base sm 42). Large 48·Medium 44 는 base 동일.
+    // 검정 Primary=color="neutral"(buttonBg.neutral), 노랑=color="primary", 블루=color="secondary".
+    button: { heightSm: 40 },
     // 카드 테두리 #E0E0E0 — neutral 스케일 밖 실측값 (200 #E5E5E5 / 300 #D8D8D8 사이)
     card: { radius: 8, borderColor: "#E0E0E0" }, // 가이드 Card = Radius/Lg 8
     modal: { radius: 16 }, // 가이드 Modal = Radius/2xl 16
-    // 노란 브랜드 위 셀렉트 칩은 다크 채움 (fill.brand 노랑 fallback 과 의도적으로 다름)
+    // 셀렉트 칩 — 가이드 Badge&Chip(5107:130): selected = 노랑 보더 + 옅은 노랑 bg + orange 텍스트
+    // (outlined-selected 룩). 구 "노란 브랜드 위 다크 채움(#333)" 에서 신 가이드로 변경. 높이 30.
     chip: {
-      selectedBackground: trostNeutral[800],
-      selectedText: trostNeutral["00"],
-      selectedBorder: trostNeutral[800],
+      height: 30,
+      paddingX: 10,
+      selectedBackground: trostYellow[100], // #FFFDD9 (BG/Brand/Subtle)
+      selectedText: trostYellow.text, // #FF9D00 (Text/Brand)
+      selectedBorder: trostYellow[500], // #FFF42E (Border/Brand)
+    },
+    // Tab tone="color" 액센트 — 가이드 Tabs(5301:108) Line/Chip/Segment 활성색 = Point 코발트.
+    // brand=노랑은 면적 채움 전용(텍스트·인디케이터 가독성↓)이라 탭 강조는 Point 로 분리.
+    tab: {
+      accentFill: trostCobalt[500], // #4968FF — line indicator + chip/segment 활성 채움
+      accentText: trostCobalt[500], // #4968FF — line 활성 텍스트
+      accentOn: trostNeutral["00"], // #FFFFFF — 코발트 채움 위 텍스트
     },
     // Toggle 40×24 — unchecked #EEE(스케일 밖 실측), checked 다크, material-like 썸 그림자
     toggle: {
@@ -134,6 +147,7 @@ export const trostTheme: BrandTheme = {
         "0 1px 1px 0 rgba(0,0,0,0.24), 0 0 1px 0 rgba(0,0,0,0.12), 0 2.4px 0.8px rgba(0,0,0,0.06), 0 2.4px 6.4px rgba(0,0,0,0.15)",
     },
     toast: { shadow: "0px 4px 16px rgba(0,0,0,0.15)" },
+    // BottomSheet 가이드(5258:128): top radius 20, drag handle 40×4 #E5E5E5(=Border/Normal)
     "bottom-sheet": {
       radius: 24, // 가이드 BottomSheet = Radius/3xl 24
       handleWidth: 50,

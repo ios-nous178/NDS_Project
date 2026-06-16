@@ -342,7 +342,7 @@ export const SizeScale: Story = {
         alignItems: "flex-start",
       }}
     >
-      <Button size="xl">XL (56px)</Button>
+      <Button size="xl">XL (52px)</Button>
       <Button size="lg">LG (48px)</Button>
       <Button size="md">MD (44px)</Button>
       <Button size="sm">SM (42px · Geniet 40)</Button>
@@ -606,6 +606,45 @@ export const InputWithFieldButton: Story = {
         TEXT
       </div>
       <Button size="field">Btn</Button>
+    </div>
+  ),
+};
+
+/* ─── Trost 스타일 매핑 (Figma 5043:108) ─────────
+   트로스트 ButtonGuide 4스타일 → DS color × variant 매핑.
+   Primary(검정)=neutral/solid · Yellow(노랑)=primary/solid ·
+   Secondary(블루)=secondary/solid · Outlined(취소·닫기)=neutral/outlined.
+   색은 트로스트 brand 토큰이 슬롯으로 흘려주므로 data-brand="trost" 래퍼만 둔다(색 하드코딩 X). */
+
+export const TrostStyleMapping: Story = {
+  name: "Brand/Trost Style Mapping",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "트로스트 ButtonGuide(Figma 5043:108)의 4스타일을 DS Button 3축(color × variant)으로 매핑한 데모. " +
+          "Primary(검정 #1A1A1A)=`color='neutral' variant='solid'`, Yellow(노랑 #FFF42E, Positive/구독/확인)=`color='primary' variant='solid'`, " +
+          "Secondary(옅은 블루 bg #EDF0FF / text #4968FF Point)=`color='secondary' variant='solid'`, " +
+          "Outlined(흰+gray border / text #333, 취소·닫기)=`color='neutral' variant='outlined'`. " +
+          "트로스트 'Primary'(검정)는 DS `color='primary'`(=노랑)가 아니라는 점에 주의. " +
+          "색은 data-brand='trost' 컨텍스트의 브랜드 토큰이 흘려준다(컴포넌트 색 하드코딩 금지).",
+      },
+    },
+  },
+  render: () => (
+    <div data-brand="trost" style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+      <Button color="neutral" variant="solid">
+        Primary (검정)
+      </Button>
+      <Button color="primary" variant="solid">
+        Yellow (확인)
+      </Button>
+      <Button color="secondary" variant="solid">
+        Secondary (블루)
+      </Button>
+      <Button color="neutral" variant="outlined">
+        Outlined (취소)
+      </Button>
     </div>
   ),
 };

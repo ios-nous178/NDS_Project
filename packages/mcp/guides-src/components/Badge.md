@@ -3,8 +3,12 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-1
 references:
   - label: CashwalkBiz Admin Badge/Chip Guide — RoundedSquare / Pill
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3782-20558
-    caption: Cashwalk for Business · Label & Chip(ChipGuide). Badge 두 shape — RoundedSquare(shape="default", radius 4~6, 동적 상태값 충전·사용·적립·만료·취소) / Pill(shape="pill", radius full, 정적 식별 태그 일반 계정·프리미엄·신규). 톤은 ghost 변형으로 매핑(충전=brand·사용=info·적립=success·만료=neutral·취소=error). SelectChip 은 Badge 아니라 Chip 컴포넌트.
+    caption: 'Cashwalk for Business · Label & Chip(ChipGuide). Badge 두 shape — RoundedSquare(shape="default", radius 4~6, 동적 상태값 충전·사용·적립·만료·취소) / Pill(shape="pill", radius full, 정적 식별 태그 일반 계정·프리미엄·신규). 톤은 ghost 변형으로 매핑(충전=brand·사용=info·적립=success·만료=neutral·취소=error). SelectChip 은 Badge 아니라 Chip 컴포넌트.'
     brand: cashwalk-biz
+  - label: Trost Badge Guide — type(label/dot/count) · 5톤(ghost)
+    url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5107-130
+    caption: 'Trost Library · Badge. 유형(type) 3종 — label(텍스트 배지, 기본) / dot(8×8 상태 점, 텍스트 없음) / count(min 18px 원형 숫자 카운터). 5톤(neutral·brand·success·error·info)은 variant="ghost" 의 subtle 룩으로 표현(brand=#FFFDD9 bg/#FF9D00 text 등). dot·count 의 색은 variant=fill 룰(예: color="error" → 빨강).'
+    brand: trost
 usagePolicy:
   useFor:
     - 상태 표시 (진행중 / 완료 / 마감)
@@ -37,7 +41,7 @@ usagePolicy:
 
 ## summary
 
-상태/속성을 한눈에 알려주는 보조 라벨. variant: fill/ghost/line · color: brand/neutral/success/error/caution/info · shape: default(라운드 사각)/pill(완전 둥근). Figma 171:10856 (캐포비 admin ChipGuide 3782-20558). label prop 필수. 콘텐츠가 아니라 콘텐츠를 보조하는 메타 정보만 담는다. **shape 로 의미 구분 — 동적 상태값=default(사각), 정적 식별 태그=pill.**
+상태/속성을 한눈에 알려주는 보조 라벨. variant: fill/ghost/line · color: brand/neutral/success/error/caution/info · shape: default(라운드 사각)/pill(완전 둥근) · **type: label/dot/count**. Figma 171:10856 (캐포비 admin ChipGuide 3782-20558 · 트로스트 5107-130). label prop 필수. 콘텐츠가 아니라 콘텐츠를 보조하는 메타 정보만 담는다. **shape 로 의미 구분 — 동적 상태값=default(사각), 정적 식별 태그=pill.** **type 축**(트로스트 5107-130, 기본 label·하위호환): label=텍스트 배지 · dot=8×8 점(텍스트 없음·활성/미확인) · count=min 18px 원형 숫자 카운터(99 초과 `99+`); dot·count 색은 ghost 가 아니라 variant=fill 룰을 따른다(예: `color="error"`→빨강). 가이드 5톤(neutral/brand/success/error/info)은 variant="ghost" subtle 룩(brand=#FFFDD9 bg/#FF9D00 text), caution 은 앰버 경고용으로 enum 유지.
 
 ## pitfalls
 
@@ -50,6 +54,7 @@ usagePolicy:
 - Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.
 - Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.
 - **shape 로 동적/정적 의미 구분 (캐포비 admin · Figma 3782-20558)**: `shape="default"`(라운드 사각)=거래/처리 상태·카테고리 같은 **동적 상태값**(충전·사용·적립·만료·취소), `shape="pill"`(완전 둥근)=계정 유형·식별성 같은 **정적 속성 태그**(일반 계정·프리미엄·신규). 둘을 혼용하지 말 것 — 동적 상태값에 pill, 정적 식별에 사각을 쓰면 의미 신호가 깨진다. 데이터 테이블 셀에는 default 사각이 기본.
+- **type 혼동 금지 (트로스트 5107-130)**: `dot` 은 텍스트 없는 8×8 점이라 children 을 넣어도 의미가 없다 — 텍스트가 필요하면 `label`. `count` 는 숫자 카운터 전용(min 18px 원형), 라벨 텍스트를 넣지 말 것. dot·count 의 색은 ghost 톤이 아니라 variant=fill 룰을 따른다(color 로 의미색 지정).
 
 ## examplesHtml.do
 
@@ -65,6 +70,10 @@ usagePolicy:
 <!-- 캐포비 admin: 정적 식별 태그 = pill -->
 <nds-badge variant="ghost" color="neutral" shape="pill" size="sm">일반 계정</nds-badge>
 <nds-badge variant="ghost" color="brand" shape="pill" size="sm">프리미엄</nds-badge>
+<!-- 트로스트: type 축 — dot(8×8 점, 텍스트 없음) / count(원형 숫자 카운터) -->
+<nds-badge type="dot" variant="fill" color="error"></nds-badge>
+<nds-badge type="count" variant="fill" color="error">12</nds-badge>
+<nds-badge type="count" variant="fill" color="brand">99+</nds-badge>
 ```
 
 ## examplesHtml.dont
@@ -76,4 +85,6 @@ usagePolicy:
 <nds-badge color="brand">오늘의 미션</nds-badge>
 <!-- 동적 상태값(적립/충전/만료…)에 pill — pill 은 정적 식별 태그 전용이라 의미 신호가 깨짐 -->
 <nds-badge variant="ghost" color="success" shape="pill">적립</nds-badge>
+<!-- count 에 라벨 텍스트 — count 는 숫자 카운터 전용 -->
+<nds-badge type="count" color="error">신규</nds-badge>
 ```

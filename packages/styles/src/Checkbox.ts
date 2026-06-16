@@ -59,8 +59,8 @@ export const checkboxStyles = `
 
   :where(.${CB_INDICATOR_CLASS}[data-state="checked"]),
   :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
-    border-color: ${cv.fill.brand};
-    background: ${cv.fill.brand};
+    border-color: var(--nds-checkbox-checked-border, ${cv.fill.brand});
+    background: var(--nds-checkbox-checked-bg, ${cv.fill.brand});
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"]) {
@@ -86,7 +86,7 @@ export const checkboxStyles = `
     height: 14px;
     opacity: 0;
     transition: opacity ${transition.default};
-    color: ${cv.button.textDefault};
+    color: var(--nds-checkbox-check-color, ${cv.button.textDefault});
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"] .${CB_CHECK_ICON_CLASS}),

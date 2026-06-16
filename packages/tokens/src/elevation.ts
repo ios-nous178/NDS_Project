@@ -6,6 +6,7 @@ export const shadow = {
   1: "0px 1px 4px rgba(0, 0, 0, 0.08)",
   2: "0px 4px 12px rgba(0, 0, 0, 0.10)",
   3: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+  e2: "0px 2px 4px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04)",
 } as const;
 
 export const elevationLevel = {

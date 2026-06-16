@@ -140,6 +140,7 @@ export const COMPONENT_ATTRS = {
       "color",
       "shape",
       "size",
+      "type",
       "variant"
     ],
     "enums": {
@@ -164,6 +165,11 @@ export const COMPONENT_ATTRS = {
       "shape": [
         "default",
         "pill"
+      ],
+      "type": [
+        "label",
+        "dot",
+        "count"
       ]
     }
   },

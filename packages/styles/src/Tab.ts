@@ -114,7 +114,8 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    color: ${cv.textRole.brand};
+    /* tone=color 활성 텍스트 — brand(기본) 또는 브랜드 액센트(트로스트=Point 코발트) */
+    color: var(--nds-tab-accent-text, ${cv.textRole.brand});
   }
 
   @media (hover: hover) {
@@ -134,7 +135,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TAB_INDICATOR_CLASS}) {
-    background: ${cv.surface.brand};
+    background: var(--nds-tab-accent-fill, ${cv.surface.brand});
   }
 
   /* ─── chip variant ─── */
@@ -184,8 +185,9 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${cv.surface.brand};
-    color: ${cv.button.textDefault};
+    /* 채움=accent(트로스트 Point 코발트), 텍스트=accentOn(코발트 위 흰). 비-Trost 는 brand fallback. */
+    background: var(--nds-tab-accent-fill, ${cv.surface.brand});
+    color: var(--nds-tab-accent-on, ${cv.button.textDefault});
     font-weight: ${fontWeight.bold};
   }
 
@@ -255,8 +257,8 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="segment"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    background: ${cv.surface.brand};
-    color: ${cv.button.textDefault};
+    background: var(--nds-tab-accent-fill, ${cv.surface.brand});
+    color: var(--nds-tab-accent-on, ${cv.button.textDefault});
     box-shadow: none;
   }
 

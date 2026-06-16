@@ -21,11 +21,13 @@ export type BadgeVariant = "fill" | "ghost" | "line";
 export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
 export type BadgeSize = "sm" | "md" | "lg";
 export type BadgeShape = "default" | "pill";
+export type BadgeType = "label" | "dot" | "count";
 
 const VARIANTS: readonly BadgeVariant[] = ["fill", "ghost", "line"];
 const COLORS: readonly BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
 const SIZES: readonly BadgeSize[] = ["sm", "md", "lg"];
 const SHAPES: readonly BadgeShape[] = ["default", "pill"];
+const TYPES: readonly BadgeType[] = ["label", "dot", "count"];
 
 export class NdsBadge extends NdsElement {
   static elementName = "nds-badge";
@@ -65,14 +67,17 @@ export class NdsBadge extends NdsElement {
     const color = this._norm("color", COLORS, "neutral");
     const size = this._norm("size", SIZES, "md");
     const shape = this._norm("shape", SHAPES, "default");
+    const type = this._norm("type", TYPES, "label");
 
-    // 색·치수·shape 라운드는 @nudge-design/styles 의 .nds-badge CSS 룰이 data-attr 로 합성.
+    // 색·치수·shape·type geometry 는 @nudge-design/styles 의 .nds-badge CSS 룰이 data-attr 로 합성.
+    // (type=dot 은 CSS 가 라벨을 display:none — react 미러와 동일하게 라벨 DOM 은 유지.)
     // WC 는 data-attr 만 set — 인라인 색/치수는 박지 않는다 (react 미러와 동일).
     const root = this._root;
     root.dataset.variant = variant;
     root.dataset.color = color;
     root.dataset.size = size;
     root.dataset.shape = shape;
+    root.dataset.type = type;
   }
 
   private _norm<T extends string>(attrName: string, allowed: readonly T[], fallback: T): T {

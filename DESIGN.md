@@ -272,6 +272,7 @@ rounded:
   sm: 4px # 소형 버튼·칩 모서리
   md: 8px # 기본 카드·컨테이너 (가장 많이 사용)
   lg: 12px # 중형 카드·패널
+  xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Figma Radius/2xl · 트로스트 Card PC·Section Container)
   pill: 9999px # 칩·토글·원형 요소
 
 # ── Shape (Semantic — radius 정책 별칭) ────────────────────
@@ -279,6 +280,7 @@ shape:
   sm: 4px # 버튼·칩
   md: 8px # 기본 카드 (표준값)
   lg: 12px # 중형 패널·리스트
+  xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Radius/2xl)
   pill: 9999px # 아바타·뱃지·토글
 
 # ── Border Width (Primitive Scale) ─────────────────────────
@@ -353,8 +355,14 @@ sizing:
   listRow: # List 행 밀도별 최소 높이 floor (Figma ListGuide 3060-82). 짧은 행은 이 높이로 맞추고, leading(Avatar/Thumbnail)이 크면 그만큼 자란다.
     sm: 40px # Compact · PC only (정보 밀도 우선 · 모바일 min touch 48 미달)
     md: 56px # Default · 표준 (텍스트 + Chevron/Toggle·Checkbox)
-    lg: 72px # Avatar · 48 원형 + 이름 + 액션
+    lg: 72px # Avatar · 48 원형 + 이름 + 액션 (Mobile)
     xl: 96px # Thumbnail · 72×72 썸네일 + 제목 + 메타
+    # ── 트로스트 List 가이드(5169:118) platform×layout 행 높이 ──
+    compactPc: 42px # PC Compact · 한 줄 + 카운트 (사이드바)
+    tablePc: 64px # PC Table · 다중 컬럼 + 상태 (예약·결제 내역)
+    avatarPc: 80px # PC Avatar · 48 원형 + 메타 + Button
+    thumbnailPc: 106px # PC Thumbnail · 96 썸네일 + 제목/메타
+    thumbnailMobile: 124px # Mobile Thumbnail · 70 썸네일 + 제목/메타 + 액션 링크 3번째 줄
 
 # ── Elevation ───────────────────────────────────────────────
 elevation:
@@ -363,6 +371,7 @@ elevation:
     1: "0px 1px 4px rgba(0, 0, 0, 0.08)"
     2: "0px 4px 12px rgba(0, 0, 0, 0.10)"
     3: "0px 8px 24px rgba(0, 0, 0, 0.12)"
+    e2: "0px 2px 4px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04)" # Figma Elevation/E2 — 떠 있는 카드(Card Elevated) 2겹 소프트 섀도우
   zIndex:
     base: 0
     dropdown: 100

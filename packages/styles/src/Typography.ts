@@ -47,6 +47,8 @@ export const typographyStyles = `
   :where(.nds-text-tone-inverse) { color: ${cv.textRole.inverse}; }
   :where(.nds-text-tone-brand) { color: ${cv.textRole.brand}; }
   :where(.nds-text-tone-brand-strong) { color: ${cv.textRole.brandStrong}; }
+  :where(.nds-text-tone-point) { color: ${cv.textRole.point}; }
+  :where(.nds-text-tone-point-strong) { color: ${cv.textRole.pointStrong}; }
   :where(.nds-text-tone-status-success) { color: ${cv.textRole.statusSuccess}; }
   :where(.nds-text-tone-status-error) { color: ${cv.textRole.statusError}; }
   :where(.nds-text-tone-status-caution) { color: ${cv.textRole.statusCaution}; }
