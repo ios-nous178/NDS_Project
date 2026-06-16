@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface GenietCircleDeleteIconProps extends React.SVGProps<SVGSVGElement> {
+export interface GenietDeleteCircleIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const GenietCircleDeleteIcon = React.forwardRef<SVGSVGElement, GenietCircleDeleteIconProps>(
+export const GenietDeleteCircleIcon = React.forwardRef<SVGSVGElement, GenietDeleteCircleIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -22,4 +22,4 @@ export const GenietCircleDeleteIcon = React.forwardRef<SVGSVGElement, GenietCirc
   )
 );
 
-GenietCircleDeleteIcon.displayName = "GenietCircleDeleteIcon";
+GenietDeleteCircleIcon.displayName = "GenietDeleteCircleIcon";

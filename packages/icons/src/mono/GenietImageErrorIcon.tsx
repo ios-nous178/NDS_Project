@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface GenietImgErrorIconProps extends React.SVGProps<SVGSVGElement> {
+export interface GenietImageErrorIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const GenietImgErrorIcon = React.forwardRef<SVGSVGElement, GenietImgErrorIconProps>(
+export const GenietImageErrorIcon = React.forwardRef<SVGSVGElement, GenietImageErrorIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -26,4 +26,4 @@ export const GenietImgErrorIcon = React.forwardRef<SVGSVGElement, GenietImgError
   )
 );
 
-GenietImgErrorIcon.displayName = "GenietImgErrorIcon";
+GenietImageErrorIcon.displayName = "GenietImageErrorIcon";

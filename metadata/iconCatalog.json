@@ -362,13 +362,8 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietArrowBackIcon",
-      "kebab": "geniet-arrow-back",
-      "brand": "geniet"
-    },
-    {
-      "name": "GenietArrowDownIcon",
-      "kebab": "geniet-arrow-down",
+      "name": "GenietArrowLeftIcon",
+      "kebab": "geniet-arrow-left",
       "brand": "geniet"
     },
     {
@@ -384,11 +379,6 @@
     {
       "name": "GenietArrowUpIcon",
       "kebab": "geniet-arrow-up",
-      "brand": "geniet"
-    },
-    {
-      "name": "GenietBackIcon",
-      "kebab": "geniet-back",
       "brand": "geniet"
     },
     {
@@ -437,18 +427,23 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietCircleDeleteIcon",
-      "kebab": "geniet-circle-delete",
+      "name": "GenietChevronDownIcon",
+      "kebab": "geniet-chevron-down",
       "brand": "geniet"
     },
     {
-      "name": "GenietCirclePlusIcon",
-      "kebab": "geniet-circle-plus",
+      "name": "GenietChevronLeftIcon",
+      "kebab": "geniet-chevron-left",
       "brand": "geniet"
     },
     {
-      "name": "GenietCircleWarningIcon",
-      "kebab": "geniet-circle-warning",
+      "name": "GenietChevronRightIcon",
+      "kebab": "geniet-chevron-right",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietChevronUpIcon",
+      "kebab": "geniet-chevron-up",
       "brand": "geniet"
     },
     {
@@ -489,6 +484,11 @@
     {
       "name": "GenietCouponIcon",
       "kebab": "geniet-coupon",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietDeleteCircleIcon",
+      "kebab": "geniet-delete-circle",
       "brand": "geniet"
     },
     {
@@ -542,13 +542,13 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietImgErrorIcon",
-      "kebab": "geniet-img-error",
+      "name": "GenietImageErrorIcon",
+      "kebab": "geniet-image-error",
       "brand": "geniet"
     },
     {
-      "name": "GenietImgGroupIcon",
-      "kebab": "geniet-img-group",
+      "name": "GenietImageGroupIcon",
+      "kebab": "geniet-image-group",
       "brand": "geniet"
     },
     {
@@ -617,11 +617,6 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietNextIcon",
-      "kebab": "geniet-next",
-      "brand": "geniet"
-    },
-    {
       "name": "GenietPenIcon",
       "kebab": "geniet-pen",
       "brand": "geniet"
@@ -629,6 +624,11 @@
     {
       "name": "GenietPillIcon",
       "kebab": "geniet-pill",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietPlusCircleIcon",
+      "kebab": "geniet-plus-circle",
       "brand": "geniet"
     },
     {
@@ -697,13 +697,13 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietShoeFillIcon",
-      "kebab": "geniet-shoe-fill",
+      "name": "GenietShoeIcon",
+      "kebab": "geniet-shoe",
       "brand": "geniet"
     },
     {
-      "name": "GenietShoeIcon",
-      "kebab": "geniet-shoe",
+      "name": "GenietShoeSolidIcon",
+      "kebab": "geniet-shoe-solid",
       "brand": "geniet"
     },
     {
@@ -732,11 +732,6 @@
       "brand": "geniet"
     },
     {
-      "name": "GenietTopIcon",
-      "kebab": "geniet-top",
-      "brand": "geniet"
-    },
-    {
       "name": "GenietUserIcon",
       "kebab": "geniet-user",
       "brand": "geniet"
@@ -744,6 +739,11 @@
     {
       "name": "GenietVideoIcon",
       "kebab": "geniet-video",
+      "brand": "geniet"
+    },
+    {
+      "name": "GenietWarningCircleIcon",
+      "kebab": "geniet-warning-circle",
       "brand": "geniet"
     },
     {
@@ -9852,18 +9852,18 @@
       "brand": "runmile"
     },
     {
-      "name": "RunmileAlramActiveIcon",
-      "kebab": "runmile-alram-active",
+      "name": "RunmileAlarmActiveIcon",
+      "kebab": "runmile-alarm-active",
       "brand": "runmile"
     },
     {
-      "name": "RunmileAlramIcon",
-      "kebab": "runmile-alram",
+      "name": "RunmileAlarmIcon",
+      "kebab": "runmile-alarm",
       "brand": "runmile"
     },
     {
-      "name": "RunmileAlramOffIcon",
-      "kebab": "runmile-alram-off",
+      "name": "RunmileAlarmOffIcon",
+      "kebab": "runmile-alarm-off",
       "brand": "runmile"
     },
     {
@@ -9977,23 +9977,13 @@
       "brand": "runmile"
     },
     {
-      "name": "RunmileCircleCheckColorIcon",
-      "kebab": "runmile-circle-check-color",
+      "name": "RunmileCheckCircleColorIcon",
+      "kebab": "runmile-check-circle-color",
       "brand": "runmile"
     },
     {
-      "name": "RunmileCircleCheckIcon",
-      "kebab": "runmile-circle-check",
-      "brand": "runmile"
-    },
-    {
-      "name": "RunmileCircleWarningIcon",
-      "kebab": "runmile-circle-warning",
-      "brand": "runmile"
-    },
-    {
-      "name": "RunmileCircleWarningStrokeIcon",
-      "kebab": "runmile-circle-warning-stroke",
+      "name": "RunmileCheckCircleIcon",
+      "kebab": "runmile-check-circle",
       "brand": "runmile"
     },
     {
@@ -10207,8 +10197,8 @@
       "brand": "runmile"
     },
     {
-      "name": "RunmileSearchClearIcon",
-      "kebab": "runmile-search-clear",
+      "name": "RunmileSearchDeleteIcon",
+      "kebab": "runmile-search-delete",
       "brand": "runmile"
     },
     {
@@ -10269,6 +10259,16 @@
     {
       "name": "RunmileUserIcon",
       "kebab": "runmile-user",
+      "brand": "runmile"
+    },
+    {
+      "name": "RunmileWarningCircleIcon",
+      "kebab": "runmile-warning-circle",
+      "brand": "runmile"
+    },
+    {
+      "name": "RunmileWarningCircleStrokeIcon",
+      "kebab": "runmile-warning-circle-stroke",
       "brand": "runmile"
     },
     {

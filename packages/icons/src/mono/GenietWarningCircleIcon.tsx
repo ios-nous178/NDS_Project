@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface GenietCircleWarningIconProps extends React.SVGProps<SVGSVGElement> {
+export interface GenietWarningCircleIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const GenietCircleWarningIcon = React.forwardRef<SVGSVGElement, GenietCircleWarningIconProps>(
+export const GenietWarningCircleIcon = React.forwardRef<SVGSVGElement, GenietWarningCircleIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -25,4 +25,4 @@ export const GenietCircleWarningIcon = React.forwardRef<SVGSVGElement, GenietCir
   )
 );
 
-GenietCircleWarningIcon.displayName = "GenietCircleWarningIcon";
+GenietWarningCircleIcon.displayName = "GenietWarningCircleIcon";

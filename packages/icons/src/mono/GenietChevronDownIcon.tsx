@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface GenietArrowDownIconProps extends React.SVGProps<SVGSVGElement> {
+export interface GenietChevronDownIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const GenietArrowDownIcon = React.forwardRef<SVGSVGElement, GenietArrowDownIconProps>(
+export const GenietChevronDownIcon = React.forwardRef<SVGSVGElement, GenietChevronDownIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -21,4 +21,4 @@ export const GenietArrowDownIcon = React.forwardRef<SVGSVGElement, GenietArrowDo
   )
 );
 
-GenietArrowDownIcon.displayName = "GenietArrowDownIcon";
+GenietChevronDownIcon.displayName = "GenietChevronDownIcon";

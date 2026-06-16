@@ -19,11 +19,11 @@ const GENIET_ROOT = "/Users/nudge_133/Desktop/GenietHomePage/public/images";
 // 일러스트(share/invite/banner/recommendcode-bg) 7개와 mood 캐릭터(condition+emoji) 10개는 제외.
 const MAPPING = [
   ["alarm/ic-alarm-orange.svg", "geniet-alarm"],
-  ["friend-invite/ic-02-arrow-down-darkgray.svg", "geniet-arrow-down"],
-  ["friend-invite/ic-02-arrow-up-darkgray.svg", "geniet-arrow-up"],
-  ["friend-invite/ic-arrow-right-white.svg", "geniet-arrow-right"],
+  ["friend-invite/ic-02-arrow-down-darkgray.svg", "geniet-chevron-down"],
+  ["friend-invite/ic-02-arrow-up-darkgray.svg", "geniet-chevron-up"],
+  ["friend-invite/ic-arrow-right-white.svg", "geniet-chevron-right"],
   ["home/stepper/ic-arrow-right-white.svg", "geniet-arrow-right-stepper"],
-  ["friend-invite/ic-back-black.svg", "geniet-arrow-back"],
+  ["friend-invite/ic-back-black.svg", "geniet-chevron-left"],
   ["friend-invite/ic-copy.svg", "geniet-copy"],
   ["header/pc/ic-cashreview.svg", "geniet-cashreview"],
   ["header/pc/ic-confetti.svg", "geniet-confetti"],

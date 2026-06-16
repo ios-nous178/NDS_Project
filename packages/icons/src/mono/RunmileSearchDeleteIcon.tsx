@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface RunmileSearchClearIconProps extends React.SVGProps<SVGSVGElement> {
+export interface RunmileSearchDeleteIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const RunmileSearchClearIcon = React.forwardRef<SVGSVGElement, RunmileSearchClearIconProps>(
+export const RunmileSearchDeleteIcon = React.forwardRef<SVGSVGElement, RunmileSearchDeleteIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -27,4 +27,4 @@ export const RunmileSearchClearIcon = React.forwardRef<SVGSVGElement, RunmileSea
   )
 );
 
-RunmileSearchClearIcon.displayName = "RunmileSearchClearIcon";
+RunmileSearchDeleteIcon.displayName = "RunmileSearchDeleteIcon";

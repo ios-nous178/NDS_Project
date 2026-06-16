@@ -1,10 +1,10 @@
 import React from "react";
 
-export interface RunmileCircleCheckColorIconProps extends React.SVGProps<SVGSVGElement> {
+export interface RunmileCheckCircleColorIconProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
 }
 
-export const RunmileCircleCheckColorIcon = React.forwardRef<SVGSVGElement, RunmileCircleCheckColorIconProps>(
+export const RunmileCheckCircleColorIcon = React.forwardRef<SVGSVGElement, RunmileCheckCircleColorIconProps>(
   ({ size = 24, color = "currentColor", ...props }, ref) => (
     <svg
       ref={ref}
@@ -31,4 +31,4 @@ export const RunmileCircleCheckColorIcon = React.forwardRef<SVGSVGElement, Runmi
   )
 );
 
-RunmileCircleCheckColorIcon.displayName = "RunmileCircleCheckColorIcon";
+RunmileCheckCircleColorIcon.displayName = "RunmileCheckCircleColorIcon";
