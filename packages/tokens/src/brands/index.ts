@@ -16,7 +16,9 @@ export {
   trostCobalt,
   trostPink,
   trostNeutral,
-  trostStatus,
+  trostRed,
+  trostBlue,
+  trostGreen,
   trostSemantic,
 } from "./trost.js";
 export type { TrostSemanticTokens } from "./trost.js";

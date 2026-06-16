@@ -30,6 +30,12 @@ export interface SemanticColors {
     overlay?: string;
     /** DS extension — disabled bg */
     disabled?: string;
+    /**
+     * Point(액센트) 서피스 — 브랜드 가이드의 코발트(트로스트) 등 보조 강조 컬러.
+     * `BG/Point/{Default,Subtle,Surface}`. brand(주 컬러)와 별개의 2차 액센트.
+     * NudgeEAP base 는 미정의 — point 패밀리를 둔 brand 만 emit.
+     */
+    point?: { default?: string; subtle?: string; surface?: string };
   };
   text?: {
     strong?: { default?: string };
@@ -39,6 +45,10 @@ export interface SemanticColors {
     disabled?: { default?: string };
     inverse?: { default?: string };
     brand?: { default?: string; strong?: string };
+    /** Brand 채움(노랑 등) 위에 얹는 텍스트. Figma `Text/OnBrand/Default`. */
+    onBrand?: { default?: string };
+    /** Point(액센트) 텍스트. Figma `Text/Point/{Default,Strong}`. */
+    point?: { default?: string; strong?: string };
     /**
      * Inline 링크 텍스트. CashwalkBiz 가이드에 명시된 `Text/Link/Default` 슬롯.
      * NudgeEAP base 에는 없고, brand 가이드가 link 를 별도 컬러로 분리할 때 사용.
@@ -101,9 +111,15 @@ export interface SemanticColors {
      * 사용. 다른 brand 는 미정의 시 fallback (base = neutral medium).
      */
     muted?: { default?: string };
+    /** 약한 아이콘 톤. Figma `Icon/Subtle/Default`. */
+    subtle?: { default?: string };
     disabled?: { default?: string };
     inverse?: { default?: string };
+    /** Brand 채움 위 아이콘. Figma `Icon/OnBrand/Default`. */
+    onBrand?: { default?: string };
     brand?: { default?: string };
+    /** Point(액센트) 아이콘. Figma `Icon/Point/Default`. */
+    point?: { default?: string };
     status?: { success?: string; error?: string; caution?: string };
   };
   border?: {
@@ -113,13 +129,17 @@ export interface SemanticColors {
     focus?: { default?: string };
     brand?: { default?: string; disabled?: string };
     disabled?: { default?: string };
-    status?: { error?: string; caution?: string };
+    status?: { error?: string; success?: string; caution?: string };
+    /** Point(액센트) 보더. Figma `Border/Point/Default`. */
+    point?: { default?: string };
   };
   fill?: {
-    brand?: { default?: string; hover?: string; pressed?: string; disabled?: string };
+    brand?: { default?: string; hover?: string; pressed?: string; disabled?: string; subtle?: string };
     neutral?: { default?: string; subtle?: string };
     inverse?: { default?: string };
-    status?: { error?: string; caution?: string };
+    status?: { error?: string; success?: string; info?: string; caution?: string };
+    /** Point(액센트) 채움. Figma `Fill/Point/{Default,Hover,Pressed,Subtle}`. */
+    point?: { default?: string; hover?: string; pressed?: string; subtle?: string };
   };
   input?: {
     bg?: string;

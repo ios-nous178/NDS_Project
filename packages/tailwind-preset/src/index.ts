@@ -16,7 +16,9 @@ import {
   trostCobalt,
   trostPink,
   trostNeutral,
-  trostStatus,
+  trostRed,
+  trostBlue,
+  trostGreen,
   trostSemantic,
   trostTheme,
   cashwalkBizCommon,
@@ -189,12 +191,16 @@ export const trostPreset = {
   theme: {
     extend: {
       colors: {
-        // Trost 고유 atomic palette
+        // Trost 고유 atomic palette (Figma 컬러 가이드 5011:108 풀 스케일).
+        // base 와 충돌하는 hue(neutral/yellow/red/blue/green)는 `trost-` prefix —
+        // 안 그러면 아래 `...nudgeEapPreset` spread 가 base 값으로 덮어버린다.
         "trost-neutral": objectToPx(trostNeutral),
         "trost-yellow": objectToPx(trostYellow),
+        "trost-red": objectToPx(trostRed),
+        "trost-blue": objectToPx(trostBlue),
+        "trost-green": objectToPx(trostGreen),
         cobalt: objectToPx(trostCobalt),
         pink: objectToPx(trostPink),
-        status: objectToPx(trostStatus),
 
         // 시멘틱 키는 nudgeEapPreset 와 동일한 CSS var 사용
         ...nudgeEapPreset.theme.extend.colors,

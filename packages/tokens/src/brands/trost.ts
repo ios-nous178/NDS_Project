@@ -11,11 +11,19 @@
  */
 
 import type { BrandTheme } from "./types.js";
-import { trostCobalt, trostNeutral, trostPink, trostStatus, trostYellow } from "./trost.palette.js";
+import {
+  trostBlue,
+  trostCobalt,
+  trostGreen,
+  trostNeutral,
+  trostPink,
+  trostRed,
+  trostYellow,
+} from "./trost.palette.js";
 import { trostSemantic } from "./trost.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export — API 호환 유지
-export { trostYellow, trostCobalt, trostPink, trostNeutral, trostStatus };
+export { trostYellow, trostCobalt, trostPink, trostNeutral, trostRed, trostBlue, trostGreen };
 export { trostSemantic };
 export type { TrostSemanticTokens } from "./trost.semantic.js";
 
@@ -29,7 +37,9 @@ export const trostTheme: BrandTheme = {
     cobalt: trostCobalt,
     pink: trostPink,
     neutral: trostNeutral,
-    status: trostStatus,
+    red: trostRed,
+    blue: trostBlue,
+    green: trostGreen,
   },
   semantic: trostSemantic,
   typography: {
@@ -42,15 +52,14 @@ export const trostTheme: BrandTheme = {
       headline1: { fontSize: 26, lineHeight: 38, letterSpacing: 0 },
       headline2: { fontSize: 24, lineHeight: 34, letterSpacing: 0 },
       headline3: { fontSize: 22, lineHeight: 30, letterSpacing: 0 },
-      headline4: { fontSize: 18, lineHeight: 26, letterSpacing: 0 },
-      // headline5 — Trost에 없으므로 headline4와 동일
+      headline4: { fontSize: 20, lineHeight: 30, letterSpacing: 0 },
       headline5: { fontSize: 18, lineHeight: 26, letterSpacing: 0 },
       body1: { fontSize: 16, lineHeight: 24, letterSpacing: 0 },
       body2: { fontSize: 15, lineHeight: 22, letterSpacing: 0 },
       body3: { fontSize: 14, lineHeight: 20, letterSpacing: 0 },
       caption1: { fontSize: 13, lineHeight: 18, letterSpacing: 0 },
       caption2: { fontSize: 12, lineHeight: 18, letterSpacing: 0 },
-      label: { fontSize: 12, lineHeight: 18, letterSpacing: 0 },
+      label: { fontSize: 11, lineHeight: 18, letterSpacing: 0 },
     },
   },
   spacing: {

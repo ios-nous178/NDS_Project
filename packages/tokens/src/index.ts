@@ -81,7 +81,9 @@ export {
   trostCobalt,
   trostPink,
   trostNeutral,
-  trostStatus,
+  trostRed,
+  trostBlue,
+  trostGreen,
   trostSemantic,
 } from "./brands/index.js";
 export {
