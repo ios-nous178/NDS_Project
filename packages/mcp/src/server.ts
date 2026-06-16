@@ -586,8 +586,14 @@ function scoreAsset(query: string, entry: AssetCatalogEntry): number {
   if (!q) return 0;
   let best = Math.max(scoreMatch(q, entry.id), scoreMatch(q, entry.category));
   for (const tok of entry.search) {
-    if (tok === q) best = Math.max(best, 90);
-    else if (tok.includes(q) || q.includes(tok)) best = Math.max(best, 55);
+    if (tok === q) {
+      best = Math.max(best, 90);
+      continue;
+    }
+    // 부분일치는 양쪽 모두 3자 이상일 때만 — 'three-d' 의 'd' 같은 1~2자 토큰이
+    // 거의 모든 질의에 q.includes(tok) 로 걸려 오탐(MISS 가 매치로 둔갑)하는 것을 차단.
+    if (tok.length < 3 || q.length < 3) continue;
+    if (tok.includes(q) || q.includes(tok)) best = Math.max(best, 55);
   }
   for (const [alias, targets] of Object.entries(ASSET_SEARCH_ALIASES)) {
     if (!q.includes(alias)) continue;
