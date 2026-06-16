@@ -78,7 +78,7 @@ import { captureTelemetry } from "./tools/telemetry-egress.js";
 import { captureTranscriptFeedback } from "./tools/feedback-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
-import { getGuide, listFigmaSyncStatus, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
+import { getGuide, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
 import { recordObservability } from "./tools/observability-sink.js";
@@ -1186,7 +1186,6 @@ export const toolHandlers = {
         },
       ),
     ),
-  list_figma_sync_status: () => listFigmaSyncStatus(),
   get_setup: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "get_setup",

@@ -1,7 +1,7 @@
 ---
 sidebar_position: 10
 title: MCP 도구 레퍼런스
-description: nudge-ds MCP 서버가 제공하는 20개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
+description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
 ---
 
 <!-- AUTO-GENERATED FILE. SSOT: packages/mcp/src/tools/registry.ts (TOOLS 배열). 본문을 바꾸려면 registry.ts 를 고치고 `pnpm generate:mcp-tools` 를 다시 실행하세요. 손으로 편집하지 마세요. -->
@@ -9,7 +9,7 @@ description: nudge-ds MCP 서버가 제공하는 20개 도구의 용도·입력 
 
 # MCP 도구 레퍼런스
 
-`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **20개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
+`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **19개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
 
 > 사용 흐름과 환경 설치는 [MCP 사용 가이드](/NUDGE_DS_MCP_USAGE) 를 먼저 참고하세요.
 >
@@ -20,13 +20,13 @@ description: nudge-ds MCP 서버가 제공하는 20개 도구의 용도·입력 
 | 카테고리                                      | 개수   | 도구                                                                                                                                                    |
 | --------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 브랜드 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회 | 5      | `get_brand` · `find_component` · `find_icon` · `find_token` · `find_asset`                                                                              |
-| 가이드 · 패턴 · 원칙                          | 2      | `get_guide` · `list_figma_sync_status`                                                                                                                  |
+| 가이드 · 패턴 · 원칙                          | 1      | `get_guide`                                                                                                                                             |
 | 설계 보조 (DesignSpec · 페이지 패턴)          | 3      | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
 | 목업 빌드 · 검증 · 변환                       | 6      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
 | Dev 서버 / 미리보기                           | 1      | `dev_server`                                                                                                                                            |
 | 외부 프로젝트 셋업                            | 1      | `get_setup`                                                                                                                                             |
 | 피드백 · 텔레메트리                           | 2      | `log_feedback` · `prompt_satisfaction`                                                                                                                  |
-| **합계**                                      | **20** |                                                                                                                                                         |
+| **합계**                                      | **19** |                                                                                                                                                         |
 
 ---
 
@@ -117,14 +117,6 @@ Fetch DS guidance by topic (`component:<Name>`, `pattern:<name>`, or fixed like 
 - `aspects` `string[]` — Principles-focused. Friendly names for the slices a screen needs — e.g. ['spacing','radius','typography','color'] returns only those blocks. Sugar over `sections` with aliases (radius→shapes, color→colors, tone→brandTone, font→typography, shadow→elevation, dos-donts→dos+donts+bannedPatterns). Merged with `sections`. No aspect resolves → error lists validAspects.
 - `brand` `trost` \| `geniet` \| `cashwalk-biz` \| `nudge-eap` \| `runmile` — Optional brand slug. Set → base guide merged with the brand's service overlay (allowedVariants/disallowed/preferred/forbiddenPatterns, servicePitfalls, iconSet, copyTone). Omitted → a `_brandVariants` slim summary lists which brands have an overlay. For `principles`, also scopes learned-principles promotion.
 - `cwd` `string` — `principles`-focused. Workspace root to read `designDecisions.jsonl` — recurring decisions (≥ threshold distinct screens) are promoted into a `_learnedPrinciples` block. Defaults to MCP process cwd (= where save_design_spec writes).
-
-### `list_figma_sync_status`
-
-List DS component guides' Figma Library sync status — figmaNodeUrl (synced vs pending) plus which size/state/color matrices and a11y notes are filled. No args. Internal DS-maintenance audit (= get_guide(\{ topic: 'figma-sync' \})).
-
-**인자**
-
-_인자 없음._
 
 ---
 

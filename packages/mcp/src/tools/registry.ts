@@ -525,16 +525,6 @@ const TOOLS = [
     },
   },
   {
-    name: "list_figma_sync_status",
-    description:
-      "List DS component guides' Figma Library sync status — figmaNodeUrl (synced vs pending) plus which size/state/color matrices and a11y notes are filled. No args. Internal DS-maintenance audit (= get_guide({ topic: 'figma-sync' })).",
-    inputSchema: {
-      type: "object",
-      properties: {},
-      additionalProperties: false,
-    },
-  },
-  {
     name: "get_setup",
     description:
       "Setup router: install/imports/update/claude-md/agents-md/inspector/external-starter/full. Defaults to HTML/<nds-*>. external-starter onboards external projects in one call (writes CLAUDE.md + AGENTS.md, returns a shared .mcp.json for Claude Code/Cursor/Codex, the validate→build→score loop, and 'NDS 써서' prompt templates). Generated mockup instructions enforce the visual-reference-first gate.",
@@ -876,8 +866,6 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         serviceName: optionalString(args, "serviceName", toolName),
         cwd: optionalString(args, "cwd", toolName),
       };
-    case "list_figma_sync_status":
-      return {};
     case "get_setup":
       return {
         step:

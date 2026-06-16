@@ -130,7 +130,7 @@ const CATEGORIES = [
     title: "가이드 · 패턴 · 원칙",
     blurb:
       "디자인 원칙·컴포넌트 함정·UX 패턴·어드민 규약을 단일 도구로 받는다. Figma 정합 상태 점검은 DS 유지보수용.",
-    tools: ["get_guide", "list_figma_sync_status"],
+    tools: ["get_guide"],
   },
   {
     title: "설계 보조 (DesignSpec · 페이지 패턴)",

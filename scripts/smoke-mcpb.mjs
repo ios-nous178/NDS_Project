@@ -123,11 +123,12 @@ try {
     throw new Error(`get_brand returned unexpected result: ${JSON.stringify(brands)}`);
   }
 
-  // list_figma_sync_status: 정식 등록 회귀 가드 — 미등록이면 "Unknown tool" 로 떨어진다.
-  const figmaSync = await callTool("list_figma_sync_status", {});
+  // figma-sync 회귀 가드 — list_figma_sync_status 별칭 도구는 제거됨(get_guide 가 정식 경로).
+  // get_guide({topic:'figma-sync'}) 가 같은 listFigmaSyncStatus() 데이터를 돌려주는지 확인.
+  const figmaSync = await callTool("get_guide", { topic: "figma-sync" });
   if (!Array.isArray(figmaSync?.entries) || typeof figmaSync?.syncedCount !== "number") {
     throw new Error(
-      `list_figma_sync_status returned unexpected result: ${JSON.stringify(figmaSync)}`,
+      `get_guide({topic:'figma-sync'}) returned unexpected result: ${JSON.stringify(figmaSync)}`,
     );
   }
 
