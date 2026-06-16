@@ -69,6 +69,10 @@
       "types": "./dist/geniet-asset-metadata.d.ts",
       "import": "./dist/geniet-asset-metadata.js"
     },
+    "./trost-assets": {
+      "types": "./dist/trost-asset-metadata.d.ts",
+      "import": "./dist/trost-asset-metadata.js"
+    },
     "./remote-url": {
       "types": "./dist/remote-url.d.ts",
       "import": "./dist/remote-url.js"

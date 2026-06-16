@@ -4670,6 +4670,332 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "trost",
     "scope": "brand",
+    "category": "images/misc",
+    "id": "test-complete",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/misc/test-complete.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "misc",
+      "test",
+      "complete"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/profiles",
+    "id": "default-profile",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/profiles/default-profile.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "profiles",
+      "default",
+      "profile"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "center",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/center.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "center"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "corona",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/corona.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "corona"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "d-type",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/d-type.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "d",
+      "type"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "depression",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/depression.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "depression"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "emotion",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/emotion.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "emotion"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "employment",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/employment.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "employment"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "event",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/event.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "event"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "job-stress",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/job-stress.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "job",
+      "stress"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "mbti",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/mbti.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "mbti"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "medicine",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/medicine.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "medicine"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "panic",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/panic.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "panic"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "personality",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/personality.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "personality"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "psych",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/psych.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "routine",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/routine.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "routine"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "self-esteem",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/self-esteem.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "self",
+      "esteem"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "images/psych-tests",
+    "id": "sound",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/sound.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "trost",
+      "images",
+      "psych",
+      "tests",
+      "sound"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
     "category": "logos",
     "id": "trost-logo",
     "inlineRef": "@nudge-design/assets/files/brand/trost/logos/trost-logo.svg",
@@ -4692,6 +5018,20 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "logos",
       "logo",
       "mobile"
+    ]
+  },
+  {
+    "brand": "trost",
+    "scope": "brand",
+    "category": "logos",
+    "id": "trost-logo-white",
+    "inlineRef": "@nudge-design/assets/files/brand/trost/logos/trost-logo-white.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "trost",
+      "logos",
+      "logo",
+      "white"
     ]
   }
 ];
@@ -4732,6 +5072,9 @@ export const ASSET_CATALOG_SUMMARY: Record<string, Record<string, number>> = {
     "sns-logos": 8
   },
   "trost": {
-    "logos": 2
+    "images/misc": 1,
+    "images/profiles": 1,
+    "images/psych-tests": 16,
+    "logos": 3
   }
 };

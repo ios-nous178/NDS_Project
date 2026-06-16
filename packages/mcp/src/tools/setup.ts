@@ -1344,6 +1344,36 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
         logoVariants.length > 0
           ? `// ① 단일 HTML 목업 (data URI 가 컴포넌트에 내장 — 이게 기본): 사이드바면 <nds-sidebar brand="${slug}"> 가 로고 자동 주입, chrome(헤더/사이드바) 밖이면 <nds-brand-logo brand="${slug}">. 백오피스/CMS·어드민 셸 사이드바 로고도 이걸로 — 텍스트·색박스 placeholder 나 빌드 산출물에서 추출한 수동 base64 <img> 금지(로고가 에셋에 data URI 로 내장).\n<nds-brand-logo brand="${slug}" height="40"></nds-brand-logo>\n// ② React/호스팅 앱(antd 등 비-DS 화면 포함 — "패키지를 못 가져온다"는 오해 차단): import { getBrandLogo } from "@nudge-design/assets"; getBrandLogo("${slug}"${logoVariants[0] === "default" ? "" : `, "${logoVariants[0]}"`}) → { filename, dataUri, mimeType } — 또는 <BrandLogo brand="${slug}" />.`
           : null,
+      // 로고 사용 규칙 (디자이너 Figma 로고 가이드). 변종 보유 브랜드에만 노출.
+      // 어두운 배경에서 쓸 반전 변종(white/mono/enMono) 보유 여부를 함께 알려 대비 규칙 위반(어두운 배경 위 검정 로고)을 차단.
+      usageGuide:
+        logoVariants.length > 0
+          ? {
+              minSize: "디지털 높이 ≥16px (16px 이하는 가독성 저하). 인쇄 ≥8mm.",
+              clearSpace: "로고 사방에 로고 높이의 50% 이상 여백 (예: 20px 로고 → 10px 마진).",
+              background: (() => {
+                const inverse = logoVariants.filter((v) =>
+                  ["white", "mono", "enMono"].includes(v),
+                );
+                return inverse.length > 0
+                  ? `배경 밝기로 색을 고른다: 밝은 배경=검정/기본 변종, 어두운 배경=반전 변종(${inverse.join("/")}). getBrandLogo("${slug}", "${inverse[0]}").`
+                  : "밝은 배경 위 기본(검정) 변종으로 사용. 어두운 배경용 반전 변종은 아직 미등록 — 어두운 배경 위 검정 로고(저대비)는 피한다.";
+              })(),
+              do: [
+                "마스터 컴포넌트/원본 자산만 사용",
+                "배경 밝기에 맞춰 검정/흰색 변종 선택",
+                "원본 비율 유지",
+                "클리어 스페이스 확보",
+              ],
+              dont: [
+                "Trost 팔레트 밖 색으로 recolor",
+                "비율 왜곡(stretch/squash)",
+                "회전·그림자·글로우 효과",
+                "저대비 배치(밝은 배경 위 흰색, 어두운 배경 위 검정)",
+                "최소 크기 미만 축소",
+              ],
+            }
+          : null,
       publicHosting: {
         baseDir: "public/assets/",
         assetBaseUrlAttr: "/assets",

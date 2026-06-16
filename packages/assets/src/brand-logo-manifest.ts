@@ -38,6 +38,7 @@ export type BrandLogoSet = Partial<Record<LogoVariant, BrandLogo>>;
 const DATA_URI_BY_FILENAME: Record<string, string> = {
   "brand/trost/logos/trost-logo.svg": defaults.TROST_LOGO_DATA_URI,
   "brand/trost/logos/trost-logo-mobile.webp": defaults.TROST_LOGO_MOBILE_DATA_URI,
+  "brand/trost/logos/trost-logo-white.svg": defaults.TROST_LOGO_WHITE_DATA_URI,
 
   "brand/geniet/logos/geniet-logo-pc.webp": defaults.GENIET_LOGO_PC_DATA_URI,
   "brand/geniet/logos/geniet-logo-mobile.webp": defaults.GENIET_LOGO_MOBILE_DATA_URI,
@@ -109,6 +110,7 @@ export function getBrandLogo(slug: BrandSlug, variant?: LogoVariant): BrandLogo 
     "horizontalSvg",
     "mono",
     "muted",
+    "white",
   ];
   for (const key of fallbackOrder) {
     const logo = set[key];
