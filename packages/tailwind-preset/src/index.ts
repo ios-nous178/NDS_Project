@@ -222,12 +222,13 @@ export const trostPreset = {
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
       borderRadius: {
         none: "0px",
-        xs: `${trostTheme.spacing!.radius!.xs}px`,
         sm: `${trostTheme.spacing!.radius!.sm}px`,
-        DEFAULT: `${trostTheme.spacing!.radius!.md}px`,
         md: `${trostTheme.spacing!.radius!.md}px`,
+        DEFAULT: `${trostTheme.spacing!.radius!.lg}px`, // 기본 = Radius/Lg(8)
         lg: `${trostTheme.spacing!.radius!.lg}px`,
         xl: `${trostTheme.spacing!.radius!.xl}px`,
+        "2xl": `${trostTheme.spacing!.radius!["2xl"]}px`,
+        "3xl": `${trostTheme.spacing!.radius!["3xl"]}px`,
         pill: "9999px",
       },
       height: {

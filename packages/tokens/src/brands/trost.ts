@@ -63,25 +63,44 @@ export const trostTheme: BrandTheme = {
     },
   },
   spacing: {
+    // Semantic Gap (Figma 스페이싱 가이드 806:271) — base 와 다른 것만 override.
+    // (tight 4 · comfortable 12 · loose 16 · wide 24 · label 8 은 base 동일 → cascade)
+    gap: {
+      default: 8, // base 10 → 가이드 Gap/Default 8
+      section: 40, // 신규 — Gap/Section (페이지 내 섹션 간)
+    },
+    // Semantic Inset (가이드 806:271) — base 와 다른 것만 override.
+    // (input 12 · card 16 · card-large 20 · modal 24 는 base 동일 → cascade)
+    inset: {
+      chip: 6, // base 8 → 가이드 Inset/Chip 6
+      button: 14, // 신규 — Inset/Button (S/M 버튼 좌우)
+      section: 32, // 신규 — Inset/Section (페이지 섹션 외곽)
+    },
+    // Semantic Radius (Figma 보더&레디우스 가이드 5179:108).
     radius: {
       none: 0,
-      xs: 6,
-      sm: 6, // Trost sm = 6px (NudgeEAP: 4px)
-      md: 8,
-      lg: 12,
-      xl: 20, // Trost 고유: pill 형태 칩
+      sm: 4, // Badge·Tag
+      md: 6, // Input·Chip·Dropdown
+      lg: 8, // 기본 — Button·Card·ListItem
+      xl: 12, // 강조 카드·콘텐츠 박스
+      "2xl": 16, // Modal·Sheet
+      "3xl": 24, // BottomSheet·큰 모달
       pill: 9999,
     },
+    // Stroke Width (가이드 5179:108) — Hairline/Default 1 · Strong(focus) 1.5 · Bold(error/강조) 2.
+    stroke: { hairline: 1, default: 1, strong: 1.5, bold: 2 },
+    borderWidth: { hairline: 1, default: 1, strong: 1.5, bold: 2 },
   },
   elevation: {
-    // Figma 가이드(556:2) — 4 Levels (E0 ~ E3). 기본 UI는 Border, Shadow는 떠있는 요소에만.
-    // shadow.1 은 트로스트 코드 실측에서 가장 자주 쓰는 floating-card 패턴
-    // `0_2px_16px_0_rgba(0,0,0,0.12)` 와 일치하도록 opacity 0.12 로 맞춤.
+    // Figma 엘리베이션 가이드(5036:108) — 6 Levels (E0~E5), 2겹 drop-shadow.
+    // E0 None / E1 Subtle / E2 Default / E3 Overlay / E4 Modal / E5 Dialog.
     shadow: {
       "0": "none",
-      "1": "0px 2px 16px rgba(0, 0, 0, 0.12)",
-      "2": "0px 4px 12px rgba(0, 0, 0, 0.10)",
-      "3": "0px 8px 24px rgba(0, 0, 0, 0.12)",
+      "1": "0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 1px 0 rgba(0, 0, 0, 0.04)",
+      "2": "0 2px 4px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)",
+      "3": "0 4px 12px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
+      "4": "0 8px 24px 0 rgba(0, 0, 0, 0.16), 0 4px 8px 0 rgba(0, 0, 0, 0.08)",
+      "5": "0 12px 32px 0 rgba(0, 0, 0, 0.2), 0 6px 12px 0 rgba(0, 0, 0, 0.1)",
     },
     zIndex: {
       base: 0,
@@ -95,10 +114,10 @@ export const trostTheme: BrandTheme = {
   // Component overrides — 트로스트 운영 코드 실측값.
   // (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용)
   components: {
-    input: { borderColor: trostNeutral[200] },
+    input: { borderColor: trostNeutral[200], radius: 6 }, // 가이드 Input = Radius/Md 6
     // 카드 테두리 #E0E0E0 — neutral 스케일 밖 실측값 (200 #E5E5E5 / 300 #D8D8D8 사이)
-    card: { radius: 12, borderColor: "#E0E0E0" },
-    modal: { radius: 12 },
+    card: { radius: 8, borderColor: "#E0E0E0" }, // 가이드 Card = Radius/Lg 8
+    modal: { radius: 16 }, // 가이드 Modal = Radius/2xl 16
     // 노란 브랜드 위 셀렉트 칩은 다크 채움 (fill.brand 노랑 fallback 과 의도적으로 다름)
     chip: {
       selectedBackground: trostNeutral[800],
@@ -116,7 +135,7 @@ export const trostTheme: BrandTheme = {
     },
     toast: { shadow: "0px 4px 16px rgba(0,0,0,0.15)" },
     "bottom-sheet": {
-      radius: 16,
+      radius: 24, // 가이드 BottomSheet = Radius/3xl 24
       handleWidth: 50,
       handleHeight: 4,
       handleColor: trostNeutral[200],
