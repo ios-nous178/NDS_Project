@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface TrostCalendarSolidIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostCalendarSolidIcon = React.forwardRef<SVGSVGElement, TrostCalendarSolidIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <rect x="6" y="2" width="1.5" height="5" rx="0.75" fill="currentColor"/>
+<path d="M22 19L21.9961 19.1543C21.9184 20.6883 20.6883 21.9184 19.1543 21.9961L19 22H5L4.8457 21.9961C3.31166 21.9184 2.08163 20.6883 2.00391 19.1543L2 19V10.5H22V19ZM19 4C20.6569 4 22 5.34315 22 7V9H2V7C2 5.34315 3.34315 4 5 4H19Z" fill="currentColor"/>
+<rect x="16.5" y="2" width="1.5" height="5" rx="0.75" fill="currentColor"/>
+    </svg>
+  )
+);
+
+TrostCalendarSolidIcon.displayName = "TrostCalendarSolidIcon";

@@ -1,0 +1,33 @@
+import React from "react";
+
+export interface TrostCautionIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostCautionIcon = React.forwardRef<SVGSVGElement, TrostCautionIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_5022_1646)">
+<path d="M12.0004 21.1004C17.0262 21.1004 21.1004 17.0262 21.1004 12.0004C21.1004 6.9746 17.0262 2.90039 12.0004 2.90039C6.9746 2.90039 2.90039 6.9746 2.90039 12.0004C2.90039 17.0262 6.9746 21.1004 12.0004 21.1004Z" stroke="currentColor" strokeWidth="1.5"/>
+<path d="M12 16.7002C12.5523 16.7002 13 16.2525 13 15.7002C13 15.1479 12.5523 14.7002 12 14.7002C11.4477 14.7002 11 15.1479 11 15.7002C11 16.2525 11.4477 16.7002 12 16.7002Z" fill="currentColor"/>
+<path d="M12 8L12 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+</g>
+<defs>
+<clipPath id="clip0_5022_1646">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+TrostCautionIcon.displayName = "TrostCautionIcon";
