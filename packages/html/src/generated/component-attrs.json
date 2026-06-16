@@ -290,9 +290,14 @@
       "clickable",
       "description",
       "divider",
+      "elevation",
       "footer-no-border",
       "footer-text",
       "metadata",
+      "platform",
+      "show-divider",
+      "show-header",
+      "show-icon",
       "subtitle",
       "thumbnail-height",
       "thumbnail-ratio",
@@ -303,6 +308,14 @@
       "variant": [
         "outlined",
         "flat"
+      ],
+      "elevation": [
+        "outline",
+        "elevated"
+      ],
+      "platform": [
+        "pc",
+        "mobile"
       ]
     }
   },
@@ -813,6 +826,7 @@
   },
   "nds-list": {
     "observedAttributes": [
+      "platform",
       "variant"
     ],
     "enums": {
@@ -820,6 +834,10 @@
         "plain",
         "card",
         "divided"
+      ],
+      "platform": [
+        "mobile",
+        "pc"
       ]
     }
   },

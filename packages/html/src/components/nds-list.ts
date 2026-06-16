@@ -13,11 +13,17 @@
  *     </nds-list-item>
  *   </nds-list>
  *
- *   → <ul class="nds-list__root" data-slot="root" data-variant="card">
- *       <li class="nds-list-item" data-slot="item" data-size="md" data-interactive="true">
+ *   → <ul class="nds-list__root" data-slot="root" data-variant="card" data-platform="mobile">
+ *       <li class="nds-list-item" data-slot="item" data-size="md" data-layout="default" data-interactive="true">
  *         ... (children 그대로)
  *       </li>
  *     </ul>
+ *
+ * Trost 가이드 (opt-in):
+ *   <nds-list platform="pc"> · <nds-list-item layout="table|avatar|thumbnail|compact|action|default">.
+ *   layout 명시 시 li 에 data-layout-explicit="true" 가 붙어 새 밀도/인셋divider/PC 룰이 발화한다.
+ *   table layout 은 consumer 가 body 에 data-layout="table" + 컬럼 span(data-col="name|status") 을 직접 author.
+ *   size 는 폐기 별칭으로 유지(md→default · lg→avatar · xl→thumbnail · sm→compact).
  *
  * 이벤트:
  *   interactive 인 nds-list-item 클릭/Enter/Space → "list-item-select" CustomEvent (bubbles).
@@ -32,16 +38,38 @@ import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 export type ListVariant = "plain" | "card" | "divided";
+/** @deprecated layout 의 별칭 — Trost 가이드는 layout 사용. */
 export type ListItemSize = "sm" | "md" | "lg" | "xl";
+export type ListPlatform = "mobile" | "pc";
+export type ListItemLayout = "default" | "avatar" | "thumbnail" | "action" | "compact" | "table";
 
 const LIST_VARIANTS: readonly ListVariant[] = ["plain", "card", "divided"];
 const ITEM_SIZES: readonly ListItemSize[] = ["sm", "md", "lg", "xl"];
+const LIST_PLATFORMS: readonly ListPlatform[] = ["mobile", "pc"];
+const ITEM_LAYOUTS: readonly ListItemLayout[] = [
+  "default",
+  "avatar",
+  "thumbnail",
+  "action",
+  "compact",
+  "table",
+];
+
+/** 폐기 size → layout 매핑 (react 미러). */
+const SIZE_TO_LAYOUT: Record<ListItemSize, ListItemLayout> = {
+  md: "default",
+  lg: "avatar",
+  xl: "thumbnail",
+  sm: "compact",
+};
 
 export class NdsList extends NdsElement {
   static elementName = "nds-list";
 
   static get observedAttributes(): readonly string[] {
-    return [...COMPONENT_ATTRS["nds-list"].observedAttributes];
+    // COMPONENT_ATTRS(catalog 파생) 에 "platform" 이 반영되기 전까지 인라인 보강.
+    // (react ListProps.platform 추가분 — 카탈로그 재생성 시 중복돼도 무해)
+    return [...COMPONENT_ATTRS["nds-list"].observedAttributes, "platform"];
   }
 
   private _root: HTMLUListElement | null = null;
@@ -91,6 +119,10 @@ export class NdsList extends NdsElement {
     this._root.dataset.variant = (LIST_VARIANTS as readonly string[]).includes(variant)
       ? variant
       : "plain";
+    const platform = this.attr("platform", "mobile");
+    this._root.dataset.platform = (LIST_PLATFORMS as readonly string[]).includes(platform)
+      ? platform
+      : "mobile";
   }
 }
 
@@ -98,7 +130,7 @@ export class NdsListItem extends NdsElement {
   static elementName = "nds-list-item";
 
   static get observedAttributes(): readonly string[] {
-    return ["size", "interactive", "active", "disabled"];
+    return ["size", "layout", "interactive", "active", "disabled"];
   }
 
   private _root: HTMLLIElement | null = null;
@@ -142,12 +174,22 @@ export class NdsListItem extends NdsElement {
     if (this.style.display !== "contents") this.style.display = "contents";
 
     const size = this.attr("size", "md");
+    const layoutAttr = this.attr("layout", "");
     const interactive = this.boolAttr("interactive");
     const active = this.boolAttr("active");
     const disabled = this.boolAttr("disabled");
 
     const li = this._root;
-    li.dataset.size = (ITEM_SIZES as readonly string[]).includes(size) ? size : "md";
+    const safeSize = (ITEM_SIZES as readonly string[]).includes(size) ? size : "md";
+    li.dataset.size = safeSize;
+    // layout 명시 시 새 [data-platform][data-layout] 룰 발화, 미명시면 폐기 size 별칭(렌더 불변).
+    const layoutOptIn = (ITEM_LAYOUTS as readonly string[]).includes(layoutAttr);
+    const resolvedLayout = layoutOptIn
+      ? layoutAttr
+      : SIZE_TO_LAYOUT[safeSize as ListItemSize];
+    li.dataset.layout = resolvedLayout;
+    if (layoutOptIn) li.dataset.layoutExplicit = "true";
+    else delete li.dataset.layoutExplicit;
     li.dataset.interactive = String(interactive);
     li.dataset.active = String(active);
     li.dataset.disabled = String(disabled);

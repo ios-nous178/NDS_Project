@@ -27,7 +27,7 @@ export const bottomSheetStyles = `
   :where(.${BS_OVERLAY_CLASS}) {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--nds-bottom-sheet-backdrop, rgba(0, 0, 0, 0.5));
     animation: nds-bs-fade-in 0.2s ease-out;
   }
 
@@ -45,8 +45,9 @@ export const bottomSheetStyles = `
     overflow: hidden;
     border-radius: var(--nds-bottom-sheet-radius, ${radius.lg}px) var(--nds-bottom-sheet-radius, ${radius.lg}px) 0 0;
     background-color: ${cv.surface.default};
-    /* upward shadow — DS shadow 토큰은 모두 아래 방향이라 의도적으로 raw 사용 */
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    /* upward shadow — DS shadow 토큰은 모두 아래 방향이라 의도적으로 raw default 사용.
+       슬롯으로 노출해 브랜드가 덮을 수 있게 (Trost 등), default 는 불변. */
+    box-shadow: var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0, 0, 0, 0.1));
     animation: nds-bs-slide-up 0.2s ease-out;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -112,10 +113,17 @@ export const bottomSheetStyles = `
     color: ${cv.textRole.subtle};
   }
 
+  /* 푸터가 없어 body 가 시트 최하단이면 iOS safe-area 인셋만큼 추가 (footer 와 중복 방지). */
+  :where(.${BS_CONTENT_CLASS} > .${BS_BODY_CLASS}:last-child) {
+    padding-bottom: calc(var(--semantic-inset-card-large) + env(safe-area-inset-bottom, 0px));
+  }
+
   :where(.${BS_FOOTER_CLASS}) {
     display: flex;
     gap: var(--semantic-gap-default);
     padding: var(--semantic-inset-input) var(--semantic-inset-card-large);
+    /* iOS 홈 인디케이터 safe-area — 푸터가 시트 최하단이면 인셋만큼 추가 (없으면 0). */
+    padding-bottom: calc(var(--semantic-inset-input) + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid ${cv.borderRole.subtle};
   }
 

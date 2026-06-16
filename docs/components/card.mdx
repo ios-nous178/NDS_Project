@@ -163,6 +163,12 @@ Counselor Card는 도메인 의존성이 높으므로 `Card` 프리미티브 위
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
 | `variant` | `CardVariant` | `"outlined"` | 스타일 변형 |
+| `elevation` | `CardElevation` | `"outline" — "elevated" 는 shadow(E2) + 보더 제거 (Trost container card)` | Elevation 모드 |
+| `platform` | `CardPlatform` | — | 플랫폼 사이즈 프리셋 (Trost) — "pc"/"mobile" 지정 시 padding/radius/title·subtitle 크기 자동. 미지정 = 현행 렌더 그대로 |
+| `icon` | `ReactNode` | — | 헤더 행 리딩 아이콘 (24px). 지정 시 title/subtitle 좌측에 header 행으로 렌더 (Trost container card) |
+| `showHeader` | `boolean` | `icon 있으면 자동 true` | 헤더 행 강제 토글 — icon 유무와 무관하게 title/subtitle 을 header 행 컬럼으로 묶고 싶을 때. |
+| `showIcon` | `boolean` | `true` | 리딩 아이콘 표시 토글 — icon 이 있어도 false 면 숨김. |
+| `showDivider` | `boolean` | `false` | 헤더/텍스트와 본문(children) 사이 구분선 표시 (Trost). cta/footerText 위 divider 와 별개. |
 | `clickable` | `boolean` | `false` | 클릭 가능 여부 |
 | `thumbnail` | `ReactNode` | — | 썸네일 콘텐츠 (이미지 등) — Figma 기본 160px 고정 height |
 | `thumbnailHeight` | `number` | — | 썸네일 고정 height (px). 기본 160. thumbnailRatio 가 있으면 무시 |

@@ -410,11 +410,18 @@ export interface ComponentOverrides {
     checkedColor?: ComponentValue;
   };
   /**
-   * NoticeAlert(인라인 Alert) 컨테이너 radius(`--nds-notice-alert-radius`).
-   * 지니어트 Alert/Radius 가이드 = Shape/MD 8. 미설정 브랜드는 radius.lg(12) fallback.
+   * NoticeAlert(인라인 Alert) 컨테이너.
+   * - radius(`--nds-notice-alert-radius`): 지니어트·트로스트 = Shape/MD 8. 미설정 브랜드는 radius.lg(12) fallback.
+   * - noticeBg / noticeIcon(`--nds-notice-alert-notice-{bg,icon}`): Notice variant 색.
+   *   패턴 기본은 블루(BG/Status/Info). 트로스트는 중립 톤(BG/Surface/Subtle + Icon/Normal)으로 override.
+   * - text(`--nds-notice-alert-text`): 본문 텍스트색. 미설정 시 variant 기본(strong / error=status-error).
+   *   트로스트는 전 variant Text/Normal 로 통일.
    */
   "notice-alert"?: {
     radius?: ComponentValue;
+    noticeBg?: ComponentValue;
+    noticeIcon?: ComponentValue;
+    text?: ComponentValue;
   };
   /**
    * Button 높이 size별 override (`--nds-button-height-{size}`). 지니어트 ButtonGuide(3047:1032):

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-16T06:55:13.209Z",
+  "generatedAt": "2026-06-16T07:45:41.652Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1344,6 +1344,44 @@
           ]
         },
         {
+          "name": "elevation",
+          "optional": true,
+          "type": "CardElevation",
+          "allowedValues": [
+            "outline",
+            "elevated"
+          ]
+        },
+        {
+          "name": "platform",
+          "optional": true,
+          "type": "CardPlatform",
+          "allowedValues": [
+            "pc",
+            "mobile"
+          ]
+        },
+        {
+          "name": "icon",
+          "optional": true,
+          "type": "React.ReactNode"
+        },
+        {
+          "name": "showHeader",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "showIcon",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "showDivider",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
           "name": "clickable",
           "optional": true,
           "type": "boolean"
@@ -1459,6 +1497,8 @@
       },
       "htmlObservedAttrs": [
         "variant",
+        "elevation",
+        "platform",
         "clickable"
       ]
     },
@@ -3653,6 +3693,15 @@
           ]
         },
         {
+          "name": "platform",
+          "optional": true,
+          "type": "ListPlatform",
+          "allowedValues": [
+            "mobile",
+            "pc"
+          ]
+        },
+        {
           "name": "header",
           "optional": true,
           "type": "React.ReactNode"
@@ -3684,7 +3733,11 @@
         ]
       },
       "htmlObservedAttrs": [
-        "variant"
+        "size",
+        "layout",
+        "interactive",
+        "active",
+        "disabled"
       ]
     },
     {
@@ -10863,7 +10916,10 @@
       "brands": [
         "geniet",
         "trost"
-      ]
+      ],
+      "brandValues": {
+        "trost": "40px"
+      }
     },
     {
       "name": "--nds-bottom-sheet-radius",
@@ -10877,8 +10933,7 @@
       ],
       "brandValues": {
         "geniet": "16px",
-        "runmile": "16px",
-        "trost": "24px"
+        "runmile": "16px"
       }
     },
     {
@@ -11359,11 +11414,36 @@
       ]
     },
     {
+      "name": "--nds-notice-alert-notice-bg",
+      "value": "var(--semantic-bg-surface-subtle)",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
+      "name": "--nds-notice-alert-notice-icon",
+      "value": "var(--semantic-icon-normal-default)",
+      "group": "nds",
+      "brands": [
+        "trost"
+      ]
+    },
+    {
       "name": "--nds-notice-alert-radius",
       "value": "8px",
       "group": "nds",
       "brands": [
-        "geniet"
+        "geniet",
+        "trost"
+      ]
+    },
+    {
+      "name": "--nds-notice-alert-text",
+      "value": "var(--semantic-text-normal-default)",
+      "group": "nds",
+      "brands": [
+        "trost"
       ]
     },
     {
@@ -14123,8 +14203,12 @@
     "nds-calendar",
     "nds-card",
     "nds-card-body",
+    "nds-card-divider",
     "nds-card-footer",
     "nds-card-header",
+    "nds-card-header-icon",
+    "nds-card-header-info",
+    "nds-card-header-row",
     "nds-card-thumbnail",
     "nds-carousel",
     "nds-chart",
@@ -14534,6 +14618,8 @@
       },
       "observedAttrs": [
         "variant",
+        "elevation",
+        "platform",
         "clickable"
       ]
     },
@@ -15014,7 +15100,11 @@
         ]
       },
       "observedAttrs": [
-        "variant"
+        "size",
+        "layout",
+        "interactive",
+        "active",
+        "disabled"
       ]
     },
     {

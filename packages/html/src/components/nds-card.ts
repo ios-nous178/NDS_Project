@@ -23,14 +23,20 @@
 import { NdsElement, define } from "../base/nds-element.js";
 
 export type CardVariant = "outlined" | "flat";
+/** Elevation 모드 — outline=현행(보더, shadow 없음) / elevated=shadow(E2) + 보더 제거 (Trost container card) */
+export type CardElevation = "outline" | "elevated";
+/** 플랫폼 사이즈 프리셋 (Trost) — root 의 padding/radius/typo 슬롯을 PC·Mobile 값으로 덮음 */
+export type CardPlatform = "pc" | "mobile";
 
 const VARIANTS: readonly CardVariant[] = ["outlined", "flat"];
+const ELEVATIONS: readonly CardElevation[] = ["outline", "elevated"];
+const PLATFORMS: readonly CardPlatform[] = ["pc", "mobile"];
 
 export class NdsCard extends NdsElement {
   static elementName = "nds-card";
 
   static get observedAttributes(): readonly string[] {
-    return ["variant", "clickable"];
+    return ["variant", "elevation", "platform", "clickable"];
   }
 
   private _root: HTMLDivElement | null = null;
@@ -73,11 +79,23 @@ export class NdsCard extends NdsElement {
     if (!this._root) return;
     if (this.style.display !== "contents") this.style.display = "contents";
 
-    const variant = this._norm("variant", VARIANTS, "flat");
+    // react 기본값과 일치시킨다 (기존 html 기본 "flat" 은 pre-existing drift).
+    const variant = this._norm("variant", VARIANTS, "outlined");
+    const elevation = this._norm("elevation", ELEVATIONS, "outline");
     const clickable = this.boolAttr("clickable");
 
     const root = this._root;
     root.dataset.variant = variant;
+    root.dataset.elevation = elevation;
+
+    // platform 미지정이면 data-platform 제거 → 현행 렌더 유지 (react 의 platform||undefined 와 일치)
+    const platformRaw = this.attr("platform", "");
+    if ((PLATFORMS as readonly string[]).includes(platformRaw)) {
+      root.dataset.platform = platformRaw;
+    } else {
+      delete root.dataset.platform;
+    }
+
     root.dataset.clickable = String(clickable);
 
     if (clickable) {
@@ -134,6 +152,30 @@ export class NdsCardHeader extends CardSlot {
   protected slotName = "header";
 }
 
+/* Trost container-card header row + 정보 컬럼 (icon 은 작성자가 직접 svg/img markup 으로 넣는다) */
+export class NdsCardHeaderRow extends CardSlot {
+  static elementName = "nds-card-header-row";
+  protected slotClass = "nds-card__header-row";
+  protected slotName = "header-row";
+}
+
+export class NdsCardHeaderIcon extends CardSlot {
+  static elementName = "nds-card-header-icon";
+  protected slotClass = "nds-card__header-icon";
+  protected slotName = "header-icon";
+
+  protected override update(): void {
+    super.update();
+    if (this._inner) this._inner.setAttribute("aria-hidden", "true");
+  }
+}
+
+export class NdsCardHeaderInfo extends CardSlot {
+  static elementName = "nds-card-header-info";
+  protected slotClass = "nds-card__header-info";
+  protected slotName = "header-info";
+}
+
 export class NdsCardBody extends CardSlot {
   static elementName = "nds-card-body";
   protected slotClass = "nds-card__body";
@@ -163,8 +205,37 @@ export class NdsCardThumbnail extends CardSlot {
   }
 }
 
+/**
+ * <nds-card-divider> — React CardDivider 미러. 헤더/텍스트 ↔ 본문 또는 cta 위 hairline.
+ * children 없는 <hr> 를 1회 mount.
+ */
+export class NdsCardDivider extends NdsElement {
+  static elementName = "nds-card-divider";
+
+  private _hr: HTMLHRElement | null = null;
+
+  override connectedCallback(): void {
+    if (!this._hr) {
+      const hr = document.createElement("hr");
+      hr.className = "nds-card__divider";
+      hr.dataset.slot = "divider";
+      this.appendChild(hr);
+      this._hr = hr;
+    }
+    super.connectedCallback();
+  }
+
+  protected update(): void {
+    if (this.style.display !== "contents") this.style.display = "contents";
+  }
+}
+
 define(NdsCard);
 define(NdsCardHeader);
+define(NdsCardHeaderRow);
+define(NdsCardHeaderIcon);
+define(NdsCardHeaderInfo);
 define(NdsCardBody);
 define(NdsCardFooter);
 define(NdsCardThumbnail);
+define(NdsCardDivider);

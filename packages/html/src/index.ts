@@ -58,11 +58,15 @@ export { NdsRadio } from "./components/nds-radio.js";
 export {
   NdsCard,
   NdsCardHeader,
+  NdsCardHeaderRow,
+  NdsCardHeaderIcon,
+  NdsCardHeaderInfo,
   NdsCardBody,
   NdsCardFooter,
   NdsCardThumbnail,
+  NdsCardDivider,
 } from "./components/nds-card.js";
-export type { CardVariant } from "./components/nds-card.js";
+export type { CardVariant, CardElevation, CardPlatform } from "./components/nds-card.js";
 
 export { NdsReviewCard } from "./components/nds-review-card.js";
 

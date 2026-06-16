@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within, waitFor } from "storybook/test";
 import { BottomSheet, Button, type BottomSheetProps } from "@nudge-design/react";
-import { colors } from "@nudge-design/tokens";
-import { LinkIcon, DownloadIcon } from "@nudge-design/icons";
+import { colors, cv } from "@nudge-design/tokens";
+import { LinkIcon, DownloadIcon, MockupBoldCallIcon as CallIcon } from "@nudge-design/icons";
 import { getSnsLogo } from "@nudge-design/assets";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
@@ -549,6 +549,178 @@ const shareNoteStyle: React.CSSProperties = {
   color: "var(--nds-text-subtle, #666)",
 };
 
+/* ─── Trost Recipe: Share (Point 토큰 + 원형 통화 CTA) ───
+ * Trost Figma 5258:128 의 Share 시트 레시피. 통화/콜 액션은 원형 40×40 버튼 —
+ * 배경 cv.surface.pointSubtle + 아이콘 cv.iconRole.point (브랜드가 코발트로 칠함).
+ * SNS 버튼 배경(#FEE500/#03C75A)만 브랜드 고유색이라 raw 유지. 나머지는 DS 토큰.
+ */
+function TrostShareRecipeExample() {
+  const [open, setOpen] = useState(false);
+  const targets = [
+    { key: "call", label: "전화 연결", icon: <CallIcon size={20} color={cv.iconRole.point} />, point: true },
+    { key: "kakao", label: "카카오톡", logo: kakaoLogo, bg: "#FEE500" },
+    {
+      key: "copy",
+      label: "링크 복사",
+      icon: <LinkIcon size={20} color={colors.neutral[700]} />,
+      bg: colors.neutral[200],
+    },
+    {
+      key: "save",
+      label: "이미지 저장",
+      icon: <DownloadIcon size={20} color={colors.neutral[700]} />,
+      bg: colors.neutral[200],
+    },
+  ];
+
+  return (
+    <div style={{ width: 360 }}>
+      <Button onClick={() => setOpen(true)}>공유하기 (Trost)</Button>
+      <BottomSheet open={open} onClose={() => setOpen(false)} title="공유하기" closable>
+        <div style={shareGridStyle}>
+          {targets.map((target) => (
+            <button
+              key={target.key}
+              type="button"
+              onClick={() => setOpen(false)}
+              style={shareTargetStyle}
+            >
+              <span
+                style={{
+                  ...trostCallIconStyle,
+                  background: target.point ? cv.surface.pointSubtle : target.bg,
+                }}
+              >
+                {target.logo ? (
+                  <img src={target.logo} alt="" width={20} height={20} />
+                ) : (
+                  target.icon
+                )}
+              </span>
+              <span style={shareLabelStyle}>{target.label}</span>
+            </button>
+          ))}
+        </div>
+      </BottomSheet>
+    </div>
+  );
+}
+
+const trostCallIconStyle: React.CSSProperties = {
+  width: 40,
+  height: 40,
+  borderRadius: 9999,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+/* ─── Trost Recipe: Info (Point 강조 박스) ───
+ * 핵심 안내를 cv.surface.pointSurface 강조 박스로 띄우고 텍스트는 Point 색.
+ * 푸터는 단일 Primary CTA — background cv.surface.point · text cv.textRole.inverse · radius 8.
+ */
+function TrostInfoRecipeExample() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>안내 시트 (Trost)</Button>
+      <BottomSheet
+        open={open}
+        onClose={() => setOpen(false)}
+        title="상담 안내"
+        closable
+        footer={
+          <button type="button" onClick={() => setOpen(false)} style={trostPrimaryCtaStyle}>
+            확인했어요
+          </button>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}>
+          <div style={trostAccentBoxStyle}>
+            <strong style={{ color: cv.textRole.pointStrong, fontSize: 15 }}>
+              예약이 확정되었어요
+            </strong>
+            <p style={{ margin: "6px 0 0", color: cv.textRole.point, fontSize: 13, lineHeight: 1.6 }}>
+              상담 24시간 전까지 무료로 변경·취소할 수 있습니다.
+            </p>
+          </div>
+          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.neutral[700] }}>
+            상담사 배정 후 알림톡으로 일정을 안내드립니다.
+          </p>
+        </div>
+      </BottomSheet>
+    </>
+  );
+}
+
+const trostAccentBoxStyle: React.CSSProperties = {
+  background: cv.surface.pointSurface,
+  borderRadius: 12,
+  padding: "var(--semantic-inset-card)",
+};
+
+const trostPrimaryCtaStyle: React.CSSProperties = {
+  flex: 1,
+  height: 48,
+  border: "none",
+  borderRadius: 8,
+  background: cv.surface.point,
+  color: cv.textRole.inverse,
+  font: "inherit",
+  fontSize: 15,
+  fontWeight: 600,
+  cursor: "pointer",
+};
+
+/* ─── Trost Recipe: List (Point 선택 강조) ───
+ * 세로 옵션 리스트 — 선택 행은 cv.textRole.point + weight 600, 구분선 borderRole.subtle.
+ */
+function TrostListRecipeExample() {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState("화상 상담");
+  const options = ["대면 상담", "화상 상담", "채팅 상담", "전화 상담"];
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>방식 선택 (Trost)</Button>
+      <BottomSheet open={open} onClose={() => setOpen(false)} title="상담 방식" closable>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {options.map((option) => {
+            const active = selected === option;
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => {
+                  setSelected(option);
+                  setOpen(false);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "14px 4px",
+                  border: "none",
+                  borderBottom: "1px solid var(--semantic-border-subtle)",
+                  background: "none",
+                  cursor: "pointer",
+                  fontSize: 15,
+                  color: active ? cv.textRole.point : colors.neutral[800],
+                  fontWeight: active ? 600 : 400,
+                }}
+              >
+                {option}
+                {active && <span aria-hidden style={{ color: cv.iconRole.point }}>✓</span>}
+              </button>
+            );
+          })}
+        </div>
+      </BottomSheet>
+    </>
+  );
+}
+
 export const Compound: Story = {
   name: "Recipe/Compound API",
   render: () => <CompoundExample />,
@@ -567,6 +739,21 @@ export const TwoButtonFooter: Story = {
 export const ShareSheet: Story = {
   name: "Recipe/Share Sheet (SNS 공유)",
   render: () => <ShareSheetExample />,
+};
+
+export const TrostShareRecipe: Story = {
+  name: "Recipe/Trost Share (Point CTA)",
+  render: () => <TrostShareRecipeExample />,
+};
+
+export const TrostInfoRecipe: Story = {
+  name: "Recipe/Trost Info (Point 강조 박스)",
+  render: () => <TrostInfoRecipeExample />,
+};
+
+export const TrostListRecipe: Story = {
+  name: "Recipe/Trost List (Point 선택)",
+  render: () => <TrostListRecipeExample />,
 };
 
 /* ─── Interaction Tests ─── */

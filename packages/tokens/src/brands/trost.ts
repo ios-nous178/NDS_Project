@@ -161,12 +161,20 @@ export const trostTheme: BrandTheme = {
     },
     // 토스트 가이드(806:1277) — drop y8 · blur24 · 18% black
     toast: { shadow: "0px 8px 24px rgba(0,0,0,0.18)" },
-    // BottomSheet 가이드(5258:128): top radius 20, drag handle 40×4 #E5E5E5(=Border/Normal)
+    // BottomSheet 가이드(5258:128): top corner radius 20, drag handle 40×4 #E5E5E5(=Border/Normal)
     "bottom-sheet": {
-      radius: 24, // 가이드 BottomSheet = Radius/3xl 24
-      handleWidth: 50,
+      radius: 20,
+      handleWidth: 40,
       handleHeight: 4,
       handleColor: trostNeutral[200],
+    },
+    // NoticeAlert 가이드(5283:206): radius 8 · Notice=중립 surface+neutral icon · 본문 Text/Normal 통일.
+    // (base 는 Notice=블루·본문 strong/error-red 유지 — 슬롯으로만 트로스트가 덮음)
+    "notice-alert": {
+      radius: 8,
+      noticeBg: "var(--semantic-bg-surface-subtle)",
+      noticeIcon: "var(--semantic-icon-normal-default)",
+      text: "var(--semantic-text-normal-default)",
     },
     // 다크 푸터 텍스트 톤 — neutral 스케일 밖 실측값 (#CCC/#888)
     footer: { companyColor: "#CCCCCC", mutedColor: "#888888", extraColor: "#CCCCCC" },

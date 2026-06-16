@@ -35,7 +35,7 @@
  *     </main>
  *   </div>
  */
-import { cv, fontFamily, grid, radius, spacing } from "@nudge-design/tokens";
+import { cv, fontFamily, grid, radius, shadow, spacing } from "@nudge-design/tokens";
 
 /* ─── Shell — 페이지 전체 레이아웃 (sidebar + main + topbar + content) ─── */
 
@@ -246,9 +246,18 @@ export const formRowStyles = `
 /* ─── Container — 컨텐츠 가로 폭을 viewport 안에 가두는 반응형 래퍼 (Figma 1385:13).
    PC ≥1024: max 1200 · 좌우 40 / Tablet 768~1023: max 768 · 좌우 24 / Mobile <768: 100% · 좌우 16.
    Layout primitive 컨벤션대로 web component 없이 클래스만 — `<div class="nds-container">…`.
-   Section(세로 블록)은 컴포넌트화하지 않고 룰만 — get_guide({ topic: 'pattern:container-section' }). ─── */
+   Section(세로 블록)은 컴포넌트화하지 않고 룰만 — get_guide({ topic: 'pattern:container-section' }).
+
+   Trost device-variant 모디파이어 (Figma 5303:111, opt-in, 가산) — 기존 base 디폴트(1200/반응형)는
+   그대로 두고 클래스 추가로만 적용한다. 다른 브랜드는 base 를 그대로 쓰므로 영향 없음.
+   - .nds-container--pc    : Trost PC 일반 컨텐츠 (max 1080 · 좌우 24)
+   - .nds-container--wide  : Trost PC-Wide 테이블/대시보드 (max 1200 · 좌우 24)
+   둘 다 모바일(<768)에서는 base 와 동일하게 100% / 좌우 16 으로 collapse. ─── */
 
 const CONTAINER_CLASS = "nds-container";
+const CONTAINER_PC_CLASS = `${CONTAINER_CLASS}--pc`;
+const CONTAINER_WIDE_CLASS = `${CONTAINER_CLASS}--wide`;
+const SECTION_SURFACE_CLASS = "nds-section-surface";
 
 export const containerStyles = `
   :where(.${CONTAINER_CLASS}) {
@@ -273,5 +282,38 @@ export const containerStyles = `
       max-width: 100%;
       padding-inline: ${spacing[16]}px;
     }
+  }
+
+  /* ── Trost device-variant 모디파이어 (opt-in) ──
+     base/Tablet 룰보다 source-order 뒤에 와 같은 0-특정성(:where)을 이긴다. */
+  :where(.${CONTAINER_PC_CLASS}) {
+    max-width: 1080px;
+    padding-inline: ${spacing[24]}px;
+  }
+
+  :where(.${CONTAINER_WIDE_CLASS}) {
+    max-width: ${grid.desktop.contentWidth}px;
+    padding-inline: ${spacing[24]}px;
+  }
+
+  /* 모바일(<768) — 모디파이어도 base 와 동일하게 full-bleed + 좌우 16 */
+  @media (max-width: 767px) {
+    :where(.${CONTAINER_PC_CLASS}),
+    :where(.${CONTAINER_WIDE_CLASS}) {
+      max-width: 100%;
+      padding-inline: ${spacing[16]}px;
+    }
+  }
+`;
+
+/* ─── Section surface — 가산 content-surface 헬퍼 (Figma 5303:111).
+   Section(BG/Section/Default) 위에 올리는 흰 컨텐츠 카드(BG/Surface/Default + radius 16).
+   .nds-container 자체에 bg/radius 를 굽지 않는다 — 필요할 때만 이 클래스를 붙인다.
+   PC 16 radius / Mobile 0 은 페이지 디자인에서 모디파이어/래퍼로 선택(가이드 참조). ─── */
+
+export const sectionSurfaceStyles = `
+  :where(.${SECTION_SURFACE_CLASS}) {
+    background: var(--semantic-bg-surface-default);
+    border-radius: ${radius.xl}px;
   }
 `;

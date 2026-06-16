@@ -8,6 +8,10 @@ const CARD_THUMBNAIL_CLASS = `${CARD_CLASS}__thumbnail`;
 const CARD_AVATAR_CLASS = `${CARD_CLASS}__avatar`;
 const CARD_CHIPS_CLASS = `${CARD_CLASS}__chips`;
 const CARD_HEADER_CLASS = `${CARD_CLASS}__header`;
+/* Trost container-card header row: leading icon + (title/subtitle) column */
+const CARD_HEADER_ROW_CLASS = `${CARD_CLASS}__header-row`;
+const CARD_HEADER_ICON_CLASS = `${CARD_CLASS}__header-icon`;
+const CARD_HEADER_INFO_CLASS = `${CARD_CLASS}__header-info`;
 const CARD_TEXT_CONTENT_CLASS = `${CARD_CLASS}__text-content`;
 const CARD_TITLE_DESC_CLASS = `${CARD_CLASS}__title-desc`;
 const CARD_BODY_CLASS = `${CARD_CLASS}__body`;
@@ -37,12 +41,20 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 /* ─── Types ─── */
 
 export type CardVariant = "outlined" | "flat";
+/** Elevation 모드 — outline=현행(보더, shadow 없음) / elevated=shadow + 보더 제거 (Trost container card) */
+export type CardElevation = "outline" | "elevated";
+/** 플랫폼 사이즈 프리셋 — 지정 시 root 의 padding/radius/typo 슬롯을 PC·Mobile 값으로 덮음 (Trost). 미지정=현행 유지 */
+export type CardPlatform = "pc" | "mobile";
 
 /* ─── Compound: Root ─── */
 
 export interface CardRootProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 카드 스타일 변형 @default "outlined" */
   variant?: CardVariant;
+  /** Elevation 모드 @default "outline" — "elevated" 는 shadow(E2) + 보더 제거 (Trost container card) */
+  elevation?: CardElevation;
+  /** 플랫폼 사이즈 프리셋 (Trost) — 지정 시 padding/radius/title·subtitle 크기를 PC·Mobile 값으로 덮음. 미지정 = 현행 렌더 그대로 */
+  platform?: CardPlatform;
   /** true이면 호버 시 시각적 피드백 제공 */
   clickable?: boolean;
   /** 카드 내부 콘텐츠 */
@@ -50,10 +62,22 @@ export interface CardRootProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const CardRoot: React.FC<CardRootProps> = React.memo(
-  ({ variant = "outlined", clickable = false, children, className, style, onKeyDown, ...rest }) => (
+  ({
+    variant = "outlined",
+    elevation = "outline",
+    platform,
+    clickable = false,
+    children,
+    className,
+    style,
+    onKeyDown,
+    ...rest
+  }) => (
     <div
       data-slot="root"
       data-variant={variant}
+      data-elevation={elevation}
+      data-platform={platform || undefined}
       data-clickable={clickable ? "true" : "false"}
       role={clickable ? "button" : undefined}
       tabIndex={clickable ? 0 : undefined}
@@ -314,7 +338,8 @@ CardFooterText.displayName = "CardFooterText";
 /* ─── Flat API ─── */
 
 export interface CardSlotProps {
-  root?: Omit<CardRootProps, "children" | "variant" | "clickable">;
+  root?: Omit<CardRootProps, "children" | "variant" | "elevation" | "platform" | "clickable">;
+  headerIcon?: React.HTMLAttributes<HTMLSpanElement>;
   thumbnail?: Omit<CardThumbnailProps, "children">;
   avatar?: Omit<CardAvatarProps, "children">;
   chips?: Omit<CardChipsProps, "children">;
@@ -334,6 +359,18 @@ export interface CardSlotProps {
 export interface CardProps {
   /** 스타일 변형 */
   variant?: CardVariant;
+  /** Elevation 모드 @default "outline" — "elevated" 는 shadow(E2) + 보더 제거 (Trost container card) */
+  elevation?: CardElevation;
+  /** 플랫폼 사이즈 프리셋 (Trost) — "pc"/"mobile" 지정 시 padding/radius/title·subtitle 크기 자동. 미지정 = 현행 렌더 그대로 */
+  platform?: CardPlatform;
+  /** 헤더 행 리딩 아이콘 (24px). 지정 시 title/subtitle 좌측에 header 행으로 렌더 (Trost container card) */
+  icon?: React.ReactNode;
+  /** 헤더 행 강제 토글 — icon 유무와 무관하게 title/subtitle 을 header 행 컬럼으로 묶고 싶을 때. @default icon 있으면 자동 true */
+  showHeader?: boolean;
+  /** 리딩 아이콘 표시 토글 — icon 이 있어도 false 면 숨김. @default true */
+  showIcon?: boolean;
+  /** 헤더/텍스트와 본문(children) 사이 구분선 표시 (Trost). cta/footerText 위 divider 와 별개. @default false */
+  showDivider?: boolean;
   /** 클릭 가능 여부 */
   clickable?: boolean;
   /** 썸네일 콘텐츠 (이미지 등) — Figma 기본 160px 고정 height */
@@ -380,6 +417,12 @@ export interface CardProps {
 
 const CardComponent: React.FC<CardProps> = ({
   variant = "outlined",
+  elevation = "outline",
+  platform,
+  icon,
+  showHeader,
+  showIcon = true,
+  showDivider = false,
   clickable = false,
   thumbnail,
   thumbnailHeight,
@@ -403,17 +446,24 @@ const CardComponent: React.FC<CardProps> = ({
   slotProps,
 }) => {
   const effectiveDescription = description ?? subtitle;
+  const hasIcon = !!icon && showIcon;
+  // header 행: 아이콘이 있거나(showHeader 미지정), showHeader 를 명시했을 때 title/subtitle 을 한 행으로 묶는다.
+  const useHeaderRow = (showHeader ?? hasIcon) && !!(title || effectiveDescription);
   // legacy: footer(ReactNode) 가 단독 사용되면 cta 슬롯으로 매핑
   const effectiveCta = cta ?? footer;
   // legacy: footerNoBorder=true 이면 divider=false (명시적으로 divider 지정한 게 우선)
-  const showDivider = divider ?? !footerNoBorder;
+  const showFooterDivider = divider ?? !footerNoBorder;
 
   const hasTextContent = !!(title || effectiveDescription || metadata || meta);
-  const hasDivider = showDivider && (effectiveCta || footerText);
+  // header/text 와 본문(children) 사이 구분선 (Trost). children 이 있을 때만 의미.
+  const hasBodyDivider = showDivider && (hasTextContent || useHeaderRow) && !!children;
+  const hasFooterDivider = showFooterDivider && (effectiveCta || footerText);
 
   return (
     <CardRoot
       variant={variant}
+      elevation={elevation}
+      platform={platform}
       clickable={clickable || !!onClick}
       className={cx(slotProps?.root?.className, className)}
       style={{ ...slotProps?.root?.style, ...style }}
@@ -441,23 +491,55 @@ const CardComponent: React.FC<CardProps> = ({
       )}
       {hasTextContent && (
         <div className={CARD_TEXT_CONTENT_CLASS}>
-          {(title || effectiveDescription) && (
-            <div className={CARD_TITLE_DESC_CLASS}>
-              {title && (
-                <CardTitle className={slotProps?.title?.className} style={slotProps?.title?.style}>
-                  {title}
-                </CardTitle>
-              )}
-              {effectiveDescription && (
-                <CardDescription
-                  className={slotProps?.description?.className}
-                  style={slotProps?.description?.style}
-                >
-                  {effectiveDescription}
-                </CardDescription>
-              )}
-            </div>
-          )}
+          {(title || effectiveDescription) &&
+            (useHeaderRow ? (
+              /* Trost container card: 리딩 아이콘(옵션) + (title/subtitle) 정보 컬럼 행 */
+              <div data-slot="header-row" className={CARD_HEADER_ROW_CLASS}>
+                {hasIcon && (
+                  <span
+                    aria-hidden="true"
+                    {...slotProps?.headerIcon}
+                    className={cx(CARD_HEADER_ICON_CLASS, slotProps?.headerIcon?.className)}
+                  >
+                    {icon}
+                  </span>
+                )}
+                <div className={CARD_HEADER_INFO_CLASS}>
+                  {title && (
+                    <CardTitle
+                      className={slotProps?.title?.className}
+                      style={slotProps?.title?.style}
+                    >
+                      {title}
+                    </CardTitle>
+                  )}
+                  {effectiveDescription && (
+                    <CardDescription
+                      className={slotProps?.description?.className}
+                      style={slotProps?.description?.style}
+                    >
+                      {effectiveDescription}
+                    </CardDescription>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className={CARD_TITLE_DESC_CLASS}>
+                {title && (
+                  <CardTitle className={slotProps?.title?.className} style={slotProps?.title?.style}>
+                    {title}
+                  </CardTitle>
+                )}
+                {effectiveDescription && (
+                  <CardDescription
+                    className={slotProps?.description?.className}
+                    style={slotProps?.description?.style}
+                  >
+                    {effectiveDescription}
+                  </CardDescription>
+                )}
+              </div>
+            ))}
           {metadata && (
             <CardMetadata
               className={slotProps?.metadata?.className}
@@ -473,12 +555,15 @@ const CardComponent: React.FC<CardProps> = ({
           )}
         </div>
       )}
+      {hasBodyDivider && (
+        <CardDivider className={slotProps?.divider?.className} style={slotProps?.divider?.style} />
+      )}
       {children && (
         <CardBody className={slotProps?.body?.className} style={slotProps?.body?.style}>
           {children}
         </CardBody>
       )}
-      {hasDivider && (
+      {hasFooterDivider && (
         <CardDivider className={slotProps?.divider?.className} style={slotProps?.divider?.style} />
       )}
       {effectiveCta && (

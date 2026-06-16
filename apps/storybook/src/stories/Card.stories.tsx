@@ -206,6 +206,75 @@ export const CompoundCounselorCard: Story = {
   ),
 };
 
+// ─── Trost container card (Figma 5123:136) — platform 프리셋 + elevation + 헤더 아이콘 행 + body divider ───
+// platform="pc": padding 28 / radius 16 / title 20 / subtitle 14. elevation 으로 outline↔elevated 전환.
+export const TrostContainerPc: Story = {
+  name: "Trost/Container Card (PC · outline & elevated)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Trost container card (PC). platform='pc' 가 padding 28 / radius 16 / title 20 / subtitle 14 을 자동 적용. icon 을 주면 리딩 아이콘 + (title/subtitle) 정보 컬럼 헤더 행으로 렌더. showDivider 로 헤더↔본문 hairline. elevation='outline'(보더) ↔ 'elevated'(shadow E2 + 보더 제거) 비교.",
+      },
+    },
+  },
+  render: () => (
+    <div data-brand="trost" style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
+      <div style={{ width: 440 }}>
+        <Card
+          platform="pc"
+          elevation="outline"
+          icon={<StarIcon size={24} color="var(--semantic-icon-point-default)" />}
+          title="이번 주 마음 리포트"
+          subtitle="지난 7일 감정 기록 요약"
+          showDivider
+        >
+          꾸준한 기록이 쌓이고 있어요. 평균 기분 점수가 지난주보다 12% 올랐습니다.
+        </Card>
+      </div>
+      <div style={{ width: 440 }}>
+        <Card
+          platform="pc"
+          elevation="elevated"
+          icon={<StarIcon size={24} color="var(--semantic-icon-point-default)" />}
+          title="이번 주 마음 리포트"
+          subtitle="지난 7일 감정 기록 요약"
+          showDivider
+        >
+          꾸준한 기록이 쌓이고 있어요. 평균 기분 점수가 지난주보다 12% 올랐습니다.
+        </Card>
+      </div>
+    </div>
+  ),
+};
+
+// platform="mobile": padding 20 / radius 14 / title 17 / subtitle 13.
+export const TrostContainerMobile: Story = {
+  name: "Trost/Container Card (Mobile)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Trost container card (Mobile). platform='mobile' 가 padding 20 / radius 14 / title 17 / subtitle 13 을 자동 적용. Mobile 은 elevation='outline'(보더) 권장.",
+      },
+    },
+  },
+  render: () => (
+    <div data-brand="trost" style={{ width: 328 }}>
+      <Card
+        platform="mobile"
+        elevation="outline"
+        icon={<StarIcon size={24} color="var(--semantic-icon-point-default)" />}
+        title="오늘의 마음 체크"
+        subtitle="2분이면 충분해요"
+        showDivider
+      >
+        지금 기분을 기록하면 주간 리포트에 반영됩니다.
+      </Card>
+    </div>
+  ),
+};
+
 export const ClickableInteraction: Story = {
   name: "Interaction/Clickable Card",
   args: {
