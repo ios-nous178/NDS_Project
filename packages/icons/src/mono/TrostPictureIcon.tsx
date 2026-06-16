@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface TrostPictureIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostPictureIcon = React.forwardRef<SVGSVGElement, TrostPictureIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path fillRule="evenodd" clipRule="evenodd" d="M4.83111 21H19.2356C20.2103 21 21.0003 20.2099 21.0003 19.2353V4.76471C21.0003 3.79009 20.2103 3 19.2356 3H4.83111C3.85649 3 3.06641 3.79009 3.06641 4.76471V19.2353C3.06641 20.2099 3.85649 21 4.83111 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M9.52138 14.0579L12.614 16.9235L15.1103 15.0069C15.8725 14.4215 16.9418 14.4552 17.6656 15.0875L20.796 17.8215L20.9785 17.875L20.985 17.9865L21 18.0003L20.986 17.9985L20.9928 18.0905C21.0956 20.1657 20.0955 21.1309 17.9923 20.9861L18.011 21.0003L16.982 20.9695L17.0147 21.0003L16.937 20.9685L3.10224 20.5675L3 16.1901L4.067 15.7465L7.06726 13.8363C7.84058 13.3437 8.84882 13.4348 9.52138 14.0579Z" fill="currentColor"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M17.1474 9.2002C17.1474 10.3045 16.255 11.2002 15.1548 11.2002C14.0545 11.2002 13.1621 10.3045 13.1621 9.2002C13.1621 8.09553 14.0545 7.2002 15.1548 7.2002C16.255 7.2002 17.1474 8.09553 17.1474 9.2002Z" fill="currentColor"/>
+    </svg>
+  )
+);
+
+TrostPictureIcon.displayName = "TrostPictureIcon";

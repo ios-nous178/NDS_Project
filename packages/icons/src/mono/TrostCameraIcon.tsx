@@ -1,0 +1,32 @@
+import React from "react";
+
+export interface TrostCameraIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostCameraIcon = React.forwardRef<SVGSVGElement, TrostCameraIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_5022_1523)">
+<path fillRule="evenodd" clipRule="evenodd" d="M21.5 17.8182C21.5 18.7721 20.7267 19.5455 19.7727 19.5455H4.22727C3.27333 19.5455 2.5 18.7721 2.5 17.8182V8.31818C2.5 7.36424 3.27333 6.59091 4.22727 6.59091H7.68182L9.40909 4H14.5909L16.3182 6.59091H19.7727C20.7267 6.59091 21.5 7.36424 21.5 8.31818V17.8182Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M11.9995 16.0907C13.9074 16.0907 15.454 14.5441 15.454 12.6362C15.454 10.7283 13.9074 9.18164 11.9995 9.18164C10.0916 9.18164 8.54492 10.7283 8.54492 12.6362C8.54492 14.5441 10.0916 16.0907 11.9995 16.0907Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_5022_1523">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+TrostCameraIcon.displayName = "TrostCameraIcon";

@@ -1,0 +1,35 @@
+import React from "react";
+
+export interface TrostCouponIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostCouponIcon = React.forwardRef<SVGSVGElement, TrostCouponIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_5022_1569)">
+<path fillRule="evenodd" clipRule="evenodd" d="M20.5 4.5C20.7652 4.5 21.0196 4.60536 21.2071 4.79289C21.3946 4.98043 21.5 5.23478 21.5 5.5V8.837C20.9012 9.12069 20.3952 9.56853 20.0409 10.1285C19.6866 10.6884 19.4985 11.3374 19.4985 12C19.4985 12.6626 19.6866 13.3116 20.0409 13.8715C20.3952 14.4315 20.9012 14.8793 21.5 15.163V18.5C21.5 18.7652 21.3946 19.0196 21.2071 19.2071C21.0196 19.3946 20.7652 19.5 20.5 19.5H3.5C3.23478 19.5 2.98043 19.3946 2.79289 19.2071C2.60536 19.0196 2.5 18.7652 2.5 18.5V15.163C3.09881 14.8793 3.6048 14.4315 3.95911 13.8715C4.31343 13.3116 4.50152 12.6626 4.50152 12C4.50152 11.3374 4.31343 10.6884 3.95911 10.1285C3.6048 9.56853 3.09881 9.12069 2.5 8.837V5.5C2.5 5.23478 2.60536 4.98043 2.79289 4.79289C2.98043 4.60536 3.23478 4.5 3.5 4.5H20.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+<path d="M10.5 9.5C10.5 9.08579 10.1642 8.75 9.75 8.75C9.33579 8.75 9 9.08579 9 9.5V10.5C9 10.9142 9.33579 11.25 9.75 11.25C10.1642 11.25 10.5 10.9142 10.5 10.5V9.5Z" fill="currentColor"/>
+<path d="M10.5 5.5C10.5 5.08579 10.1642 4.75 9.75 4.75C9.33579 4.75 9 5.08579 9 5.5V6.5C9 6.91421 9.33579 7.25 9.75 7.25C10.1642 7.25 10.5 6.91421 10.5 6.5V5.5Z" fill="currentColor"/>
+<path d="M10.5 17.5C10.5 17.0858 10.1642 16.75 9.75 16.75C9.33579 16.75 9 17.0858 9 17.5V18.5C9 18.9142 9.33579 19.25 9.75 19.25C10.1642 19.25 10.5 18.9142 10.5 18.5V17.5Z" fill="currentColor"/>
+<path d="M10.5 13.5C10.5 13.0858 10.1642 12.75 9.75 12.75C9.33579 12.75 9 13.0858 9 13.5V14.5C9 14.9142 9.33579 15.25 9.75 15.25C10.1642 15.25 10.5 14.9142 10.5 14.5V13.5Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_5022_1569">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+TrostCouponIcon.displayName = "TrostCouponIcon";

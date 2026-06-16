@@ -1,0 +1,31 @@
+import React from "react";
+
+export interface TrostCallIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostCallIcon = React.forwardRef<SVGSVGElement, TrostCallIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_5022_1380)">
+<path d="M20.1334 15.1013L15.8935 13.2014L15.8818 13.196C15.4346 13.0047 14.9211 13.0521 14.5165 13.322C14.493 13.3375 14.4705 13.3543 14.449 13.3724L12.2583 15.2399C10.8705 14.5658 9.43774 13.1438 8.76364 11.774L10.6338 9.55009C10.6518 9.52759 10.6689 9.50509 10.6851 9.48079C10.9492 9.07736 10.9937 8.56858 10.8039 8.12538V8.11458L8.89864 3.86747C8.64493 3.28201 8.03619 2.93333 7.40283 3.01066C4.88003 3.34264 2.99546 5.49533 3.00001 8.03988C3.00001 15.1859 8.81404 20.9999 15.9601 20.9999C18.5046 21.0045 20.6573 19.1199 20.9893 16.5971C21.0668 15.964 20.7185 15.3553 20.1334 15.1013Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_5022_1380">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+TrostCallIcon.displayName = "TrostCallIcon";

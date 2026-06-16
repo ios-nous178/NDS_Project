@@ -1,0 +1,31 @@
+import React from "react";
+
+export interface TrostChevronUpIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const TrostChevronUpIcon = React.forwardRef<SVGSVGElement, TrostChevronUpIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_5022_1210)">
+<path d="M5.46967 15.2803C5.73594 15.5466 6.1526 15.5708 6.44621 15.3529L6.53033 15.2803L12 9.811L17.4697 15.2803C17.7359 15.5466 18.1526 15.5708 18.4462 15.3529L18.5303 15.2803C18.7966 15.0141 18.8208 14.5974 18.6029 14.3038L18.5303 14.2197L12.5303 8.21967C12.2641 7.9534 11.8474 7.9292 11.5538 8.14705L11.4697 8.21967L5.46967 14.2197C5.17678 14.5126 5.17678 14.9874 5.46967 15.2803Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_5022_1210">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+TrostChevronUpIcon.displayName = "TrostChevronUpIcon";

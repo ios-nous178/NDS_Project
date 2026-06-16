@@ -10367,13 +10367,103 @@
       "brand": "nudge-eap"
     },
     {
+      "name": "TrostAlarmDotIcon",
+      "kebab": "trost-alarm-dot",
+      "brand": "trost"
+    },
+    {
       "name": "TrostAlarmIcon",
       "kebab": "trost-alarm",
       "brand": "trost"
     },
     {
+      "name": "TrostArrowBackIcon",
+      "kebab": "trost-arrow-back",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostArrowForwardIcon",
+      "kebab": "trost-arrow-forward",
+      "brand": "trost"
+    },
+    {
       "name": "TrostBackIcon",
       "kebab": "trost-back",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostBookIcon",
+      "kebab": "trost-book",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostBookmarkIcon",
+      "kebab": "trost-bookmark",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCalendarIcon",
+      "kebab": "trost-calendar",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCalendarSolidIcon",
+      "kebab": "trost-calendar-solid",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCallIcon",
+      "kebab": "trost-call",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCameraIcon",
+      "kebab": "trost-camera",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCautionIcon",
+      "kebab": "trost-caution",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCheckCircleIcon",
+      "kebab": "trost-check-circle",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCheckIcon",
+      "kebab": "trost-check",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostChevronDownIcon",
+      "kebab": "trost-chevron-down",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostChevronLeftIcon",
+      "kebab": "trost-chevron-left",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostChevronRightIcon",
+      "kebab": "trost-chevron-right",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostChevronUpIcon",
+      "kebab": "trost-chevron-up",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCloseCircleIcon",
+      "kebab": "trost-close-circle",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCloseIcon",
+      "kebab": "trost-close",
       "brand": "trost"
     },
     {
@@ -10387,6 +10477,11 @@
       "brand": "trost"
     },
     {
+      "name": "TrostConsultIcon",
+      "kebab": "trost-consult",
+      "brand": "trost"
+    },
+    {
       "name": "TrostCounselActiveIcon",
       "kebab": "trost-counsel-active",
       "brand": "trost"
@@ -10397,8 +10492,48 @@
       "brand": "trost"
     },
     {
+      "name": "TrostCounselorSearchIcon",
+      "kebab": "trost-counselor-search",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostCouponIcon",
+      "kebab": "trost-coupon",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostDeleteIcon",
+      "kebab": "trost-delete",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostDownloadIcon",
+      "kebab": "trost-download",
+      "brand": "trost"
+    },
+    {
       "name": "TrostEnergyCoinIcon",
       "kebab": "trost-energy-coin",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostEyeIcon",
+      "kebab": "trost-eye",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostHeadphoneIcon",
+      "kebab": "trost-headphone",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostHeartIcon",
+      "kebab": "trost-heart",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostHeartSolidIcon",
+      "kebab": "trost-heart-solid",
       "brand": "trost"
     },
     {
@@ -10412,8 +10547,38 @@
       "brand": "trost"
     },
     {
+      "name": "TrostInfoIcon",
+      "kebab": "trost-info",
+      "brand": "trost"
+    },
+    {
       "name": "TrostLinkCircleIcon",
       "kebab": "trost-link-circle",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostListIcon",
+      "kebab": "trost-list",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostLocationIcon",
+      "kebab": "trost-location",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMedalIcon",
+      "kebab": "trost-medal",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMemoIcon",
+      "kebab": "trost-memo",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMemoSolidIcon",
+      "kebab": "trost-memo-solid",
       "brand": "trost"
     },
     {
@@ -10469,6 +10634,26 @@
     {
       "name": "TrostMentalSoundIcon",
       "kebab": "trost-mental-sound",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMenuActiveIcon",
+      "kebab": "trost-menu-active",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMenuIcon",
+      "kebab": "trost-menu",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMessageIcon",
+      "kebab": "trost-message",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostMessageSolidIcon",
+      "kebab": "trost-message-solid",
       "brand": "trost"
     },
     {
@@ -10532,6 +10717,11 @@
       "brand": "trost"
     },
     {
+      "name": "TrostMoreVerticalIcon",
+      "kebab": "trost-more-vertical",
+      "brand": "trost"
+    },
+    {
       "name": "TrostMyActiveIcon",
       "kebab": "trost-my-active",
       "brand": "trost"
@@ -10542,6 +10732,46 @@
       "brand": "trost"
     },
     {
+      "name": "TrostPauseIcon",
+      "kebab": "trost-pause",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPencilIcon",
+      "kebab": "trost-pencil",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPeopleIcon",
+      "kebab": "trost-people",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPictureIcon",
+      "kebab": "trost-picture",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPlaceIcon",
+      "kebab": "trost-place",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPlaceSolidIcon",
+      "kebab": "trost-place-solid",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPlayIcon",
+      "kebab": "trost-play",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPlayThumbnailIcon",
+      "kebab": "trost-play-thumbnail",
+      "brand": "trost"
+    },
+    {
       "name": "TrostPlusCircleIcon",
       "kebab": "trost-plus-circle",
       "brand": "trost"
@@ -10549,6 +10779,21 @@
     {
       "name": "TrostPsychTestIcon",
       "kebab": "trost-psych-test",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostPsychTestSolidIcon",
+      "kebab": "trost-psych-test-solid",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostQuestionIcon",
+      "kebab": "trost-question",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostReplyIcon",
+      "kebab": "trost-reply",
       "brand": "trost"
     },
     {
@@ -10567,6 +10812,41 @@
       "brand": "trost"
     },
     {
+      "name": "TrostShareIcon",
+      "kebab": "trost-share",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostSkipBackwardIcon",
+      "kebab": "trost-skip-backward",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostSkipForwardIcon",
+      "kebab": "trost-skip-forward",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostStarHalfIcon",
+      "kebab": "trost-star-half",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostStarIcon",
+      "kebab": "trost-star",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostSubwayIcon",
+      "kebab": "trost-subway",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostTestIcon",
+      "kebab": "trost-test",
+      "brand": "trost"
+    },
+    {
       "name": "TrostTestresultDangerIcon",
       "kebab": "trost-testresult-danger",
       "brand": "trost"
@@ -10579,6 +10859,31 @@
     {
       "name": "TrostTestresultWarningIcon",
       "kebab": "trost-testresult-warning",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostThumbDownIcon",
+      "kebab": "trost-thumb-down",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostThumbUpIcon",
+      "kebab": "trost-thumb-up",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostTimeIcon",
+      "kebab": "trost-time",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostTimeSolidIcon",
+      "kebab": "trost-time-solid",
+      "brand": "trost"
+    },
+    {
+      "name": "TrostWebIcon",
+      "kebab": "trost-web",
       "brand": "trost"
     },
     {
