@@ -53,7 +53,7 @@ export const modalStyles = `
     overflow: hidden;
     border-radius: var(--nds-modal-radius, ${radius.md}px);
     background-color: ${cv.surface.default};
-    box-shadow: ${shadow["3"]};
+    box-shadow: var(--nds-modal-shadow, ${shadow["3"]});
     animation: nds-modal-slide-up 0.2s ease-out;
     box-sizing: border-box;
   }
@@ -83,7 +83,7 @@ export const modalStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${cv.textRole.normal};
+    color: var(--nds-modal-title-color, ${cv.textRole.normal});
   }
 
   :where(.${CLOSE_CLASS}) {
@@ -112,9 +112,9 @@ export const modalStyles = `
     flex-direction: column;
     gap: var(--semantic-gap-default);
     padding: 0;
-    font-size: ${typeScale.body3.fontSize}px;
-    line-height: ${typeScale.body3.lineHeight}px;
-    color: ${cv.textRole.normal};
+    font-size: var(--nds-modal-body-font-size, ${typeScale.body3.fontSize}px);
+    line-height: var(--nds-modal-body-line-height, ${typeScale.body3.lineHeight}px);
+    color: var(--nds-modal-body-color, ${cv.textRole.normal});
     text-align: center;
     /* 본문이 길어 content 의 max-height 를 넘으면 헤더/푸터는 고정하고 본문만 스크롤.
        min-height:0 가 있어야 flex column 에서 본문이 줄어들어 스크롤이 생긴다. */

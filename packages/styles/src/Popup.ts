@@ -39,9 +39,9 @@ export const popupStyles = `
     flex-direction: column;
     gap: var(--semantic-gap-wide);
     padding: ${spacing[28]}px var(--semantic-inset-card) var(--semantic-inset-card);
-    border-radius: ${radius.md}px;
+    border-radius: var(--nds-popup-radius, ${radius.md}px);
     background: ${cv.surface.default};
-    box-shadow: ${shadow["3"]};
+    box-shadow: var(--nds-popup-shadow, ${shadow["3"]});
     animation: nds-popup-scale-in 0.2s ease-out;
   }
 

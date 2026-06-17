@@ -1019,7 +1019,8 @@
         "상태 SSOT 는 호스트의 `checked` **프로퍼티** — `el.checked = true` 로 코드에서 바꿔도 `change` 는 발생하지 않는다(네이티브 동일, 사용자 입력에만 발화). 전체선택 헤더는 ①헤더 `change` → 자식 `.checked` 를 일괄 set, ②자식 `change` → 선택 수로 헤더 `checked`/`indeterminate` 3상태 재계산, 두 방향을 직접 잇는다. `onclick` 시점엔 아직 토글 전이라 상태가 안 settled — 반드시 `change` 를 들을 것. (`.click()` 만으론 호스트 토글이 안 됨.)",
         "**시/도 ▸ 시/군구 같은 계층 트리는 CheckboxTree** 가 부모 indeterminate 를 자동 계산 — 직접 indeterminate 를 손계산해 트리를 손조립하지 말 것. component:CheckboxTree.",
         "소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)",
-        "**트로스트(Controls 가이드 5158:108)**: 컨트롤 박스 24×24, on(checked) 상태는 브랜드 노랑이 아닌 **다크 #333 채움 + 흰 체크**(노랑 위 가독성 — 트로스트 토큰 checkbox.checkedBg/checkColor). 라벨 우측 gap 12. 그룹은 vertical stack 행간 12. 필수면 그룹 라벨에 * , 미선택 시 그룹 하단 Helper 로 에러."
+        "**트로스트(Controls 가이드 5158:108)**: 컨트롤 박스 24×24, on(checked) 상태는 브랜드 노랑이 아닌 **다크 #333 채움 + 흰 체크**(노랑 위 가독성 — 트로스트 토큰 checkbox.checkedBg/checkColor). 라벨 우측 gap 12. 그룹은 vertical stack 행간 12. 필수면 그룹 라벨에 * , 미선택 시 그룹 하단 Helper 로 에러.",
+        "**런마일(Controls 가이드 5111:345)**: 박스 24×24, on(checked) = 브랜드 **오렌지 #FF5B37 채움 + 흰 체크**(트로스트 다크와 달리 런마일은 brand색=오렌지가 곧 on색 → checkedBg 미설정·fill.brand fallback). off=Border/Default + 흰 surface, disabled=BG/Disabled. 다중 선택·약관 동의·필터 옵션."
       ],
       "examplesHtml": {
         "do": "<nds-checkbox name=\"agree-terms\" label=\"이용약관에 동의합니다\" required></nds-checkbox>\n<nds-checkbox name=\"optional-marketing\" label=\"마케팅 정보 수신 (선택)\"></nds-checkbox>",
@@ -1991,7 +1992,8 @@
         "**★ 캐포비 단일 버튼 모달은 우측 정렬 hug 검정 pill — full-width 아님.** 흔한 회귀: 버튼 1개인데 full-width 로 깔리거나 본문 가운데에 끼는 것. 원인은 (a) `<nds-button full-width>` 를 붙임 또는 (b) footer 를 `<div slot=\"footer\">` 로 감싸지 않고 버튼만 본문에 둠. 해법: `<div slot=\"footer\"><nds-button color=\"neutral\" variant=\"solid\" shape=\"pill\">확인</nds-button></div>` — slot=\"footer\" 가 .nds-modal__footer 로 승격되고, 캐포비 single cascade 가 `justify-content:flex-end` 로 우측 정렬 + hug 너비를 만든다(full-width 금지). 2개일 때만 가로 분할. **단, 이 규칙은 확인/결정 팝업(①~④) 한정** — 모달 종류별로 푸터가 다르다(아래).",
         "**모달 종류별 푸터 결정 트리** (혼동 금지): ① 확인/결정 팝업 = 우측 hug **검정 pill**(color=\"neutral\" — 캐포비엔 secondary 없음), 취소는 neutral outlined. ② 선택/피커 모달(⑥, dimensions.selectionModal) = **본문 풀폭 단일 \"적용\" 옐로우 Solid/Primary pill** (검정 아님·hug 아님). ③ 데이터 로더(⑦, dimensions.dataLoaderModal) = 취소(outlined) + 불러오기 **검정 pill**. ④ 조회 전용 Data Modal(⑤) = 푸터 CTA 없음(Close X 만). 어떤 모달인지 먼저 정하고 그 푸터를 쓸 것 — 선택 모달에 검정 hug 를, 확인 팝업에 옐로우 풀폭을 쓰면 회귀.",
         "**④ Confirm + Slot — 두 개의 독립 슬롯**(Figma ModalGuide 3418-471 · Variant Showcase): 확인 모달은 severity 슬롯과 본문 컨트롤 슬롯을 **각각 독립적으로** 끼울 수 있다(둘 다 / 하나만 / 없음 모두 가능 — 두 슬롯은 swipe 시안에서 슬롯 a·b 로 분리돼 있다). ❶ **slot a — severity(Notice 3종: info / caution / error, + success)**: 심각도 표시. Figma 는 헤더 제목 앞 pill Badge 로 그리지만, `<Modal title>`/`<nds-modal title>` 헤더는 타이틀 전용이라 **DS 표준은 본문 첫 자식 `nds-notice-alert`(variant=info/caution/error)** 로 표현한다(헤더에 직접 배지를 박아야 하면 저수준 `Modal.Header` children 으로 `Badge` 조립). ❷ **slot b — BodyContent 컨트롤(4종)**: `ContentSlot`(기본 — 회색 안내 박스 `fill/neutral-subtle` 배경·radius 12·높이 48) / `nds-input`(TextInput) / `nds-select`(Dropdown) / `nds-date-picker`(DateInput) 중 하나. 두 슬롯 모두 **설명 `<p>` 와 함께 본문 children 형제로** 둔다(슬롯은 footer 가 아니라 본문 — `slot=\"footer\"` 붙이지 말 것). ModalBody 가 세로 스택 + 자동 간격(캐포비 20px / base `--semantic-gap-default`)을 잡으므로 **슬롯마다 wrapper/margin 으로 간격을 직접 주지 말 것**(직접 주면 이중 간격 회귀). 슬롯은 full-width 로 늘어남. 푸터는 ①과 동일(취소 neutral outlined + 확정 검정 neutral · 48px pill w128).",
-        "**높이/스크롤·중첩 팝오버는 DS 가 알아서 처리한다 — 손대지 말 것.** (a) 본문이 길어 화면을 넘으면 ModalContent 가 뷰포트(카드 패딩 제외) 안으로 max-height 를 걸고 **헤더/푸터는 고정한 채 본문(.nds-modal__body)만 스크롤**한다. 모달 패널에 직접 height/max-height/overflow 를 박아 이 동작을 깨지 말 것(`--nds-modal-max-height` 로 상한만 오버라이드 가능). (b) 본문 슬롯의 `nds-date-picker`/`nds-select` 캘린더·드롭다운은 `document.body` 로 portal 되어 모달 `overflow:hidden` 밖으로 뜬다(잘리지 않음) — 팝오버를 모달 밖으로 빼내려고 별도 컨테이너/position 을 만들지 말 것."
+        "**높이/스크롤·중첩 팝오버는 DS 가 알아서 처리한다 — 손대지 말 것.** (a) 본문이 길어 화면을 넘으면 ModalContent 가 뷰포트(카드 패딩 제외) 안으로 max-height 를 걸고 **헤더/푸터는 고정한 채 본문(.nds-modal__body)만 스크롤**한다. 모달 패널에 직접 height/max-height/overflow 를 박아 이 동작을 깨지 말 것(`--nds-modal-max-height` 로 상한만 오버라이드 가능). (b) 본문 슬롯의 `nds-date-picker`/`nds-select` 캘린더·드롭다운은 `document.body` 로 portal 되어 모달 `overflow:hidden` 밖으로 뜬다(잘리지 않음) — 팝오버를 모달 밖으로 빼내려고 별도 컨테이너/position 을 만들지 말 것.",
+        "**런마일(Modal 가이드 5085:27)**: 컨테이너 radius **3XL 24**(`components.modal.radius`). overlay #000 α0.5 · 흰 surface · Confirm=오렌지 Solid · Cancel=Outlined 좌 + Confirm 우(actionsLayout split, Primary 우측). 단일=Confirm only, 이중=Cancel+Confirm. 본문 3줄↑/입력 폼이면 BottomSheet·별도 페이지 권장. (Elevation/3·본문 13·Title=Strong·치수 296/328 은 컴포넌트 정적 import·role-slot 한계라 후속 과제 — 현재 base 정적값.)"
       ],
       "examplesHtml": {
         "do": "<!-- 2버튼(가로 분할): 취소 + 확정. slot=\"footer\" 는 자동으로 .nds-modal__footer 로 승격됨 -->\n<nds-modal open title=\"신청을 취소할까요?\" max-width=\"400\" closable>\n  <p>입력한 내용은 저장되지 않아요.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"neutral\" variant=\"outlined\">닫기</nds-button>\n    <nds-button color=\"error\" variant=\"solid\">취소하기</nds-button>\n  </div>\n</nds-modal>\n<!-- 캐포비(data-brand=\"cashwalk-biz\") 단일 버튼: 우측 정렬 · hug 너비 · 검정 pill (full-width 아님). full-width 속성 붙이지 말 것 — footer cascade 가 우측 정렬 처리 -->\n<nds-modal open title=\"검수를 승인할까요?\" max-width=\"480\">\n  <p>승인하면 즉시 노출됩니다.</p>\n  <div slot=\"footer\">\n    <nds-button color=\"neutral\" variant=\"solid\" shape=\"pill\">승인</nds-button>\n  </div>\n</nds-modal>\n<!-- ④ Confirm + Slot: 두 독립 슬롯 — slot a(severity)=nds-notice-alert(info/caution/error) + slot b(BodyContent)=Input/Select/DatePicker 중 하나. 설명 <p> 와 슬롯을 본문 children 형제로 두면 ModalBody 가 자동 간격(캐포비 20px)으로 쌓는다 — 직접 wrapper/margin 불필요. 슬롯은 full-width. -->\n<nds-modal open title=\"종료 사유를 입력해주세요\" max-width=\"480\">\n  <p>광고비는 전액 청구되며 환불·보상·재집행은 불가합니다.</p>\n  <nds-notice-alert variant=\"caution\" message=\"종료 후에는 되돌릴 수 없어요.\"></nds-notice-alert>\n  <nds-input label=\"사유\" placeholder=\"사유를 입력하세요\"></nds-input>\n  <div slot=\"footer\">\n    <nds-button color=\"neutral\" variant=\"outlined\">취소</nds-button>\n    <nds-button color=\"neutral\" variant=\"solid\">확정</nds-button>\n  </div>\n</nds-modal>\n<script>modal.addEventListener(\"modal-close\", () => modal.removeAttribute(\"open\"));</script>",
@@ -2370,7 +2372,8 @@
         "Radio를 단독으로 여러 개 두고 same name만 맞추는 패턴은 동기화 버그가 잦음. 무조건 RadioGroup으로 감쌀 것.",
         "RadioGroupItem은 RadioGroupContext 안에서만 동작. throw가 나면 RadioGroup으로 감싸지지 않은 것.",
         "value prop은 string. 숫자/객체 쓸 거면 String(value)로 직렬화하고 onValueChange에서 다시 파싱.",
-        "**트로스트(Controls 가이드 5158:108)**: 컨트롤 24×24, on 상태 = **다크 #333 테두리+점**(브랜드 노랑 아님 — 트로스트 토큰 radio.checkedColor). 라벨 우측 gap 12, 그룹 vertical stack 행간 12. 상호배타 옵션에만(독립 다중은 Checkbox). 필수면 그룹 라벨 * + 미선택 시 하단 Helper 에러."
+        "**트로스트(Controls 가이드 5158:108)**: 컨트롤 24×24, on 상태 = **다크 #333 테두리+점**(브랜드 노랑 아님 — 트로스트 토큰 radio.checkedColor). 라벨 우측 gap 12, 그룹 vertical stack 행간 12. 상호배타 옵션에만(독립 다중은 Checkbox). 필수면 그룹 라벨 * + 미선택 시 하단 Helper 에러.",
+        "**런마일(Controls 가이드 5111:345)**: 24×24, on = **오렌지 #FF5B37 ring+점**(트로스트 다크와 달리 fill.brand fallback — checkedColor 미설정). off=원 outline. 단일 선택 그룹(한 그룹 1개만)·정렬 옵션."
       ],
       "recommended": [
         "<RadioGroup name=\"freq\" value={v} onValueChange={setV}> <RadioGroupItem value=\"daily\" label=\"매일\" /> ... </RadioGroup>",
@@ -2680,7 +2683,8 @@
         "인터랙션 없는 단순 일시 메시지(저장됨/복사됨)는 Toast 가 더 적합 — 액션·닫기가 없으면 Snackbar 를 길게 띄우지 말 것.",
         "액션이 두 개 이상 필요하면 Snackbar 대신 Modal/Popup을 검토.",
         "title 없이 description만 사용하지 말 것 — 시맨틱 의미가 무너짐.",
-        "인라인 `<Snackbar>` 는 자동으로 사라지지 않음(부모가 통제). 자동닫힘·우측상단·단일교체가 필요하면 `Snackbar.Provider`/`<nds-snackbar-host>` 사용."
+        "인라인 `<Snackbar>` 는 자동으로 사라지지 않음(부모가 통제). 자동닫힘·우측상단·단일교체가 필요하면 `Snackbar.Provider`/`<nds-snackbar-host>` 사용.",
+        "**런마일(Toast 가이드 5085:234)**: **다크 토스트** — bg=Surface/Strong(#221E1F α0.85)·radius 12·Elevation/2·메시지 흰색(Text/OnBrand) Body1 Medium 13·아이콘 24. variant 는 카드색이 아니라 **아이콘 색만** 차이(Default=흰·Success=초록 #00C255·Error=빨강 #FF2428). 하단 중앙(Bottom Navi 위 safe area)·자동 사라짐 2~4초·1줄 8~20자. 브랜드 토큰 `components.snackbar` 의 `--nds-snackbar-bg` 가 전 variant 를 다크로 통일(컴포넌트는 브랜드 무관). (Info 아이콘 파랑 #007AFF·메시지 weight Medium·액션 Text/Brand 는 컴포넌트 슬롯 미비로 후속 과제 — 현재 Info 아이콘=brand 오렌지·title weight=bold.)"
       ],
       "recommended": [
         "되돌리기: <Snackbar title='삭제됐어요' actionLabel='되돌리기' onAction={undo} />",
@@ -3009,7 +3013,8 @@
         "Toggle 변경 후 별도 '저장' 버튼이 필요한 UI 라면 Checkbox 가 맞음 — Toggle 은 즉시 반영 시그널.",
         "size='sm' 을 본문 안 inline 텍스트와 함께 — 시각 위계 부족, baseline 어색.",
         "노출/활성 status 토글의 켜짐 초록을 raw hex(#60be34 등)로 박지 말 것 — tone='success' 가 semantic status-success 토큰으로 5 브랜드 자동 대응. 라벨 내장 status 토글은 size 무시(고정 30 / thumb 25).",
-        "**트로스트(Controls 가이드 5158:108)**: 트랙 50×30, on=다크(#333). 즉시 적용 설정에만(저장 버튼 필요한 곳 금지). 라벨은 명사·상태형(\"푸시 알림\" ⭕, \"받기\"/\"활성화\" ❌ — 동사 금지). 라벨 좌측·컨트롤 우측."
+        "**트로스트(Controls 가이드 5158:108)**: 트랙 50×30, on=다크(#333). 즉시 적용 설정에만(저장 버튼 필요한 곳 금지). 라벨은 명사·상태형(\"푸시 알림\" ⭕, \"받기\"/\"활성화\" ❌ — 동사 금지). 라벨 좌측·컨트롤 우측.",
+        "**런마일(Controls 가이드 5111:345)**: 트랙 51×31, OFF=BG/Disabled(gray200 #F2F4F6)·노브 좌, ON=브랜드 **오렌지 #FF5B37**·노브 우(트로스트 다크와 달리 fill.brand fallback). 즉시 적용 옵션(알림 설정·다크모드 등). disabled 는 BG/Disabled."
       ],
       "examplesHtml": {
         "do": "<nds-toggle name=\"push-notification\" label=\"푸시 알림 받기\" checked></nds-toggle>\n<!-- 어드민 리스트 노출 토글: 라벨 내장 + 초록 status -->\n<nds-toggle on-label=\"노출\" off-label=\"미노출\" tone=\"success\" checked></nds-toggle>\n<script>el.addEventListener(\"change\", e => savePref(e.target.checked));</script>",
@@ -3025,7 +3030,8 @@
         "trigger 가 aria-label 만 갖고 visible 텍스트가 없는 아이콘 버튼인데 Tooltip 도 같은 내용 — 중복.",
         "본문 길이/줄 수 제한은 없음 — 두 줄·여러 줄·제목+불릿 리치까지 허용(`<template slot=\"content\">` + 필요 시 `max-width`). 단 (a) 사용자의 응답/결정이 필요하면 component:ConfirmTooltip(가벼운 인라인 확인) 또는 Modal/Popup(차단형), (b) 한 화면을 채울 만큼 길면 Modal — Tooltip 은 어디까지나 hover 보조 안내. (이전의 '한 문장 초과 금지' 규칙은 폐기.)",
         "리치 본문은 `content` 속성(평문)이 아니라 **`<template slot=\"content\">`** 로 — HTML(제목 `<p style=\"font-weight:700\">` · 불릿 `<ul><li>` · 강조 `<strong>`)을 넣어야 렌더된다. content 속성에 태그 문자열을 넣으면 그대로 escape 됨.",
-        "**트로스트(Tooltip 가이드 806:1278)**: bg #333 · 흰 텍스트 Caption1 Medium 13 · padding 14/16 · radius 8 · tail 12×8 삼각형(본체 외부 가운데). Position 4종(Top/Bottom/Left/Right, 화면 가장자리면 반대 방향). delay show 200ms·hide 0 · trigger Hover·Focus(터치=long-press) · z-index 1400(모달·토스트 1500 아래). 액션 버튼·링크 금지 → Modal/Notice. 본문 1줄(최대 2)."
+        "**트로스트(Tooltip 가이드 806:1278)**: bg #333 · 흰 텍스트 Caption1 Medium 13 · padding 14/16 · radius 8 · tail 12×8 삼각형(본체 외부 가운데). Position 4종(Top/Bottom/Left/Right, 화면 가장자리면 반대 방향). delay show 200ms·hide 0 · trigger Hover·Focus(터치=long-press) · z-index 1400(모달·토스트 1500 아래). 액션 버튼·링크 금지 → Modal/Notice. 본문 1줄(최대 2).",
+        "**런마일(Tooltip 가이드 5085:314)**: bg=Surface/Strong **#221E1F α0.9**(트로스트 #333 보다 진한 반투명 — `components.tooltip.bg`, 컨테이너+화살표 공용 슬롯). 흰 텍스트, Position 4종(Top 기본). (radius 6·tail 8×8·메시지 11/12 는 컴포넌트가 정적 import 라 현재 공용값 8/12×8/13 — 런마일 전용 치수는 후속 컴포넌트 과제.)"
       ],
       "examplesHtml": {
         "do": "<!-- ① 짧은 힌트(자동 줄바꿈) -->\n<nds-tooltip content=\"삭제하면 복구할 수 없어요\" placement=\"top\" trigger-label=\"?\"></nds-tooltip>\n<!-- ② 리치 안내(제목+불릿·멀티라인) — 캐포비 권한 안내 형태 -->\n<nds-tooltip trigger-label=\"?\" placement=\"top\" max-width=\"346\" open>\n  <template slot=\"content\">\n    <p style=\"font-weight:700\">권한 안내</p>\n    <ul>\n      <li>비즈니스 계정 : <strong>모든 광고 계정</strong>에 접근할 수 있으며, 광고 계정 생성 및 수정 권한을 가집니다.</li>\n      <li>일반 계정 : <strong>초대된 광고 계정</strong>에 한해 광고 조회 및 관리가 가능합니다.</li>\n    </ul>\n  </template>\n</nds-tooltip>",

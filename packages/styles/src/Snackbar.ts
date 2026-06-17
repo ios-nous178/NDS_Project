@@ -42,7 +42,9 @@ export const snackbarStyles = `
    * 아이콘 색은 variant 정체성이라 브랜드 override 와 무관하게 항상 variant 색을 유지. */
   :where(.${SB_CLASS}[data-variant="info"]) {
     --nds-snackbar-variant-bg: var(--semantic-bg-status-info);
-    --nds-snackbar-icon: var(--semantic-icon-brand-default);
+    /* info 아이콘색 — 브랜드 scoped slot > brand fallback. 런마일 다크 토스트는 파랑(text-status-info),
+       미설정 브랜드는 brand 색 유지. */
+    --nds-snackbar-icon: var(--nds-snackbar-info-icon, var(--semantic-icon-brand-default));
   }
   :where(.${SB_CLASS}[data-variant="success"]) {
     --nds-snackbar-variant-bg: var(--semantic-bg-status-success);
@@ -86,7 +88,7 @@ export const snackbarStyles = `
   :where(.${SB_TITLE_CLASS}) {
     font-size: var(--nds-snackbar-title-font-size, ${typeScale.body3.fontSize}px);
     line-height: var(--nds-snackbar-title-line-height, ${typeScale.body3.lineHeight}px);
-    font-weight: ${fontWeight.bold};
+    font-weight: var(--nds-snackbar-title-font-weight, ${fontWeight.bold});
     margin: 0;
   }
 
@@ -100,8 +102,9 @@ export const snackbarStyles = `
     height: 28px;
     padding: 0 var(--semantic-inset-chip);
     border: none;
-    background: rgba(255, 255, 255, 0.12);
-    color: inherit;
+    /* 액션 칩 — 브랜드가 투명+Text/Brand 텍스트 버튼으로 덮을 수 있게 슬롯화(런마일). 미설정 시 흰 12% 칩. */
+    background: var(--nds-snackbar-action-bg, rgba(255, 255, 255, 0.12));
+    color: var(--nds-snackbar-action-color, inherit);
     font-family: inherit;
     font-size: ${typeScale.caption1.fontSize}px;
     font-weight: ${fontWeight.bold};

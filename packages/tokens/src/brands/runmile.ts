@@ -163,5 +163,64 @@ export const runmileTheme: BrandTheme = {
       activeBgHover: runmileGray[900],
       activeText: runmileNeutral.white,
     },
+    // ─ Controls 가이드 (5111:345) ─
+    // Checkbox·Radio 24×24. on 상태 = brand 오렌지 + 흰 체크/점 → checkedBg/checkedColor 미설정
+    // (fill.brand fallback = runmileOrange500 이 곧 on 색). off border=Border/Default·disabled=BG/Disabled 도 정합.
+    checkbox: { size: 24 },
+    radio: { size: 24 },
+    // Toggle 51×31 — OFF 트랙 = BG/Disabled(gray200 #F2F4F6), ON = brand 오렌지(fill.brand fallback),
+    // 노브 흰색(surface.default fallback). 썸 25 · offset 3 · travel 20 (=51-25-3-3).
+    toggle: {
+      trackW: 51,
+      trackH: 31,
+      trackBg: "var(--semantic-bg-disabled)", // #F2F4F6 — BG/Disabled (OFF 트랙)
+      thumbSize: 25,
+      thumbOffset: 3,
+      thumbTravel: 20,
+    },
+    // ─ Toast 가이드 (5085:234) ─ 다크 토스트.
+    // ①--nds-snackbar-bg 가 전 variant 를 다크 카드로 통일하고 컬러 아이콘만 차이(Figma 정합).
+    // status 아이콘색(success 초록·error 빨강 등)은 semantic cascade 로 자동. radius/fg 는 신설 슬롯.
+    snackbar: {
+      bg: "rgba(34, 30, 31, 0.85)", // #221E1F @ 0.85 — BG/Surface/Strong
+      fg: "var(--semantic-text-onbrand-default)", // #FFFFFF — Text/OnBrand
+      radius: 12, // Radius/LG
+      shadow: "0 1px 4px 2px rgba(0, 0, 0, 0.03)", // Elevation/2
+      iconSize: 24,
+      titleFontWeight: "500", // Body1 Medium (string — number 면 px 가 붙음)
+      infoIcon: "var(--semantic-text-status-info)", // info 아이콘 파랑 #007AFF (brand 오렌지 대신)
+      actionBg: "transparent", // 액션 = text 버튼(칩 없음)
+      actionColor: "var(--semantic-text-brand-default)", // Text/Brand 오렌지 #FF5B37
+      closeColor: "var(--semantic-icon-onbrand-default)", // 흰 닫기
+    },
+    // 단일 다크 Toast 컴포넌트도 같은 런마일 다크 톤으로 정합.
+    toast: {
+      bg: "rgba(34, 30, 31, 0.85)",
+      shadow: "0 1px 4px 2px rgba(0, 0, 0, 0.03)",
+    },
+    // ─ Tooltip 가이드 (5085:314) ─ BG/Surface/Strong #221E1F α0.9 · Radius/SM 6 · 화살표 8×8 · 본문 12/16.
+    tooltip: {
+      bg: "rgba(34, 30, 31, 0.9)", // #221E1F @ 0.9 (컨테이너+화살표 공용)
+      radius: 6, // Radius/SM
+      fontSize: 12, // Body2 Medium 12
+      lineHeight: 16,
+      arrowW: 4, // 밑변 8 (절반 4)
+      arrowH: 8, // 높이 8 → 8×8 삼각형
+    },
+    // ─ Modal 가이드 (5085:27) ─ Radius/3XL 24 · Elevation/3 · Title=Strong · Body=Text/Normal(subtle) 13/18.
+    // (치수 296/328 은 React DEVICE_WIDTH 하드코딩이라 base 294/332 유지 — 4px 차 무시.)
+    modal: {
+      radius: 24,
+      shadow: "0 4px 13px rgba(0, 0, 0, 0.06)", // Elevation/3
+      titleColor: "var(--semantic-text-strong-default)", // Title=Text/Strong #221E1F
+      bodyColor: "var(--semantic-text-subtle-default)", // Body=Text/Normal #4E5968
+      bodyFontSize: 13, // Body1 Regular 13
+      bodyLineHeight: 18,
+    },
+    // ─ Popup(가운데 confirm 다이얼로그) ─ 모달 패밀리. Radius 2XL 20 · Elevation/3.
+    popup: {
+      radius: 20,
+      shadow: "0 4px 13px rgba(0, 0, 0, 0.06)", // Elevation/3
+    },
   },
 };

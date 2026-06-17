@@ -13,6 +13,7 @@ figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5158-
 - size='sm' 을 본문 안 inline 텍스트와 함께 — 시각 위계 부족, baseline 어색.
 - 노출/활성 status 토글의 켜짐 초록을 raw hex(#60be34 등)로 박지 말 것 — tone='success' 가 semantic status-success 토큰으로 5 브랜드 자동 대응. 라벨 내장 status 토글은 size 무시(고정 30 / thumb 25).
 - **트로스트(Controls 가이드 5158:108)**: 트랙 50×30, on=다크(#333). 즉시 적용 설정에만(저장 버튼 필요한 곳 금지). 라벨은 명사·상태형("푸시 알림" ⭕, "받기"/"활성화" ❌ — 동사 금지). 라벨 좌측·컨트롤 우측.
+- **런마일(Controls 가이드 5111:345)**: 트랙 51×31, OFF=BG/Disabled(gray200 #F2F4F6)·노브 좌, ON=브랜드 **오렌지 #FF5B37**·노브 우(트로스트 다크와 달리 fill.brand fallback). 즉시 적용 옵션(알림 설정·다크모드 등). disabled 는 BG/Disabled.
 
 ## examplesHtml.do
 

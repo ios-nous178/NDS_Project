@@ -26,10 +26,10 @@ export const tooltipStyles = `
     /* 단일 다크 톤 #333333 (Figma 1380:13). --nds-tooltip-bg = 전 브랜드 동일 — base theme :root emit. */
     background: var(--nds-tooltip-bg);
     color: ${cv.textRole.inverse};
-    font-size: ${typeScale.caption1.fontSize}px;
+    font-size: var(--nds-tooltip-font-size, ${typeScale.caption1.fontSize}px);
     font-weight: ${fontWeight.medium};
-    line-height: ${typeScale.caption1.lineHeight}px;
-    border-radius: ${radius.md}px;
+    line-height: var(--nds-tooltip-line-height, ${typeScale.caption1.lineHeight}px);
+    border-radius: var(--nds-tooltip-radius, ${radius.md}px);
     pointer-events: none;
     max-width: 240px;
     white-space: normal;
@@ -85,8 +85,8 @@ export const tooltipStyles = `
   :where(.${TT_CONTENT_CLASS}[data-placement="top"]) .${TT_ARROW_CLASS} {
     top: 100%;
     left: 50%;
-    margin-left: -6px;
-    border-width: 8px 6px 0 6px;
+    margin-left: calc(-1 * var(--nds-tooltip-arrow-w, 6px));
+    border-width: var(--nds-tooltip-arrow-h, 8px) var(--nds-tooltip-arrow-w, 6px) 0 var(--nds-tooltip-arrow-w, 6px);
     border-color: var(--nds-tooltip-bg) transparent transparent transparent;
   }
 
@@ -94,8 +94,8 @@ export const tooltipStyles = `
   :where(.${TT_CONTENT_CLASS}[data-placement="bottom"]) .${TT_ARROW_CLASS} {
     bottom: 100%;
     left: 50%;
-    margin-left: -6px;
-    border-width: 0 6px 8px 6px;
+    margin-left: calc(-1 * var(--nds-tooltip-arrow-w, 6px));
+    border-width: 0 var(--nds-tooltip-arrow-w, 6px) var(--nds-tooltip-arrow-h, 8px) var(--nds-tooltip-arrow-w, 6px);
     border-color: transparent transparent var(--nds-tooltip-bg) transparent;
   }
 
@@ -103,8 +103,8 @@ export const tooltipStyles = `
   :where(.${TT_CONTENT_CLASS}[data-placement="left"]) .${TT_ARROW_CLASS} {
     left: 100%;
     top: 50%;
-    margin-top: -6px;
-    border-width: 6px 0 6px 8px;
+    margin-top: calc(-1 * var(--nds-tooltip-arrow-w, 6px));
+    border-width: var(--nds-tooltip-arrow-w, 6px) 0 var(--nds-tooltip-arrow-w, 6px) var(--nds-tooltip-arrow-h, 8px);
     border-color: transparent transparent transparent var(--nds-tooltip-bg);
   }
 
@@ -112,8 +112,8 @@ export const tooltipStyles = `
   :where(.${TT_CONTENT_CLASS}[data-placement="right"]) .${TT_ARROW_CLASS} {
     right: 100%;
     top: 50%;
-    margin-top: -6px;
-    border-width: 6px 8px 6px 0;
+    margin-top: calc(-1 * var(--nds-tooltip-arrow-w, 6px));
+    border-width: var(--nds-tooltip-arrow-w, 6px) var(--nds-tooltip-arrow-h, 8px) var(--nds-tooltip-arrow-w, 6px) 0;
     border-color: transparent var(--nds-tooltip-bg) transparent transparent;
   }
 

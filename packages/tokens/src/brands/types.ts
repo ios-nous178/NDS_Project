@@ -331,8 +331,24 @@ export interface ComponentOverrides {
   /**
    * Modal 컨테이너 radius(`--nds-modal-radius`) + 상단 패딩(`--nds-modal-pad-top`).
    * 미설정 시 radius.md / spacing.28 fallback. 트로스트 가이드(171:9899)는 radius 16 · top 24.
+   * shadow/titleColor/bodyColor/bodyFontSize/bodyLineHeight 는 정적 import 였던 값의 슬롯화 —
+   * 런마일(5085:27): radius 24·Elevation/3·Title=Strong·Body=Text/Normal(subtle) 13/18.
    */
-  modal?: { radius?: ComponentValue; padTop?: ComponentValue };
+  modal?: {
+    radius?: ComponentValue;
+    padTop?: ComponentValue;
+    shadow?: ComponentValue;
+    titleColor?: ComponentValue;
+    bodyColor?: ComponentValue;
+    bodyFontSize?: ComponentValue;
+    bodyLineHeight?: ComponentValue;
+  };
+  /**
+   * Popup(가운데 confirm 다이얼로그) 컨테이너 radius(`--nds-popup-radius`)·그림자(`--nds-popup-shadow`)·폭.
+   * 미설정 시 radius.md / shadow.3 / 400px fallback. 캐포비는 [data-brand] 로 16 을 박았으나
+   * 슬롯으로 일원화 — 런마일 = radius 20 · Elevation/3.
+   */
+  popup?: { radius?: ComponentValue; shadow?: ComponentValue; maxWidth?: ComponentValue };
   /** BottomSheet — 상단 radius / drag handle 치수·색. */
   "bottom-sheet"?: {
     radius?: ComponentValue;
@@ -490,7 +506,16 @@ export interface ComponentOverrides {
    * Tooltip 다크 말풍선 배경 슬롯. 캐포비는 Fill/Neutral(#333) — base inverse(#111)와 다름.
    * 다른 브랜드는 미설정 → 컴포넌트 fallback (surface.inverse) 유지.
    */
-  tooltip?: { bg?: ComponentValue };
+  tooltip?: {
+    bg?: ComponentValue;
+    /** radius(`--nds-tooltip-radius`, 미설정 8) · 본문 폰트(`--nds-tooltip-font-size/-line-height`, 미설정 13/18). 런마일=6·12/16. */
+    radius?: ComponentValue;
+    fontSize?: ComponentValue;
+    lineHeight?: ComponentValue;
+    /** 화살표 기하 — arrowW=밑변 절반(미설정 6→밑변12) · arrowH=높이(미설정 8). 런마일 8×8 → arrowW 4·arrowH 8. */
+    arrowW?: ComponentValue;
+    arrowH?: ComponentValue;
+  };
   /**
    * Chart — 어드민 통계 차트 시리즈 색 슬롯 (`--nds-chart-*`).
    * 기본값(캐포비 데이터-뷰 팔레트)은 base(nudge-eap) theme 이 :root 로 emit —
@@ -515,17 +540,30 @@ export interface ComponentOverrides {
    */
   toast?: { bg?: ComponentValue; shadow?: ComponentValue };
   /**
-   * Snackbar — 캐포비 admin 의 'variant 무시 흰카드' 서피스 + 큰 타이틀/아이콘/회색 닫기.
-   * `--nds-snackbar-bg`(① 서피스 override)가 variant bg(② `--nds-snackbar-variant-bg`)를 덮어
-   * 전 variant 흰카드가 되고, 아이콘 색만 variant 유지. 다른 브랜드는 미설정 → variant 틴트 카드(fallback).
+   * Snackbar — 브랜드 서피스 override (`--nds-snackbar-bg` ①)가 variant bg(② `--nds-snackbar-variant-bg`)를
+   * 덮어 전 variant 를 한 서피스로 통일하고 아이콘 색만 variant 유지.
+   * - 캐포비 admin: 'variant 무시 흰카드' + 큰 타이틀/아이콘/회색 닫기.
+   * - 런마일(5085:234): 다크 토스트 — bg=Surface/Strong(#221E1F α0.85)·fg=흰(Text/OnBrand)·radius 12·Elevation/2·icon 24.
+   * 다른 브랜드는 미설정 → variant 틴트 카드(fallback).
    */
   snackbar?: {
     bg?: ComponentValue;
+    /** 메시지/본문 텍스트색 (`--nds-snackbar-fg`). 미설정 시 text.normal fallback. 다크 서피스 브랜드는 onBrand(흰). */
+    fg?: ComponentValue;
+    /** 컨테이너 radius (`--nds-snackbar-radius`). 미설정 시 radius.md(8) fallback. 런마일 = Radius/LG 12. */
+    radius?: ComponentValue;
     border?: ComponentValue;
     shadow?: ComponentValue;
     titleFontSize?: ComponentValue;
     titleLineHeight?: ComponentValue;
+    /** 메시지 font-weight (`--nds-snackbar-title-font-weight`). 미설정 시 bold(700). 런마일 = Medium "500". (string 으로 — number 면 px 가 붙음) */
+    titleFontWeight?: ComponentValue;
     iconSize?: ComponentValue;
+    /** info variant 아이콘색 (`--nds-snackbar-info-icon`). 미설정 시 icon.brand fallback. 런마일 = 파랑(text-status-info). */
+    infoIcon?: ComponentValue;
+    /** 액션 버튼 배경/글자색 (`--nds-snackbar-action-bg/-action-color`). 미설정 시 흰 12% 칩 + inherit. 런마일 = 투명 + Text/Brand 오렌지(text 버튼). */
+    actionBg?: ComponentValue;
+    actionColor?: ComponentValue;
     closeColor?: ComponentValue;
     closeOpacity?: ComponentValue;
   };

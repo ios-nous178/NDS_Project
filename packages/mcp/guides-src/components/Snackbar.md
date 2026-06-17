@@ -27,6 +27,7 @@ matrixOverrides:
 - 액션이 두 개 이상 필요하면 Snackbar 대신 Modal/Popup을 검토.
 - title 없이 description만 사용하지 말 것 — 시맨틱 의미가 무너짐.
 - 인라인 `<Snackbar>` 는 자동으로 사라지지 않음(부모가 통제). 자동닫힘·우측상단·단일교체가 필요하면 `Snackbar.Provider`/`<nds-snackbar-host>` 사용.
+- **런마일(Toast 가이드 5085:234)**: **다크 토스트** — bg=Surface/Strong(#221E1F α0.85)·radius 12·Elevation/2·메시지 흰색(Text/OnBrand) Body1 **Medium**(500) 13·아이콘 24. variant 는 카드색이 아니라 **아이콘 색만** 차이(Default=흰·Success=초록 #00C255·Error=빨강 #FF2428·**Info=파랑 #007AFF**). 액션 버튼=투명+**Text/Brand 오렌지**(text 버튼). 하단 중앙(Bottom Navi 위 safe area)·자동 사라짐 2~4초·1줄 8~20자. 브랜드 토큰 `components.snackbar` 가 `--nds-snackbar-bg`(전 variant 다크 통일)·`-info-icon`·`-action-color`·`-title-font-weight` 슬롯으로 흘려보냄(컴포넌트는 브랜드 무관, 타 브랜드는 fallback 유지).
 
 ## recommended
 

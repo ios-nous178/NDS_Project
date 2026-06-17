@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-17T05:44:43.686Z",
+  "generatedAt": "2026-06-17T06:49:17.754Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -11184,10 +11184,12 @@
       "brands": [
         "cashwalk-biz",
         "geniet",
+        "runmile",
         "trost"
       ],
       "brandValues": {
         "geniet": "24px",
+        "runmile": "24px",
         "trost": "24px"
       }
     },
@@ -11478,6 +11480,30 @@
       }
     },
     {
+      "name": "--nds-modal-body-color",
+      "value": "var(--semantic-text-subtle-default)",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-modal-body-font-size",
+      "value": "13px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-modal-body-line-height",
+      "value": "18px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
       "name": "--nds-modal-pad-top",
       "value": "24px",
       "group": "nds",
@@ -11491,7 +11517,27 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
+      ],
+      "brandValues": {
+        "runmile": "24px"
+      }
+    },
+    {
+      "name": "--nds-modal-shadow",
+      "value": "0 4px 13px rgba(0, 0, 0, 0.06)",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-modal-title-color",
+      "value": "var(--semantic-text-strong-default)",
+      "group": "nds",
+      "brands": [
+        "runmile"
       ]
     },
     {
@@ -11673,6 +11719,22 @@
       ]
     },
     {
+      "name": "--nds-popup-radius",
+      "value": "20px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-popup-shadow",
+      "value": "0 4px 13px rgba(0, 0, 0, 0.06)",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
       "name": "--nds-radio-checked-color",
       "value": "#333333",
       "group": "nds",
@@ -11686,6 +11748,7 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ]
     },
@@ -11788,12 +11851,32 @@
       ]
     },
     {
+      "name": "--nds-snackbar-action-bg",
+      "value": "transparent",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-action-color",
+      "value": "var(--semantic-text-brand-default)",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
       "name": "--nds-snackbar-bg",
       "value": "var(--semantic-bg-surface-default)",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
-      ]
+        "cashwalk-biz",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "rgba(34, 30, 31, 0.85)"
+      }
     },
     {
       "name": "--nds-snackbar-border",
@@ -11808,8 +11891,12 @@
       "value": "var(--semantic-icon-normal-default)",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
-      ]
+        "cashwalk-biz",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "var(--semantic-icon-onbrand-default)"
+      }
     },
     {
       "name": "--nds-snackbar-close-opacity",
@@ -11820,11 +11907,36 @@
       ]
     },
     {
+      "name": "--nds-snackbar-fg",
+      "value": "var(--semantic-text-onbrand-default)",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
       "name": "--nds-snackbar-icon-size",
       "value": "24px",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
+        "cashwalk-biz",
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-info-icon",
+      "value": "var(--semantic-text-status-info)",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-radius",
+      "value": "12px",
+      "group": "nds",
+      "brands": [
+        "runmile"
       ]
     },
     {
@@ -11832,8 +11944,12 @@
       "value": "0 2px 6px rgba(0, 0, 0, 0.12)",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
-      ]
+        "cashwalk-biz",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "0 1px 4px 2px rgba(0, 0, 0, 0.03)"
+      }
     },
     {
       "name": "--nds-snackbar-title-font-size",
@@ -11841,6 +11957,14 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz"
+      ]
+    },
+    {
+      "name": "--nds-snackbar-title-font-weight",
+      "value": "500",
+      "group": "nds",
+      "brands": [
+        "runmile"
       ]
     },
     {
@@ -12057,7 +12181,8 @@
       "value": "rgba(33, 33, 33, 0.92)",
       "group": "nds",
       "brandValues": {
-        "geniet": "rgba(17, 17, 17, 0.92)"
+        "geniet": "rgba(17, 17, 17, 0.92)",
+        "runmile": "rgba(34, 30, 31, 0.85)"
       }
     },
     {
@@ -12066,6 +12191,7 @@
       "group": "nds",
       "brandValues": {
         "geniet": "0 8px 24px rgba(0, 0, 0, 0.18)",
+        "runmile": "0 1px 4px 2px rgba(0, 0, 0, 0.03)",
         "trost": "0px 8px 24px rgba(0,0,0,0.18)"
       }
     },
@@ -12083,9 +12209,11 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ],
       "brandValues": {
+        "runmile": "3px",
         "trost": "3px"
       }
     },
@@ -12103,9 +12231,11 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ],
       "brandValues": {
+        "runmile": "25px",
         "trost": "24px"
       }
     },
@@ -12115,6 +12245,7 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ]
     },
@@ -12138,9 +12269,11 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ],
       "brandValues": {
+        "runmile": "var(--semantic-bg-disabled)",
         "trost": "#EEEEEE"
       }
     },
@@ -12150,6 +12283,7 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ],
       "brandValues": {
@@ -12162,6 +12296,7 @@
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
       ],
       "brandValues": {
@@ -12169,9 +12304,52 @@
       }
     },
     {
+      "name": "--nds-tooltip-arrow-h",
+      "value": "8px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-tooltip-arrow-w",
+      "value": "4px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
       "name": "--nds-tooltip-bg",
       "value": "#333333",
-      "group": "nds"
+      "group": "nds",
+      "brandValues": {
+        "runmile": "rgba(34, 30, 31, 0.9)"
+      }
+    },
+    {
+      "name": "--nds-tooltip-font-size",
+      "value": "12px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-tooltip-line-height",
+      "value": "16px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-tooltip-radius",
+      "value": "6px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
     },
     {
       "name": "--radius-0",
