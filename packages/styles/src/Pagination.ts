@@ -29,7 +29,7 @@ export const paginationStyles = `
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    min-width: 32px;
+    min-width: var(--nds-pagination-item-min-width, 32px);
     height: var(--nds-pagination-item-height, 32px);
     padding: 0 ${spacing[6]}px;
     border: var(--nds-pagination-item-border, none);
@@ -74,8 +74,8 @@ export const paginationStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 32px;
-    height: 32px;
+    min-width: var(--nds-pagination-item-min-width, 32px);
+    height: var(--nds-pagination-item-height, 32px);
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     user-select: none;

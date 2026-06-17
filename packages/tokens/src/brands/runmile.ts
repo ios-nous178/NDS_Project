@@ -2,10 +2,13 @@
  * Runmile Brand Theme
  *
  * 런마일(러닝 대회 정보/커뮤니티 플랫폼) 브랜드 토큰.
- * SSOT: Figma 런마일 library
- *   Colors    (60:1245)  — orange / blue / red / gray / neutral
- *   Typography (63:447)  — Heading / Title / Subtitle / Body / Label
- *   BottomNav  (83:887)  — 4탭, active=black filled / inactive=gray outline
+ * SSOT: Figma 런마일 Library (MssCIDnDdAjStQXHclPNIc)
+ *   ColorGuide          (5005:2)  — main / black / blue / red / green / yellow / base
+ *   SemanticColorGuide  (5009:2)  — BG · Text · Icon · Border · Fill role 트리
+ *   Typography          (5011:2)  — Heading / Title / Subtitle / Body / Label (Pretendard)
+ *   Elevation           (5020:6)  — E0~E3 drop shadow
+ *   Spacing             (5025:16) — 2pt 기반 스케일 (값은 base --spacing-* 와 동일)
+ *   Border & Radius     (5024:16) — Radius None~3XL/Full · Border W-Default/Icon/Strong
  *
  * 구성:
  *   - runmile.palette.ts   : atomic 컬러 스케일 (runmileOrange / runmileGray / ...)
@@ -17,15 +20,26 @@ import type { BrandTheme } from "./types.js";
 import {
   runmileBlue,
   runmileGray,
+  runmileGreen,
   runmileNeutral,
   runmileOrange,
   runmileRed,
   runmileStatus,
+  runmileYellow,
 } from "./runmile.palette.js";
 import { runmileSemantic } from "./runmile.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export
-export { runmileOrange, runmileBlue, runmileRed, runmileGray, runmileNeutral, runmileStatus };
+export {
+  runmileOrange,
+  runmileBlue,
+  runmileRed,
+  runmileGreen,
+  runmileYellow,
+  runmileGray,
+  runmileNeutral,
+  runmileStatus,
+};
 export { runmileSemantic };
 export type { RunmileSemanticTokens } from "./runmile.semantic.js";
 
@@ -38,6 +52,8 @@ export const runmileTheme: BrandTheme = {
     orange: runmileOrange,
     blue: runmileBlue,
     red: runmileRed,
+    green: runmileGreen,
+    yellow: runmileYellow,
     gray: runmileGray,
     neutral: runmileNeutral,
     status: runmileStatus,
@@ -67,23 +83,46 @@ export const runmileTheme: BrandTheme = {
     },
   },
   spacing: {
-    // Toss 스타일 radius — 4/6/8/12/16/pill
+    // Radius — Figma Border&Radius 가이드 (5024:16). None~3XL + Full(pill).
+    // 스페이싱 스케일(2pt) 값은 base --spacing-* 와 동일해 override 불필요.
     radius: {
       none: 0,
       xs: 4,
       sm: 6,
       md: 8,
       lg: 12,
-      xl: 16,
+      xl: 15,
+      "2xl": 20,
+      "3xl": 24,
       pill: 9999,
+    },
+    // shape = radius 동기 alias (정책 스케일 일치).
+    shape: {
+      none: 0,
+      xs: 4,
+      sm: 6,
+      md: 8,
+      lg: 12,
+      xl: 15,
+      "2xl": 20,
+      "3xl": 24,
+      pill: 9999,
+    },
+    // Border Width — Figma Border&Radius 가이드 (5024:16). W-Default/Icon/Strong.
+    borderWidth: {
+      none: 0,
+      default: 1,
+      icon: 1.5,
+      strong: 2,
     },
   },
   elevation: {
+    // Drop shadow — Figma Elevation 가이드 (5020:6). E0~E3.
     shadow: {
       "0": "none",
-      "1": "0 1px 2px rgba(0, 0, 0, 0.04)",
-      "2": "0 2px 8px rgba(0, 0, 0, 0.08)",
-      "3": "0 8px 24px rgba(0, 0, 0, 0.12)",
+      "1": "0 1px 4px rgba(0, 0, 0, 0.1)",
+      "2": "0 1px 4px 2px rgba(0, 0, 0, 0.03)",
+      "3": "0 4px 13px rgba(0, 0, 0, 0.06)",
     },
     zIndex: {
       base: 0,
@@ -99,9 +138,18 @@ export const runmileTheme: BrandTheme = {
   //   label = Pretendard Medium 12/16 (Figma 실측). 나머지는 Figma 런마일 library 실측값
   //   (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용).
   components: {
+    // Button 높이 — Figma 런마일 ButtonGuide (5124:390): Mini 40 / S 44 / M 48 / L 52 / XL 56.
+    // base sizing.button (52/48/44/42/.../32) 와 달라 size별 height override. XS·field 는 base 유지.
+    button: {
+      heightXl: 56,
+      heightLg: 52,
+      heightMd: 48,
+      heightSm: 44,
+      heightMini: 40,
+    },
     footer: {
       navActiveColor: "var(--semantic-icon-strong-default)", // black #221E1F
-      navInactiveColor: "var(--semantic-icon-muted-default)", // gray600 #919CAA
+      navInactiveColor: "var(--semantic-icon-muted-default)", // gray600 #8B95A1
       navLabelFontSize: 12,
       navLabelLineHeight: 16,
       navLabelWeight: "500",
@@ -118,11 +166,25 @@ export const runmileTheme: BrandTheme = {
       selectedText: runmileNeutral.white,
       selectedBorder: runmileOrange[500],
     },
-    // Pagination active = gray800 fill, brand orange 아님 (Figma 120:1234)
+    // Tab — Figma 런마일 TabsGuide (5111:138): active = 검정(#221E1F) · 포인트색(주황) 아님.
+    //   underline active 텍스트·인디케이터는 이미 text/strong(검정) 정합. chip active bg 만
+    //   기본 fill.neutral(#333D4B) 이라 → text/strong(#221E1F) 로 내려 검정으로 맞춘다.
+    //   (fill.neutral 은 Chip 컴포넌트가 공유하므로 전역 변경 금지 — Tab 전용 슬롯만 override.)
+    tab: { chipSelectedBg: "var(--semantic-text-strong-default)" },
+    // Pagination — Figma 런마일 PaginationGuide (5055:29): element 24×24 · radius 6 · 칩 간격 8 ·
+    //   active = gray800 채움(brand orange 아님) + 흰 텍스트 bold · inactive = gray800 medium(500) ·
+    //   이전/다음 화살표 20×20 gray600(#8B95A1).
     pagination: {
+      gap: 8,
+      itemHeight: 24,
+      itemMinWidth: 24,
+      itemRadius: 6,
+      itemWeight: "500",
       activeBg: runmileGray[800],
       activeBgHover: runmileGray[900],
       activeText: runmileNeutral.white,
+      arrowColor: runmileGray[600], // #8B95A1
+      arrowSize: 20,
     },
   },
 };

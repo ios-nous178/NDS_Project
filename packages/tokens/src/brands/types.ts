@@ -362,6 +362,8 @@ export interface ComponentOverrides {
   pagination?: {
     gap?: ComponentValue;
     itemHeight?: ComponentValue;
+    /** 아이템 최소 너비 (`--nds-pagination-item-min-width`). 미설정 시 32px. 런마일 24×24 정사각 셀용. */
+    itemMinWidth?: ComponentValue;
     itemBorder?: ComponentValue;
     itemRadius?: ComponentValue;
     itemBg?: ComponentValue;

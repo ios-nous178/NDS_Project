@@ -24,6 +24,8 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import {
+  BRAND_TONE_DENYLIST,
+  BRAND_VARIANT_WHITELIST,
   BUTTON_COLORS,
   BUTTON_SHAPES,
   BUTTON_SIZES,
@@ -39,6 +41,34 @@ import {
 
 const BUTTON_CLASS = "nds-button";
 const BUTTON_LABEL_CLASS = `${BUTTON_CLASS}__label`;
+
+/* react Button.tsx warnIfBrandRestricted 미러 — dev-only console.warn (런타임 영향 없음). */
+const warnedKeys = new Set<string>();
+function warnIfBrandRestricted(brand: string | null, variant: ButtonVariant, color: ButtonColor) {
+  if (!brand) return;
+  const allow = BRAND_VARIANT_WHITELIST[brand];
+  if (allow && !allow.includes(variant)) {
+    const key = `${brand}:v:${variant}`;
+    if (!warnedKeys.has(key)) {
+      warnedKeys.add(key);
+      console.warn(
+        `[nds/Button] variant="${variant}" 는 brand="${brand}" Figma 가이드에 없음 — ` +
+          `허용된 variant: [${allow.join(", ")}]. 디자인 인텐트가 어긋날 수 있어요.`,
+      );
+    }
+  }
+  const deny = BRAND_TONE_DENYLIST[brand];
+  if (deny && deny.includes(color)) {
+    const key = `${brand}:c:${color}`;
+    if (!warnedKeys.has(key)) {
+      warnedKeys.add(key);
+      console.warn(
+        `[nds/Button] color="${color}" 는 brand="${brand}" Figma 가이드에 없는 tone 입니다. ` +
+          `검정/회색 CTA 는 color="neutral" 을 쓰세요 (secondary 아님).`,
+      );
+    }
+  }
+}
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -175,6 +205,11 @@ export class NdsButton extends NdsElement {
     const disabled = this.boolAttr("disabled");
     const fullWidth = this.boolAttr("full-width");
     const type = this._normalizedType();
+
+    // Brand-aware 경고 (dev-only) — react Button.tsx 미러.
+    if (typeof document !== "undefined") {
+      warnIfBrandRestricted(document.documentElement.getAttribute("data-brand"), variant, color);
+    }
 
     const cfg = sizeConfig[size];
     const set = styleMap[color][variant];

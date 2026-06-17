@@ -27,6 +27,7 @@ stateMatrix:
 - **필드 검증 에러는 Input 인라인으로, NoticeAlert 박스로 띄우지 말 것** (★). html=`error error-message="..."`, React=`error errorMessage="..."` → 필드 아래 빨간 헬퍼(role=alert). 비밀번호 불일치·이메일 형식·중복 등은 전부 이 패턴(component:NoticeAlert 오용 금지).
 - **html `error-message` / `error` 를 함께(또는 `error-message` 단독) 주어야 빨간 보더+메시지가 뜬다.** `error-message` 만 줘도 error 상태로 간주된다. (과거엔 html 이 `error-message` 를 안 봐서 조용히 실패 → 이제 관측함. `helper-text` 만 주면 회색 안내로만 뜨니 에러엔 `error-message` 를 쓸 것.)
 - **가로 행(인풋+버튼 한 줄)에서 인풋을 늘리려면 `full-width`** — host 가 display:contents 라 `<nds-input>` 에 `style="flex:1"`·`width:100%` 를 줘도 무시된다(내부 root 까지 안 닿음). `<nds-input full-width>` 면 행의 남는 폭을 채운다(세로 스택은 자동 full). React 는 `fullWidth`(기본 true).
+- **외형 변형 `variant="box"|"line"` — 런마일은 미지정 시 line 기본 (Figma 런마일 Text Input 5095:200)**: `line` 은 4면 박스가 아닌 **하단 1px 라인(언더라인)** · radius 0 · 좌우 패딩 0 · 높이 40 · 라벨↔필드/필드↔헬퍼 간격 6. 상태색은 box 와 동일 토큰을 따른다 — default 하단라인 gray400(#D1D6DB), **typing(포커스) = 검정(#221E1F)**(런마일 input.borderFocus, 일반 Border/Focus 파랑과 분리), error 빨강(#FF2428). 런마일(`[data-brand="runmile"]`)에서는 `<nds-input>`/`<Input>` 에 variant 를 안 줘도 line 으로 cascade — box 가 필요할 때만 `variant="box"` 로 opt-out. 라벨/값/placeholder/헬퍼 색·폰트는 box 와 동일 Input Typography 토큰. 색을 직접 박지 말 것.
 
 ## recommended
 
