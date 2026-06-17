@@ -7,72 +7,78 @@
  *
  * 누락된 키는 base 값이 그대로 유지된다.
  *
- * SSOT: Figma 런마일 library (60:1245)
+ * SSOT: Figma 런마일 Library — SemanticColorGuide (5009:2)
+ *   https://www.figma.com/design/MssCIDnDdAjStQXHclPNIc/런마일---Library?node-id=5009-2
+ *
+ * Figma role → 본 트리 매핑 (text/icon 은 base 컨벤션과 동일하게 단조 darkening):
+ *   strong = Strong(#221E1F) · normal = Title(gray900) · subtle = Normal(gray800) ·
+ *   muted  = Subtle(gray700) · disabled = Disabled(gray500). Placeholder(gray600)=input.placeholder.
  */
 
 import {
   runmileBlue,
   runmileGray,
+  runmileGreen,
   runmileNeutral,
   runmileOrange,
   runmileRed,
+  runmileYellow,
 } from "./runmile.palette.js";
-// 런마일 Figma library 에는 caution(노랑)/success(초록) 패밀리가 없다.
-// status.caution/success 는 base 값을 *명시적으로* 채워 silent fallback 을 없앤다
-// (값은 base 와 동일 — 디자이너가 런마일 톤을 확정하면 여기만 교체).
-import { yellow as baseYellow, green as baseGreen } from "../colors.js";
 
 export const runmileSemantic = {
   bg: {
     page: { default: runmileNeutral.white }, // #FFFFFF — 본문 페이지
     surface: {
-      default: runmileNeutral.white, // #FFFFFF
-      // Figma chip type=assetive2 / ghost neutral 등에서 사용하는 light gray fill 톤 — gray200 SSOT.
-      subtle: runmileGray[200], // #F2F4F6
+      default: runmileNeutral.white, // #FFFFFF — BG/Surface/Default
+      // BG/Surface/Subtle = gray100 (구 gray200 에서 갱신).
+      subtle: runmileGray[100], // #F9FAFB
     },
-    section: { default: runmileGray[200] }, // #F2F4F6 — 섹션 구분 bg
+    section: { default: runmileGray[200] }, // #F2F4F6 — BG/Surface/Section
     brand: {
-      default: runmileOrange[500], // #FF5B37
-      subtle: runmileOrange[100], // #FFF7F5
+      default: runmileOrange[500], // #FF5B37 — BG/Brand/Default
+      subtle: runmileOrange[100], // #FFF0ED — BG/Brand/Subtle
     },
     inverse: { default: runmileNeutral.black }, // #221E1F
     status: {
-      error: runmileRed[200], // #FFE9E9
-      info: runmileOrange[100], // #FFF7F5 — brand info bg
-      caution: baseYellow[50], // base 명시 채움 — 런마일 노랑 톤 미정
-      success: baseGreen[50], // base 명시 채움 — 런마일 초록 톤 미정
+      error: runmileRed[100], // #FFE4E4 — BG/Error
+      info: runmileBlue[100], // #8DD0FF — BG/Info (구 brand-orange tint 에서 blue 로 갱신)
+      caution: runmileYellow[100], // #FFF3CC — BG/Warning
+      success: runmileGreen[100], // #C0EDCD — BG/Success
     },
     overlay: "rgba(0, 0, 0, 0.5)",
-    disabled: runmileGray[300], // #E5E8EB
+    // BG/Disabled = gray200 (구 gray300 에서 갱신).
+    disabled: runmileGray[200], // #F2F4F6
   },
   text: {
-    strong: { default: runmileNeutral.black }, // #221E1F
-    normal: { default: runmileGray[900] }, // #333D4B
-    subtle: { default: runmileGray[800] }, // #4E5968
-    muted: { default: runmileGray[700] }, // #6B7684 — secondary 라벨
-    disabled: { default: runmileGray[500] }, // #B0B8C1
+    strong: { default: runmileNeutral.black }, // #221E1F — Text/Strong
+    normal: { default: runmileGray[900] }, // #333D4B — Text/Title (primary body)
+    subtle: { default: runmileGray[800] }, // #4E5968 — Text/Normal
+    muted: { default: runmileGray[700] }, // #6B7684 — Text/Subtle
+    disabled: { default: runmileGray[500] }, // #B0B8C1 — Text/Disabled
     inverse: { default: runmileNeutral.white }, // #FFFFFF
+    onBrand: { default: runmileNeutral.white }, // #FFFFFF — Text/OnBrand
+    link: { default: runmileBlue[500] }, // #007AFF — Text/Link
     brand: {
-      default: runmileOrange[500], // #FF5B37
+      default: runmileOrange[500], // #FF5B37 — Text/Brand
       strong: runmileOrange[500], // #FF5B37
     },
     status: {
-      error: runmileRed[500], // #FF2428
-      info: runmileBlue[500], // #007AFF
-      caution: baseYellow[600], // base 명시 채움 — 런마일 노랑 톤 미정
-      success: baseGreen[400], // base 명시 채움 — 런마일 초록 톤 미정
+      error: runmileRed[500], // #FF2428 — Text/Error
+      info: runmileBlue[500], // #007AFF — Text/Info
+      caution: runmileYellow.text, // #F39E00 — Text/Warning
+      success: runmileGreen[500], // #00C255 — Text/Success
     },
   },
-  // Button — Figma 111:477 — 3 sematic × 2 style × 5 size × 3 state.
+  // Button — Figma 버튼 가이드(별도 노드). 3 semantic × 2 style × 5 size × 3 state.
   //   Solid/Primary    : bg=orange500, text=white
   //   Solid/Secondary  : bg=black(#221E1F), text=white  ← dark inverse 패턴 (gray900 아님)
-  //   Solid/Neutral  : bg=gray200, text=gray800
+  //   Solid/Neutral    : bg=gray200, text=gray800
   //   Outlined/Primary : bg=white, text=orange500, border=orange500
-  //   Outlined/Secondary: bg=white, text=black, border=black (base 의 secondary.outlined 패턴이 자동 적용)
-  //   Outlined/Neutral: bg=white, text=gray800, border=gray400
+  //   Outlined/Secondary: bg=white, text=black, border=black (base secondary.outlined 패턴 자동 적용)
+  //   Outlined/Neutral : bg=white, text=gray800, border=gray400
   buttonBg: {
     default: runmileOrange[500], // #FF5B37 — Solid/Primary
-    hover: runmileOrange[400], // #FF805C — Solid/Primary Hover (Figma SSOT: runmile/primary/orange/400)
+    hover: runmileOrange[400], // #FF805C — Solid/Primary Hover
     pressed: "#D33E20",
     disabled: runmileGray[300], // #E5E8EB
     secondary: {
@@ -82,14 +88,14 @@ export const runmileSemantic = {
     },
     outlined: {
       default: runmileNeutral.white, // #FFFFFF
-      hover: runmileOrange[100], // #FFF7F5
+      hover: runmileOrange[100], // #FFF0ED
       disabled: runmileNeutral.white,
     },
     // Solid/Neutral — Figma SSOT (gray200 / gray300 / gray400 페어).
     neutral: {
       default: runmileGray[200], // #F2F4F6 — Solid/Neutral Default
       hover: runmileGray[300], // #E5E8EB — Solid/Neutral Hover
-      disabled: runmileGray[400], // #D1D6DB — Solid/Neutral Disabled (Figma 111:615)
+      disabled: runmileGray[400], // #D1D6DB — Solid/Neutral Disabled
     },
   },
   buttonText: {
@@ -103,91 +109,93 @@ export const runmileSemantic = {
     neutral: runmileGray[800], // #4E5968
     // Solid Neutral 텍스트 — 밝은 #F2F4F6 fill 위 어두운 글자.
     neutralSolid: runmileGray[800], // #4E5968
-    // Outlined Neutral disabled 텍스트 — Figma SSOT gray600. Solid Neutral disabled 텍스트는
-    // base 가 cv.surface.default(white) 를 사용 → Figma 111:615 (white 텍스트) 자동 매칭.
-    neutralDisabled: runmileGray[600], // #919CAA
+    // Outlined Neutral disabled 텍스트 — Figma SSOT gray600.
+    neutralDisabled: runmileGray[600], // #8B95A1
     disabled: runmileGray[500], // #B0B8C1
   },
   buttonBorder: {
     outlined: {
       default: runmileOrange[500], // #FF5B37
-      // Outlined/Primary Hover — Figma SSOT border 만 orange400 으로 톤다운 (bg 변경 없음).
+      // Outlined/Primary Hover — border 만 orange400 으로 톤다운 (bg 변경 없음).
       hover: runmileOrange[400], // #FF805C
       disabled: runmileGray[300], // #E5E8EB
     },
     neutral: {
       default: runmileGray[400], // #D1D6DB — Figma Outlined/Neutral border
-      // Outlined Neutral disabled border 도 동일 gray400 (Figma 111:711).
       disabled: runmileGray[400], // #D1D6DB
     },
   },
-  // Icon — Figma 런마일 library (20:94) 의 5 컬러 슬롯 미러.
-  //   color=black     → strong   (#221E1F)
-  //   color=gray800   → normal   (#4E5968)
-  //   color=gray600   → muted    (#919CAA) — BottomNav inactive · secondary 아이콘
-  //   color=white     → inverse  (#FFFFFF)
-  //   color=orange500 → brand    (#FF5B37)
-  //   color=red500    → status.error (#FF2428)
+  // Icon — Figma 런마일 Library SemanticColorGuide (5009:2) 의 아이콘 슬롯 미러.
+  //   Icon/Strong   → strong   (#221E1F)
+  //   Icon/Normal   → normal   (#4E5968 / gray800)
+  //   Icon/Subtle   → subtle   (#6B7684 / gray700)
+  //   gray600       → muted    (#8B95A1) — BottomNav inactive · secondary 아이콘 (footer 슬롯이 참조)
+  //   Icon/Disabled → disabled (#B0B8C1 / gray500)
+  //   Icon/OnBrand  → inverse / onBrand (#FFFFFF)
+  //   Icon/Brand    → brand    (#FF5B37)
   icon: {
     strong: { default: runmileNeutral.black }, // #221E1F
     normal: { default: runmileGray[800] }, // #4E5968
-    muted: { default: runmileGray[600] }, // #919CAA
-    disabled: { default: runmileGray[400] }, // #D1D6DB
-    inverse: { default: runmileNeutral.white },
+    subtle: { default: runmileGray[700] }, // #6B7684 — Icon/Subtle
+    muted: { default: runmileGray[600] }, // #8B95A1 — BottomNav inactive
+    disabled: { default: runmileGray[500] }, // #B0B8C1 — Icon/Disabled
+    inverse: { default: runmileNeutral.white }, // #FFFFFF
+    onBrand: { default: runmileNeutral.white }, // #FFFFFF — Icon/OnBrand
     brand: { default: runmileOrange[500] }, // #FF5B37
     status: {
-      error: runmileRed[500], // #FF2428
-      caution: baseYellow[500], // base 명시 채움 — 런마일 노랑 톤 미정
-      success: baseGreen[300], // base 명시 채움 — 런마일 초록 톤 미정
+      error: runmileRed[500], // #FF2428 — Icon/Error
+      caution: runmileYellow.text, // #F39E00 — Icon/Warning
+      success: runmileGreen[500], // #00C255 — Icon/Success
     },
   },
   border: {
-    // Figma SSOT — chip assetive1 outline, text-input default border-b, divider 등 default neutral 보더는 gray400.
-    normal: { default: runmileGray[400] }, // #D1D6DB
-    strong: { default: runmileGray[500] }, // #B0B8C1
-    subtle: { default: runmileGray[300] }, // #E5E8EB
-    focus: { default: runmileOrange[500] }, // #FF5B37
+    normal: { default: runmileGray[300] }, // #E5E8EB — Border/Default
+    strong: { default: runmileGray[800] }, // #4E5968 — Border/Strong
+    subtle: { default: runmileGray[200] }, // #F2F4F6 — Border/Subtle
+    focus: { default: runmileBlue[500] }, // #007AFF — Border/Focus (구 orange 에서 blue 로 갱신)
     brand: {
-      default: runmileOrange[500],
+      default: runmileOrange[500], // #FF5B37 — Border/Brand
       disabled: runmileGray[300],
     },
     disabled: { default: runmileGray[300] }, // #E5E8EB
     status: {
-      error: runmileRed[500], // #FF2428
-      caution: baseYellow[500], // base 명시 채움 — 런마일 노랑 톤 미정
+      error: runmileRed[500], // #FF2428 — Border/Error
+      success: runmileGreen[500], // #00C255 — Border/Success
+      caution: runmileYellow[500], // #FFC400
     },
   },
   fill: {
     brand: {
-      default: runmileOrange[500], // #FF5B37
+      default: runmileOrange[500], // #FF5B37 — Fill/Brand
       hover: "#E84A28",
       pressed: "#D33E20",
+      subtle: runmileOrange[100], // #FFF0ED — Fill/Brand-Subtle
       disabled: runmileGray[300],
     },
     neutral: {
-      // Figma chip type=secondary fill 이 gray900 (#333D4B). NudgeEAP base 처럼
-      // gray800 보다 한 단계 더 진한 톤이 SSOT.
+      // Figma chip type=secondary fill 이 gray900 (#333D4B).
       default: runmileGray[900], // #333D4B
       subtle: runmileGray[200], // #F2F4F6
     },
     inverse: { default: runmileNeutral.white },
     status: {
       error: runmileRed[500], // #FF2428
-      caution: baseYellow[500], // base 명시 채움 — 런마일 노랑 톤 미정
+      caution: runmileYellow[500], // #FFC400
     },
   },
   input: {
     bg: runmileNeutral.white, // #FFFFFF
     bgDisabled: runmileGray[100], // #F9FAFB
-    // Figma text-input (144:609) default border-b 가 gray400. typing 시 black.
+    // Figma text-input default border-b 가 gray400. typing 시 black.
     borderDefault: runmileGray[400], // #D1D6DB
     borderHover: runmileGray[500], // #B0B8C1
-    borderFocus: runmileOrange[500], // #FF5B37
+    // 포커스는 semantic Border/Focus(=blue) 에 정합.
+    borderFocus: runmileBlue[500], // #007AFF
     borderError: runmileRed[500], // #FF2428
     borderDisabled: runmileGray[300], // #E5E8EB
-    placeholder: runmileGray[500], // #B0B8C1
+    placeholder: runmileGray[600], // #8B95A1 — Text/Placeholder
     helpertextDefault: runmileGray[700], // #6B7684
-    helpertextSuccess: runmileOrange[500], // #FF5B37 — brand-as-success
+    helpertextSuccess: runmileGreen[500], // #00C255 — Text/Success
     helpertextError: runmileRed[500], // #FF2428
     helpertextDisabled: runmileGray[400], // #D1D6DB
   },

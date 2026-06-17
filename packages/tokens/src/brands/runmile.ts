@@ -2,10 +2,13 @@
  * Runmile Brand Theme
  *
  * 런마일(러닝 대회 정보/커뮤니티 플랫폼) 브랜드 토큰.
- * SSOT: Figma 런마일 library
- *   Colors    (60:1245)  — orange / blue / red / gray / neutral
- *   Typography (63:447)  — Heading / Title / Subtitle / Body / Label
- *   BottomNav  (83:887)  — 4탭, active=black filled / inactive=gray outline
+ * SSOT: Figma 런마일 Library (MssCIDnDdAjStQXHclPNIc)
+ *   ColorGuide          (5005:2)  — main / black / blue / red / green / yellow / base
+ *   SemanticColorGuide  (5009:2)  — BG · Text · Icon · Border · Fill role 트리
+ *   Typography          (5011:2)  — Heading / Title / Subtitle / Body / Label (Pretendard)
+ *   Elevation           (5020:6)  — E0~E3 drop shadow
+ *   Spacing             (5025:16) — 2pt 기반 스케일 (값은 base --spacing-* 와 동일)
+ *   Border & Radius     (5024:16) — Radius None~3XL/Full · Border W-Default/Icon/Strong
  *
  * 구성:
  *   - runmile.palette.ts   : atomic 컬러 스케일 (runmileOrange / runmileGray / ...)
@@ -17,15 +20,26 @@ import type { BrandTheme } from "./types.js";
 import {
   runmileBlue,
   runmileGray,
+  runmileGreen,
   runmileNeutral,
   runmileOrange,
   runmileRed,
   runmileStatus,
+  runmileYellow,
 } from "./runmile.palette.js";
 import { runmileSemantic } from "./runmile.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export
-export { runmileOrange, runmileBlue, runmileRed, runmileGray, runmileNeutral, runmileStatus };
+export {
+  runmileOrange,
+  runmileBlue,
+  runmileRed,
+  runmileGreen,
+  runmileYellow,
+  runmileGray,
+  runmileNeutral,
+  runmileStatus,
+};
 export { runmileSemantic };
 export type { RunmileSemanticTokens } from "./runmile.semantic.js";
 
@@ -38,6 +52,8 @@ export const runmileTheme: BrandTheme = {
     orange: runmileOrange,
     blue: runmileBlue,
     red: runmileRed,
+    green: runmileGreen,
+    yellow: runmileYellow,
     gray: runmileGray,
     neutral: runmileNeutral,
     status: runmileStatus,
@@ -67,23 +83,46 @@ export const runmileTheme: BrandTheme = {
     },
   },
   spacing: {
-    // Toss 스타일 radius — 4/6/8/12/16/pill
+    // Radius — Figma Border&Radius 가이드 (5024:16). None~3XL + Full(pill).
+    // 스페이싱 스케일(2pt) 값은 base --spacing-* 와 동일해 override 불필요.
     radius: {
       none: 0,
       xs: 4,
       sm: 6,
       md: 8,
       lg: 12,
-      xl: 16,
+      xl: 15,
+      "2xl": 20,
+      "3xl": 24,
       pill: 9999,
+    },
+    // shape = radius 동기 alias (정책 스케일 일치).
+    shape: {
+      none: 0,
+      xs: 4,
+      sm: 6,
+      md: 8,
+      lg: 12,
+      xl: 15,
+      "2xl": 20,
+      "3xl": 24,
+      pill: 9999,
+    },
+    // Border Width — Figma Border&Radius 가이드 (5024:16). W-Default/Icon/Strong.
+    borderWidth: {
+      none: 0,
+      default: 1,
+      icon: 1.5,
+      strong: 2,
     },
   },
   elevation: {
+    // Drop shadow — Figma Elevation 가이드 (5020:6). E0~E3.
     shadow: {
       "0": "none",
-      "1": "0 1px 2px rgba(0, 0, 0, 0.04)",
-      "2": "0 2px 8px rgba(0, 0, 0, 0.08)",
-      "3": "0 8px 24px rgba(0, 0, 0, 0.12)",
+      "1": "0 1px 4px rgba(0, 0, 0, 0.1)",
+      "2": "0 1px 4px 2px rgba(0, 0, 0, 0.03)",
+      "3": "0 4px 13px rgba(0, 0, 0, 0.06)",
     },
     zIndex: {
       base: 0,
@@ -101,7 +140,7 @@ export const runmileTheme: BrandTheme = {
   components: {
     footer: {
       navActiveColor: "var(--semantic-icon-strong-default)", // black #221E1F
-      navInactiveColor: "var(--semantic-icon-muted-default)", // gray600 #919CAA
+      navInactiveColor: "var(--semantic-icon-muted-default)", // gray600 #8B95A1
       navLabelFontSize: 12,
       navLabelLineHeight: 16,
       navLabelWeight: "500",

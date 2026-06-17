@@ -1,51 +1,87 @@
 /**
  * Runmile Brand Palette — atomic 색상 스케일.
  *
- * SSOT: Figma 런마일 library (60:1245)
- *   https://www.figma.com/design/udH9ME1HnHk4kbxR17Neig/런마일-library--Copy-?node-id=60-1245
+ * SSOT: Figma 런마일 Library — ColorGuide (5005:2)
+ *   https://www.figma.com/design/MssCIDnDdAjStQXHclPNIc/런마일---Library?node-id=5005-2
  *
- * 네이밍 규칙(`runmile/[category]/[color]/[level]`)에서 category 는 build 시
- * 의미를 가지므로 코드에서는 평탄한 family 키 (`orange` / `blue` / `red` /
- * `gray` / `neutral`) 로만 노출 — generate-css.js 가 `--color-{family}-{stop}`
- * 으로 emit.
+ * Figma 명명(`color-main/*` / `color-black/*` / `color-blue/*` …)을 본 시스템의 평탄한
+ * family 키로 매핑 — primary=orange(main) · gray(black) · blue · red · green · yellow ·
+ * neutral(base black/white). generate-css.js 가 `--color-{family}-{stop}` 으로 emit.
  *
  * runmile.semantic.ts 가 이 palette 를 참조해 시멘틱 트리를 만들고,
  * runmile.ts (theme) 가 둘을 묶어 BrandTheme 로 export.
  */
 
-// ─── Primary (Orange) ───────────────────────────────────
+// ─── Primary (Orange · Figma `color-main`) ──────────────
 export const runmileOrange = {
-  100: "#FFF7F5",
-  200: "#FFF0ED",
+  50: "#FFF7F5",
+  100: "#FFF0ED",
+  200: "#FFE2DC",
   300: "#FECDC1",
   400: "#FF805C",
   500: "#FF5B37",
 } as const;
 
-// ─── Secondary ──────────────────────────────────────────
+// ─── Blue (Figma `color-blue`) ──────────────────────────
 export const runmileBlue = {
+  25: "#E3F4FF",
+  50: "#BBE2FF",
+  100: "#8DD0FF",
+  200: "#56BDFF",
+  300: "#009EFF",
+  400: "#008FFF",
   500: "#007AFF",
 } as const;
 
+// ─── Red (Figma `color-red`) ────────────────────────────
 export const runmileRed = {
-  200: "#FFE9E9",
+  25: "#FFF9F9",
+  50: "#FFF1F1",
+  100: "#FFE4E4",
+  200: "#FFC2C3",
+  300: "#FF8B8D",
+  400: "#FF575A",
   500: "#FF2428",
 } as const;
 
-// ─── Grayscale (Toss-style cool gray) ───────────────────
+// ─── Green (Figma `color-green`) ────────────────────────
+export const runmileGreen = {
+  25: "#F7FCF9",
+  50: "#E5F8EB",
+  100: "#C0EDCD",
+  200: "#95E1AD",
+  300: "#62D68A",
+  400: "#2ECC70",
+  500: "#00C255",
+} as const;
+
+// ─── Yellow (Figma `color-yellow`) ──────────────────────
+// `text` = 노랑 위 텍스트/아이콘용 접근성 톤 (Figma `color-yellow/text`).
+export const runmileYellow = {
+  25: "#FFFCF2",
+  50: "#FFF8E5",
+  100: "#FFF3CC",
+  200: "#FFEA99",
+  300: "#FFDF66",
+  400: "#FFD233",
+  500: "#FFC400",
+  text: "#F39E00",
+} as const;
+
+// ─── Grayscale (Toss-style cool gray · Figma `color-black`) ──
 export const runmileGray = {
   100: "#F9FAFB",
   200: "#F2F4F6",
   300: "#E5E8EB",
   400: "#D1D6DB",
   500: "#B0B8C1",
-  600: "#919CAA",
+  600: "#8B95A1", // Figma color-black/600 (구 #919CAA 에서 갱신)
   700: "#6B7684",
   800: "#4E5968",
   900: "#333D4B",
 } as const;
 
-// ─── Black & White ──────────────────────────────────────
+// ─── Black & White (Figma `color-base`) ─────────────────
 export const runmileNeutral = {
   black: "#221E1F",
   white: "#FFFFFF",
@@ -55,4 +91,6 @@ export const runmileNeutral = {
 export const runmileStatus = {
   error: runmileRed[500], // #FF2428
   info: runmileBlue[500], // #007AFF
+  success: runmileGreen[500], // #00C255
+  caution: runmileYellow[500], // #FFC400
 } as const;
