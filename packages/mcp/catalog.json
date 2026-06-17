@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-17T06:49:17.754Z",
+  "generatedAt": "2026-06-17T23:47:28.849Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3509,6 +3509,15 @@
           ]
         },
         {
+          "name": "variant",
+          "optional": true,
+          "type": "\"box\" | \"line\"",
+          "allowedValues": [
+            "box",
+            "line"
+          ]
+        },
+        {
           "name": "slotProps",
           "optional": true,
           "type": "InputSlotProps"
@@ -3536,6 +3545,7 @@
         "label",
         "helper-text",
         "size",
+        "variant",
         "error",
         "error-message",
         "disabled",
@@ -11018,12 +11028,48 @@
       }
     },
     {
+      "name": "--nds-button-height-lg",
+      "value": "52px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-button-height-md",
+      "value": "48px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
+      "name": "--nds-button-height-mini",
+      "value": "40px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
+    },
+    {
       "name": "--nds-button-height-sm",
       "value": "40px",
       "group": "nds",
       "brands": [
         "geniet",
+        "runmile",
         "trost"
+      ],
+      "brandValues": {
+        "runmile": "44px"
+      }
+    },
+    {
+      "name": "--nds-button-height-xl",
+      "value": "56px",
+      "group": "nds",
+      "brands": [
+        "runmile"
       ]
     },
     {
@@ -11622,16 +11668,24 @@
       "value": "#777777",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "#8B95A1"
+      }
     },
     {
       "name": "--nds-pagination-arrow-size",
       "value": "24px",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "20px"
+      }
     },
     {
       "name": "--nds-pagination-disabled-bg",
@@ -11662,8 +11716,12 @@
       "value": "6px",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
-      ]
+        "cashwalk-biz",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "8px"
+      }
     },
     {
       "name": "--nds-pagination-item-bg",
@@ -11695,11 +11753,21 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
+        "geniet",
+        "runmile"
       ],
       "brandValues": {
-        "geniet": "28px"
+        "geniet": "28px",
+        "runmile": "24px"
       }
+    },
+    {
+      "name": "--nds-pagination-item-min-width",
+      "value": "24px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
     },
     {
       "name": "--nds-pagination-item-radius",
@@ -11707,15 +11775,20 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "6px"
+      }
     },
     {
       "name": "--nds-pagination-item-weight",
       "value": "500",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
+        "cashwalk-biz",
+        "runmile"
       ]
     },
     {
@@ -12061,8 +12134,12 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "var(--semantic-text-strong-default)"
+      }
     },
     {
       "name": "--nds-tab-chip-tab-height",
@@ -12848,7 +12925,7 @@
       "brandValues": {
         "cashwalk-biz": "#111111",
         "geniet": "#ECECEC",
-        "runmile": "#F2F4F6",
+        "runmile": "#221E1F",
         "trost": "#1A1A1A"
       }
     },
@@ -12859,7 +12936,7 @@
       "brandValues": {
         "cashwalk-biz": "#DDDDDD",
         "geniet": "#DDDDDD",
-        "runmile": "#D1D6DB",
+        "runmile": "#E5E8EB",
         "trost": "#D8D8D8"
       }
     },
@@ -12870,7 +12947,7 @@
       "brandValues": {
         "cashwalk-biz": "#333333",
         "geniet": "#F5F5F5",
-        "runmile": "#E5E8EB",
+        "runmile": "#333D4B",
         "trost": "#333333"
       }
     },
@@ -13050,8 +13127,7 @@
       "value": "#FFFFFF",
       "group": "semantic",
       "brandValues": {
-        "geniet": "#555555",
-        "runmile": "#4E5968"
+        "geniet": "#555555"
       }
     },
     {
@@ -13517,7 +13593,7 @@
       "brandValues": {
         "cashwalk-biz": "#111111",
         "geniet": "#00A8AC",
-        "runmile": "#007AFF",
+        "runmile": "#221E1F",
         "trost": "#4968FF"
       }
     },
@@ -15369,6 +15445,7 @@
         "label",
         "helper-text",
         "size",
+        "variant",
         "error",
         "error-message",
         "disabled",

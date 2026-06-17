@@ -257,6 +257,7 @@ export const formRowStyles = `
 const CONTAINER_CLASS = "nds-container";
 const CONTAINER_PC_CLASS = `${CONTAINER_CLASS}--pc`;
 const CONTAINER_WIDE_CLASS = `${CONTAINER_CLASS}--wide`;
+const CONTAINER_RUNMILE_CLASS = `${CONTAINER_CLASS}--runmile`;
 const SECTION_SURFACE_CLASS = "nds-section-surface";
 
 export const containerStyles = `
@@ -296,10 +297,18 @@ export const containerStyles = `
     padding-inline: ${spacing[24]}px;
   }
 
+  /* ── 런마일 device-variant 모디파이어 (opt-in) — Figma Section/Container (5070:2):
+     콘텐츠 max 1280 · 좌우 패딩 PC 80 (모바일은 base 16 으로 collapse). ── */
+  :where(.${CONTAINER_RUNMILE_CLASS}) {
+    max-width: 1280px;
+    padding-inline: ${spacing[80]}px;
+  }
+
   /* 모바일(<768) — 모디파이어도 base 와 동일하게 full-bleed + 좌우 16 */
   @media (max-width: 767px) {
     :where(.${CONTAINER_PC_CLASS}),
-    :where(.${CONTAINER_WIDE_CLASS}) {
+    :where(.${CONTAINER_WIDE_CLASS}),
+    :where(.${CONTAINER_RUNMILE_CLASS}) {
       max-width: 100%;
       padding-inline: ${spacing[16]}px;
     }

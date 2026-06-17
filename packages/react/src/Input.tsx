@@ -92,6 +92,12 @@ export interface InputRootProps extends React.HTMLAttributes<HTMLDivElement> {
   fieldWidth?: FieldWidth;
   /** 입력 필드 높이 변형 @default "default" */
   size?: InputSize;
+  /**
+   * 외형 변형 — `"box"`(4면 보더 박스) / `"line"`(하단 라인 언더라인). 미지정 시 box 가 기본이나,
+   * **런마일 브랜드(`[data-brand="runmile"]`)는 미지정 시 line 으로 cascade** (Figma 런마일 Text Input).
+   * 런마일에서 box 가 필요하면 `variant="box"` 로 명시 opt-out. 색·상태는 모두 토큰을 따른다.
+   */
+  variant?: "box" | "line";
   /** 외부에서 주입할 input ID (미지정 시 자동 생성) */
   inputId?: string;
   /** Root 내부 콘텐츠 (Label, Wrapper, Helper 등) */
@@ -106,6 +112,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
   fullWidth = true,
   fieldWidth,
   size = "default",
+  variant,
   inputId: inputIdProp,
   children,
   className,
@@ -138,6 +145,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
       <div
         data-slot="root"
         data-size={size}
+        data-variant={variant}
         data-disabled={disabled ? "true" : "false"}
         data-error={error ? "true" : "false"}
         style={
@@ -497,6 +505,11 @@ export interface InputProps extends Omit<
   fieldWidth?: FieldWidth;
   /** 입력 필드 높이 변형 */
   size?: InputSize;
+  /**
+   * 외형 변형 — `"box"` / `"line"`(하단 라인). 미지정 시 box, 단 런마일(`[data-brand="runmile"]`)은
+   * line 으로 cascade. 런마일에서 box 가 필요하면 `variant="box"` 로 opt-out.
+   */
+  variant?: "box" | "line";
   /** 슬롯 프롭 */
   slotProps?: InputSlotProps;
   /** 래퍼 클래스 */
@@ -527,6 +540,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
       fullWidth = true,
       fieldWidth,
       size = "default",
+      variant,
       className,
       style,
       wrapperClassName,
@@ -597,6 +611,7 @@ const InputComponent = React.forwardRef<HTMLInputElement, InputProps>(
         fullWidth={fullWidth}
         fieldWidth={fieldWidth}
         size={size}
+        variant={variant}
         inputId={idProp}
         className={cx(slotProps?.root?.className, className)}
         style={{ ...slotProps?.root?.style, ...style }}

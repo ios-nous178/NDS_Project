@@ -323,6 +323,8 @@ const BRAND_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
  * Secondary tone 이 없음. 검정/회색 CTA 는 color="neutral" 사용(color="secondary" 아님). */
 const BRAND_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
   "cashwalk-biz": ["secondary"],
+  // 런마일 ButtonGuide(5124:390) tone = Primary + Neutral 둘뿐. 검정 CTA = color="neutral".
+  runmile: ["secondary"],
 };
 
 const warnedKeys = new Set<string>();

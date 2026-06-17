@@ -9,6 +9,10 @@ references:
     url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5123-136
     caption: 트로스트 Container card. platform(pc=padding28·r16·title20·subtitle14 / mobile=padding20·r14·title17·subtitle13) + elevation(outline=보더 / elevated=shadow E2 + 보더 제거) + 헤더 행(리딩 아이콘 24px + 10px gap + title/subtitle 정보 컬럼, gap 2px) + 헤더↔본문 divider. point(코발트) 액센트 아이콘. 컴포넌트는 opt-in(platform/elevation/icon/showDivider) — 미지정 시 현행 렌더 그대로.
     brand: trost
+  - label: Runmile Card Guide — 이벤트 카드 (앱 레벨 composition)
+    url: https://www.figma.com/design/MssCIDnDdAjStQXHclPNIc/?node-id=5117-130
+    caption: '런마일 CardGuide. 표준 이벤트 카드(세로형 PC 280×432 / MO 159×343) = DS 프리미티브 composition (새 variant 아님). 썸네일(bg gray200 · radius 12 · 1:1 정사각) → 타이틀(18/15 Bold #221E1F · 2줄) → 메타 칩(=Badge · radius 4 · 12 Bold) → 날짜(calendar icon + 14/12 Medium gray800) · 주최(gray600) → 태그 칩(=Chip · 13 Medium gray900 · 흰 bg gray300 보더 · 최대 3). 3 ComponentSet: 표준 Card(5115:126) · competition card(5067:1828 가로형 622×138/296×138) · heart(5067:1819 좋아요 토글). 본문 ## runmile 섹션 참조.'
+    brand: runmile
 usagePolicy:
   useFor:
     - 분류된 식품·콘텐츠 텍스트 나열 (List · 10개 이상 / 페이지)
@@ -64,6 +68,9 @@ sizeMatrix:
   trostElevation: "트로스트 elevation — outline=현행(보더 1px, shadow 없음, 기본값) / elevated=box-shadow E2(shadow.e2) + 보더 제거. 한 화면 한 elevation 유지."
   trostHeaderRow: "트로스트 헤더 행 — 리딩 아이콘(24px, point/코발트 액센트) + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px). icon prop 지정 시 활성. showHeader 로 아이콘 없이 컬럼만 묶기도 가능."
   trostBodyDivider: "트로스트 헤더/텍스트 ↔ 본문(children) 사이 hairline — showDivider prop. cta/footerText 위 divider(divider prop) 와 별개. 둘 다 1px cv.borderRole.subtle."
+  runmileEventCard: "런마일 이벤트 카드 (Figma 5117:130) — 앱 레벨 composition, DS 새 variant 아님. 세로형 Card: PC 280×432 / MO 159×343. 썸네일 bg gray200 · radius 12(LG) · 1:1 정사각(PC 280×280 / MO 159×159). 슬롯: 썸네일 → 메타칩(Badge) → 타이틀 → 날짜·주최 → 태그칩(Chip). DS 매핑 = Card(Container) + Badge(메타칩) + Chip(태그)."
+  runmileEventTypo: "런마일 이벤트 카드 타이포 — 타이틀 PC 18 / MO 15 Bold(#221E1F · 최대 2줄) · 날짜 PC 14 / MO 12 Medium gray800(+ calendar icon) · 주최 Medium gray600 · 메타칩 12/11 Bold · 태그칩 13 Medium gray900. 색·radius 세부는 Badge/Chip 가이드 SSOT 참조."
+  runmileComponentSets: "런마일 Card 페이지 3 ComponentSet — ① 표준 Card(5115:126, 세로형) ② competition card(5067:1828, 대회 전용 가로형 PC 622×138 / MO 296×138 · date 인스턴스 + 상태 Badge + 대회명 16/14 Bold + 위치/날짜 + 내장 heart) ③ heart(5067:1819, 좋아요 토글 PC 30 / MO 28). competition card·heart 는 도메인 전용 — 표준 Card 와 별개 유지."
   cardGapMobile: 16px
   cardGapWebCMS: 24px
   elementGapTitleMeta: 4px
@@ -109,6 +116,7 @@ stateMatrix:
 - 그리드 카드 간격 임의 혼합(8/12/16/20px) 금지. Auto Layout: Mobile 16px, Web·CMS 24px.
 - Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.
 - Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경.
+- 런마일 이벤트 카드는 Card 의 새 variant 가 아님 — Card(Container) + Badge(메타 칩) + Chip(태그)을 조합한 앱 레벨 composition. 새 variant/컴포넌트를 만들지 말고 프리미티브를 조합한다. 대회 정보는 표준 Card 가 아니라 competition card(가로형 · 별도 ComponentSet)를 쓴다.
 
 ## recommended
 
@@ -122,6 +130,7 @@ stateMatrix:
 - Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.
 - 지니어트 배치 매핑 (Geniet CardGuide 3056-125) — 음식 검색·식단 리스트(Mobile) → Horizontal(328·r8) / 홈 인기·추천 가로스크롤 → Vertical(240×280·r12) / 카테고리 그리드 2·3열 → Grid(160×210·r8) / PC 메인·모달 → Container(440·r16) / Hero 강조 → Container + shadow(E2). Mobile 은 border, PC Container 만 shadow — 한 화면 한 elevation 유지(위 Figma 권위 룰).
 - Trost Container card (Figma 5123:136) — 트로스트 PC/모바일 큰 카드는 `platform` + `elevation` + `icon`/`showDivider` 로 표현. PC: `<Card platform='pc' elevation='outline' icon={<Icon/>} title=… subtitle=… showDivider>본문</Card>` (padding 28·r16·title 20·subtitle 14). Hero/모달 강조는 `elevation='elevated'`(shadow E2 + 보더 제거). Mobile: `<Card platform='mobile' elevation='outline' …>` (padding 20·r14·title 17·subtitle 13, border 권장). 리딩 아이콘은 point/코발트(cv.iconRole.point) 액센트. HTML: `<nds-card platform='pc' elevation='elevated'><nds-card-header-row><nds-card-header-icon>…</nds-card-header-icon><nds-card-header-info><h3 class='nds-card__title'>…</h3><p class='nds-card__description'>…</p></nds-card-header-info></nds-card-header-row><nds-card-divider></nds-card-divider><nds-card-body>본문</nds-card-body></nds-card>`.
+- 런마일 이벤트 카드 (Figma 5117:130) — 표준 Card 위에 도메인 정보를 얹는 **앱 레벨 composition**(새 variant 아님). 세로형 PC 280×432 / MO 159×343, 썸네일 1:1 정사각(radius 12). 구성: 썸네일 → 메타 칩(Badge, 거리·D-day) → 타이틀(18/15 Bold, 2줄) → 날짜(calendar icon + gray800)·주최(gray600) → 태그 칩(Chip, 최대 3). 예: `<Card variant='cover' clickable><Card.Thumbnail aspect='1:1'><img src='…' alt='' /></Card.Thumbnail><Card.Chips><Badge color='brand' variant='soft'>5km 외 2개</Badge><Badge variant='outlined'>접수마감 D-60</Badge></Card.Chips><Card.Title>2026 댕댕이레이스</Card.Title><Card.Metadata>📅 25.12.30~25.12.31 · (주)러닝포인트</Card.Metadata><Card.Chips><Chip>#강아지</Chip><Chip>#댕댕런</Chip></Card.Chips></Card>`. 색·radius 세부(태그칩 등)는 Badge/Chip 가이드 SSOT. 대회 정보는 표준 Card 가 아니라 competition card(가로형) 사용.
 
 ## accessibility
 

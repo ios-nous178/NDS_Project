@@ -103,7 +103,20 @@ export const BRAND_PROFILES: Record<BrandSlug, BrandProfile> = {
     },
     admin: { pagePatternSystem: true },
   },
-  runmile: { slug: "runmile" },
+  runmile: {
+    slug: "runmile",
+    cta: {
+      // Figma 런마일 ButtonGuide(5124:390) tone = Primary + Neutral 둘뿐. 검정 CTA = neutral solid #221E1F.
+      blackCta: "neutral",
+      deniedButtonColors: [
+        {
+          color: "secondary",
+          useInstead:
+            '검정/회색 CTA 는 color="neutral" (solid=검정 #221E1F / soft=회색 #F2F4F6 / outlined=라인)',
+        },
+      ],
+    },
+  },
 };
 
 export const BRAND_SLUGS = Object.keys(BRAND_PROFILES) as readonly BrandSlug[];

@@ -69,20 +69,23 @@ export const runmileSemantic = {
       success: runmileGreen[500], // #00C255 — Text/Success
     },
   },
-  // Button — Figma 버튼 가이드(별도 노드). 3 semantic × 2 style × 5 size × 3 state.
+  // Button — Figma 런마일 ButtonGuide (5124:390, "어드민 기준").
+  //   tone = Primary / Neutral 둘뿐 (Secondary 없음 — 검정 솔리드는 Neutral 이다).
+  //   style = Solid / Soft / Outlined · 5 size (Mini40/S44/M48/L52/XL56) · 3 state.
   //   Solid/Primary    : bg=orange500, text=white
-  //   Solid/Secondary  : bg=black(#221E1F), text=white  ← dark inverse 패턴 (gray900 아님)
-  //   Solid/Neutral    : bg=gray200, text=gray800
+  //   Solid/Neutral    : bg=black(#221E1F), text=white     ← 검정 솔리드 · 강한 위계 (캐포비와 동일 패턴)
+  //   Soft/Neutral     : bg=gray200(surface.section), text=black  ← 회색 옅은 BG · 가벼운 보조 (styleMap soft 가 처리)
   //   Outlined/Primary : bg=white, text=orange500, border=orange500
-  //   Outlined/Secondary: bg=white, text=black, border=black (base secondary.outlined 패턴 자동 적용)
   //   Outlined/Neutral : bg=white, text=gray800, border=gray400
   buttonBg: {
     default: runmileOrange[500], // #FF5B37 — Solid/Primary
     hover: runmileOrange[400], // #FF805C — Solid/Primary Hover
     pressed: "#D33E20",
     disabled: runmileGray[300], // #E5E8EB
+    // @deprecated tone — 신규 가이드엔 Secondary 없음. 검정 CTA 는 color="neutral" 사용.
+    // 하위호환용 검정값만 유지 (캐포비와 동일 운용 · Button BRAND_TONE_DENYLIST 가 경고).
     secondary: {
-      default: runmileNeutral.black, // #221E1F — Figma SSOT (gray900 아님)
+      default: runmileNeutral.black, // #221E1F
       hover: runmileGray[900], // #333D4B
       disabled: runmileGray[300], // #E5E8EB
     },
@@ -91,11 +94,12 @@ export const runmileSemantic = {
       hover: runmileOrange[100], // #FFF0ED
       disabled: runmileNeutral.white,
     },
-    // Solid/Neutral — Figma SSOT (gray200 / gray300 / gray400 페어).
+    // Solid/Neutral — 검정 솔리드 CTA (Figma "Solid Neutral = 검정 솔리드"). 흰 텍스트 페어.
+    //   default=black / hover=gray900 / disabled=gray300 (Solid/Primary disabled 와 동일 회색).
     neutral: {
-      default: runmileGray[200], // #F2F4F6 — Solid/Neutral Default
-      hover: runmileGray[300], // #E5E8EB — Solid/Neutral Hover
-      disabled: runmileGray[400], // #D1D6DB — Solid/Neutral Disabled
+      default: runmileNeutral.black, // #221E1F — Solid/Neutral Default (검정)
+      hover: runmileGray[900], // #333D4B — Solid/Neutral Hover
+      disabled: runmileGray[300], // #E5E8EB — Solid/Neutral Disabled
     },
   },
   buttonText: {
@@ -107,8 +111,8 @@ export const runmileSemantic = {
     },
     // Outlined/Weak Neutral enabled 텍스트 — Figma SSOT gray800.
     neutral: runmileGray[800], // #4E5968
-    // Solid Neutral 텍스트 — 밝은 #F2F4F6 fill 위 어두운 글자.
-    neutralSolid: runmileGray[800], // #4E5968
+    // Solid Neutral 텍스트 — 검정(#221E1F) fill 위 흰 글자 (Solid Neutral = 검정 솔리드).
+    neutralSolid: runmileNeutral.white, // #FFFFFF
     // Outlined Neutral disabled 텍스트 — Figma SSOT gray600.
     neutralDisabled: runmileGray[600], // #8B95A1
     disabled: runmileGray[500], // #B0B8C1
@@ -189,8 +193,9 @@ export const runmileSemantic = {
     // Figma text-input default border-b 가 gray400. typing 시 black.
     borderDefault: runmileGray[400], // #D1D6DB
     borderHover: runmileGray[500], // #B0B8C1
-    // 포커스는 semantic Border/Focus(=blue) 에 정합.
-    borderFocus: runmileBlue[500], // #007AFF
+    // Figma 런마일 Text Input (5095:200): typing(포커스) 하단 라인 = 검정(#221E1F).
+    // 일반 Border/Focus(=blue #007AFF, border.focus)와 분리된 input 전용 토큰 — 캐포비와 동일 패턴.
+    borderFocus: runmileNeutral.black, // #221E1F
     borderError: runmileRed[500], // #FF2428
     borderDisabled: runmileGray[300], // #E5E8EB
     placeholder: runmileGray[600], // #8B95A1 — Text/Placeholder

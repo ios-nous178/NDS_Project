@@ -138,6 +138,15 @@ export const runmileTheme: BrandTheme = {
   //   label = Pretendard Medium 12/16 (Figma 실측). 나머지는 Figma 런마일 library 실측값
   //   (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용).
   components: {
+    // Button 높이 — Figma 런마일 ButtonGuide (5124:390): Mini 40 / S 44 / M 48 / L 52 / XL 56.
+    // base sizing.button (52/48/44/42/.../32) 와 달라 size별 height override. XS·field 는 base 유지.
+    button: {
+      heightXl: 56,
+      heightLg: 52,
+      heightMd: 48,
+      heightSm: 44,
+      heightMini: 40,
+    },
     footer: {
       navActiveColor: "var(--semantic-icon-strong-default)", // black #221E1F
       navInactiveColor: "var(--semantic-icon-muted-default)", // gray600 #8B95A1
@@ -157,11 +166,25 @@ export const runmileTheme: BrandTheme = {
       selectedText: runmileNeutral.white,
       selectedBorder: runmileOrange[500],
     },
-    // Pagination active = gray800 fill, brand orange 아님 (Figma 120:1234)
+    // Tab — Figma 런마일 TabsGuide (5111:138): active = 검정(#221E1F) · 포인트색(주황) 아님.
+    //   underline active 텍스트·인디케이터는 이미 text/strong(검정) 정합. chip active bg 만
+    //   기본 fill.neutral(#333D4B) 이라 → text/strong(#221E1F) 로 내려 검정으로 맞춘다.
+    //   (fill.neutral 은 Chip 컴포넌트가 공유하므로 전역 변경 금지 — Tab 전용 슬롯만 override.)
+    tab: { chipSelectedBg: "var(--semantic-text-strong-default)" },
+    // Pagination — Figma 런마일 PaginationGuide (5055:29): element 24×24 · radius 6 · 칩 간격 8 ·
+    //   active = gray800 채움(brand orange 아님) + 흰 텍스트 bold · inactive = gray800 medium(500) ·
+    //   이전/다음 화살표 20×20 gray600(#8B95A1).
     pagination: {
+      gap: 8,
+      itemHeight: 24,
+      itemMinWidth: 24,
+      itemRadius: 6,
+      itemWeight: "500",
       activeBg: runmileGray[800],
       activeBgHover: runmileGray[900],
       activeText: runmileNeutral.white,
+      arrowColor: runmileGray[600], // #8B95A1
+      arrowSize: 20,
     },
     // ─ Controls 가이드 (5111:345) ─
     // Checkbox·Radio 24×24. on 상태 = brand 오렌지 + 흰 체크/점 → checkedBg/checkedColor 미설정

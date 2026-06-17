@@ -25,6 +25,17 @@ export const SHAPE_RADIUS: Record<ButtonShape, string> = {
   pill: "9999px",
 };
 
+/* ─── Brand-restricted variants / tones (react Button.tsx 미러 — SSOT 통일 전까지 수동 동기화) ─── */
+export const BRAND_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
+  geniet: ["solid", "outlined"],
+};
+
+/** 브랜드별 미정의 tone — 사용 시 dev 경고. 캐포비·런마일은 Secondary 없음(검정 CTA = neutral). */
+export const BRAND_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
+  "cashwalk-biz": ["secondary"],
+  runmile: ["secondary"],
+};
+
 export const sizeConfig = {
   xl: {
     height: sizing.button.xl,

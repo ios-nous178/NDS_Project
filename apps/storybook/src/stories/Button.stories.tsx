@@ -649,6 +649,68 @@ export const TrostStyleMapping: Story = {
   ),
 };
 
+/* ─── 런마일 스타일 매핑 (Figma 5124:390 ButtonGuide · 어드민 기준) ───
+   tone = Primary / Neutral 둘뿐 (Secondary 없음 — 검정 솔리드 = Neutral).
+   Solid/Primary(주황) · Solid/Neutral(검정 #221E1F) · Soft/Neutral(회색) ·
+   Outlined/Primary(주황 라인) · Outlined/Neutral(gray 라인). 5 size: Mini40/S44/M48/L52/XL56. */
+
+export const RunmileStyleMapping: Story = {
+  name: "Brand/Runmile Style Mapping",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "런마일 ButtonGuide(Figma 5124:390)의 3스타일 × 2시멘틱 매트릭스(Secondary 없음). " +
+          "Solid/Primary=`color='primary' variant='solid'`(주황), " +
+          "Solid/Neutral=`color='neutral' variant='solid'`(검정 #221E1F · 강한 위계), " +
+          "Soft/Neutral=`color='neutral' variant='soft'`(회색 옅은 BG · 가벼운 보조), " +
+          "Outlined/Primary · Outlined/Neutral. " +
+          "검정 솔리드를 Secondary로 부르지 말 것 — color='secondary' 사용 시 dev console 경고. " +
+          "색은 data-brand='runmile' 컨텍스트의 브랜드 토큰이 흘려준다(색 하드코딩 금지).",
+      },
+    },
+  },
+  render: () => (
+    <div data-brand="runmile" style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}>
+      <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+        <Button color="primary" variant="solid">
+          Solid/Primary (주황)
+        </Button>
+        <Button color="neutral" variant="solid">
+          Solid/Neutral (검정)
+        </Button>
+        <Button color="neutral" variant="soft">
+          Soft/Neutral (회색)
+        </Button>
+        <Button color="primary" variant="outlined">
+          Outlined/Primary
+        </Button>
+        <Button color="neutral" variant="outlined">
+          Outlined/Neutral
+        </Button>
+      </div>
+      {/* 5 size — Mini 40 / S 44 / M 48 / L 52 / XL 56 (런마일 brand 높이 override) */}
+      <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+        <Button color="primary" variant="solid" size="mini">
+          Mini 40
+        </Button>
+        <Button color="primary" variant="solid" size="sm">
+          S 44
+        </Button>
+        <Button color="primary" variant="solid" size="md">
+          M 48
+        </Button>
+        <Button color="primary" variant="solid" size="lg">
+          L 52
+        </Button>
+        <Button color="primary" variant="solid" size="xl">
+          XL 56
+        </Button>
+      </div>
+    </div>
+  ),
+};
+
 /* ─── Interaction Tests ─── */
 
 export const ClickInteraction: Story = {
