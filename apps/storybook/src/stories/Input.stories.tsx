@@ -55,6 +55,44 @@ export const Playground: Story = {
   ],
 };
 
+/* ─── Variant: line (런마일 Text Input — 하단 라인 / Figma 5095:200) ─── */
+
+export const LineVariant: Story = {
+  name: "Variant/Line",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '하단 라인(언더라인) 인풋. 런마일은 미지정 시 자동 line 으로 cascade — 여기선 명시적으로 variant="line" 으로 표시. radius 0 · 좌우 패딩 0 · 높이 40 · 라벨/헬퍼 간격 6. 상태색은 box 와 동일 토큰(default gray400 / typing 검정 / error 빨강).',
+      },
+    },
+  },
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24, width: 360 }}>
+      <Input
+        variant="line"
+        label="레이블"
+        placeholder="내용을 입력하세요"
+        helperText="메세지를 입력해 주세요."
+      />
+      <Input
+        variant="line"
+        label="레이블"
+        placeholder="내용을 입력하세요"
+        complete
+        successMessage="사용 가능합니다."
+      />
+      <Input
+        variant="line"
+        label="레이블"
+        placeholder="내용을 입력하세요"
+        error
+        errorMessage="메세지를 입력해 주세요."
+      />
+    </div>
+  ),
+};
+
 /* ─── Figma Spec (430:4212 / 171:9903 / Section_Input 294:12) ─── */
 
 const INPUT_SPEC_ROWS: Array<{ key: string; value: string }> = [

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-17T06:12:50.047Z",
+  "generatedAt": "2026-06-17T06:44:04.079Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -3509,6 +3509,15 @@
           ]
         },
         {
+          "name": "variant",
+          "optional": true,
+          "type": "\"box\" | \"line\"",
+          "allowedValues": [
+            "box",
+            "line"
+          ]
+        },
+        {
           "name": "slotProps",
           "optional": true,
           "type": "InputSlotProps"
@@ -3536,6 +3545,7 @@
         "label",
         "helper-text",
         "size",
+        "variant",
         "error",
         "error-message",
         "disabled",
@@ -11612,16 +11622,24 @@
       "value": "#777777",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "#8B95A1"
+      }
     },
     {
       "name": "--nds-pagination-arrow-size",
       "value": "24px",
       "group": "nds",
       "brands": [
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "20px"
+      }
     },
     {
       "name": "--nds-pagination-disabled-bg",
@@ -11652,8 +11670,12 @@
       "value": "6px",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
-      ]
+        "cashwalk-biz",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "8px"
+      }
     },
     {
       "name": "--nds-pagination-item-bg",
@@ -11685,11 +11707,21 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
+        "geniet",
+        "runmile"
       ],
       "brandValues": {
-        "geniet": "28px"
+        "geniet": "28px",
+        "runmile": "24px"
       }
+    },
+    {
+      "name": "--nds-pagination-item-min-width",
+      "value": "24px",
+      "group": "nds",
+      "brands": [
+        "runmile"
+      ]
     },
     {
       "name": "--nds-pagination-item-radius",
@@ -11697,15 +11729,20 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "6px"
+      }
     },
     {
       "name": "--nds-pagination-item-weight",
       "value": "500",
       "group": "nds",
       "brands": [
-        "cashwalk-biz"
+        "cashwalk-biz",
+        "runmile"
       ]
     },
     {
@@ -11973,8 +12010,12 @@
       "group": "nds",
       "brands": [
         "cashwalk-biz",
-        "geniet"
-      ]
+        "geniet",
+        "runmile"
+      ],
+      "brandValues": {
+        "runmile": "var(--semantic-text-strong-default)"
+      }
     },
     {
       "name": "--nds-tab-chip-tab-height",
@@ -13374,7 +13415,7 @@
       "brandValues": {
         "cashwalk-biz": "#111111",
         "geniet": "#00A8AC",
-        "runmile": "#007AFF",
+        "runmile": "#221E1F",
         "trost": "#4968FF"
       }
     },
@@ -15226,6 +15267,7 @@
         "label",
         "helper-text",
         "size",
+        "variant",
         "error",
         "error-message",
         "disabled",

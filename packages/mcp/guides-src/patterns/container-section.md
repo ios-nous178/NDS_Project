@@ -25,9 +25,20 @@ base `.nds-container` 는 전 브랜드 공용 디폴트 — **PC(≥1024) max 1
 | Mobile (<768)  | (모디파이어 자동 collapse) | 360 (≈100%) | 16              |
 | PC (≥768)      | `.nds-container--pc`    | 1080        | 24              |
 | PC-Wide        | `.nds-container--wide`  | 1200        | 24              |
+| 런마일 PC      | `.nds-container--runmile` | 1280      | 80              |
 
 - **PC-Wide(`--wide`)** 는 테이블·대시보드 등 가로 정보량이 많은 화면용. 일반 컨텐츠는 **PC(`--pc`, 1080)** 가 기본.
 - h-padding 은 viewport 와 content 폭의 차를 양분한 값 — **h-padding = (viewport − content) / 2**. 모디파이어는 모바일(<768)에서 base 와 동일하게 100% / 좌우 16 으로 자동 collapse 한다.
+
+#### 런마일 Section/Container (Figma 5070:2)
+
+런마일 앱 컨텐츠는 **`.nds-container--runmile`** — 콘텐츠 max **1280** · 좌우 패딩 **PC 80 / Mobile 16**(자동 collapse). 세부 레이아웃 규칙:
+
+- **2열 그리드** = **Main 888 + Side 332 + 컬럼 갭 60**(모바일은 1열 fallback 필수). 888/332/60 은 토큰이 아니라 페이지에서 직접 그린다.
+- **카드 그리드 갭** = PC **24**(3열, Gap/Wide) / **16**(2열, Gap/2XL). 모바일 1열.
+- **Section 타이틀 ↔ 콘텐츠** = **20**(PC, Gap/3XL) / **12**(Mobile, Gap/XL). **Section 간 구분** = **8**(Divider/여백, Gap/MD).
+- **Section 타이틀 비주얼** = **4×22 브랜드 액센트 바(BG/Brand `#FF5B37`) + 22 Bold 타이틀(Text/Strong `#221E1F`)**. (런마일 headline1 은 24 — 22 타이틀은 섹션 헤딩 한정.)
+- **간격 라벨 매핑**(Figma → DS): Spacing/MD=8 · XL=12 · 2XL=16 · 3XL=20 · 4XL=24 — 전부 DS gap/spacing 스케일과 1:1. 임의 간격(13·17·25) 금지.
 
 ```html
 <!-- Trost 앱: Section(세로 블록, BG 교차) 안에 Container(가로 폭 가둠) 1개 -->

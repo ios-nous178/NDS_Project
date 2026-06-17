@@ -783,12 +783,17 @@ export const COMPONENT_ATTRS = {
       "password-toggle",
       "show-count",
       "size",
-      "success-message"
+      "success-message",
+      "variant"
     ],
     "enums": {
       "size": [
         "default",
         "field"
+      ],
+      "variant": [
+        "box",
+        "line"
       ]
     }
   },

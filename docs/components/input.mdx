@@ -363,6 +363,7 @@ div [data-slot="root"]
 | `fullWidth` | `boolean` | `true` | 컴포넌트 너비 |
 | `fieldWidth` | `FieldWidth` | — | 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%). 지정 시 `fullWidth` 보다 우선. 폼 내부 일반 입력은 `md`(304), 모달 메인 입력은 `lg`(400) 권장. |
 | `size` | `InputSize` | `"default"` | 입력 필드 높이 변형 |
+| `variant` | `"box" \| "line"` | — | 외형 변형 — `"box"` / `"line"`(하단 라인). 미지정 시 box, 단 런마일(`[data-brand="runmile"]`)은 line 으로 cascade. 런마일에서 box 가 필요하면 `variant="box"` 로 opt-out. |
 | `slotProps` | `InputSlotProps` | — | 슬롯 프롭 |
 | `wrapperClassName` | `string` | — | 래퍼 클래스 |
 | `wrapperStyle` | `CSSProperties` | — | 래퍼 스타일 |
