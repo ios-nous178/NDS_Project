@@ -34,9 +34,10 @@ export const stepperStyles = `
     min-width: 0;
   }
 
-  :where(.${ST_ITEM_CLASS}:last-child) {
-    flex: 0 0 auto;
-  }
+  /* 모든 step 은 동일 폭(flex:1 1 0) 유지 — connector 의 calc(50% ± 18px) 기하가 "모든 칸이 같은 폭"을
+     전제한다. last-child 를 flex:0 0 auto 로 좁히면 마지막 원이 앞 원에 바짝 붙고(균등간격 깨짐)
+     직전 connector 가 마지막 원을 지나쳐 overshoot 한다. 마지막 칸을 끝에 붙이는 정렬이 필요하면
+     connector left/right 계산까지 함께 바꿔야 하므로 여기서 flex 만 좁히지 말 것. */
 
   :where(.${ST_INDICATOR_CLASS}) {
     display: inline-flex;
