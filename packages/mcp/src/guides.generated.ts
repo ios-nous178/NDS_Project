@@ -677,6 +677,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5043-108",
         "caption": "트로스트 Library · ButtonGuide. 4스타일을 DS 3축(color×variant)으로 매핑 — Primary(검정 #1A1A1A)=color=\"neutral\" variant=\"solid\", Yellow(노랑 #FFF42E, Positive/구독/확인)=color=\"primary\" variant=\"solid\", Secondary(옅은 블루 bg #EDF0FF / text #4968FF Point)=color=\"secondary\" variant=\"solid\", Outlined(흰+gray border / text #333, 취소·닫기)=color=\"neutral\" variant=\"outlined\". 사이즈 Large=lg(48)/Medium=md(44)/Small=sm(40 트로스트 override)/Bottom CTA=lg fullWidth shape=\"pill\"(전용 56 사이즈 없음, 풀너비 lg 근사). disabled bg #D8D8D8. 본문 ## trostStyleMapping 표 참조.",
         "brand": "trost"
+      },
+      {
+        "label": "Runmile Button Guide — Solid / Soft / Outlined × Primary / Neutral (어드민 기준)",
+        "url": "https://www.figma.com/design/MssCIDnDdAjStQXHclPNIc/?node-id=5124-390",
+        "caption": "런마일 Library · ButtonGuide. tone = Primary / Neutral 둘뿐(Secondary 없음 — 검정 솔리드는 Neutral). Solid/Primary(주황)=color=\"primary\" variant=\"solid\", Solid/Neutral(검정 #221E1F + 흰 텍스트)=color=\"neutral\" variant=\"solid\", Soft/Neutral(회색 옅은 #F2F4F6 + 어두운 텍스트)=color=\"neutral\" variant=\"soft\", Outlined/Primary(주황 라인)=color=\"primary\" variant=\"outlined\", Outlined/Neutral(gray 라인 + gray800)=color=\"neutral\" variant=\"outlined\". 5 사이즈 Mini=mini(40)/S=sm(44)/M=md(48)/L=lg(52)/XL=xl(56). 본문 ## runmileStyleMapping 표 참조.",
+        "brand": "runmile"
       }
     ],
     "usagePolicy": {
@@ -717,6 +723,19 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "hover": "primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/neutral=var(--semantic-bg-surface-subtle)"
     },
     "matrixOverrides": {
+      "runmile": {
+        "sizeMatrix": {
+          "xl": "height 56 (base 52 → 56) / px 16 / 16·24 bold / icon 20 / gap 8",
+          "lg": "height 52 (base 48 → 52) / px 16 / 16·24 bold / icon 20 / gap 8",
+          "md": "height 48 (base 44 → 48) / px 24 / 15·22 bold / icon 20 / gap 8",
+          "sm": "height 44 (base 42 → 44) / px 16 / 14·20 bold / icon 20 / gap 8",
+          "mini": "height 40 (base 32 → 40) / px 12 / 13·18 bold / icon 16 / gap 4"
+        },
+        "dimensions": {
+          "tone": "Primary / Neutral 둘뿐 (Secondary 없음). 검정 솔리드 = color=neutral variant=solid (#221E1F + 흰 텍스트). 회색 옅은 보조 = color=neutral variant=soft. color=secondary 는 dev 경고 + validator brand-denied-button-color 가 잡음.",
+          "sizes": "5 size — Mini 40 / S 44 / M 48 / L 52 / XL 56 (XS·field 는 base 유지)."
+        }
+      },
       "cashwalk-biz": {
         "sizeMatrix": {
           "sm": "height 40 (base 42 → 40) / 그 외 px/py/typography 는 base 동일",
@@ -733,13 +752,13 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         }
       }
     },
-    "summary": "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).\n\n### 트로스트 스타일 → DS color × variant 매핑 (Figma 5043:108)\n\n트로스트 ButtonGuide 는 **4스타일**로 정의돼 있지만, DS Button 은 `color={primary,secondary,neutral} × variant{solid,soft,outlined}` 3축이다. 트로스트 스타일을 그대로 박지 말고 아래 매핑으로 옮긴다 — 색은 트로스트 brand 토큰이 슬롯에 흘려주므로 `data-brand=\"trost\"` 컨텍스트만 있으면 된다(색 하드코딩 금지).\n\n| 트로스트 스타일 | 용도 | DS props | 색 (트로스트 토큰) |\n| --- | --- | --- | --- |\n| **Primary** | 메인 CTA · 한 화면 1개 | `color=\"neutral\" variant=\"solid\"` | 검정 #1A1A1A (buttonBg.neutral 신설) + 흰 텍스트 |\n| **Yellow** | Positive · 구독 · 확인 | `color=\"primary\" variant=\"solid\"` | 노랑 #FFF42E (트로스트 brand) |\n| **Secondary** | 보조 액션 | `color=\"secondary\" variant=\"solid\"` | bg #EDF0FF / text #4968FF (Point) |\n| **Outlined** | 취소 · 닫기 | `color=\"neutral\" variant=\"outlined\"` | 흰 배경 + gray border / text #333 |\n\n**사이즈**: Large=`size=\"lg\"`(48) / Medium=`size=\"md\"`(44) / Small=`size=\"sm\"`(40 — 트로스트 override, base sm 42 → 40) / **Bottom CTA = `size=\"lg\" fullWidth shape=\"pill\"`**. 트로스트 Bottom CTA 의 56px 전용 사이즈는 두지 않기로 결정 — 풀너비 lg(48)로 근사한다. disabled 배경은 #D8D8D8.\n\n**주의** — 트로스트 \"Primary\"(검정)는 DS `color=\"primary\"`(=노랑)가 **아니다**. Primary=`color=\"neutral\" variant=\"solid\"`, Yellow 가 `color=\"primary\"` 다. 직관과 반대이므로 매핑 표를 그대로 따를 것. DO: 한 화면에 Primary(검정) 1개 / 확인·취소는 Primary + Outlined 페어. DON'T: Primary 검정 버튼 2개 이상, 서로 다른 사이즈 가로 병치, 한 줄 넘는 긴 라벨.",
+    "summary": "1차/2차 CTA. color × variant × size 매트릭스로 톤 결정 (Figma Library node 171:8385 기준).\n\n### 트로스트 스타일 → DS color × variant 매핑 (Figma 5043:108)\n\n트로스트 ButtonGuide 는 **4스타일**로 정의돼 있지만, DS Button 은 `color={primary,secondary,neutral} × variant{solid,soft,outlined}` 3축이다. 트로스트 스타일을 그대로 박지 말고 아래 매핑으로 옮긴다 — 색은 트로스트 brand 토큰이 슬롯에 흘려주므로 `data-brand=\"trost\"` 컨텍스트만 있으면 된다(색 하드코딩 금지).\n\n| 트로스트 스타일 | 용도 | DS props | 색 (트로스트 토큰) |\n| --- | --- | --- | --- |\n| **Primary** | 메인 CTA · 한 화면 1개 | `color=\"neutral\" variant=\"solid\"` | 검정 #1A1A1A (buttonBg.neutral 신설) + 흰 텍스트 |\n| **Yellow** | Positive · 구독 · 확인 | `color=\"primary\" variant=\"solid\"` | 노랑 #FFF42E (트로스트 brand) |\n| **Secondary** | 보조 액션 | `color=\"secondary\" variant=\"solid\"` | bg #EDF0FF / text #4968FF (Point) |\n| **Outlined** | 취소 · 닫기 | `color=\"neutral\" variant=\"outlined\"` | 흰 배경 + gray border / text #333 |\n\n**사이즈**: Large=`size=\"lg\"`(48) / Medium=`size=\"md\"`(44) / Small=`size=\"sm\"`(40 — 트로스트 override, base sm 42 → 40) / **Bottom CTA = `size=\"lg\" fullWidth shape=\"pill\"`**. 트로스트 Bottom CTA 의 56px 전용 사이즈는 두지 않기로 결정 — 풀너비 lg(48)로 근사한다. disabled 배경은 #D8D8D8.\n\n**주의** — 트로스트 \"Primary\"(검정)는 DS `color=\"primary\"`(=노랑)가 **아니다**. Primary=`color=\"neutral\" variant=\"solid\"`, Yellow 가 `color=\"primary\"` 다. 직관과 반대이므로 매핑 표를 그대로 따를 것. DO: 한 화면에 Primary(검정) 1개 / 확인·취소는 Primary + Outlined 페어. DON'T: Primary 검정 버튼 2개 이상, 서로 다른 사이즈 가로 병치, 한 줄 넘는 긴 라벨.\n\n### 런마일 스타일 → DS color × variant 매핑 (Figma 5124:390)\n\n런마일 ButtonGuide 는 **3스타일(Solid / Soft / Outlined) × 2시멘틱(Primary / Neutral)** 로 정의 — **Secondary tone 없음**. 색은 런마일 brand 토큰이 슬롯에 흘려주므로 `data-brand=\"runmile\"` 컨텍스트만 있으면 된다(색 하드코딩 금지).\n\n| 런마일 스타일 | 용도 | DS props | 색 (런마일 토큰) |\n| --- | --- | --- | --- |\n| **Solid/Primary** | 메인 CTA · 한 화면 1개 | `color=\"primary\" variant=\"solid\"` | 주황 #FF5B37 + 흰 텍스트 (hover #FF805C) |\n| **Solid/Neutral** | 검정 솔리드 · 강한 위계 | `color=\"neutral\" variant=\"solid\"` | 검정 #221E1F + 흰 텍스트 (hover gray900) |\n| **Soft/Neutral** | 회색 옅은 BG · 가벼운 보조 | `color=\"neutral\" variant=\"soft\"` | gray200 #F2F4F6 + 어두운 텍스트 |\n| **Outlined/Primary** | 밝은 배경 위 보조 | `color=\"primary\" variant=\"outlined\"` | 흰 + 주황 보더/텍스트 |\n| **Outlined/Neutral** | 취소 · 닫기 | `color=\"neutral\" variant=\"outlined\"` | 흰 + gray400 보더 + gray800 텍스트 |\n\n**사이즈** (5종): Mini=`size=\"mini\"`(40) / S=`size=\"sm\"`(44) / M=`size=\"md\"`(48) / L=`size=\"lg\"`(52) / XL=`size=\"xl\"`(56). base 와 다른 런마일 brand 높이 override(`components.button.height*`). 라벨 길이 가이드: Mini 4자 / S 8자 / M 12자 이하.\n\n**주의** — 런마일은 **Secondary tone 이 없다**. 검정 솔리드를 \"Secondary\"로 부르지 말 것 — `color=\"neutral\" variant=\"solid\"` 이 검정 CTA 다(캐포비와 동일 정책). `color=\"secondary\"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡는다. 또 \"Solid Assistive\"(검정을 약한 보조로) 패턴 금지 — 가벼운 보조는 `variant=\"soft\"`(회색)로.",
     "pitfalls": [
       "**라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**",
       "**HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.",
       "**React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.",
-      "color='neutral' + variant='solid' 은 **brand 별로 다름** — base/NudgeEAP·Trost·Geniet·Runmile 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)는 neutral solid = #111 검정 CTA(Figma Neutral tone)로 정당** — 캐포비 한정 예외(글자는 fill 명도 대비 자동: 검정 fill→흰글자).",
-      "**캐포비(cashwalk-biz)는 Secondary tone 이 없음** — Figma ButtonGuide(3098:1032) tone = Primary + Neutral 둘뿐. 캐포비 검정/회색 CTA 는 반드시 `color=\"neutral\"` (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). `color=\"secondary\"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡음. (secondary 는 다른 브랜드 전용 tone)",
+      "color='neutral' + variant='solid' 은 **brand 별로 다름** — base/NudgeEAP·Trost·Geniet 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)·런마일(runmile)은 neutral solid = 검정 CTA(Figma Neutral tone)로 정당** — 두 브랜드는 `cta.blackCta=\"neutral\"` 선언으로 면제(글자는 fill 명도 대비 자동: 검정 fill→흰글자, 캐포비 #111 / 런마일 #221E1F).",
+      "**캐포비(cashwalk-biz)·런마일(runmile)은 Secondary tone 이 없음** — Figma ButtonGuide tone = Primary + Neutral 둘뿐(캐포비 3098:1032 · 런마일 5124:390). 검정/회색 CTA 는 반드시 `color=\"neutral\"` (solid=검정 / soft=회색 / outlined=라인). `color=\"secondary\"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡음. (secondary 는 다른 브랜드 전용 tone)",
       "Geniet 브랜드에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
       "Geniet Solid/Secondary 는 옅은 mint subtle(#F2FAFA) 배경 + brand mint(#00A8AC) 텍스트 — 다른 브랜드 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)",
       "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
@@ -810,6 +829,12 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
         "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5123-136",
         "caption": "트로스트 Container card. platform(pc=padding28·r16·title20·subtitle14 / mobile=padding20·r14·title17·subtitle13) + elevation(outline=보더 / elevated=shadow E2 + 보더 제거) + 헤더 행(리딩 아이콘 24px + 10px gap + title/subtitle 정보 컬럼, gap 2px) + 헤더↔본문 divider. point(코발트) 액센트 아이콘. 컴포넌트는 opt-in(platform/elevation/icon/showDivider) — 미지정 시 현행 렌더 그대로.",
         "brand": "trost"
+      },
+      {
+        "label": "Runmile Card Guide — 이벤트 카드 (앱 레벨 composition)",
+        "url": "https://www.figma.com/design/MssCIDnDdAjStQXHclPNIc/?node-id=5117-130",
+        "caption": "런마일 CardGuide. 표준 이벤트 카드(세로형 PC 280×432 / MO 159×343) = DS 프리미티브 composition (새 variant 아님). 썸네일(bg gray200 · radius 12 · 1:1 정사각) → 타이틀(18/15 Bold #221E1F · 2줄) → 메타 칩(=Badge · radius 4 · 12 Bold) → 날짜(calendar icon + 14/12 Medium gray800) · 주최(gray600) → 태그 칩(=Chip · 13 Medium gray900 · 흰 bg gray300 보더 · 최대 3). 3 ComponentSet: 표준 Card(5115:126) · competition card(5067:1828 가로형 622×138/296×138) · heart(5067:1819 좋아요 토글). 본문 ## runmile 섹션 참조.",
+        "brand": "runmile"
       }
     ],
     "usagePolicy": {
@@ -871,6 +896,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "trostElevation": "트로스트 elevation — outline=현행(보더 1px, shadow 없음, 기본값) / elevated=box-shadow E2(shadow.e2) + 보더 제거. 한 화면 한 elevation 유지.",
       "trostHeaderRow": "트로스트 헤더 행 — 리딩 아이콘(24px, point/코발트 액센트) + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px). icon prop 지정 시 활성. showHeader 로 아이콘 없이 컬럼만 묶기도 가능.",
       "trostBodyDivider": "트로스트 헤더/텍스트 ↔ 본문(children) 사이 hairline — showDivider prop. cta/footerText 위 divider(divider prop) 와 별개. 둘 다 1px cv.borderRole.subtle.",
+      "runmileEventCard": "런마일 이벤트 카드 (Figma 5117:130) — 앱 레벨 composition, DS 새 variant 아님. 세로형 Card: PC 280×432 / MO 159×343. 썸네일 bg gray200 · radius 12(LG) · 1:1 정사각(PC 280×280 / MO 159×159). 슬롯: 썸네일 → 메타칩(Badge) → 타이틀 → 날짜·주최 → 태그칩(Chip). DS 매핑 = Card(Container) + Badge(메타칩) + Chip(태그).",
+      "runmileEventTypo": "런마일 이벤트 카드 타이포 — 타이틀 PC 18 / MO 15 Bold(#221E1F · 최대 2줄) · 날짜 PC 14 / MO 12 Medium gray800(+ calendar icon) · 주최 Medium gray600 · 메타칩 12/11 Bold · 태그칩 13 Medium gray900. 색·radius 세부는 Badge/Chip 가이드 SSOT 참조.",
+      "runmileComponentSets": "런마일 Card 페이지 3 ComponentSet — ① 표준 Card(5115:126, 세로형) ② competition card(5067:1828, 대회 전용 가로형 PC 622×138 / MO 296×138 · date 인스턴스 + 상태 Badge + 대회명 16/14 Bold + 위치/날짜 + 내장 heart) ③ heart(5067:1819, 좋아요 토글 PC 30 / MO 28). competition card·heart 는 도메인 전용 — 표준 Card 와 별개 유지.",
       "cardGapMobile": "16px",
       "cardGapWebCMS": "24px",
       "elementGapTitleMeta": "4px",
@@ -907,7 +935,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "카드 장식 라인/accent 바 금지 — 상단 컬러 라인(border-top accent), 좌측 accent 보더, ::before 컬러 바 등으로 카드를 장식하지 않는다. 카드가 가질 수 있는 선은 outlined variant 의 중립 1px 전체 보더와 옵션 footer/divider hairline(`border-top 1px subtle`) 뿐 — 컬러 accent 선은 DS Card 에 없다. 강조는 색이 아니라 Chip/Badge·텍스트 위계로, 영역 구분은 spacing/Divider 로. (`get_guide({ topic: 'pattern:visual-antipatterns' })` 표면 그룹 참고.)",
       "그리드 카드 간격 임의 혼합(8/12/16/20px) 금지. Auto Layout: Mobile 16px, Web·CMS 24px.",
       "Card.Header / Card.Body / Card.Footer 는 styles.css 에 자체 padding 보유. 외곽에 padding 또 주면 이중 패딩.",
-      "Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경."
+      "Card Overuse — 단순 텍스트+상태+날짜 목록(상담 내역·예약·알림)을 Card 로 감싸는 패턴. 정보 밀도 ↓, List Row 로 변경.",
+      "런마일 이벤트 카드는 Card 의 새 variant 가 아님 — Card(Container) + Badge(메타 칩) + Chip(태그)을 조합한 앱 레벨 composition. 새 variant/컴포넌트를 만들지 말고 프리미티브를 조합한다. 대회 정보는 표준 Card 가 아니라 competition card(가로형 · 별도 ComponentSet)를 쓴다."
     ],
     "recommended": [
       "List variant — 이미지 없이 Title + Meta. 분류된 항목을 좁은 간격으로 노출, 시각 가중치 최저. <Card.Root variant='list'><Card.Title>…</Card.Title><Card.Metadata>…</Card.Metadata></Card.Root>",
@@ -919,7 +948,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.",
       "Thumb 폴백 — 이미지가 없을 때 Brand Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.",
       "지니어트 배치 매핑 (Geniet CardGuide 3056-125) — 음식 검색·식단 리스트(Mobile) → Horizontal(328·r8) / 홈 인기·추천 가로스크롤 → Vertical(240×280·r12) / 카테고리 그리드 2·3열 → Grid(160×210·r8) / PC 메인·모달 → Container(440·r16) / Hero 강조 → Container + shadow(E2). Mobile 은 border, PC Container 만 shadow — 한 화면 한 elevation 유지(위 Figma 권위 룰).",
-      "Trost Container card (Figma 5123:136) — 트로스트 PC/모바일 큰 카드는 `platform` + `elevation` + `icon`/`showDivider` 로 표현. PC: `<Card platform='pc' elevation='outline' icon={<Icon/>} title=… subtitle=… showDivider>본문</Card>` (padding 28·r16·title 20·subtitle 14). Hero/모달 강조는 `elevation='elevated'`(shadow E2 + 보더 제거). Mobile: `<Card platform='mobile' elevation='outline' …>` (padding 20·r14·title 17·subtitle 13, border 권장). 리딩 아이콘은 point/코발트(cv.iconRole.point) 액센트. HTML: `<nds-card platform='pc' elevation='elevated'><nds-card-header-row><nds-card-header-icon>…</nds-card-header-icon><nds-card-header-info><h3 class='nds-card__title'>…</h3><p class='nds-card__description'>…</p></nds-card-header-info></nds-card-header-row><nds-card-divider></nds-card-divider><nds-card-body>본문</nds-card-body></nds-card>`."
+      "Trost Container card (Figma 5123:136) — 트로스트 PC/모바일 큰 카드는 `platform` + `elevation` + `icon`/`showDivider` 로 표현. PC: `<Card platform='pc' elevation='outline' icon={<Icon/>} title=… subtitle=… showDivider>본문</Card>` (padding 28·r16·title 20·subtitle 14). Hero/모달 강조는 `elevation='elevated'`(shadow E2 + 보더 제거). Mobile: `<Card platform='mobile' elevation='outline' …>` (padding 20·r14·title 17·subtitle 13, border 권장). 리딩 아이콘은 point/코발트(cv.iconRole.point) 액센트. HTML: `<nds-card platform='pc' elevation='elevated'><nds-card-header-row><nds-card-header-icon>…</nds-card-header-icon><nds-card-header-info><h3 class='nds-card__title'>…</h3><p class='nds-card__description'>…</p></nds-card-header-info></nds-card-header-row><nds-card-divider></nds-card-divider><nds-card-body>본문</nds-card-body></nds-card>`.",
+      "런마일 이벤트 카드 (Figma 5117:130) — 표준 Card 위에 도메인 정보를 얹는 **앱 레벨 composition**(새 variant 아님). 세로형 PC 280×432 / MO 159×343, 썸네일 1:1 정사각(radius 12). 구성: 썸네일 → 메타 칩(Badge, 거리·D-day) → 타이틀(18/15 Bold, 2줄) → 날짜(calendar icon + gray800)·주최(gray600) → 태그 칩(Chip, 최대 3). 예: `<Card variant='cover' clickable><Card.Thumbnail aspect='1:1'><img src='…' alt='' /></Card.Thumbnail><Card.Chips><Badge color='brand' variant='soft'>5km 외 2개</Badge><Badge variant='outlined'>접수마감 D-60</Badge></Card.Chips><Card.Title>2026 댕댕이레이스</Card.Title><Card.Metadata>📅 25.12.30~25.12.31 · (주)러닝포인트</Card.Metadata><Card.Chips><Chip>#강아지</Chip><Chip>#댕댕런</Chip></Card.Chips></Card>`. 색·radius 세부(태그칩 등)는 Badge/Chip 가이드 SSOT. 대회 정보는 표준 Card 가 아니라 competition card(가로형) 사용."
     ],
     "accessibility": [
       "clickable Card 는 <Card.Root clickable onClick> — 키보드 포커스/Enter 자동. raw <div onClick> 대체 금지.",

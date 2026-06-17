@@ -5,6 +5,10 @@ references:
     url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5043-108
     caption: '트로스트 Library · ButtonGuide. 4스타일을 DS 3축(color×variant)으로 매핑 — Primary(검정 #1A1A1A)=color="neutral" variant="solid", Yellow(노랑 #FFF42E, Positive/구독/확인)=color="primary" variant="solid", Secondary(옅은 블루 bg #EDF0FF / text #4968FF Point)=color="secondary" variant="solid", Outlined(흰+gray border / text #333, 취소·닫기)=color="neutral" variant="outlined". 사이즈 Large=lg(48)/Medium=md(44)/Small=sm(40 트로스트 override)/Bottom CTA=lg fullWidth shape="pill"(전용 56 사이즈 없음, 풀너비 lg 근사). disabled bg #D8D8D8. 본문 ## trostStyleMapping 표 참조.'
     brand: trost
+  - label: Runmile Button Guide — Solid / Soft / Outlined × Primary / Neutral (어드민 기준)
+    url: https://www.figma.com/design/MssCIDnDdAjStQXHclPNIc/?node-id=5124-390
+    caption: '런마일 Library · ButtonGuide. tone = Primary / Neutral 둘뿐(Secondary 없음 — 검정 솔리드는 Neutral). Solid/Primary(주황)=color="primary" variant="solid", Solid/Neutral(검정 #221E1F + 흰 텍스트)=color="neutral" variant="solid", Soft/Neutral(회색 옅은 #F2F4F6 + 어두운 텍스트)=color="neutral" variant="soft", Outlined/Primary(주황 라인)=color="primary" variant="outlined", Outlined/Neutral(gray 라인 + gray800)=color="neutral" variant="outlined". 5 사이즈 Mini=mini(40)/S=sm(44)/M=md(48)/L=lg(52)/XL=xl(56). 본문 ## runmileStyleMapping 표 참조.'
+    brand: runmile
 usagePolicy:
   useFor:
     - 화면의 대표 CTA, 명확한 실행 액션, 중요한 폼 제출
@@ -36,6 +40,16 @@ stateMatrix:
   outlined_disabled: "흰 배경 + 보더 #9CA2AE + 텍스트 #9CA2AE."
   hover: primary=var(--semantic-fill-brand-hover) / secondary=var(--semantic-bg-brand-subtle) / outlined/neutral=var(--semantic-bg-surface-subtle)
 matrixOverrides:
+  runmile:
+    sizeMatrix:
+      xl: height 56 (base 52 → 56) / px 16 / 16·24 bold / icon 20 / gap 8
+      lg: height 52 (base 48 → 52) / px 16 / 16·24 bold / icon 20 / gap 8
+      md: height 48 (base 44 → 48) / px 24 / 15·22 bold / icon 20 / gap 8
+      sm: height 44 (base 42 → 44) / px 16 / 14·20 bold / icon 20 / gap 8
+      mini: height 40 (base 32 → 40) / px 12 / 13·18 bold / icon 16 / gap 4
+    dimensions:
+      tone: "Primary / Neutral 둘뿐 (Secondary 없음). 검정 솔리드 = color=neutral variant=solid (#221E1F + 흰 텍스트). 회색 옅은 보조 = color=neutral variant=soft. color=secondary 는 dev 경고 + validator brand-denied-button-color 가 잡음."
+      sizes: "5 size — Mini 40 / S 44 / M 48 / L 52 / XL 56 (XS·field 는 base 유지)."
   cashwalk-biz:
     sizeMatrix:
       sm: height 40 (base 42 → 40) / 그 외 px/py/typography 는 base 동일
@@ -68,13 +82,29 @@ matrixOverrides:
 
 **주의** — 트로스트 "Primary"(검정)는 DS `color="primary"`(=노랑)가 **아니다**. Primary=`color="neutral" variant="solid"`, Yellow 가 `color="primary"` 다. 직관과 반대이므로 매핑 표를 그대로 따를 것. DO: 한 화면에 Primary(검정) 1개 / 확인·취소는 Primary + Outlined 페어. DON'T: Primary 검정 버튼 2개 이상, 서로 다른 사이즈 가로 병치, 한 줄 넘는 긴 라벨.
 
+### 런마일 스타일 → DS color × variant 매핑 (Figma 5124:390)
+
+런마일 ButtonGuide 는 **3스타일(Solid / Soft / Outlined) × 2시멘틱(Primary / Neutral)** 로 정의 — **Secondary tone 없음**. 색은 런마일 brand 토큰이 슬롯에 흘려주므로 `data-brand="runmile"` 컨텍스트만 있으면 된다(색 하드코딩 금지).
+
+| 런마일 스타일 | 용도 | DS props | 색 (런마일 토큰) |
+| --- | --- | --- | --- |
+| **Solid/Primary** | 메인 CTA · 한 화면 1개 | `color="primary" variant="solid"` | 주황 #FF5B37 + 흰 텍스트 (hover #FF805C) |
+| **Solid/Neutral** | 검정 솔리드 · 강한 위계 | `color="neutral" variant="solid"` | 검정 #221E1F + 흰 텍스트 (hover gray900) |
+| **Soft/Neutral** | 회색 옅은 BG · 가벼운 보조 | `color="neutral" variant="soft"` | gray200 #F2F4F6 + 어두운 텍스트 |
+| **Outlined/Primary** | 밝은 배경 위 보조 | `color="primary" variant="outlined"` | 흰 + 주황 보더/텍스트 |
+| **Outlined/Neutral** | 취소 · 닫기 | `color="neutral" variant="outlined"` | 흰 + gray400 보더 + gray800 텍스트 |
+
+**사이즈** (5종): Mini=`size="mini"`(40) / S=`size="sm"`(44) / M=`size="md"`(48) / L=`size="lg"`(52) / XL=`size="xl"`(56). base 와 다른 런마일 brand 높이 override(`components.button.height*`). 라벨 길이 가이드: Mini 4자 / S 8자 / M 12자 이하.
+
+**주의** — 런마일은 **Secondary tone 이 없다**. 검정 솔리드를 "Secondary"로 부르지 말 것 — `color="neutral" variant="solid"` 이 검정 CTA 다(캐포비와 동일 정책). `color="secondary"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡는다. 또 "Solid Assistive"(검정을 약한 보조로) 패턴 금지 — 가벼운 보조는 `variant="soft"`(회색)로.
+
 ## pitfalls
 
 - **라벨을 JS 로 갈아끼우지 말 것 (HTML 한정 함정)** — `nds-button` 은 실제 `<button>` 을 light DOM 에 렌더하므로 `el.textContent = '...'` / `el.innerHTML = '...'` 로 라벨을 바꾸면 컴포넌트가 렌더한 `<button>` 이 통째로 지워지고, host(display:contents)에 맨 텍스트만 남아 스타일·포인터(cursor)·클릭 동작이 전부 사라진다(회귀: 위저드 하단 '다음 단계'→'심사 신청' 라벨 교체로 버튼이 무스타일 텍스트가 됨). 단계별로 라벨이 달라야 하면 (1) 라벨 고정 nds-button 을 단계 수만큼 두고 show/hide 로 전환하거나 (2) host 자체를 새 nds-button 으로 교체하라. **라벨 텍스트만 노드 변이(textContent/innerHTML) 금지.**
 - **HTML 한정** — `nds-button` 은 `leftIcon`/`rightIcon` slot **미구현** (nds-button.ts L20-21). `<nds-button><span slot='leftIcon'>...</span>텍스트</nds-button>` 패턴 금지 (slot 은 무시되고 span 이 children 으로 흘러 들어감). 아이콘이 필요하면 children 안에 SVG 와 텍스트를 직접 나열: `<nds-button><svg>...</svg>텍스트</nds-button>`. **아이콘↔텍스트 간격은 컴포넌트가 `.nds-button__label` 의 gap 으로 자동 적용**하므로 margin-right/padding 으로 직접 띄우지 말 것. JS 로 빈 span 에 innerHTML 인젝션 우회 절대 금지.
 - **React 한정** — `<Button leftIcon={<svg/>}>...</Button>` / `rightIcon={<svg/>}` 사용. 빈 React Element 를 넘기고 ref 로 innerHTML 박는 패턴 금지.
-- color='neutral' + variant='solid' 은 **brand 별로 다름** — base/NudgeEAP·Trost·Geniet·Runmile 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)는 neutral solid = #111 검정 CTA(Figma Neutral tone)로 정당** — 캐포비 한정 예외(글자는 fill 명도 대비 자동: 검정 fill→흰글자).
-- **캐포비(cashwalk-biz)는 Secondary tone 이 없음** — Figma ButtonGuide(3098:1032) tone = Primary + Neutral 둘뿐. 캐포비 검정/회색 CTA 는 반드시 `color="neutral"` (solid=검정 #111 / soft=회색 #F5F5F5 / outlined=라인). `color="secondary"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡음. (secondary 는 다른 브랜드 전용 tone)
+- color='neutral' + variant='solid' 은 **brand 별로 다름** — base/NudgeEAP·Trost·Geniet 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)·런마일(runmile)은 neutral solid = 검정 CTA(Figma Neutral tone)로 정당** — 두 브랜드는 `cta.blackCta="neutral"` 선언으로 면제(글자는 fill 명도 대비 자동: 검정 fill→흰글자, 캐포비 #111 / 런마일 #221E1F).
+- **캐포비(cashwalk-biz)·런마일(runmile)은 Secondary tone 이 없음** — Figma ButtonGuide tone = Primary + Neutral 둘뿐(캐포비 3098:1032 · 런마일 5124:390). 검정/회색 CTA 는 반드시 `color="neutral"` (solid=검정 / soft=회색 / outlined=라인). `color="secondary"` 사용 시 dev console 경고 + validator `brand-denied-button-color` 가 잡음. (secondary 는 다른 브랜드 전용 tone)
 - Geniet 브랜드에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.
 - Geniet Solid/Secondary 는 옅은 mint subtle(#F2FAFA) 배경 + brand mint(#00A8AC) 텍스트 — 다른 브랜드 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)
 - primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.

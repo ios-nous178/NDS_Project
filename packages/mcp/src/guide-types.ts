@@ -70,7 +70,7 @@ export interface ComponentGuide {
    *  dimensions 는 base 에 없는 spec 을 brand 별로 신설할 때 사용 (예: Modal Cashwalk-biz 의 admin desktop 변형 width/radius/padding/typography). */
   matrixOverrides?: Partial<
     Record<
-      "trost" | "geniet" | "cashwalk-biz" | "nudge-eap",
+      "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile",
       {
         sizeMatrix?: Partial<Record<string, string>>;
         stateMatrix?: Partial<Record<string, string>>;
@@ -83,16 +83,16 @@ export interface ComponentGuide {
    *  예: BrandHeader.activeKey = { trost: ['home','counsel',...], geniet: ['home','community',...] }.
    *  brand 가 지정된 get_guide 호출 시 router 가 해당 brand 값만 응답에 fold. */
   validPropValues?: Partial<
-    Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap", Record<string, string[]>>
+    Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile", Record<string, string[]>>
   >;
   /** brand 별 필요 파일 manifest — Pattern 'Brand-aware Base'.
    *  예: { trost: ['trost-logo.svg'], geniet: ['geniet-logo-pc.webp', ...] }. 호스트 앱이 public/ 에 배치해야 할 자산. */
-  assetManifest?: Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap", string[]>>;
+  assetManifest?: Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile", string[]>>;
   /** brand 별 강제 prop 값 — Pattern 'Brand-aware Base'.
    *  예: { footerTone: { trost: 'dark', '*': 'light' } } — 키 '*' 는 명시 안 된 brand 의 default. */
   forcedProps?: Record<
     string,
-    Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "*", string>>
+    Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile" | "*", string>>
   >;
   /** 출처 Figma 노드 URL (Library 파일) */
   figmaNodeUrl?: string;

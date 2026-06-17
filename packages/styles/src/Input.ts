@@ -68,6 +68,35 @@ export const inputStyles = `
       background-color ${transition.default};
   }
 
+  /* ─── line variant (variant="line" · 런마일 기본) — 하단 라인(언더라인) 인풋 ───
+   * Figma 런마일 Text Input (5095:200): 4면 box 가 아니라 하단 1px 라인만 · radius 0 · 좌우 패딩 0 · h40.
+   * 셀렉터 = 명시 variant="line"  OR  런마일 기본(box 명시 제외 — [data-brand="runmile"] 구조 cascade).
+   * 색은 모두 cv.input.* / --nds-input-* 토큰만 — 브랜드 색 하드코딩 없음 (CLAUDE.md 구조 예외).
+   * 전부 :where() 로 0-특정성 유지 → 뒤따르는 [data-focused]/[data-error] 의 border-color 가
+   *   source-order 로 하단 보더색을 덮는다(포커스=검정·에러=빨강). 이 블록은 그래서 그 룰들 "앞"에 둔다. */
+  :where(.${INPUT_ROOT_CLASS}[data-variant="line"]) :where(.${INPUT_WRAPPER_CLASS}),
+  :where([data-brand="runmile"] .${INPUT_ROOT_CLASS}:not([data-variant="box"])) :where(.${INPUT_WRAPPER_CLASS}) {
+    border: none;
+    border-bottom: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+    min-height: var(--nds-input-height, 40px);
+  }
+
+  /* label↔field · field↔helper = 6 (Spacing/SM). InputRoot 가 --nds-input-*-gap 을 inline 으로
+   * 박아 var 폴백을 못 쓰므로(인라인 > 스타일시트) margin 을 직접 지정해 우회한다. */
+  :where(.${INPUT_ROOT_CLASS}[data-variant="line"]) :where(.${INPUT_LABEL_CLASS}) + :where(.${INPUT_WRAPPER_CLASS}),
+  :where([data-brand="runmile"] .${INPUT_ROOT_CLASS}:not([data-variant="box"])) :where(.${INPUT_LABEL_CLASS}) + :where(.${INPUT_WRAPPER_CLASS}) {
+    margin-top: ${spacing[6]}px;
+  }
+  :where(.${INPUT_ROOT_CLASS}[data-variant="line"]) :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_CLASS}),
+  :where(.${INPUT_ROOT_CLASS}[data-variant="line"]) :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_GROUP_CLASS}),
+  :where([data-brand="runmile"] .${INPUT_ROOT_CLASS}:not([data-variant="box"])) :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_CLASS}),
+  :where([data-brand="runmile"] .${INPUT_ROOT_CLASS}:not([data-variant="box"])) :where(.${INPUT_WRAPPER_CLASS}) + :where(.${INPUT_HELPER_GROUP_CLASS}) {
+    margin-top: ${spacing[6]}px;
+  }
+
   :where(.${INPUT_ROOT_CLASS}[data-disabled="true"]) {
     --nds-input-helper-gap: ${spacing[12]}px;
   }

@@ -84,6 +84,7 @@ export class NdsInput extends NdsElement {
       "label",
       "helper-text",
       "size",
+      "variant",
       "error",
       "error-message",
       "disabled",
@@ -206,6 +207,11 @@ export class NdsInput extends NdsElement {
 
     const root = this._root;
     root.dataset.size = size;
+    // variant 는 명시(box|line)일 때만 data-variant 반영 — 미지정 시 속성을 비워 런마일
+    // [data-brand] 기본(line) cascade 가 살아 있게 한다 (react 미러: data-variant={variant}).
+    const variant = this.getAttribute("variant");
+    if (variant === "box" || variant === "line") root.dataset.variant = variant;
+    else delete root.dataset.variant;
     root.dataset.disabled = String(disabled);
     root.dataset.error = String(error);
     root.style.setProperty(
