@@ -83,7 +83,7 @@ src/                             ← 생성물 (직접 수정 금지)
 - **올바른 영어 단어**. `alarm`(❌`alram`), `image`(❌`img`), `delete`(검색 클리어는 `search-delete` 로 통일).
 - **예외 = 의도된 제품/기능명**: 글리프와 무관하게 앱 기능명을 쓰는 경우는 허용하되 **반드시 주석/가이드에 사유 기록**. (예: `geniet-cashhomt` = "캐시홈트(home-training)" 운동 기능 — 아령 글리프지만 기능명 보존.)
 
-> 브랜드 간 정합 이력: alram→alarm · shoe-fill→shoe-solid · img→image · circle-*→*-circle · 방향 도형명 정합 (`.changeset/icon-naming-consistency.md`). 에셋 id 규칙은 `@nudge-design/assets` README 참조.
+> 브랜드 간 정합 이력: alram→alarm · shoe-fill→shoe-solid · img→image · circle-*→*-circle · 방향 도형명 정합 · runmile-questionmark→runmile-question-mark (복합어 하이픈) (`.changeset/icon-naming-consistency.md`). 에셋 id 규칙은 `@nudge-design/assets` README 참조.
 
 ## 아이콘 추가
 
