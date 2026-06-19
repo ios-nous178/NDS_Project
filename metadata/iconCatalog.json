@@ -9932,6 +9932,11 @@
       "brand": "runmile"
     },
     {
+      "name": "RunmileChatColorIcon",
+      "kebab": "runmile-chat-color",
+      "brand": "runmile"
+    },
+    {
       "name": "RunmileChatsActiveIcon",
       "kebab": "runmile-chats-active",
       "brand": "runmile"
@@ -10112,6 +10117,11 @@
       "brand": "runmile"
     },
     {
+      "name": "RunmileLocationIcon",
+      "kebab": "runmile-location",
+      "brand": "runmile"
+    },
+    {
       "name": "RunmileLoginIcon",
       "kebab": "runmile-login",
       "brand": "runmile"
@@ -10172,13 +10182,13 @@
       "brand": "runmile"
     },
     {
-      "name": "RunmileQuestionmarkActiveIcon",
-      "kebab": "runmile-questionmark-active",
+      "name": "RunmileQuestionMarkActiveIcon",
+      "kebab": "runmile-question-mark-active",
       "brand": "runmile"
     },
     {
-      "name": "RunmileQuestionmarkIcon",
-      "kebab": "runmile-questionmark",
+      "name": "RunmileQuestionMarkIcon",
+      "kebab": "runmile-question-mark",
       "brand": "runmile"
     },
     {

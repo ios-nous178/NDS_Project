@@ -41,6 +41,7 @@ export type VanillaMultiIconName =
   | "GenietYellowpointIcon"
   | "MockupLinearData2Icon"
   | "RunmileCautionColorIcon"
+  | "RunmileChatColorIcon"
   | "RunmileCheckCircleColorIcon"
   | "RunmileConfettiColorIcon"
   | "RunmileFireColorIcon"
@@ -240,6 +241,10 @@ export const vanillaIconDefinitions: Record<VanillaMultiIconName, IconDefinition
   RunmileCautionColorIcon: {
     viewBox: "0 0 24 24",
     body: "<g transform=\"translate(1.9992 3)\">\n    <path id=\"Polygon 1\" d=\"M6.78557 1.87168C8.21421 -0.623893 11.7858 -0.623892 13.2144 1.87168L19.4972 12.8465C20.9258 15.3421 19.14 18.4615 16.2828 18.4615H3.71724C0.859969 18.4615 -0.925825 15.3421 0.502812 12.8465L6.78557 1.87168Z\" fill=\"#FFEAE6\"/>\n  </g>\n  <g transform=\"translate(10.9872 8.856)\">\n    <path id=\"Vector\" d=\"M1.01184 6.03777C0.569164 6.03777 0.231881 5.74013 0.210801 5.35745L0 0.74409C0 0.340155 0.358363 0 0.801043 0H1.22264C1.6864 0 2.04476 0.340155 2.02368 0.74409L1.81288 5.35745C1.81288 5.74013 1.43344 6.03777 1.01184 6.03777Z\" fill=\"#FF805C\"/>\n  </g>\n  <g transform=\"translate(11.0928 16.0416)\">\n    <path id=\"Vector\" d=\"M0.906441 1.82834C1.40705 1.82834 1.81288 1.41905 1.81288 0.91417C1.81288 0.409288 1.40705 0 0.906441 0C0.405828 0 0 0.409288 0 0.91417C0 1.41905 0.405828 1.82834 0.906441 1.82834Z\" fill=\"#FF805C\"/>\n  </g>",
+  },
+  RunmileChatColorIcon: {
+    viewBox: "0 0 24 24",
+    body: "<path d=\"M12 1.9917C17.799 1.9917 22.5 6.19766 22.5 11.3862C22.4999 14.4293 20.8813 17.1323 18.374 18.8491L18.1514 21.3901C18.0837 22.1589 17.2081 22.5643 16.5781 22.1187L14.3486 20.5415C13.5933 20.696 12.8076 20.7808 12 20.7808C6.20109 20.7808 1.50013 16.5747 1.5 11.3862C1.5 6.19766 6.20101 1.9917 12 1.9917Z\" fill=\"#D6EDFF\"/>\n  <circle cx=\"8.13157\" cy=\"11.386\" r=\"1.10526\" fill=\"#009EFF\"/>\n  <circle cx=\"12\" cy=\"11.386\" r=\"1.10526\" fill=\"#009EFF\"/>\n  <circle cx=\"15.8684\" cy=\"11.386\" r=\"1.10526\" fill=\"#009EFF\"/>",
   },
   RunmileCheckCircleColorIcon: {
     viewBox: "0 0 24 24",
