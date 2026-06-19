@@ -29,6 +29,46 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     "brand": "cashwalk-biz",
     "scope": "brand",
     "category": "illustrations",
+    "id": "ads",
+    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/ads.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "cashwalk",
+      "biz",
+      "illustrations",
+      "ads",
+      "광고",
+      "ad",
+      "광고비"
+    ]
+  },
+  {
+    "brand": "cashwalk-biz",
+    "scope": "brand",
+    "category": "illustrations",
+    "id": "channel",
+    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/channel.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "cashwalk",
+      "biz",
+      "illustrations",
+      "channel",
+      "채널"
+    ]
+  },
+  {
+    "brand": "cashwalk-biz",
+    "scope": "brand",
+    "category": "illustrations",
     "id": "charge-alert-bell",
     "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/charge-alert-bell.png",
     "mimeType": "image/png",
@@ -41,6 +81,47 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "bell",
       "충전알림",
       "알림벨"
+    ]
+  },
+  {
+    "brand": "cashwalk-biz",
+    "scope": "brand",
+    "category": "illustrations",
+    "id": "message",
+    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/message.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "cashwalk",
+      "biz",
+      "illustrations",
+      "message",
+      "메시지",
+      "확성기",
+      "홍보"
+    ]
+  },
+  {
+    "brand": "cashwalk-biz",
+    "scope": "brand",
+    "category": "illustrations",
+    "id": "quiz",
+    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/quiz.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "cashwalk",
+      "biz",
+      "illustrations",
+      "quiz",
+      "퀴즈",
+      "물음표"
     ]
   },
   {
@@ -5377,7 +5458,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
 /** 브랜드 → 카테고리 → 에셋 수 요약. */
 export const ASSET_CATALOG_SUMMARY: Record<string, Record<string, number>> = {
   "cashwalk-biz": {
-    "illustrations": 1,
+    "illustrations": 5,
     "logos": 3
   },
   "geniet": {
