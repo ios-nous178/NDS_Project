@@ -12,6 +12,7 @@ export * as snsLogoDefaults from "./sns-logo-defaults.js";
 
 export * from "./profile-image-metadata.js";
 export * from "./illustration-metadata.js";
+export * from "./state-image-metadata.js";
 export * from "./marathon-event-metadata.js";
 export * from "./nudge-eap-image-metadata.js";
 export * from "./nudge-img-metadata.js";

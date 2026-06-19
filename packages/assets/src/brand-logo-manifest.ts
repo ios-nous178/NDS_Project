@@ -63,6 +63,7 @@ const DATA_URI_BY_FILENAME: Record<string, string> = {
   "brand/runmile/logos/runmile-logo.svg": defaults.RUNMILE_LOGO_DATA_URI,
   "brand/runmile/logos/runmile-logo-black.svg": defaults.RUNMILE_LOGO_BLACK_DATA_URI,
   "brand/runmile/logos/runmile-logo-gray700.svg": defaults.RUNMILE_LOGO_GRAY700_DATA_URI,
+  "brand/runmile/logos/runmile-logo-white.svg": defaults.RUNMILE_LOGO_WHITE_DATA_URI,
 };
 
 function augment(meta: BrandLogoMeta): BrandLogo {

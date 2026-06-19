@@ -1089,7 +1089,13 @@ export const toolHandlers = {
       getBrand(
         args as {
           brand?: string;
-          assetKind?: "logos" | "snsLogos" | "profileImages" | "illustrations" | "marathonEvents";
+          assetKind?:
+            | "logos"
+            | "snsLogos"
+            | "profileImages"
+            | "illustrations"
+            | "stateImages"
+            | "marathonEvents";
         },
       ),
     ),

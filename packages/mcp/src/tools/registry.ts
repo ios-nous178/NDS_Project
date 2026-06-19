@@ -30,7 +30,7 @@ const TOOLS = [
         },
         assetKind: {
           type: "string",
-          enum: ["logos", "snsLogos", "profileImages", "illustrations", "marathonEvents"],
+          enum: ["logos", "snsLogos", "profileImages", "illustrations", "stateImages", "marathonEvents"],
           description:
             "[brand lookup only] Fetch one detailed asset list. Omit for summary-only brand metadata.",
         },
@@ -711,6 +711,7 @@ const BRAND_ASSET_KIND_VALUES = [
   "snsLogos",
   "profileImages",
   "illustrations",
+  "stateImages",
   "marathonEvents",
 ] as const;
 const FEEDBACK_CATEGORY_VALUES = [

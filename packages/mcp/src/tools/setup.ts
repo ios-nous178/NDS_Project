@@ -22,6 +22,7 @@ import {
 import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
 import { PROFILE_IMAGE_METADATA, PROFILE_IMAGE_IDS } from "@nudge-design/assets/profile-images";
 import { ILLUSTRATION_METADATA, ILLUSTRATION_IDS } from "@nudge-design/assets/illustrations";
+import { STATE_IMAGE_METADATA, STATE_IMAGE_IDS } from "@nudge-design/assets/state-images";
 import { MARATHON_EVENT_METADATA, MARATHON_EVENT_IDS } from "@nudge-design/assets/marathon-events";
 import {
   buildBackofficeGuide,
@@ -102,6 +103,7 @@ export type BrandAssetKind =
   | "snsLogos"
   | "profileImages"
   | "illustrations"
+  | "stateImages"
   | "marathonEvents";
 
 function remoteAssetRef(filename: string): string | undefined {
@@ -1403,17 +1405,18 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
             files: PROFILE_IMAGE_IDS.map((id) => ({
               id,
               filename: PROFILE_IMAGE_METADATA[id].filename,
+              filename2x: PROFILE_IMAGE_METADATA[id].filename2x,
+              filename3x: PROFILE_IMAGE_METADATA[id].filename3x,
               mimeType: PROFILE_IMAGE_METADATA[id].mimeType,
               figmaNodeId: PROFILE_IMAGE_METADATA[id].figmaNodeId,
-              source: PROFILE_IMAGE_METADATA[id].source,
               inlineRef: `@nudge-design/assets/files/${PROFILE_IMAGE_METADATA[id].filename}`,
               publicPath: `/${PROFILE_IMAGE_METADATA[id].filename}`,
               remoteRef: remoteAssetRef(PROFILE_IMAGE_METADATA[id].filename),
             })),
-            importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본:\n<img src="@nudge-design/assets/files/brand/runmile/profiles/profile-1.jpg" width="24" height="24" alt="" />\n// ② React/호스팅 앱: import { getProfileImage } from "@nudge-design/assets"; getProfileImage(1) → { filename, mimeType, figmaNodeId, source }, public/ 호스팅 후 /brand/runmile/profiles/profile-1.jpg`,
+            importExample: `// ① 단일 HTML 목업 (build_singlefile_html 가 base64 inline) — 이게 기본:\n<img src="@nudge-design/assets/files/brand/runmile/avatar/profile-1.png" width="24" height="24" alt="" />\n// ② React/호스팅 앱: import { getProfileImage } from "@nudge-design/assets"; getProfileImage(1) → { filename, filename2x, filename3x, mimeType, figmaNodeId }, public/ 호스팅 후 /brand/runmile/avatar/profile-1.png`,
             publicHosting: {
-              baseDir: "public/brand/runmile/profiles/",
-              note: `Runmile 라이브러리 21:136 의 사용자 프로필 기본 이미지 12종. id 1/2/9~12 는 단일 raster export (원본 사진/일러스트, ~600KB max), id 3~8 은 Figma screenshot flatten 24×24 (~1.5KB). **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 규약을 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 로 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/brand/runmile/profiles/…)는 단일 파일에 안 박혀 깨진다(호스팅 앱 전용).** dataUri 메타데이터는 미제공(inline 은 빌드가 처리).`,
+              baseDir: "public/brand/runmile/avatar/",
+              note: `Runmile 라이브러리 21:136 의 사용자 프로필(avatar) 기본 이미지 12종 + 기본 아바타(default). 전부 1x/@2x/@3x PNG 재export (24×24 슬롯). **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 규약을 <img src> 에 그대로 써라 — build_singlefile_html 이 base64 로 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/brand/runmile/avatar/…)는 단일 파일에 안 박혀 깨진다(호스팅 앱 전용).** dataUri 메타데이터는 미제공(inline 은 빌드가 처리).`,
             },
           }
         : null,
@@ -1425,6 +1428,8 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
             files: ILLUSTRATION_IDS.map((id) => ({
               id,
               filename: ILLUSTRATION_METADATA[id].filename,
+              filename2x: ILLUSTRATION_METADATA[id].filename2x,
+              filename3x: ILLUSTRATION_METADATA[id].filename3x,
               mimeType: ILLUSTRATION_METADATA[id].mimeType,
               figmaNodeId: ILLUSTRATION_METADATA[id].figmaNodeId,
               figmaNodeName: ILLUSTRATION_METADATA[id].figmaNodeName,
@@ -1432,10 +1437,34 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
               publicPath: `/${ILLUSTRATION_METADATA[id].filename}`,
               remoteRef: remoteAssetRef(ILLUSTRATION_METADATA[id].filename),
             })),
-            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/brand/runmile/illustrations/page-error.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getIllustration } from "@nudge-design/assets"; getIllustration("page-error") → { filename, mimeType, figmaNodeId, figmaNodeName }`,
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/brand/runmile/illust/community.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getIllustration } from "@nudge-design/assets"; getIllustration("community") → { filename, filename2x, filename3x, mimeType, figmaNodeId, figmaNodeName }`,
             publicHosting: {
-              baseDir: "public/brand/runmile/illustrations/",
-              note: `Runmile 라이브러리 55:955 의 빈 상태 / 에러 / 알람 일러스트 10종 (140×140 PNG). Figma screenshot flatten 으로 export. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/brand/runmile/illustrations/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
+              baseDir: "public/brand/runmile/illust/",
+              note: `Runmile 콘텐츠 일러스트(illust 카테고리): community/shoe/qna 는 1x/@2x/@3x, chatting-default/white 는 1x. 마라톤 행사 일러스트는 marathonEvents(illust/event-*) 로 분리. 빈상태·에러·알람은 stateImages 로 분리. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/brand/runmile/illust/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
+            },
+          }
+        : null,
+    stateImages:
+      slug === "runmile"
+        ? {
+            package: "@nudge-design/assets",
+            ids: STATE_IMAGE_IDS,
+            files: STATE_IMAGE_IDS.map((id) => ({
+              id,
+              filename: STATE_IMAGE_METADATA[id].filename,
+              filename2x: STATE_IMAGE_METADATA[id].filename2x,
+              filename3x: STATE_IMAGE_METADATA[id].filename3x,
+              mimeType: STATE_IMAGE_METADATA[id].mimeType,
+              figmaNodeId: STATE_IMAGE_METADATA[id].figmaNodeId,
+              figmaNodeName: STATE_IMAGE_METADATA[id].figmaNodeName,
+              inlineRef: `@nudge-design/assets/files/${STATE_IMAGE_METADATA[id].filename}`,
+              publicPath: `/${STATE_IMAGE_METADATA[id].filename}`,
+              remoteRef: remoteAssetRef(STATE_IMAGE_METADATA[id].filename),
+            })),
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline) — 기본:\n<img src="@nudge-design/assets/files/brand/runmile/state/alarm-empty.png" width="140" height="140" alt="" />\n// ② React/호스팅 앱: import { getStateImage } from "@nudge-design/assets"; getStateImage("alarm-empty") → { filename, filename2x, filename3x, mimeType, figmaNodeId, figmaNodeName }`,
+            publicHosting: {
+              baseDir: "public/brand/runmile/state/",
+              note: `Runmile 상태(state) 이미지: 빈상태·에러·알람·결과없음·페이지오류. alarm-empty/error-default/error 는 1x/@2x/@3x, page-error/no-result 는 1x. **단일 HTML 목업이면 inlineRef(@nudge-design/assets/files/…) 를 <img src> 에 쓰면 build_singlefile_html 이 base64 inline. 상대경로(/brand/runmile/state/…)는 단일 파일에서 깨짐(호스팅 앱 전용).**`,
             },
           }
         : null,
@@ -1447,6 +1476,7 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
             files: MARATHON_EVENT_IDS.map((id) => ({
               id,
               filename: MARATHON_EVENT_METADATA[id].filename,
+              filename2x: MARATHON_EVENT_METADATA[id].filename2x,
               filename3x: MARATHON_EVENT_METADATA[id].filename3x,
               mimeType: MARATHON_EVENT_METADATA[id].mimeType,
               figmaNodeId: MARATHON_EVENT_METADATA[id].figmaNodeId,
@@ -1458,10 +1488,10 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
               remoteRef: remoteAssetRef(MARATHON_EVENT_METADATA[id].filename),
               remoteRef3x: remoteAssetRef(MARATHON_EVENT_METADATA[id].filename3x),
             })),
-            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline, srcset 토큰까지 치환) — 기본:\n<img src="@nudge-design/assets/files/brand/runmile/marathon-events/hangang-night-run.png"\n     srcset="@nudge-design/assets/files/brand/runmile/marathon-events/hangang-night-run.png 2x, @nudge-design/assets/files/brand/runmile/marathon-events/hangang-night-run@3x.png 3x"\n     width="180" height="180" alt="한강나이트런" />\n// ② React/호스팅 앱: import { getMarathonEvent } from "@nudge-design/assets"; getMarathonEvent("hangang-night-run") → { filename, filename3x, mimeType, figmaNodeName }, public/ 호스팅 후 /brand/runmile/marathon-events/…`,
+            importExample: `// ① 단일 HTML 목업 (빌드가 base64 inline, srcset 토큰까지 치환) — 기본:\n<img src="@nudge-design/assets/files/brand/runmile/illust/event-hangang-night-run.png"\n     srcset="@nudge-design/assets/files/brand/runmile/illust/event-hangang-night-run.png 2x, @nudge-design/assets/files/brand/runmile/illust/event-hangang-night-run@3x.png 3x"\n     width="180" height="180" alt="한강나이트런" />\n// ② React/호스팅 앱: import { getMarathonEvent } from "@nudge-design/assets"; getMarathonEvent("hangang-night-run") → { filename, filename3x, mimeType, figmaNodeName }, public/ 호스팅 후 /brand/runmile/illust/event-…`,
             publicHosting: {
-              baseDir: "public/brand/runmile/marathon-events/",
-              note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 11종. base 360×360 (2x) + @3x 540×540 (3x), srcset 으로 180×180 슬롯에 렌더. **단일 HTML 목업이면 inlineRef / inlineRef3x(@nudge-design/assets/files/…) 를 src·srcset 에 그대로 써라 — build_singlefile_html 이 두 토큰 모두 base64 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/brand/runmile/marathon-events/…)는 단일 파일에서 깨짐(호스팅 앱 전용).** 댕댕이레이스/개나리런/연탄런/신한동행런/산타클로스런/한강나이트런/봄꽃런/애니멀런 + 오류 placeholder.`,
+              baseDir: "public/brand/runmile/illust/",
+              note: `Runmile 만의 자산 — 마라톤 행사별 일러스트 10종 (illust 카테고리, id=event-*). base 360×360 + @3x 540×540 (3x), srcset 으로 180×180 슬롯에 렌더. **단일 HTML 목업이면 inlineRef / inlineRef3x(@nudge-design/assets/files/…) 를 src·srcset 에 그대로 써라 — build_singlefile_html 이 두 토큰 모두 base64 inline 해서 내부 미리보기·외부 단독 파일 모두 보인다. 상대경로(/brand/runmile/illust/…)는 단일 파일에서 깨짐(호스팅 앱 전용).** 댕댕이레이스(dog-race)/개나리런(forsythia)/포켓몬런(pokemon)/연탄런/신한동행런/산타클로스런/석촌호수나이트런/한강나이트런/봄꽃런/애니멀런. (이미지 로드 실패 "오류" placeholder 는 stateImages 의 error 로 이동.)`,
             },
           }
         : null,
@@ -1472,6 +1502,7 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
     snsLogos: snsForBrand ? { count: snsFiles.length, services: snsForBrand } : null,
     profileImages: slug === "runmile" ? { count: PROFILE_IMAGE_IDS.length } : null,
     illustrations: slug === "runmile" ? { count: ILLUSTRATION_IDS.length } : null,
+    stateImages: slug === "runmile" ? { count: STATE_IMAGE_IDS.length } : null,
     marathonEvents: slug === "runmile" ? { count: MARATHON_EVENT_IDS.length } : null,
   };
   const selectedAsset = args.assetKind ? fullAssets[args.assetKind] : undefined;
@@ -1491,7 +1522,7 @@ export function getBrandInfo(args: { brand: string; assetKind?: BrandAssetKind }
         : `이 브랜드 전용 prefix 아이콘은 아직 없습니다. 공용 @nudge-design/icons 의 아이콘을 그대로 사용하세요.`,
     assetSummary,
     _assetHint:
-      "Default get_brand detail is summary-only. Pass assetKind:'logos'|'snsLogos'|'profileImages'|'illustrations'|'marathonEvents' to fetch one detailed asset list.",
+      "Default get_brand detail is summary-only. Pass assetKind:'logos'|'snsLogos'|'profileImages'|'illustrations'|'stateImages'|'marathonEvents' to fetch one detailed asset list.",
     ...(args.assetKind
       ? {
           assetKind: args.assetKind,

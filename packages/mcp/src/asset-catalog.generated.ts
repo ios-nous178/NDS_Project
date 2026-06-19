@@ -3055,7 +3055,9 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
       "geniet",
       "profiles",
       "profile",
-      "default"
+      "default",
+      "기본프로필",
+      "프로필"
     ]
   },
   {
@@ -4361,27 +4363,249 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
-    "id": "alram",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/alram.png",
+    "category": "avatar",
+    "id": "profile-1",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-1.png",
     "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
-      "alram",
-      "알림"
+      "avatar",
+      "profile",
+      "1"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
+    "category": "avatar",
+    "id": "profile-10",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-10.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "10"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-11",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-11.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "11"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-12",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-12.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "12"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-2",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-2.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "2"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-3",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-3.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "3"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-4",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-4.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "4"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-5",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-5.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "5"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-6",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-6.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "6"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-7",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-7.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "7"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-8",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-8.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "8"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-9",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-9.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "9"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "avatar",
+    "id": "profile-default",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-default.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "avatar",
+      "profile",
+      "default",
+      "기본프로필",
+      "프로필"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
     "id": "chatting-default",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/chatting-default.png",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/chatting-default.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
-      "illustrations",
+      "illust",
       "chatting",
       "default",
       "채팅"
@@ -4390,13 +4614,13 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
+    "category": "illust",
     "id": "chatting-white",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/chatting-white.png",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/chatting-white.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
-      "illustrations",
+      "illust",
       "chatting",
       "white",
       "채팅"
@@ -4405,13 +4629,17 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
+    "category": "illust",
     "id": "community",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/community.png",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/community.png",
     "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
+      "illust",
       "community",
       "커뮤니티"
     ]
@@ -4419,77 +4647,217 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
-    "id": "error",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/error.png",
+    "category": "illust",
+    "id": "event-animal-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-animal-run.png",
     "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
-      "error"
+      "illust",
+      "event",
+      "animal",
+      "run",
+      "동물런",
+      "애니멀런"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
-    "id": "no-result-default",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/no-result-default.png",
+    "category": "illust",
+    "id": "event-bomkkot-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-bomkkot-run.png",
     "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
-      "no",
-      "result",
-      "default",
-      "결과없음",
-      "검색결과없음"
+      "illust",
+      "event",
+      "bomkkot",
+      "run",
+      "봄꽃런"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
-    "id": "no-result-white",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/no-result-white.png",
+    "category": "illust",
+    "id": "event-dog-race",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-dog-race.png",
     "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
-      "no",
-      "result",
-      "white",
-      "결과없음",
-      "검색결과없음"
+      "illust",
+      "event",
+      "dog",
+      "race",
+      "댕댕이레이스",
+      "강아지레이스"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
-    "id": "page-error",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/page-error.png",
+    "category": "illust",
+    "id": "event-forsythia",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-forsythia.png",
     "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
-      "page",
-      "error",
-      "페이지오류",
-      "에러"
+      "illust",
+      "event",
+      "forsythia",
+      "개나리런"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
-    "id": "qa",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/qa.png",
+    "category": "illust",
+    "id": "event-hangang-night-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-hangang-night-run.png",
     "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
-      "qa",
+      "illust",
+      "event",
+      "hangang",
+      "night",
+      "run",
+      "한강야간런",
+      "한강런"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
+    "id": "event-pokemon",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-pokemon.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "illust",
+      "event",
+      "pokemon",
+      "포켓몬런"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
+    "id": "event-santa-claus-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-santa-claus-run.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "illust",
+      "event",
+      "santa",
+      "claus",
+      "run",
+      "산타런",
+      "산타클로스런"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
+    "id": "event-seokchon-night-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-seokchon-night-run.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "illust",
+      "event",
+      "seokchon",
+      "night",
+      "run",
+      "석촌야간런"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
+    "id": "event-shinhan-donghaeng-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-shinhan-donghaeng-run.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "illust",
+      "event",
+      "shinhan",
+      "donghaeng",
+      "run",
+      "신한동행런"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
+    "id": "event-yeontan-run",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-yeontan-run.png",
+    "mimeType": "image/png",
+    "retina": [
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "illust",
+      "event",
+      "yeontan",
+      "run",
+      "연탄런"
+    ]
+  },
+  {
+    "brand": "runmile",
+    "scope": "brand",
+    "category": "illust",
+    "id": "qna",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/qna.png",
+    "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
+    "search": [
+      "runmile",
+      "illust",
+      "qna",
       "문의",
       "질문"
     ]
@@ -4497,13 +4865,17 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "illustrations",
+    "category": "illust",
     "id": "shoe",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illustrations/shoe.png",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/shoe.png",
     "mimeType": "image/png",
+    "retina": [
+      "2x",
+      "3x"
+    ],
     "search": [
       "runmile",
-      "illustrations",
+      "illust",
       "shoe",
       "신발",
       "운동화"
@@ -4553,383 +4925,126 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "marathon-events",
-    "id": "animal-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/animal-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
+    "category": "logos",
+    "id": "runmile-logo-white",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/logos/runmile-logo-white.svg",
+    "mimeType": "image/svg+xml",
     "search": [
       "runmile",
-      "marathon",
-      "events",
-      "animal",
-      "run",
-      "동물런",
-      "애니멀런"
+      "logos",
+      "logo",
+      "white"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "marathon-events",
-    "id": "bomkkot-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/bomkkot-run.png",
+    "category": "state",
+    "id": "alarm-empty",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/alarm-empty.png",
     "mimeType": "image/png",
     "retina": [
+      "2x",
       "3x"
     ],
     "search": [
       "runmile",
-      "marathon",
-      "events",
-      "bomkkot",
-      "run",
-      "봄꽃런"
+      "state",
+      "alarm",
+      "empty",
+      "알림",
+      "알람",
+      "알림없음"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "marathon-events",
-    "id": "dangdangi-race",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/dangdangi-race.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "dangdangi",
-      "race",
-      "당당이레이스"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "marathon-events",
+    "category": "state",
     "id": "error",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/error.png",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/error.png",
     "mimeType": "image/png",
     "retina": [
+      "2x",
       "3x"
     ],
     "search": [
       "runmile",
-      "marathon",
-      "events",
-      "error"
+      "state",
+      "error",
+      "이미지오류",
+      "오류",
+      "로드실패"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "marathon-events",
-    "id": "gaenari-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/gaenari-run.png",
+    "category": "state",
+    "id": "error-default",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/error-default.png",
     "mimeType": "image/png",
     "retina": [
+      "2x",
       "3x"
     ],
     "search": [
       "runmile",
-      "marathon",
-      "events",
-      "gaenari",
-      "run",
-      "개나리런"
+      "state",
+      "error",
+      "default",
+      "에러",
+      "오류"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "marathon-events",
-    "id": "hangang-night-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/hangang-night-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "hangang",
-      "night",
-      "run",
-      "한강야간런",
-      "한강런"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "marathon-events",
-    "id": "pokemon-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/pokemon-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "pokemon",
-      "run",
-      "포켓몬런"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "marathon-events",
-    "id": "santa-claus-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/santa-claus-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "santa",
-      "claus",
-      "run",
-      "산타런",
-      "산타클로스런"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "marathon-events",
-    "id": "seokchon-night-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/seokchon-night-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "seokchon",
-      "night",
-      "run",
-      "석촌야간런"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "marathon-events",
-    "id": "shinhan-donghaeng-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/shinhan-donghaeng-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "shinhan",
-      "donghaeng",
-      "run",
-      "신한동행런"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "marathon-events",
-    "id": "yeontan-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/marathon-events/yeontan-run.png",
-    "mimeType": "image/png",
-    "retina": [
-      "3x"
-    ],
-    "search": [
-      "runmile",
-      "marathon",
-      "events",
-      "yeontan",
-      "run",
-      "연탄런"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-1",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-1.jpg",
-    "mimeType": "image/jpeg",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "1"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-10",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-10.png",
+    "category": "state",
+    "id": "no-result-default",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/no-result-default.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
-      "profiles",
-      "profile",
-      "10"
+      "state",
+      "no",
+      "result",
+      "default",
+      "결과없음",
+      "검색결과없음"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "profiles",
-    "id": "profile-11",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-11.png",
+    "category": "state",
+    "id": "no-result-white",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/no-result-white.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
-      "profiles",
-      "profile",
-      "11"
+      "state",
+      "no",
+      "result",
+      "white",
+      "결과없음",
+      "검색결과없음"
     ]
   },
   {
     "brand": "runmile",
     "scope": "brand",
-    "category": "profiles",
-    "id": "profile-12",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-12.png",
+    "category": "state",
+    "id": "page-error",
+    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/page-error.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
-      "profiles",
-      "profile",
-      "12"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-2",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-2.jpg",
-    "mimeType": "image/jpeg",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "2"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-3",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-3.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "3"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-4",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-4.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "4"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-5",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-5.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "5"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-6",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-6.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "6"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-7",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-7.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "7"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-8",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-8.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "8"
-    ]
-  },
-  {
-    "brand": "runmile",
-    "scope": "brand",
-    "category": "profiles",
-    "id": "profile-9",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/profiles/profile-9.png",
-    "mimeType": "image/png",
-    "search": [
-      "runmile",
-      "profiles",
-      "profile",
-      "9"
+      "state",
+      "page",
+      "error",
+      "페이지오류",
+      "에러"
     ]
   },
   {
@@ -5482,10 +5597,10 @@ export const ASSET_CATALOG_SUMMARY: Record<string, Record<string, number>> = {
     "profiles": 11
   },
   "runmile": {
-    "illustrations": 10,
-    "logos": 3,
-    "marathon-events": 11,
-    "profiles": 12
+    "avatar": 13,
+    "illust": 15,
+    "logos": 4,
+    "state": 6
   },
   "shared": {
     "sns-logos": 8

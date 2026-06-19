@@ -79,13 +79,15 @@ export const BRAND_LOGO_METADATA: Record<BrandSlug, BrandLogoMetaSet> = {
     },
   },
 
-  // Figma 17:90 (런마일 library) — 3 color variants × 142×32 SVG.
-  // SVG 내부에 fill="var(--fill-0, #FF5B37)" 형태로 CSS 변수 fallback 까지 들어있어
-  // 테마 override 도 가능. default=red(브랜드 primary), mono=black(단색), muted=gray700(저강조).
+  // 런마일 로고 가이드 (Figma library 5089:16) — 4 color variants × 142×32 SVG.
+  // SVG 내부에 fill="var(--fill-0, #HEX)" 형태로 CSS 변수 fallback 까지 들어있어
+  // 테마 override 도 가능. default=red(브랜드 primary), mono=black(단색), muted=gray700(저강조),
+  // white=흰색(어두운/컬러 배경 위).
   runmile: {
     default: { filename: "brand/runmile/logos/runmile-logo.svg", mimeType: "image/svg+xml" },
     mono: { filename: "brand/runmile/logos/runmile-logo-black.svg", mimeType: "image/svg+xml" },
     muted: { filename: "brand/runmile/logos/runmile-logo-gray700.svg", mimeType: "image/svg+xml" },
+    white: { filename: "brand/runmile/logos/runmile-logo-white.svg", mimeType: "image/svg+xml" },
   },
 };
 

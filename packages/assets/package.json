@@ -51,6 +51,11 @@
       "import": "./dist/illustration-metadata.js",
       "default": "./dist/illustration-metadata.js"
     },
+    "./state-images": {
+      "types": "./dist/state-image-metadata.d.ts",
+      "import": "./dist/state-image-metadata.js",
+      "default": "./dist/state-image-metadata.js"
+    },
     "./marathon-events": {
       "types": "./dist/marathon-event-metadata.d.ts",
       "import": "./dist/marathon-event-metadata.js",
