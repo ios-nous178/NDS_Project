@@ -35,7 +35,7 @@
  *     </main>
  *   </div>
  */
-import { cv, fontFamily, grid, radius, shadow, spacing } from "@nudge-design/tokens";
+import { cv, fontFamily, grid, radius, spacing } from "@nudge-design/tokens";
 
 /* ─── Shell — 페이지 전체 레이아웃 (sidebar + main + topbar + content) ─── */
 
