@@ -422,9 +422,7 @@ async function main() {
   );
   dimRoot.appendChild(dh);
 
-  // dimension 표 — Token + 브랜드 모드 컬럼(프로젝트별 값). nudge-eap 와 다른 값은 강조.
-  const DNAMEW = 230,
-    DCOLW = 92;
+  // dimension 표 — Semantic 표와 100% 동일 스타일(헤더바·카테고리·행·컬럼폭). 셀만 숫자값.
   const dHead = auto("colhead", "HORIZONTAL", 0, {
     align: "CENTER",
     fill: BAR,
@@ -432,46 +430,50 @@ async function main() {
     padV: 9,
     padH: 14,
   });
-  dHead.appendChild(txt("Token", 11, "Bold", INK, DNAMEW - 14));
-  for (const b of BRANDS) dHead.appendChild(txt(brandLabel(b), 11, "Bold", INK, DCOLW, "LEFT"));
+  dHead.appendChild(txt("Token", 11, "Bold", INK, NAMEW - 14));
+  for (const b of BRANDS) dHead.appendChild(txt(brandLabel(b), 11, "Bold", INK, COLW, "LEFT"));
   dimRoot.appendChild(dHead);
 
   const dgroups = {};
   for (const name of Object.keys(TOKENS.dimensions.variables))
     (dgroups[name.split("/")[0]] = dgroups[name.split("/")[0]] || []).push(name);
   for (const g of Object.keys(dgroups)) {
-    const sec = auto(g, "VERTICAL", 0);
-    const sp = figma.createFrame();
-    sp.resize(1, 14);
-    sp.fills = [];
-    sec.appendChild(sp);
-    accentTitle(sec, catName(g), `${dgroups[g].length}`);
-    const sp2 = figma.createFrame();
-    sp2.resize(1, 4);
-    sp2.fills = [];
-    sec.appendChild(sp2);
+    const group = auto(g, "VERTICAL", 0);
+    const gpad = figma.createFrame();
+    gpad.resize(1, 18);
+    gpad.fills = [];
+    group.appendChild(gpad);
+    accentTitle(group, catName(g), `${dgroups[g].length} tokens`);
+    const gpad2 = figma.createFrame();
+    gpad2.resize(1, 6);
+    gpad2.fills = [];
+    group.appendChild(gpad2);
     for (const name of dgroups[g]) {
       const vbm = TOKENS.dimensions.variables[name].valuesByMode;
       const baseV = (vbm["nudge-eap"] || {}).value;
-      const row = auto(name, "HORIZONTAL", 0, { align: "CENTER", padV: 5 });
-      row.appendChild(txt(name, 11, "Regular", INK, DNAMEW));
+      const row = auto(name, "HORIZONTAL", 0, { align: "CENTER", padV: 7 });
+      row.appendChild(txt(name, 11, "Regular", INK, NAMEW));
       for (const b of BRANDS) {
+        const cellWrap = auto(b, "HORIZONTAL", 7, {
+          align: "CENTER",
+          primary: "FIXED",
+          counter: "FIXED",
+        });
+        cellWrap.resize(COLW, 26);
         const v = (vbm[b] || {}).value;
-        const differs = v != null && baseV != null && v !== baseV;
-        row.appendChild(
-          txt(
-            v == null ? "—" : String(v),
-            11,
-            differs ? "Bold" : "Regular",
-            differs ? ACCENT : SUB,
-            DCOLW,
-            "LEFT",
-          ),
-        );
+        if (v == null) {
+          cellWrap.appendChild(txt("—", 10, "Regular", LINE));
+        } else {
+          const differs = baseV != null && v !== baseV;
+          cellWrap.appendChild(
+            txt(String(v), 12, differs ? "Bold" : "Regular", differs ? ACCENT : INK),
+          );
+        }
+        row.appendChild(cellWrap);
       }
-      sec.appendChild(row);
+      group.appendChild(row);
     }
-    dimRoot.appendChild(sec);
+    dimRoot.appendChild(group);
   }
 
   // Text Style 샘플
