@@ -16,6 +16,9 @@ export * from "./tools/html-validator.js";
 export * from "./tools/build-html.js";
 // 고정 DS 스탬프 바(DS 버전 / NDS% / 앱 버전) — dist + 라이브 미리보기 공통 주입
 export * from "./tools/ds-stamp.js";
+// 시나리오 보드(처음 보는 분을 위한 화면 흐름·조작 가이드) — 셸 주입기 + 콘텐츠 게이트
+export * from "./tools/scenario-board.js";
+export * from "./tools/scenario-coverage.js";
 // prebuilt DS 단일 자산(dist/standalone) 런타임 로더 — html intent inline 의 자원
 export * from "./tools/standalone-assets.js";
 // 캐포비 어드민 Page Pattern PRD 추천 — MCP 툴 + 데스크탑 카드 공유 SSOT

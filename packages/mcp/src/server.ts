@@ -78,6 +78,7 @@ import { captureTelemetry } from "./tools/telemetry-egress.js";
 import { captureTranscriptFeedback } from "./tools/feedback-capture.js";
 import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html";
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
+import { validateScenarioCoverage } from "@nudge-design/mockup-core/tools/scenario-coverage";
 import { getGuide, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
 import { configureSetup, getProject, getSetup } from "./tools/setup.js";
@@ -1386,6 +1387,10 @@ export const toolHandlers = {
   validate_prd_coverage: (args: ToolArgs) => {
     const typed = args as { source?: string; filePath?: string };
     return validatePrdCoverage(typed);
+  },
+  validate_scenario_coverage: (args: ToolArgs) => {
+    const typed = args as { source?: string; filePath?: string };
+    return validateScenarioCoverage(typed);
   },
   score_mockup_quality: async (args: ToolArgs) => {
     const typed = args as {

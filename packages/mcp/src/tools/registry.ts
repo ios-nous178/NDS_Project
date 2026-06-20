@@ -369,6 +369,25 @@ const TOOLS = [
     },
   },
   {
+    name: "validate_scenario_coverage",
+    description:
+      "Validate scenario-board content (the first-time-viewer screen-flow & operation guide auto-injected as a right panel): checks the `script[type=application/json][data-nds-scenario]` manifest — flow[] non-empty, every flow screen has a description, and every flow key maps to a `[data-screen]` element in the DOM (live-sync evidence). Pass `source` or `filePath`. Missing/incomplete content blocks build_singlefile_html; read build.scenarioValidation.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        source: {
+          type: "string",
+          description: "HTML source string. One of `source` / `filePath` is required.",
+        },
+        filePath: {
+          type: "string",
+          description: "Absolute path to an .html file.",
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: "convert_html_to_ds_html",
     description:
       "Rewrite common native HTML controls to <nds-*> elements and optionally replace known colors.",
@@ -925,6 +944,11 @@ function validateToolArgs(toolName: string, rawArgs: unknown): ToolArgs {
         surface: optionalString(args, "surface", toolName),
       };
     case "validate_prd_coverage":
+      return {
+        source: optionalString(args, "source", toolName),
+        filePath: optionalString(args, "filePath", toolName),
+      };
+    case "validate_scenario_coverage":
       return {
         source: optionalString(args, "source", toolName),
         filePath: optionalString(args, "filePath", toolName),

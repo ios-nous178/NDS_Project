@@ -1,7 +1,7 @@
 ---
 sidebar_position: 10
 title: MCP 도구 레퍼런스
-description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
+description: nudge-ds MCP 서버가 제공하는 20개 도구의 용도·입력 인자·호출 시점 레퍼런스 (registry.ts 에서 자동 생성)
 ---
 
 <!-- AUTO-GENERATED FILE. SSOT: packages/mcp/src/tools/registry.ts (TOOLS 배열). 본문을 바꾸려면 registry.ts 를 고치고 `pnpm generate:mcp-tools` 를 다시 실행하세요. 손으로 편집하지 마세요. -->
@@ -9,7 +9,7 @@ description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 
 
 # MCP 도구 레퍼런스
 
-`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **19개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
+`nudge-ds` MCP 서버는 Claude 가 NudgeEAP 디자인시스템 정보를 정확하게 찾아 쓰도록 **20개 도구**를 제공합니다. 거의 모든 도구는 **Claude 에게 한국어로 부탁하면 자동 호출**되므로 직접 인자를 타이핑할 일은 없습니다. 이 페이지는 `packages/mcp/src/tools/registry.ts` 의 도구 정의에서 **자동 생성**됩니다 — 도구가 추가/삭제되면 같이 갱신됩니다.
 
 > 사용 흐름과 환경 설치는 [MCP 사용 가이드](/NUDGE_DS_MCP_USAGE) 를 먼저 참고하세요.
 >
@@ -17,16 +17,16 @@ description: nudge-ds MCP 서버가 제공하는 19개 도구의 용도·입력 
 
 ## 한눈에 보기
 
-| 카테고리                                        | 개수   | 도구                                                                                                                                                    |
-| ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 프로젝트 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회 | 5      | `get_project` · `find_component` · `find_icon` · `find_token` · `find_asset`                                                                            |
-| 가이드 · 패턴 · 원칙                            | 1      | `get_guide`                                                                                                                                             |
-| 설계 보조 (DesignSpec · 페이지 패턴)            | 3      | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
-| 목업 빌드 · 검증 · 변환                         | 6      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
-| Dev 서버 / 미리보기                             | 1      | `dev_server`                                                                                                                                            |
-| 외부 프로젝트 셋업                              | 1      | `get_setup`                                                                                                                                             |
-| 피드백 · 텔레메트리                             | 2      | `log_feedback` · `prompt_satisfaction`                                                                                                                  |
-| **합계**                                        | **19** |                                                                                                                                                         |
+| 카테고리                                        | 개수   | 도구                                                                                                                                                                                   |
+| ----------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 프로젝트 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회 | 5      | `get_project` · `find_component` · `find_icon` · `find_token` · `find_asset`                                                                                                           |
+| 가이드 · 패턴 · 원칙                            | 1      | `get_guide`                                                                                                                                                                            |
+| 설계 보조 (DesignSpec · 페이지 패턴)            | 3      | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                                                 |
+| 목업 빌드 · 검증 · 변환                         | 7      | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `validate_scenario_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
+| Dev 서버 / 미리보기                             | 1      | `dev_server`                                                                                                                                                                           |
+| 외부 프로젝트 셋업                              | 1      | `get_setup`                                                                                                                                                                            |
+| 피드백 · 텔레메트리                             | 2      | `log_feedback` · `prompt_satisfaction`                                                                                                                                                 |
+| **합계**                                        | **20** |                                                                                                                                                                                        |
 
 ---
 
@@ -189,6 +189,15 @@ Validate HTML/&lt;nds-\*&gt; mockups for DS/static quality (token, spacing, nati
 ### `validate_prd_coverage`
 
 Validate PRD/brief coverage (separate from DS quality): checks the `script[type=application/json][data-prd-coverage]` manifest — every requirement implemented and every evidence selector present in the DOM. Pass `source` or `filePath`. Use alongside validate_html_mockup or read build_singlefile_html.prdValidation.
+
+**인자**
+
+- `source` `string` — HTML source string. One of `source` / `filePath` is required.
+- `filePath` `string` — Absolute path to an .html file.
+
+### `validate_scenario_coverage`
+
+Validate scenario-board content (the first-time-viewer screen-flow & operation guide auto-injected as a right panel): checks the `script[type=application/json][data-nds-scenario]` manifest — flow[] non-empty, every flow screen has a description, and every flow key maps to a `[data-screen]` element in the DOM (live-sync evidence). Pass `source` or `filePath`. Missing/incomplete content blocks build_singlefile_html; read build.scenarioValidation.
 
 **인자**
 

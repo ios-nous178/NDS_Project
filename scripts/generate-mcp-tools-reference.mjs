@@ -146,6 +146,7 @@ const CATEGORIES = [
       "build_singlefile_html",
       "validate_html_mockup",
       "validate_prd_coverage",
+      "validate_scenario_coverage",
       "score_mockup_quality",
       "convert_html_to_ds_html",
       "suggest_replacement",

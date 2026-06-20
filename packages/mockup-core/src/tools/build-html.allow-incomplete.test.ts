@@ -34,8 +34,11 @@ const indexHtml = (extra = "") => `<!doctype html>
 <html data-project="nudge-eap"><head><meta charset="utf-8"></head>
 <body>
   <script type="application/json" data-prd-coverage>{"requirements":[]}</script>
-  <nds-button id="ok-btn">확인</nds-button>
-  ${extra}
+  <script type="application/json" data-nds-scenario>{"flow":[{"key":"main","title":"화면"}],"screens":{"main":{"desc":"화면"}}}</script>
+  <main data-screen="main">
+    <nds-button id="ok-btn">확인</nds-button>
+    ${extra}
+  </main>
   <script>document.getElementById("ok-btn").addEventListener("click", () => alert("ok"));</script>
 </body></html>`;
 

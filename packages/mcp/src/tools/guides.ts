@@ -1315,6 +1315,7 @@ task: <project>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary
 7. **PRD/brief 일부 구현 금지.** 코드 작성 전에 사용자 PRD/brief 의 명시 요구사항을 전부 분해하고, \`index.html\` 에 \`<script type="application/json" data-prd-coverage>{"requirements":[...]}</script>\` 로 남긴다. 각 항목은 \`status:"implemented"\` 와 실제 DOM \`evidence\` selector 를 가져야 한다. \`build_singlefile_html\` 은 매니페스트 누락을 \`missing-prd-coverage\` 로 막고, 최종 응답의 \`prdValidation\` 또는 별도 \`validate_prd_coverage\` 가 미완료/증거 누락을 실패시킨다. DS 품질 점수(\`validate_html_mockup\`)와 PRD 커버리지 verdict 는 분리해서 본다.
 8. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.ts\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다.
 9. **산출물은 반드시 \`build_singlefile_html\`.** raw \`vite build\` 결과의 다중 파일 \`dist/\` 폴더로 끝내지 말 것. 디자이너/PM 에게 공유 가능한 표준 산출물은 \`vite-plugin-singlefile\` 로 inline 된 \`dist/index.html\` 1개 파일이다. MCP 가 vite.config 패치 + 빌드까지 자동 수행한다.
+10. **시나리오 보드 콘텐츠 작성 필수 (처음 보는 분을 위한 화면 흐름·조작 가이드).** 목업을 처음 보는 디자이너/PM/QA 가 화면 흐름과 조작법을 바로 이해하도록, \`build_singlefile_html\` 이 우측에 "시나리오 보드" 패널을 **자동 주입**한다. 셸은 자동이지만 **콘텐츠는 작성**해야 한다 — \`index.html\` 에 \`<script type="application/json" data-nds-scenario>{"flow":[{"key":"login","title":"로그인","sub":"신규 진입"}],"screens":{"login":{"desc":"이 화면이 하는 일","tips":["조작 가이드…"]}},"commonTips":["브라우저 뒤로가기로 이전 화면"],"edgeCases":[{"screen":"login","label":"빈 상태","note":"…"}]}</script>\` 형식으로 남긴다. **각 화면을 그리는 컨테이너에 \`data-screen="<key>"\` 를 달아야** 보드의 "지금 보는 화면"이 라이브로 동기화된다(\`flow[].key\` ↔ \`screens\` 키 ↔ \`[data-screen]\` 셋이 일치). \`build_singlefile_html\` 은 매니페스트 누락을 \`missing-scenario-board\` 로 막고, 최종 응답의 \`scenarioValidation\` 또는 별도 \`validate_scenario_coverage\` 가 누락/구조 미비/DOM 미스매치를 실패시킨다(빌드 차단). 단일 화면 목업도 \`flow\` 1개 + 그 화면 \`data-screen\` 으로 최소 충족한다.
 
 **우회 자가 감지 체크리스트 — 작업 시작 직후 + 완료 직전 둘 다 통과해야 한다:**
 
@@ -1323,6 +1324,7 @@ task: <project>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary
 - [ ] 구현 전 \`references.md\` 를 읽고 good/bad 기준을 실제 레이아웃·간격·타이포·컬러 결정에 반영했다.
 - [ ] root \`index.html\` 이 존재하고 \`<nds-*>\` custom-element 를 1개 이상 사용한다.
 - [ ] \`src/\` 에 \`.tsx\` 파일이 없다 (\`.ts\` + 필요 시 \`.css\` 만).
+- [ ] \`index.html\` 에 \`data-nds-scenario\` JSON(flow/screens/tips)이 있고, 각 화면 컨테이너에 \`data-screen="<key>"\` 가 붙어 시나리오 보드가 라이브로 동작한다.
 - [ ] \`@nudge-design/react\` 가 어떤 \`.ts\` / \`.html\` 에서도 import / 참조되지 않는다.
 - [ ] \`src/\` 의 \`.css\` 어디에도 \`:root { --semantic-* / --nds-* / --color-* / --gap-* / --inset-* }\` 인라인 정의가 없다.
 - [ ] 모든 DS 사용처는 \`<nds-*>\` custom-element 이다 (\`<button class="nds-button">\` 같은 className 흉내 없음).

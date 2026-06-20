@@ -40,8 +40,13 @@ import {
   type ValidateHtmlMockupResult,
 } from "./html-validator.js";
 import { validatePrdCoverage, type ValidatePrdCoverageResult } from "./prd-coverage.js";
+import {
+  validateScenarioCoverage,
+  type ValidateScenarioCoverageResult,
+} from "./scenario-coverage.js";
 import { detectDsVersions } from "./usage/tracker.js";
 import { injectDsStampBar } from "./ds-stamp.js";
+import { injectScenarioBoard } from "./scenario-board.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -120,6 +125,7 @@ export type WorkspaceAuditRule =
   | "no-tsx-found"
   | "missing-visual-references"
   | "missing-prd-coverage"
+  | "missing-scenario-board"
   | "no-html-entry-found"
   | "html-entry-has-no-nds-tag"
   | "cashwalk-biz-admin-missing-design-spec"
@@ -156,6 +162,11 @@ export interface BuildSinglefileHtmlResult {
   validation?: ValidateHtmlMockupResult;
   /** html intent 한정: PRD/brief 요구사항 커버리지 전용 검증 결과. DS 점수와 분리된다. */
   prdValidation?: ValidatePrdCoverageResult;
+  /**
+   * html intent 한정: 시나리오 보드(처음 보는 분을 위한 화면 흐름·조작 가이드) 콘텐츠 검증 결과.
+   * 셸은 빌드가 자동 주입하지만 콘텐츠(data-nds-scenario)는 작성해야 하며, 누락 시 빌드를 차단한다.
+   */
+  scenarioValidation?: ValidateScenarioCoverageResult;
   /**
    * allowIncomplete:true 로 error-severity DS 위반을 무시하고 강제 빌드한 경우, 미해결 error 개수.
    * 0/undefined 면 강제하지 않았거나 error 가 없었던 것. 위반 상세는 validation.violations[] 에 그대로 있다.
@@ -402,6 +413,7 @@ export async function buildSinglefileHtml(
   // react intent 는 shell 만 있어 dev_server 없이는 렌더드 DOM 을 못 잡으므로 NEXT STEP 안내로 위임.
   let validation: ValidateHtmlMockupResult | undefined;
   let prdValidation: ValidatePrdCoverageResult | undefined;
+  let scenarioValidation: ValidateScenarioCoverageResult | undefined;
   let report: ReportHtmlMockupUsageResult | undefined;
   let reportError: string | undefined;
   if (intent === "html") {
@@ -440,6 +452,28 @@ export async function buildSinglefileHtml(
       };
     }
     try {
+      // 시나리오 보드 콘텐츠(처음 보는 분을 위한 화면 흐름·조작 가이드) 검증 — 셸은 빌드가
+      // 자동 주입하지만 콘텐츠(data-nds-scenario)는 AI 가 작성해야 하므로 누락을 빌드 차단으로 막는다.
+      scenarioValidation = validateScenarioCoverage({ filePath: outputPath });
+    } catch (err) {
+      scenarioValidation = {
+        ok: false,
+        violations: [
+          {
+            rule: "scenario-board-incomplete",
+            line: 1,
+            selector: "(document)",
+            detail: `Scenario coverage auto-call failed: ${(err as Error).message}`,
+            suggestion:
+              "원본 index.html 의 data-nds-scenario JSON 과 dist/index.html 산출 상태를 확인하세요.",
+          },
+        ],
+        violationsByRule: [{ rule: "scenario-board-incomplete", count: 1, lines: [1] }],
+        summary: { flowSteps: 0, screensCovered: 0, screensMissing: 0, domMatched: 0, hasManifest: false },
+        note: "시나리오 보드 전용 검증입니다.",
+      };
+    }
+    try {
       report = await reportHtmlMockupUsage({
         filePath: outputPath,
         cwd,
@@ -466,6 +500,10 @@ export async function buildSinglefileHtml(
       args.assetVersion,
       report?.usage,
     );
+    // 시나리오 보드 셸 주입 — stamp 와 동일하게 validate·report 뒤에 박는다(주입된 패널의
+    // 마크업·클래스가 usage 카운트·DS 검증을 오염시키지 않도록). 콘텐츠 JSON(data-nds-scenario)이
+    // 있을 때만 박히며, 없으면 위 scenarioValidation 이 빌드를 차단한다.
+    stampScenarioBoard(outputPath);
   }
   const sizeBytes = fs.statSync(outputPath).size;
   const sizeKb = Math.round(sizeBytes / 1024);
@@ -477,10 +515,25 @@ export async function buildSinglefileHtml(
   const dsErrorCount = intent === "html" ? (validation?.severitySummary.error ?? 0) : 0;
   const hasBlockingDsErrors = dsErrorCount > 0;
   const forcedDsErrorCount = hasBlockingDsErrors && args.allowIncomplete ? dsErrorCount : undefined;
+  // 시나리오 보드 콘텐츠 게이트 — DS error 와 같은 무게로 빌드를 차단한다(사용자 결정: 빌드 차단).
+  const scenarioErrorCount =
+    intent === "html" && !(scenarioValidation?.ok ?? true)
+      ? (scenarioValidation?.violations.length ?? 0)
+      : 0;
+  const hasBlockingScenarioErrors = scenarioErrorCount > 0;
+  const forcedScenarioErrorCount =
+    hasBlockingScenarioErrors && args.allowIncomplete ? scenarioErrorCount : undefined;
   const forcedBuildWarning =
-    forcedDsErrorCount !== undefined
-      ? `[강제 빌드] DS error 위반 ${forcedDsErrorCount}건이 미해결인 상태로 allowIncomplete:true 로 빌드했습니다. ` +
-        `산출물은 생성됐지만 DS 정합성을 보장하지 않습니다 — validation.violations[] 를 확인하고 공유 전에 수정하세요.`
+    forcedDsErrorCount !== undefined || forcedScenarioErrorCount !== undefined
+      ? `[강제 빌드] ${[
+          forcedDsErrorCount !== undefined ? `DS error 위반 ${forcedDsErrorCount}건` : null,
+          forcedScenarioErrorCount !== undefined
+            ? `시나리오 보드 미비 ${forcedScenarioErrorCount}건`
+            : null,
+        ]
+          .filter(Boolean)
+          .join(" · ")}이 미해결인 상태로 allowIncomplete:true 로 빌드했습니다. ` +
+        `산출물은 생성됐지만 정합성을 보장하지 않습니다 — validation.violations[] / scenarioValidation.violations[] 를 확인하고 공유 전에 수정하세요.`
       : undefined;
 
   const annotations: string[] = [];
@@ -508,6 +561,11 @@ export async function buildSinglefileHtml(
       `prd ${prdValidation.ok ? "ok" : `${prdValidation.violations.length}건 위반`}`,
     );
   }
+  if (scenarioValidation) {
+    annotations.push(
+      `scenario ${scenarioValidation.ok ? "ok" : `${scenarioValidation.violations.length}건 위반`}`,
+    );
+  }
   if (report?.webhook) {
     const w = report.webhook;
     annotations.push(
@@ -523,22 +581,32 @@ export async function buildSinglefileHtml(
     intent === "react"
       ? "dev_server({ action:'start' }) → validate_html_mockup({ url, sessionId })"
       : undefined;
-  // 기본(allowIncomplete 미지정)에서 DS error 위반이 있으면 빌드를 실패로 보고한다.
+  // 기본(allowIncomplete 미지정)에서 DS error 또는 시나리오 보드 미비가 있으면 빌드를 실패로 보고한다.
   const blockedByDsErrors = hasBlockingDsErrors && !args.allowIncomplete;
+  const blockedByScenario = hasBlockingScenarioErrors && !args.allowIncomplete;
+  const blocked = blockedByDsErrors || blockedByScenario;
+  const blockReasons = [
+    blockedByDsErrors ? `DS error 위반 ${dsErrorCount}건` : null,
+    blockedByScenario ? `시나리오 보드 미비 ${scenarioErrorCount}건` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const humanReadable =
     intent === "html"
-      ? blockedByDsErrors
-        ? `[BLOCKED] ${relOutput} 생성됨 — DS error 위반 ${dsErrorCount}건으로 빌드를 막았습니다 (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
-          `validation.violations[] 를 확인해 error 위반을 수정 후 build_singlefile_html 재호출하세요. ` +
+      ? blocked
+        ? `[BLOCKED] ${relOutput} 생성됨 — ${blockReasons}으로 빌드를 막았습니다 (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
+          `validation.violations[] / scenarioValidation.violations[] 를 확인해 위반을 수정 후 build_singlefile_html 재호출하세요. ` +
           `사용자가 명시적으로 우회를 허용한 경우에만 build_singlefile_html({ allowIncomplete: true }) 로 재호출 — ` +
-          `이 경우 미해결 DS 에러가 남은 채로 산출물이 공유됩니다.`
-        : validation?.ok && prdValidation?.ok
+          `이 경우 미해결 위반이 남은 채로 산출물이 공유됩니다.`
+        : validation?.ok && prdValidation?.ok && scenarioValidation?.ok
           ? `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}`
           : `[OK build / FAIL validate] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
             (forcedBuildWarning ? `${forcedBuildWarning}\n` : "") +
             `DS 위반 ${validation?.violations.length ?? 0}건, PRD 위반 ${
               prdValidation?.violations.length ?? 0
-            }건 — validation.violations[] / prdValidation.violations[] 를 각각 확인 후 수정.`
+            }건, 시나리오 위반 ${
+              scenarioValidation?.violations.length ?? 0
+            }건 — validation / prdValidation / scenarioValidation 의 violations[] 를 각각 확인 후 수정.`
       : `[OK] ${relOutput} (${sizeKb} KB, ${elapsedSec}s)${tail}\n` +
         `NEXT STEP → ${nextCall} 호출 필수 (DS 사용량 적재 + 위반 최종 확인).`;
 
@@ -559,7 +627,7 @@ export async function buildSinglefileHtml(
   return {
     // 기본은 빌드 성공. 단 html intent 에서 DS error 위반이 있고 allowIncomplete 가 아니면 ok:false 로 막는다.
     // (산출물 dist/index.html 은 이미 생성됐지만, 게이트는 "이 빌드를 ship 해도 되는가" 신호다.)
-    ok: !blockedByDsErrors,
+    ok: !blocked,
     outputPath,
     sizeBytes,
     sizeKb,
@@ -574,16 +642,17 @@ export async function buildSinglefileHtml(
     intent,
     validation,
     prdValidation,
+    scenarioValidation,
     forcedDsErrorCount,
     forcedBuildWarning,
     report,
     humanReadable,
     nextStep: nextCall,
     _nextSuggestion,
-    ...(blockedByDsErrors
+    ...(blocked
       ? {
           error:
-            `DS error 위반 ${dsErrorCount}건으로 빌드가 차단됨. validation.violations[] 확인 후 수정하거나 ` +
+            `${blockReasons}으로 빌드가 차단됨. validation.violations[] / scenarioValidation.violations[] 확인 후 수정하거나 ` +
             `allowIncomplete:true 로 명시 우회하세요.`,
         }
       : {}),
@@ -1009,6 +1078,20 @@ function stampDsBar(
   }
 }
 
+/**
+ * dist/index.html 에 시나리오 보드 셸을 주입(멱등). AI 가 작성한 data-nds-scenario 콘텐츠가 있을
+ * 때만 박힌다. best-effort: 실패해도 빌드 자체는 성공으로 둔다(stampDsBar 와 동일 정책).
+ */
+function stampScenarioBoard(outputPath: string): void {
+  try {
+    const html = fs.readFileSync(outputPath, "utf-8");
+    const next = injectScenarioBoard(html);
+    if (next !== html) fs.writeFileSync(outputPath, next, "utf-8");
+  } catch {
+    // 시나리오 보드 주입 실패는 산출물 자체를 무효화하지 않는다.
+  }
+}
+
 function findMatchingBracket(source: string, openIdx: number): number {
   if (source[openIdx] !== "[") return -1;
   let depth = 0;
@@ -1267,6 +1350,8 @@ export function auditMockupWorkspace(
         }
         const prdCoverageViolation = auditPrdCoverageManifest(content);
         if (prdCoverageViolation) violations.push(prdCoverageViolation);
+        const scenarioViolation = auditScenarioManifest(content);
+        if (scenarioViolation) violations.push(scenarioViolation);
       } catch {
         // 읽기 실패는 무시 — vite build 단계에서 어차피 실패함
       }
@@ -1274,6 +1359,22 @@ export function auditMockupWorkspace(
   }
 
   return violations;
+}
+
+function auditScenarioManifest(content: string): WorkspaceAuditViolation | null {
+  if (/<script\b[^>]*\bdata-nds-scenario\b[^>]*>/i.test(content)) return null;
+  return {
+    rule: "missing-scenario-board",
+    files: ["index.html"],
+    detail:
+      "index.html 에 시나리오 보드 콘텐츠(data-nds-scenario)가 없습니다. " +
+      "이 목업을 처음 보는 분(디자이너/PM/QA)을 위한 화면 흐름·조작 가이드를 빌드가 우측 패널로 자동 주입하지만, " +
+      "콘텐츠는 작성해야 합니다. 화면 흐름을 분해해 " +
+      '<script type="application/json" data-nds-scenario>{"flow":[{"key":"login","title":"로그인","sub":"신규 진입"}],' +
+      '"screens":{"login":{"desc":"이 화면이 하는 일","tips":["조작 가이드…"]}},"commonTips":["브라우저 뒤로가기로 이전 화면"]}</script> ' +
+      "형식으로 남기고, 각 화면 컨테이너에 data-screen=\"<key>\" 를 달아 '지금 보는 화면' 라이브 싱크가 동작하게 하세요. " +
+      "validate 시 scenario-board-incomplete 로 재검증하며 누락 시 빌드를 차단합니다.",
+  };
 }
 
 function auditPrdCoverageManifest(content: string): WorkspaceAuditViolation | null {
