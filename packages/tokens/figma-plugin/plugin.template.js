@@ -135,11 +135,27 @@ async function main() {
     const ex = dimColl.modes.find((x) => x.name === m);
     dModeIds[m] = ex ? ex.modeId : dimColl.addMode(m);
   }
+  // FLOAT 변수 scope — 해당 Figma 속성 picker 에만 떠서 바인딩이 깔끔하게 동작.
+  const dimScope = (name) => {
+    const c = name.split("/")[0];
+    if (c === "font-size") return ["FONT_SIZE"];
+    if (c === "line-height") return ["LINE_HEIGHT"];
+    if (c === "letter-spacing") return ["LETTER_SPACING"];
+    if (c === "radius" || c === "shape") return ["CORNER_RADIUS"];
+    if (c === "border-width" || c === "stroke") return ["STROKE_FLOAT"];
+    if (c === "gap" || c === "gap-title") return ["GAP"];
+    if (c === "inset" || c === "spacing") return ["GAP", "WIDTH_HEIGHT"];
+    if (c === "size" || c === "grid") return ["WIDTH_HEIGHT", "GAP"];
+    return ["ALL_SCOPES"];
+  };
   const dimVars = {};
   for (const [name, def] of Object.entries(TOKENS.dimensions.variables)) {
     const v = ensureVar(name, dimColl, "FLOAT");
     for (const [mode, mv] of Object.entries(def.valuesByMode))
       v.setValueForMode(dModeIds[mode], mv.value);
+    try {
+      v.scopes = dimScope(name);
+    } catch (e) {} // eslint-disable-line no-empty
     dimVars[name] = v;
   }
 
@@ -406,95 +422,135 @@ async function main() {
   semantic.x = atomic.x + atomic.width + 120;
   colorPage.appendChild(semantic);
 
-  // ── 페이지 2: Dimension & Type ──
-  const dimPage = await getPage("🎨 Token Guide — Dimension & Type");
-  const dimRoot = auto("Dimension & Type", "VERTICAL", 28, { pad: 56, fill: WHITE });
+  // 공용 dimension 표(Semantic 표와 100% 동일 스타일) + 옵션 시각 바.
+  const dgroups = {};
+  for (const name of Object.keys(TOKENS.dimensions.variables))
+    (dgroups[name.split("/")[0]] = dgroups[name.split("/")[0]] || []).push(name);
+  const spacer1 = (h) => {
+    const f = figma.createFrame();
+    f.resize(1, h);
+    f.fills = [];
+    return f;
+  };
+  function dimTable(parent, cats, withBar) {
+    const head = auto("colhead", "HORIZONTAL", 0, {
+      align: "CENTER",
+      fill: BAR,
+      radius: 6,
+      padV: 9,
+      padH: 14,
+    });
+    head.appendChild(txt("Token", 11, "Bold", INK, NAMEW - 14));
+    for (const b of BRANDS) head.appendChild(txt(brandLabel(b), 11, "Bold", INK, COLW, "LEFT"));
+    parent.appendChild(head);
+    for (const g of cats) {
+      if (!dgroups[g]) continue;
+      const group = auto(g, "VERTICAL", 0);
+      group.appendChild(spacer1(18));
+      accentTitle(group, catName(g), `${dgroups[g].length} tokens`);
+      group.appendChild(spacer1(6));
+      for (const name of dgroups[g]) {
+        const vbm = TOKENS.dimensions.variables[name].valuesByMode;
+        const baseV = (vbm["nudge-eap"] || {}).value;
+        const row = auto(name, "HORIZONTAL", 0, { align: "CENTER", padV: 7 });
+        row.appendChild(txt(name, 11, "Regular", INK, NAMEW));
+        for (const b of BRANDS) {
+          const cell = auto(b, "HORIZONTAL", 7, {
+            align: "CENTER",
+            primary: "FIXED",
+            counter: "FIXED",
+          });
+          cell.resize(COLW, 26);
+          const v = (vbm[b] || {}).value;
+          if (v == null) cell.appendChild(txt("—", 10, "Regular", LINE));
+          else {
+            const d = baseV != null && v !== baseV;
+            cell.appendChild(txt(String(v), 12, d ? "Bold" : "Regular", d ? ACCENT : INK));
+          }
+          row.appendChild(cell);
+        }
+        // 시각 바 — radius 는 곡률, 나머지는 길이로 실제 크기 표현(base 값).
+        if (withBar && typeof baseV === "number" && baseV >= 0) {
+          const isR = /^(radius|shape)/.test(name);
+          const bar = figma.createRectangle();
+          bar.resize(Math.max(2, Math.min(baseV, 280)), 14);
+          bar.cornerRadius = isR ? Math.min(baseV, 7) : 2;
+          bar.fills = [{ type: "SOLID", color: ACCENT }];
+          row.appendChild(bar);
+        }
+        group.appendChild(row);
+      }
+      parent.appendChild(group);
+    }
+  }
+
+  // ── 페이지 2: Dimension (지오메트리) ──
+  const TYPO_CATS = ["font-size", "line-height", "letter-spacing"];
+  const GEO_CATS = Object.keys(dgroups).filter((g) => !TYPO_CATS.includes(g));
+  const dimPage = await getPage("🎨 Token Guide — Dimension");
+  const dimRoot = auto("Dimension", "VERTICAL", 28, { pad: 56, fill: WHITE });
   const dh = auto("hd", "VERTICAL", 4);
   dh.appendChild(rect(40, 4, ACCENT));
-  dh.appendChild(txt("Dimension & Type", 28, "Bold", INK));
+  dh.appendChild(txt("Dimension", 28, "Bold", INK));
   dh.appendChild(
     txt(
-      "FLOAT 변수(spacing·radius·stroke·typeScale 분해) + Text Style(변수 바인딩) — 코드 SSOT 자동",
+      "FLOAT 변수(spacing·gap·inset·radius·stroke·size) — auto-layout gap/padding·corner·stroke 에 바인딩. brand=mode.",
       12,
       "Regular",
       SUB,
     ),
   );
   dimRoot.appendChild(dh);
+  dimTable(dimRoot, GEO_CATS, true);
+  dimPage.appendChild(dimRoot);
 
-  // dimension 표 — Semantic 표와 100% 동일 스타일(헤더바·카테고리·행·컬럼폭). 셀만 숫자값.
-  const dHead = auto("colhead", "HORIZONTAL", 0, {
-    align: "CENTER",
-    fill: BAR,
-    radius: 6,
-    padV: 9,
-    padH: 14,
-  });
-  dHead.appendChild(txt("Token", 11, "Bold", INK, NAMEW - 14));
-  for (const b of BRANDS) dHead.appendChild(txt(brandLabel(b), 11, "Bold", INK, COLW, "LEFT"));
-  dimRoot.appendChild(dHead);
+  // ── 페이지 3: Typography ──
+  const typoPage = await getPage("🎨 Token Guide — Typography");
+  const typoRoot = auto("Typography", "VERTICAL", 28, { pad: 56, fill: WHITE });
+  const th = auto("hd", "VERTICAL", 4);
+  th.appendChild(rect(40, 4, ACCENT));
+  th.appendChild(txt("Typography", 28, "Bold", INK));
+  th.appendChild(
+    txt(
+      "Text Style(typeScale) — fontSize/lineHeight/letterSpacing 를 FLOAT 변수에 바인딩(brand=mode). 샘플은 바인딩된 변수값으로 렌더.",
+      12,
+      "Regular",
+      SUB,
+    ),
+  );
+  typoRoot.appendChild(th);
 
-  const dgroups = {};
-  for (const name of Object.keys(TOKENS.dimensions.variables))
-    (dgroups[name.split("/")[0]] = dgroups[name.split("/")[0]] || []).push(name);
-  for (const g of Object.keys(dgroups)) {
-    const group = auto(g, "VERTICAL", 0);
-    const gpad = figma.createFrame();
-    gpad.resize(1, 18);
-    gpad.fills = [];
-    group.appendChild(gpad);
-    accentTitle(group, catName(g), `${dgroups[g].length} tokens`);
-    const gpad2 = figma.createFrame();
-    gpad2.resize(1, 6);
-    gpad2.fills = [];
-    group.appendChild(gpad2);
-    for (const name of dgroups[g]) {
-      const vbm = TOKENS.dimensions.variables[name].valuesByMode;
-      const baseV = (vbm["nudge-eap"] || {}).value;
-      const row = auto(name, "HORIZONTAL", 0, { align: "CENTER", padV: 7 });
-      row.appendChild(txt(name, 11, "Regular", INK, NAMEW));
-      for (const b of BRANDS) {
-        const cellWrap = auto(b, "HORIZONTAL", 7, {
-          align: "CENTER",
-          primary: "FIXED",
-          counter: "FIXED",
-        });
-        cellWrap.resize(COLW, 26);
-        const v = (vbm[b] || {}).value;
-        if (v == null) {
-          cellWrap.appendChild(txt("—", 10, "Regular", LINE));
-        } else {
-          const differs = baseV != null && v !== baseV;
-          cellWrap.appendChild(
-            txt(String(v), 12, differs ? "Bold" : "Regular", differs ? ACCENT : INK),
-          );
-        }
-        row.appendChild(cellWrap);
-      }
-      group.appendChild(row);
-    }
-    dimRoot.appendChild(group);
-  }
-
-  // Text Style 샘플
-  const tsSec = auto("Text Styles", "VERTICAL", 12);
-  accentTitle(tsSec, "Text Styles", `${createdStyles.length} · typeScale → 변수 바인딩`);
+  // Text Style 샘플 — 스타일 적용(setTextStyleIdAsync) → 바인딩된 변수값으로 실제 렌더.
+  const tsSec = auto("Text Styles", "VERTICAL", 0);
+  accentTitle(tsSec, "Text Styles", `${createdStyles.length} · 변수 바인딩`);
+  tsSec.appendChild(spacer1(8));
   for (const cs of createdStyles) {
-    const row = auto(cs.kk, "HORIZONTAL", 16, { align: "CENTER" });
-    row.appendChild(txt(cs.nm, 11, "Regular", SUB, 140));
-    const sample = txt("다람쥐 Aa 0123", 16, "Regular", INK);
+    const row = auto(cs.kk, "HORIZONTAL", 20, { align: "CENTER", padV: 6 });
+    row.appendChild(txt(cs.nm, 11, "Regular", SUB, 150));
+    const fsd = TOKENS.dimensions.variables["font-size/" + cs.kk];
+    const lhd = TOKENS.dimensions.variables["line-height/" + cs.kk];
+    const fsv = fsd ? (fsd.valuesByMode["nudge-eap"] || {}).value : null;
+    const lhv = lhd ? (lhd.valuesByMode["nudge-eap"] || {}).value : null;
+    row.appendChild(
+      txt(`${fsv == null ? "—" : fsv}/${lhv == null ? "—" : lhv}`, 10, "Regular", FAINT, 56),
+    );
+    const sample = txt("다람쥐 Aa 0123 한글 Sample", 16, "Regular", INK);
     try {
-      sample.textStyleId = cs.st.id;
+      await sample.setTextStyleIdAsync(cs.st.id);
     } catch (e) {} // eslint-disable-line no-empty
     row.appendChild(sample);
     tsSec.appendChild(row);
   }
-  dimRoot.appendChild(tsSec);
-  dimPage.appendChild(dimRoot);
+  typoRoot.appendChild(tsSec);
+  typoRoot.appendChild(spacer1(20));
+  dimTable(typoRoot, TYPO_CATS, false); // font-size/line-height/letter-spacing 변수 표
+  typoPage.appendChild(typoRoot);
 
   await figma.setCurrentPageAsync(colorPage);
 }
 
 main()
-  .then(() => figma.closePlugin("✓ 변수 + Text Style + 가이드 2페이지 생성 완료"))
+  .then(() =>
+    figma.closePlugin("✓ 변수 + Text Style + 가이드 3페이지(Color·Dimension·Typography) 완료"),
+  )
   .catch((e) => figma.closePlugin("✗ 오류: " + (e && e.message ? e.message : e)));
