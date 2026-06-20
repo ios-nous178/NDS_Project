@@ -52,8 +52,18 @@ export const semanticCategoryNotes: Record<string, string> = {
   "confirm-cta": "모달/팝업 확인(주 액션) 버튼",
 };
 
+/** Semantic 표 컬럼 헤더용 브랜드 표시명 (한글). 코드 mode 키 → 표시명. */
+export const brandLabels: Record<string, string> = {
+  "nudge-eap": "넛지EAP",
+  "cashwalk-biz": "캐포비",
+  geniet: "geniet",
+  runmile: "runmile",
+  trost: "trost",
+};
+
 export const tokenMeta = {
   collections: collectionNotes,
   families: familyNotes,
   semanticCategories: semanticCategoryNotes,
+  brandLabels,
 };

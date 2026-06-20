@@ -15,6 +15,8 @@ const path = require("path");
 const { colors } = require("../dist/colors");
 const { isRef } = require("../dist/ref.js");
 const { tokenMeta } = require("../dist/token-meta.js");
+const dim = require("../dist/spacing"); // spacing/gap/gapTitle/inset/radius/shape/borderWidth/stroke/sizing/grid
+const { typeScale } = require("../dist/typography");
 const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
@@ -164,6 +166,53 @@ for (const name of [...allNames].sort()) {
   }
   variables[name] = { type: "COLOR", valuesByMode };
 }
+// ─── dimensions (FLOAT, brand=mode) — Figma FLOAT 변수: gap/padding·corner·stroke·텍스트 바인딩 ───
+function flatNum(obj, prefix, out) {
+  for (const [k, v] of Object.entries(obj)) {
+    const name = prefix ? `${prefix}/${k}` : k;
+    if (typeof v === "number") out[name] = v;
+    else if (v && typeof v === "object") flatNum(v, name, out);
+  }
+  return out;
+}
+const tsKey = (s) => s.replace(/([a-z])(\d)/g, "$1-$2"); // body2 → body-2
+function dimMap(theme) {
+  const ov = (theme && theme.spacing) || {};
+  const tsOv = (theme && theme.typography && theme.typography.typeScale) || {};
+  const out = {};
+  flatNum({ ...dim.spacing, ...(ov.spacing || {}) }, "spacing", out);
+  flatNum({ ...dim.gap, ...(ov.gap || {}) }, "gap", out);
+  flatNum({ ...dim.gapTitle, ...(ov.gapTitle || {}) }, "gap-title", out);
+  flatNum({ ...dim.inset, ...(ov.inset || {}) }, "inset", out);
+  flatNum({ ...dim.radius, ...(ov.radius || {}) }, "radius", out);
+  flatNum({ ...dim.shape, ...(ov.shape || {}) }, "shape", out);
+  flatNum({ ...dim.borderWidth, ...(ov.borderWidth || {}) }, "border-width", out);
+  flatNum({ ...dim.stroke, ...(ov.stroke || {}) }, "stroke", out);
+  flatNum(dim.sizing, "size", out);
+  flatNum({ ...dim.grid, ...(ov.grid || {}) }, "grid", out);
+  const ts = { ...typeScale, ...tsOv };
+  for (const [k, v] of Object.entries(ts)) {
+    const kk = tsKey(k);
+    out[`font-size/${kk}`] = v.fontSize;
+    out[`line-height/${kk}`] = v.lineHeight;
+    if (v.letterSpacing != null) out[`letter-spacing/${kk}`] = v.letterSpacing;
+  }
+  return out;
+}
+const dimByMode = {};
+for (const { mode, theme } of BRANDS) dimByMode[mode] = dimMap(mode === "nudge-eap" ? null : theme);
+const dimNames = new Set();
+for (const m of Object.values(dimByMode)) for (const n of Object.keys(m)) dimNames.add(n);
+const dimVariables = {};
+for (const name of [...dimNames].sort()) {
+  const vbm = {};
+  for (const { mode } of BRANDS)
+    if (dimByMode[mode][name] != null) vbm[mode] = { value: dimByMode[mode][name] };
+  dimVariables[name] = { type: "FLOAT", valuesByMode: vbm };
+}
+// typeScale 키 목록(Text Style 생성용) — 본문 weight/family 는 보류, size/lh/ls 만 변수 바인딩.
+const textStyleKeys = Object.keys(typeScale).map(tsKey);
+
 const figma = {
   $comment:
     "P2 v1 intermediate. semantic=brand=mode, alias=variable name(컬렉션 미지정). " +
@@ -171,6 +220,7 @@ const figma = {
     "alias 'family/stop' 는 nudge-eap mode=Primitive/Core, 브랜드 mode=Primitive/{Brand} 로 해석.",
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
+  dimensions: { modes: BRANDS.map((b) => b.mode), variables: dimVariables, textStyleKeys },
   meta: tokenMeta,
 };
 fs.writeFileSync(path.join(nextDir, "figma-variables.json"), JSON.stringify(figma, null, 2) + "\n");
