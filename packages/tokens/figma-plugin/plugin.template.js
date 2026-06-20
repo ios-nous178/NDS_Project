@@ -5,8 +5,8 @@
  * Nudge Tokens → Figma 플러그인 (코드 SSOT → Figma 변수 + 바인딩된 비주얼 가이드).
  *   1) Primitive/Core + Primitive/{Brand} 컬렉션 + Semantic(brand=mode) 컬렉션을 생성/업서트.
  *      semantic 값은 primitive 변수로 VARIABLE_ALIAS, confirmCta self-ref 는 semantic alias.
- *   2) "🎨 Token Guide" 페이지에 스와치를 그리되 fill 을 변수에 **바인딩** → 값 바뀌면 자동 갱신.
- * 이름기준 업서트(재실행 안전). 토큰/네트워크 불필요(현 파일에 직접 실행).
+ *   2) "🎨 Token Guide" 페이지: Primitive=램프별 그룹, Semantic=카테고리 카드×브랜드 열 표.
+ *      스와치 fill 을 변수에 **바인딩** → 값 바뀌면 자동 갱신. 이름기준 업서트(재실행 안전).
  */
 const TOKENS = __TOKENS_JSON__;
 
@@ -102,116 +102,183 @@ async function main() {
   // ── 비주얼 가이드 ──────────────────────────────────────
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
   await figma.loadFontAsync({ family: "Inter", style: "Medium" });
+  await figma.loadFontAsync({ family: "Inter", style: "Bold" });
 
-  const page = figma.createPage();
-  page.name = "🎨 Token Guide";
+  const INK = { r: 0.08, g: 0.08, b: 0.1 };
+  const SUB = { r: 0.42, g: 0.43, b: 0.47 };
+  const LINE = { r: 0.9, g: 0.9, b: 0.93 };
+  const CARD = { r: 0.98, g: 0.98, b: 0.99 };
+  const WHITE = { r: 1, g: 1, b: 1 };
 
-  const vstack = (name, gap, pad) => {
+  const auto = (name, dir, gap, opts) => {
+    opts = opts || {};
     const f = figma.createFrame();
     f.name = name;
-    f.layoutMode = "VERTICAL";
+    f.layoutMode = dir;
     f.itemSpacing = gap;
-    f.paddingTop = f.paddingBottom = f.paddingLeft = f.paddingRight = pad || 0;
-    f.primaryAxisSizingMode = "AUTO";
-    f.counterAxisSizingMode = "AUTO";
+    f.primaryAxisSizingMode = opts.primary || "AUTO";
+    f.counterAxisSizingMode = opts.counter || "AUTO";
+    if (opts.align) f.counterAxisAlignItems = opts.align;
+    if (opts.padV != null) f.paddingTop = f.paddingBottom = opts.padV;
+    if (opts.padH != null) f.paddingLeft = f.paddingRight = opts.padH;
+    if (opts.pad != null)
+      f.paddingTop = f.paddingBottom = f.paddingLeft = f.paddingRight = opts.pad;
+    f.fills = opts.fill ? [{ type: "SOLID", color: opts.fill }] : [];
+    if (opts.radius) f.cornerRadius = opts.radius;
+    if (opts.stroke) {
+      f.strokes = [{ type: "SOLID", color: opts.stroke }];
+      f.strokeWeight = 1;
+    }
+    return f;
+  };
+  const txt = (s, size, weight, color, w, align) => {
+    const t = figma.createText();
+    t.fontName = { family: "Inter", style: weight || "Regular" };
+    t.characters = String(s);
+    t.fontSize = size;
+    t.fills = [{ type: "SOLID", color: color || INK }];
+    if (w != null) {
+      t.textAutoResize = "HEIGHT";
+      t.resize(w, t.height);
+      if (align) t.textAlignHorizontal = align;
+    }
+    return t;
+  };
+  const spacer = (w, h) => {
+    const f = figma.createFrame();
+    f.name = "·";
+    f.resize(w, h);
     f.fills = [];
     return f;
   };
-  const label = (text, size, medium) => {
-    const t = figma.createText();
-    t.fontName = { family: "Inter", style: medium ? "Medium" : "Regular" };
-    t.characters = text;
-    t.fontSize = size;
-    return t;
-  };
-  const boundSwatch = (variable, w, h) => {
+  const swatch = (variable, w, h) => {
     const r = figma.createRectangle();
     r.resize(w, h);
-    r.cornerRadius = 6;
+    r.cornerRadius = 8;
     let paint = { type: "SOLID", color: { r: 0.5, g: 0.5, b: 0.5 } };
-    paint = figma.variables.setBoundVariableForPaint(paint, "color", variable);
+    try {
+      paint = figma.variables.setBoundVariableForPaint(paint, "color", variable);
+    } catch (e) {} // eslint-disable-line no-empty
     r.fills = [paint];
-    r.strokes = [{ type: "SOLID", color: { r: 0.9, g: 0.9, b: 0.9 } }];
+    r.strokes = [{ type: "SOLID", color: LINE }];
     r.strokeWeight = 1;
     return r;
   };
+  const pretty = (s) => s.replace(/-/g, " ").replace(/(^|\s)\w/g, (m) => m.toUpperCase());
 
-  const root = vstack("Tokens", 48, 48);
-  root.fills = [{ type: "SOLID", color: { r: 1, g: 1, b: 1 } }];
-
-  // Primitive 섹션 — 컬렉션별 스와치 그리드
-  for (const key of primKeys) {
-    const section = vstack(collTitle(key), 16);
-    section.appendChild(label(collTitle(key), 20, true));
-    const grid = figma.createFrame();
-    grid.name = "swatches";
-    grid.layoutMode = "HORIZONTAL";
-    grid.layoutWrap = "WRAP";
-    grid.itemSpacing = 12;
-    grid.counterAxisSpacing = 12;
-    grid.primaryAxisSizingMode = "FIXED";
-    grid.counterAxisSizingMode = "AUTO";
-    grid.resize(1040, 100);
-    grid.fills = [];
-    for (const [name, hex] of Object.entries(TOKENS.primitives[key])) {
-      const cell = vstack("c", 4);
-      cell.appendChild(boundSwatch(primVars[key][name], 72, 56));
-      cell.appendChild(label(name, 10, true));
-      cell.appendChild(label(String(hex).toUpperCase(), 9));
-      grid.appendChild(cell);
-    }
-    section.appendChild(grid);
-    root.appendChild(section);
+  // 재실행 안전 — 기존 가이드 페이지가 있으면 비우고 재사용(중복 생성 방지).
+  const PAGE_NAME = "🎨 Token Guide";
+  let page = figma.root.children.find((p) => p.name === PAGE_NAME);
+  if (page) {
+    await page.loadAsync();
+    for (const child of [...page.children]) child.remove();
+  } else {
+    page = figma.createPage();
+    page.name = PAGE_NAME;
   }
 
-  // Semantic 섹션 — role 마다 모드(브랜드)별 스와치 (mode-override 프레임에 바인딩)
-  const sem = vstack("Semantic", 12);
-  sem.appendChild(label("Semantic (brand = mode)", 20, true));
-  const header = figma.createFrame();
-  header.layoutMode = "HORIZONTAL";
-  header.itemSpacing = 8;
-  header.counterAxisSizingMode = "AUTO";
-  header.primaryAxisSizingMode = "AUTO";
-  header.fills = [];
-  header.appendChild(
-    (() => {
-      const l = label("", 11);
-      l.resize(220, 16);
-      return l;
-    })(),
+  const root = auto("Nudge Design Tokens", "VERTICAL", 56, { pad: 72, fill: WHITE });
+
+  const head = auto("header", "VERTICAL", 6);
+  head.appendChild(txt("Nudge Design Tokens", 36, "Bold", INK));
+  head.appendChild(
+    txt(
+      "Primitive · Semantic (brand = mode) — 코드 SSOT 에서 자동 생성, 스와치는 변수 바인딩",
+      14,
+      "Regular",
+      SUB,
+    ),
   );
-  for (const b of BRANDS) {
-    const l = label(b, 11, true);
-    l.resize(72, 16);
-    header.appendChild(l);
-  }
-  sem.appendChild(header);
-  for (const name of Object.keys(TOKENS.semantic.variables)) {
-    const row = figma.createFrame();
-    row.layoutMode = "HORIZONTAL";
-    row.itemSpacing = 8;
-    row.counterAxisAlignItems = "CENTER";
-    row.counterAxisSizingMode = "AUTO";
-    row.primaryAxisSizingMode = "AUTO";
-    row.fills = [];
-    const nameLabel = label(name, 11);
-    nameLabel.resize(220, 16);
-    row.appendChild(nameLabel);
-    for (const b of BRANDS) {
-      const cellFrame = figma.createFrame(); // mode-override 프레임 → 해당 브랜드 값 표시
-      cellFrame.resize(72, 32);
-      cellFrame.fills = [];
-      cellFrame.clipsContent = false;
-      cellFrame.setExplicitVariableModeForCollection(semColl, modeIds[b]);
-      cellFrame.appendChild(boundSwatch(semVars[name], 72, 32));
-      row.appendChild(cellFrame);
+  root.appendChild(head);
+
+  // ── Primitives — 램프별 그룹 ──
+  const primSection = auto("Primitives", "VERTICAL", 24);
+  primSection.appendChild(txt("Primitives", 26, "Bold", INK));
+  for (const key of primKeys) {
+    const card = auto(collTitle(key), "VERTICAL", 20, {
+      pad: 28,
+      fill: CARD,
+      radius: 16,
+      stroke: LINE,
+    });
+    card.appendChild(txt(collTitle(key).replace("Primitive/", ""), 16, "Medium", SUB));
+    const fams = {};
+    for (const name of Object.keys(TOKENS.primitives[key])) {
+      const i = name.indexOf("/");
+      const fam = i < 0 ? name : name.slice(0, i);
+      const stop = i < 0 ? "" : name.slice(i + 1);
+      (fams[fam] = fams[fam] || []).push({ name, stop });
     }
-    sem.appendChild(row);
+    for (const fam of Object.keys(fams)) {
+      const row = auto(fam, "HORIZONTAL", 16, { align: "CENTER" });
+      row.appendChild(txt(fam, 12, "Medium", INK, 92, "RIGHT"));
+      const chips = auto("chips", "HORIZONTAL", 8);
+      for (const s of fams[fam]) {
+        const chip = auto(s.name, "VERTICAL", 6, { align: "CENTER" });
+        chip.appendChild(swatch(primVars[key][s.name], 64, 48));
+        chip.appendChild(txt(s.stop, 10, "Medium", SUB));
+        chips.appendChild(chip);
+      }
+      row.appendChild(chips);
+      card.appendChild(row);
+    }
+    primSection.appendChild(card);
   }
-  root.appendChild(sem);
+  root.appendChild(primSection);
+
+  // ── Semantic — 카테고리 카드 × 브랜드 열 ──
+  const COLW = 108;
+  const NAMEW = 260;
+  const ROWH = 40;
+  const semSection = auto("Semantic", "VERTICAL", 20);
+  semSection.appendChild(txt("Semantic", 26, "Bold", INK));
+  semSection.appendChild(
+    txt("열 = 브랜드 모드 · 같은 role 이 프로젝트별로 어떻게 풀리는지 비교", 13, "Regular", SUB),
+  );
+
+  const headRow = auto("modes", "HORIZONTAL", 8, { align: "CENTER" });
+  headRow.appendChild(spacer(NAMEW, 1));
+  for (const b of BRANDS) headRow.appendChild(txt(b, 12, "Bold", INK, COLW, "CENTER"));
+  semSection.appendChild(headRow);
+
+  const cats = {};
+  for (const name of Object.keys(TOKENS.semantic.variables)) {
+    const cat = name.split("/")[0];
+    (cats[cat] = cats[cat] || []).push(name);
+  }
+  for (const cat of Object.keys(cats)) {
+    const card = auto(cat, "VERTICAL", 12, {
+      padV: 18,
+      padH: 22,
+      fill: CARD,
+      radius: 14,
+      stroke: LINE,
+    });
+    card.appendChild(txt(pretty(cat), 14, "Bold", INK));
+    for (const name of cats[cat]) {
+      const role = name.split("/").slice(1).join(" / ") || "(base)";
+      const row = auto(name, "HORIZONTAL", 8, { align: "CENTER" });
+      row.appendChild(txt(role, 12, "Regular", INK, NAMEW));
+      for (const b of BRANDS) {
+        const cell = figma.createFrame();
+        cell.name = b;
+        cell.resize(COLW, ROWH);
+        cell.fills = [];
+        cell.clipsContent = false;
+        try {
+          cell.setExplicitVariableModeForCollection(semColl, modeIds[b]);
+        } catch (e) {} // eslint-disable-line no-empty
+        cell.appendChild(swatch(semVars[name], COLW, ROWH));
+        row.appendChild(cell);
+      }
+      card.appendChild(row);
+    }
+    semSection.appendChild(card);
+  }
+  root.appendChild(semSection);
 
   page.appendChild(root);
-  figma.currentPage = page;
+  await figma.setCurrentPageAsync(page);
 }
 
 main()
