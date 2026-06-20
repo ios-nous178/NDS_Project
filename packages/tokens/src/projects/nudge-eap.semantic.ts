@@ -160,6 +160,8 @@ export const nudgeEapSemantic = {
       error: ref("color.red.500"), // #F13F00
       caution: ref("color.yellow.500"), // #FFC303
     },
+    // 선택 컨트롤(checkbox·radio) on 채움 — base 는 fill-brand 를 추종(프로젝트별 자기 brand 색).
+    controlOn: "var(--semantic-fill-brand-default)",
   },
   /**
    * Figma `Section_Input` (294:12).

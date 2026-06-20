@@ -146,6 +146,8 @@ export interface SemanticColors {
     status?: { error?: string; success?: string; info?: string; caution?: string };
     /** Point(액센트) 채움. Figma `Fill/Point/{Default,Hover,Pressed,Subtle}`. */
     point?: { default?: string; hover?: string; pressed?: string; subtle?: string };
+    /** 선택 컨트롤(checkbox·radio) on 채움. base=fill-brand 추종, trost=dark. */
+    controlOn?: string;
   };
   input?: {
     bg?: string;

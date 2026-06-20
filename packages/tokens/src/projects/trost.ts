@@ -141,11 +141,10 @@ export const trostTheme: ProjectTheme = {
     // 다크(#333) + 흰 체크/점(노랑 위 가독성). 칩 선택색과 동일 톤.
     checkbox: {
       size: 24,
-      checkedBg: trostNeutral[800],
-      checkedBorder: trostNeutral[800],
+      // checkedBg/checkedBorder → semantic fill.controlOn(dark) 로 승격(P3). checkColor 유지.
       checkColor: trostNeutral["00"],
     },
-    radio: { size: 24, checkedColor: trostNeutral[800] },
+    radio: { size: 24 }, // checkedColor → semantic fill.controlOn(dark) 로 승격(P3)
     // Toggle 50×30 (Controls 가이드 5158:108) — unchecked #EEE(스케일 밖 실측), checked 다크,
     // 썸 24·offset 3·travel 20(=50-24-3-3), material-like 그림자
     toggle: {

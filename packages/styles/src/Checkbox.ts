@@ -59,8 +59,8 @@ export const checkboxStyles = `
 
   :where(.${CB_INDICATOR_CLASS}[data-state="checked"]),
   :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
-    border-color: var(--nds-checkbox-checked-border, ${cv.fill.brand});
-    background: var(--nds-checkbox-checked-bg, ${cv.fill.brand});
+    border-color: var(--nds-checkbox-checked-border, ${cv.fill.controlOn});
+    background: var(--nds-checkbox-checked-bg, ${cv.fill.controlOn});
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"]) {

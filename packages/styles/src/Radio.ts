@@ -55,7 +55,7 @@ export const radioStyles = `
   }
 
   :where(.${RADIO_INDICATOR_CLASS}[data-checked="true"]) {
-    border-color: var(--nds-radio-checked-color, ${cv.fill.brand});
+    border-color: var(--nds-radio-checked-color, ${cv.fill.controlOn});
   }
 
   :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_INDICATOR_CLASS}) {
@@ -72,7 +72,7 @@ export const radioStyles = `
     width: 10px;
     height: 10px;
     border-radius: ${radius.pill}px;
-    background: var(--nds-radio-checked-color, ${cv.fill.brand});
+    background: var(--nds-radio-checked-color, ${cv.fill.controlOn});
     opacity: 0;
     transform: scale(0);
     transition: opacity ${transition.default}, transform ${transition.default},

@@ -160,6 +160,8 @@ export const trostSemantic = {
       info: ref("color.blue.500"), // #2C91FF
       caution: ref("color.yellow.text"),
     },
+    // 선택 컨트롤(checkbox·radio) on 채움 — trost 만 dark(노랑 brand 가 대비 부족).
+    controlOn: ref("color.neutral.800"),
     // Point(액센트) 채움 — 코발트.
     point: {
       default: ref("color.cobalt.500"), // #4968FF

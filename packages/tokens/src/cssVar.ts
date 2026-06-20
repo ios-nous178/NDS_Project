@@ -131,6 +131,8 @@ export const cv = {
     neutral: v("--semantic-fill-neutral-default"),
     neutralSubtle: v("--semantic-fill-neutral-subtle"),
     inverse: v("--semantic-fill-inverse-default"),
+    // 선택 컨트롤(checkbox·radio) on 채움. base 는 fill-brand 추종, trost 만 dark override.
+    controlOn: v("--semantic-fill-control-on"),
     statusError: v("--semantic-fill-status-error"),
     statusCaution: v("--semantic-fill-status-caution"),
   },
