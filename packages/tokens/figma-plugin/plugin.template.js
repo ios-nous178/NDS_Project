@@ -350,7 +350,7 @@ async function main() {
     padH: 14,
   });
   headBar.appendChild(txt("Token", 11, "Bold", INK, NAMEW - 14));
-  for (const b of BRANDS) headBar.appendChild(txt(brandLabel(b), 11, "Bold", INK, COLW, "MIN"));
+  for (const b of BRANDS) headBar.appendChild(txt(brandLabel(b), 11, "Bold", INK, COLW, "LEFT"));
   semantic.appendChild(headBar);
 
   const cats = {};
