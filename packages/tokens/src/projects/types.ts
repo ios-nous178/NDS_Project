@@ -134,7 +134,13 @@ export interface SemanticColors {
     point?: { default?: string };
   };
   fill?: {
-    brand?: { default?: string; hover?: string; pressed?: string; disabled?: string; subtle?: string };
+    brand?: {
+      default?: string;
+      hover?: string;
+      pressed?: string;
+      disabled?: string;
+      subtle?: string;
+    };
     neutral?: { default?: string; subtle?: string };
     inverse?: { default?: string };
     status?: { error?: string; success?: string; info?: string; caution?: string };
@@ -167,16 +173,8 @@ export interface SemanticColors {
     active?: string;
     text?: string;
   };
-  /**
-   * 캐시워크 로고 등 brand identity asset 전용 색상 슬롯.
-   * CashwalkBiz 가이드의 `Brand/Logo/{Default,Subtle,Strong}` (Brown 톤).
-   * NudgeEAP base / Trost / Geniet 는 사용하지 않음 — 로고 raw hex 또는 별도 자산 사용.
-   */
-  brandLogo?: {
-    default?: string;
-    subtle?: string;
-    strong?: string;
-  };
+  // (brandLogo 슬롯 제거 — P3 slice 2. brand→project 리네임으로 로고 자산이
+  //  @nudge-design/assets 로 이전되며 고아화, 소비처 0.)
 }
 
 /** 타이포그래피 오버라이드 */

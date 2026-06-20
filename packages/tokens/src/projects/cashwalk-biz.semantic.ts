@@ -217,13 +217,8 @@ export const cashwalkBizSemantic = {
     active: ref("color.neutral.800"), // #333333 — press (구 cascade 의 bgNeutralHover 와 동일)
     text: ref("color.common.00"), // #FFFFFF — 검정 fill 위 흰 텍스트
   },
-
-  // ─── Brand/Logo (3 tokens, 캐시워크 로고용 — 캐포비 신규 그룹) ───
-  brandLogo: {
-    default: ref("color.brown.500"), // #5E5050 — Brand/Logo/Default
-    subtle: ref("color.brown.100"), // #F2EAE8 — Brand/Logo/Subtle
-    strong: ref("color.brown.700"), // #403535 — Brand/Logo/Strong
-  },
+  // (Brand/Logo 3토큰 제거 — P3 slice 2. brand→project 리네임으로 로고 자산이
+  //  @nudge-design/assets 로 이전되며 고아화, 소비처 0. brown 팔레트는 유지.)
 } as const;
 
 export type CashwalkBizSemanticTokens = typeof cashwalkBizSemantic;
