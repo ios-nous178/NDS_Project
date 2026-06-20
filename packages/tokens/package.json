@@ -48,6 +48,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc && node scripts/generate-css.cjs && node scripts/generate-next.cjs",
     "check:value-freeze": "node scripts/check-value-freeze.cjs",
+    "figma:variables": "node scripts/figma-variables-upload.cjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
