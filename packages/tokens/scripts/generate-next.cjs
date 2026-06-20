@@ -14,6 +14,7 @@ const path = require("path");
 
 const { colors } = require("../dist/colors");
 const { isRef } = require("../dist/ref.js");
+const { tokenMeta } = require("../dist/token-meta.js");
 const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
@@ -170,6 +171,7 @@ const figma = {
     "alias 'family/stop' 는 nudge-eap mode=Primitive/Core, 브랜드 mode=Primitive/{Brand} 로 해석.",
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
+  meta: tokenMeta,
 };
 fs.writeFileSync(path.join(nextDir, "figma-variables.json"), JSON.stringify(figma, null, 2) + "\n");
 
