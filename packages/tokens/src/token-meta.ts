@@ -56,6 +56,7 @@ export const semanticCategoryNotes: Record<string, string> = {
 export const brandLabels: Record<string, string> = {
   "nudge-eap": "넛지EAP",
   "cashwalk-biz": "캐포비",
+  cashwalk: "캐시워크",
   geniet: "geniet",
   runmile: "runmile",
   trost: "trost",

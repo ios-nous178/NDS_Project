@@ -67,6 +67,7 @@ export {
   trostTheme,
   genietTheme,
   cashwalkBizTheme,
+  cashwalkTheme,
   runmileTheme,
 } from "./projects/index.js";
 export type {
@@ -74,6 +75,7 @@ export type {
   TrostSemanticTokens,
   GenietSemanticTokens,
   CashwalkBizSemanticTokens,
+  CashwalkSemanticTokens,
   RunmileSemanticTokens,
 } from "./projects/index.js";
 export {
@@ -108,6 +110,19 @@ export {
   cashwalkBizBrown,
   cashwalkBizStatus,
   cashwalkBizSemantic,
+} from "./projects/index.js";
+export {
+  cashwalkCommon,
+  cashwalkNeutral,
+  cashwalkYellow,
+  cashwalkCoralRed,
+  cashwalkBlue,
+  cashwalkCornflower,
+  cashwalkIndigo,
+  cashwalkGreen,
+  cashwalkBrown,
+  cashwalkStatus,
+  cashwalkSemantic,
 } from "./projects/index.js";
 export {
   runmileOrange,

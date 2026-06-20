@@ -31,6 +31,16 @@ import {
   cashwalkBizStatus,
   cashwalkBizSemantic,
   cashwalkBizTheme,
+  cashwalkCommon,
+  cashwalkNeutral,
+  cashwalkYellow,
+  cashwalkCoralRed,
+  cashwalkBlue,
+  cashwalkCornflower,
+  cashwalkIndigo,
+  cashwalkGreen,
+  cashwalkBrown,
+  cashwalkStatus,
   genietMint,
   genietRed,
   genietYellow,
@@ -319,6 +329,35 @@ export const cashwalkBizPreset = {
             Object.entries(cashwalkBizTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
           )
         : undefined,
+    },
+  },
+};
+
+/**
+ * Cashwalk (캐시워크 · 소비자앱) Tailwind preset.
+ *
+ * cashwalk.css 가 시멘틱 var 를 노란 톤으로 redefine → 시멘틱 클래스 자동 캐시워크.
+ * 별도 atomic alias 만 추가(cornflower=팀워크 · indigo=동네산책 accent 포함).
+ * theme(palette+semantic) 만 가진 minimal 프로젝트 → typography/spacing 은 base extend 상속.
+ */
+export const cashwalkPreset = {
+  theme: {
+    extend: {
+      ...nudgeEapPreset.theme.extend,
+      colors: {
+        "cashwalk-neutral": objectToPx(cashwalkNeutral),
+        "cashwalk-yellow": objectToPx(cashwalkYellow),
+        "cashwalk-blue": objectToPx(cashwalkBlue),
+        "cashwalk-green": objectToPx(cashwalkGreen),
+        "cashwalk-coral-red": objectToPx(cashwalkCoralRed),
+        cornflower: objectToPx(cashwalkCornflower),
+        indigo: objectToPx(cashwalkIndigo),
+        brown: objectToPx(cashwalkBrown),
+        common: objectToPx(cashwalkCommon),
+        status: objectToPx(cashwalkStatus),
+        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk.css 가 자동 redefine
+        ...nudgeEapPreset.theme.extend.colors,
+      },
     },
   },
 };

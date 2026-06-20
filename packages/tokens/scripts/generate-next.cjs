@@ -21,6 +21,7 @@ const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
 const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
+const { cashwalkTheme } = require("../dist/projects/cashwalk");
 const { runmileTheme } = require("../dist/projects/runmile");
 
 const BRANDS = [
@@ -28,6 +29,7 @@ const BRANDS = [
   { mode: "trost", theme: trostTheme },
   { mode: "geniet", theme: genietTheme },
   { mode: "cashwalk-biz", theme: cashwalkBizTheme },
+  { mode: "cashwalk", theme: cashwalkTheme },
   { mode: "runmile", theme: runmileTheme },
 ];
 

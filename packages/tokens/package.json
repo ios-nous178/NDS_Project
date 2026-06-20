@@ -39,6 +39,10 @@
     "./css/runmile": {
       "types": "./dist/css-stub.d.ts",
       "default": "./dist/runmile.css"
+    },
+    "./css/cashwalk": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/cashwalk.css"
     }
   },
   "files": [
