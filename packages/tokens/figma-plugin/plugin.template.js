@@ -59,7 +59,7 @@ function resolveCell(name, mode, seen) {
         ? TOKENS.primitives[bk]
         : TOKENS.primitives.core
     )[mv.alias];
-    return hex ? { hex, ref: mv.alias.replace(/\//g, ".") } : null;
+    return hex ? { hex, ref: mv.alias } : null; // 슬래시 형 통일 (Figma 변수명 = "family/stop")
   }
   const v = mv.value;
   const r = /^var\((--semantic-[a-z0-9-]+)\)$/.exec(v);
@@ -386,7 +386,7 @@ async function main() {
     group.appendChild(gpad2);
     for (const name of cats[cat]) {
       const row = auto(name, "HORIZONTAL", 0, { align: "CENTER", padV: 7 });
-      row.appendChild(txt("--semantic-" + name.replace(/\//g, "-"), 11, "Regular", INK, NAMEW));
+      row.appendChild(txt(name, 11, "Regular", INK, NAMEW)); // 슬래시 형(= Figma 변수명) 통일
       for (const b of BRANDS) {
         const cellWrap = auto(b, "HORIZONTAL", 7, {
           align: "CENTER",
