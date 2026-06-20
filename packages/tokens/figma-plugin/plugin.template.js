@@ -422,31 +422,55 @@ async function main() {
   );
   dimRoot.appendChild(dh);
 
-  // dimension 그룹별 목록 (이름 + base 값)
+  // dimension 표 — Token + 브랜드 모드 컬럼(프로젝트별 값). nudge-eap 와 다른 값은 강조.
+  const DNAMEW = 230,
+    DCOLW = 92;
+  const dHead = auto("colhead", "HORIZONTAL", 0, {
+    align: "CENTER",
+    fill: BAR,
+    radius: 6,
+    padV: 9,
+    padH: 14,
+  });
+  dHead.appendChild(txt("Token", 11, "Bold", INK, DNAMEW - 14));
+  for (const b of BRANDS) dHead.appendChild(txt(brandLabel(b), 11, "Bold", INK, DCOLW, "LEFT"));
+  dimRoot.appendChild(dHead);
+
   const dgroups = {};
   for (const name of Object.keys(TOKENS.dimensions.variables))
     (dgroups[name.split("/")[0]] = dgroups[name.split("/")[0]] || []).push(name);
   for (const g of Object.keys(dgroups)) {
-    const sec = auto(g, "VERTICAL", 8);
+    const sec = auto(g, "VERTICAL", 0);
+    const sp = figma.createFrame();
+    sp.resize(1, 14);
+    sp.fills = [];
+    sec.appendChild(sp);
     accentTitle(sec, catName(g), `${dgroups[g].length}`);
-    const grid = auto("rows", "VERTICAL", 4);
+    const sp2 = figma.createFrame();
+    sp2.resize(1, 4);
+    sp2.fills = [];
+    sec.appendChild(sp2);
     for (const name of dgroups[g]) {
-      const base = (TOKENS.dimensions.variables[name].valuesByMode["nudge-eap"] || {}).value;
-      const row = auto(name, "HORIZONTAL", 12, { align: "CENTER" });
-      row.appendChild(txt(name, 11, "Regular", INK, 240));
-      row.appendChild(txt(base == null ? "—" : String(base), 11, "Medium", SUB, 60));
-      // spacing/radius 류는 시각 바 표시
-      if (
-        /^(spacing|gap|inset|radius|shape|border-width|stroke)\b/.test(name) &&
-        typeof base === "number" &&
-        base <= 200
-      ) {
-        const bar = rect(Math.max(1, base), 12, ACCENT);
-        row.appendChild(bar);
+      const vbm = TOKENS.dimensions.variables[name].valuesByMode;
+      const baseV = (vbm["nudge-eap"] || {}).value;
+      const row = auto(name, "HORIZONTAL", 0, { align: "CENTER", padV: 5 });
+      row.appendChild(txt(name, 11, "Regular", INK, DNAMEW));
+      for (const b of BRANDS) {
+        const v = (vbm[b] || {}).value;
+        const differs = v != null && baseV != null && v !== baseV;
+        row.appendChild(
+          txt(
+            v == null ? "—" : String(v),
+            11,
+            differs ? "Bold" : "Regular",
+            differs ? ACCENT : SUB,
+            DCOLW,
+            "LEFT",
+          ),
+        );
       }
-      grid.appendChild(row);
+      sec.appendChild(row);
     }
-    sec.appendChild(grid);
     dimRoot.appendChild(sec);
   }
 
