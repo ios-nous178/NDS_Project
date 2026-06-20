@@ -1,19 +1,32 @@
 /**
- * P2 신규 파이프 (비파괴) — reference-carrying 토큰을 alias 그래프 보존하며 emit.
- * 기존 generate-css.cjs(값-동결 hex)는 그대로 두고, dist/next/ 에 나란히 출력한다.
+ * P2 신규 파이프 (비파괴) — reference-carrying 토큰을 alias 그래프 보존하며 3-emit.
+ * 기존 generate-css.cjs(값-동결 hex)는 그대로 두고 dist/next/ 에 나란히 출력한다.
  *
- *   dist/next/tokens.css        — semantic 이 `var(--color-…)` 로 primitive 를 *가리킴*
- *   dist/next/tokens.dtcg.json  — DTCG: semantic 이 `{color.…}` alias 참조
+ *   dist/next/tokens.css         — base semantic 이 `var(--color-…)` 로 primitive 를 *가리킴*
+ *   dist/next/{brand}.css        — 브랜드 팔레트 + 브랜드 semantic override(var 체인), base 위 cascade
+ *   dist/next/tokens.dtcg.json   — DTCG: semantic 이 `{color.…}` alias 참조 (base)
+ *   dist/next/figma-variables.json — Figma 업로드 intermediate: semantic = brand=mode, alias-by-name
  *
- * 현재 범위 = base(nudge-eap) semantic + color primitive. 브랜드/컴포넌트/figma-variables 는 후속.
- * 값 동치 검증은 scripts/check-value-freeze.cjs.
+ * 값 동치 검증은 scripts/check-value-freeze.cjs. nds component 티어 ref화는 후속.
  */
 const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
 const { isRef } = require("../dist/ref.js");
-const { nudgeEapSemantic } = require("../dist/projects/nudge-eap.semantic.js");
+const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
+const { trostTheme } = require("../dist/projects/trost");
+const { genietTheme } = require("../dist/projects/geniet");
+const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
+const { runmileTheme } = require("../dist/projects/runmile");
+
+const BRANDS = [
+  { mode: "nudge-eap", theme: nudgeEapTheme }, // base — palette=colors, semantic=full
+  { mode: "trost", theme: trostTheme },
+  { mode: "geniet", theme: genietTheme },
+  { mode: "cashwalk-biz", theme: cashwalkBizTheme },
+  { mode: "runmile", theme: runmileTheme },
+];
 
 function camelToKebab(s) {
   return s.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
@@ -27,33 +40,59 @@ function refToCssVar(r) {
 function refToDtcg(r) {
   return `{${r.$ref}}`;
 }
-
-// ─── CSS (dist/next/tokens.css) ─────────────────────────
-const cssLines = [":root {", "  /* ── Color primitives (atomic) ── */"];
-for (const [family, scale] of Object.entries(colors)) {
-  for (const [stop, value] of Object.entries(scale)) {
-    cssLines.push(`  --color-${family}-${stop}: ${value};`);
-  }
+/** ref("color.coolGray.50") → "coolGray/50" (Figma variable name, 컬렉션은 mode 가 결정) */
+function refToFigmaAlias(r) {
+  const [, family, stop] = r.$ref.split(".");
+  return `${family}/${stop}`;
 }
-cssLines.push("");
-cssLines.push("  /* ── Semantic (alias → primitive via var()) ── */");
-function walkCss(obj, prefix) {
-  for (const [key, value] of Object.entries(obj)) {
-    const part = camelToKebab(key);
-    const name = prefix ? `${prefix}-${part}` : part;
-    if (isRef(value)) {
-      cssLines.push(`  --semantic-${name}: ${refToCssVar(value)};`);
-    } else if (typeof value === "string") {
-      cssLines.push(`  --semantic-${name}: ${value};`); // 리터럴 hex/rgba/var(--semantic-…)
-    } else if (value && typeof value === "object") {
-      walkCss(value, name);
+
+// ─── CSS ────────────────────────────────────────────────
+function paletteCssLines(palette) {
+  const lines = [];
+  for (const [family, scale] of Object.entries(palette)) {
+    for (const [stop, value] of Object.entries(scale)) {
+      if (typeof value === "string") lines.push(`  --color-${family}-${stop}: ${value};`);
     }
   }
+  return lines;
 }
-walkCss(nudgeEapSemantic, "");
-cssLines.push("}");
+function semanticCssLines(tree) {
+  const lines = [];
+  (function walk(obj, prefix) {
+    for (const [key, value] of Object.entries(obj)) {
+      const name = prefix ? `${prefix}-${camelToKebab(key)}` : camelToKebab(key);
+      if (isRef(value)) lines.push(`  --semantic-${name}: ${refToCssVar(value)};`);
+      else if (typeof value === "string") lines.push(`  --semantic-${name}: ${value};`);
+      else if (value && typeof value === "object") walk(value, name);
+    }
+  })(tree, "");
+  return lines;
+}
 
-// ─── DTCG (dist/next/tokens.dtcg.json) ──────────────────
+const nextDir = path.join(__dirname, "..", "dist", "next");
+fs.mkdirSync(nextDir, { recursive: true });
+
+// base: tokens.css = color primitives + base semantic
+{
+  const lines = [":root {", "  /* ── Color primitives (atomic) ── */"];
+  lines.push(...paletteCssLines(colors));
+  lines.push("", "  /* ── Semantic (alias → primitive via var()) ── */");
+  lines.push(...semanticCssLines(nudgeEapTheme.semantic));
+  lines.push("}");
+  fs.writeFileSync(path.join(nextDir, "tokens.css"), lines.join("\n") + "\n");
+}
+// brands: {brand}.css = brand palette + brand semantic override (cascade over tokens.css)
+for (const { mode, theme } of BRANDS) {
+  if (mode === "nudge-eap") continue;
+  const lines = [":root {", "  /* ── Palette ── */"];
+  lines.push(...paletteCssLines(theme.palette));
+  lines.push("", "  /* ── Semantic override (alias → primitive via var()) ── */");
+  lines.push(...semanticCssLines(theme.semantic));
+  lines.push("}");
+  fs.writeFileSync(path.join(nextDir, `${mode}.css`), lines.join("\n") + "\n");
+}
+
+// ─── DTCG (base) ────────────────────────────────────────
 const dtcg = { color: {}, semantic: {} };
 for (const [family, scale] of Object.entries(colors)) {
   dtcg.color[family] = {};
@@ -61,24 +100,80 @@ for (const [family, scale] of Object.entries(colors)) {
     dtcg.color[family][stop] = { $value: value, $type: "color" };
   }
 }
-function walkDtcg(obj, node) {
+(function walkDtcg(obj, node) {
   for (const [key, value] of Object.entries(obj)) {
-    if (isRef(value)) {
-      node[key] = { $value: refToDtcg(value), $type: "color" };
-    } else if (typeof value === "string") {
-      node[key] = { $value: value, $type: "color" };
-    } else if (value && typeof value === "object") {
+    if (isRef(value)) node[key] = { $value: refToDtcg(value), $type: "color" };
+    else if (typeof value === "string") node[key] = { $value: value, $type: "color" };
+    else if (value && typeof value === "object") {
       node[key] = {};
       walkDtcg(value, node[key]);
     }
   }
-}
-walkDtcg(nudgeEapSemantic, dtcg.semantic);
-
-// ─── Write ──────────────────────────────────────────────
-const nextDir = path.join(__dirname, "..", "dist", "next");
-fs.mkdirSync(nextDir, { recursive: true });
-fs.writeFileSync(path.join(nextDir, "tokens.css"), cssLines.join("\n") + "\n");
+})(nudgeEapTheme.semantic, dtcg.semantic);
 fs.writeFileSync(path.join(nextDir, "tokens.dtcg.json"), JSON.stringify(dtcg, null, 2) + "\n");
-console.log(`Generated ${path.join(nextDir, "tokens.css")}`);
-console.log(`Generated ${path.join(nextDir, "tokens.dtcg.json")}`);
+
+// ─── figma-variables.json (semantic = brand=mode, alias-by-name) ─────────────
+// base+brand 를 mode 별로 merge(Figma 모드엔 CSS cascade 없음). ref → alias-by-name,
+// 리터럴 → 값. 컬렉션 토폴로지(Core+Brand 분할)·Figma ID 해석은 P4.
+function isLeaf(v) {
+  return isRef(v) || typeof v === "string";
+}
+function deepMerge(base, over) {
+  if (over === undefined) return base;
+  if (isLeaf(over)) return over;
+  const src = isLeaf(base) || base == null ? {} : base;
+  const out = { ...src };
+  for (const k of Object.keys(over)) out[k] = deepMerge(src[k], over[k]);
+  return out;
+}
+function flattenSemantic(tree, prefix, acc) {
+  for (const [key, value] of Object.entries(tree)) {
+    const name = prefix ? `${prefix}/${camelToKebab(key)}` : camelToKebab(key);
+    if (isLeaf(value)) acc[name] = value;
+    else if (value && typeof value === "object") flattenSemantic(value, name, acc);
+  }
+  return acc;
+}
+
+const primitives = { core: {} };
+for (const [family, scale] of Object.entries(colors)) {
+  for (const [stop, value] of Object.entries(scale)) primitives.core[`${family}/${stop}`] = value;
+}
+const variables = {};
+const allNames = new Set();
+const perMode = {};
+for (const { mode, theme } of BRANDS) {
+  const merged = deepMerge(nudgeEapTheme.semantic, mode === "nudge-eap" ? {} : theme.semantic);
+  perMode[mode] = flattenSemantic(merged, "", {});
+  Object.keys(perMode[mode]).forEach((n) => allNames.add(n));
+  if (mode !== "nudge-eap") {
+    primitives[mode] = {};
+    for (const [family, scale] of Object.entries(theme.palette)) {
+      for (const [stop, value] of Object.entries(scale))
+        primitives[mode][`${family}/${stop}`] = value;
+    }
+  }
+}
+for (const name of [...allNames].sort()) {
+  const valuesByMode = {};
+  for (const { mode } of BRANDS) {
+    const leaf = perMode[mode][name];
+    if (leaf === undefined) continue;
+    valuesByMode[mode] = isRef(leaf) ? { alias: refToFigmaAlias(leaf) } : { value: leaf };
+  }
+  variables[name] = { type: "COLOR", valuesByMode };
+}
+const figma = {
+  $comment:
+    "P2 v1 intermediate. semantic=brand=mode, alias=variable name(컬렉션 미지정). " +
+    "Core+Brand 컬렉션 분할·Figma ID 해석·alias→VARIABLE_ALIAS 변환은 P4 업로드 단계. " +
+    "alias 'family/stop' 는 nudge-eap mode=Primitive/Core, 브랜드 mode=Primitive/{Brand} 로 해석.",
+  primitives,
+  semantic: { modes: BRANDS.map((b) => b.mode), variables },
+};
+fs.writeFileSync(path.join(nextDir, "figma-variables.json"), JSON.stringify(figma, null, 2) + "\n");
+
+const brandCss = BRANDS.filter((b) => b.mode !== "nudge-eap").map((b) => `${b.mode}.css`);
+console.log(
+  `Generated dist/next/{tokens.css, ${brandCss.join(", ")}, tokens.dtcg.json, figma-variables.json}`,
+);
