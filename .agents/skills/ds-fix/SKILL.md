@@ -20,7 +20,7 @@ description: >-
 ## 입력 (자유 텍스트 우선)
 
 - **1차**: 사용자가 **붙여넣은 자유 텍스트** — 다른 AI 의 답변/크리틱, QA 코멘트, 이슈. (정제된 폼이 아니다. 이게 보통의 입력이다.)
-- **옵션**: 대상 목업 파일/화면(rel 경로), 브랜드.
+- **옵션**: 대상 목업 파일/화면(rel 경로), 프로젝트.
 - **보조**: `.ds-feedback-log.jsonl` 의 해당 screen `revision-request` 항목, 그리고 그 목업에 `validate_html_mockup`/`score_mockup_quality` 를 돌린 현재 위반·점수.
 
 ## 카디널 룰
@@ -29,7 +29,7 @@ description: >-
 2. **DS 공백은 hack 하지 말고 escalate.** 없는 컴포넌트/토큰을 raw hex·custom div 로 때우지 않는다 — 신설이 정당하면 신설(=`/ds-component`/토큰 절차), 디자인 판단이 필요하면 사람에게.
 3. **오용은 재발 방지로 닫는다.** 피드백이 "작성자가 DS 를 잘못 씀"이면, 고칠 DS = **검증룰/가이드를 강화**해 같은 실수가 다시 안 나게 한다(+ 필요 시 목업도 고쳐야 함을 보고).
 4. **토큰-퍼스트·3면 미러·외부전파** — `/ds-component` 카디널 룰 그대로 따른다(매핑 안 되는 hex 는 flag, react/styles/html lockstep, 카탈로그/가이드/changeset).
-5. **브랜드 의미 차이는 프로필+intent 슬롯으로, prop 재매핑/denylist 산재 금지.** "이 브랜드만 X가 다르다"(검정 CTA 색, 금지 컴포넌트, 모달 정책 등)는 ① 색이면 semantic intent 토큰 슬롯 신설(`buttonBg.assistive` 선례 — 컴포넌트 prop 은 브랜드 무관 유지), ② 정책이면 `packages/tokens/src/brand-profiles.ts` 에 데이터로 선언(validator 는 프로필을 읽지 브랜드 slug 를 하드코딩하지 않는다). 토큰 캐스케이드와 prop 기본값에 분산 인코딩하면 한쪽만 고치는 재발(캐포비 모달 노랑 5회+)이 난다.
+5. **프로젝트 의미 차이는 프로필+intent 슬롯으로, prop 재매핑/denylist 산재 금지.** "이 프로젝트만 X가 다르다"(검정 CTA 색, 금지 컴포넌트, 모달 정책 등)는 ① 색이면 semantic intent 토큰 슬롯 신설(`buttonBg.assistive` 선례 — 컴포넌트 prop 은 프로젝트 무관 유지), ② 정책이면 `packages/tokens/src/project-profiles.ts` 에 데이터로 선언(validator 는 프로필을 읽지 프로젝트 slug 를 하드코딩하지 않는다). 토큰 캐스케이드와 prop 기본값에 분산 인코딩하면 한쪽만 고치는 재발(캐포비 모달 노랑 5회+)이 난다.
 6. **자율이되 안전.** max iteration·무진척 감지로 thrashing 을 막고, 막히면 멈춰서 보고한다.
 7. **고치기 전에 먼저 합의한다 (★ 사용자 기본).** 트리아지(1단계)가 끝나면 **곧바로 수정에 들어가지 말고**, 먼저 사용자에게 **① 문제 정의(원문→근본원인) → ② 해결방안 제안(어디를 어떻게)** 을 제시하고 **착수 승인을 받는다**(1.5단계). 이 확인은 **루프 초반(트리아지 직후)** 에 하지, 다 고친 뒤 보고에서 하지 않는다. 사용자가 "그냥 다 해줘"라고 미리 위임했거나 자명한 1건짜리면 게이트를 생략할 수 있다.
 
@@ -44,7 +44,7 @@ description: >-
 
 - **DS 버그/공백** — 컴포넌트가 시안과 다르다 / 컴포넌트·토큰이 없다 / 가이드가 틀렸다 / 검증이 못 잡았다 → **DS 수정**.
 - **목업 오용** — DS 는 맞는데 작성자가 잘못 씀 → **가이드/검증룰 강화**(재발 방지) + 목업 수정 필요 보고.
-- **디자인 판단 / 모호 / 시안 부재** — 토큰에 없는 값, 브랜드 정책, 픽셀 결정 등 → **escalate**(사람). 지어내지 않는다.
+- **디자인 판단 / 모호 / 시안 부재** — 토큰에 없는 값, 프로젝트 정책, 픽셀 결정 등 → **escalate**(사람). 지어내지 않는다.
 
 ### 1.5 제안 & 승인 게이트 (사용자 확인 — 초반에) ★
 
@@ -62,14 +62,14 @@ description: >-
 | 이슈 유형                     | 손대는 곳                                                                                                          |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | 컴포넌트가 시안과 다르다/없다 | **`/ds-component` 플로우 재사용** — react/styles/html 3면 + 스토리 + AllComponents + COMPONENT_GUIDES + changeset  |
-| 색/크기 토큰 문제             | `packages/tokens/src/**` (+ 브랜드) + `DESIGN.md` + `pnpm build --filter @nudge-design/tokens`                     |
+| 색/크기 토큰 문제             | `packages/tokens/src/**` (+ 프로젝트) + `DESIGN.md` + `pnpm build --filter @nudge-design/tokens`                     |
 | 합성/사용 규칙(패턴)          | `packages/mcp/guides-src/patterns/<name>.md` (+ build:guides 재생성) + (필요 시) `html-validator.ts` 검증룰 + 예시 |
 | 검증이 못 잡음                | `packages/mockup-core/src/tools/html-validator.ts` 룰 추가 + 테스트 + (catalog-config 컨텍스트)                    |
 | 가이드만 틀림/누락            | `packages/mcp/guides-src/{components,patterns}/<Name>.md` 본문 (+ build:guides 재생성)                             |
 
 ### 3. 검증 (이슈가 실제로 닫혔는지)
 
-- `/ds-component` 검증 게이트와 동일: 패키지별 `tsc` + `vitest`(react/html) + `node --test`(mockup-core) + **정합 게이트**(빌드된 브랜드 CSS ↔ 시안 치수) + 예시 `validate_html_mockup`.
+- `/ds-component` 검증 게이트와 동일: 패키지별 `tsc` + `vitest`(react/html) + `node --test`(mockup-core) + **정합 게이트**(빌드된 프로젝트 CSS ↔ 시안 치수) + 예시 `validate_html_mockup`.
 - **마무리 전 `pnpm fix`(하드 게이트)** — 파생 생성물(guides.generated.ts·catalog.json·metadata/\* 등)을 일괄 재생성하고, 출력된 "재생성된 파일" 목록을 변경분과 같이 staged 하도록 안내. 생성물 커밋 누락이 CI 터짐의 최다 원인이다.
 - **이슈 재현 시나리오로 확인** — 그 피드백을 유발한 입력(목업 조각/오용 패턴)에 다시 돌려 위반/점수/외형이 실제로 해소됐는지 본다. (검증룰을 추가했으면, 그 룰이 해당 오용을 이제 잡는지 테스트로 고정.)
 

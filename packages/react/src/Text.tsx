@@ -7,7 +7,7 @@ import { cv, fontWeight, typeScale } from "@nudge-design/tokens";
  * "한 덩이의 텍스트(본문·라벨·메타·캡션)"는 Text.
  *
  * expandable: 길면 '더보기/접기' 토글(구 ExpandableText 흡수). 평소엔 순수 presentational.
- * 색·폰트의 브랜드 차이는 컴포넌트가 모름 — `--semantic-text-*`(tone) 토큰이 흘려보낸다.
+ * 색·폰트의 프로젝트 차이는 컴포넌트가 모름 — `--semantic-text-*`(tone) 토큰이 흘려보낸다.
  */
 
 const TEXT_CLASS = "nds-text";

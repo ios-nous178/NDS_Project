@@ -1,7 +1,7 @@
 ---
 metrics:
   hostDisplay: contents
-  affectsComponents: "117 / 121 nds-* (제외: brand-chrome / input-group / inspector)"
+  affectsComponents: "117 / 121 nds-* (제외: project-chrome / input-group / inspector)"
   droppedProps: margin / padding / width / height / flex / align-self / gap / background / border / box-shadow / position
   allowedOnHost: --nds-* · --semantic-* custom properties · display:contents
   fix: wrapper div 또는 부모 컨테이너 gap
@@ -18,7 +18,7 @@ NDS 웹컴포넌트(<nds-*>)는 light-DOM 미러라 호스트 엘리먼트가 `d
 - 간격이 필요하면 컴포넌트를 일반 `<div>` 로 감싸고 그 wrapper 에 margin/padding 을 준다. 또는 부모 컨테이너를 flex/grid 로 만들고 부모의 `gap`(semantic-gap-*)으로 컴포넌트 사이를 띄운다 — wrapper 보다 부모 gap 이 우선.
 - 크기(width/height)가 필요해도 호스트가 아니라 wrapper 에 준다 (예: 폼 안에서 Select 를 240px 로 → `<div style="width:240px"><nds-select …></nds-select></div>`).
 - 호스트에 줘도 되는 inline 스타일은 CSS 커스텀 프로퍼티뿐 — `--nds-*` / `--semantic-*` 변수(컴포넌트 슬롯·토큰 전달)와 `display: contents` 자신. 그 외 표준 박스 프로퍼티는 금지.
-- 예외: `display: contents` 를 안 쓰는 소수 컴포넌트(brand-chrome / input-group / inspector)는 호스트 스타일이 먹지만, 일관성을 위해 동일하게 wrapper 패턴을 권장.
+- 예외: `display: contents` 를 안 쓰는 소수 컴포넌트(project-chrome / input-group / inspector)는 호스트 스타일이 먹지만, 일관성을 위해 동일하게 wrapper 패턴을 권장.
 
 ## avoid
 

@@ -24,7 +24,7 @@ metrics:
 - IconButton: X-Large(48) / Large(44) / Medium(40) / Small(32) × Default/Hover/Disabled. (총 12 variants)
 - 터치/마우스 타겟 ≥ 36px (Mini) — admin 데스크톱은 그래도 Medium(44) 이상 권장.
 - Outlined/Primary 텍스트는 Yellow/700 (#FEAF01) — Outlined 텍스트가 그린 색이면 안 됨 (가이드 명시).
-- **아이콘 색 하드코딩 금지** — `color="var(--semantic-icon-inverse-default)"` 처럼 inverse/brand 토큰 사용 금지. 캐시워크 포 비즈니스는 primary text 가 검정이라 흰 아이콘이 노란 배경 위에 떠 보임. `color="currentColor"` 로 두어 Button 텍스트 색을 상속.
+- **아이콘 색 하드코딩 금지** — `color="var(--semantic-icon-inverse-default)"` 처럼 inverse/project 토큰 사용 금지. 캐시워크 포 비즈니스는 primary text 가 검정이라 흰 아이콘이 노란 배경 위에 떠 보임. `color="currentColor"` 로 두어 Button 텍스트 색을 상속.
 
 ## avoid
 

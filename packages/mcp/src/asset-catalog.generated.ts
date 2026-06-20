@@ -8,10 +8,10 @@
  */
 
 export interface AssetCatalogEntry {
-  /** 브랜드 slug 또는 "shared". */
-  brand: string;
-  scope: "brand" | "shared" | "unknown";
-  /** 브랜드 아래 디렉토리 경로(예: "images/food-types", "logos", "profiles"). */
+  /** 프로젝트 slug 또는 "shared". */
+  project: string;
+  scope: "project" | "shared" | "unknown";
+  /** 프로젝트 아래 디렉토리 경로(예: "images/food-types", "logos", "profiles"). */
   category: string;
   /** 파일 stem(레티나 접미사 제거) — 보통 의미 있는 kebab id(예: "bibimbap"). */
   id: string;
@@ -20,17 +20,17 @@ export interface AssetCatalogEntry {
   mimeType: string;
   /** 보유 레티나 변형(예: ["3x"]). 없으면 키 자체가 없음. */
   retina?: string[];
-  /** 소문자 검색 토큰(brand·category·id 영문 + asset-tags.ko.json 한글 태그). */
+  /** 소문자 검색 토큰(project·category·id 영문 + asset-tags.ko.json 한글 태그). */
   search: string[];
 }
 
 export const ASSET_CATALOG: AssetCatalogEntry[] = [
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "illustrations",
     "id": "ads",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/ads.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/illustrations/ads.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -47,11 +47,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "illustrations",
     "id": "channel",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/channel.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/illustrations/channel.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -66,11 +66,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "illustrations",
     "id": "charge-alert-bell",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/charge-alert-bell.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/illustrations/charge-alert-bell.png",
     "mimeType": "image/png",
     "search": [
       "cashwalk",
@@ -84,11 +84,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "illustrations",
     "id": "message",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/message.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/illustrations/message.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -105,11 +105,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "illustrations",
     "id": "quiz",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/illustrations/quiz.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/illustrations/quiz.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -125,11 +125,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "logos",
     "id": "cashwalk-for-business-horizontal",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "cashwalk",
@@ -141,11 +141,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "logos",
     "id": "cashwalk-horizontal",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/logos/cashwalk-horizontal.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/logos/cashwalk-horizontal.png",
     "mimeType": "image/png",
     "search": [
       "cashwalk",
@@ -155,11 +155,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "cashwalk-biz",
-    "scope": "brand",
+    "project": "cashwalk-biz",
+    "scope": "project",
     "category": "logos",
     "id": "cashwalk-vertical",
-    "inlineRef": "@nudge-design/assets/files/brand/cashwalk-biz/logos/cashwalk-vertical.png",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk-biz/logos/cashwalk-vertical.png",
     "mimeType": "image/png",
     "search": [
       "cashwalk",
@@ -169,11 +169,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "asian",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/asian.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/asian.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -189,11 +189,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "beverage",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/beverage.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/beverage.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -208,11 +208,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "chinese",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/chinese.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/chinese.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -228,11 +228,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "dairy-baby-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/dairy-baby-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/dairy-baby-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -250,11 +250,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "diet",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/diet.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/diet.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -270,11 +270,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "fast-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/fast-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/fast-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -290,11 +290,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "health-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/health-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/health-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -310,11 +310,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "japanese",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/japanese.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/japanese.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -330,11 +330,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "korean",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/korean.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/korean.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -350,11 +350,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "livestock",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/livestock.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/livestock.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -370,11 +370,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "marine",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/marine.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/marine.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -390,11 +390,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "noodle-can-oil-sauce",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/noodle-can-oil-sauce.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/noodle-can-oil-sauce.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -414,11 +414,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "produce",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/produce.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/produce.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -434,11 +434,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "rice-cake-bakery-snack",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/rice-cake-bakery-snack.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/rice-cake-bakery-snack.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -458,11 +458,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "snack-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/snack-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/snack-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -479,11 +479,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/category-heroes",
     "id": "western",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/category-heroes/western.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/category-heroes/western.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -499,11 +499,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "coupon-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/coupon-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/coupon-empty.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -519,11 +519,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "error-thumbnail",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/error-thumbnail.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/error-thumbnail.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -540,11 +540,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "food-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/food-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/food-empty.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -559,11 +559,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "food-thumbnail-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/food-thumbnail-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/food-thumbnail-empty.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -579,11 +579,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "heart-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/heart-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/heart-empty.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -599,11 +599,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "memo-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/memo-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/memo-empty.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -618,11 +618,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/empty-states",
     "id": "pill-thumbnail-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/empty-states/pill-thumbnail-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/empty-states/pill-thumbnail-empty.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -639,11 +639,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "alcohol",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/alcohol.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/alcohol.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -659,11 +659,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "all",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/all.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/all.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -679,11 +679,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "baby-formula",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/baby-formula.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/baby-formula.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -700,11 +700,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "bakery",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/bakery.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/bakery.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -721,11 +721,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "beef",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/beef.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/beef.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -742,11 +742,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "bibimbap",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/bibimbap.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/bibimbap.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -761,11 +761,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "braised-pigs-feet",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/braised-pigs-feet.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/braised-pigs-feet.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -783,11 +783,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "bread",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/bread.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/bread.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -802,11 +802,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "broth",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/broth.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/broth.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -822,11 +822,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "burger",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/burger.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/burger.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -842,11 +842,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "candy",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/candy.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/candy.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -862,11 +862,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "canned-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/canned-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/canned-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -882,11 +882,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "cheese",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/cheese.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/cheese.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -901,11 +901,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "chicken",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/chicken.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/chicken.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -921,11 +921,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "chicken-breast",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/chicken-breast.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/chicken-breast.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -941,11 +941,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "coffee",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/coffee.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/coffee.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -960,11 +960,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "cooking-oil",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/cooking-oil.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/cooking-oil.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -981,11 +981,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "curry",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/curry.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/curry.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1000,11 +1000,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "curry-indian",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/curry-indian.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/curry-indian.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1021,11 +1021,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "diet",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/diet.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/diet.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1041,11 +1041,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "dim-sum",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/dim-sum.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/dim-sum.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1061,11 +1061,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "dried-seafood",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/dried-seafood.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/dried-seafood.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1081,11 +1081,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "duck",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/duck.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/duck.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1101,11 +1101,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "egg",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/egg.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/egg.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1121,11 +1121,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "enzyme",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/enzyme.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/enzyme.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1140,11 +1140,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "etc",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/etc.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/etc.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1159,11 +1159,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fish",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fish.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fish.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1179,11 +1179,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fish-cake",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fish-cake.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fish-cake.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1200,11 +1200,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fried",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fried.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fried.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1219,11 +1219,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fried-chicken",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fried-chicken.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fried-chicken.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1241,11 +1241,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fried-rice",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fried-rice.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fried-rice.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1261,11 +1261,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fritters",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fritters.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fritters.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1281,11 +1281,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "fruit",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/fruit.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/fruit.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1300,11 +1300,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "functional-health-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/functional-health-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/functional-health-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1321,11 +1321,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "gimbap",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/gimbap.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/gimbap.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1340,11 +1340,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "grain-shake",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/grain-shake.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/grain-shake.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1361,11 +1361,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "gratin",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/gratin.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/gratin.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1380,11 +1380,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "grilled",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/grilled.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/grilled.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1399,11 +1399,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "health-juice",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/health-juice.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/health-juice.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1419,11 +1419,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "health-snack",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/health-snack.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/health-snack.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1439,11 +1439,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "hot-dog",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/hot-dog.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/hot-dog.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1459,11 +1459,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "ice-cream",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/ice-cream.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/ice-cream.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1479,11 +1479,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "jjajangmyeon",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/jjajangmyeon.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/jjajangmyeon.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1499,11 +1499,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "jjamppong",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/jjamppong.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/jjamppong.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1518,11 +1518,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "juice",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/juice.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/juice.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1537,11 +1537,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "kimchi",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/kimchi.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/kimchi.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1556,11 +1556,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "korean-pancake",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/korean-pancake.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/korean-pancake.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1578,11 +1578,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "low-sugar-food",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/low-sugar-food.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/low-sugar-food.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1599,11 +1599,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "meal-plan",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/meal-plan.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/meal-plan.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1620,11 +1620,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "milk",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/milk.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/milk.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1639,11 +1639,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "multigrain",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/multigrain.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/multigrain.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1658,11 +1658,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "nasi-goreng",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/nasi-goreng.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/nasi-goreng.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1678,11 +1678,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "nuts",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/nuts.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/nuts.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1698,11 +1698,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "pad-thai",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/pad-thai.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/pad-thai.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1718,11 +1718,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "pasta",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/pasta.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/pasta.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1737,11 +1737,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "pizza",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/pizza.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/pizza.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1756,11 +1756,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "pork",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/pork.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/pork.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1775,11 +1775,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "pork-cutlet",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/pork-cutlet.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/pork-cutlet.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1796,11 +1796,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "pottage",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/pottage.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/pottage.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1816,11 +1816,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "powder",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/powder.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/powder.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1836,11 +1836,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "probiotics",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/probiotics.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/probiotics.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1856,11 +1856,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "processed-seafood",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/processed-seafood.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/processed-seafood.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1877,11 +1877,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "ramen",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/ramen.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/ramen.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1896,11 +1896,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "ramyeon",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/ramyeon.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/ramyeon.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1915,11 +1915,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "red-ginseng",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/red-ginseng.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/red-ginseng.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1935,11 +1935,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "rice",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/rice.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/rice.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1955,11 +1955,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "rice-bowl",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/rice-bowl.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/rice-bowl.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1975,11 +1975,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "rice-cake",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/rice-cake.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/rice-cake.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -1995,11 +1995,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "rice-grain",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/rice-grain.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/rice-grain.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2016,11 +2016,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "rice-noodle",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/rice-noodle.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/rice-noodle.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2036,11 +2036,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "risotto",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/risotto.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/risotto.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2055,11 +2055,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "royal-jelly",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/royal-jelly.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/royal-jelly.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2075,11 +2075,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "salad",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/salad.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/salad.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2094,11 +2094,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "salted-seafood",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/salted-seafood.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/salted-seafood.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2114,11 +2114,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "sandwich",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/sandwich.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/sandwich.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2133,11 +2133,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "sashimi",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/sashimi.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/sashimi.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2153,11 +2153,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "sauce",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/sauce.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/sauce.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2173,11 +2173,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "seafood",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/seafood.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/seafood.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2193,11 +2193,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "seaweed",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/seaweed.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/seaweed.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2213,11 +2213,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "shake",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/shake.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/shake.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2232,11 +2232,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "side-dish",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/side-dish.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/side-dish.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2252,11 +2252,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "smoothie",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/smoothie.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/smoothie.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2271,11 +2271,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "snack",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/snack.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/snack.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2291,11 +2291,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "soda",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/soda.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/soda.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2311,11 +2311,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "soup",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/soup.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/soup.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2331,11 +2331,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "sports-drink",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/sports-drink.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/sports-drink.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2352,11 +2352,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "steamed",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/steamed.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/steamed.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2371,11 +2371,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "stir-fry",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/stir-fry.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/stir-fry.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2391,11 +2391,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "sundae-sausage",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/sundae-sausage.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/sundae-sausage.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2411,11 +2411,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "sweet-sour-pork",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/sweet-sour-pork.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/sweet-sour-pork.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2432,11 +2432,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "syrup",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/syrup.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/syrup.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2451,11 +2451,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "tea",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/tea.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/tea.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2470,11 +2470,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "tom-yum",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/tom-yum.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/tom-yum.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2491,11 +2491,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "tteokbokki",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/tteokbokki.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/tteokbokki.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2510,11 +2510,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "udon",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/udon.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/udon.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2529,11 +2529,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "vegetable",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/vegetable.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/vegetable.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2549,11 +2549,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "vitamin",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/vitamin.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/vitamin.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2568,11 +2568,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "water",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/water.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/water.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2588,11 +2588,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/food-types",
     "id": "yogurt",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/food-types/yogurt.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/food-types/yogurt.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2608,11 +2608,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/misc",
     "id": "alert",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/misc/alert.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/misc/alert.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2627,11 +2627,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/misc",
     "id": "cashlotto",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/misc/cashlotto.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/misc/cashlotto.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2646,11 +2646,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "images/misc",
     "id": "pill",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/images/misc/pill.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/images/misc/pill.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2666,11 +2666,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "geniet-logo-footer",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/geniet-logo-footer.webp",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/geniet-logo-footer.webp",
     "mimeType": "image/webp",
     "search": [
       "geniet",
@@ -2680,11 +2680,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "geniet-logo-mobile",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/geniet-logo-mobile.webp",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/geniet-logo-mobile.webp",
     "mimeType": "image/webp",
     "search": [
       "geniet",
@@ -2694,11 +2694,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "geniet-logo-pc",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/geniet-logo-pc.webp",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/geniet-logo-pc.webp",
     "mimeType": "image/webp",
     "search": [
       "geniet",
@@ -2708,11 +2708,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "symbol",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/symbol.svg",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/symbol.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "geniet",
@@ -2721,11 +2721,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2737,11 +2737,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark-alt",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark-alt.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark-alt.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2754,11 +2754,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark-en",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark-en.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark-en.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2771,11 +2771,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark-en-alt",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark-en-alt.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark-en-alt.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2789,11 +2789,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark-ko",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark-ko.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark-ko.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2806,11 +2806,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark-koen",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark-koen.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark-koen.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2823,11 +2823,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "logos",
     "id": "wordmark-koen-alt",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/logos/wordmark-koen-alt.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/logos/wordmark-koen-alt.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2841,11 +2841,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-01",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-01.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-01.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2858,11 +2858,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-02",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-02.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-02.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2875,11 +2875,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-03",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-03.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-03.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2892,11 +2892,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-04",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-04.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-04.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2909,11 +2909,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-05",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-05.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-05.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2926,11 +2926,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-06",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-06.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-06.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2943,11 +2943,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-07",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-07.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-07.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2960,11 +2960,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-08",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-08.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-08.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2977,11 +2977,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-09",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-09.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-09.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -2994,11 +2994,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-10",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-10.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-10.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3011,11 +3011,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-11",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-11.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-11.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3028,11 +3028,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-12",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-12.png",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-12.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3045,11 +3045,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "geniet",
-    "scope": "brand",
+    "project": "geniet",
+    "scope": "project",
     "category": "profiles",
     "id": "profile-default",
-    "inlineRef": "@nudge-design/assets/files/brand/geniet/profiles/profile-default.svg",
+    "inlineRef": "@nudge-design/assets/files/project/geniet/profiles/profile-default.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "geniet",
@@ -3061,11 +3061,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/circle-icons",
     "id": "bubbles-blue",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/circle-icons/bubbles-blue.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/circle-icons/bubbles-blue.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3083,11 +3083,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/circle-icons",
     "id": "bubbles-white",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/circle-icons/bubbles-white.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/circle-icons/bubbles-white.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3105,11 +3105,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/circle-icons",
     "id": "location-white",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/circle-icons/location-white.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/circle-icons/location-white.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3126,11 +3126,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/circle-icons",
     "id": "notice-blue",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/circle-icons/notice-blue.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/circle-icons/notice-blue.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3148,11 +3148,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/circle-icons",
     "id": "search-white",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/circle-icons/search-white.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/circle-icons/search-white.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3169,11 +3169,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/consult",
     "id": "calendar",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/consult/calendar.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/consult/calendar.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3189,11 +3189,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/consult",
     "id": "inquiry-form",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/consult/inquiry-form.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/consult/inquiry-form.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3210,11 +3210,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/consult",
     "id": "sentence-test",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/consult/sentence-test.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/consult/sentence-test.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3231,11 +3231,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/gift",
     "id": "cafe",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/gift/cafe.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/gift/cafe.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3251,11 +3251,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/gift",
     "id": "culture",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/gift/culture.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/gift/culture.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3271,11 +3271,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/gift",
     "id": "market",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/gift/market.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/gift/market.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3291,11 +3291,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/gift",
     "id": "pizza",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/gift/pizza.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/gift/pizza.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3310,11 +3310,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/gift",
     "id": "shoppingcart",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/gift/shoppingcart.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/gift/shoppingcart.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3330,11 +3330,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "chat",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/chat.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/chat.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3351,11 +3351,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "counseling",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/counseling.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/counseling.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3371,11 +3371,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "courthouse",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/courthouse.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/courthouse.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3392,11 +3392,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "emotion",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/emotion.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/emotion.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3412,11 +3412,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "life",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/life.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/life.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3433,11 +3433,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "location",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/location.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/location.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3454,11 +3454,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "one-to-one",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/one-to-one.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/one-to-one.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3476,11 +3476,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "routine",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/routine.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/routine.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3497,11 +3497,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-app",
     "id": "sound-therapy",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-app/sound-therapy.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-app/sound-therapy.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3519,11 +3519,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "bubbles-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/bubbles-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/bubbles-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3539,11 +3539,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "bubbles-selected",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/bubbles-selected.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/bubbles-selected.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3559,11 +3559,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "challenge-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/challenge-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/challenge-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3581,11 +3581,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "challenge-selected",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/challenge-selected.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/challenge-selected.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3603,11 +3603,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "eap-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/eap-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/eap-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3622,11 +3622,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "eap-selected",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/eap-selected.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/eap-selected.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3641,11 +3641,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "life-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/life-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/life-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3663,11 +3663,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/menu-web",
     "id": "life-selected",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/menu-web/life-selected.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/menu-web/life-selected.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3685,11 +3685,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "depression",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/depression.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/depression.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3706,11 +3706,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "dsi",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/dsi.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/dsi.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3726,11 +3726,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "finance",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/finance.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/finance.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3747,11 +3747,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "happy",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/happy.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/happy.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3767,11 +3767,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "job-stress",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/job-stress.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/job-stress.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3789,11 +3789,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "koss",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/koss.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/koss.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3810,11 +3810,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "love",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/love.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/love.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3831,11 +3831,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "marriage",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/marriage.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/marriage.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3852,11 +3852,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "mbti",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/mbti.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/mbti.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3872,11 +3872,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "personality",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/personality.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/personality.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3893,11 +3893,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "psych",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/psych.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/psych.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3913,11 +3913,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "selfesteem",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/psych-tests/selfesteem.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/psych-tests/selfesteem.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3933,11 +3933,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/rank",
     "id": "rank-01",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/rank/rank-01.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/rank/rank-01.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3953,11 +3953,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/rank",
     "id": "rank-02",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/rank/rank-02.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/rank/rank-02.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3973,11 +3973,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/rank",
     "id": "rank-03",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/rank/rank-03.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/rank/rank-03.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -3993,11 +3993,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/three-d",
     "id": "shopping",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/three-d/shopping.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/three-d/shopping.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4013,11 +4013,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "images/three-d",
     "id": "walkranking",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/images/three-d/walkranking.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/images/three-d/walkranking.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4034,11 +4034,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "dain-logo",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/dain-logo.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/dain-logo.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4049,11 +4049,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-en",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-en.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-en.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4063,11 +4063,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-en-dark",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-en-dark.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-en-dark.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4078,11 +4078,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-ko",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-ko.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-ko.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4092,11 +4092,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-koen",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-koen.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-koen.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4106,11 +4106,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-logo",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-logo.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-logo.png",
     "mimeType": "image/png",
     "search": [
       "nudge",
@@ -4120,11 +4120,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-logo",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-logo.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-logo.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4134,11 +4134,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-logo-footer",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-logo-footer.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-logo-footer.png",
     "mimeType": "image/png",
     "search": [
       "nudge",
@@ -4149,11 +4149,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "logos",
     "id": "nudge-eap-symbol",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/logos/nudge-eap-symbol.svg",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/logos/nudge-eap-symbol.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "nudge",
@@ -4163,11 +4163,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "client-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/client-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/client-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4181,11 +4181,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "counselor-01",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/counselor-01.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/counselor-01.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4199,11 +4199,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "counselor-02",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/counselor-02.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/counselor-02.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4217,11 +4217,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "counselor-03",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/counselor-03.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/counselor-03.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4235,11 +4235,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "counselor-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/counselor-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/counselor-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4253,11 +4253,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "user-01",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/user-01.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/user-01.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4271,11 +4271,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "user-02",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/user-02.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/user-02.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4289,11 +4289,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "user-03",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/user-03.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/user-03.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4307,11 +4307,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "user-04",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/user-04.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/user-04.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4325,11 +4325,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "user-05",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/user-05.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/user-05.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4343,11 +4343,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "nudge-eap",
-    "scope": "brand",
+    "project": "nudge-eap",
+    "scope": "project",
     "category": "profiles",
     "id": "user-default",
-    "inlineRef": "@nudge-design/assets/files/brand/nudge-eap/profiles/user-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/nudge-eap/profiles/user-default.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4361,11 +4361,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-1",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-1.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-1.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4379,11 +4379,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-10",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-10.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-10.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4397,11 +4397,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-11",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-11.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-11.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4415,11 +4415,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-12",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-12.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-12.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4433,11 +4433,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-2",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-2.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-2.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4451,11 +4451,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-3",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-3.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-3.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4469,11 +4469,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-4",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-4.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-4.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4487,11 +4487,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-5",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-5.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-5.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4505,11 +4505,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-6",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-6.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-6.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4523,11 +4523,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-7",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-7.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-7.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4541,11 +4541,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-8",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-8.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-8.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4559,11 +4559,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-9",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-9.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-9.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4577,11 +4577,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "avatar",
     "id": "profile-default",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/avatar/profile-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/avatar/profile-default.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4597,11 +4597,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "chatting-default",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/chatting-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/chatting-default.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
@@ -4612,11 +4612,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "chatting-white",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/chatting-white.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/chatting-white.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
@@ -4627,11 +4627,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "community",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/community.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/community.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4645,11 +4645,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-animal-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-animal-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-animal-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4665,11 +4665,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-bomkkot-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-bomkkot-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-bomkkot-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4684,11 +4684,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-dog-race",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-dog-race.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-dog-race.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4705,11 +4705,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-forsythia",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-forsythia.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-forsythia.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4724,11 +4724,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-hangang-night-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-hangang-night-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-hangang-night-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4745,11 +4745,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-pokemon",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-pokemon.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-pokemon.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4764,11 +4764,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-santa-claus-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-santa-claus-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-santa-claus-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4785,11 +4785,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-seokchon-night-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-seokchon-night-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-seokchon-night-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4805,11 +4805,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-shinhan-donghaeng-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-shinhan-donghaeng-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-shinhan-donghaeng-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4825,11 +4825,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "event-yeontan-run",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/event-yeontan-run.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/event-yeontan-run.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -4844,11 +4844,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "qna",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/qna.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/qna.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4863,11 +4863,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "illust",
     "id": "shoe",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/illust/shoe.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/illust/shoe.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4882,11 +4882,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "logos",
     "id": "runmile-logo",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/logos/runmile-logo.svg",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/logos/runmile-logo.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "runmile",
@@ -4895,11 +4895,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "logos",
     "id": "runmile-logo-black",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/logos/runmile-logo-black.svg",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/logos/runmile-logo-black.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "runmile",
@@ -4909,11 +4909,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "logos",
     "id": "runmile-logo-gray700",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/logos/runmile-logo-gray700.svg",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/logos/runmile-logo-gray700.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "runmile",
@@ -4923,11 +4923,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "logos",
     "id": "runmile-logo-white",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/logos/runmile-logo-white.svg",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/logos/runmile-logo-white.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "runmile",
@@ -4937,11 +4937,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "state",
     "id": "alarm-empty",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/alarm-empty.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/state/alarm-empty.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4958,11 +4958,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "state",
     "id": "error",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/error.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/state/error.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4978,11 +4978,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "state",
     "id": "error-default",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/error-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/state/error-default.png",
     "mimeType": "image/png",
     "retina": [
       "2x",
@@ -4998,11 +4998,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "state",
     "id": "no-result-default",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/no-result-default.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/state/no-result-default.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
@@ -5015,11 +5015,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "state",
     "id": "no-result-white",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/no-result-white.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/state/no-result-white.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
@@ -5032,11 +5032,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "runmile",
-    "scope": "brand",
+    "project": "runmile",
+    "scope": "project",
     "category": "state",
     "id": "page-error",
-    "inlineRef": "@nudge-design/assets/files/brand/runmile/state/page-error.png",
+    "inlineRef": "@nudge-design/assets/files/project/runmile/state/page-error.png",
     "mimeType": "image/png",
     "search": [
       "runmile",
@@ -5048,7 +5048,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "apple-black",
@@ -5064,7 +5064,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "apple-white",
@@ -5080,7 +5080,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "google-main",
@@ -5096,7 +5096,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "google-white",
@@ -5112,7 +5112,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "kakao-black",
@@ -5128,7 +5128,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "kakao-main",
@@ -5144,7 +5144,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "naver-main",
@@ -5160,7 +5160,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "shared",
+    "project": "shared",
     "scope": "shared",
     "category": "sns-logos",
     "id": "naver-white",
@@ -5176,11 +5176,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/misc",
     "id": "test-complete",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/misc/test-complete.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/misc/test-complete.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5194,11 +5194,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/profiles",
     "id": "default-profile",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/profiles/default-profile.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/profiles/default-profile.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5212,11 +5212,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "center",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/center.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/center.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5232,11 +5232,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "corona",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/corona.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/corona.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5251,11 +5251,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "d-type",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/d-type.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/d-type.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5272,11 +5272,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "depression",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/depression.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/depression.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5292,11 +5292,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "emotion",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/emotion.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/emotion.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5311,11 +5311,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "employment",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/employment.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/employment.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5330,11 +5330,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "event",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/event.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/event.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5349,11 +5349,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "job-stress",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/job-stress.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/job-stress.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5370,11 +5370,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "mbti",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/mbti.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/mbti.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5389,11 +5389,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "medicine",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/medicine.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/medicine.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5409,11 +5409,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "panic",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/panic.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/panic.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5429,11 +5429,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "personality",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/personality.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/personality.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5449,11 +5449,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "psych",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/psych.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/psych.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5468,11 +5468,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "routine",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/routine.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/routine.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5488,11 +5488,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "self-esteem",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/self-esteem.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/self-esteem.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5508,11 +5508,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "images/psych-tests",
     "id": "sound",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/images/psych-tests/sound.png",
+    "inlineRef": "@nudge-design/assets/files/project/trost/images/psych-tests/sound.png",
     "mimeType": "image/png",
     "retina": [
       "3x"
@@ -5528,11 +5528,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "logos",
     "id": "trost-logo",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/logos/trost-logo.svg",
+    "inlineRef": "@nudge-design/assets/files/project/trost/logos/trost-logo.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "trost",
@@ -5541,11 +5541,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "logos",
     "id": "trost-logo-mobile",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/logos/trost-logo-mobile.webp",
+    "inlineRef": "@nudge-design/assets/files/project/trost/logos/trost-logo-mobile.webp",
     "mimeType": "image/webp",
     "search": [
       "trost",
@@ -5555,11 +5555,11 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
-    "brand": "trost",
-    "scope": "brand",
+    "project": "trost",
+    "scope": "project",
     "category": "logos",
     "id": "trost-logo-white",
-    "inlineRef": "@nudge-design/assets/files/brand/trost/logos/trost-logo-white.svg",
+    "inlineRef": "@nudge-design/assets/files/project/trost/logos/trost-logo-white.svg",
     "mimeType": "image/svg+xml",
     "search": [
       "trost",
@@ -5570,7 +5570,7 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
   }
 ];
 
-/** 브랜드 → 카테고리 → 에셋 수 요약. */
+/** 프로젝트 → 카테고리 → 에셋 수 요약. */
 export const ASSET_CATALOG_SUMMARY: Record<string, Record<string, number>> = {
   "cashwalk-biz": {
     "illustrations": 5,

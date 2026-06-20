@@ -23,8 +23,8 @@ export {
   NdsArticleActions,
 } from "./components/nds-article.js";
 
-export { NdsBrandLogo } from "./components/nds-brand-logo.js";
-export type { BrandLogoBrand } from "./components/nds-brand-logo.js";
+export { NdsProjectLogo } from "./components/nds-project-logo.js";
+export type { ProjectSlug } from "./components/nds-project-logo.js";
 
 export { NdsIconButton } from "./components/nds-icon-button.js";
 export type { IconButtonSize } from "./components/nds-icon-button.js";
@@ -95,10 +95,10 @@ export {
 export type { FooterVariant, FooterWebTone } from "./components/nds-footer.js";
 
 export {
-  NdsBrandHeader,
-  NdsBrandFooter,
-  NdsBrandBottomNav,
-} from "./components/nds-brand-chrome.js";
+  NdsProjectHeader,
+  NdsProjectFooter,
+  NdsProjectBottomNav,
+} from "./components/nds-project-chrome.js";
 
 export { NdsList, NdsListItem } from "./components/nds-list.js";
 export type { ListItemSize, ListVariant } from "./components/nds-list.js";
@@ -281,8 +281,8 @@ export { NdsFileUpload } from "./components/nds-file-upload.js";
 
 export { NdsImageUpload } from "./components/nds-image-upload.js";
 
-// Sidebar(admin chrome)는 nds-brand-chrome 로 흡수됨 — element 명은 <nds-sidebar> 유지.
-export { NdsSidebar } from "./components/nds-brand-chrome.js";
+// Sidebar(admin chrome)는 nds-project-chrome 로 흡수됨 — element 명은 <nds-sidebar> 유지.
+export { NdsSidebar } from "./components/nds-project-chrome.js";
 
 export { NdsVideoPlayer } from "./components/nds-video-player.js";
 

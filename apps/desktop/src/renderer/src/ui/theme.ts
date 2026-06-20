@@ -14,7 +14,7 @@ export const c = {
   text: "#d4d4d4",
   textMuted: "#858585",
   textFaint: "#6a6a6a",
-  // 포인트 = 옐로우(Nudge 브랜드 톤). 다크 위에서 채움엔 검정 글자(accentText).
+  // 포인트 = 옐로우(Nudge 프로젝트 톤). 다크 위에서 채움엔 검정 글자(accentText).
   accent: "#ffd33d",
   accentText: "#1e1e1e",
   accentBg: "rgba(255, 211, 61, 0.14)",

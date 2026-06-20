@@ -69,7 +69,7 @@ export function getSnsLogos(sns: SnsService): SnsLogoSet {
 /**
  * 단일 SNS 로고 조회. color 미지정 시 합리적 default 로 fallback.
  *   main → black → white 순.
- *   (서비스 로고는 보통 "브랜드 색상" 이 가장 흔하게 쓰임)
+ *   (서비스 로고는 보통 "프로젝트 색상" 이 가장 흔하게 쓰임)
  */
 export function getSnsLogo(sns: SnsService, color?: SnsLogoColor): SnsLogo | undefined {
   const set = getSnsLogos(sns);

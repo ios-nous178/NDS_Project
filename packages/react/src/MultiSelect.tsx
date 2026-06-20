@@ -77,7 +77,7 @@ export interface MultiSelectProps {
  * MultiSelect — 검색 + 전체선택 + 체크박스 + 취소/적용 푸터를 가진 다중 선택 필터 드롭다운.
  *
  * 내부는 DS 컴포넌트 조합: 검색=`SearchInput`, 전체선택/옵션=`Checkbox`(indeterminate),
- * 푸터=`Button`. 체크박스/입력/버튼의 토큰·a11y·브랜드 cascade 를 그대로 물려받는다.
+ * 푸터=`Button`. 체크박스/입력/버튼의 토큰·a11y·프로젝트 cascade 를 그대로 물려받는다.
  *
  * 일반 `Select`(단일 선택, 즉시 반영)와 다르다: 초안(draft)을 패널 안에서 편집하고
  * **적용** 을 눌러야 `onValueChange` 가 발화한다(취소는 초안 폐기).

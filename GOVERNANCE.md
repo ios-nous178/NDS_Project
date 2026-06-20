@@ -2,7 +2,7 @@
 
 이 디자인 시스템을 **어떻게 운영·확장·개선할지**의 규칙을 한곳에 모읍니다. 두 갈래로 나눕니다:
 
-- **Track A — 무엇을 시스템에 포함시킬지** (Brand / Component / Token / Asset / Documentation)
+- **Track A — 무엇을 시스템에 포함시킬지** (Project / Component / Token / Asset / Documentation)
 - **Track B — 어떻게 더 잘 생성할지** (Learning / Validation / AI / Quality / Telemetry)
 
 > **운영 철학**: 거버넌스의 상당 부분은 이미 **게이트·스킬·baseline**으로 코드에 강제돼 있습니다. 이 문서는 그 결정들을 *명문화하고 SSOT로 링크*하는 인덱스입니다. 정책 결정은 아래 **결정 (확정)** 표에 모았고, 일부는 정책만 확정·**구현은 후속**(🟡)입니다.
@@ -19,7 +19,7 @@
 
 | | |
 |---|---|
-| **기준** | ① 2+ 브랜드 사용 or 명시 사유 ② Figma 가이드 노드(`figmaNodeUrl`) ③ 앱 비즈니스 로직 없음 ④ react+html 미러 동시 |
+| **기준** | ① 2+ 프로젝트 사용 or 명시 사유 ② Figma 가이드 노드(`figmaNodeUrl`) ③ 앱 비즈니스 로직 없음 ④ react+html 미러 동시 |
 | **SSOT** | [CLAUDE.md](CLAUDE.md) "DS 편입 기준(admission)" · `/ds-component` 스킬 |
 | **강제** | `guide-figma-links`(노드 누락 차단)·`mirror-parity`(미러 drift)·`storybook-catalog`(스토리/inventory) 게이트 |
 
@@ -31,22 +31,22 @@
 |---|---|
 | **기준** | 토큰-퍼스트: raw hex 신규 금지. 시멘틱 2갈래만 — `--semantic-*`(Figma 정합) / `--nds-*`(컴포넌트 슬롯) |
 | **SSOT** | `packages/tokens/src/` · [DESIGN.md](DESIGN.md) · `docs/guide/design-token-principles.mdx` · `token-review-checklist.mdx` |
-| **강제** | `tokens-sync`(DESIGN.md↔src)·`brand-completeness`(5브랜드 정의/waiver)·`input-token-binding` 게이트 |
+| **강제** | `tokens-sync`(DESIGN.md↔src)·`project-completeness`(5프로젝트 정의/waiver)·`input-token-binding` 게이트 |
 
-### A3. Brand (신규 브랜드 편입) — ✅ 절차 확정 (승인: DS 오너)
+### A3. Project (신규 프로젝트 편입) — ✅ 절차 확정 (승인: DS 오너)
 
 | | |
 |---|---|
-| **현황** | `brand-completeness` 게이트 + `packages/tokens/src/brands/<brand>.ts` 템플릿은 있으나, **"브랜드를 받을지" 의사결정 절차가 문서화돼 있지 않음** |
-| **SSOT(기술)** | `scripts/check-brand-completeness.mjs` · `scripts/brand-completeness-baseline.json` |
+| **현황** | `project-completeness` 게이트 + `packages/tokens/src/projects/<project>.ts` 템플릿은 있으나, **"프로젝트를 받을지" 의사결정 절차가 문서화돼 있지 않음** |
+| **SSOT(기술)** | `scripts/check-project-completeness.mjs` · `scripts/project-completeness-baseline.json` |
 
 **절차 (확정)** — 승인권자: **DS 오너**(D3):
-1. **요청** — 실제 제품 필요 근거(2+ 화면) + 브랜드 오너 지정
-2. **팔레트** — `brands/<brand>.palette.ts` 원시 색 정의
-3. **시멘틱 매핑** — `brands/<brand>.ts` 가 base 시멘틱 leaf 를 **전부 명시 정의 or waiver**
-4. **게이트 통과** — `pnpm lint:brand-completeness` green (silent base-fallback 0)
-5. **DS 오너 승인 → 등재** — `BRANDS` 목록·tailwind preset·문서에 반영
-> 원칙: 브랜드 차이는 **토큰 값으로만**. 브랜드 전용 컴포넌트는 **원칙 금지, 명시 사유 시에만 예외**(D4 — [ARCHITECTURE.md](ARCHITECTURE.md) "브랜드는 토큰으로만").
+1. **요청** — 실제 제품 필요 근거(2+ 화면) + 프로젝트 오너 지정
+2. **팔레트** — `projects/<project>.palette.ts` 원시 색 정의
+3. **시멘틱 매핑** — `projects/<project>.ts` 가 base 시멘틱 leaf 를 **전부 명시 정의 or waiver**
+4. **게이트 통과** — `pnpm lint:project-completeness` green (silent base-fallback 0)
+5. **DS 오너 승인 → 등재** — `PROJECTS` 목록·tailwind preset·문서에 반영
+> 원칙: 프로젝트 차이는 **토큰 값으로만**. 프로젝트 전용 컴포넌트는 **원칙 금지, 명시 사유 시에만 예외**(D4 — [ARCHITECTURE.md](ARCHITECTURE.md) "프로젝트는 토큰으로만").
 
 ### A4. Asset (아이콘/로고/이미지) — ✅ 기술 / 🟡 추가기준
 
@@ -54,7 +54,7 @@
 |---|---|
 | **현황** | 아이콘: Figma→SVG→컴포넌트 파이프라인(일부 자동). 로고/자산: `@nudge-design/assets` SSOT |
 | **SSOT** | `packages/icons/`(README) · `packages/assets/`(README) |
-| **공백** | "어느 브랜드까지·언제 새 로고/일러스트를 받나"의 기준 미문서화. 중복 방지는 `find_icon`(MCP) 선조회 |
+| **공백** | "어느 프로젝트까지·언제 새 로고/일러스트를 받나"의 기준 미문서화. 중복 방지는 `find_icon`(MCP) 선조회 |
 
 ### A5. Deprecated / Breaking Change — 🟡 정책 확정, 강제 도구 미구현
 
@@ -91,9 +91,9 @@
 
 | | |
 |---|---|
-| **현황** | **게이트 23개**(`scripts/gates.mjs` SSOT)가 CI/pre-commit/`pnpm fix` 3층에서 강제. 목업 검증은 MCP `validate_html_mockup`(raw hex/px·prop 매칭·brand cascade·primary 과다·장식 남용) |
+| **현황** | **게이트 23개**(`scripts/gates.mjs` SSOT)가 CI/pre-commit/`pnpm fix` 3층에서 강제. 목업 검증은 MCP `validate_html_mockup`(raw hex/px·prop 매칭·project cascade·primary 과다·장식 남용) |
 | **SSOT** | `scripts/gates.mjs` · `scripts/check-*.mjs` · `packages/mockup-core/src`(validator) |
-| **분류** | 룰 종류: `invariant`(불변) / `model-guard`(모델 오용) / `brand-policy`(브랜드 규칙) — 텔레메트리에 `ruleKind` 로 기록됨 |
+| **분류** | 룰 종류: `invariant`(불변) / `model-guard`(모델 오용) / `project-policy`(프로젝트 규칙) — 텔레메트리에 `ruleKind` 로 기록됨 |
 
 ### B2. Telemetry (수집·보관·열람) — ✅ 수집/보관 / 🟡 열람
 
@@ -152,7 +152,7 @@ usage_weekly_summary(뷰)                                   주간 리포트(마
 | | |
 |---|---|
 | **현황** | `find_*`(조회+환각 추적)·`suggest_replacement`·`recommend_page_pattern` |
-| **경계(확정)** | 3단계 — ① **추천만**: 대체 컴포넌트·패턴 제안(`suggest_replacement`·`recommend_page_pattern`) ② **자동 수정**: 검증 가능한 **토큰·prop 위반**(raw hex→시멘틱, 잘못된 enum 등) ③ **차단(사람 확인)**: admission(figma 노드 없는 신규 편입)·**brand drift**·breaking — 자동 통과 금지 |
+| **경계(확정)** | 3단계 — ① **추천만**: 대체 컴포넌트·패턴 제안(`suggest_replacement`·`recommend_page_pattern`) ② **자동 수정**: 검증 가능한 **토큰·prop 위반**(raw hex→시멘틱, 잘못된 enum 등) ③ **차단(사람 확인)**: admission(figma 노드 없는 신규 편입)·**project drift**·breaking — 자동 통과 금지 |
 
 > 요지: 객관적·되돌리기 쉬운 위반(①②)은 AI 가 자동, 정책·디자인 근거가 필요한 판단(③)은 사람이 게이트.
 
@@ -164,10 +164,10 @@ usage_weekly_summary(뷰)                                   주간 리포트(마
 |---|---|---|
 | D1 | **Deprecation 유예 기간** | ✅ 최소 1 minor 유예 → 다음 major 제거 |
 | D2 | **Breaking change 승인권자** | ✅ DS 오너 단독 리뷰 + major changeset 필수 |
-| D3 | **Brand 편입 승인권자** | ✅ DS 오너 단독 |
-| D4 | **브랜드 전용 컴포넌트 허용?** | ✅ 원칙 금지, 명시 사유 시에만 예외 |
+| D3 | **Project 편입 승인권자** | ✅ DS 오너 단독 |
+| D4 | **프로젝트 전용 컴포넌트 허용?** | ✅ 원칙 금지, 명시 사유 시에만 예외 |
 | D5 | **Learning 리포트 주기·오너·도착지** | ✅ 주 1회 · DS 오너 트리아지 · 슬랙 + artifact (구현됨) |
-| D6 | **AI 자동 수정 범위** | ✅ 토큰/prop 위반까지 자동, admission·brand drift 는 차단(사람 확인) |
+| D6 | **AI 자동 수정 범위** | ✅ 토큰/prop 위반까지 자동, admission·project drift 는 차단(사람 확인) |
 | D7 | **Quality 합격선** | ✅ rubric 차원별 임계(B4) + 사용자 👍/👎 만족도 병행 |
 
 > 임계 구체값(D7)·`@deprecated` 강제 게이트(A5 후속)·👍/👎 수집(B4 후속)은 운영하며 보정/구현.

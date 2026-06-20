@@ -112,7 +112,7 @@ export const tpStyles = `
   :where(.${TP_ICON_CLASS} svg) { width: 20px; height: 20px; display: block; }
   :where(.${TP_TRIGGER_CLASS}:disabled .${TP_ICON_CLASS}) { color: ${cv.textRole.disabled}; }
 
-  /* 빠른설정 프리셋 칩('자정까지' 등) — 필드 트레일링, 회색 중립 surface(노란 brand 아님) */
+  /* 빠른설정 프리셋 칩('자정까지' 등) — 필드 트레일링, 회색 중립 surface(노란 project 아님) */
   :where(.${TP_PRESETS_CLASS}) {
     flex-shrink: 0;
     display: inline-flex;

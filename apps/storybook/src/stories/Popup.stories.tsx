@@ -6,11 +6,11 @@ import { resolveActionsLayout } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
-/** 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+/** 정적 프리뷰용 — 현재 프로젝트 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
 function currentActionsLayout(): "split" | "end" {
-  const brand =
-    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
-  return resolveActionsLayout(brand);
+  const project =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-project") : null;
+  return resolveActionsLayout(project);
 }
 
 const meta: Meta<PopupProps> = {
@@ -30,7 +30,7 @@ const meta: Meta<PopupProps> = {
     actionsLayout: {
       control: "radio",
       options: [undefined, "split", "end"],
-      description: "버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split).",
+      description: "버튼 배치. 생략 시 프로젝트 기본(캐포비=end, 그 외=split).",
     },
   },
   args: {
@@ -103,7 +103,7 @@ export const Playground: Story = {
 /* ─── Single / Dual Action ───────────────────────────────────────────────
    docs(개요)에서 클릭 없이 바로 UI 가 보이도록, 포털/오버레이 없이 컴포넌트와 동일한
    DS 클래스(nds-popup__*)로 카드만 인라인 렌더한다 — styles.css 가 그대로 적용되므로
-   브랜드 툴바를 cashwalk-biz 로 두면 우측 hug pill 확인창으로 보인다.
+   프로젝트 툴바를 cashwalk-biz 로 두면 우측 hug pill 확인창으로 보인다.
    (실제 열림/포커스/Esc 동작은 Playground·Interaction 스토리 참고.) */
 
 function PopupStaticPreview({

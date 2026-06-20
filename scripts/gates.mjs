@@ -121,26 +121,26 @@ export const GATES = [
     ssot: true,
   },
   {
-    id: "brand-completeness",
-    label: "brand semantic completeness",
-    check: ["node", "scripts/check-brand-completeness.mjs"],
+    id: "project-completeness",
+    label: "project semantic completeness",
+    check: ["node", "scripts/check-project-completeness.mjs"],
     fix: null,
     fixHint:
-      "base 시멘틱 leaf 를 4개 브랜드에 명시 정의하거나, 사유와 함께 " +
-      "scripts/brand-completeness-baseline.json waiver 에 추가하세요.",
+      "base 시멘틱 leaf 를 4개 프로젝트에 명시 정의하거나, 사유와 함께 " +
+      "scripts/project-completeness-baseline.json waiver 에 추가하세요.",
     watch: ["packages/tokens/src/"],
-    buildFree: false, // packages/tokens/dist/brands/*.semantic.js 를 읽음
+    buildFree: false, // packages/tokens/dist/projects/*.semantic.js 를 읽음
     ssot: true,
   },
   {
     id: "tailwind-presets",
-    label: "brand Tailwind preset 완전성 (브랜드마다 <brand>Preset)",
+    label: "project Tailwind preset 완전성 (프로젝트마다 <project>Preset)",
     check: ["node", "scripts/check-tailwind-presets.mjs"],
     fix: null,
     fixHint:
-      "packages/tailwind-preset/src/index.ts 에 누락 브랜드의 `export const <brand>Preset` 를 " +
+      "packages/tailwind-preset/src/index.ts 에 누락 프로젝트의 `export const <project>Preset` 를 " +
       "추가하세요 (trostPreset/cashwalkBizPreset 구조 미러: atomic palette + radius + typography + shadow).",
-    watch: ["packages/tokens/src/brands/", "packages/tailwind-preset/src/"],
+    watch: ["packages/tokens/src/projects/", "packages/tailwind-preset/src/"],
     buildFree: true, // 소스 텍스트만 파싱 — dist 불필요
     ssot: true,
   },
@@ -180,11 +180,11 @@ export const GATES = [
     ssot: true,
   },
   {
-    id: "brand-coverage",
+    id: "project-coverage",
     label:
-      "brand coverage manifest (metadata/coverage-manifest.json — 보드는 공유 컴포넌트가 렌더)",
-    check: ["node", "scripts/generate-brand-coverage.mjs", "--check"],
-    fix: ["node", "scripts/generate-brand-coverage.mjs"],
+      "project coverage manifest (metadata/coverage-manifest.json — 보드는 공유 컴포넌트가 렌더)",
+    check: ["node", "scripts/generate-project-coverage.mjs", "--check"],
+    fix: ["node", "scripts/generate-project-coverage.mjs"],
     watch: ["packages/react/src/index.ts", "packages/html/src/index.ts", "metadata/"],
     buildFree: true,
     ssot: true,
@@ -274,11 +274,11 @@ export const GATES = [
   // ── 루트 lint 체인의 나머지 게이트 (check-ssot 밖) ───────────────────────
   {
     id: "actions-layout",
-    label: "brand actionsLayout 정의",
+    label: "project actionsLayout 정의",
     check: ["node", "scripts/check-actions-layout.mjs"],
     fix: null,
-    fixHint: "packages/tokens/src/brands/<brand>.ts 에 actionsLayout('split'|'end') 추가.",
-    watch: ["packages/tokens/src/brands/"],
+    fixHint: "packages/tokens/src/projects/<project>.ts 에 actionsLayout('split'|'end') 추가.",
+    watch: ["packages/tokens/src/projects/"],
     buildFree: true,
     ssot: false,
   },
@@ -287,7 +287,7 @@ export const GATES = [
     label: "입력 계열 --nds-input-* 토큰 바인딩",
     check: ["node", "scripts/check-input-token-binding.mjs"],
     fix: null,
-    fixHint: "입력 계열 styles 는 --nds-input-* 슬롯을 공유해야 합니다 (brand drift 방지).",
+    fixHint: "입력 계열 styles 는 --nds-input-* 슬롯을 공유해야 합니다 (project drift 방지).",
     watch: ["packages/styles/src/"],
     buildFree: true,
     ssot: false,

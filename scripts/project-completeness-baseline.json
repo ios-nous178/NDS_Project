@@ -1,0 +1,95 @@
+{
+  "_comment": "check-project-completeness.mjs 의 waiver 목록 — base 시멘틱 leaf 의 프로젝트 미정의가 '의도된 base-fallback' 인 경우만 사유와 함께 등재한다. 사유 없는 silent fallback 은 게이트가 차단.",
+  "entries": [
+    {
+      "project": "trost",
+      "key": "confirmCta.bg",
+      "reason": "base 가 var() late-bind (nudge-eap.semantic.ts:184) — 프로젝트 :root cascade 로 자기 project 색이 자동 적용. 명시 불필요"
+    },
+    {
+      "project": "trost",
+      "key": "confirmCta.hover",
+      "reason": "base var() late-bind — confirmCta.bg 와 동일"
+    },
+    {
+      "project": "trost",
+      "key": "confirmCta.active",
+      "reason": "base var() late-bind — confirmCta.bg 와 동일"
+    },
+    {
+      "project": "trost",
+      "key": "confirmCta.text",
+      "reason": "base var() late-bind — buttonText.default(트로스트=검정)가 자동 적용"
+    },
+    {
+      "project": "geniet",
+      "key": "confirmCta.bg",
+      "reason": "base 가 var() late-bind (nudge-eap.semantic.ts:184) — 프로젝트 :root cascade 로 자기 project 색이 자동 적용. 명시 불필요"
+    },
+    {
+      "project": "geniet",
+      "key": "confirmCta.hover",
+      "reason": "base var() late-bind — confirmCta.bg 와 동일"
+    },
+    {
+      "project": "geniet",
+      "key": "confirmCta.active",
+      "reason": "base var() late-bind — confirmCta.bg 와 동일"
+    },
+    {
+      "project": "geniet",
+      "key": "confirmCta.text",
+      "reason": "base var() late-bind — buttonText.default 가 자동 적용"
+    },
+    {
+      "project": "runmile",
+      "key": "confirmCta.bg",
+      "reason": "base 가 var() late-bind (nudge-eap.semantic.ts:184) — 프로젝트 :root cascade 로 자기 project 색이 자동 적용. 명시 불필요"
+    },
+    {
+      "project": "runmile",
+      "key": "confirmCta.hover",
+      "reason": "base var() late-bind — confirmCta.bg 와 동일"
+    },
+    {
+      "project": "runmile",
+      "key": "confirmCta.active",
+      "reason": "base var() late-bind — confirmCta.bg 와 동일"
+    },
+    {
+      "project": "runmile",
+      "key": "confirmCta.text",
+      "reason": "base var() late-bind — buttonText.default 가 자동 적용"
+    },
+    {
+      "project": "trost",
+      "key": "buttonBg.neutral.default",
+      "reason": "트로스트 Figma 버튼 가이드에 Solid/Neutral variant 부재 — base cool-gray 폴백 의도 (디자이너가 트로스트 Neutral 톤을 정의하면 명시 전환)"
+    },
+    {
+      "project": "trost",
+      "key": "buttonBg.neutral.hover",
+      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
+    },
+    {
+      "project": "trost",
+      "key": "buttonBg.neutral.disabled",
+      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
+    },
+    {
+      "project": "trost",
+      "key": "buttonText.neutral",
+      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
+    },
+    {
+      "project": "trost",
+      "key": "buttonText.neutralSolid",
+      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
+    },
+    {
+      "project": "trost",
+      "key": "buttonText.neutralDisabled",
+      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
+    }
+  ]
+}

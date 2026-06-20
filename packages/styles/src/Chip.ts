@@ -9,7 +9,7 @@ const CHIP_ICON_CLASS = `${CHIP_CLASS}__icon`;
 export const chipStyles = `
   :where(.${CHIP_ROOT_CLASS}) {
     /* variant×color → bg/fg/border 슬롯 합성. react/html 은 data-variant/data-color 만 set,
-       색은 여기서만(JS 색맵 우회 금지). 슬롯 폴백은 outlined·brand(컴포넌트 기본값)와 동일. */
+       색은 여기서만(JS 색맵 우회 금지). 슬롯 폴백은 outlined·project(컴포넌트 기본값)와 동일. */
     background: var(--nds-chip-bg, ${cv.surface.default});
     color: var(--nds-chip-fg, ${cv.textRole.brand});
     border: 1px solid var(--nds-chip-border, ${cv.borderRole.brand});
@@ -20,7 +20,7 @@ export const chipStyles = `
   }
 
   /* ─── variant=fill × color (FILL_COLORS) ─── */
-  :where(.${CHIP_ROOT_CLASS}[data-variant="fill"][data-color="brand"]) {
+  :where(.${CHIP_ROOT_CLASS}[data-variant="fill"][data-color="project"]) {
     --nds-chip-bg: ${cv.fill.brand};
     --nds-chip-fg: ${cv.button.textDefault};
     --nds-chip-border: transparent;
@@ -47,7 +47,7 @@ export const chipStyles = `
   }
 
   /* ─── variant=outlined × color (OUTLINED_COLORS) ─── */
-  :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"][data-color="brand"]) {
+  :where(.${CHIP_ROOT_CLASS}[data-variant="outlined"][data-color="project"]) {
     --nds-chip-bg: ${cv.surface.default};
     --nds-chip-fg: ${cv.textRole.brand};
     --nds-chip-border: ${cv.borderRole.brand};
@@ -74,7 +74,7 @@ export const chipStyles = `
   }
 
   /* ─── variant=ghost × color (GHOST_COLORS) ─── */
-  :where(.${CHIP_ROOT_CLASS}[data-variant="ghost"][data-color="brand"]) {
+  :where(.${CHIP_ROOT_CLASS}[data-variant="ghost"][data-color="project"]) {
     --nds-chip-bg: ${cv.surface.brandSubtle};
     --nds-chip-fg: ${cv.textRole.brand};
     --nds-chip-border: transparent;
@@ -102,7 +102,7 @@ export const chipStyles = `
 
   /* ─── selected=true × color (variant 무시 → FILL_COLORS, 단 --nds-chip-selected-* override 우선) ─── */
   /* selected 룰은 variant 룰 뒤(source order)에 둬 :where() 동일 특정성에서 이긴다. */
-  :where(.${CHIP_ROOT_CLASS}[data-selected="true"][data-color="brand"]) {
+  :where(.${CHIP_ROOT_CLASS}[data-selected="true"][data-color="project"]) {
     --nds-chip-bg: var(--nds-chip-selected-background, ${cv.fill.brand});
     --nds-chip-fg: var(--nds-chip-selected-text, ${cv.button.textDefault});
     --nds-chip-border: var(--nds-chip-selected-border, transparent);

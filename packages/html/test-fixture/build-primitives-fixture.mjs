@@ -107,7 +107,7 @@ const html = `<!DOCTYPE html>
     <div>
       <div class="compare-header">&lt;nds-badge variant="fill"&gt;</div>
       <div class="row">
-        <nds-badge variant="fill" color="brand">brand</nds-badge>
+        <nds-badge variant="fill" color="project">project</nds-badge>
         <nds-badge variant="fill" color="neutral">neutral</nds-badge>
         <nds-badge variant="fill" color="success">success</nds-badge>
         <nds-badge variant="fill" color="error">error</nds-badge>
@@ -116,7 +116,7 @@ const html = `<!DOCTYPE html>
       </div>
       <div class="compare-header">&lt;nds-badge variant="ghost"&gt;</div>
       <div class="row">
-        <nds-badge variant="ghost" color="brand">brand</nds-badge>
+        <nds-badge variant="ghost" color="project">project</nds-badge>
         <nds-badge variant="ghost" color="neutral">neutral</nds-badge>
         <nds-badge variant="ghost" color="success">success</nds-badge>
         <nds-badge variant="ghost" color="error">error</nds-badge>
@@ -125,7 +125,7 @@ const html = `<!DOCTYPE html>
       </div>
       <div class="compare-header">&lt;nds-badge variant="line"&gt;</div>
       <div class="row">
-        <nds-badge variant="line" color="brand">brand</nds-badge>
+        <nds-badge variant="line" color="project">project</nds-badge>
         <nds-badge variant="line" color="neutral">neutral</nds-badge>
         <nds-badge variant="line" color="success">success</nds-badge>
         <nds-badge variant="line" color="error">error</nds-badge>
@@ -136,9 +136,9 @@ const html = `<!DOCTYPE html>
     <div>
       <div class="compare-header">sizes (sm / md / lg)</div>
       <div class="row">
-        <nds-badge size="sm" color="brand">sm</nds-badge>
-        <nds-badge size="md" color="brand">md</nds-badge>
-        <nds-badge size="lg" color="brand">lg</nds-badge>
+        <nds-badge size="sm" color="project">sm</nds-badge>
+        <nds-badge size="md" color="project">md</nds-badge>
+        <nds-badge size="lg" color="project">lg</nds-badge>
       </div>
     </div>
   </div>
@@ -148,9 +148,9 @@ const html = `<!DOCTYPE html>
     <div>
       <div class="compare-header">정적 chip (variant × color)</div>
       <div class="row">
-        <nds-chip variant="fill" color="brand">fill brand</nds-chip>
-        <nds-chip variant="outlined" color="brand">outlined brand</nds-chip>
-        <nds-chip variant="ghost" color="brand">ghost brand</nds-chip>
+        <nds-chip variant="fill" color="project">fill project</nds-chip>
+        <nds-chip variant="outlined" color="project">outlined project</nds-chip>
+        <nds-chip variant="ghost" color="project">ghost project</nds-chip>
       </div>
       <div class="row">
         <nds-chip variant="fill" color="success">fill success</nds-chip>

@@ -29,7 +29,7 @@ import {
 } from "./usage/tracker.js";
 import { resolveQueueDir, resolveWritableLogDir, safeAppendUsageToLog } from "./usage/log-path.js";
 import { ingestUrl } from "./usage/webhook.js";
-import type { Brand, Context, DsUsageEntry, MockupUsage } from "../types/usage.js";
+import type { Project, Context, DsUsageEntry, MockupUsage } from "../types/usage.js";
 
 interface DomElement {
   type: string;
@@ -239,7 +239,7 @@ export interface ReportHtmlMockupUsageArgs {
   filePath?: string;
   mockupName?: string;
   context?: Context;
-  brand?: Exclude<Brand, null>;
+  project?: Exclude<Project, null>;
   cwd?: string;
   /** 기본 false (.tsx report 와 동일). true 면 로그/webhook 모두 생략. */
   dryRun?: boolean;
@@ -310,7 +310,7 @@ export async function reportHtmlMockupUsage(
     mockupName,
     cwd,
     context: args.context ?? "user-app",
-    brand: args.brand ?? null,
+    project: args.project ?? null,
     loggedAt,
     dsVersionFallback: args.dsVersionFallback,
     assetVersionFallback: args.assetVersionFallback,
@@ -356,14 +356,14 @@ export async function reportHtmlMockupUsage(
   const webhookStatus = !webhook.attempted ? "skipped" : "background";
   const dsVersionLabel = usage.dsVersions?.primary ?? "unknown";
   const humanReadable =
-    `[html-usage] ${mockupName} (${usage.brand ?? "?"}) · DS@${dsVersionLabel} · ` +
+    `[html-usage] ${mockupName} (${usage.project ?? "?"}) · DS@${dsVersionLabel} · ` +
     `DS ${counts.ndsTags.total} (${counts.dsRatio}%) · ` +
     `nds-class ${counts.ndsClassed.total} · native ${counts.nativeUnwrapped.total} · ` +
     `webhook ${webhookStatus}`;
 
   const _nextSuggestion =
     "⚠️ MUST: 사용자에게 보여줄 한 줄 요약(humanReadable)에는 **DS 사용 비율(%) 과 DS 버전** 이 항상 함께 들어가야 합니다. " +
-    "기본 형식 예: '[html-usage] <name> (<brand>) · DS@<version> · DS <n> (<ratio>%) · ...'. " +
+    "기본 형식 예: '[html-usage] <name> (<project>) · DS@<version> · DS <n> (<ratio>%) · ...'. " +
     "이 결과를 사용자에게 한 줄로 보여준 다음, build_singlefile_html 로 dist/index.html 단일 산출물을 만드세요.";
 
   return {
@@ -393,14 +393,14 @@ interface BuildUsageArgs {
   mockupName: string;
   cwd: string;
   context: Context;
-  brand: Brand;
+  project: Project;
   loggedAt: string;
   dsVersionFallback?: string;
   assetVersionFallback?: string;
 }
 
 function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
-  const { counts, filePath, mockupName, cwd, context, brand, loggedAt } = args;
+  const { counts, filePath, mockupName, cwd, context, project, loggedAt } = args;
 
   const ds: DsUsageEntry[] = [];
   for (const [tag, count] of Object.entries(counts.ndsTags.byTag)) {
@@ -447,7 +447,7 @@ function buildMockupUsageFromHtmlCounts(args: BuildUsageArgs): MockupUsage {
     mockupFile,
     mockupName,
     context,
-    brand,
+    project,
     dsVersions,
     ds,
     adminCms: [],

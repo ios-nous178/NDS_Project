@@ -142,7 +142,7 @@ for (const tc of TEST_CASES) {
   if (!inner.disabled) errors.push("inner.disabled not set");
   // disabled state 가 적용되면 bg 가 enabled 와 달라야 함
   const bg = inner.style.getPropertyValue("--nds-button-background");
-  if (bg.includes("brand-default")) errors.push(`disabled bg should not be brand: ${bg}`);
+  if (bg.includes("project-default")) errors.push(`disabled bg should not be project: ${bg}`);
   if (errors.length === 0) console.log("✓ disabled state");
   else {
     failures++;

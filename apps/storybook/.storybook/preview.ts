@@ -1,9 +1,9 @@
 import React from "react";
 import type { Preview, Decorator } from "@storybook/react";
-import { brandThemes, defaultBrand } from "../src/brand-themes";
+import { projectThemes, defaultProject } from "../src/project-themes";
 import "../../../packages/tokens/dist/tokens.css";
 import "../../../packages/react/dist/styles.css";
-// 목업 전용 html 웹컴포넌트(nds-brand-*, nds-sidebar) 를 Storybook 에서 렌더하려면
+// 목업 전용 html 웹컴포넌트(nds-project-*, nds-sidebar) 를 Storybook 에서 렌더하려면
 // custom element 등록이 필요 — runtime import 가 모든 nds-* 를 define 한다.
 import "@nudge-design/html/runtime";
 
@@ -21,17 +21,17 @@ function isDocsEntry(title: string, name: string): boolean {
 }
 
 /* ═══════════════════════════════════════
-   Brand Theme Decorator
+   Project Theme Decorator
    ═══════════════════════════════════════ */
 
-const withBrandTheme: Decorator = (Story, context) => {
-  const brandKey = (context.globals.brand as string) || defaultBrand;
-  const theme = brandThemes[brandKey];
+const withProjectTheme: Decorator = (Story, context) => {
+  const projectKey = (context.globals.project as string) || defaultProject;
+  const theme = projectThemes[projectKey];
 
   if (theme) {
     const root = document.documentElement;
 
-    for (const b of Object.values(brandThemes)) {
+    for (const b of Object.values(projectThemes)) {
       for (const key of Object.keys(b.cssVars)) {
         root.style.removeProperty(key);
       }
@@ -41,11 +41,11 @@ const withBrandTheme: Decorator = (Story, context) => {
       root.style.setProperty(key, value);
     }
 
-    // Brand-aware 컴포넌트 가드용 hook — DS 컴포넌트가 `useBrand()` / data-brand selector 로 읽음.
-    root.setAttribute("data-brand", brandKey);
+    // Project-aware 컴포넌트 가드용 hook — DS 컴포넌트가 `useProject()` / data-project selector 로 읽음.
+    root.setAttribute("data-project", projectKey);
 
     try {
-      const raw = sessionStorage.getItem(`${TOKEN_OVERRIDE_KEY}:${brandKey}`);
+      const raw = sessionStorage.getItem(`${TOKEN_OVERRIDE_KEY}:${projectKey}`);
       if (raw) {
         const overrides = JSON.parse(raw) as Record<string, string>;
         for (const [key, value] of Object.entries(overrides)) {
@@ -56,13 +56,13 @@ const withBrandTheme: Decorator = (Story, context) => {
       /* 무시 */
     }
 
-    // Docs(개요)처럼 한 페이지에 여러 브랜드가 동시에 렌더되면 위의 :root 전역 테마가
-    // 마지막 브랜드로 덮어써진다. 각 스토리가 자기 브랜드 색을 유지하도록 CSS 변수를
+    // Docs(개요)처럼 한 페이지에 여러 프로젝트가 동시에 렌더되면 위의 :root 전역 테마가
+    // 마지막 프로젝트로 덮어써진다. 각 스토리가 자기 프로젝트 색을 유지하도록 CSS 변수를
     // 스토리 단위 래퍼에 스코프해서 한 번 더 적용한다. (display:contents → 레이아웃 영향 없음)
     return React.createElement(
       "div",
       {
-        "data-brand": brandKey,
+        "data-project": projectKey,
         style: { display: "contents", ...theme.cssVars } as unknown as React.CSSProperties,
       },
       React.createElement(Story),
@@ -893,12 +893,12 @@ const withCssEditor: Decorator = (Story) => {
 
 const preview: Preview = {
   globalTypes: {
-    brand: {
-      description: "브랜드 테마 전환",
+    project: {
+      description: "프로젝트 테마 전환",
       toolbar: {
-        title: "Brand",
+        title: "Project",
         icon: "paintbrush",
-        items: Object.values(brandThemes).map((t) => ({
+        items: Object.values(projectThemes).map((t) => ({
           value: t.name,
           title: t.label,
           right: t.description,
@@ -908,13 +908,13 @@ const preview: Preview = {
     },
   },
   initialGlobals: {
-    brand: defaultBrand,
+    project: defaultProject,
   },
-  decorators: [withBrandTheme, withSpecOverlay, withCssEditor],
+  decorators: [withProjectTheme, withSpecOverlay, withCssEditor],
   parameters: {
     options: {
       // 사이드바 순서: Foundations 최상단 → Components → 나머지.
-      // Components 안에서는 브랜드 프레임(Header → Footer → BottomNav)을 먼저,
+      // Components 안에서는 프로젝트 프레임(Header → Footer → BottomNav)을 먼저,
       // 그 뒤로 의미 버킷(Inputs/Controls/Display/…)을 둔다.
       //
       // 같은 컴포넌트 그룹 안에서는 docs(개요)를 항상 최상단에 둔다.
@@ -931,7 +931,7 @@ const preview: Preview = {
         const aParts = a.title.split("/");
         const bParts = b.title.split("/");
 
-        const rootOrder = ["Foundations", "Brands", "Components"];
+        const rootOrder = ["Foundations", "Projects", "Components"];
         const aRootRank = rankByOrder(aParts[0] ?? "", rootOrder);
         const bRootRank = rankByOrder(bParts[0] ?? "", rootOrder);
         if (aRootRank !== bRootRank) return aRootRank - bRootRank;
@@ -959,11 +959,11 @@ const preview: Preview = {
           if (aDocs !== bDocs) return aDocs ? -1 : 1;
         }
 
-        if ((aParts[0] ?? "") === "Brands" && (bParts[0] ?? "") === "Brands") {
-          const brandOrder = ["NudgeEAP", "Geniet", "Trost", "CashwalkBiz", "Runmile"];
-          const aBrandRank = rankByOrder(aParts[1] ?? "", brandOrder);
-          const bBrandRank = rankByOrder(bParts[1] ?? "", brandOrder);
-          if (aBrandRank !== bBrandRank) return aBrandRank - bBrandRank;
+        if ((aParts[0] ?? "") === "Projects" && (bParts[0] ?? "") === "Projects") {
+          const projectOrder = ["NudgeEAP", "Geniet", "Trost", "CashwalkBiz", "Runmile"];
+          const aProjectRank = rankByOrder(aParts[1] ?? "", projectOrder);
+          const bProjectRank = rankByOrder(bParts[1] ?? "", projectOrder);
+          if (aProjectRank !== bProjectRank) return aProjectRank - bProjectRank;
 
           const aDocs = isDocsEntry(a.title, a.name);
           const bDocs = isDocsEntry(b.title, b.name);

@@ -2,8 +2,8 @@
 /**
  * build-asset-catalog.mjs — @nudge-design/assets 의 src/files/** → src/asset-catalog.generated.ts.
  *
- * find_asset 도구가 읽는 **검색용 에셋 카탈로그**의 SSOT 생성기. 파일시스템(전 브랜드 479장)을
- * 걸어 brand/category/id/inlineRef/retina 를 정규화한다. metadata 모듈(Geniet/NudgeImg/…)이
+ * find_asset 도구가 읽는 **검색용 에셋 카탈로그**의 SSOT 생성기. 파일시스템(전 프로젝트 479장)을
+ * 걸어 project/category/id/inlineRef/retina 를 정규화한다. metadata 모듈(Geniet/NudgeImg/…)이
  * 모듈마다 형태가 달라(Record vs 배열) 통합이 깨지기 쉬우므로, **파일이 SSOT**다(빠짐 없음 보장).
  * 이름이 의미를 담은 id(beef·bibimbap·salad…)라 path 토큰만으로도 1차 fuzzy 가 선다.
  *
@@ -60,20 +60,20 @@ function walk(dir, base = dir) {
   return out;
 }
 
-/** relPath(=files/ 기준) → { scope, brand, category }. category = brand/scope 아래 디렉토리 경로(파일명 제외). */
+/** relPath(=files/ 기준) → { scope, project, category }. category = project/scope 아래 디렉토리 경로(파일명 제외). */
 function classify(relParts) {
   const dirs = relParts.slice(0, -1); // 파일명 제외
-  if (dirs[0] === "brand") {
+  if (dirs[0] === "project") {
     return {
-      scope: "brand",
-      brand: dirs[1] ?? "unknown",
+      scope: "project",
+      project: dirs[1] ?? "unknown",
       category: dirs.slice(2).join("/") || "root",
     };
   }
   if (dirs[0] === "shared") {
-    return { scope: "shared", brand: "shared", category: dirs.slice(1).join("/") || "root" };
+    return { scope: "shared", project: "shared", category: dirs.slice(1).join("/") || "root" };
   }
-  return { scope: "unknown", brand: "unknown", category: dirs.join("/") || "root" };
+  return { scope: "unknown", project: "unknown", category: dirs.join("/") || "root" };
 }
 
 /** 파일 stem 에서 @2x/@3x 레티나 접미사 분리 → { baseId, retina } (retina: null|"2x"|"3x"). */
@@ -113,12 +113,12 @@ for (const rel of walk(FILES_DIR)) {
   const stem = file.slice(0, file.length - ext.length);
   const { baseId, retina } = splitRetina(stem);
   const key = `${dir}/${baseId}${ext}`;
-  const { scope, brand, category } = classify(parts);
+  const { scope, project, category } = classify(parts);
 
   let entry = groups.get(key);
   if (!entry) {
     entry = {
-      brand,
+      project,
       scope,
       category,
       id: baseId,
@@ -145,10 +145,10 @@ for (const rel of walk(FILES_DIR)) {
   }
 }
 
-// 검색 토큰 = 영문 path 토큰(brand·category·id) + 한글 사이드카 태그(id 매칭).
+// 검색 토큰 = 영문 path 토큰(project·category·id) + 한글 사이드카 태그(id 매칭).
 // 영문 토큰을 먼저(기존 순서 유지 → catalog churn 최소), 한글을 뒤에 append. 결정적.
 function buildSearch(e) {
-  const set = new Set(tokenize(e.brand, e.category, e.id));
+  const set = new Set(tokenize(e.project, e.category, e.id));
   for (const tag of KO_TAGS_BY_ID[e.id] ?? []) {
     set.add(tag.toLowerCase()); // 구절 전체(예: "돼지족발")
     for (const sub of tokenize(tag)) set.add(sub); // 분절 토큰(공백/기호 포함 태그 대비)
@@ -159,7 +159,7 @@ function buildSearch(e) {
 // 2) 정렬 + 검색 토큰 부여 → 직렬화 형태로 정규화.
 const catalog = [...groups.values()]
   .map((e) => ({
-    brand: e.brand,
+    project: e.project,
     scope: e.scope,
     category: e.category,
     id: e.id,
@@ -169,14 +169,14 @@ const catalog = [...groups.values()]
     search: buildSearch(e),
   }))
   .sort((a, b) =>
-    `${a.brand}/${a.category}/${a.id}` < `${b.brand}/${b.category}/${b.id}` ? -1 : 1,
+    `${a.project}/${a.category}/${a.id}` < `${b.project}/${b.category}/${b.id}` ? -1 : 1,
   );
 
-// 3) 브랜드×카테고리 요약(no-arg find_asset 응답용).
+// 3) 프로젝트×카테고리 요약(no-arg find_asset 응답용).
 const summary = {};
 for (const e of catalog) {
-  summary[e.brand] ??= {};
-  summary[e.brand][e.category] = (summary[e.brand][e.category] ?? 0) + 1;
+  summary[e.project] ??= {};
+  summary[e.project][e.category] = (summary[e.project][e.category] ?? 0) + 1;
 }
 
 const generated = `/**
@@ -189,10 +189,10 @@ const generated = `/**
  */
 
 export interface AssetCatalogEntry {
-  /** 브랜드 slug 또는 "shared". */
-  brand: string;
-  scope: "brand" | "shared" | "unknown";
-  /** 브랜드 아래 디렉토리 경로(예: "images/food-types", "logos", "profiles"). */
+  /** 프로젝트 slug 또는 "shared". */
+  project: string;
+  scope: "project" | "shared" | "unknown";
+  /** 프로젝트 아래 디렉토리 경로(예: "images/food-types", "logos", "profiles"). */
   category: string;
   /** 파일 stem(레티나 접미사 제거) — 보통 의미 있는 kebab id(예: "bibimbap"). */
   id: string;
@@ -201,13 +201,13 @@ export interface AssetCatalogEntry {
   mimeType: string;
   /** 보유 레티나 변형(예: ["3x"]). 없으면 키 자체가 없음. */
   retina?: string[];
-  /** 소문자 검색 토큰(brand·category·id 영문 + asset-tags.ko.json 한글 태그). */
+  /** 소문자 검색 토큰(project·category·id 영문 + asset-tags.ko.json 한글 태그). */
   search: string[];
 }
 
 export const ASSET_CATALOG: AssetCatalogEntry[] = ${JSON.stringify(catalog, null, 2)};
 
-/** 브랜드 → 카테고리 → 에셋 수 요약. */
+/** 프로젝트 → 카테고리 → 에셋 수 요약. */
 export const ASSET_CATALOG_SUMMARY: Record<string, Record<string, number>> = ${JSON.stringify(summary, null, 2)};
 `;
 
@@ -224,6 +224,6 @@ if (CHECK) {
 } else {
   fs.writeFileSync(OUT_PATH, generated, "utf8");
   console.log(
-    `[asset-catalog] 생성: ${catalog.length} 에셋 (브랜드 ${Object.keys(summary).length}) → src/asset-catalog.generated.ts`,
+    `[asset-catalog] 생성: ${catalog.length} 에셋 (프로젝트 ${Object.keys(summary).length}) → src/asset-catalog.generated.ts`,
   );
 }

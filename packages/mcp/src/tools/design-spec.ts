@@ -17,9 +17,9 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { ndsTagToComponentName } from "@nudge-design/mockup-core/tools/usage/parser";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
 import {
-  canonicalBrandSlug,
+  canonicalProjectSlug,
   canonicalPagePattern,
   CASHWALK_BIZ_PAGE_PATTERNS,
 } from "@nudge-design/mockup-core/tools/standalone-assets";
@@ -68,7 +68,7 @@ export interface DesignSpecNode {
 
 export interface DesignSpec {
   screen: {
-    brand: string;
+    project: string;
     surface: DesignSpecSurface;
     intent: string;
     name?: string;
@@ -79,7 +79,7 @@ export interface DesignSpec {
     surfaceKind?: "admin" | "service";
     /**
      * 캐포비 어드민 Page Pattern(Onboarding/Dashboard/List/Detail/Form 5종 중 하나).
-     * brand=cashwalk-biz + surfaceKind=admin 이면 필수 — get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }).
+     * project=cashwalk-biz + surfaceKind=admin 이면 필수 — get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }).
      */
     pagePattern?: string;
   };
@@ -103,7 +103,7 @@ export interface ValidateDesignSpecResult {
   ok: boolean;
   violations: DesignSpecViolation[];
   summary: { error: number; warn: number; info: number; hasErrors: boolean };
-  brand: string | null;
+  project: string | null;
   componentsUsed: string[];
   tokensUsed: string[];
   nextStep: string;
@@ -118,8 +118,8 @@ export interface SaveDesignSpecResult extends ValidateDesignSpecResult {
 interface DesignSpecContext {
   tokenSet: Set<string>;
   componentNames: Set<string>;
-  /** 실재하는 정식 브랜드 slug 셋(별칭 제외). 비면 brand 엄격검사를 건너뛴다. */
-  brands: Set<string>;
+  /** 실재하는 정식 프로젝트 slug 셋(별칭 제외). 비면 project 엄격검사를 건너뛴다. */
+  projects: Set<string>;
   /** PascalCase 컴포넌트명 → (prop명 → 허용값[]) */
   propAllowedValues: Map<string, Map<string, string[]>>;
   /** nds-tag → (attr명 → 허용값[]) */
@@ -129,7 +129,7 @@ interface DesignSpecContext {
 let ctx: DesignSpecContext = {
   tokenSet: new Set(),
   componentNames: new Set(),
-  brands: new Set(),
+  projects: new Set(),
   propAllowedValues: new Map(),
   ndsAttrEnums: new Map(),
 };
@@ -212,29 +212,29 @@ export function validateDesignSpec(input: unknown): ValidateDesignSpecResult {
   }
 
   const spec = input as Partial<DesignSpec>;
-  let canonicalBrand: string | null = null;
+  let canonicalProject: string | null = null;
 
   // ── screen ──
   const screen = spec.screen;
   if (!screen || typeof screen !== "object") {
-    add("missing-field", "error", "screen", "screen { brand, surface, intent } 가 필요합니다.");
+    add("missing-field", "error", "screen", "screen { project, surface, intent } 가 필요합니다.");
   } else {
-    if (!screen.brand) {
-      add("missing-field", "error", "screen.brand", "brand 가 필요합니다.");
+    if (!screen.project) {
+      add("missing-field", "error", "screen.project", "project 가 필요합니다.");
     } else {
-      // canonicalBrandSlug 는 별칭(cashpobi→cashwalk-biz)만 정규화하고 미지 입력은 그대로 돌려준다.
-      // 실재 여부는 주입된 brands 셋으로 판정 — html-validator 의 unknown-brand-slug 룰과 동일 의미.
-      // brands 가 비면(자산 디렉토리 미해석 등) 엄격검사를 건너뛴다(false-positive 방지).
-      const canon = canonicalBrandSlug(screen.brand);
-      if (canon && ctx.brands.size > 0 && !ctx.brands.has(canon)) {
+      // canonicalProjectSlug 는 별칭(cashpobi→cashwalk-biz)만 정규화하고 미지 입력은 그대로 돌려준다.
+      // 실재 여부는 주입된 projects 셋으로 판정 — html-validator 의 unknown-project-slug 룰과 동일 의미.
+      // projects 가 비면(자산 디렉토리 미해석 등) 엄격검사를 건너뛴다(false-positive 방지).
+      const canon = canonicalProjectSlug(screen.project);
+      if (canon && ctx.projects.size > 0 && !ctx.projects.has(canon)) {
         add(
-          "unknown-brand",
+          "unknown-project",
           "error",
-          "screen.brand",
-          `'${screen.brand}' 는 알 수 없는 브랜드 slug 입니다. base(블루) 로 silent 폴백되어 색이 틀어집니다. 허용: ${[...ctx.brands].join(", ")}.`,
+          "screen.project",
+          `'${screen.project}' 는 알 수 없는 프로젝트 slug 입니다. base(블루) 로 silent 폴백되어 색이 틀어집니다. 허용: ${[...ctx.projects].join(", ")}.`,
         );
       } else if (canon) {
-        canonicalBrand = canon;
+        canonicalProject = canon;
       }
     }
     if (!screen.surface) {
@@ -251,13 +251,13 @@ export function validateDesignSpec(input: unknown): ValidateDesignSpecResult {
       add("missing-field", "warn", "screen.intent", "intent(화면 한 줄 설명) 가 비었습니다.");
     }
 
-    // ── Page Pattern System 브랜드 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ──
-    //   적용 여부 = 브랜드 프로필 admin.pagePatternSystem (현재 선언 브랜드 = cashwalk-biz).
+    // ── Page Pattern System 프로젝트 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ──
+    //   적용 여부 = 프로젝트 프로필 admin.pagePatternSystem (현재 선언 프로젝트 = cashwalk-biz).
     //   어드민 화면은 Onboarding/Dashboard/List/Detail/Form 5종으로 표준화. 코드 직전 게이트에서
     //   "분류부터 한다"(pattern:cashwalk-biz-page-patterns)를 권고가 아닌 하드 룰로 강제한다.
     //   surfaceKind 는 모델 선언 또는 saveDesignSpec 가 nudge.surface 마커에서 주입.
     if (
-      getBrandProfile(canonicalBrand)?.admin?.pagePatternSystem &&
+      getProjectProfile(canonicalProject)?.admin?.pagePatternSystem &&
       screen.surfaceKind === "admin"
     ) {
       if (!screen.pagePattern) {
@@ -422,12 +422,12 @@ export function validateDesignSpec(input: unknown): ValidateDesignSpecResult {
     );
   }
 
-  return finalize(violations, canonicalBrand, componentsUsed, tokensUsed);
+  return finalize(violations, canonicalProject, componentsUsed, tokensUsed);
 }
 
 function finalize(
   violations: DesignSpecViolation[],
-  brand: string | null,
+  project: string | null,
   componentsUsed: Set<string>,
   tokensUsed: Set<string>,
 ): ValidateDesignSpecResult {
@@ -439,7 +439,7 @@ function finalize(
     ok: !hasErrors,
     violations,
     summary: { error, warn, info, hasErrors },
-    brand,
+    project,
     componentsUsed: [...componentsUsed].sort(),
     tokensUsed: [...tokensUsed].sort(),
     nextStep: hasErrors
@@ -479,7 +479,7 @@ export function saveDesignSpec(args: {
         },
       ],
       summary: { error: 1, warn: 0, info: 0, hasErrors: true },
-      brand: null,
+      project: null,
       componentsUsed: [],
       tokensUsed: [],
       nextStep: "spec 을 유효한 JSON(객체 또는 JSON 문자열)으로 다시 전달하세요.",
@@ -583,7 +583,7 @@ export function buildDesignDecisionRow(
   if (decisions.length === 0 && rationales.length === 0) return null;
 
   const screen = {
-    brand: spec.screen?.brand,
+    project: spec.screen?.project,
     surface: spec.screen?.surface,
     intent: spec.screen?.intent,
     name: spec.screen?.name,
@@ -606,7 +606,7 @@ export function buildDesignDecisionRow(
 
 /**
  * 결정 행을 designDecisions.jsonl 에 누적한다(best-effort, never throws).
- * - 같은 화면(brand·surface·intent·name)의 가장 최근 행과 hash 가 같으면 건너뛴다
+ * - 같은 화면(project·surface·intent·name)의 가장 최근 행과 hash 가 같으면 건너뛴다
  *   (재저장·auto-fix 루프 중복 방지. 화면을 번갈아 저장해도 각 화면 기준으로 비교).
  * - maxRows 초과분은 오래된 행부터 버린다(상한 유지 → 읽기/git 비용 bounded). 깨진 행은 자가치유로 제거.
  * @returns 실제로 행을 추가했으면 true.

@@ -1,5 +1,5 @@
 {
-  "$comment": "목표 컴포넌트 (target components) baseline + 브랜드별 Figma 가이드 매핑. 출처는 TDS(Toss DS) Components 사이드바이지만, 우리에게는 '브랜드 4개가 결국 갖춰야 할 컴포넌트 목표' 로 사용. figmaByBrand 는 브랜드별 Figma 가이드 URL — 채워질수록 진짜 구현 비율이 올라감.",
+  "$comment": "목표 컴포넌트 (target components) baseline + 프로젝트별 Figma 가이드 매핑. 출처는 TDS(Toss DS) Components 사이드바이지만, 우리에게는 '프로젝트 4개가 결국 갖춰야 할 컴포넌트 목표' 로 사용. figmaByProject 는 프로젝트별 Figma 가이드 URL — 채워질수록 진짜 구현 비율이 올라감.",
   "$sources": {
     "mobile": "https://tossmini-docs.toss.im/tds-mobile/",
     "rn": "https://tossmini-docs.toss.im/tds-react-native/",
@@ -23,7 +23,7 @@
       "category": "general",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Button/",
       "nds": "Button",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=508-6962"
       }
     },
@@ -33,7 +33,7 @@
       "category": "general",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/text-button/",
       "nds": "TextButton",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "IconButton",
@@ -41,7 +41,7 @@
       "category": "general",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/icon-button/",
       "nds": "IconButton",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Badge",
@@ -49,7 +49,7 @@
       "category": "general",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/badge/",
       "nds": "Badge",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856"
       }
     },
@@ -60,7 +60,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/board-row/",
       "nds": "Accordion",
       "ndsNote": "BoardRow = 토글형 Q&A. NDS Accordion 으로 매핑.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Border",
@@ -68,7 +68,7 @@
       "category": "general",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/border/",
       "nds": "Divider",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "BottomInfo",
@@ -77,7 +77,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bottom-info/",
       "nds": null,
       "ndsNote": "TDS 의 보조 문구 하단 영역 — NDS 에는 명시 컴포넌트 없음 (Banner / NoticeAlert 로 대체).",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "BottomSheet",
@@ -85,7 +85,7 @@
       "category": "overlay",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bottom-sheet/",
       "nds": "BottomSheet",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "BottomCTA",
@@ -93,7 +93,7 @@
       "category": "layout",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/BottomCTA/check-first/",
       "nds": "FloatingCtaBanner",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Bubble",
@@ -102,7 +102,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/bubble/",
       "nds": "ChatBubble",
       "ndsNote": "TDS Bubble = 1:1 상담/챗봇 말풍선. NDS ChatBubble 로 매핑 (한 줄 안내·코치마크 풍선은 TDS Tooltip → NDS Tooltip).",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Checkbox",
@@ -110,7 +110,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/checkbox/",
       "nds": "Checkbox",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904"
       }
     },
@@ -120,7 +120,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/radio/",
       "nds": "Radio",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904"
       }
     },
@@ -130,7 +130,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/switch/",
       "nds": "Toggle",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904"
       }
     },
@@ -140,7 +140,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/TextField/text-field/",
       "nds": "Input",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=430-4212"
       }
     },
@@ -150,7 +150,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/search-field/",
       "nds": "SearchInput",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Slider",
@@ -158,7 +158,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/slider/",
       "nds": "Slider",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Stepper",
@@ -166,7 +166,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/stepper/",
       "nds": "Stepper",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "NumericSpinner",
@@ -174,7 +174,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/numeric-spinner/",
       "nds": null,
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "SegmentedControl",
@@ -183,7 +183,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/segmented-control/",
       "nds": "Tab",
       "ndsNote": "SegmentedControl 은 Tab 에 변형(variant)으로 병합됨 — Tab 으로 커버.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Rating",
@@ -191,7 +191,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/rating/",
       "nds": "StarRating",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Keypad",
@@ -199,7 +199,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Keypad/keypad/",
       "nds": "",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Dropdown",
@@ -207,7 +207,7 @@
       "category": "input",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/dropdown/",
       "nds": "Select",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Tab",
@@ -215,7 +215,7 @@
       "category": "navigation",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/tab/",
       "nds": "Tab",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9902"
       }
     },
@@ -225,7 +225,7 @@
       "category": "overlay",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/menu/",
       "nds": "DropdownMenu",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Navbar",
@@ -234,7 +234,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/navbar/",
       "nds": "Header",
       "ndsNote": "AppBar 는 Header(+HeaderNavBar 슬롯)로 통합됨 — Header 로 커버.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Modal",
@@ -242,7 +242,7 @@
       "category": "overlay",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/modal/",
       "nds": "Modal",
-      "figmaByBrand": {
+      "figmaByProject": {
         "nudge-eap": "https://www.figma.com/design/NUDGE-DS-EXAMPLE/NudgeEAP-Design-System?node-id=612-18421"
       }
     },
@@ -252,7 +252,7 @@
       "category": "overlay",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Dialog/dialog/",
       "nds": "Popup",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Toast",
@@ -260,7 +260,7 @@
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/toast/",
       "nds": "Toast",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Tooltip",
@@ -268,7 +268,7 @@
       "category": "overlay",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/tooltip/",
       "nds": "Tooltip",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Loader",
@@ -276,7 +276,7 @@
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/loader/",
       "nds": "Spinner",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Skeleton",
@@ -284,7 +284,7 @@
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/skeleton/",
       "nds": "Skeleton",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "ProgressBar",
@@ -292,7 +292,7 @@
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/progress-bar/",
       "nds": "ProgressBar",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "ProgressStepper",
@@ -301,7 +301,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/progress-stepper/",
       "nds": "Stepper",
       "ndsNote": "단계 진행 표시 — NDS Stepper(인디케이터). 폼 흐름 전체는 조립 패턴 pattern:multi-step-form.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Result",
@@ -310,7 +310,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/result/",
       "nds": "ResultState",
       "ndsNote": "TDS Result = 완료/실패 결과 화면. NDS 에서는 ResultState (변형) 으로 커버.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "ErrorPage",
@@ -318,7 +318,7 @@
       "category": "feedback",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/error-page/",
       "nds": "ResultState",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "GridList",
@@ -326,7 +326,7 @@
       "category": "layout",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/grid-list/",
       "nds": "",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "List",
@@ -334,7 +334,7 @@
       "category": "layout",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/list/",
       "nds": "List",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "ListRow",
@@ -343,7 +343,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/ListRow/list-row-overview/",
       "nds": "List",
       "ndsNote": "NDS 는 List + ListItem 으로 통합.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "ListHeader",
@@ -352,7 +352,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/list-header/",
       "nds": null,
       "ndsNote": "페이지/리스트 헤더는 pattern:page-header(Heading + Breadcrumb + actions 조합) — 단일 컴포넌트 아님.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "ListFooter",
@@ -361,7 +361,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/list-footer/",
       "nds": null,
       "ndsNote": "리스트 하단 보조 텍스트 — NDS 별도 컴포넌트 없음.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "TableRow",
@@ -369,7 +369,7 @@
       "category": "data",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/table-row/",
       "nds": "DataTable",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Top",
@@ -378,7 +378,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/top/",
       "nds": null,
       "ndsNote": "페이지 상단 헤더는 pattern:page-header(Heading 조합) — 단일 컴포넌트 아님.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "AmountTop",
@@ -387,7 +387,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/amount-top/",
       "nds": null,
       "ndsNote": "TDS 의 금액 강조 상단 영역 — NDS 미구현.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Asset",
@@ -395,7 +395,7 @@
       "category": "content",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Asset/asset/",
       "nds": "Asset",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Carousel",
@@ -403,7 +403,7 @@
       "category": "content",
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/carousel/",
       "nds": "Carousel",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Agreement",
@@ -411,7 +411,7 @@
       "category": "domain",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/Agreement/v4/",
       "nds": "CheckboxGroup",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Chart",
@@ -420,7 +420,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/chart/",
       "nds": "Sparkline",
       "ndsNote": "TDS Chart 보다 NDS Sparkline 이 가볍지만 가장 가까운 매핑.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "BarChart",
@@ -429,7 +429,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/bar-chart/",
       "nds": null,
       "ndsNote": "전용 BarChart 없음 — DataTable 또는 외부 차트 라이브러리 사용 권장.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Highlight",
@@ -437,7 +437,7 @@
       "category": "general",
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/highlight/",
       "nds": "DSHighlight",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Paragraph",
@@ -446,7 +446,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/paragraph/",
       "nds": "Text",
       "ndsNote": "Paragraph = 텍스트 컴포넌트. ExpandableText 는 Text(expandable)로 흡수됨 — Text 로 커버.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Post",
@@ -455,7 +455,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-mobile/components/post/",
       "nds": "Heading",
       "ndsNote": "Post = 줄글 포스트 스타일. NDS Heading + 본문 조합으로 대체.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Gradient",
@@ -464,7 +464,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/gradient/",
       "nds": null,
       "ndsNote": "그라데이션 유틸 — NDS 에는 토큰만 존재.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     },
     {
       "tds": "Shadow",
@@ -473,7 +473,7 @@
       "docsUrl": "https://tossmini-docs.toss.im/tds-react-native/components/shadow/",
       "nds": null,
       "ndsNote": "그림자 유틸 — NDS 는 elevation 토큰으로 대체.",
-      "figmaByBrand": {}
+      "figmaByProject": {}
     }
   ]
 }

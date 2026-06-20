@@ -132,11 +132,11 @@ export const Shadow: Story = {
   render: () => <BottomNavDemo initial="counsel" shadow />,
 };
 
-export const BrandTokenOverride: Story = {
-  name: "브랜드 토큰 override (컴포넌트는 브랜드 모름)",
+export const ProjectTokenOverride: Story = {
+  name: "프로젝트 토큰 override (컴포넌트는 프로젝트 모름)",
   render: () => (
     <BottomNavDemo
-      // 브랜드 토큰 파일이 하는 일을 인라인으로 시연 — 활성색만 브랜드 민트로.
+      // 프로젝트 토큰 파일이 하는 일을 인라인으로 시연 — 활성색만 프로젝트 민트로.
       style={
         {
           "--nds-bottomnav-active-color": "var(--semantic-text-brand-default)",

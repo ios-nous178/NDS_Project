@@ -1,7 +1,7 @@
 ---
 metrics:
   standaloneIconColor: required
-  preferredColor: var(--semantic-icon-*) — strong/normal/disabled/inverse/brand/status
+  preferredColor: var(--semantic-icon-*) — strong/normal/disabled/inverse/project/status
   maxSemanticIconColorsPerSection: 1
 ---
 
@@ -19,7 +19,7 @@ metrics:
     · 보조 정보·메타 → `--semantic-icon-normal-default`
     · 비활성 → `--semantic-icon-disabled-default`
     · 어두운 배경 위 → `--semantic-icon-inverse-default`
-    · 브랜드 강조 → `--semantic-icon-brand-default`
+    · 프로젝트 강조 → `--semantic-icon-brand-default`
 - 상태 의미가 있을 때만 status 토큰을 사용한다:
     · 성공 → `--semantic-icon-status-success` (Teal/500 · #13BFA2)
     · 오류 → `--semantic-icon-status-error` (Orange Red/500 · #F13F00)
@@ -30,7 +30,7 @@ metrics:
 ## avoid
 
 - <InfoIcon />처럼 단독 아이콘을 색 지정 없이 배치
-- 안내 박스 안에서 아이콘만 브랜드 primary로 과하게 강조
+- 안내 박스 안에서 아이콘만 프로젝트 primary로 과하게 강조
 - 아이콘에 hex/rgb 직접 지정 — `--semantic-icon-*` 토큰만 사용
 - 구식 `--semantic-icon-*` 토큰 사용 — `--semantic-icon-*`로 대체
 - 한 섹션 안에서 아이콘마다 다른 semantic color를 섞는 구성

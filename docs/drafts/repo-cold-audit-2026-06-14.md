@@ -1,7 +1,7 @@
 # 레포 냉철 분석 — 2026-06-14
 
 > 8개 관점 병렬 감사(29 에이전트, critical/high 21건 적대적 검증)의 정리본.
-> **스코프**: push / release 로 풀리는 항목은 제외했다 — 미푸시 커밋·release-notes·changelog 범위·태그 단조성(버전 0.0.3 은 리브랜드 시 **의도적 초기화**라 문제 아님)·"npm 미배포" 자체. 여기 남은 것은 **push 와 무관하게 워킹트리/시스템 자체에 존재하는 문제**다.
+> **스코프**: push / release 로 풀리는 항목은 제외했다 — 미푸시 커밋·release-notes·changelog 범위·태그 단조성(버전 0.0.3 은 리프로젝트 시 **의도적 초기화**라 문제 아님)·"npm 미배포" 자체. 여기 남은 것은 **push 와 무관하게 워킹트리/시스템 자체에 존재하는 문제**다.
 > 검증 과정에서 초기 가설 일부가 반증됐고, 그 정정도 각 항목에 반영했다(severity 는 검증 후 값).
 
 ---
@@ -44,19 +44,19 @@
 | 문제                                                                                                                                    | severity | 근거                                                                                                     |
 | --------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
 | **react 103개 중 17개만 테스트**(83% 무테스트) — DataTable·MultiSelect·Autocomplete·Slider·Carousel 등 상호작용 복잡 위젯이 회귀 가드 0 | medium   | `packages/react/test/component/` 18파일. _완화: html 미러 438케이스 + Chromatic + 117스토리가 일부 보완_ |
-| **tokens·styles 패키지 테스트 0** — 브랜드 cascade·`var()` 합성·brand-completeness 로직이 정적 `--check` 게이트에만 의존                | medium   | silent base-fallback 같은 버그 클래스를 단위 수준에서 못 잡음                                            |
+| **tokens·styles 패키지 테스트 0** — 프로젝트 cascade·`var()` 합성·project-completeness 로직이 정적 `--check` 게이트에만 의존                | medium   | silent base-fallback 같은 버그 클래스를 단위 수준에서 못 잡음                                            |
 
 **액션**: react 폼/오버레이/데이터 계열 동작·a11y 테스트 보강. `check-input-tests.mjs`("신규만 차단" 게이트)를 입력류→상호작용 컴포넌트 전반으로 확장. coverage ratchet 과 묶으면 자연 증가.
 
-### 4. 토큰 / 브랜드 부채
+### 4. 토큰 / 프로젝트 부채
 
 | 문제                                                                                                                                  | severity | 근거                                                                                                                             |
 | ------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| **브랜드 토큰 값 검증 게이트 부재** — 브랜드 색이 100% 사는 `tokens/src/brands/`(16파일)는 전부 수기 + Figma/DESIGN.md 정합 강제 없음 | medium   | `sync-tokens.mjs` 는 primitive 5파일만 커버(`brand` 문자열 0건). brand-completeness 게이트는 leaf **존재**만 검사, 값 비교 안 함 |
-| **raw hex 차단 lint 부재** — `cv.textRole.inverse` 토큰이 있는데 `#fff/#000` 직박이 6개 컴포넌트에 산재                               | medium   | brand-completeness 도 raw hex 는 못 잡음                                                                                         |
-| CLAUDE.md 가 명시한 마이그레이션 숙제 미완 — Modal/Popup 취소버튼 순수 색, DatePicker 캘린더 글리프 mask 토큰                         | medium   | 신규 브랜드 추가 시 컴포넌트 CSS 를 뒤져야 함(원칙 위반)                                                                         |
+| **프로젝트 토큰 값 검증 게이트 부재** — 프로젝트 색이 100% 사는 `tokens/src/projects/`(16파일)는 전부 수기 + Figma/DESIGN.md 정합 강제 없음 | medium   | `sync-tokens.mjs` 는 primitive 5파일만 커버(`project` 문자열 0건). project-completeness 게이트는 leaf **존재**만 검사, 값 비교 안 함 |
+| **raw hex 차단 lint 부재** — `cv.textRole.inverse` 토큰이 있는데 `#fff/#000` 직박이 6개 컴포넌트에 산재                               | medium   | project-completeness 도 raw hex 는 못 잡음                                                                                         |
+| CLAUDE.md 가 명시한 마이그레이션 숙제 미완 — Modal/Popup 취소버튼 순수 색, DatePicker 캘린더 글리프 mask 토큰                         | medium   | 신규 프로젝트 추가 시 컴포넌트 CSS 를 뒤져야 함(원칙 위반)                                                                         |
 
-**액션**: `check-raw-hex` 게이트 추가(주석 hex 허용). 브랜드 토큰 leaf 형식/값 검증 게이트(Figma 자동화 로드맵과 묶기). 취소버튼 색을 `--nds-{c}-cancel-*` 슬롯으로, 캘린더 글리프를 `--nds-{c}-icon` mask 슬롯으로 추출.
+**액션**: `check-raw-hex` 게이트 추가(주석 hex 허용). 프로젝트 토큰 leaf 형식/값 검증 게이트(Figma 자동화 로드맵과 묶기). 취소버튼 색을 `--nds-{c}-cancel-*` 슬롯으로, 캘린더 글리프를 `--nds-{c}-icon` mask 슬롯으로 추출.
 
 ### 5. 문서 / SSOT 드리프트
 
@@ -65,7 +65,7 @@
 | **퍼블릭 docs 사이트에 제거/리네임된 컴포넌트 페이지가 라이브** — 죽은 `import { Tabs }` 를 라이브 JSX 로 렌더 | medium     | 실제 orphan **18개**(tabs·empty-state·confetti·content-viewer·expandable-text·circular-progress·number-stepper·countdown-timer·app-bar·web-header·segmented-control 등) |
 | **component-docs 게이트가 orphan mdx 를 skip 만 하고 차단 안 함**                                              | medium     | `generate-component-docs.mjs:291`, baseline `{"skip":{}}`. 소스 없는 mdx 가 영구 누적돼도 CI 통과                                                                       |
 | **SSOT 인 CLAUDE.md 가 파생물보다 stale** — "게이트 16개"(실제 **23**)                                         | (교정완료) | `gates.mjs` 에 23개 id                                                                                                                                                  |
-| "EAP 멘탈케어 플랫폼" 프레이밍 — 회사는 EAP 전문이 아니라 캐시워크 계열 멀티브랜드                             | (교정완료) | EAP 는 첫 DS 적용 영역일 뿐                                                                                                                                             |
+| "EAP 멘탈케어 플랫폼" 프레이밍 — 회사는 EAP 전문이 아니라 캐시워크 계열 멀티프로젝트                             | (교정완료) | EAP 는 첫 DS 적용 영역일 뿐                                                                                                                                             |
 | **컴포넌트 문서/메타가 4중 SSOT** — guides-src(AI) + docs mdx(사람) + storybook + 코드 props                   | medium     | 카운트 불일치(react 103/styles 100/html 108/가이드 124/mdx 99)가 이 다중 동기화 실패의 증상. drift 차단을 게이트로 떠받치는 게 경계 설계의 보상기제                     |
 
 **액션**: orphan 18개 정리(삭제/리네임/allowlist) + component-docs 게이트에 orphan **차단** 추가(이 커밋에서 시작). docs(Docusaurus)와 storybook 의 갤러리 역할 중복을 `@nudge-design/catalog` 단일 inventory 로 강제 동기화.
@@ -74,7 +74,7 @@
 
 | 문제                                                                                                                   | severity | 근거                                                                                                        |
 | ---------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-| **tailwind-preset 이 5브랜드 중 2개(trost·cashwalk-biz)만 import** — geniet/runmile 의 atomic palette·전용 radius 누락 | medium   | `tailwind-preset/src/index.ts:14-31`. _시멘틱 var 는 공유돼 색 자체는 렌더됨 — 누락은 alias·non-color 토큰_ |
+| **tailwind-preset 이 5프로젝트 중 2개(trost·cashwalk-biz)만 import** — geniet/runmile 의 atomic palette·전용 radius 누락 | medium   | `tailwind-preset/src/index.ts:14-31`. _시멘틱 var 는 공유돼 색 자체는 렌더됨 — 누락은 alias·non-color 토큰_ |
 | **icons 에 per-icon 서브패스 export 부재** — 비번들 ESM(Jest/SSR)에서 단일 아이콘 import 가 4076-export 배럴을 거침    | medium   | `"./mono/*"` 와일드카드 서브패스 추가로 해소                                                                |
 | **assets 6.3MB 래스터(png 163)가 tgz 에 통째로** — react 소비자가 transitive 로 전부 끌어옴                            | medium   | S3 remote-url + base64 fallback 결정과 부분 충돌                                                            |
 | `styles` 패키지 `sideEffects` 미설정 — 일부 번들러가 CSS 를 트리쉐이크해 날릴 위험                                     | low      | `"sideEffects":["**/*.css"]` 명시                                                                           |
@@ -94,7 +94,7 @@
 
 ### 즉시 (quick, 이 커밋에서)
 
-1. CLAUDE.md "16개"→"23개" + "EAP 멘탈케어 플랫폼"→"캐시워크 계열 멀티브랜드" + `sync:agents-md` ✅
+1. CLAUDE.md "16개"→"23개" + "EAP 멘탈케어 플랫폼"→"캐시워크 계열 멀티프로젝트" + `sync:agents-md` ✅
 2. orphan docs 18개 정리(삭제 9·리네임 3·allowlist 6) + component-docs 게이트 orphan 차단 ✅
 3. `mcp` 에 `private:true`, icons/assets 버전 정렬
 
@@ -102,7 +102,7 @@
 
 1. Storybook `|| true` 제거 → a11y·interaction 차단성 복구
 2. coverage ratchet(`COVERAGE=true` + 실측 baseline)
-3. raw-hex 차단 게이트 + 브랜드 토큰 값 검증 게이트
+3. raw-hex 차단 게이트 + 프로젝트 토큰 값 검증 게이트
 4. mirror-parity: 진짜 누락만 blocking 으로 분리, 보일러플레이트 149건 재트리아지
 
 ### 점진 (large, 근본)
@@ -125,4 +125,4 @@
 - ❌ "a11y 설정이 죽은 config" → `preview.ts:975` 에 살아있음(`test:"error"`). 진짜 문제는 `|| true` 가 그 결과를 삼키는 것
 - ❌ "테스트 66%가 내부도구" → 케이스 기준 22%. html 공개미러 438케이스를 무시한 오집계
 - ❌ "부가 제품군이 DS 릴리즈에 묶임" → desktop/web-server 는 별도 워크플로우로 분리됨
-- ❌ "버전 단조성 파괴" → 0.0.3 은 리브랜드 시 **의도적 초기화**, 문제 아님(이번 스코프에서 제외)
+- ❌ "버전 단조성 파괴" → 0.0.3 은 리프로젝트 시 **의도적 초기화**, 문제 아님(이번 스코프에서 제외)

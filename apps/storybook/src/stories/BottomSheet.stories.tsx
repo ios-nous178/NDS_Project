@@ -551,8 +551,8 @@ const shareNoteStyle: React.CSSProperties = {
 
 /* ─── Trost Recipe: Share (Point 토큰 + 원형 통화 CTA) ───
  * Trost Figma 5258:128 의 Share 시트 레시피. 통화/콜 액션은 원형 40×40 버튼 —
- * 배경 cv.surface.pointSubtle + 아이콘 cv.iconRole.point (브랜드가 코발트로 칠함).
- * SNS 버튼 배경(#FEE500/#03C75A)만 브랜드 고유색이라 raw 유지. 나머지는 DS 토큰.
+ * 배경 cv.surface.pointSubtle + 아이콘 cv.iconRole.point (프로젝트가 코발트로 칠함).
+ * SNS 버튼 배경(#FEE500/#03C75A)만 프로젝트 고유색이라 raw 유지. 나머지는 DS 토큰.
  */
 function TrostShareRecipeExample() {
   const [open, setOpen] = useState(false);

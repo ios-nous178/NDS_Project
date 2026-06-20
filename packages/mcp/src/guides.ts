@@ -1,5 +1,5 @@
-import { canonicalBrandSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
+import { canonicalProjectSlug } from "@nudge-design/mockup-core/tools/standalone-assets";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
 
 /**
  * 컴포넌트별 사용 가이드 — d.ts 파싱만으로는 잡히지 않는
@@ -17,11 +17,11 @@ import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
  * 이 MCP는 본질적으로 "사용자 앱(서비스)" DS 컴포넌트 라이브러리를 노출하지만,
  * 운영자가 보는 화면은 두 영역으로 갈린다:
  *
- *   - 어드민(admin): 외부에 제공되는 b2b 어드민 *서비스*. DS_ADMIN_BRANDS 하드게이트
- *     브랜드(캐포비/넛지EAP)만 지원하며 DS(html 워크플로우)로 만든다.
- *     그 외 브랜드는 차단(blocked-admin).
+ *   - 어드민(admin): 외부에 제공되는 b2b 어드민 *서비스*. DS_ADMIN_PROJECTS 하드게이트
+ *     프로젝트(캐포비/넛지EAP)만 지원하며 DS(html 워크플로우)로 만든다.
+ *     그 외 프로젝트는 차단(blocked-admin).
  *
- *   - 백오피스(backoffice): 사내 어드민/운영툴/CMS. 브랜드 무관 전 서비스 기본 지원 —
+ *   - 백오피스(backoffice): 사내 어드민/운영툴/CMS. 프로젝트 무관 전 서비스 기본 지원 —
  *     중립 antd 컨벤션(buildBackofficeGuide, 서비스명 파라미터)으로 만든다.
  *     (구명 'admin-cms' 는 외부 워크스페이스 호환을 위한 영구 별칭.)
  *
@@ -136,62 +136,62 @@ export function detectIntentFromText(text?: string): "operator" | "user-app" | "
 }
 
 /**
- * 어드민(외부 제공 b2b 어드민 서비스)을 DS 로 만드는 하드게이트 브랜드.
- * 이 목록 밖 브랜드의 어드민 발화는 차단(blocked-admin)된다 — 백오피스(중립 antd)로
+ * 어드민(외부 제공 b2b 어드민 서비스)을 DS 로 만드는 하드게이트 프로젝트.
+ * 이 목록 밖 프로젝트의 어드민 발화는 차단(blocked-admin)된다 — 백오피스(중립 antd)로
  * 진행하거나 DS 팀에 어드민 편입을 요청해야 한다.
  *  - cashwalk-biz: DS 안에 자체 admin 디자인 시스템(admin 토큰/page-pattern) 보유
  *  - nudge-eap:    자체 admin 토큰 없이 기존 DS 컴포넌트/토큰으로 어드민 목업 제작
  */
-export const DS_ADMIN_BRANDS = ["cashwalk-biz", "nudge-eap"] as const;
+export const DS_ADMIN_PROJECTS = ["cashwalk-biz", "nudge-eap"] as const;
 
-export function isDsAdminBrand(brand?: string | null): boolean {
+export function isDsAdminProject(project?: string | null): boolean {
   // 별칭 정규화 필수 — cashpobi / cash-pobi / cashwalkbiz 등 입력도 cashwalk-biz 로 resolve 해야
-  // admin 발화가 antd(백오피스)가 아니라 DS 경로로 우회된다. raw 매치만 하면 brand='cashpobi'
+  // admin 발화가 antd(백오피스)가 아니라 DS 경로로 우회된다. raw 매치만 하면 project='cashpobi'
   // 가 새어나가 백오피스 사이드바(240px·INFO·CMS MENU)가 캐포비에 잘못 적용됨.
-  const canon = canonicalBrandSlug(brand ?? undefined);
-  return !!canon && (DS_ADMIN_BRANDS as readonly string[]).includes(canon);
+  const canon = canonicalProjectSlug(project ?? undefined);
+  return !!canon && (DS_ADMIN_PROJECTS as readonly string[]).includes(canon);
 }
 
 /**
- * DS 안에 '자체 admin 디자인 시스템'(admin 토큰·page-pattern)까지 갖춘 브랜드인지.
- * 이 브랜드(현재 캐포비)는 백오피스/CMS 발화라도 DS 경로로 우회한다 — "캐포비 CMS"
- * 발화가 antd 로 새던 회귀를 막는 게이트. 판정은 brand profile 의 admin.pagePatternSystem
+ * DS 안에 '자체 admin 디자인 시스템'(admin 토큰·page-pattern)까지 갖춘 프로젝트인지.
+ * 이 프로젝트(현재 캐포비)는 백오피스/CMS 발화라도 DS 경로로 우회한다 — "캐포비 CMS"
+ * 발화가 antd 로 새던 회귀를 막는 게이트. 판정은 project profile 의 admin.pagePatternSystem
  * 선언을 SSOT 로 쓴다(슬러그 하드코딩 회피).
  */
-function hasOwnAdminDesignSystem(canonicalBrand?: string | null): boolean {
-  return !!canonicalBrand && !!getBrandProfile(canonicalBrand)?.admin?.pagePatternSystem;
+function hasOwnAdminDesignSystem(canonicalProject?: string | null): boolean {
+  return !!canonicalProject && !!getProjectProfile(canonicalProject)?.admin?.pagePatternSystem;
 }
 
 /** resolveIntentRouting 의 결과 — 영역 3분화 라우팅의 단일 진리원천. */
 export type IntentRouting =
-  | { kind: "html"; surface?: "admin"; brand?: string }
+  | { kind: "html"; surface?: "admin"; project?: string }
   | { kind: "backoffice" }
   | {
       kind: "blocked-admin";
-      requestedBrand: string;
-      supportedAdminBrands: readonly string[];
+      requestedProject: string;
+      supportedAdminProjects: readonly string[];
       error: string;
       options: string[];
     }
   | {
       kind: "ambiguous-operator";
-      requestedBrand?: string;
+      requestedProject?: string;
       question: string;
       options: string[];
     };
 
 /**
- * intent + brand 를 합쳐 영역(서비스/어드민/백오피스) 라우팅을 결정하는 단일 지점.
+ * intent + project 를 합쳐 영역(서비스/어드민/백오피스) 라우팅을 결정하는 단일 지점.
  *
  *   - intent:'backoffice'(또는 레거시 'admin-cms')                  → backoffice (중립 antd)
- *   - intent:'admin' + DS_ADMIN_BRANDS                             → html (DS admin)
- *   - intent:'admin' + 게이트 밖 브랜드 명시                         → blocked-admin (차단)
- *   - intent:'admin' + 브랜드 미지정                                 → ambiguous-operator (지원 브랜드 확답 필요)
+ *   - intent:'admin' + DS_ADMIN_PROJECTS                             → html (DS admin)
+ *   - intent:'admin' + 게이트 밖 프로젝트 명시                         → blocked-admin (차단)
+ *   - intent:'admin' + 프로젝트 미지정                                 → ambiguous-operator (지원 프로젝트 확답 필요)
  *   - 운영자 키워드 자유발화(어드민/백오피스/CMS/운영툴/admin/...)    → ambiguous-operator (하드스톱 —
  *     b2b 어드민인지 사내 백오피스인지 확답 받기 전 진행 금지)
  *   - 그 외                                                         → html
  *
- * ★ 예외 — 자체 admin DS 보유 브랜드(캐포비): 운영자 발화가 admin/backoffice 어느 쪽이든
+ * ★ 예외 — 자체 admin DS 보유 프로젝트(캐포비): 운영자 발화가 admin/backoffice 어느 쪽이든
  *   결과가 DS(html) 라 질문이 무의미 — 확답 없이 DS 경로로 우회한다 ("캐포비 CMS" 회귀 보존).
  *
  * ★ blocked/ambiguous 일 때 호출처는 어떤 가이드/셋업 본문도 반환하지 말 것 — 질문/안내와
@@ -200,51 +200,51 @@ export type IntentRouting =
  * 레거시 intent:'admin-cms' 는 "antd 가이드를 달라"는 뜻이므로 차단 대상이 아니라
  * backoffice 로 정규화한다 (이미 배포된 외부 CLAUDE.md 호환).
  * 모든 라우팅 지점(setup / CLAUDE.md 생성)은 detectIntentFromText 대신 이 함수를 써야
- * brand 신호가 누락되지 않는다.
+ * project 신호가 누락되지 않는다.
  */
-export function resolveIntentRouting(intent?: string, brand?: string | null): IntentRouting {
+export function resolveIntentRouting(intent?: string, project?: string | null): IntentRouting {
   const explicit =
     intent === "admin" || intent === "backoffice" || intent === "admin-cms" || intent === "html"
       ? intent
       : undefined;
   const track =
     explicit === "admin-cms" ? "backoffice" : (explicit ?? detectIntentFromText(intent));
-  const canon = canonicalBrandSlug(brand ?? undefined);
+  const canon = canonicalProjectSlug(project ?? undefined);
 
-  if (track === "html" || track === "user-app") return { kind: "html", brand: canon };
+  if (track === "html" || track === "user-app") return { kind: "html", project: canon };
 
-  // 자체 admin DS 보유 브랜드(캐포비)는 admin/backoffice/operator 어느 발화든 DS 경로.
+  // 자체 admin DS 보유 프로젝트(캐포비)는 admin/backoffice/operator 어느 발화든 DS 경로.
   if (hasOwnAdminDesignSystem(canon)) {
-    return { kind: "html", surface: "admin", brand: canon };
+    return { kind: "html", surface: "admin", project: canon };
   }
 
   if (track === "backoffice") return { kind: "backoffice" };
 
   if (track === "admin") {
-    if (isDsAdminBrand(brand)) return { kind: "html", surface: "admin", brand: canon };
-    if (brand && brand.trim()) {
-      const requested = canon ?? brand.trim();
+    if (isDsAdminProject(project)) return { kind: "html", surface: "admin", project: canon };
+    if (project && project.trim()) {
+      const requested = canon ?? project.trim();
       return {
         kind: "blocked-admin",
-        requestedBrand: requested,
-        supportedAdminBrands: DS_ADMIN_BRANDS,
+        requestedProject: requested,
+        supportedAdminProjects: DS_ADMIN_PROJECTS,
         error:
-          `이 브랜드(${requested})는 어드민(외부 제공 b2b) 미지원입니다. ` +
-          `어드민 목업은 ${DS_ADMIN_BRANDS.join(" / ")} 만 DS 로 제작할 수 있습니다.`,
+          `이 프로젝트(${requested})는 어드민(외부 제공 b2b) 미지원입니다. ` +
+          `어드민 목업은 ${DS_ADMIN_PROJECTS.join(" / ")} 만 DS 로 제작할 수 있습니다.`,
         options: [
           "사내 백오피스 화면이라면 intent:'backoffice' 로 다시 호출 — 중립 antd 컨벤션으로 진행",
-          "이 브랜드의 어드민(b2b) 편입이 필요하면 DS 팀에 요청",
+          "이 프로젝트의 어드민(b2b) 편입이 필요하면 DS 팀에 요청",
         ],
       };
     }
     return {
       kind: "ambiguous-operator",
       question:
-        "어드민(b2b)은 하드게이트 브랜드만 지원합니다. 어느 브랜드의 어드민인가요? " +
-        `지원 브랜드(${DS_ADMIN_BRANDS.join(", ")}) 를 brand 로 명시해 재호출하세요. ` +
+        "어드민(b2b)은 하드게이트 프로젝트만 지원합니다. 어느 프로젝트의 어드민인가요? " +
+        `지원 프로젝트(${DS_ADMIN_PROJECTS.join(", ")}) 를 project 로 명시해 재호출하세요. ` +
         "확답을 받기 전에는 가이드/셋업을 진행하지 않습니다.",
       options: [
-        `b2b 어드민 → brand 명시해 재호출 (지원: ${DS_ADMIN_BRANDS.join(", ")})`,
+        `b2b 어드민 → project 명시해 재호출 (지원: ${DS_ADMIN_PROJECTS.join(", ")})`,
         "사내 백오피스였다면 → intent:'backoffice' 로 재호출 (중립 antd, 전 서비스 기본 지원)",
       ],
     };
@@ -253,21 +253,21 @@ export function resolveIntentRouting(intent?: string, brand?: string | null): In
   // track === "operator" — 운영자 화면 발화이지만 영역 미확정. 키워드로 추측하지 않고
   // 사용자 확답을 받은 뒤 intent:'admin' / intent:'backoffice' 명시 재호출로만 진행한다.
   const gateNote =
-    brand && brand.trim() && !isDsAdminBrand(brand)
-      ? ` 참고: 이 브랜드(${canon ?? brand.trim()})는 어드민(b2b) 미지원 — b2b 어드민이라면 차단되며, ` +
+    project && project.trim() && !isDsAdminProject(project)
+      ? ` 참고: 이 프로젝트(${canon ?? project.trim()})는 어드민(b2b) 미지원 — b2b 어드민이라면 차단되며, ` +
         "사내 백오피스로 진행하거나 DS 팀에 어드민 편입을 요청해야 합니다."
       : "";
   return {
     kind: "ambiguous-operator",
-    requestedBrand: canon ?? (brand?.trim() || undefined),
+    requestedProject: canon ?? (project?.trim() || undefined),
     question:
       "운영자 화면 요청으로 보입니다. 이 화면은 어느 영역인가요? 사용자에게 확답을 받기 전에는 " +
       "가이드/셋업을 진행하지 않습니다. " +
-      `(1) 외부 제공(b2b) 어드민 — intent:'admin' + 지원 브랜드(${DS_ADMIN_BRANDS.join(", ")}) 로 재호출, ` +
+      `(1) 외부 제공(b2b) 어드민 — intent:'admin' + 지원 프로젝트(${DS_ADMIN_PROJECTS.join(", ")}) 로 재호출, ` +
       "(2) 사내 백오피스 — intent:'backoffice' 로 재호출." +
       gateNote,
     options: [
-      `b2b 어드민 → intent:'admin' + brand 명시해 재호출 (지원: ${DS_ADMIN_BRANDS.join(", ")})`,
+      `b2b 어드민 → intent:'admin' + project 명시해 재호출 (지원: ${DS_ADMIN_PROJECTS.join(", ")})`,
       "사내 백오피스 → intent:'backoffice' 로 재호출 (중립 antd, 전 서비스 기본 지원)",
     ],
   };
@@ -279,9 +279,9 @@ export function resolveIntentRouting(intent?: string, brand?: string | null): In
  */
 export function resolveEffectiveIntent(
   intent?: string,
-  brand?: string | null,
+  project?: string | null,
 ): "admin-cms" | "html" {
-  const routing = resolveIntentRouting(intent, brand);
+  const routing = resolveIntentRouting(intent, project);
   return routing.kind === "html" ? "html" : "admin-cms";
 }
 
@@ -294,7 +294,7 @@ export const SCOPE_ADVISORY = {
     inScope: [
       "외부 목업 프로젝트에서 DS 컴포넌트/아이콘/토큰 조회",
       "외부 목업 프로젝트에 CLAUDE.md / 환경 셋업 생성",
-      "서비스(사용자 앱) / 어드민(b2b, 하드게이트 브랜드) / 백오피스(사내, antd) 목업 작성·검증",
+      "서비스(사용자 앱) / 어드민(b2b, 하드게이트 프로젝트) / 백오피스(사내, antd) 목업 작성·검증",
       "목업 dev 서버 실행 / preview 확인 / 종료",
     ],
     outOfScope: [
@@ -319,19 +319,19 @@ export const SCOPE_ADVISORY = {
     },
     admin: {
       action:
-        "어드민(외부 제공 b2b 어드민 서비스)은 하드게이트 브랜드만 지원한다 — " +
-        `${DS_ADMIN_BRANDS.join(" / ")}. 이 브랜드들의 어드민은 antd 가 아니라 DS(html 워크플로우)로 ` +
-        "만든다 (brand 를 넘기면 get_setup / CLAUDE.md 가 자동으로 DS 경로로 우회). " +
-        "그 외 브랜드의 어드민 요청은 차단된다 — 사내 백오피스 화면이면 intent:'backoffice' 로 진행하고, " +
-        "이 브랜드의 어드민 편입이 필요하면 DS 팀에 요청할 것.",
+        "어드민(외부 제공 b2b 어드민 서비스)은 하드게이트 프로젝트만 지원한다 — " +
+        `${DS_ADMIN_PROJECTS.join(" / ")}. 이 프로젝트들의 어드민은 antd 가 아니라 DS(html 워크플로우)로 ` +
+        "만든다 (project 를 넘기면 get_setup / CLAUDE.md 가 자동으로 DS 경로로 우회). " +
+        "그 외 프로젝트의 어드민 요청은 차단된다 — 사내 백오피스 화면이면 intent:'backoffice' 로 진행하고, " +
+        "이 프로젝트의 어드민 편입이 필요하면 DS 팀에 요청할 것.",
       tools: [
-        `get_setup({ step: 'full', intent: 'admin', brand: '${DS_ADMIN_BRANDS[0]}' })`,
+        `get_setup({ step: 'full', intent: 'admin', project: '${DS_ADMIN_PROJECTS[0]}' })`,
         "get_guide({ topic: 'backoffice' }) — 사내 백오피스로 전환할 때",
       ],
     },
     backoffice: {
       action:
-        "백오피스(사내 어드민/운영툴/CMS)는 브랜드 무관 전 서비스 기본 지원 — 이 DS(@nudge-design/react)를 " +
+        "백오피스(사내 어드민/운영툴/CMS)는 프로젝트 무관 전 서비스 기본 지원 — 이 DS(@nudge-design/react)를 " +
         "쓰지 말고 antd v5 를 사용한다. 시각/구조 컨벤션은 get_guide({ topic: 'backoffice', serviceName: '<서비스명>' }) 로 " +
         "확인할 것. 두 라이브러리를 한 화면에서 섞어쓰지 말 것. (구명 'admin-cms' 는 영구 별칭으로 계속 동작.) " +
         "★ 단, 캐포비(cashwalk-biz)는 백오피스/CMS 발화라도 DS(html) 경로로 우회한다 — DS 안에 자체 admin " +
@@ -371,13 +371,13 @@ export const SCOPE_ADVISORY = {
 };
 
 /* ──────────────────────────────────────────────────────────────────────
- * 백오피스(사내 어드민/CMS/운영툴) 컨벤션 — 브랜드 무관 전 서비스 기본 지원
+ * 백오피스(사내 어드민/CMS/운영툴) 컨벤션 — 프로젝트 무관 전 서비스 기본 지원
  *
  * 출처: NudgeEAPCMS 코드베이스(Next.js + antd 5.5.1 + styled-components)에서
  * 추출한 공통 컨벤션. 서비스 고유 표기(푸터 카피 등)는 serviceName 파라미터로 주입.
  *   /src/styled/reset.css           (폰트 스택, body bg)
  *   /src/app/(primary)/layout.tsx   (Shell + content padding + footer)
- *   /src/layout/ScreenLocalNavigationBar.tsx (라이트 사이더 + 6px 브랜드 액센트)
+ *   /src/layout/ScreenLocalNavigationBar.tsx (라이트 사이더 + 6px 프로젝트 액센트)
  *   /src/layout/component/SideMenu.tsx       (메뉴 선택 시 right 6px 액센트)
  *   /src/layout/component/SideUserInfo.tsx   (사이드 INFO 블록)
  *   /src/layout/component/SideSetting.tsx    (사이드 SETTING 블록 + 로그아웃/정보수정)
@@ -392,7 +392,7 @@ export const SCOPE_ADVISORY = {
 export interface BackofficeGuide {
   scope: string;
   rationale: string;
-  /** antd 가 아니라 DS 로 만드는 어드민 하드게이트 브랜드 안내 (캐포비/넛지EAP). */
+  /** antd 가 아니라 DS 로 만드는 어드민 하드게이트 프로젝트 안내 (캐포비/넛지EAP). */
   dsAdminException?: string;
   techStack: {
     required: string[];
@@ -432,7 +432,7 @@ export interface BackofficeGuide {
 export type AdminCmsGuide = BackofficeGuide;
 
 /**
- * 백오피스(사내 어드민) 가이드 본문 생성 — 브랜드 무관 전 서비스 기본 지원.
+ * 백오피스(사내 어드민) 가이드 본문 생성 — 프로젝트 무관 전 서비스 기본 지원.
  * 레이아웃/검색폼/테이블 컨벤션은 NudgeEAPCMS 실코드에서 추출한 공통 패턴 그대로,
  * 서비스 고유 표기(푸터 카피)만 serviceName 으로 주입한다.
  */
@@ -442,16 +442,16 @@ export function buildBackofficeGuide(serviceName?: string): BackofficeGuide {
   return {
     scope:
       "백오피스(사내 어드민/CMS/운영툴) 화면. 사용자 앱이 아닌 운영자가 보는 사내 화면. " +
-      "브랜드 무관 전 서비스 기본 지원 — 서비스 고유 표기는 serviceName 파라미터로 주입. " +
+      "프로젝트 무관 전 서비스 기본 지원 — 서비스 고유 표기는 serviceName 파라미터로 주입. " +
       "출처: NudgeEAPCMS (Next.js + antd 5.5.1 + styled-components) 실제 운영 코드에서 추출한 공통 컨벤션.",
     rationale:
       "Nudge DS는 B2C 멘탈케어 앱 화면을 위한 컴포넌트 셋이다. 백오피스는 정보 밀도 / 표 / 폼 / " +
       "필터 위주라 antd가 더 적합하고, 운영팀이 익숙한 시각 언어와도 일치한다.",
     dsAdminException:
-      "어드민(외부 제공 b2b) 하드게이트 브랜드 — 캐포비(cashwalk-biz)·넛지EAP(nudge-eap) — 의 어드민은 " +
-      "이 antd 컨벤션을 따르지 말 것. 이 브랜드들의 어드민은 DS(html 워크플로우)로 만든다 " +
+      "어드민(외부 제공 b2b) 하드게이트 프로젝트 — 캐포비(cashwalk-biz)·넛지EAP(nudge-eap) — 의 어드민은 " +
+      "이 antd 컨벤션을 따르지 말 것. 이 프로젝트들의 어드민은 DS(html 워크플로우)로 만든다 " +
       "(캐포비는 자체 admin 토큰/page-pattern, 넛지EAP 는 기존 DS 컴포넌트/토큰). " +
-      "intent:'admin' + brand 를 넘기면 get_setup / CLAUDE.md / get_guide 가 자동으로 DS 경로로 우회한다.",
+      "intent:'admin' + project 를 넘기면 get_setup / CLAUDE.md / get_guide 가 자동으로 DS 경로로 우회한다.",
     techStack: {
       required: [
         "react ^18",
@@ -642,7 +642,7 @@ export { COMPONENT_GUIDES, PATTERN_GUIDES } from "./guides.generated.js";
 /* ───────────── 디자인 원칙 (DESIGN.md 발췌 + 큐레이션) ───────────── */
 
 export interface DesignPrinciples {
-  brandTone: string;
+  projectTone: string;
   colors: Record<string, string>;
   typography: { family: string; weights: string[]; rules: string[] };
   spacing: { base: number; scale: number[]; rules: string[] };
@@ -654,7 +654,7 @@ export interface DesignPrinciples {
 }
 
 export const DESIGN_PRINCIPLES: DesignPrinciples = {
-  brandTone:
+  projectTone:
     "낮은 진입 장벽과 전문적 신뢰감을 주되, 흔한 SaaS/헬스케어 클리셰처럼 보이면 안 됩니다. Linear/Notion식 회색 카드 그리드, 스톡사진+파스텔 그라데이션, 모든 카드에 아이콘을 꽂는 대시보드 톤, 과한 감성 카피/일러스트 장식은 금지. Neutral surface와 텍스트 위계를 기본으로 두고 primary blue는 대표 CTA와 핵심 인터랙션에만 제한합니다.",
   colors: {
     primary:
@@ -711,24 +711,24 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
-    "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tab size mobile/pc, BrandFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%. 다열(2열+) 그리드는 좁은 화면에서 1열 fallback 필수(@media max-width:768 → grid-template-columns:1fr 또는 flex-wrap) — 안 두면 모바일에서 카드가 짓눌려 글자가 세로로 쪼개진다. **시각 순서 = DOM 순서가 기본** — PC 다열을 만들려고 DOM 을 열 우선(1,6,2,7…)으로 깔지 말 것(모바일 1열에서 순서가 뒤섞인다). DOM 은 읽기 순서(1,2,3…)대로 두고, '좌열 1–5 / 우열 6–10' 같은 열 우선 배치는 grid-auto-flow:column + grid-template-rows 로 표현한다(그래야 모바일 1열에서도 1,2,3…10 순서가 유지된다). 모든 목업 <head> 엔 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> 필수 — 없으면 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 전혀 안 먹는다(validator 의 missing-viewport-meta 로 검출).",
+    "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tab size mobile/pc, ProjectFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%. 다열(2열+) 그리드는 좁은 화면에서 1열 fallback 필수(@media max-width:768 → grid-template-columns:1fr 또는 flex-wrap) — 안 두면 모바일에서 카드가 짓눌려 글자가 세로로 쪼개진다. **시각 순서 = DOM 순서가 기본** — PC 다열을 만들려고 DOM 을 열 우선(1,6,2,7…)으로 깔지 말 것(모바일 1열에서 순서가 뒤섞인다). DOM 은 읽기 순서(1,2,3…)대로 두고, '좌열 1–5 / 우열 6–10' 같은 열 우선 배치는 grid-auto-flow:column + grid-template-rows 로 표현한다(그래야 모바일 1열에서도 1,2,3…10 순서가 유지된다). 모든 목업 <head> 엔 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> 필수 — 없으면 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 전혀 안 먹는다(validator 의 missing-viewport-meta 로 검출).",
     "4pt 그리드에 맞춰 간격 설정. Gap(요소 간)과 Inset(컨테이너 내부)을 구분해 항상 semantic 토큰(--semantic-gap-* / --semantic-inset-*) 사용",
-    "Brand background(--semantic-bg-brand-*)는 주의/안내/하이라이트 의미 전달이 필요할 때만, 한 화면당 1개 이내로 사용 — 자세히는 get_guide({ topic: 'pattern:surface-layer' })",
+    "Project background(--semantic-bg-brand-*)는 주의/안내/하이라이트 의미 전달이 필요할 때만, 한 화면당 1개 이내로 사용 — 자세히는 get_guide({ topic: 'pattern:surface-layer' })",
     "인터랙티브 요소(Button/IconButton/Card.Root clickable/Tab)에는 onClick 등 핸들러를 반드시 부착",
     "표준 variant에 없는 톤이 필요하면 컴포넌트의 style/icon 같은 확장 슬롯을 활용 (raw 요소로 대체 금지)",
     "단독 아이콘은 주변 텍스트/배경과 어울리는 토큰 컬러를 명시하거나 부모 color를 토큰으로 지정해 currentColor가 의도한 색을 상속하게 함",
     "아이콘은 행동/상태/affordance 전달 목적에만 사용 — 화이트리스트와 검증 룰은 get_guide({ topic: 'pattern:icon-usage' })",
-    "아이콘 선택 필수 우선순위: 1) 현재 브랜드 전용 아이콘(예: Geniet*/Trost*) 2) NudgeEAP 기본 브랜드 아이콘 3) 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) 4) 자체 생성 SVG. 이 순서를 건너뛰지 말 것.",
+    "아이콘 선택 필수 우선순위: 1) 현재 프로젝트 전용 아이콘(예: Geniet*/Trost*) 2) NudgeEAP 기본 프로젝트 아이콘 3) 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) 4) 자체 생성 SVG. 이 순서를 건너뛰지 말 것.",
     "Tab 은 동일 depth 콘텐츠 전환·category navigation·section switching 에만 사용 — 필터/CTA/라우팅 대체용 금지",
     "Modal 은 즉각적 판단/응답이 필요할 때만 사용 — 단순 정보는 inline Notice/Banner, 에러는 Toast/inline error 사용",
-    "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Brand color 는 '현재 선택·핵심 강조' 에만",
-    "브랜드 모드(brand='geniet'/'trost' 등)에서 작업할 때, 해당 브랜드 prefix 의 아이콘(예: `GenietRecordIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 brand prefix 가 보이면 그 브랜드 모드에서는 그 쪽이 정답. 브랜드별 아이콘 수와 검색 힌트는 get_brand({ brand: '<slug>' }).detail.brandIconCount / brandIconLookup 으로 확인하고, 실제 후보는 find_icon({ query: '<BrandPrefix>' }) 로 조회.",
-    "브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(`HomeIcon`, `SearchIcon` 등)을 먼저 찾고, 그 다음에만 목업용 기본 아이콘(`MockupLinear*Icon`, `MockupBold*Icon`)을 사용. 자체 생성 SVG는 마지막 수단.",
-    "브랜드 분기는 공통 컴포넌트 구현이 아니라 **브랜드 전용 화면/스토리** 에서 처리 — 브랜드 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<Footer.TabBar tabs={[{ icon: <GenietRecordIcon /> }]} />`)",
+    "Badge 는 보조 정보 — 일반 카테고리는 ghost/line + neutral 우선, Project color 는 '현재 선택·핵심 강조' 에만",
+    "프로젝트 모드(project='geniet'/'trost' 등)에서 작업할 때, 해당 프로젝트 prefix 의 아이콘(예: `GenietRecordIcon`, `GenietGpointIcon`)이 존재하면 공용 아이콘보다 **우선 사용**. find_icon 결과에 project prefix 가 보이면 그 프로젝트 모드에서는 그 쪽이 정답. 프로젝트별 아이콘 수와 검색 힌트는 get_project({ project: '<slug>' }).detail.projectIconCount / projectIconLookup 으로 확인하고, 실제 후보는 find_icon({ query: '<ProjectPrefix>' }) 로 조회.",
+    "프로젝트 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(`HomeIcon`, `SearchIcon` 등)을 먼저 찾고, 그 다음에만 목업용 기본 아이콘(`MockupLinear*Icon`, `MockupBold*Icon`)을 사용. 자체 생성 SVG는 마지막 수단.",
+    "프로젝트 분기는 공통 컴포넌트 구현이 아니라 **프로젝트 전용 화면/스토리** 에서 처리 — 프로젝트 화면이 명시적으로 `Geniet*Icon` 을 import 해 컴포넌트의 icon prop 으로 전달. (예: `<Footer.TabBar tabs={[{ icon: <GenietRecordIcon /> }]} />`)",
     "★ 패턴(pattern:*)을 조립할 때 **각 조각(잎)은 반드시 실재하는 nds-* 컴포넌트로** 그린다 — 셀렉션/피커 모달처럼 여러 컴포넌트의 조립을 단일 컴포넌트로 안 빼고 패턴으로 두는 건 정상이지만, 그 잎(Modal·CheckboxTree·SelectedItemsPanel·SelectedItemRow·Button 등)은 전부 nds-* 여야 한다. 대응 nds-* 가 없어 raw `<div role=…>`·`<div onclick>` 로 잎을 흉내내면 **재발명(avoidable-reinvention)** 으로 검증/점수에서 깎인다. 점수(NDS%)는 '패턴이 한 개의 nds 태그인가'가 아니라 **잎 nds 컴포넌트 수**로 매겨지므로(레이아웃 div 는 분모 제외) 조립 자체는 감점이 아니다. 빠진 잎이 있으면 패턴을 컴포넌트로 감싸지 말고 **그 잎 컴포넌트를 DS 에 신설**(/ds-component)하는 것이 해법.",
   ],
   donts: [
-    "표면=admin 화면에 소비자 brand chrome(<nds-brand-header> / <nds-brand-footer> / <nds-brand-bottom-nav>) 사용 금지 — 어드민은 admin-shell(사이드바+톱바) 또는 어드민 온보딩 카드. '회원가입/로그인'이라는 화면 이름으로 소비자 플로우를 추측하지 마세요. build_singlefile_html / validate_html_mockup 의 admin-surface-consumer-chrome 룰(error)로 자동 차단됨.",
+    "표면=admin 화면에 소비자 project chrome(<nds-project-header> / <nds-project-footer> / <nds-project-bottom-nav>) 사용 금지 — 어드민은 admin-shell(사이드바+톱바) 또는 어드민 온보딩 카드. '회원가입/로그인'이라는 화면 이름으로 소비자 플로우를 추측하지 마세요. build_singlefile_html / validate_html_mockup 의 admin-surface-consumer-chrome 룰(error)로 자동 차단됨.",
     "한 화면에 3개 이상의 폰트 웨이트를 혼용하지 마세요",
     "둥근 코너와 각진 코너를 같은 뷰에서 섞지 마세요",
     "그림자와 보더를 동시에 적용하여 이중 계층을 만들지 마세요",
@@ -746,14 +746,14 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "→ ← ✓ ★ • 같은 텍스트 기호 사용 금지 — 화살표/체크/별점/불릿을 문자로 표현하지 마세요. 아이콘은 find_icon, 진행/별점/리스트는 DS 컴포넌트(Timeline/Stepper/Rating/Dense list) 사용. validate_html_mockup 의 text-symbol-banned 룰로 자동 검출됨.",
     "Primitive spacing(--spacing-N) / 임의 px (5/7/9/11/13/15) 사용 금지 — 반드시 --semantic-gap-* / --semantic-inset-* semantic 토큰으로 표현",
     "Inset(내부 여백) 자리에 Gap 토큰 사용 금지 (또는 그 반대) — padding 자리에 --semantic-gap-*, gap 자리에 --semantic-inset-* 쓰지 않기",
-    "Brand background 를 단순 시각 구분·decorative section·KPI 카드·summary 카드 배경으로 사용 금지 — 의미 전달 없는 색 배경은 위계를 망가뜨림",
+    "Project background 를 단순 시각 구분·decorative section·KPI 카드·summary 카드 배경으로 사용 금지 — 의미 전달 없는 색 배경은 위계를 망가뜨림",
     "한 화면 안에서 카드마다 다른 pastel background 를 사용해 영역을 색으로 구분하지 마세요 — 구분은 spacing/border/text 위계로",
     "서브타이틀(h3/h4) 앞 장식 아이콘 · Form Label 앞 장식 아이콘 · 본문 텍스트 앞 decorative icon 금지 — 한 화면에서 일부 헤딩에만 아이콘을 붙이면 hierarchy 가 깨짐",
     "헤딩 앞 아이콘 5개 이상 사용 시 자동 위반 — 아이콘을 hierarchy 표현 수단으로 쓰지 마세요",
     "Tab 을 CTA처럼 사용 금지 — '저장/신청/다음 단계' 등 액션은 Button 사용. Tab 은 동일 depth 콘텐츠 전환 전용",
     "세그먼트형 단일 값 선택은 Tab variant='segment' 사용. line/chip 은 패널 전환 전용",
     "단순 정보 전달용으로 Modal 사용 금지 — inline Notice / Banner / section 안내 우선. Modal 은 즉각적 판단/응답이 필요할 때만",
-    "Modal 내부에 또 다른 강조(Card·Brand BG·Chip 그룹)를 쌓지 마세요 — 핵심 action 1 + 보조 action 1 구조가 기본",
+    "Modal 내부에 또 다른 강조(Card·Project BG·Chip 그룹)를 쌓지 마세요 — 핵심 action 1 + 보조 action 1 구조가 기본",
     "Fill Badge 를 한 카드/Row 안에 2개 이상 두지 마세요 — 일반 카테고리는 ghost/line 우선, Fill 은 카드당 최대 1개",
     // ── Card Everything Syndrome ──
     "모든 영역을 카드로 감싸지 마세요 — 카드는 '독립된 정보 단위' 일 때만. 단순 group/section 은 spacing + h3 + Divider 로 위계를 만드세요",
@@ -777,12 +777,12 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
     "장식 중심 hero section(큰 일러스트 + 큰 카피 + gradient 배경)을 만들지 마세요 — EAP 도메인은 사용자 상태/액션을 직접 보여주는 것이 우선",
     // ── Everything Has an Icon ──
     "한 화면에 여러 icon 스타일(선/면/colorful)을 혼용하지 마세요 — `@nudge-design/icons` 단일 셋만",
-    "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. brand color icon 은 진입점 1-2 개에만",
+    "colorful/멀티컬러 아이콘을 본문 UI 에 과다 사용하지 마세요 — DS icon 은 currentColor monochrome 이 원칙. project color icon 은 진입점 1-2 개에만",
     // ── Spacing Randomness 보강 ──
     "같은 depth(부모 컨테이너 안의 형제 요소들) 에 서로 다른 spacing 을 적용하지 마세요 — 형제는 같은 --semantic-gap-* 으로 통일",
-    // ── Brand Icon ──
-    "공통 컴포넌트(Footer/BottomNav/Header 등) 의 *구현* 안에 brand 분기 로직(`if (brand === 'geniet') return <GenietRecordIcon />`)을 넣지 마세요 — DS 컴포넌트는 brand-agnostic 으로 유지. 분기는 사용처(브랜드 전용 화면)에서 명시적 icon prop 으로 표현.",
-    "브랜드 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 brand prefix 아이콘이 있으면 그게 우선. get_brand({ brand: '<slug>' }).detail.brandIconLookup 또는 find_icon({ query: '<BrandPrefix>' }) 로 매칭 확인.",
+    // ── Project Icon ──
+    "공통 컴포넌트(Footer/BottomNav/Header 등) 의 *구현* 안에 project 분기 로직(`if (project === 'geniet') return <GenietRecordIcon />`)을 넣지 마세요 — DS 컴포넌트는 project-agnostic 으로 유지. 분기는 사용처(프로젝트 전용 화면)에서 명시적 icon prop 으로 표현.",
+    "프로젝트 모드인데 공용 아이콘(`HomeIcon`/`CouponIcon` 등) 을 그대로 쓰지 마세요 — 같은 의미의 project prefix 아이콘이 있으면 그게 우선. get_project({ project: '<slug>' }).detail.projectIconLookup 또는 find_icon({ query: '<ProjectPrefix>' }) 로 매칭 확인.",
     "NudgeEAP 기본 아이콘이나 MockupLinear*/MockupBold* 아이콘을 확인하지 않고 인라인 SVG/직접 생성 아이콘으로 넘어가지 마세요 — 자체 생성은 마지막 수단.",
   ],
   bannedPatterns: [
@@ -941,19 +941,19 @@ export const UX_WRITING_GUIDE: UxWritingGuide = {
  * 카테고리: basic / navigation / action / media / state-reaction / location / eap-service / color
  * 스타일:   line(기본) / filled(강조·활성·소형) / color(다색 일러스트성 아이콘)
  *
- * ── 브랜드 아이콘 사용 정책 ──────────────────────────────────────────────
- * `Geniet*Icon`, `Trost*Icon` 같은 brand prefix 아이콘은 해당 브랜드 디자인을 그대로 옮긴
+ * ── 프로젝트 아이콘 사용 정책 ──────────────────────────────────────────────
+ * `Geniet*Icon`, `Trost*Icon` 같은 project prefix 아이콘은 해당 프로젝트 디자인을 그대로 옮긴
  * 변종이라 공용 아이콘과 시각이 다릅니다.
  *
- * **브랜드 모드(brand='geniet' / 'trost' 등) 작업 시:**
- *   - 같은 의미의 brand prefix 아이콘이 존재하면 **반드시 그쪽을 우선 사용**.
+ * **프로젝트 모드(project='geniet' / 'trost' 등) 작업 시:**
+ *   - 같은 의미의 project prefix 아이콘이 존재하면 **반드시 그쪽을 우선 사용**.
  *     (예: Geniet bottom nav → `GenietRecordIcon` (단일 그래픽 + color cascade), 공용 PushActiveIcon X)
- *   - 사용 가능한 brand 아이콘은 `get_brand({ brand: '<slug>' }).detail.brandIconLookup` 또는 `find_icon({ query: '<BrandPrefix>' })` 로 조회.
+ *   - 사용 가능한 project 아이콘은 `get_project({ project: '<slug>' }).detail.projectIconLookup` 또는 `find_icon({ query: '<ProjectPrefix>' })` 로 조회.
  *   - 매칭이 없으면 공용 아이콘 fallback 으로 사용 (예: `LikeIcon` 은 Geniet 매칭 없음 → 공용 OK).
  *
  * **컴포넌트 구현(공통 DS) 에서는:**
- *   - brand 분기 로직(`if (brand === 'geniet')`)을 컴포넌트 안에 박지 않는다.
- *   - DS 컴포넌트는 brand-agnostic 유지, 브랜드 전용 화면이 명시적으로 icon prop 으로 전달.
+ *   - project 분기 로직(`if (project === 'geniet')`)을 컴포넌트 안에 박지 않는다.
+ *   - DS 컴포넌트는 project-agnostic 유지, 프로젝트 전용 화면이 명시적으로 icon prop 으로 전달.
  *     예: `<Footer.TabBar tabs={[{ key: 'record', icon: <GenietRecordIcon /> }]} />`
  */
 export type IconCategory =
@@ -1117,7 +1117,7 @@ export const ICON_METADATA: Record<string, IconMeta> = {
   TestresultDangerIcon: { category: "color", style: "color" },
   SirenIcon: { category: "color", style: "color" },
 
-  // ── Geniet 브랜드 ─ Geniet 홈페이지에서 가져온 브랜드 전용 아이콘. NudgeEAP 공용과 디자인이 달라 prefix 로 분리.
+  // ── Geniet 프로젝트 ─ Geniet 홈페이지에서 가져온 프로젝트 전용 아이콘. NudgeEAP 공용과 디자인이 달라 prefix 로 분리.
   GenietAlarmIcon: { category: "state-reaction", style: "filled" },
   GenietChevronLeftIcon: { category: "navigation", style: "line" },
   GenietChevronDownIcon: { category: "navigation", style: "line" },

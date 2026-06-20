@@ -143,7 +143,7 @@ function SurfacePage() {
         Surface / Background Layers
       </h2>
       <p style={{ fontSize: 14, lineHeight: "20px", color: "#666", marginBottom: 24 }}>
-        4단계 레이어로 표면 위계를 표현한다. Brand background 는 시각 장식이 아니라 의미
+        4단계 레이어로 표면 위계를 표현한다. Project background 는 시각 장식이 아니라 의미
         전달(주의·안내·하이라이트) 목적으로만 사용한다.
       </p>
 
@@ -158,7 +158,7 @@ function SurfacePage() {
 
       <section style={{ marginBottom: 40 }}>
         <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111", marginBottom: 8 }}>
-          Brand background 사용 결정 트리
+          Project background 사용 결정 트리
         </h3>
         <ol
           style={{
@@ -170,7 +170,7 @@ function SurfacePage() {
           }}
         >
           <li>사용자에게 주의 / 안내 / 하이라이트 의미 전달이 필요한가?</li>
-          <li>현재 화면에 이미 사용 중인 brand background 가 없는가?</li>
+          <li>현재 화면에 이미 사용 중인 project background 가 없는가?</li>
           <li>단순 decoration 목적이 아닌가?</li>
         </ol>
         <p style={{ fontSize: 13, color: "#666" }}>
@@ -188,14 +188,14 @@ function SurfacePage() {
         <div>
           <Banner kind="good">DO</Banner>
           <p style={{ fontSize: 13, color: "#666", marginBottom: 12 }}>
-            주의/안내 의미가 있고 화면 내 brand bg 가 1개뿐인 경우.
+            주의/안내 의미가 있고 화면 내 project bg 가 1개뿐인 경우.
           </p>
           <DoCard />
         </div>
         <div>
           <Banner kind="bad">DON&apos;T</Banner>
           <p style={{ fontSize: 13, color: "#666", marginBottom: 12 }}>
-            KPI/summary 카드를 brand bg 로 도배 — 위계가 평탄해진다.
+            KPI/summary 카드를 project bg 로 도배 — 위계가 평탄해진다.
           </p>
           <div
             style={{
@@ -223,5 +223,5 @@ const meta: Meta = {
 export default meta;
 
 export const Layers: StoryObj = {
-  name: "Layers & Brand BG Decision",
+  name: "Layers & Project BG Decision",
 };

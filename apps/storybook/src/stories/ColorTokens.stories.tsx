@@ -91,7 +91,7 @@ function RoleGroup({
   const tokens = flattenSemantic(nudgeEapSemantic[group] as Record<string, unknown>);
   // Map dotted-path key inside the group → guide path used by semanticGuide.
   // Guide keys use cv dotted paths (surface.brand / textRole.brand etc.) which
-  // differ from semantic field paths (bg.brand.default / text.brand.default).
+  // differ from semantic field paths (bg.project.default / text.project.default).
   const guideGroupOf = (g: string): string => {
     if (g === "bg") return "surface";
     if (g === "text") return "textRole";
@@ -112,7 +112,7 @@ function RoleGroup({
         }}
       >
         {tokens.map(({ path, hex }) => {
-          // Convert semantic path `brand.default` → cv key `brand` (drop `.default`)
+          // Convert semantic path `project.default` → cv key `project` (drop `.default`)
           // and `status.error` → `statusError` (camelCase).
           const cvKey = path
             .replace(/\.default$/, "")

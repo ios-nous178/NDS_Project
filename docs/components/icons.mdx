@@ -19,7 +19,7 @@ import { ChevronRightIcon, SearchIcon, HomeIcon } from "@nudge-design/icons";
 ```
 
 아래 카탈로그는 `@nudge-design/icons` 패키지의 **실제 export 를 그대로 렌더**합니다.
-브랜드별로 `Common / Geniet / Trost` 로 분류되며, 카드 클릭 시 import 문이 클립보드에 복사됩니다.
+프로젝트별로 `Common / Geniet / Trost` 로 분류되며, 카드 클릭 시 import 문이 클립보드에 복사됩니다.
 
 <IconCatalog />
 
@@ -81,15 +81,15 @@ import { SearchIcon } from "@nudge-design/icons";
 
 ---
 
-## 브랜드별 아이콘
+## 프로젝트별 아이콘
 
 | Prefix      | 컴포넌트 접두어 | 용도                                                                  |
 | ----------- | --------------- | --------------------------------------------------------------------- |
-| (없음)      | `XxxIcon`       | 3개 브랜드 공통 — NudgeEAP / Geniet / Trost 어디서나 사용 가능        |
-| `geniet-*`  | `GenietXxxIcon` | Geniet 전용 — 다른 브랜드 화면에는 쓰지 마세요                        |
+| (없음)      | `XxxIcon`       | 3개 프로젝트 공통 — NudgeEAP / Geniet / Trost 어디서나 사용 가능        |
+| `geniet-*`  | `GenietXxxIcon` | Geniet 전용 — 다른 프로젝트 화면에는 쓰지 마세요                        |
 | `trost-*`   | `TrostXxxIcon`  | Trost 전용 — Trost 메이븐 / 멘탈 자가검사 등 Trost 한정 컨텍스트      |
 
-브랜드 한정 아이콘을 공통 화면에 쓰면 톤이 어긋납니다. 다른 브랜드에서도 같은 시각 표현이 필요하면 디자인팀에 공통 아이콘 추가를 요청하세요.
+프로젝트 한정 아이콘을 공통 화면에 쓰면 톤이 어긋납니다. 다른 프로젝트에서도 같은 시각 표현이 필요하면 디자인팀에 공통 아이콘 추가를 요청하세요.
 
 ---
 
@@ -98,7 +98,7 @@ import { SearchIcon } from "@nudge-design/icons";
 용도/키워드만 알고 정확한 이름은 모를 때 `nudge-ds` MCP 도구로 검색하세요.
 
 ```
-find_icon                       # 인자 없으면 전체 아이콘 목록 (브랜드 prefix 포함)
+find_icon                       # 인자 없으면 전체 아이콘 목록 (프로젝트 prefix 포함)
 find_icon({ query: "검색" })     # 키워드/한국어 별칭으로 후보 추출
 find_icon({ query: "플레이" })   # → play, play-active 등
 find_icon({ query: "위치" })     # → locate, pin
@@ -119,7 +119,7 @@ Claude 에게는 한국어로 그대로 부탁하면 됩니다:
 - **장식용 아이콘에 alt text 추가** — 텍스트 옆 장식 아이콘은 `aria-hidden="true"` 로 스크린 리더에서 숨기세요.
 - **다른 아이콘 라이브러리와 혼용** — `react-icons`, `lucide-react`, MUI Icons 등을 섞어 쓰면 stroke 두께·스타일이 달라집니다. **`@nudge-design/icons` 만 사용**하세요. 없는 아이콘은 디자인팀에 요청합니다.
 - **inline SVG 직접 작성** — 아이콘이 필요하면 항상 패키지에서 import. 직접 SVG 를 박으면 Figma sync 추적이 끊깁니다.
-- **브랜드 한정 아이콘을 공통 화면에 사용** — `Geniet*` / `Trost*` 는 해당 브랜드 컨텍스트 안에서만 사용하세요.
+- **프로젝트 한정 아이콘을 공통 화면에 사용** — `Geniet*` / `Trost*` 는 해당 프로젝트 컨텍스트 안에서만 사용하세요.
 
 ---
 
@@ -127,7 +127,7 @@ Claude 에게는 한국어로 그대로 부탁하면 됩니다:
 
 신규 아이콘이 필요한 경우:
 
-1. Figma Iconography 노드(`379:490`) 또는 브랜드별 아이콘 노드에 아이콘 추가 (디자인팀)
+1. Figma Iconography 노드(`379:490`) 또는 프로젝트별 아이콘 노드에 아이콘 추가 (디자인팀)
 2. `pnpm --filter @nudge-design/icons fetch:figma` (Figma API 에서 SVG 받기)
 3. `pnpm --filter @nudge-design/icons generate` (TSX 컴포넌트 자동 생성)
 4. `pnpm build --filter @nudge-design/icons`

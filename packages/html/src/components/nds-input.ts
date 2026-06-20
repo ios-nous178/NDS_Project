@@ -208,7 +208,7 @@ export class NdsInput extends NdsElement {
     const root = this._root;
     root.dataset.size = size;
     // variant 는 명시(box|line)일 때만 data-variant 반영 — 미지정 시 속성을 비워 런마일
-    // [data-brand] 기본(line) cascade 가 살아 있게 한다 (react 미러: data-variant={variant}).
+    // [data-project] 기본(line) cascade 가 살아 있게 한다 (react 미러: data-variant={variant}).
     const variant = this.getAttribute("variant");
     if (variant === "box" || variant === "line") root.dataset.variant = variant;
     else delete root.dataset.variant;
@@ -218,7 +218,7 @@ export class NdsInput extends NdsElement {
       "--nds-input-width",
       resolvedFieldWidth ?? (fullWidth ? "100%" : "auto"),
     );
-    // size="default" 는 inline 높이를 박지 않는다 — 그래야 브랜드 :root override
+    // size="default" 는 inline 높이를 박지 않는다 — 그래야 프로젝트 :root override
     // (예: 캐포비 admin --nds-input-height:48)가 cascade 로 이긴다. inline 으로 박으면
     // :root 를 눌러 같은 행 nds-select(inline 안 박음) 와 높이가 어긋날 수 있다.
     // field 는 작성자가 명시한 의도이므로 inline 유지(값은 default 와 동일 48).

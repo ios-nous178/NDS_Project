@@ -9,7 +9,7 @@ import { validateHtmlSource, type HtmlValidationContext } from "./html-validator
  * 작성자(다른 AI)가 빠져나가려 <header>/<aside> 를 <div> 로 strip 했다. 그런데 admin-shell
  * 패턴(pattern:admin-shell)의 SSOT 는 <header class="nds-shell__topbar"> / <aside
  * class="nds-shell__sidebar"> 를 명시한다 — 즉 그 landmark 들이 정답인데 검증이 막은 것.
- * 또 raw-landmark 의 기존 suggestion 은 admin 화면에 nds-header/brand-header 를 권했는데,
+ * 또 raw-landmark 의 기존 suggestion 은 admin 화면에 nds-header/project-header 를 권했는데,
  * 이는 admin-surface-consumer-chrome(error) 와 정면 충돌한다.
  */
 
@@ -63,7 +63,7 @@ test("표면=admin 의 bare <header> 는 raw-landmark 이되 suggestion 이 admi
   // 소비자 chrome 을 "우선 사용/교체" 로 권하지 않는다 (admin-surface-consumer-chrome 와 모순 방지).
   assert.doesNotMatch(
     sug,
-    /nds-header 우선|nds-brand-header[^]{0,30}교체/,
+    /nds-header 우선|nds-project-header[^]{0,30}교체/,
     "admin 화면에 소비자 chrome 사용을 권하면 안 된다",
   );
 });

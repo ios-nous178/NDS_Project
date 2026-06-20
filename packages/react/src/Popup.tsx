@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { resolveActionsLayout, type ActionsLayout } from "@nudge-design/tokens";
-import { useBrand } from "./internal/useBrand.js";
+import { useProject } from "./internal/useProject.js";
 
 /* ─── Class names ─── */
 
@@ -258,8 +258,8 @@ export interface PopupActionsProps extends Omit<DivProps, "children"> {
   /** 액션 버튼 콘텐츠 (CancelButton, ConfirmButton 등) */
   children: React.ReactNode;
   /**
-   * 버튼 배치. 생략 시 현재 브랜드 기본값(캐포비=end, 그 외=split).
-   * `split`=2버튼 50/50·1버튼 세로 스택, `end`=우측 hug. 색/pill 모양은 브랜드 토큰이 별도 결정.
+   * 버튼 배치. 생략 시 현재 프로젝트 기본값(캐포비=end, 그 외=split).
+   * `split`=2버튼 50/50·1버튼 세로 스택, `end`=우측 hug. 색/pill 모양은 프로젝트 토큰이 별도 결정.
    */
   actionsLayout?: ActionsLayout;
 }
@@ -271,8 +271,8 @@ export const PopupActions: React.FC<PopupActionsProps> = ({
   ...rest
 }) => {
   const count = React.Children.count(children);
-  const brand = useBrand();
-  const resolvedLayout = resolveActionsLayout(brand, actionsLayout);
+  const project = useProject();
+  const resolvedLayout = resolveActionsLayout(project, actionsLayout);
   return (
     <div
       data-slot="actions"
@@ -368,7 +368,7 @@ export interface PopupProps {
   cancelText?: string;
   /** 취소 콜백 (제공하면 Cancel 버튼 표시) */
   onCancel?: () => void;
-  /** 버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split). `split`|`end`. */
+  /** 버튼 배치. 생략 시 프로젝트 기본(캐포비=end, 그 외=split). `split`|`end`. */
   actionsLayout?: ActionsLayout;
   /** 오버레이 클릭으로 닫기 */
   isMaskClose?: boolean;

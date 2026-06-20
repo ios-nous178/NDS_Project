@@ -46,7 +46,7 @@ export const bottomSheetStyles = `
     border-radius: var(--nds-bottom-sheet-radius, ${radius.lg}px) var(--nds-bottom-sheet-radius, ${radius.lg}px) 0 0;
     background-color: ${cv.surface.default};
     /* upward shadow — DS shadow 토큰은 모두 아래 방향이라 의도적으로 raw default 사용.
-       슬롯으로 노출해 브랜드가 덮을 수 있게 (Trost 등), default 는 불변. */
+       슬롯으로 노출해 프로젝트가 덮을 수 있게 (Trost 등), default 는 불변. */
     box-shadow: var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0, 0, 0, 0.1));
     animation: nds-bs-slide-up 0.2s ease-out;
     font-family: ${fontFamily.web};

@@ -33,8 +33,8 @@ configureHtmlValidator({
     "nds-modal",
     "nds-bottom-sheet",
     "nds-sidebar",
-    "nds-brand-header",
-    "nds-brand-footer",
+    "nds-project-header",
+    "nds-project-footer",
     "nds-footer-info",
     "nds-header",
     "nds-form-field",
@@ -184,14 +184,14 @@ describe("validateHtmlSource", () => {
     expect(rulesFor(`<header>title</header>`)).toContain("raw-landmark");
   });
 
-  it("directs raw brand header/footer to BrandHeader and BrandFooter", () => {
+  it("directs raw project header/footer to ProjectHeader and ProjectFooter", () => {
     const result = validateHtmlMockup({
       source: `<header>직접 만든 GNB</header><footer>직접 만든 푸터</footer>`,
     });
     const raw = result.violations.filter((v) => v.rule === "raw-landmark");
 
-    expect(raw.some((v) => v.suggestion.includes("component:BrandHeader"))).toBe(true);
-    expect(raw.some((v) => v.suggestion.includes("component:BrandFooter"))).toBe(true);
+    expect(raw.some((v) => v.suggestion.includes("component:ProjectHeader"))).toBe(true);
+    expect(raw.some((v) => v.suggestion.includes("component:ProjectFooter"))).toBe(true);
   });
 
   it("flags x text used as an icon substitute", () => {
@@ -308,17 +308,17 @@ describe("validateHtmlSource — ported JSX patterns", () => {
   });
 
   it("flags cashwalk-biz modal single full-width button (hug 우측정렬이어야 함)", () => {
-    const html = `<html data-brand="cashwalk-biz"><body>
+    const html = `<html data-project="cashwalk-biz"><body>
       <nds-modal open title="검수를 승인할까요?">
         <p>승인하면 즉시 노출됩니다.</p>
         <div slot="footer"><nds-button color="secondary" variant="solid" full-width>승인</nds-button></div>
       </nds-modal>
     </body></html>`;
-    expect(rulesFor(html)).toContain("brand-modal-single-button-fullwidth");
+    expect(rulesFor(html)).toContain("project-modal-single-button-fullwidth");
   });
 
   it("flags SelectedItemsPanel helper text placed as an adjacent sibling", () => {
-    const html = `<html data-brand="cashwalk-biz"><body>
+    const html = `<html data-project="cashwalk-biz"><body>
       <nds-selected-items-panel panel-title="선택한 지역" count="3">
         <nds-region-row>서울특별시 &gt; 전체</nds-region-row>
       </nds-selected-items-panel>
@@ -328,7 +328,7 @@ describe("validateHtmlSource — ported JSX patterns", () => {
   });
 
   it("does NOT flag SelectedItemsPanel helper when it is owned by FormField", () => {
-    const html = `<html data-brand="cashwalk-biz"><body>
+    const html = `<html data-project="cashwalk-biz"><body>
       <nds-form-field label="지역" density="admin" helper="시/도, 시/군/구를 검색해 노출할 지역을 추가하세요.">
         <nds-selected-items-panel panel-title="선택한 지역" count="3">
           <nds-region-row>서울특별시 &gt; 전체</nds-region-row>
@@ -339,21 +339,21 @@ describe("validateHtmlSource — ported JSX patterns", () => {
   });
 
   it("does NOT flag cashwalk-biz single modal button when hug (no full-width)", () => {
-    const html = `<html data-brand="cashwalk-biz"><body>
+    const html = `<html data-project="cashwalk-biz"><body>
       <nds-modal open title="검수를 승인할까요?">
         <div slot="footer"><nds-button color="secondary" variant="solid" shape="pill">승인</nds-button></div>
       </nds-modal>
     </body></html>`;
-    expect(rulesFor(html)).not.toContain("brand-modal-single-button-fullwidth");
+    expect(rulesFor(html)).not.toContain("project-modal-single-button-fullwidth");
   });
 
-  it("does NOT flag full-width single modal button outside cashwalk-biz brand", () => {
+  it("does NOT flag full-width single modal button outside cashwalk-biz project", () => {
     const html = `<nds-modal><div slot="footer"><nds-button full-width>확인</nds-button></div></nds-modal>`;
-    expect(rulesFor(html)).not.toContain("brand-modal-single-button-fullwidth");
+    expect(rulesFor(html)).not.toContain("project-modal-single-button-fullwidth");
   });
 
   it("does NOT flag cashwalk-biz dual-button modal (가로 분할은 정상)", () => {
-    const html = `<html data-brand="cashwalk-biz"><body>
+    const html = `<html data-project="cashwalk-biz"><body>
       <nds-modal>
         <div slot="footer">
           <nds-button color="neutral" variant="outlined">닫기</nds-button>
@@ -361,7 +361,7 @@ describe("validateHtmlSource — ported JSX patterns", () => {
         </div>
       </nds-modal>
     </body></html>`;
-    expect(rulesFor(html)).not.toContain("brand-modal-single-button-fullwidth");
+    expect(rulesFor(html)).not.toContain("project-modal-single-button-fullwidth");
   });
 
   it("does NOT flag primary-cta-overuse when secondary buttons are non-solid", () => {
@@ -395,15 +395,15 @@ describe("validateHtmlSource — ported JSX patterns", () => {
     expect(rulesFor(html)).toContain("bold-overuse");
   });
 
-  it("flags brand-bg-overuse when --semantic-bg-brand-* used 2+ times", () => {
+  it("flags project-bg-overuse when --semantic-bg-brand-* used 2+ times", () => {
     const html = `<div style="background: var(--semantic-bg-brand-default)">a</div>
                   <div style="background: var(--semantic-bg-brand-subtle)">b</div>`;
-    expect(rulesFor(html)).toContain("brand-bg-overuse");
+    expect(rulesFor(html)).toContain("project-bg-overuse");
   });
 
-  it("does NOT flag brand-bg-overuse when used once", () => {
+  it("does NOT flag project-bg-overuse when used once", () => {
     const html = `<div style="background: var(--semantic-bg-brand-default)">a</div>`;
-    expect(rulesFor(html)).not.toContain("brand-bg-overuse");
+    expect(rulesFor(html)).not.toContain("project-bg-overuse");
   });
 
   it("flags decorative-shadow when 4+ inline box-shadow", () => {
@@ -439,7 +439,7 @@ describe("violation severity", () => {
     expect(v?.severity).toBe("error");
   });
 
-  it("raw <header>/<footer> with brand variant available is error", () => {
+  it("raw <header>/<footer> with project variant available is error", () => {
     const result = validateHtmlMockup({
       source: `<header>직접 만든 GNB</header><footer>직접 만든 푸터</footer>`,
     });
@@ -447,7 +447,7 @@ describe("violation severity", () => {
     expect(raw.every((v) => v.severity === "error")).toBe(true);
   });
 
-  it("raw <aside> falls back to warn (no brand variant)", () => {
+  it("raw <aside> falls back to warn (no project variant)", () => {
     const result = validateHtmlMockup({ source: `<aside>menu</aside>` });
     const aside = result.violations.find(
       (v) => v.rule === "raw-landmark" && v.selector?.includes("aside"),

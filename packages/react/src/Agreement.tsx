@@ -21,7 +21,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 type CheckState = "checked" | "indeterminate" | "unchecked";
 
-/* ─── Icons (브랜드 무관 · currentColor) ─── */
+/* ─── Icons (프로젝트 무관 · currentColor) ─── */
 
 const CheckIcon = () => (
   <svg className={`${AG_CHECK_CLASS}-icon`} viewBox="0 0 14 14" fill="none" aria-hidden="true">

@@ -21,7 +21,7 @@ export const TabOverlay: ServiceOverlay = {
     "선택된 탭만 강조(Underline=bold+바, Box=검정 fill+흰 텍스트), 나머지는 subtle — 라벨 텍스트 자체 색을 임의로 바꾸지 말 것.",
   ],
   forbiddenPatterns: [
-    "Box 선택 fill 을 brand yellow 로 변경 — 캐포비 Tab/Box 선택은 neutral inverse(검정 #111 + 흰 텍스트)다. Checkbox 의 Yellow/500 Primary 와 혼동 금지.",
+    "Box 선택 fill 을 project yellow 로 변경 — 캐포비 Tab/Box 선택은 neutral inverse(검정 #111 + 흰 텍스트)다. Checkbox 의 Yellow/500 Primary 와 혼동 금지.",
     "Tab 을 CTA(저장/신청/다음 단계)나 페이지 단위 라우팅 대체로 사용 — 라우팅은 좌측 Sidebar, 액션은 Button.",
     "같은 리스트의 '필터'를 Tab/Box 와 FilterBar 로 동시에 중복 — 상태 분기는 Tab/Box, 다중 조건 필터는 FilterBar 로 한쪽만.",
     "캐포비 Tab 규격은 line / chip / segment 세 종 — 세그먼트형 단일 값 선택(상태/기간 토글)은 Tab variant='segment' (mobile/pc) 사용.",

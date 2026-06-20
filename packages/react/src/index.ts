@@ -32,7 +32,7 @@ export type { ChipVariantKey, ChipColorKey } from "./Chip.guide.js";
 export * from "./DSHighlight.js";
 export * from "./Header.js";
 export * from "./Footer.js";
-export * from "./BrandLogo.js";
+export * from "./ProjectLogo.js";
 export * from "./Skeleton.js";
 export * from "./StarRating.js";
 export * from "./Toggle.js";
@@ -104,4 +104,4 @@ export * from "./MediaCard.js";
 export * from "./FilterBar.js";
 export * from "./ProductCard.js";
 export * from "./SummaryCard.js";
-// Sidebar(브랜드-aware admin 셸)는 공개 react 에서 제거 — 목업 전용 html <nds-sidebar>(nds-brand-chrome 흡수)로.
+// Sidebar(프로젝트-aware admin 셸)는 공개 react 에서 제거 — 목업 전용 html <nds-sidebar>(nds-project-chrome 흡수)로.

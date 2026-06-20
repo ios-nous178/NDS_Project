@@ -14,11 +14,11 @@
   - **main row** (space-between): 좌측 `Heading`(title + description) · 우측 액션 슬롯(`Button`/`IconButton`, pattern:cta-group 의 우측 hug).
   - **bottom row** (선택): `Tab`(탭형 페이지) 또는 `FilterBar`. 컨테이너 좌우 패딩을 상쇄해 풀블리드.
 - ③ 간격·여백은 토큰으로(MUST) — 컨테이너 `gap: --semantic-gap-comfortable`, `padding: --semantic-inset-card-large --semantic-inset-modal`. raw px 금지.
-- ④ 배경은 기본 투명(SHOULD) — 콘텐츠 위에 얹히는 제목 블록이라 기본 transparent. 흰 카드로 띄워야 하면 그 컨테이너에만 surface 토큰을 준다(브랜드 admin 합의 따름).
+- ④ 배경은 기본 투명(SHOULD) — 콘텐츠 위에 얹히는 제목 블록이라 기본 transparent. 흰 카드로 띄워야 하면 그 컨테이너에만 surface 토큰을 준다(프로젝트 admin 합의 따름).
 - ⑤ 하단 보더는 옵션(SHOULD) — 리스트/디테일 구분이 필요하면 `border-bottom: 1px var(--semantic-border-subtle-default)`. **캐포비 admin 은 끄는 게 규칙**(pattern:cashwalk-biz-page-* 참조).
 - ⑥ 액션은 우측 정렬 한 행(MUST) — pattern:cta-group 을 따른다. 주 액션 1개 + 보조 0~2개. 액션 폭주 금지.
 - ⑦ 접근성(MUST) — 페이지 제목은 문서에 h1 하나(Heading as="h1"). 뒤로가기는 `aria-label`. 탭은 Tab 의 role=tablist 그대로.
-- ⑧ 컴포넌트 승격 기준(governance) — 다시 DS 컴포넌트로 만들려면 **2개 이상 브랜드의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다(예전 셸이 제거된 이유).
+- ⑧ 컴포넌트 승격 기준(governance) — 다시 DS 컴포넌트로 만들려면 **2개 이상 프로젝트의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다(예전 셸이 제거된 이유).
 
 ## avoid
 
@@ -26,7 +26,7 @@
 - 페이지 제목을 raw `<h1 style>` / `<div>` 로 — 타이포·시맨틱이 Heading 과 어긋난다. 항상 `Heading`.
 - AppBar(글로벌 상단 네비)와 혼동 — AppBar 는 앱 셸 상단, 이건 콘텐츠 영역 안 페이지 제목.
 - 액션을 좌측·중앙에 흩뿌리기 — 우측 한 행(cta-group).
-- 색·간격 raw hex/px — semantic 토큰으로 5 브랜드 자동 대응.
+- 색·간격 raw hex/px — semantic 토큰으로 5 프로젝트 자동 대응.
 - 캐포비 admin 에서 하단 보더 켜기 — admin 규칙 위반(pattern:cashwalk-biz-page-*).
 
 ## readyMade.note

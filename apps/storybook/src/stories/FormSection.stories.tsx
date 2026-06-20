@@ -7,7 +7,7 @@ import { FormSection, FormField, Input, Select } from "@nudge-design/react";
  *
  * 캐시워크 for Business 어드민 폼 표준 (Figma InputGuide 3080:741 · FormSection 3466:17405):
  *   - 제목 Headline3 24 Bold + (옵션) 설명
- *   - 카드: white bg · 1px border(#EEE) · radius 16(브랜드 cascade) · 좌우 padding 24
+ *   - 카드: white bg · 1px border(#EEE) · radius 16(프로젝트 cascade) · 좌우 padding 24
  *   - 본문은 `FormField density="admin"` 행을 쌓아 세로 리듬(py-24)을 만든다.
  *   - 입력 너비는 `fieldWidth` 스케일(xs~xl/full) 사용 — 인라인 width 금지.
  */
@@ -15,7 +15,7 @@ const meta: Meta<typeof FormSection> = {
   title: "Components/Inputs/FormSection",
   component: FormSection,
   parameters: { layout: "padded" },
-  globals: { brand: "cashwalk-biz" },
+  globals: { project: "cashwalk-biz" },
 };
 export default meta;
 type Story = StoryObj<typeof FormSection>;

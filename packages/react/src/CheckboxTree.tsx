@@ -123,7 +123,7 @@ function parentValues(nodes: CheckboxTreeNode[]): string[] {
   );
 }
 
-/* ─── Icons (브랜드 무관 · currentColor) ─── */
+/* ─── Icons (프로젝트 무관 · currentColor) ─── */
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">

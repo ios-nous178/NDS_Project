@@ -16,9 +16,9 @@ figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5303-
 | **`.nds-section` (어드민 카드)** | 본문 안 흰 카드 (head/body/title)          | `Layout.ts` `sectionStyles` — `<section class="nds-section">`   |
 | **`FormSection`**            | 어드민 폼 그룹 카드 (React/HTML 컴포넌트)   | `get_guide({ topic: 'component:FormSection' })`                |
 
-### Container 반응형 — base(전 브랜드 공용) + Trost device-variant
+### Container 반응형 — base(전 프로젝트 공용) + Trost device-variant
 
-base `.nds-container` 는 전 브랜드 공용 디폴트 — **PC(≥1024) max 1200·좌우 40 / Tablet(768~1023) max 768·좌우 24 / Mobile(<768) 100%·좌우 16**, `margin-inline:auto` 가운데 정렬. Trost 앱 컨텐츠는 아래 **opt-in 모디파이어**로 device-variant 폭을 잡는다(base 는 그대로, 클래스 추가로만 적용 — 다른 브랜드 영향 0).
+base `.nds-container` 는 전 프로젝트 공용 디폴트 — **PC(≥1024) max 1200·좌우 40 / Tablet(768~1023) max 768·좌우 24 / Mobile(<768) 100%·좌우 16**, `margin-inline:auto` 가운데 정렬. Trost 앱 컨텐츠는 아래 **opt-in 모디파이어**로 device-variant 폭을 잡는다(base 는 그대로, 클래스 추가로만 적용 — 다른 프로젝트 영향 0).
 
 | device-variant | 클래스                  | content max | inner h-padding |
 | -------------- | ----------------------- | ----------- | --------------- |
@@ -37,7 +37,7 @@ base `.nds-container` 는 전 브랜드 공용 디폴트 — **PC(≥1024) max 1
 - **2열 그리드** = **Main 888 + Side 332 + 컬럼 갭 60**(모바일은 1열 fallback 필수). 888/332/60 은 토큰이 아니라 페이지에서 직접 그린다.
 - **카드 그리드 갭** = PC **24**(3열, Gap/Wide) / **16**(2열, Gap/2XL). 모바일 1열.
 - **Section 타이틀 ↔ 콘텐츠** = **20**(PC, Gap/3XL) / **12**(Mobile, Gap/XL). **Section 간 구분** = **8**(Divider/여백, Gap/MD).
-- **Section 타이틀 비주얼** = **4×22 브랜드 액센트 바(BG/Brand `#FF5B37`) + 22 Bold 타이틀(Text/Strong `#221E1F`)**. (런마일 headline1 은 24 — 22 타이틀은 섹션 헤딩 한정.)
+- **Section 타이틀 비주얼** = **4×22 프로젝트 액센트 바(BG/Brand `#FF5B37`) + 22 Bold 타이틀(Text/Strong `#221E1F`)**. (런마일 headline1 은 24 — 22 타이틀은 섹션 헤딩 한정.)
 - **간격 라벨 매핑**(Figma → DS): Spacing/MD=8 · XL=12 · 2XL=16 · 3XL=20 · 4XL=24 — 전부 DS gap/spacing 스케일과 1:1. 임의 간격(13·17·25) 금지.
 
 ```html

@@ -8,8 +8,8 @@
 // migrate to the corresponding role group below.
 
 const v = (name: string) => `var(${name})`;
-// Point(액센트) 토큰은 point 패밀리를 둔 브랜드(트로스트 코발트)만 emit한다. 비-Trost
-// 브랜드 화면에서 빈 var() 로 색이 사라지지 않도록 brand 토큰으로 폴백한다.
+// Point(액센트) 토큰은 point 패밀리를 둔 프로젝트(트로스트 코발트)만 emit한다. 비-Trost
+// 프로젝트 화면에서 빈 var() 로 색이 사라지지 않도록 brand 토큰으로 폴백한다.
 const vf = (name: string, fallback: string) => `var(${name}, ${fallback})`;
 
 export const cv = {
@@ -30,7 +30,7 @@ export const cv = {
     // DS extension — Figma has no `bg-disabled` role; needed for disabled controls.
     disabled: v("--semantic-bg-disabled"),
     // Point(액센트) 서피스 — 트로스트 코발트 등 2차 강조(BottomSheet CTA·강조 박스).
-    // point 패밀리가 없는 브랜드는 brand 서피스로 폴백.
+    // point 패밀리가 없는 프로젝트는 brand 서피스로 폴백.
     point: vf("--semantic-bg-point-default", v("--semantic-bg-brand-default")),
     pointSubtle: vf("--semantic-bg-point-subtle", v("--semantic-bg-brand-subtle")),
     pointSurface: vf("--semantic-bg-point-surface", v("--semantic-bg-brand-subtle")),
@@ -49,7 +49,7 @@ export const cv = {
     statusError: v("--semantic-text-status-error"),
     statusCaution: v("--semantic-text-status-caution"),
     statusInfo: v("--semantic-text-status-info"),
-    // Point(액센트) 텍스트 — 트로스트 코발트. 비-point 브랜드는 brand 텍스트로 폴백.
+    // Point(액센트) 텍스트 — 트로스트 코발트. 비-point 프로젝트는 brand 텍스트로 폴백.
     point: vf("--semantic-text-point-default", v("--semantic-text-brand-default")),
     pointStrong: vf("--semantic-text-point-strong", v("--semantic-text-brand-strong")),
   },
@@ -63,7 +63,7 @@ export const cv = {
     statusSuccess: v("--semantic-icon-status-success"),
     statusError: v("--semantic-icon-status-error"),
     statusCaution: v("--semantic-icon-status-caution"),
-    // Point(액센트) 아이콘 — 트로스트 코발트. 비-point 브랜드는 brand 아이콘으로 폴백.
+    // Point(액센트) 아이콘 — 트로스트 코발트. 비-point 프로젝트는 brand 아이콘으로 폴백.
     point: vf("--semantic-icon-point-default", v("--semantic-icon-brand-default")),
   },
   // ── Border (Figma `Section_Border` 227:86) ────────────────
@@ -77,7 +77,7 @@ export const cv = {
     disabled: v("--semantic-border-disabled-default"),
     statusError: v("--semantic-border-status-error"),
     statusCaution: v("--semantic-border-status-caution"),
-    // Point(액센트) 보더 — 트로스트 코발트. 비-point 브랜드는 brand 보더로 폴백.
+    // Point(액센트) 보더 — 트로스트 코발트. 비-point 프로젝트는 brand 보더로 폴백.
     point: vf("--semantic-border-point-default", v("--semantic-border-brand-default")),
   },
   // ── Button (Figma `Section_Button{BG,Text,Border}` 231:2 / 231:46 / 261:32) ─
@@ -92,14 +92,14 @@ export const cv = {
     bgOutlined: v("--semantic-button-bg-outlined-default"),
     bgOutlinedHover: v("--semantic-button-bg-outlined-hover"),
     bgOutlinedDisabled: v("--semantic-button-bg-outlined-disabled"),
-    // Solid/Neutral — neutral filled (light gray fill + neutral text). 브랜드별 톤은
+    // Solid/Neutral — neutral filled (light gray fill + neutral text). 프로젝트별 톤은
     // buttonBg.neutral / buttonText.neutral 슬롯에서 override.
     bgNeutral: v("--semantic-button-bg-neutral-default"),
     bgNeutralHover: v("--semantic-button-bg-neutral-hover"),
     bgNeutralDisabled: v("--semantic-button-bg-neutral-disabled"),
     textDefault: v("--semantic-button-text-default"),
     textBrand: v("--semantic-button-text-brand"),
-    // Solid/Secondary 텍스트 — 브랜드별 의도가 갈리는 슬롯 (Geniet=white on dark, 다른 브랜드=brand on tint).
+    // Solid/Secondary 텍스트 — 프로젝트별 의도가 갈리는 슬롯 (Geniet=white on dark, 다른 프로젝트=brand on tint).
     textSecondary: v("--semantic-button-text-secondary-default"),
     textSecondaryDisabled: v("--semantic-button-text-secondary-disabled"),
     // Outlined/Weak Neutral 의 enabled 텍스트(흰/투명 bg 위 → 어두운 톤). Outlined disabled 는 textNeutralDisabled.
@@ -149,7 +149,7 @@ export const cv = {
     helpertextError: v("--semantic-input-helpertext-error"),
     helpertextDisabled: v("--semantic-input-helpertext-disabled"),
   },
-  // ── Input Typography (Figma 4247:1964 · 브랜드 무관) ───────
+  // ── Input Typography (Figma 4247:1964 · 프로젝트 무관) ───────
   // 입력 패밀리(Input·Textarea·Select·FormField·TagInput·Phone·DatePicker…)의 라벨/값/
   // 헬퍼 타이포를 통일하는 시멘틱 토큰. size+lineHeight 는 한 토큰으로 묶고, weight 는 분리.
   //   · `.font`  — `font` shorthand 한 줄(weight + size/lh + family)을 합성. 라벨/값/헬퍼의

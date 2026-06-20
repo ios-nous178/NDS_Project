@@ -17,7 +17,7 @@ const HELPER_TEXT_CLASS = "nds-helper-text";
 export const helperTextStyles = `
   /* Helper text — Figma Section_Input(294:12) Input/HelperText/* 토큰.
    *   default  = Input/HelperText/Default  (nudge #999 · capo #666)
-   *   success  = Input/HelperText/Success  (폼 검증 통과 — brand 톤, 일반 success 녹색과 구분)
+   *   success  = Input/HelperText/Success  (폼 검증 통과 — project 톤, 일반 success 녹색과 구분)
    *   error    = Input/HelperText/Error    (nudge #F13F00 · capo #FC3500)
    *   disabled = Input/HelperText/Disabled
    * 폰트는 Input Typography 표준 helper(13/18 · Regular)로 4종 통일
@@ -63,15 +63,15 @@ export const helperTextStyles = `
   }
 
   /* 캐포비(cashwalk-biz) admin 전용 — 에러 헬퍼 앞 빨간 경고 아이콘(Figma 04ic/report/red).
-   * 구 Input/Textarea/Select/FormField 4벌 → 여기 1벌로 통합. 다른 브랜드 미노출. */
-  [data-brand="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-variant="error"]),
-  [data-brand="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-error="true"]) {
+   * 구 Input/Textarea/Select/FormField 4벌 → 여기 1벌로 통합. 다른 프로젝트 미노출. */
+  [data-project="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-variant="error"]),
+  [data-project="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-error="true"]) {
     display: flex;
     align-items: center;
     gap: var(--semantic-gap-tight);
   }
-  [data-brand="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-variant="error"])::before,
-  [data-brand="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-error="true"])::before {
+  [data-project="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-variant="error"])::before,
+  [data-project="cashwalk-biz"] :where(.${HELPER_TEXT_CLASS}[data-error="true"])::before {
     content: "";
     flex: 0 0 auto;
     width: 16px;

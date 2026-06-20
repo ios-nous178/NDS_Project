@@ -121,10 +121,10 @@ function extractTools(src) {
  */
 const CATEGORIES = [
   {
-    title: "브랜드 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회",
+    title: "프로젝트 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회",
     blurb:
-      "작업 전 어떤 브랜드/컴포넌트/아이콘/토큰/이미지를 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. 브랜드 이미지(음식·일러스트·프로필·대회 포스터 등)가 필요하면 `find_asset` 을 먼저 호출해 `inlineRef` 를 `<img src>` 에 박는다(에셋에 없으면 placeholder + 경고, AI 생성 금지). (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)",
-    tools: ["get_brand", "find_component", "find_icon", "find_token", "find_asset"],
+      "작업 전 어떤 프로젝트/컴포넌트/아이콘/토큰/이미지를 쓸지 정하는 조회 도구들. 모두 **인자 없으면 목록, 있으면 상세** 패턴이다. 프로젝트 이미지(음식·일러스트·프로필·대회 포스터 등)가 필요하면 `find_asset` 을 먼저 호출해 `inlineRef` 를 `<img src>` 에 박는다(에셋에 없으면 placeholder + 경고, AI 생성 금지). (목업/화면 작업은 먼저 사용자에게 시각 레퍼런스를 받아 `references.md` 를 만든 뒤 호출)",
+    tools: ["get_project", "find_component", "find_icon", "find_token", "find_asset"],
   },
   {
     title: "가이드 · 패턴 · 원칙",
@@ -183,7 +183,7 @@ const FLOWS = [
         note: "코드·조회 전",
       },
       { tool: "get_guide", call: 'get_guide({ topics: ["principles", "pattern:..."] })' },
-      { tool: "get_brand", call: "get_brand({ brand })" },
+      { tool: "get_project", call: "get_project({ project })" },
       { tool: "find_component", call: "find_component / find_icon / find_token" },
       {
         tool: "save_design_spec",
@@ -236,7 +236,7 @@ const FLOWS = [
       { tool: "get_setup", call: 'get_setup({ step: "full" })' },
       {
         tool: "get_setup",
-        call: 'get_setup({ step: "install" }) → get_setup({ step: "imports", brand })',
+        call: 'get_setup({ step: "install" }) → get_setup({ step: "imports", project })',
       },
       { tool: "get_setup", call: 'get_setup({ step: "claude-md" })  // 또는 step: "agents-md"' },
       {
@@ -390,7 +390,7 @@ async function render(tools) {
     "",
     "> 사용 흐름과 환경 설치는 [MCP 사용 가이드](/NUDGE_DS_MCP_USAGE) 를 먼저 참고하세요.",
     ">",
-    "> 옛 도구 이름(`validate_mockup` · `report_mockup_usage` · `check_preview` · `list_packages` · `check_mcp_update` · `list_brands` 등)으로 호출하면 `Unknown tool` 에러가 납니다. 현재 유효한 도구는 아래 표가 SSOT 입니다.",
+    "> 옛 도구 이름(`validate_mockup` · `report_mockup_usage` · `check_preview` · `list_packages` · `check_mcp_update` · `list_projects` 등)으로 호출하면 `Unknown tool` 에러가 납니다. 현재 유효한 도구는 아래 표가 SSOT 입니다.",
     "",
     "## 한눈에 보기",
     "",
@@ -424,7 +424,7 @@ async function render(tools) {
     "",
     "- `/mcp` 입력 → `nudge-ds` 가 떠 있는지 확인",
     "- 떠 있는데 도구가 없으면 → Claude Code 재시작 (MCP 는 시작 시점에만 도구를 로드)",
-    "- `Unknown tool: list_brands` 같은 에러가 보이면 → 사라진 옛 이름을 호출한 것. 위 표의 현재 도구명을 쓰세요",
+    "- `Unknown tool: list_projects` 같은 에러가 보이면 → 사라진 옛 이름을 호출한 것. 위 표의 현재 도구명을 쓰세요",
     "- 그래도 안 되면 → [MCP 사용 가이드 — 안 될 때](/NUDGE_DS_MCP_USAGE)",
     "",
   );

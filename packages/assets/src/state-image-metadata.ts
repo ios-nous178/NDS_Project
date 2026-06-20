@@ -3,7 +3,7 @@
  *
  * Runmile Figma library (file `Wd1BqKFPvrlLORr7E6EwjB`) 의 빈상태·에러·알람 등
  * "사용자에게 현재 상태를 알리는" 이미지. 이미지 네이밍 가이드(5030:979)의
- * 용도중심 5분류 중 **state** 카테고리. 폴더: `brand/runmile/state/`.
+ * 용도중심 5분류 중 **state** 카테고리. 폴더: `project/runmile/state/`.
  *
  * 결정 트리상 illust 보다 우선(빈상태에 일러스트가 와도 state). 콘텐츠 일러스트는
  * `illustration-metadata.ts` (getIllustration).
@@ -39,43 +39,43 @@ export interface StateImageMeta {
 
 export const STATE_IMAGE_METADATA: Record<StateImageId, StateImageMeta> = {
   "alarm-empty": {
-    filename: "brand/runmile/state/alarm-empty.png",
-    filename2x: "brand/runmile/state/alarm-empty@2x.png",
-    filename3x: "brand/runmile/state/alarm-empty@3x.png",
+    filename: "project/runmile/state/alarm-empty.png",
+    filename2x: "project/runmile/state/alarm-empty@2x.png",
+    filename3x: "project/runmile/state/alarm-empty@3x.png",
     mimeType: "image/png",
     figmaNodeId: "498:2473",
     figmaNodeName: "img/alram",
   },
   "error-default": {
-    filename: "brand/runmile/state/error-default.png",
-    filename2x: "brand/runmile/state/error-default@2x.png",
-    filename3x: "brand/runmile/state/error-default@3x.png",
+    filename: "project/runmile/state/error-default.png",
+    filename2x: "project/runmile/state/error-default@2x.png",
+    filename3x: "project/runmile/state/error-default@3x.png",
     mimeType: "image/png",
     figmaNodeId: "538:2281",
     figmaNodeName: "img/error",
   },
   error: {
-    filename: "brand/runmile/state/error.png",
-    filename2x: "brand/runmile/state/error@2x.png",
-    filename3x: "brand/runmile/state/error@3x.png",
+    filename: "project/runmile/state/error.png",
+    filename2x: "project/runmile/state/error@2x.png",
+    filename3x: "project/runmile/state/error@3x.png",
     mimeType: "image/png",
     figmaNodeId: "27:310",
     figmaNodeName: "오류 (이미지 로드 실패)",
   },
   "page-error": {
-    filename: "brand/runmile/state/page-error.png",
+    filename: "project/runmile/state/page-error.png",
     mimeType: "image/png",
     figmaNodeId: "55:969",
     figmaNodeName: "img/page-error",
   },
   "no-result-default": {
-    filename: "brand/runmile/state/no-result-default.png",
+    filename: "project/runmile/state/no-result-default.png",
     mimeType: "image/png",
     figmaNodeId: "202:657",
     figmaNodeName: "img/no-result · color=default",
   },
   "no-result-white": {
-    filename: "brand/runmile/state/no-result-white.png",
+    filename: "project/runmile/state/no-result-white.png",
     mimeType: "image/png",
     figmaNodeId: "790:839",
     figmaNodeName: "img/no-result · color=whtie",

@@ -1,6 +1,6 @@
 /* CheckboxGroup 데이터 모드(select-all + 체크 리스트 + badge/detail) 스타일.
  * 레이아웃 모드(.nds-checkbox-group 기본 flex)는 Checkbox.ts 에 유지되고, 여기서는
- * items 데이터 모드의 sub-element 만 정의한다. 색/radius 는 semantic 토큰(브랜드 cascade). */
+ * items 데이터 모드의 sub-element 만 정의한다. 색/radius 는 semantic 토큰(프로젝트 cascade). */
 import { cv, fontWeight, radius, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const CG_CLASS = "nds-checkbox-group";

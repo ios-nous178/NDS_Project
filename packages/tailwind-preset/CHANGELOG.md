@@ -8,24 +8,24 @@
   - 전 패키지 `"type": "module"` + tsc `module: NodeNext` 전환, 소스 상대 임포트에 `.js` 확장자 명시 (NodeNext 가 컴파일 타임에 강제).
   - exports 맵에 `default` 조건 추가 — Node ≥22 `require(esm)` 으로 CJS 소비도 동작.
   - 효과: Next.js SSR/RSC 를 `transpilePackages` 없이 사용 가능, Node 스크립트·tsx·vitest(외부화 모드)에서 직접 import 가능. Vite 목업 플로우는 동작·번들 크기 변화 없음 (실측 245 KB 유지).
-  - icons 생성기(`scripts/generate.cjs`)가 barrels 에 `.js` specifier 를 emit 하도록 갱신. dist 는 per-file 산출 유지 — catalog/brand-completeness/MCPB 패킹 등 dist 레이아웃 의존 툴링 영향 없음.
+  - icons 생성기(`scripts/generate.cjs`)가 barrels 에 `.js` specifier 를 emit 하도록 갱신. dist 는 per-file 산출 유지 — catalog/project-completeness/MCPB 패킹 등 dist 레이아웃 의존 툴링 영향 없음.
 
-- 82113f1: geniet·runmile Tailwind preset 신설 — 5 브랜드 모두 preset 제공
+- 82113f1: geniet·runmile Tailwind preset 신설 — 5 프로젝트 모두 preset 제공
 
-  `genietPreset`·`runmilePreset` 를 추가해 trost·cashwalk-biz 와 동일하게 브랜드 고유 토큰을
+  `genietPreset`·`runmilePreset` 를 추가해 trost·cashwalk-biz 와 동일하게 프로젝트 고유 토큰을
   Tailwind theme 로 매핑한다:
   - atomic palette alias — geniet: `mint`·`purple`·`geniet-neutral|gray|red|yellow|blue|green`,
     runmile: `orange`·`runmile-neutral|gray|red|blue`
   - 전용 radius (geniet 곡률 `xl=18`·`2xl=23`, runmile Toss 스타일 `4/6/8/12/16/pill`),
     typography(typeScale), shadow
 
-  그동안 두 브랜드는 시멘틱 CSS var(`bg-brand` 등)만 공유돼 색은 렌더됐지만 brand atomic
-  alias·전용 radius 가 빠져 있었다. 시멘틱 클래스는 종전대로 각 브랜드 `.css` 가 같은 var 를
+  그동안 두 프로젝트는 시멘틱 CSS var(`bg-brand` 등)만 공유돼 색은 렌더됐지만 project atomic
+  alias·전용 radius 가 빠져 있었다. 시멘틱 클래스는 종전대로 각 프로젝트 `.css` 가 같은 var 를
   redefine 하므로 자동 반영된다. (참고: `tailwind-preset` 은 fixed 그룹이라 react·tokens·styles·
   html 도 같은 버전으로 함께 올라간다.)
 
 - 7405016: 트로스트 컬러·타이포 토큰을 새 Figma 가이드에 맞춰 정비했어요.
-  - 본문/제목 글자색이 가이드 기준으로 한 단계 정돈됐고(강세 텍스트가 순검정 대신 진회색), 상태색(성공/오류/정보)과 노란 브랜드 강조·테두리 톤이 가이드값으로 맞춰졌습니다.
+  - 본문/제목 글자색이 가이드 기준으로 한 단계 정돈됐고(강세 텍스트가 순검정 대신 진회색), 상태색(성공/오류/정보)과 노란 프로젝트 강조·테두리 톤이 가이드값으로 맞춰졌습니다.
   - 코발트(파랑) **포인트 컬러**가 정식 색 역할로 추가됐어요 — 배경/글자/아이콘/테두리/채움 어디서든 보조 강조색으로 쓸 수 있습니다.
   - 트로스트 타이포 일부 크기 보정(헤드라인4 20px, 라벨 11px).
   - Tailwind 프리셋: 트로스트 색 유틸리티가 풀 스케일로 바뀌었습니다(`trost-yellow-500` 등 숫자 단계, `trost-red/blue/green-*` 추가). 기존 `trost-yellow-primary`·`status-*` 클래스명은 사용하지 않습니다.

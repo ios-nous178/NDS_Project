@@ -24,7 +24,7 @@ export interface DesignSpecNodePreview {
   children?: DesignSpecNodePreview[];
 }
 export interface DesignSpecPreview {
-  screen?: { brand?: string; surface?: string; intent?: string; name?: string };
+  screen?: { project?: string; surface?: string; intent?: string; name?: string };
   tree?: DesignSpecNodePreview[];
   decisions?: string[];
 }
@@ -42,7 +42,7 @@ export interface DesignSpecCardMessage {
   kind: "design-spec";
   toolUseId: string;
   ok: boolean;
-  brand: string | null;
+  project: string | null;
   spec: DesignSpecPreview;
   violations: DesignSpecViolationLite[];
   summary: { error: number; warn: number; info: number };
@@ -359,7 +359,7 @@ function buildDesignSpecMessage(
     kind: "design-spec",
     toolUseId,
     ok: parsed.ok === true,
-    brand: typeof parsed.brand === "string" ? parsed.brand : null,
+    project: typeof parsed.project === "string" ? parsed.project : null,
     spec,
     violations: asViolations(parsed.violations),
     summary: { error: num(summary.error), warn: num(summary.warn), info: num(summary.info) },

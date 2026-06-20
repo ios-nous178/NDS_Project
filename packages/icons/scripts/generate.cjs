@@ -3,7 +3,7 @@
  *
  * SEED 식 mono/multicolor 이원화 구조:
  *   svg/mono/        → src/mono/      (currentColor 사용, UI chrome)
- *   svg/multicolor/  → src/multicolor/(브랜드 시그니처, 스타일 잠금)
+ *   svg/multicolor/  → src/multicolor/(프로젝트 시그니처, 스타일 잠금)
  *
  * 출력:
  *   - src/mono/{Name}Icon.tsx, src/mono/index.ts, src/mono/vanilla.ts

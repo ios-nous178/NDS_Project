@@ -86,7 +86,7 @@ export const ShortHint: Story = {
       <Tooltip
         placement="bottom"
         delay={0}
-        content="광고할 브랜드가 아닌, 광고계정들을 운영할 팀이나 회사의 사업자등록번호를 입력해 주세요"
+        content="광고할 프로젝트가 아닌, 광고계정들을 운영할 팀이나 회사의 사업자등록번호를 입력해 주세요"
       >
         <QuestionTrigger />
       </Tooltip>

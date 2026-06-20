@@ -104,7 +104,7 @@ async function fontIndex() {
  * 요청 family+weight 에 "실제 사용 가능한" 가장 가까운 폰트를 로드한다.
  *   ① 요청 family 안에서 weight 후보 스타일 매칭(공백/하이픈 무시)
  *   ② 같은 방식으로 Inter 매칭  ③ Inter Regular.
- * 사용자가 브랜드 폰트를 로컬 설치(또는 조직 공유)했으면 ①에서 잡혀 폴백이 안 일어난다.
+ * 사용자가 프로젝트 폰트를 로컬 설치(또는 조직 공유)했으면 ①에서 잡혀 폴백이 안 일어난다.
  * 실제 로드된 fontName 을 반환(전부 실패 시 null).
  */
 async function ensureFont(family, weight) {

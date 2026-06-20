@@ -2,7 +2,7 @@
  * Trost 원본 SVG → @nudge-design/icons svg/ 로 정제 import.
  *
  * Trost 홈페이지(TrostAstroHomepage)의 public/images 하위 SVG는 viewBox 가 18/20/24/28/32/60 으로
- * 제각각이고 fill 에 브랜드 hex 가 박혀 있어 Nudge DS 표준(viewBox 24×24, currentColor) 에 맞지 않는다.
+ * 제각각이고 fill 에 프로젝트 hex 가 박혀 있어 Nudge DS 표준(viewBox 24×24, currentColor) 에 맞지 않는다.
  * 이 스크립트는 UI 아이콘 17개를 정제해서 packages/icons/svg/trost-*.svg 로 떨군다.
  *
  * 사용법: node packages/icons/scripts/import-trost.mjs
@@ -16,11 +16,11 @@ const SVG_DIR = join(__dirname, "..", "svg");
 const TROST_ROOT = "/Users/nudge_133/Desktop/00_Trost/TrostAstroHomepage/public/images";
 
 /**
- * 색상 sanitization 예외 — 단색 currentColor 가 아니라 2-color 브랜드 마크로
+ * 색상 sanitization 예외 — 단색 currentColor 가 아니라 2-color 프로젝트 마크로
  * 보존해야 하는 파일들. (이 목록의 SVG 는 hex fill 을 그대로 유지한다.)
- *   - trost-energy-coin: 다크 코인(#333) + 노란 번개(#FFF42E) 2-color 브랜드 마크.
+ *   - trost-energy-coin: 다크 코인(#333) + 노란 번개(#FFF42E) 2-color 프로젝트 마크.
  */
-const PRESERVE_BRAND_COLORS = new Set(["trost-energy-coin"]);
+const PRESERVE_PROJECT_COLORS = new Set(["trost-energy-coin"]);
 
 // [원본 상대경로, 신규 파일명]
 // 정사각형 viewBox 만 선별 (rank 26×18 은 비례 왜곡 우려로 제외).
@@ -82,8 +82,8 @@ function transform(svgText, name) {
     (match) => (match.startsWith("<") ? match : "\n"),
   );
 
-  // 색상 치환 — 2-color 브랜드 마크는 hex 보존
-  if (!PRESERVE_BRAND_COLORS.has(name)) {
+  // 색상 치환 — 2-color 프로젝트 마크는 hex 보존
+  if (!PRESERVE_PROJECT_COLORS.has(name)) {
     inner = replaceColorAttr(inner, "fill");
     inner = replaceColorAttr(inner, "stroke");
   }

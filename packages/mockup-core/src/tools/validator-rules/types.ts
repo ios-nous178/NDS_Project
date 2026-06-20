@@ -50,7 +50,7 @@ export interface HtmlViolation {
 
 export interface DocumentValidationScope {
   surface: HtmlSurface;
-  brand?: string;
+  project?: string;
   pagePattern?: CashwalkBizPagePattern;
 }
 

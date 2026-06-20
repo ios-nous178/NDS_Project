@@ -35,15 +35,15 @@ src/                             ← 생성물 (직접 수정 금지)
 - **kebab-case**, 소문자, 영문/숫자/하이픈만. `.svg`.
 - 새 아이콘은 추가 전 `find_icon`(MCP)으로 중복 조회.
 
-### 2. 브랜드 prefix
+### 2. 프로젝트 prefix
 
-- 브랜드 전용 아이콘은 **브랜드 슬러그를 prefix**: `geniet-` · `trost-` · `runmile-` · `cashwalk-biz-` · `nudge-eap-`.
+- 프로젝트 전용 아이콘은 **프로젝트 슬러그를 prefix**: `geniet-` · `trost-` · `runmile-` · `cashwalk-biz-` · `nudge-eap-`.
 - 범용(공유) 아이콘은 prefix 없음(`home`, `calendar`, `search` …). `mockup-` 은 iconsax 일괄 import 셋(별도 계열).
 
 ### 3. mono vs multicolor
 
 - **mono** (`svg/mono/`) — 단색. `currentColor` 로 그려져 `color` prop 으로 제어. UI chrome 의 기본.
-- **multicolor** (`svg/multicolor/`) — 색을 **잠그는** 아이콘: 그라데이션·고정 색·흰색+섀도우·브랜드 시그니처 일러스트. `currentColor` 정규화 대상 아님. (예: `geniet-heart-white-shadow` — 흰 하트+드롭섀도우를 보존해야 하므로 multicolor.)
+- **multicolor** (`svg/multicolor/`) — 색을 **잠그는** 아이콘: 그라데이션·고정 색·흰색+섀도우·프로젝트 시그니처 일러스트. `currentColor` 정규화 대상 아님. (예: `geniet-heart-white-shadow` — 흰 하트+드롭섀도우를 보존해야 하므로 multicolor.)
 
 ### 4. 어순 — `명사-수식어` (수식어/도형은 **접미사**)
 
@@ -83,8 +83,8 @@ src/                             ← 생성물 (직접 수정 금지)
 - **올바른 영어 단어**. `alarm`(❌`alram`), `image`(❌`img`), `delete`(검색 클리어는 `search-delete` 로 통일).
 - **예외 = 의도된 제품/기능명**: 글리프와 무관하게 앱 기능명을 쓰는 경우는 허용하되 **반드시 주석/가이드에 사유 기록**. (예: `geniet-cashhomt` = "캐시홈트(home-training)" 운동 기능 — 아령 글리프지만 기능명 보존.)
 
-> 브랜드 간 정합 이력: alram→alarm · shoe-fill→shoe-solid · img→image · circle-_→_-circle · 방향 도형명 정합 · runmile-questionmark→runmile-question-mark (복합어 하이픈) (`.changeset/icon-naming-consistency.md`). 에셋 id 규칙은 `@nudge-design/assets` README 참조.
+> 프로젝트 간 정합 이력: alram→alarm · shoe-fill→shoe-solid · img→image · circle-_→_-circle · 방향 도형명 정합 · runmile-questionmark→runmile-question-mark (복합어 하이픈) (`.changeset/icon-naming-consistency.md`). 에셋 id 규칙은 `@nudge-design/assets` README 참조.
 
 ## 아이콘 추가
 
-현재 Figma → SVG 는 일부 자동(`fetch-figma`), 브랜드별은 반자동(import 스크립트)입니다. `find_icon` (MCP)으로 기존 아이콘을 먼저 조회해 중복을 피하세요. 자동화 개선 여지는 거버넌스/Figma 자동화 트랙에서 다룹니다.
+현재 Figma → SVG 는 일부 자동(`fetch-figma`), 프로젝트별은 반자동(import 스크립트)입니다. `find_icon` (MCP)으로 기존 아이콘을 먼저 조회해 중복을 피하세요. 자동화 개선 여지는 거버넌스/Figma 자동화 트랙에서 다룹니다.

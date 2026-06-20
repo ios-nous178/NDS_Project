@@ -35,10 +35,10 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
  *
  * 캐시워크 for Business 어드민 폼 표준 (Figma InputGuide 3080:741 · FormSection 3466:17405):
  *   · 제목 Headline3 24 Bold + (옵션) 설명
- *   · 카드 = white bg · 1px border(subtle) · radius 16(브랜드 cascade) · 좌우 패딩 24
+ *   · 카드 = white bg · 1px border(subtle) · radius 16(프로젝트 cascade) · 좌우 패딩 24
  *   · 본문은 `FormField density="admin"` 행을 쌓아 세로 리듬(py-24)을 만든다.
  *
- * 색·radius 는 `data-brand="cashwalk-biz"` cascade 로 자동 매핑 — hex 를 직접 박지 않는다.
+ * 색·radius 는 `data-project="cashwalk-biz"` cascade 로 자동 매핑 — hex 를 직접 박지 않는다.
  */
 export const FormSection: React.FC<FormSectionProps> = ({
   title,

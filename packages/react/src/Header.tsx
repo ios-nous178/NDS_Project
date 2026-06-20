@@ -15,7 +15,7 @@ import { sizing, spacing, zIndex } from "@nudge-design/tokens";
  *
  *  Figma SSOT
  *    · web variant : Library 96:25923 (NudgeEAP Web Header)
- *    · flex variants : 브랜드별 AppBar Figma 노드
+ *    · flex variants : 프로젝트별 AppBar Figma 노드
  * ───────────────────────────────────────────────────────────── */
 
 /* ─── Class constants ─── */

@@ -9,8 +9,8 @@ import { validateHtmlSource } from "./html-validator.js";
  * '가입/로그인' 화면 이름 통념으로 admin 을 소비자 플로우로 오제작하는 것을 차단한다.
  */
 
-const ADMIN_WITH_BRAND_HEADER = `<html><body>
-  <nds-brand-header brand="cashwalk-biz" surface="web"></nds-brand-header>
+const ADMIN_WITH_PROJECT_HEADER = `<html><body>
+  <nds-project-header project="cashwalk-biz" surface="web"></nds-project-header>
   <main>회원가입</main>
 </body></html>`;
 
@@ -32,8 +32,8 @@ const SERVICE_WITH_SIDEBAR = `<html><body>
   <main>홈</main>
 </body></html>`;
 
-test("surface=admin 인데 소비자 brand chrome 사용 → admin-surface-consumer-chrome error", () => {
-  const v = validateHtmlSource(ADMIN_WITH_BRAND_HEADER, { surface: "admin" });
+test("surface=admin 인데 소비자 project chrome 사용 → admin-surface-consumer-chrome error", () => {
+  const v = validateHtmlSource(ADMIN_WITH_PROJECT_HEADER, { surface: "admin" });
   const hit = v.find((x) => x.rule === "admin-surface-consumer-chrome");
   assert.ok(hit, "admin-surface-consumer-chrome 위반이 있어야 함");
   assert.equal(hit?.severity, "error");
@@ -47,7 +47,7 @@ test("surface=admin + admin-shell(사이드바) 은 위반 아님", () => {
   );
 });
 
-test("surface=admin + 어드민 온보딩 중앙 카드(brand chrome 없음)는 위반 아님", () => {
+test("surface=admin + 어드민 온보딩 중앙 카드(project chrome 없음)는 위반 아님", () => {
   // 어드민 온보딩(로그인/가입)은 admin-shell 없이 중앙 카드가 정상 — false positive 방지.
   const v = validateHtmlSource(ADMIN_ONBOARDING_CARD, { surface: "admin" });
   assert.equal(
@@ -57,15 +57,15 @@ test("surface=admin + 어드민 온보딩 중앙 카드(brand chrome 없음)는 
 });
 
 test("surface 미선언(null)이면 chrome 룰을 적용하지 않는다(백워드 호환)", () => {
-  const v = validateHtmlSource(ADMIN_WITH_BRAND_HEADER);
+  const v = validateHtmlSource(ADMIN_WITH_PROJECT_HEADER);
   assert.equal(
     v.find((x) => x.rule === "admin-surface-consumer-chrome"),
     undefined,
   );
 });
 
-test("surface=service 면 brand chrome 은 정상(위반 아님)", () => {
-  const v = validateHtmlSource(ADMIN_WITH_BRAND_HEADER, { surface: "service" });
+test("surface=service 면 project chrome 은 정상(위반 아님)", () => {
+  const v = validateHtmlSource(ADMIN_WITH_PROJECT_HEADER, { surface: "service" });
   assert.equal(
     v.find((x) => x.rule === "admin-surface-consumer-chrome"),
     undefined,

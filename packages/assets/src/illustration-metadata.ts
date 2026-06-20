@@ -3,7 +3,7 @@
  *
  * Runmile Figma library (file `Wd1BqKFPvrlLORr7E6EwjB`) 의 콘텐츠 영역 강조용
  * 일러스트. 이미지 네이밍 가이드(5030:979)의 용도중심 5분류 중 **illust** 카테고리.
- * 폴더: `brand/runmile/illust/`.
+ * 폴더: `project/runmile/illust/`.
  *
  * 빈상태·로딩·에러·알람 등 "상태"는 별도 **state** 카테고리로 분리됨
  * → `state-image-metadata.ts` (getStateImage). 마라톤 행사 일러스트는
@@ -39,37 +39,37 @@ export interface IllustrationMeta {
 
 export const ILLUSTRATION_METADATA: Record<IllustrationId, IllustrationMeta> = {
   shoe: {
-    filename: "brand/runmile/illust/shoe.png",
-    filename2x: "brand/runmile/illust/shoe@2x.png",
-    filename3x: "brand/runmile/illust/shoe@3x.png",
+    filename: "project/runmile/illust/shoe.png",
+    filename2x: "project/runmile/illust/shoe@2x.png",
+    filename3x: "project/runmile/illust/shoe@3x.png",
     mimeType: "image/png",
     figmaNodeId: "230:2016",
     figmaNodeName: "img/shoe",
   },
   qna: {
-    filename: "brand/runmile/illust/qna.png",
-    filename2x: "brand/runmile/illust/qna@2x.png",
-    filename3x: "brand/runmile/illust/qna@3x.png",
+    filename: "project/runmile/illust/qna.png",
+    filename2x: "project/runmile/illust/qna@2x.png",
+    filename3x: "project/runmile/illust/qna@3x.png",
     mimeType: "image/png",
     figmaNodeId: "230:2075",
     figmaNodeName: "img/q&a",
   },
   community: {
-    filename: "brand/runmile/illust/community.png",
-    filename2x: "brand/runmile/illust/community@2x.png",
-    filename3x: "brand/runmile/illust/community@3x.png",
+    filename: "project/runmile/illust/community.png",
+    filename2x: "project/runmile/illust/community@2x.png",
+    filename3x: "project/runmile/illust/community@3x.png",
     mimeType: "image/png",
     figmaNodeId: "281:1677",
     figmaNodeName: "img/commnunity",
   },
   "chatting-default": {
-    filename: "brand/runmile/illust/chatting-default.png",
+    filename: "project/runmile/illust/chatting-default.png",
     mimeType: "image/png",
     figmaNodeId: "484:2830",
     figmaNodeName: "img/chatting · color=default",
   },
   "chatting-white": {
-    filename: "brand/runmile/illust/chatting-white.png",
+    filename: "project/runmile/illust/chatting-white.png",
     mimeType: "image/png",
     figmaNodeId: "522:3258",
     figmaNodeName: "img/chatting · color=white",

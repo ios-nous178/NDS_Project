@@ -9,11 +9,11 @@ import { coreGuideMeta } from "../components/guideMeta";
 const badgeGuideMeta = coreGuideMeta("Badge");
 
 const VARIANTS: BadgeVariant[] = ["fill", "ghost", "line"];
-const COLORS: BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
+const COLORS: BadgeColor[] = ["project", "neutral", "success", "error", "caution", "info"];
 const TYPES: BadgeType[] = ["label", "dot", "count"];
 
 const COLOR_USAGE: Record<BadgeColor, string> = {
-  brand: "주요 액션, 브랜드 강조",
+  project: "주요 액션, 프로젝트 강조",
   neutral: "일반 카테고리, 기본 레이블",
   success: "완료, 성공, 진행 중",
   error: "오류, 실패, 위험",
@@ -22,7 +22,7 @@ const COLOR_USAGE: Record<BadgeColor, string> = {
 };
 
 const COLOR_LABEL: Record<BadgeColor, string> = {
-  brand: "Brand",
+  project: "Project",
   neutral: "Neutral",
   success: "완료",
   error: "오류",
@@ -71,9 +71,9 @@ const meta: Meta<typeof Badge> = {
   },
   args: {
     variant: "fill",
-    color: "brand",
+    color: "project",
     size: "md",
-    children: "Brand",
+    children: "Project",
   },
 };
 
@@ -85,7 +85,7 @@ export const Overview: Story = {
   tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-      <Badge variant="fill" color="brand">
+      <Badge variant="fill" color="project">
         진행 중
       </Badge>
       <Badge variant="ghost" color="success">
@@ -143,13 +143,13 @@ export const SizeScale: Story = {
   name: "Spec/Size Scale",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-      <Badge size="sm" color="brand">
+      <Badge size="sm" color="project">
         SM
       </Badge>
-      <Badge size="md" color="brand">
+      <Badge size="md" color="project">
         MD
       </Badge>
-      <Badge size="lg" color="brand">
+      <Badge size="lg" color="project">
         LG
       </Badge>
     </div>
@@ -173,10 +173,10 @@ export const ShapeScale: Story = {
   tags: ["gallery"],
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-      <Badge shape="default" variant="ghost" color="brand">
+      <Badge shape="default" variant="ghost" color="project">
         default
       </Badge>
-      <Badge shape="pill" variant="ghost" color="brand">
+      <Badge shape="pill" variant="ghost" color="project">
         pill
       </Badge>
     </div>
@@ -205,13 +205,13 @@ export const TypeAxis: Story = {
   },
   render: () => (
     <div
-      data-brand="trost"
+      data-project="trost"
       style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-loose)" }}>
         <span style={{ minWidth: 56, fontSize: 13, fontWeight: 700 }}>label</span>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-          <Badge type="label" variant="fill" color="brand">
+          <Badge type="label" variant="fill" color="project">
             NEW
           </Badge>
           <Badge type="label" variant="ghost" color="success">
@@ -227,7 +227,7 @@ export const TypeAxis: Story = {
         <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
           <Badge type="dot" variant="fill" color="error" aria-label="미확인" />
           <Badge type="dot" variant="fill" color="success" aria-label="활성" />
-          <Badge type="dot" variant="fill" color="brand" aria-label="강조" />
+          <Badge type="dot" variant="fill" color="project" aria-label="강조" />
           <Badge type="dot" variant="fill" color="neutral" aria-label="기본" />
         </div>
       </div>
@@ -240,7 +240,7 @@ export const TypeAxis: Story = {
           <Badge type="count" variant="fill" color="error">
             12
           </Badge>
-          <Badge type="count" variant="fill" color="brand">
+          <Badge type="count" variant="fill" color="project">
             99+
           </Badge>
         </div>
@@ -302,7 +302,7 @@ export const StatusBadges: Story = {
       <Badge variant="fill" color="error">
         취소됨
       </Badge>
-      <Badge variant="ghost" color="brand">
+      <Badge variant="ghost" color="project">
         방문 전용
       </Badge>
       <Badge variant="ghost" color="neutral">
@@ -321,14 +321,14 @@ export const CashwalkBizAdminTags: Story = {
     docs: {
       description: {
         story:
-          "캐포비 admin(Figma 3782-20558): 동적 상태값 = 라운드 사각(shape 기본), 정적 식별 태그 = pill. 톤은 ghost 매핑(충전=brand·사용=info·적립=success·만료=neutral·취소=error).",
+          "캐포비 admin(Figma 3782-20558): 동적 상태값 = 라운드 사각(shape 기본), 정적 식별 태그 = pill. 톤은 ghost 매핑(충전=project·사용=info·적립=success·만료=neutral·취소=error).",
       },
     },
   },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-loose)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)" }}>
-        <Badge variant="ghost" color="brand" size="sm">
+        <Badge variant="ghost" color="project" size="sm">
           충전
         </Badge>
         <Badge variant="ghost" color="info" size="sm">
@@ -348,7 +348,7 @@ export const CashwalkBizAdminTags: Story = {
         <Badge variant="ghost" color="neutral" shape="pill" size="sm">
           일반 계정
         </Badge>
-        <Badge variant="ghost" color="brand" shape="pill" size="sm">
+        <Badge variant="ghost" color="project" shape="pill" size="sm">
           프리미엄
         </Badge>
         <Badge variant="ghost" color="info" shape="pill" size="sm">
@@ -364,7 +364,7 @@ export const LabelSlotOverride: Story = {
   render: () => (
     <Badge
       variant="ghost"
-      color="brand"
+      color="project"
       slotProps={{
         label: {
           style: {

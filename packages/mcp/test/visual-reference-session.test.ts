@@ -55,16 +55,16 @@ describe("withVisualReferencePrompt — session-once gate", () => {
   });
 
   it("원본 결과 payload 는 풀/stub 양쪽 모두 보존된다", () => {
-    const first = withVisualReferencePrompt("get_brand", { brand: "geniet" }) as Record<
+    const first = withVisualReferencePrompt("get_project", { project: "geniet" }) as Record<
       string,
       unknown
     >;
-    const second = withVisualReferencePrompt("find_token", { brand: "trost" }) as Record<
+    const second = withVisualReferencePrompt("find_token", { project: "trost" }) as Record<
       string,
       unknown
     >;
-    expect(first.brand).toBe("geniet");
-    expect(second.brand).toBe("trost");
+    expect(first.project).toBe("geniet");
+    expect(second.project).toBe("trost");
   });
 
   it("리셋 후엔 다시 풀 게이트부터 시작한다", () => {

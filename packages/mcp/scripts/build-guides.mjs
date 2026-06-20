@@ -8,7 +8,7 @@
  *
  * 검증(빌드 게이트):
  *   - 알 수 없는 top-level 필드(오타) — tsc excess-property 와 이중 가드
- *   - summary 필수 · figmaNodeUrl 형식 · 브랜드 키(brand-profiles BRAND_SLUGS) 유효성
+ *   - summary 필수 · figmaNodeUrl 형식 · 프로젝트 키(project-profiles PROJECT_SLUGS) 유효성
  *
  * 사용:
  *   node scripts/build-guides.mjs          # src/guides.generated.ts 재생성
@@ -17,7 +17,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { BRAND_SLUGS } from "@nudge-design/tokens/brand-profiles";
+import { PROJECT_SLUGS } from "@nudge-design/tokens/project-profiles";
 import { parseGuide } from "./guides-md.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -26,7 +26,7 @@ const SRC_DIR = path.join(PKG, "guides-src");
 const OUT_PATH = path.join(PKG, "src/guides.generated.ts");
 const CHECK = process.argv.includes("--check");
 
-const BRAND_KEYS = new Set([...BRAND_SLUGS, "*"]);
+const PROJECT_KEYS = new Set([...PROJECT_SLUGS, "*"]);
 
 const COMPONENT_FIELDS = new Set([
   "name",
@@ -65,7 +65,7 @@ const PATTERN_FIELDS = new Set([
   "references",
   "_readyMade",
 ]);
-const BRAND_KEYED_FIELDS = ["matrixOverrides", "validPropValues", "assetManifest"];
+const PROJECT_KEYED_FIELDS = ["matrixOverrides", "validPropValues", "assetManifest"];
 
 function fail(msg) {
   console.error(`[build-guides] ✗ ${msg}`);
@@ -84,19 +84,19 @@ function validate(kind, file, guide) {
   if (guide.figmaNodeUrl && !/^https:\/\/(www\.figma\.com|zpl\.io)\//.test(guide.figmaNodeUrl)) {
     fail(`${file}: figmaNodeUrl 형식 오류(figma.com/zpl.io 아님) — ${guide.figmaNodeUrl}`);
   }
-  for (const field of BRAND_KEYED_FIELDS) {
-    for (const brand of Object.keys(guide[field] ?? {})) {
-      if (!BRAND_KEYS.has(brand)) fail(`${file}: ${field} 의 브랜드 키 "${brand}" 미지`);
+  for (const field of PROJECT_KEYED_FIELDS) {
+    for (const project of Object.keys(guide[field] ?? {})) {
+      if (!PROJECT_KEYS.has(project)) fail(`${file}: ${field} 의 프로젝트 키 "${project}" 미지`);
     }
   }
-  for (const [prop, byBrand] of Object.entries(guide.forcedProps ?? {})) {
-    for (const brand of Object.keys(byBrand ?? {})) {
-      if (!BRAND_KEYS.has(brand)) fail(`${file}: forcedProps.${prop} 브랜드 키 "${brand}" 미지`);
+  for (const [prop, byProject] of Object.entries(guide.forcedProps ?? {})) {
+    for (const project of Object.keys(byProject ?? {})) {
+      if (!PROJECT_KEYS.has(project)) fail(`${file}: forcedProps.${prop} 프로젝트 키 "${project}" 미지`);
     }
   }
   for (const ref of guide.references ?? []) {
-    if (ref?.brand && !BRAND_KEYS.has(ref.brand)) {
-      fail(`${file}: references[].brand "${ref.brand}" 미지`);
+    if (ref?.project && !PROJECT_KEYS.has(ref.project)) {
+      fail(`${file}: references[].project "${ref.project}" 미지`);
     }
   }
 }

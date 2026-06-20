@@ -1,5 +1,5 @@
 export type Context = "user-app" | "admin-cms" | "unknown";
-export type Brand = "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile" | null;
+export type Project = "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile" | null;
 
 export interface DsUsageEntry {
   component: string;
@@ -54,7 +54,7 @@ export interface MockupUsage {
   mockupFile: string;
   mockupName: string;
   context: Context;
-  brand: Brand;
+  project: Project;
   /** Installed DS package versions (must be reported — see DsVersions). */
   dsVersions?: DsVersions;
   ds: DsUsageEntry[];

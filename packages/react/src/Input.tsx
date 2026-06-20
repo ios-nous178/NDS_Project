@@ -27,8 +27,8 @@ export type InputSize = "default" | "field";
  *   helper(items) gap   : 12px (HelpText 1 ↔ HelpText 2)
  *   wrapper text↔icon gap: 10px
  *
- * 캐포비 admin TextField = 48px (size 미지정 → 브랜드 :root 48 cascade, 또는 field).
- *   admin 폼이 40px(옛 compact)였던 건 fc223c7a 에서 brand height 40→48 로 정합되며 폐기.
+ * 캐포비 admin TextField = 48px (size 미지정 → 프로젝트 :root 48 cascade, 또는 field).
+ *   admin 폼이 40px(옛 compact)였던 건 fc223c7a 에서 project height 40→48 로 정합되며 폐기.
  */
 const inputSizeConfig = {
   default: {
@@ -94,7 +94,7 @@ export interface InputRootProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: InputSize;
   /**
    * 외형 변형 — `"box"`(4면 보더 박스) / `"line"`(하단 라인 언더라인). 미지정 시 box 가 기본이나,
-   * **런마일 브랜드(`[data-brand="runmile"]`)는 미지정 시 line 으로 cascade** (Figma 런마일 Text Input).
+   * **런마일 프로젝트(`[data-project="runmile"]`)는 미지정 시 line 으로 cascade** (Figma 런마일 Text Input).
    * 런마일에서 box 가 필요하면 `variant="box"` 로 명시 opt-out. 색·상태는 모두 토큰을 따른다.
    */
   variant?: "box" | "line";
@@ -151,7 +151,7 @@ export const InputRoot: React.FC<InputRootProps> = ({
         style={
           {
             "--nds-input-width": resolveFieldWidth(fieldWidth) ?? (fullWidth ? "100%" : "auto"),
-            // size="default" 는 inline 높이 생략 → 브랜드 :root override(캐포비 admin 48)가
+            // size="default" 는 inline 높이 생략 → 프로젝트 :root override(캐포비 admin 48)가
             // cascade 로 이김. inline 으로 박으면 같은 행 nds-select 와 높이 어긋날 수 있음.
             ...(size !== "default" && {
               "--nds-input-height": `${sizeStyle.height}px`,
@@ -506,7 +506,7 @@ export interface InputProps extends Omit<
   /** 입력 필드 높이 변형 */
   size?: InputSize;
   /**
-   * 외형 변형 — `"box"` / `"line"`(하단 라인). 미지정 시 box, 단 런마일(`[data-brand="runmile"]`)은
+   * 외형 변형 — `"box"` / `"line"`(하단 라인). 미지정 시 box, 단 런마일(`[data-project="runmile"]`)은
    * line 으로 cascade. 런마일에서 box 가 필요하면 `variant="box"` 로 opt-out.
    */
   variant?: "box" | "line";

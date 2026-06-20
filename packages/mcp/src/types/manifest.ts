@@ -36,17 +36,17 @@ export interface TokenDef {
   value: string;
   group: string;
   /**
-   * 이 토큰을 정의하는 브랜드 슬러그 목록. base(tokens.css = nudge-eap) 에만 있는
-   * 공통 토큰은 이 필드가 없음(= 전 브랜드 적용). geniet 의 `--color-mint-*` 처럼
-   * 특정 브랜드 고유 토큰일 때만 채워짐.
+   * 이 토큰을 정의하는 프로젝트 슬러그 목록. base(tokens.css = nudge-eap) 에만 있는
+   * 공통 토큰은 이 필드가 없음(= 전 프로젝트 적용). geniet 의 `--color-mint-*` 처럼
+   * 특정 프로젝트 고유 토큰일 때만 채워짐.
    */
-  brands?: string[];
+  projects?: string[];
   /**
-   * 같은 토큰 이름이 브랜드별로 다른 값을 가질 때의 오버라이드 맵.
+   * 같은 토큰 이름이 프로젝트별로 다른 값을 가질 때의 오버라이드 맵.
    * 예: `--semantic-button-bg-default` 가 nudge=#2B96ED, geniet=#48C2C5 →
-   * value 는 base(nudge) 값, brandValues = { geniet: "#48C2C5", ... }.
+   * value 는 base(nudge) 값, projectValues = { geniet: "#48C2C5", ... }.
    */
-  brandValues?: Record<string, string>;
+  projectValues?: Record<string, string>;
 }
 
 export interface PackageMeta {
@@ -57,7 +57,7 @@ export interface PackageMeta {
   cssExports: string[];
 }
 
-export interface BrandDef {
+export interface ProjectDef {
   slug: string;
   name: string;
   version?: string;
@@ -85,7 +85,7 @@ export interface Catalog {
   components: ComponentDef[];
   icons: string[];
   tokens: TokenDef[];
-  brands: BrandDef[];
+  projects: ProjectDef[];
   /** @nudge-design/html custom element 태그 목록 (예: "nds-button", "nds-input"). */
   ndsHtmlTags?: string[];
   /** 각 nds-* 의 attribute enum (예: { tag: "nds-button", attrs: { color: ["primary", ...] } }). */

@@ -32,7 +32,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
  *
  * 보통 `SelectionButtonGroup` 으로 묶어 쓰지만, 토글 한 개·커스텀 레이아웃이 필요할 때
  * 단독으로 쓴다. 그룹과 동일한 `nds-selection-button-group__item` 비주얼(브랜드색
- * 아웃라인 + `selected` 시 `--semantic-bg-brand-subtle` 채움)을 공유한다 — 5개 브랜드
+ * 아웃라인 + `selected` 시 `--semantic-bg-brand-subtle` 채움)을 공유한다 — 5개 프로젝트
  * 시멘틱 cascade 자동 대응. 그룹 안에서는 등폭(100%), 단독일 때는 콘텐츠 hug.
  *
  * 선택은 외부 제어 — `selected` 로 상태를 받고 `onClick` 으로 변경을 처리한다.

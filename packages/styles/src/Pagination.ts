@@ -22,8 +22,8 @@ export const paginationStyles = `
     box-sizing: border-box;
   }
 
-  /* 아이템 시각은 --nds-pagination-* 슬롯로 합성 — 브랜드(캐포비)는 boxed 룩을 토큰 맵에서 override.
-   * base(다른 브랜드) = 테두리 없는 투명 버튼(슬롯 fallback). (CLAUDE.md 슬롯 합성 참조.) */
+  /* 아이템 시각은 --nds-pagination-* 슬롯로 합성 — 프로젝트(캐포비)는 boxed 룩을 토큰 맵에서 override.
+   * base(다른 프로젝트) = 테두리 없는 투명 버튼(슬롯 fallback). (CLAUDE.md 슬롯 합성 참조.) */
   :where(.${PG_ITEM_CLASS}) {
     display: inline-flex;
     align-items: center;
@@ -83,7 +83,7 @@ export const paginationStyles = `
 
   :where(.${PG_ITEM_CLASS}[data-type="arrow"]) {
     font-size: 0;
-    /* 화살표 아이콘 색은 슬롯으로 — 브랜드가 숫자 셀과 다른 톤을 줄 수 있다(예: 지니어트 gray/600). */
+    /* 화살표 아이콘 색은 슬롯으로 — 프로젝트가 숫자 셀과 다른 톤을 줄 수 있다(예: 지니어트 gray/600). */
     color: var(--nds-pagination-arrow-color, ${cv.textRole.subtle});
   }
 

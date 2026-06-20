@@ -2,7 +2,7 @@
  * <nds-chip> — Web Component version of React Chip.
  *
  * DOM (React Chip.tsx 와 동일):
- *   <nds-chip variant="outlined" color="brand" size="md" interactive selected>
+ *   <nds-chip variant="outlined" color="project" size="md" interactive selected>
  *     라벨
  *   </nds-chip>
  *
@@ -34,11 +34,11 @@ import { NdsElement, define } from "../base/nds-element.js";
 import { REMOVE_ICON_SVG } from "../base/remove-icon.js";
 
 export type ChipVariant = "fill" | "outlined" | "ghost";
-export type ChipColor = "brand" | "neutral" | "success" | "error" | "caution";
+export type ChipColor = "project" | "neutral" | "success" | "error" | "caution";
 export type ChipSize = "sm" | "md";
 
 const VARIANTS: readonly ChipVariant[] = ["fill", "outlined", "ghost"];
-const COLORS: readonly ChipColor[] = ["brand", "neutral", "success", "error", "caution"];
+const COLORS: readonly ChipColor[] = ["project", "neutral", "success", "error", "caution"];
 const SIZES: readonly ChipSize[] = ["sm", "md"];
 
 // variant×color / selected 별 색은 styles/src/Chip.ts 의 [data-variant][data-color] /
@@ -130,20 +130,20 @@ export class NdsChip extends NdsElement {
     if (this.style.display !== "contents") this.style.display = "contents";
 
     const variant = this._norm("variant", VARIANTS, "outlined");
-    const color = this._norm("color", COLORS, "brand");
+    const color = this._norm("color", COLORS, "project");
     const size = this._norm("size", SIZES, "md");
     const selected = this.boolAttr("selected");
     const disabled = this.boolAttr("disabled");
     const interactive = this.boolAttr("interactive");
     const removable = this.boolAttr("removable") && !disabled;
 
-    // selected 는 React Chip.tsx 와 동일하게 brand 채움(FILL)이 기본 선택표시이며,
-    // 브랜드가 brand-subtle 등 다른 선택 톤을 원하면 `--nds-chip-selected-*` 로 override.
+    // selected 는 React Chip.tsx 와 동일하게 project 채움(FILL)이 기본 선택표시이며,
+    // 프로젝트가 project-subtle 등 다른 선택 톤을 원하면 `--nds-chip-selected-*` 로 override.
     // 색은 styles/src/Chip.ts 의 [data-variant][data-color] / [data-selected] CSS 룰이 슬롯에 주입 —
     // 여기서는 data-* attr 만 set, 인라인 색은 박지 않는다.
     const st = SIZE_TOKENS[size];
     const paddingRight = removable ? Math.max(st.paddingX - 4, 6) : st.paddingX;
-    // 치수는 --nds-chip-* 슬롯로 합성 (react Chip.tsx 미러) — 브랜드가 토큰 맵에서 override.
+    // 치수는 --nds-chip-* 슬롯로 합성 (react Chip.tsx 미러) — 프로젝트가 토큰 맵에서 override.
     const chipPadY = `var(--nds-chip-padding-y, ${st.paddingY}px)`;
     const chipPadX = `var(--nds-chip-padding-x, ${st.paddingX}px)`;
     const chipPadRight = removable ? `${paddingRight}px` : chipPadX;

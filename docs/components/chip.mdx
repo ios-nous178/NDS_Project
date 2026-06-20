@@ -76,7 +76,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 
 | Color     | 사용 맥락             |
 | --------- | --------------------- |
-| `brand`   | 주요 필터, 브랜드 선택 |
+| `project`   | 주요 필터, 프로젝트 선택 |
 | `neutral` | 일반 카테고리 필터    |
 | `success` | 완료 상태 (참여가능)  |
 | `error`   | 오류/실패 상태 표시   |
@@ -98,7 +98,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 ## 기본 사용법
 
 ```tsx
-<Chip label="심리상담" variant="outlined" color="brand" />
+<Chip label="심리상담" variant="outlined" color="project" />
 ```
 
 ### 토글 선택 (선택됨 → fill)
@@ -108,7 +108,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
   label="스트레스"
   variant={isSelected ? "fill" : "outlined"}
   selected={isSelected}
-  color="brand"
+  color="project"
   onClick={() => toggle()}
 />
 ```
@@ -119,7 +119,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 <Chip
   label="서울"
   variant="fill"
-  color="brand"
+  color="project"
   onRemove={() => removeFilter("서울")}
 />
 ```
@@ -147,7 +147,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 | --- | --- | --- | --- |
 | `label` *(필수)* | `string` | — | 라벨 텍스트 |
 | `variant` | `ChipVariant` | `"outlined"` | 시각적 스타일 (Figma "Style") |
-| `color` | `ChipColor` | `"brand"` | 의미 컬러 (Figma "Color") |
+| `color` | `ChipColor` | `"project"` | 의미 컬러 (Figma "Color") |
 | `size` | `ChipSize` | `"md"` | 크기 |
 | `selected` | `boolean` | `false` | 선택 상태. onClick과 함께 쓰면 aria-pressed로 노출된다. |
 | `disabled` | `boolean` | `false` | 비활성화 |
@@ -158,7 +158,7 @@ Figma `Color` 축. 상태(Status)를 표현할 때는 의미에 맞는 컬러를
 <!-- AUTO-GEN:props:END -->
 
 **ChipVariant**: `"fill"` | `"outlined"` | `"ghost"`
-**ChipColor**: `"brand"` | `"neutral"` | `"success"` | `"error"` | `"caution"`
+**ChipColor**: `"project"` | `"neutral"` | `"success"` | `"error"` | `"caution"`
 **ChipSize**: `"sm"` | `"md"`
 
 ---

@@ -12,7 +12,7 @@
 - onSearch는 외부 API 호출 트리거 — 컴포넌트가 직접 검색 안 함.
 - value는 주소 + 상세 한 묶음 — 폼 state에서 단일 값으로 관리.
 - loading 상태 동안 검색 버튼 비활성 — 직접 disabled 처리 X.
-- 검색 버튼 검정 CTA — 지니어트는 color="secondary", **캐포비는 color="neutral"**(캐포비 secondary 는 Figma 미정의라 Button/validator 가 경고). 색 hex 박지 말고 브랜드 cascade.
+- 검색 버튼 검정 CTA — 지니어트는 color="secondary", **캐포비는 color="neutral"**(캐포비 secondary 는 Figma 미정의라 Button/validator 가 경고). 색 hex 박지 말고 프로젝트 cascade.
 
 ## recommended
 

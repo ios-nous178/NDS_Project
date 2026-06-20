@@ -37,7 +37,7 @@ const CATALOG_CSS = `
 .nds-cat-card__copied{position:absolute;top:6px;right:6px;font-size:10px;font-weight:700;color:var(--semantic-text-brand-default,#2563eb)}
 .nds-cat-badge{position:absolute;top:6px;left:6px;padding:1px 6px;border-radius:999px;font-size:9.5px;font-weight:700}
 .nds-cat-badge--common{background:var(--semantic-bg-surface-subtle,#f1f5f9);color:var(--semantic-text-subtle-default,#6b7280)}
-.nds-cat-badge--brand{background:var(--semantic-bg-brand-default,#fff7e6);color:var(--semantic-icon-brand-default,#b45309)}
+.nds-cat-badge--project{background:var(--semantic-bg-brand-default,#fff7e6);color:var(--semantic-icon-brand-default,#b45309)}
 .nds-cat-empty{padding:40px 0;text-align:center;color:var(--semantic-text-subtle-default,#6b7280);font-size:13px}
 `;
 
@@ -81,7 +81,7 @@ function useCopy(copyMode: "import" | "name") {
   return { copied, copy };
 }
 
-type Badge = { text: string; tone: "common" | "brand" };
+type Badge = { text: string; tone: "common" | "project" };
 
 interface IconCardProps {
   name: string;
@@ -167,7 +167,7 @@ export function IconCatalog(props: IconCatalogProps): React.JSX.Element {
   const {
     data,
     mode = "all",
-    brand,
+    project,
     copyMode = "import",
     iconSize = 32,
     iconColor,
@@ -205,7 +205,7 @@ export function IconCatalog(props: IconCatalogProps): React.JSX.Element {
         label: e.displayName,
         badge:
           e.source === "cashwalk-biz"
-            ? { text: "CashwalkBiz", tone: "brand" }
+            ? { text: "CashwalkBiz", tone: "project" }
             : { text: "공통", tone: "common" },
       });
     }
@@ -226,27 +226,27 @@ export function IconCatalog(props: IconCatalogProps): React.JSX.Element {
     return { sections, chips, total: all.length, shown: filtered.length };
   }, [mode, data.cashwalkBiz, filter, q]);
 
-  // ── all / single-brand 모드: 전체 아이콘 + 브랜드 칩/그룹 ──
-  const branded = useMemo(() => {
+  // ── all / single-project 모드: 전체 아이콘 + 프로젝트 칩/그룹 ──
+  const projected = useMemo(() => {
     if (mode === "cashwalk-biz") return null;
     const base: IconCatalogIcon[] =
-      mode === "single-brand" && brand
-        ? data.icons.filter((i) => i.brand === brand)
+      mode === "single-project" && project
+        ? data.icons.filter((i) => i.project === project)
         : data.icons;
     const matches = (i: IconCatalogIcon) =>
-      (mode !== "all" || filter === "all" || i.brand === filter) &&
+      (mode !== "all" || filter === "all" || i.project === filter) &&
       (!q || i.name.toLowerCase().includes(q) || (searchKebab && i.kebab.includes(q)));
     const filtered = base.filter(matches);
 
     let sections: Section[];
     if (mode === "all") {
-      // 브랜드 순서대로 그룹
-      sections = data.brands
+      // 프로젝트 순서대로 그룹
+      sections = data.projects
         .map((b) => ({
           key: b.id,
           label: b.label,
           items: filtered
-            .filter((i) => i.brand === b.id)
+            .filter((i) => i.project === b.id)
             .map((i) => ({ name: i.name, label: i.name })),
         }))
         .filter((s) => s.items.length > 0);
@@ -264,20 +264,20 @@ export function IconCatalog(props: IconCatalogProps): React.JSX.Element {
       mode === "all"
         ? [
             { id: "all", label: "전체", count: base.length },
-            ...data.brands.map((b) => ({
+            ...data.projects.map((b) => ({
               id: b.id,
               label: b.label,
-              count: base.filter((i) => i.brand === b.id).length,
+              count: base.filter((i) => i.project === b.id).length,
             })),
           ]
         : [];
 
     return { sections, chips, total: base.length, shown: filtered.length };
-  }, [mode, brand, data.icons, data.brands, filter, q, searchKebab]);
+  }, [mode, project, data.icons, data.projects, filter, q, searchKebab]);
 
-  const view = cashwalk ?? branded!;
+  const view = cashwalk ?? projected!;
   const showChips = view.chips.length > 0;
-  const showSectionHeads = mode !== "single-brand";
+  const showSectionHeads = mode !== "single-project";
 
   return (
     <div className="nds-cat-root">

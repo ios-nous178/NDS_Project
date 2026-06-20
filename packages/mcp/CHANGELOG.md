@@ -5,24 +5,24 @@
 ### Patch Changes
 
 - aad9872: 영역 체계 3분화 — 서비스 / 어드민(b2b) / 백오피스(사내)
-  - **어드민(외부 제공 b2b 어드민 서비스)**: 하드게이트 브랜드만 지원 — `DS_ADMIN_BRANDS = cashwalk-biz, nudge-eap`. 이 브랜드들의 어드민은 antd 가 아니라 DS(html 워크플로우)로 만든다 (넛지EAP 는 전용 admin 토큰 없이 기존 DS 컴포넌트/토큰으로, 캐포비 전용 page-pattern/design-spec 게이트는 캐포비에만 유지). 게이트 밖 브랜드의 어드민 요청은 차단되고 백오피스 전환/DS팀 편입 안내를 반환한다.
-  - **백오피스(사내 어드민/CMS/운영툴)**: 기존 admin-cms(antd) 가이드를 중립화 — NudgeEAP 전용 문구(푸터 카피 등)를 `serviceName` 파라미터로 주입하는 공통 컨벤션으로 전환. 브랜드 무관 전 서비스 기본 지원. topic/intent 는 `backoffice` 가 canonical, `admin-cms` 는 영구 별칭으로 유지(기존 외부 워크스페이스 호환).
+  - **어드민(외부 제공 b2b 어드민 서비스)**: 하드게이트 프로젝트만 지원 — `DS_ADMIN_PROJECTS = cashwalk-biz, nudge-eap`. 이 프로젝트들의 어드민은 antd 가 아니라 DS(html 워크플로우)로 만든다 (넛지EAP 는 전용 admin 토큰 없이 기존 DS 컴포넌트/토큰으로, 캐포비 전용 page-pattern/design-spec 게이트는 캐포비에만 유지). 게이트 밖 프로젝트의 어드민 요청은 차단되고 백오피스 전환/DS팀 편입 안내를 반환한다.
+  - **백오피스(사내 어드민/CMS/운영툴)**: 기존 admin-cms(antd) 가이드를 중립화 — NudgeEAP 전용 문구(푸터 카피 등)를 `serviceName` 파라미터로 주입하는 공통 컨벤션으로 전환. 프로젝트 무관 전 서비스 기본 지원. topic/intent 는 `backoffice` 가 canonical, `admin-cms` 는 영구 별칭으로 유지(기존 외부 워크스페이스 호환).
   - **확답 우선 라우팅**: 운영자 화면 키워드(어드민/백오피스/CMS/운영툴 등)는 영역을 키워드로 추측하지 않고, get_setup/claude-md 가 가이드·셋업 본문 없이 확답 질문만 반환하는 하드스톱(`ambiguous-operator`)으로 동작 — `intent:'admin'`/`intent:'backoffice'` 명시 재호출로만 진행. 예외: 캐포비는 자체 admin DS 보유라 질문 없이 DS 경로 우회(기존 동작 보존).
   - 어드민(b2b) 셋업 시 `nudge.surface=admin` 마커를 기록해 validator 표면 룰과 자동 연동.
 
-- 936ff60: BottomNav 추가 — 모바일 하단 탭 바 공식 primitive (브랜드 무관)
+- 936ff60: BottomNav 추가 — 모바일 하단 탭 바 공식 primitive (프로젝트 무관)
   - **신규 `BottomNav`** — compound + 슬롯 API. `<BottomNav activeKey onChange>` 안에 `<BottomNav.Item itemKey label icon activeIcon href badge>`. 활성/비활성 아이콘 분리, 우상단 배지, 키보드/aria(role=tablist·aria-current) 지원.
-  - **브랜드를 모르는 컴포넌트** — 색·배경·보더·높이는 전부 `--nds-bottomnav-*` 슬롯으로 노출되고 브랜드 토큰이 값만 덮는다. 브랜드별 아이콘/라벨은 호출부가 주입한다. (브랜드별 `{Brand}BottomNav` 래퍼를 대체하는 공개 primitive — 래퍼 정리는 후속 chrome 통합에서.)
+  - **프로젝트를 모르는 컴포넌트** — 색·배경·보더·높이는 전부 `--nds-bottomnav-*` 슬롯으로 노출되고 프로젝트 토큰이 값만 덮는다. 프로젝트별 아이콘/라벨은 호출부가 주입한다. (프로젝트별 `{Project}BottomNav` 래퍼를 대체하는 공개 primitive — 래퍼 정리는 후속 chrome 통합에서.)
   - **3면 미러** — react(`BottomNav`) ↔ styles(`.nds-bottom-nav`) ↔ html(`<nds-bottom-nav>` / `<nds-bottom-nav-item>`). html 은 slot=icon / slot=active-icon 으로 아이콘 주입, active-key 변경 시 자식 active 자동 좌표화.
   - MCP 가이드 신설 + validator 가 새 태그(`nds-bottom-nav` / `nds-bottom-nav-item`)를 인식.
 
-- 526c227: 브랜드 로고 발견성 — admin/CMS 사이드바 로고를 컴포넌트로 (텍스트·수동 base64 우회 차단)
+- 526c227: 프로젝트 로고 발견성 — admin/CMS 사이드바 로고를 컴포넌트로 (텍스트·수동 base64 우회 차단)
 
-  배경: 브랜드 로고는 `@nudge-design/assets` 에 5개 브랜드 모두 data URI 로 내장돼 있고 `<nds-brand-logo brand>` / `<nds-sidebar brand>` 가 자동 주입하는데, 이 easy-path 가 캐포비에만 표면화돼 있어 다른 브랜드(예: 지니어트) 백오피스 CMS 사이드바에서 텍스트 placeholder→빌드 산출물 base64 추출이라는 우회가 반복됐다.
-  - **BrandLogo 가이드 일반화** — 캐포비 온보딩 중심 서술을 모든 브랜드의 백오피스/CMS 사이드바·헤더·어드민 셸 로고 슬롯으로 확장. "antd 등 비-DS 화면이라 패키지 import 못 한다"는 오해를 명시 차단(`import { getBrandLogo }` / `<BrandLogo>`).
-  - **admin-shell 패턴** — 사이드바/톱바 로고 = `<nds-sidebar brand>` 자동 주입(또는 `<nds-brand-logo brand>`). 텍스트 placeholder·색박스·빌드 산출물 base64 추출 금지 규칙 + avoid + metric 추가.
-  - **get_brand brandLogos 안내 보강** — snsLogos 수준으로: 컴포넌트 경로(`<nds-brand-logo>` data URI 내장) + 목업/호스팅 이중 경로(getBrandLogo import).
-  - **validator 신규 룰 `admin-sidebar-logo-not-component` (warn)** — admin 셸 사이드바·톱바에 텍스트 로고나 수동 base64 `<img>` 가 있고 `<nds-sidebar brand>`/`<nds-brand-logo>` 가 없으면 환기. 캐포비 온보딩 한정이던 text-logo 차단을 전 브랜드 admin 셸로 일반화. 사이드바 아이콘(inline SVG)·계정 아바타는 오탐 제외(테스트 6건).
+  배경: 프로젝트 로고는 `@nudge-design/assets` 에 5개 프로젝트 모두 data URI 로 내장돼 있고 `<nds-project-logo project>` / `<nds-sidebar project>` 가 자동 주입하는데, 이 easy-path 가 캐포비에만 표면화돼 있어 다른 프로젝트(예: 지니어트) 백오피스 CMS 사이드바에서 텍스트 placeholder→빌드 산출물 base64 추출이라는 우회가 반복됐다.
+  - **ProjectLogo 가이드 일반화** — 캐포비 온보딩 중심 서술을 모든 프로젝트의 백오피스/CMS 사이드바·헤더·어드민 셸 로고 슬롯으로 확장. "antd 등 비-DS 화면이라 패키지 import 못 한다"는 오해를 명시 차단(`import { getProjectLogo }` / `<ProjectLogo>`).
+  - **admin-shell 패턴** — 사이드바/톱바 로고 = `<nds-sidebar project>` 자동 주입(또는 `<nds-project-logo project>`). 텍스트 placeholder·색박스·빌드 산출물 base64 추출 금지 규칙 + avoid + metric 추가.
+  - **get_project projectLogos 안내 보강** — snsLogos 수준으로: 컴포넌트 경로(`<nds-project-logo>` data URI 내장) + 목업/호스팅 이중 경로(getProjectLogo import).
+  - **validator 신규 룰 `admin-sidebar-logo-not-component` (warn)** — admin 셸 사이드바·톱바에 텍스트 로고나 수동 base64 `<img>` 가 있고 `<nds-sidebar project>`/`<nds-project-logo>` 가 없으면 환기. 캐포비 온보딩 한정이던 text-logo 차단을 전 프로젝트 admin 셸로 일반화. 사이드바 아이콘(inline SVG)·계정 아바타는 오탐 제외(테스트 6건).
 
 - c941e74: 캐포비 본인인증 패턴 가이드 신설 + 품질점수 감점 근거 세분화
   - **pattern:cashwalk-biz-verification 신설** — VerificationCodeInput 가이드가 참조하던 패턴이
@@ -35,45 +35,45 @@
     붙이고 잦은 사유부터 정렬. 점수만 보고 "어디를 왜 깎였나" 모르던 문제(특히 SPA 누적집계)를
     줄 위치로 짚어줌.
 
-- eb0ea32: chrome 정리 — PageHeader 강등 + 브랜드 chrome 19개 제거 (BREAKING)
+- eb0ea32: chrome 정리 — PageHeader 강등 + 프로젝트 chrome 19개 제거 (BREAKING)
 
-  공개 면(react/html)은 브랜드를 모르는 primitive 만 두고, 브랜드 조립은 목업 전용
-  `nds-brand-chrome` 으로 모으는 정리. (chrome 통합 플랜 Phase 2 + Phase 4. Sidebar 흡수는 Phase 3 로 분리 진행 중.)
+  공개 면(react/html)은 프로젝트를 모르는 primitive 만 두고, 프로젝트 조립은 목업 전용
+  `nds-project-chrome` 으로 모으는 정리. (chrome 통합 플랜 Phase 2 + Phase 4. Sidebar 흡수는 Phase 3 로 분리 진행 중.)
 
   **제거(BREAKING)**
   - **`PageHeader` 컴포넌트 제거** → `pattern:page-header` 로 강등. 페이지 헤더는 단일 컴포넌트가
     아니라 `Heading`(`level="h2" as="h1"`) + Breadcrumb + actions + (선택)Tab 조립이다. (Figma 가이드
     노드 없는 thin wrapper — MultiStepForm 선례와 동일.) react/styles/html 3면 + 스토리 + 문서 제거,
     새 패턴 가이드 `pattern:page-header` 신설.
-  - **브랜드별 chrome 컴포넌트 19개 제거** — `{Trost,Geniet,NudgeEAP,CashwalkBiz,Runmile}` 의
+  - **프로젝트별 chrome 컴포넌트 19개 제거** — `{Trost,Geniet,NudgeEAP,CashwalkBiz,Runmile}` 의
     AppBar·BottomNav·Footer·WebHeader·DesktopHeader·UtilityHeader·TabNavigation. 이들은 base
-    primitive(Header/Footer/BottomNav)를 브랜드 로고·기본값으로 감싼 얇은 래퍼였고, 목업 엔진은
-    이미 html `nds-brand-chrome`(`<nds-brand-header brand="...">` 등)만 사용한다.
+    primitive(Header/Footer/BottomNav)를 프로젝트 로고·기본값으로 감싼 얇은 래퍼였고, 목업 엔진은
+    이미 html `nds-project-chrome`(`<nds-project-header project="...">` 등)만 사용한다.
     - **유지**: `NudgeEAPLogo`, 트로스트 서비스 위젯(EAPBanner·SearchForm·LoginSection·AppDownloadButton),
-      그리고 목업 전용 html `nds-brand-chrome` 패밀리(전 브랜드 header/footer/bottomnav 커버).
+      그리고 목업 전용 html `nds-project-chrome` 패밀리(전 프로젝트 header/footer/bottomnav 커버).
 
   **대체 경로**
-  - 브랜드 화면 chrome → 목업: `<nds-brand-header|footer|bottom-nav brand="...">` (MCP `component:BrandHeader` 등).
-  - 공개 primitive 가 필요하면 `Header` / `BottomNav` / `Footer` + 브랜드 토큰.
+  - 프로젝트 화면 chrome → 목업: `<nds-project-header|footer|bottom-nav project="...">` (MCP `component:ProjectHeader` 등).
+  - 공개 primitive 가 필요하면 `Header` / `BottomNav` / `Footer` + 프로젝트 토큰.
   - 페이지 헤더 → `pattern:page-header`(Heading 조합).
 
-  **알려진 한계(후속)**: (캐시워크)트로스트 앱 BottomNav 변형(`cashwalk-trost`)은 `nds-brand-bottom-nav`
-  미지원 — 필요 시 BRAND_DATA 에 variant 추가 또는 `BottomNav` primitive 로 직접 조립.
+  **알려진 한계(후속)**: (캐시워크)트로스트 앱 BottomNav 변형(`cashwalk-trost`)은 `nds-project-bottom-nav`
+  미지원 — 필요 시 PROJECT_DATA 에 variant 추가 또는 `BottomNav` primitive 로 직접 조립.
 
-- 869e02a: chrome 정리 — Sidebar 를 목업 전용 nds-brand-chrome 으로 흡수 (Phase 3, BREAKING)
+- 869e02a: chrome 정리 — Sidebar 를 목업 전용 nds-project-chrome 으로 흡수 (Phase 3, BREAKING)
 
-  브랜드-aware admin 사이드바를 공개 react 면에서 걷어내고, 목업 전용 html 한 곳으로 모은다.
+  프로젝트-aware admin 사이드바를 공개 react 면에서 걷어내고, 목업 전용 html 한 곳으로 모은다.
   (chrome 통합 플랜 Phase 3 — Phase 2/4 와 동일 방향.)
-  - **react `Sidebar` 컴포넌트 제거(BREAKING)** — 브랜드 로고·캐포비 admin 튜닝이 박힌 admin 셸이라
+  - **react `Sidebar` 컴포넌트 제거(BREAKING)** — 프로젝트 로고·캐포비 admin 튜닝이 박힌 admin 셸이라
     공개 primitive 가 아니다. admin 사이드바 화면은 목업 전용 html `<nds-sidebar>` 로 만든다.
-  - **html `<nds-sidebar>` 는 그대로 유지** — 코드만 standalone `nds-sidebar.ts` 에서 `nds-brand-chrome`
+  - **html `<nds-sidebar>` 는 그대로 유지** — 코드만 standalone `nds-sidebar.ts` 에서 `nds-project-chrome`
     으로 흡수(병합). element 명·속성·UI·여닫기(collapse/서브메뉴 토글) 동작 모두 동일. `NdsSidebar` export
-    도 유지(deep 모듈 경로만 이동). admin chrome 도 브랜드 chrome 의 한 형태로 한 파일에 모임.
+    도 유지(deep 모듈 경로만 이동). admin chrome 도 프로젝트 chrome 의 한 형태로 한 파일에 모임.
   - 가이드(`component:Sidebar`, `pattern:cashwalk-biz-admin-sidebar`)를 html 전용으로 재프레이밍 —
     제거된 react `<Sidebar>` ready-made/예시 정리. validator·목업 intake 는 `<nds-sidebar>` 그대로라 무변경.
   - 폐기 잔재 정리: orphan `cashwalk-biz-sidebar-example.ts` + 생성기 제거.
 
-  대체: admin 사이드바 → `<nds-sidebar brand="cashwalk-biz">` (또는 `pattern:cashwalk-biz-admin-sidebar`
+  대체: admin 사이드바 → `<nds-sidebar project="cashwalk-biz">` (또는 `pattern:cashwalk-biz-admin-sidebar`
   ready-made). 공개 react 에는 사이드바 primitive 를 두지 않는다(admin = 목업 html).
 
 - 71111ac: 별점 렌더 통합 — ReviewCard·MediaCard 가 StarRating 을 재사용 (3중 중복 제거)
@@ -86,12 +86,12 @@
   - MediaCard 는 정수 반올림 → 반쪽 별 표시로 별점 정밀도가 올라갑니다(예: 4.5 → 4.5개로 표시).
 
 - 9e3a6ad: CountdownTimer 컴포넌트 제거 (강등) · PriceTag 간격 보정
-  - **CountdownTimer 제거 (BREAKING)** — 종료 시각 카운트다운은 DS 편입 기준(2+ 브랜드 사용 / Figma 가이드 노드)을 충족하지 못하고, 실사용은 인증 코드 입력 레시피 한 곳뿐이라 **앱이 합성하는 인라인 타이머 패턴**으로 강등했습니다. react `CountdownTimer`, html `nds-countdown-timer` 제거. 인증 폼에서 남은시간 표시가 필요하면 코드 입력 우측에 앱이 직접 인라인 요소(예: `<span>03:00</span>`, 브랜드색)를 겹쳐 배치하세요 — `get_guide({ topic: 'component:VerificationCodeInput' })` 의 레시피 참고.
+  - **CountdownTimer 제거 (BREAKING)** — 종료 시각 카운트다운은 DS 편입 기준(2+ 프로젝트 사용 / Figma 가이드 노드)을 충족하지 못하고, 실사용은 인증 코드 입력 레시피 한 곳뿐이라 **앱이 합성하는 인라인 타이머 패턴**으로 강등했습니다. react `CountdownTimer`, html `nds-countdown-timer` 제거. 인증 폼에서 남은시간 표시가 필요하면 코드 입력 우측에 앱이 직접 인라인 요소(예: `<span>03:00</span>`, 브랜드색)를 겹쳐 배치하세요 — `get_guide({ topic: 'component:VerificationCodeInput' })` 의 레시피 참고.
   - **PriceTag 간격 보정** — sm·lg 사이즈의 요소 간격이 좁아 보이던 문제를 보정(sm 4→6px, lg 10→12px, md는 유지). react·html 미러 동일 적용. 더불어 토큰값 gap 이 `var(--…)px` 로 깨져 lg 가 기본값으로 폴백되던 react 보간 버그를 함께 수정.
 
 - 2b51ea7: 내부 정리: 제거된 `trostEapBanner` 토큰 이름을 primary-color-overload 검출 정규식에서 제거했습니다. 해당 CSS 변수는 실제로 emit 된 적이 없어 동작 변화는 없습니다.
 - find_asset 한글 검색 보강 + figma 가이드 baseline 정리
-  - `packages/mcp/asset-tags.ko.json`(id→한글 동의어) 사이드카를 SSOT 로 신설하고, build-asset-catalog 가 이 태그를 검색 토큰에 머지한다. 이제 "비빔밥·족발·김치·라면·돈까스·우울증·영양제" 같은 한글 질의로 브랜드 이미지가 잡힌다(기존: 영문 id 만).
+  - `packages/mcp/asset-tags.ko.json`(id→한글 동의어) 사이드카를 SSOT 로 신설하고, build-asset-catalog 가 이 태그를 검색 토큰에 머지한다. 이제 "비빔밥·족발·김치·라면·돈까스·우울증·영양제" 같은 한글 질의로 프로젝트 이미지가 잡힌다(기존: 영문 id 만).
   - find_asset 카테고리 한글 alias 확장(한식/중식/일식/양식·영양제·약·상담·채팅·음료).
   - guide-figma-baseline waiver 에서 figmaNodeUrl 이 채워진 5건(DatePicker·Popup·Radio·Select·Textarea) 제거.
 
@@ -114,19 +114,19 @@
   - 좌측 라벨을 입력 세로 중앙으로 끌어내리던 보정 `padding-top`(default 10px / admin 12px)을 제거. 이제 Figma 대로 **라벨 시작점 = 입력 시작점(top 정렬)**. `align-items: flex-start` 한 자리로 처리돼 입력 높이(40/48 등)와 무관하게 라벨이 항상 컨트롤 상단에 붙음 — density/size 조합이 어긋나도 라벨이 처지지 않음.
 
   **Input `size="compact"` 제거 (BREAKING)**
-  - `InputSize` 가 `"default" | "field" | "compact"` → `"default" | "field"` 로 좁혀짐. `compact`(40px)는 한때 "캐포비 admin TextField 표준"으로 문서화됐으나, admin 입력 표준은 브랜드 토큰 정합(`fc223c7a`, cashwalk-biz `--nds-input-height` 40→48) 이후 **48px** 임. admin 폼은 `size` 미지정(캐포비 brand :root 48 cascade) 또는 `field`(48) 를 사용. 기존 `size="compact"` 사용처는 size 속성을 제거하면 됨.
+  - `InputSize` 가 `"default" | "field" | "compact"` → `"default" | "field"` 로 좁혀짐. `compact`(40px)는 한때 "캐포비 admin TextField 표준"으로 문서화됐으나, admin 입력 표준은 프로젝트 토큰 정합(`fc223c7a`, cashwalk-biz `--nds-input-height` 40→48) 이후 **48px** 임. admin 폼은 `size` 미지정(캐포비 project :root 48 cascade) 또는 `field`(48) 를 사용. 기존 `size="compact"` 사용처는 size 속성을 제거하면 됨.
   - raw 토큰 `sizing.input.compact`(40)은 유지 — 컴포넌트 size API 에서만 제거.
 
   **html `nds-input` `field` 높이 parity 버그 수정**
   - html `SIZE_CONFIG` 의 `field` 가 44px 로 박혀 react/토큰(48px)과 어긋나 있던 react↔html mirror parity 버그를 수정 → **48px** 로 일치. `size="field"` 를 쓰던 html 소비처는 4px 커짐.
 
   **가이드/주석 정합**
-  - FormField / Input / `cashwalk-biz-form-layout` 가이드와 브랜드 토큰 주석에서 "admin = compact 40 / 48 로 두면 select 와 어긋남" 류의 stale 서술을 **admin = 48** 로 정정 (`cashwalk-biz-form-layout` 은 정반대로 48 을 경고하고 있었음). FormField 좌측 라벨 정렬도 "중앙" → "top(시작점 일치)" 으로 갱신.
+  - FormField / Input / `cashwalk-biz-form-layout` 가이드와 프로젝트 토큰 주석에서 "admin = compact 40 / 48 로 두면 select 와 어긋남" 류의 stale 서술을 **admin = 48** 로 정정 (`cashwalk-biz-form-layout` 은 정반대로 48 을 경고하고 있었음). FormField 좌측 라벨 정렬도 "중앙" → "top(시작점 일치)" 으로 갱신.
 
 - b192881: 가이드 공백 해소 — FormSection · SelectionButton MCP 컴포넌트 가이드 추가(둘 다 figmaNodeUrl 보유). 외부 목업 프로젝트가 `get_guide({ topic: 'component:FormSection' })` / `component:SelectionButton` 으로 사용 규칙·함정을 받을 수 있다.
 - eab0abc: 입력 타이포 통일 — 라벨·헬퍼 글자 크기를 한 기준으로 정렬
 
-  입력 폼 계열(인풋·텍스트영역·셀렉트·폼필드·태그·전화·금액·검색·주소·채팅·날짜/기간 선택·시간선택·수량입력·자동완성)의 글자 크기를 **하나의 기준(Input Typography 표준, Figma 4247:1964)** 으로 맞췄습니다. 브랜드와 무관하게 모든 브랜드에 동일하게 적용됩니다.
+  입력 폼 계열(인풋·텍스트영역·셀렉트·폼필드·태그·전화·금액·검색·주소·채팅·날짜/기간 선택·시간선택·수량입력·자동완성)의 글자 크기를 **하나의 기준(Input Typography 표준, Figma 4247:1964)** 으로 맞췄습니다. 프로젝트와 무관하게 모든 프로젝트에 동일하게 적용됩니다.
   - **라벨**: 13px / 줄높이 18 · Medium (이전 14px에서 통일)
   - **입력값·placeholder**: 15px / 줄높이 22 · Regular (그대로 — 색만 placeholder가 흐리게)
   - **헬퍼·에러 안내문**: 13px / 줄높이 18 · Regular (이전 12px에서 통일, 같은 자리에서 색만 교체)
@@ -145,7 +145,7 @@
   **Card**
   - 지니어트 카드 가이드(배치·크기 축 Horizontal/Vertical/Grid/Container)를 가이드에 반영했습니다. 기존 콘텐츠 축(List/Thumb/Cover)은 그대로 두고, 배치별 크기·radius·사용 케이스 매핑을 더했습니다.
 
-  타이포·색 등 나머지 규격은 브랜드와 무관한 기존 표준을 유지하며, 브랜드별 Figma 가이드 노드는 한 가이드에 **references 로 누적**(브랜드마다 추가)되도록 했습니다.
+  타이포·색 등 나머지 규격은 프로젝트와 무관한 기존 표준을 유지하며, 프로젝트별 Figma 가이드 노드는 한 가이드에 **references 로 누적**(프로젝트마다 추가)되도록 했습니다.
 
 - 45f4f23: 목업 워크플로우 개선 3종 (목업 세션 피드백 반영)
   - **검증 응답 토큰 절감** — `validate_html_mockup` 이 같은 룰(인라인 스타일 등)을 다수 보고할 때, 룰별 첫 5건 뒤(꼬리)는 `selector` 를 생략해 응답·컨텍스트 비대화를 막음(회고: inline-color 240건이 단일 응답을 점거하고 이후 턴마다 따라다님). 룰별 전체 카운트·line 은 `violationsByRule` 에 그대로 보존돼 정보 손실이 없고, 위반당 1행을 적재하는 telemetry(rule-stats) 카운트도 유지된다.
@@ -163,7 +163,7 @@
   - `−`/값/`+` 으로 작은 정수(수량·회차·세트 수·인원)를 키보드 없이 조정. 가운데 값은 직접 입력·위/아래 화살표 키도 지원하고, `min`/`max` 도달 시 해당 버튼이 자동 비활성화된다.
   - Props: `value` / `onValueChange` / `min` / `max` / `step`(기본 1) / `disabled` / `size`(medium·small). html 미러는 `<nds-numeric-spinner>` + `numeric-spinner-change` 이벤트.
   - 혼동 주의: `Stepper`(단계 진행 표시기)·`AmountInput`(금액·천단위 콤마)와 역할이 다르다. 큰 수/금액은 AmountInput 을 쓴다.
-  - 색·치수는 전부 입력 계열 시멘틱 토큰 참조(raw hex 없음), 브랜드 override 슬롯 `--nds-numeric-spinner-*` 제공.
+  - 색·치수는 전부 입력 계열 시멘틱 토큰 참조(raw hex 없음), 프로젝트 override 슬롯 `--nds-numeric-spinner-*` 제공.
 
 - 71111ac: 선젬 컴포넌트 3종 제거 — CallControlBar · TimeSlotPicker · OnlineIndicator (BREAKING)
 
@@ -240,21 +240,21 @@
 
 - a5f7eda: 트로스트 Button·Tab·Badge·Chip 컴포넌트를 새 Figma 가이드에 맞춰 정리했어요.
   - **버튼** — 트로스트 버튼 체계를 가이드대로 정돈했습니다. 검정 메인 버튼(Primary)·노랑 긍정 버튼(구독·확인)·옅은 블루 보조 버튼·흰색 외곽선 버튼을 각각 제대로 된 색으로 표현하고, Small 사이즈를 40px로, 보조(블루) 버튼 배경을 가이드값으로, 비활성 색을 조금 진한 회색(#D8D8D8)으로 맞췄습니다. (검정 메인 버튼은 `color="neutral"`, 노랑은 `color="primary"` — 자세한 매핑은 Button 가이드 참고.)
-  - **탭** — 트로스트 탭의 '선택됨' 강조색이 노랑에서 **코발트 블루(포인트 컬러)**로 바뀌었습니다. 노랑은 글자·밑줄처럼 얇은 요소에서 잘 안 보여, 탭 강조는 포인트 블루로 분리했어요. Line·Chip·Segment 세 유형 모두 적용됩니다. (다른 브랜드는 기존 강조색 그대로.)
+  - **탭** — 트로스트 탭의 '선택됨' 강조색이 노랑에서 **코발트 블루(포인트 컬러)**로 바뀌었습니다. 노랑은 글자·밑줄처럼 얇은 요소에서 잘 안 보여, 탭 강조는 포인트 블루로 분리했어요. Line·Chip·Segment 세 유형 모두 적용됩니다. (다른 프로젝트는 기존 강조색 그대로.)
   - **배지** — 배지에 **점(dot)**과 **숫자 카운터(count)** 유형을 추가했습니다. 기존 텍스트 배지(label)는 그대로 동작하고, 알림 표시용 작은 점(8×8)과 개수 표시용 원형 숫자 배지를 새로 쓸 수 있어요.
   - **칩** — 트로스트 선택 칩의 '선택됨' 모양이 진한 검정 채움에서 **노랑 테두리 + 옅은 노랑 배경 + 주황 글자** 강조로 바뀌었습니다(가이드 정합). 칩 높이는 30px.
   - 가이드(MCP)에 트로스트 Figma 노드와 위 내용이 함께 반영됐습니다.
 
-- 27a44be: 트로스트 Card·List·Bottom Sheet·Alert(Notice)·Section/Container를 새 Figma 가이드에 맞춰 정리했어요. 모두 **기존 사용법·다른 브랜드 화면은 그대로** 두고, 트로스트 가이드 값은 새 옵션이나 브랜드 토큰으로만 더했습니다.
+- 27a44be: 트로스트 Card·List·Bottom Sheet·Alert(Notice)·Section/Container를 새 Figma 가이드에 맞춰 정리했어요. 모두 **기존 사용법·다른 프로젝트 화면은 그대로** 두고, 트로스트 가이드 값은 새 옵션이나 프로젝트 토큰으로만 더했습니다.
   - **카드(Card)** — PC/모바일 플랫폼별 크기(여백·모서리·제목 크기)와 강조 단계(Outline 테두리 / Elevated 그림자)를 고를 수 있게 했어요. 아이콘+제목+부제 헤더와 헤더↔본문 구분선도 켜고 끌 수 있습니다. 전부 새 옵션이라 켜야만 적용돼, 기존 카드는 그대로 보입니다.
   - **리스트(List)** — PC/모바일 × 레이아웃(기본·아바타·썸네일·액션·컴팩트·테이블) 9가지 조합을 정식 지원합니다. 조합별 행 높이, 행 사이 구분선 들여쓰기, PC 테이블(여러 컬럼+상태), 모바일 썸네일 액션 링크까지 가이드대로 맞췄어요. 기존 `size` 는 그대로 두고 새 `layout` 으로 자연스럽게 넘어갈 수 있습니다.
   - **바텀시트(Bottom Sheet)** — 트로스트 시트 모서리(20)·드래그 핸들(40×4)·하단 safe-area 를 가이드값으로 맞추고, Share·Info·List 3가지 구성 예시(전화 원형 버튼·강조 박스·CTA)를 포인트(코발트) 토큰으로 정리했어요. 드래그로 닫기·스냅포인트 같은 동작은 다음 단계로 분리했습니다.
-  - **알림 박스(Alert/Notice)** — 주의(Caution) 배경을 회색에서 **옐로우**로 바로잡고(가이드·패턴 정합), 컨테이너 여백·간격·높이(1줄 52/2줄 72)·본문 굵기를 패턴 기준으로 정렬했어요. 트로스트는 Notice 를 중립 톤으로, 본문 글자색을 통일하고 모서리를 8 로 맞췄습니다(다른 브랜드는 기존 그대로).
-  - **섹션/컨테이너(Section/Container)** — 페이지 콘텐츠 폭 표준(모바일 360 / PC 1080 / 와이드 1200)을 `.nds-container--pc`·`.nds-container--wide` 로 추가하고, 가이드(패턴)를 트로스트 기준으로 새로 정리했습니다. 기본 컨테이너 동작은 그대로라 다른 브랜드 화면은 영향이 없어요.
+  - **알림 박스(Alert/Notice)** — 주의(Caution) 배경을 회색에서 **옐로우**로 바로잡고(가이드·패턴 정합), 컨테이너 여백·간격·높이(1줄 52/2줄 72)·본문 굵기를 패턴 기준으로 정렬했어요. 트로스트는 Notice 를 중립 톤으로, 본문 글자색을 통일하고 모서리를 8 로 맞췄습니다(다른 프로젝트는 기존 그대로).
+  - **섹션/컨테이너(Section/Container)** — 페이지 콘텐츠 폭 표준(모바일 360 / PC 1080 / 와이드 1200)을 `.nds-container--pc`·`.nds-container--wide` 로 추가하고, 가이드(패턴)를 트로스트 기준으로 새로 정리했습니다. 기본 컨테이너 동작은 그대로라 다른 프로젝트 화면은 영향이 없어요.
   - 가이드(MCP)에 위 내용과 트로스트 Figma 노드(Card 5123:136 · List 5169:118 · BottomSheet 5258:128 · Alert 5283:206 · Section/Container 5303:111)가 함께 반영됐습니다.
 
 - 2effb30: 트로스트 컴포넌트 Figma 가이드 동기화 — Controls·Modal·Toast·Tooltip
-  - **Controls(체크박스·라디오·토글)**: 트로스트 on(checked) 상태를 브랜드 노랑 대신 다크(#333) 채움 + 흰 체크/점으로(노랑 위 가독성), 컨트롤 크기 24×24, 토글 트랙 50×30 (Controls 가이드 5158:108). 체크색은 새 토큰 슬롯(`--nds-checkbox-checked-bg/-checked-border/-check-color`, `--nds-radio-checked-color`)으로 분리 — 다른 브랜드는 기존 `fill.brand` fallback 유지(무변화).
+  - **Controls(체크박스·라디오·토글)**: 트로스트 on(checked) 상태를 프로젝트 노랑 대신 다크(#333) 채움 + 흰 체크/점으로(노랑 위 가독성), 컨트롤 크기 24×24, 토글 트랙 50×30 (Controls 가이드 5158:108). 체크색은 새 토큰 슬롯(`--nds-checkbox-checked-bg/-checked-border/-check-color`, `--nds-radio-checked-color`)으로 분리 — 다른 프로젝트는 기존 `fill.brand` fallback 유지(무변화).
   - **Modal**: 확인 CTA 텍스트색을 `confirmCta.text` 로 정렬(노랑 위 흰 글씨 회귀 해소 — 트로스트 노랑+검은 글씨 자동). 비가역 액션용 `confirmTone="destructive"`(검정 Neutral CTA + 흰 텍스트) prop 추가. 트로스트 모달 상단 패딩 24(`--nds-modal-pad-top`). HTML(`<nds-modal>`)은 footer 가 consumer slot 이라 destructive 확정 = `<nds-button color="neutral">`.
   - **Toast**: 트로스트 그림자를 drop y8·blur24·18% 로(가이드 806:1277).
   - **Tooltip**: 기존 스펙이 이미 정합(가이드 806:1278) — figmaNodeUrl·문서만 갱신.
@@ -344,7 +344,7 @@
 
   **Avatar (Figma 1337:8 정합)** — `shape` prop 신규(circle 기본 · rounded · square, 사이즈별 rounded radius 4/6/8/10/12) + 사이즈 스케일을 가이드 5종(24/32/48/64/96)에 맞춤. 키 API 는 유지(xs/sm/md/lg/xl)하되 픽셀값을 가이드에 정합 — **md 40→48 · lg 48→64 · xl 64→96 으로 변경**(xs 24·sm 32 동일). 이미지 부재 fallback 은 이니셜 **1자 Bold**(기존 2자→1자). AvatarGroup 도 동일 스케일·shape 전파(px/font 는 `avatarSizeConfig` 에서 파생해 중복 하드코딩 제거). 프로덕션 DS 컴포넌트는 Avatar 를 슬롯(ReactNode)으로 받으므로 사이즈 변경의 직접 영향 없음 — 앱에서 `size="md/lg/xl"` 를 픽셀 의도로 쓰던 곳은 새 스케일 확인 필요.
 
-  **Card (Figma 713:2 — 넛지EAP CardRulesGuide)** — `pattern:nudge-eap-card` 신규: 넛지EAP 서비스 카드는 ① 내부 CTA 허용(4종: Full-width 48 / Compact 40 / Icon+Text 44 / Ghost), ② shadow 금지·border-only, ③ radius 12 고정. 기존 `component:Card` 가이드의 "[Figma 권위 룰]"(CTA 금지·Elevation 0/1)은 Geniet 도메인 기준임을 명시하는 브랜드 분기 캐비엇 추가(컴포넌트는 Card.Cta/Footer 슬롯으로 양쪽 모두 지원 — 차이는 사용 규칙).
+  **Card (Figma 713:2 — 넛지EAP CardRulesGuide)** — `pattern:nudge-eap-card` 신규: 넛지EAP 서비스 카드는 ① 내부 CTA 허용(4종: Full-width 48 / Compact 40 / Icon+Text 44 / Ghost), ② shadow 금지·border-only, ③ radius 12 고정. 기존 `component:Card` 가이드의 "[Figma 권위 룰]"(CTA 금지·Elevation 0/1)은 Geniet 도메인 기준임을 명시하는 프로젝트 분기 캐비엇 추가(컴포넌트는 Card.Cta/Footer 슬롯으로 양쪽 모두 지원 — 차이는 사용 규칙).
 
 - 73eca2e: Badge `shape` prop 추가 (default | pill) — 캐포비 admin Badge 가이드 동기화 (Figma 3782-20558)
   - `shape="default"`(라운드 사각)=동적 상태값(충전·사용·적립·만료·취소), `shape="pill"`(완전 둥근)=정적 식별 태그(일반 계정·프리미엄·신규). 기본값 default 로 기존 동작 유지.
@@ -355,22 +355,22 @@
   - 푸터 액션 버튼 크기 갱신: 높이 44px→48px, 폭 120px(single)/hug(dual)→**128px 고정**(Single·Dual 모두 우측 정렬 pill).
   - ④ Confirm + Slot 을 **두 개의 독립 슬롯**으로 가이드에 명문화 — slot a=severity(Notice info/caution/error) · slot b=BodyContent 컨트롤(ContentSlot/Input/Select/DatePicker). Variant Showcase 반영.
 
-- 7a04a69: 캐포비 본인인증(휴대폰/이메일 → 인증번호) 플로우 구현 지원 — FieldActionRow action 옵션화 · CountdownTimer tone="brand"
+- 7a04a69: 캐포비 본인인증(휴대폰/이메일 → 인증번호) 플로우 구현 지원 — FieldActionRow action 옵션화 · CountdownTimer tone="project"
 
   캐포비 비밀번호 찾기 등 본인인증 화면(연락처 입력 → 별도 full-width 검정 [재전송] → 코드 입력 + 인라인 타이머 → 하단 [다음])을 DS 컴포넌트로 그대로 구현할 수 있게 두 군데 갭을 메웠다.
   - **FieldActionRow `action` 옵션화** — 이제 action 을 생략하면 "코드 입력 + 우측 타이머만"(인라인 버튼 없는 줄)을 렌더한다. 인증번호 전송/재전송이 별도 full-width 버튼이고 코드 입력엔 타이머만 두는 캐포비 레이아웃을 직접 만들 수 있다. (react/html 미러)
-  - **CountdownTimer `tone="brand"`** — 진행 중 타이머를 브랜드 액센트색으로(캐포비 = 오렌지 #FD9B02, `text.brand` 토큰). 인증 코드 입력의 오렌지 타이머를 정확히 재현한다. urgent(≤10초) 빨강은 tone 과 무관하게 우선. (react/html/styles 미러)
+  - **CountdownTimer `tone="project"`** — 진행 중 타이머를 프로젝트 액센트색으로(캐포비 = 오렌지 #FD9B02, `text.project` 토큰). 인증 코드 입력의 오렌지 타이머를 정확히 재현한다. urgent(≤10초) 빨강은 tone 과 무관하게 우선. (react/html/styles 미러)
   - **가이드** — 온보딩 패턴에 "03c 본인 인증 Section" 추가, VerificationCodeInput 가이드에 캐포비 본인인증 레시피(별도 재전송 + 타이머만 코드 입력) 추가, FieldActionRow·CountdownTimer 가이드에 신규 옵션 반영.
 
 - 7a04a69: 캐포비(cashwalk-biz)는 알림에 Snackbar 만 사용 — Toast 사용을 validator 가 차단
 
-  캐포비 알림 SSOT 는 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 를 가진 Snackbar 인데, 이를 권고하는 가이드만 있고 검증룰이 없어 캐포비 목업에서 `<nds-toast>` 가 아무 위반 없이 통과하던 공백이 있었다. `validate_html_mockup` 에 `cashwalk-biz-toast` 룰(error)을 신설해, `data-brand="cashwalk-biz"`(별칭 cashpobi 포함) 화면의 `<nds-toast>` 를 전면 차단하고 Snackbar 로 안내한다. Toast 컴포넌트 가이드(component:Toast)도 "캐포비는 Toast 미사용 — 예외 없음" 으로 문구를 강화했다. 다른 브랜드의 Toast 사용은 영향 없음.
+  캐포비 알림 SSOT 는 흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X 를 가진 Snackbar 인데, 이를 권고하는 가이드만 있고 검증룰이 없어 캐포비 목업에서 `<nds-toast>` 가 아무 위반 없이 통과하던 공백이 있었다. `validate_html_mockup` 에 `cashwalk-biz-toast` 룰(error)을 신설해, `data-project="cashwalk-biz"`(별칭 cashpobi 포함) 화면의 `<nds-toast>` 를 전면 차단하고 Snackbar 로 안내한다. Toast 컴포넌트 가이드(component:Toast)도 "캐포비는 Toast 미사용 — 예외 없음" 으로 문구를 강화했다. 다른 프로젝트의 Toast 사용은 영향 없음.
 
 - 7a04a69: 약관동의 [필수] 자동 강조 · 캐포비 모달/팝업 검정 CTA 회귀(노랑) 정착 · 온보딩 풀폭 CTA 게이트
 
   세 가지 반복 피드백을 DS 근본에서 닫는다.
   - **약관동의 [필수] 강조 누락(반복)** — CheckboxGroup 이 `badge` 에 "필수" 가 들어있으면 `required` 를 따로 안 붙여도 자동으로 빨강+bold 강조하도록 했다(react/html 미러). 그동안 `required` opt-in 을 매번 누락해 회색으로 나오던 footgun 제거. 끄려면 `required={false}` 명시.
-  - **캐포비 모달/팝업 버튼이 노랑(반복)** — 모달/팝업 confirm 버튼 색을 `[data-brand="cashwalk-biz"]` CSS 캐스케이드 대신 신규 `--semantic-confirm-cta-*` 토큰으로 흐르게 바꿨다. 기존 캐스케이드는 `data-brand` 속성을 쓰지 않는 standalone 목업(브랜드 `:root` 교체식)에서 안 걸려 base 의 brand 노랑이 새던 회귀의 원인이었다. 토큰은 목업·Storybook 양쪽에 적용되고, base 는 각 브랜드 brand 색을 참조하므로 캐포비만 검정(#111)으로 override 된다(타 브랜드 무영향).
+  - **캐포비 모달/팝업 버튼이 노랑(반복)** — 모달/팝업 confirm 버튼 색을 `[data-project="cashwalk-biz"]` CSS 캐스케이드 대신 신규 `--semantic-confirm-cta-*` 토큰으로 흐르게 바꿨다. 기존 캐스케이드는 `data-project` 속성을 쓰지 않는 standalone 목업(프로젝트 `:root` 교체식)에서 안 걸려 base 의 project 노랑이 새던 회귀의 원인이었다. 토큰은 목업·Storybook 양쪽에 적용되고, base 는 각 프로젝트 project 색을 참조하므로 캐포비만 검정(#111)으로 override 된다(타 프로젝트 무영향).
   - **온보딩 단일 CTA 가 좁게(반복)** — 온보딩 주 CTA(Primary solid)에 full-width 가 없으면 `validate_html_mockup` 이 `onboarding-cta-not-fullwidth` error 로 막는다. 작성자가 모달 단일버튼(우측 hug)과 혼동하던 회귀 차단. 가이드(pattern:cashwalk-biz-page-onboarding)도 명시 강화.
 
 - 9257d0a: Container/Section 레이아웃 가이드(Figma 1385:13) 반영
@@ -401,7 +401,7 @@
 
 - d6e2deb: 캐포비 Pagination 박스형을 디자인가이드(PaginationGuide)에 정합
 
-  캐포비 어드민 Pagination 디자인가이드(Figma 4118:1186)를 기준으로 `data-brand="cashwalk-biz"` 박스형 캐스케이드를 다듬는다. markup/props 는 그대로라 다른 브랜드(base pill 형)와 React/HTML 미러는 무영향 — CSS 토큰 정합 + 가이드 갱신만.
+  캐포비 어드민 Pagination 디자인가이드(Figma 4118:1186)를 기준으로 `data-project="cashwalk-biz"` 박스형 캐스케이드를 다듬는다. markup/props 는 그대로라 다른 프로젝트(base pill 형)와 React/HTML 미러는 무영향 — CSS 토큰 정합 + 가이드 갱신만.
   - **radius 8 → 4** — 가이드가 명시한 PageItem radius(4) 로 맞춤(기존 `radius.md` → `radius.sm`).
   - **활성 페이지 font-weight bold → medium** — 가이드 Body3/Medium 과 일치(검정 배경+흰 텍스트로 이미 충분히 구분).
   - **boxed disabled 신설** — 끝에 도달한 Prev/Next 가 흐림(opacity 0.4)이 아니라 옅은 회색 박스(배경 `surface.subtle` + 회색 텍스트 `textRole.disabled`)로 표시. 가이드의 boxed disabled 의도 반영.
@@ -410,9 +410,9 @@
 
 - 9530a80: QuickMenu(신규): PC 우측 고정 퀵메뉴 컴포넌트
 
-  PC 화면 우측에 고정(sticky/fixed)되어 자주 쓰는 전역 액션 2~4개(3개 권장)를 빠르게 노출하는 보조 navigation 컴포넌트를 추가했다. Container(width 120 · radius 12 · White · overlay shadow) + Header("QUICK MENU" Bold/brand 색 + divider) + Menu Item × N(IconCircle 60 + 라벨) + 하단 TOP(맨 위로) 버튼 구조.
+  PC 화면 우측에 고정(sticky/fixed)되어 자주 쓰는 전역 액션 2~4개(3개 권장)를 빠르게 노출하는 보조 navigation 컴포넌트를 추가했다. Container(width 120 · radius 12 · White · overlay shadow) + Header("QUICK MENU" Bold/project 색 + divider) + Menu Item × N(IconCircle 60 + 라벨) + 하단 TOP(맨 위로) 버튼 구조.
   - React `<QuickMenu items={[…]} fixed showTop onTopClick />` · HTML `<nds-quick-menu items='[…]' fixed>` 3면 미러.
-  - 색은 전부 시멘틱 토큰 — 헤더는 `--semantic-text-brand-default`(brand cascade)라 5개 브랜드 색이 자동 적용. raw hex 없음.
+  - 색은 전부 시멘틱 토큰 — 헤더는 `--semantic-text-brand-default`(project cascade)라 5개 프로젝트 색이 자동 적용. raw hex 없음.
   - `fixed` 속성으로 PC 우측 고정 위치(top 172 · right 40 · z 900) + 모바일/태블릿(<1024) 자동 숨김(하단 Tab Bar 로 대체).
   - 아이템 클릭 → `quick-menu-item`(detail.key) · TOP 클릭 → `quick-menu-top` 이벤트. icon 은 inline SVG(이름/이모지 아님).
   - MCP 가이드(`component:QuickMenu`) · Storybook 스토리 · AllComponents 카탈로그 등재.
@@ -425,10 +425,10 @@
 
   Toast 디자인 가이드(Figma 1330:2)에 맞춰 컴포넌트를 **비차단형 단일 다크 메시지**로 재정의했다. 위치가 곧 형태다 — `top`(PC·상단 중앙·**pill**·패딩 16/32·body2) / `bottom`(모바일·하단·**rounded 24**·패딩 12/20·body3). 배경은 다크값(#212121·0.92) + 흰 텍스트, drop shadow(y8 blur12 18%) 추가.
 
-  배경/그림자는 role-based 시멘틱 변수(Figma SSOT) 집합 밖이라 **`--nds-toast-bg` / `--nds-toast-shadow` 컴포넌트 토큰**으로 신설(base `nudge-eap` theme `components` 맵 → `:root` emit, 브랜드 cascade 가능). styles 는 raw hex 없이 `var(--nds-toast-*)` 만 참조한다.
+  배경/그림자는 role-based 시멘틱 변수(Figma SSOT) 집합 밖이라 **`--nds-toast-bg` / `--nds-toast-shadow` 컴포넌트 토큰**으로 신설(base `nudge-eap` theme `components` 맵 → `:root` emit, 프로젝트 cascade 가능). styles 는 raw hex 없이 `var(--nds-toast-*)` 만 참조한다.
 
   **BREAKING**
-  - **색 변형 제거** — `variant`(`success`/`error`/`warning`/`info`) 와 `ToastVariant` 타입을 삭제했다. Toast 는 단일 다크 스타일만 가진다. 심각한 오류·결정 요청은 Modal/Alert, 액션·닫기·브랜드 카드(캐포비 흰 카드)는 Snackbar 로 라우팅. `error` 토스트의 `role=alert`/`aria-live=assertive` 도 함께 제거(모든 토스트 `role=status`·polite — 비차단형 일관).
+  - **색 변형 제거** — `variant`(`success`/`error`/`warning`/`info`) 와 `ToastVariant` 타입을 삭제했다. Toast 는 단일 다크 스타일만 가진다. 심각한 오류·결정 요청은 Modal/Alert, 액션·닫기·프로젝트 카드(캐포비 흰 카드)는 Snackbar 로 라우팅. `error` 토스트의 `role=alert`/`aria-live=assertive` 도 함께 제거(모든 토스트 `role=status`·polite — 비차단형 일관).
   - **`top-right` position 제거** — `ToastPosition` 은 `top | bottom` 만 남는다(가이드 2-position 모델). 유일 소비처였던 캐포비 admin 은 이미 Toast 자체가 banned(Snackbar 만 사용).
   - **동시 1개 노출이 기본** — `maxCount` 기본값을 3 → **1** 로 변경(새 토스트가 기존을 즉시 대체). 스택이 필요하면 `maxCount` 를 올려 opt-in.
 
@@ -437,7 +437,7 @@
 - 72d2018: Tooltip — Figma 가이드(1380:13) 규격 정렬
 
   Tooltip 을 디자인 가이드(Figma 1380:13) 스펙에 맞췄다. React/HTML 컴포넌트 구조·API·동작(hover·focus, show 200ms·hide 0ms, 4 position, 단일 노출)은 이미 부합해 변경 없이 **시각 규격(CSS·토큰)만** 정렬했다.
-  - **단일 다크 톤 #333333** — 배경을 `surface.inverse`(#111) → `--nds-tooltip-bg`(#333333, **전 브랜드 동일**)로. base `nudge-eap` theme 이 `:root` 로 emit. 기존 캐포비 전용 `tooltip.bg` 브랜드 override 는 base 가 흡수해 **중복 제거**.
+  - **단일 다크 톤 #333333** — 배경을 `surface.inverse`(#111) → `--nds-tooltip-bg`(#333333, **전 프로젝트 동일**)로. base `nudge-eap` theme 이 `:root` 로 emit. 기존 캐포비 전용 `tooltip.bg` 프로젝트 override 는 base 가 흡수해 **중복 제거**.
   - **본문** — Caption1 **Medium** 13/18(weight regular → medium), 흰 텍스트.
   - **패딩 14/16**(상하/좌우, 기존 8/12), radius 8 유지.
   - **꼬리 12×8 triangle** — 기존 8×8 rotate(45deg) 사각형 → border 로 그린 정삼각형(4 방향), 본체 외부 가운데에서 트리거 방향. 본체-트리거 8px 간격을 꼬리가 메운다.
@@ -447,7 +447,7 @@
 
 - c0efbfa: ValidationChip 신규 + 폼 검증/합성 패턴 가이드 (넛지EAP InputFormGuide)
 
-  넛지EAP Library 의 새 인풋 가이드(InputFormGuide 1399:124)에서 유일하게 DS 에 없던 **ValidationChip** 을 추가했다 — 입력 형식 요구사항 1개의 실시간 충족 신호(16px 체크 아이콘 + 12px 라벨). `state` 3종: `incomplete`(muted)·`complete`(Brand Blue)·`error`(status-error). 아이콘·텍스트가 같은 색이라 root `color` 하나만 semantic 토큰으로 두고 SVG 는 `currentColor` 로 상속 → 5 브랜드 cascade 자동 대응. react `<ValidationChip>` + html `<nds-validation-chip>` 3면 미러, Storybook 스토리·AllComponents 카탈로그 동시 등재.
+  넛지EAP Library 의 새 인풋 가이드(InputFormGuide 1399:124)에서 유일하게 DS 에 없던 **ValidationChip** 을 추가했다 — 입력 형식 요구사항 1개의 실시간 충족 신호(16px 체크 아이콘 + 12px 라벨). `state` 3종: `incomplete`(muted)·`complete`(Project Blue)·`error`(status-error). 아이콘·텍스트가 같은 색이라 root `color` 하나만 semantic 토큰으로 두고 SVG 는 `currentColor` 로 상속 → 5 프로젝트 cascade 자동 대응. react `<ValidationChip>` + html `<nds-validation-chip>` 3면 미러, Storybook 스토리·AllComponents 카탈로그 동시 등재.
 
   가이드(MCP): `component:ValidationChip` + 신규 `pattern:form-validation` — 회원가입 합성 3종(Input+ValidationChip 실시간 검증 · Input+Inline Button=FieldActionRow · Input+내장 password-toggle)과 Label/Helper/Error 규칙·검증 시점(onBlur/onSubmit/onChange)을 정리했다. 단일 필드 레이아웃은 기존 `pattern:nudge-eap-form-layout`, 컨트롤 선택은 `pattern:selection-controls` 로 위임.
 
@@ -490,7 +490,7 @@
 
 - b887f41: AddressSearch → **AddressPicker** 개명 (Picker 패밀리 정합) + 검색 버튼 검정 CTA.
   - **개명(Breaking)**: `AddressSearch` → `AddressPicker`, 태그 `nds-address-search` → `nds-address-picker`, 타입 `AddressSearchProps` → `AddressPickerProps`. 단순 검색창이 아니라 검색→결과선택→상세입력까지의 합성 picker 라서 Picker 패밀리(DatePicker/TimePicker…)와 이름을 맞춤. (도메인 이벤트 `address-query`/`address-search` 는 동작을 가리키므로 유지 — 소비자 리스너 무변경. `AddressResult`/`AddressValue` 타입도 유지.)
-  - **검색 버튼 검정**: 검색 버튼을 `color="secondary"` 로 — 캐포비/지니어트는 시그니처 검정 CTA, 트로스트/런마일은 각 브랜드 secondary 로 cascade(색 hex 미박음). react+html 미러.
+  - **검색 버튼 검정**: 검색 버튼을 `color="secondary"` 로 — 캐포비/지니어트는 시그니처 검정 CTA, 트로스트/런마일은 각 프로젝트 secondary 로 cascade(색 hex 미박음). react+html 미러.
   - MCP `COMPONENT_GUIDES.AddressPicker` 갱신(전체 플로우 명시 · SearchInput 혼동 경고 · 검정 버튼 cascade 주의).
 
   마이그레이션: `<nds-address-search>` → `<nds-address-picker>`, `import { AddressSearch }` → `import { AddressPicker }`.
@@ -505,10 +505,10 @@
 
   Avatar / AvatarGroup 는 그대로 유지 (사람 식별 시멘틱). Asset 은 그보다 일반적인 미디어 박스 — 카드 썸네일, 카테고리 시그니처, 상품 이미지, 채팅 첨부 등.
 
-- 501ff41: ⚠️ BREAKING — Button taxonomy 통일 (전 브랜드).
+- 501ff41: ⚠️ BREAKING — Button taxonomy 통일 (전 프로젝트).
 
   축 정리: `shape{default, pill}` × `variant{solid, soft, outlined}` × `color{primary, secondary, neutral}`.
-  - **`assistive` → `neutral` 하드 rename** (alias 없음): 토큰 슬롯(`buttonBg/text/border.assistive` × 전 브랜드 semantic), `cv.button` 멤버(`bgAssistive`→`bgNeutral` 등), CSS 변수 `--semantic-button-*-assistive-*` → `--semantic-button-*-neutral-*`, validator(html-validator·mockup-validator) 룰(`assistive-solid-cta`→`neutral-solid-cta`), MCP 가이드. → 외부 프로젝트에서 `<Button color="assistive">` / `--semantic-button-*-assistive-*` var 사용 시 **변경 필요**.
+  - **`assistive` → `neutral` 하드 rename** (alias 없음): 토큰 슬롯(`buttonBg/text/border.assistive` × 전 프로젝트 semantic), `cv.button` 멤버(`bgAssistive`→`bgNeutral` 등), CSS 변수 `--semantic-button-*-assistive-*` → `--semantic-button-*-neutral-*`, validator(html-validator·mockup-validator) 룰(`assistive-solid-cta`→`neutral-solid-cta`), MCP 가이드. → 외부 프로젝트에서 `<Button color="assistive">` / `--semantic-button-*-assistive-*` var 사용 시 **변경 필요**.
   - **`outlined-sub` variant 제거** → `outlined` 로 흡수: react/html styleMap 의 3개 tone blocks·타입·`BUTTON_VARIANTS` 제거. 소비처(Trost AppBar·mockup-layout·stories) 는 `variant="outlined" color="secondary"` 로 마이그레이션(neutral 보더 유지). validator/guide/test enum 정리. → `<Button variant="outlined-sub">` 사용 시 **변경 필요**.
   - `color` prop 이름은 **유지**(Badge/Chip 등과 공유 prop — Button 만 tone 으로 바꾸면 API 엇갈림). tone 개념은 값(primary/secondary/neutral)으로 표현.
   - 시각 변화 없음(순수 rename/제거) — outlined-sub→outlined 흡수분만 weight medium→bold·text tone 미세 변화.
@@ -547,11 +547,11 @@
     - Weak/Neutral = `neutral`+`soft` → bg #F5F5F5/#EEE/#FAFAFA · 텍스트 #111/#BBB
     - Outlined/Neutral = `neutral`+`outlined` → border #E7E7E7 · 텍스트 #111 · disabled #BBB
   - 캐포비 semantic 에 `buttonBg.neutral`·`buttonText.neutral`/`neutralDisabled` 추가(buttonBorder.neutral 은 기존 #E7E7E7).
-  - **styleMap `neutral.soft`** 를 "연한 회색 fill + 진한 텍스트"(surface.section + textRole.strong)로 변경 — 전 브랜드 weak/neutral 에 적용(Weak/Neutral 패턴 정합). **react↔html `neutral.solid` drift 도 reconcile**(html 을 react 의 `cv.button.bgNeutral` 로 통일).
+  - **styleMap `neutral.soft`** 를 "연한 회색 fill + 진한 텍스트"(surface.section + textRole.strong)로 변경 — 전 프로젝트 weak/neutral 에 적용(Weak/Neutral 패턴 정합). **react↔html `neutral.solid` drift 도 reconcile**(html 을 react 의 `cv.button.bgNeutral` 로 통일).
   - `secondary` tone 은 캐포비에서 옵션(Figma 미정의) — 하위호환용 검정값만 유지. 신규는 `color="neutral"`.
-  - validator `neutral-solid-cta` 룰에 **캐포비 예외** 추가 — cashwalk-biz 는 neutral solid 가 #111 검정 CTA 라 정당(다른 브랜드는 cool-gray 라 경고 유지).
-  - **버그 수정 — neutral solid 글자색**: 기존엔 solid neutral 텍스트가 brand 별 fill 명도와 안 맞아 밝은 fill 브랜드(geniet #ECECEC / runmile #F2F4F6)에서 흰 글자가 안 보였음. 전용 `--semantic-button-text-neutral-solid` 토큰 신설(fill 명도 대비: 어두운 fill=흰 / 밝은 fill=어두운 글자) + styleMap neutral.solid 텍스트를 이걸로 전환. cashpobi #111→흰, geniet→#666, runmile→#4E5968.
-  - **"캐포비 secondary 없음" 가드 3중**: (1) React Button `BRAND_TONE_DENYLIST` dev console.warn, (2) validator 하드게이트 룰 `cashwalk-biz-no-secondary`, (3) MCP Button 가이드 pitfall. 캐포비 검정/회색 CTA 는 `color="neutral"`.
+  - validator `neutral-solid-cta` 룰에 **캐포비 예외** 추가 — cashwalk-biz 는 neutral solid 가 #111 검정 CTA 라 정당(다른 프로젝트는 cool-gray 라 경고 유지).
+  - **버그 수정 — neutral solid 글자색**: 기존엔 solid neutral 텍스트가 project 별 fill 명도와 안 맞아 밝은 fill 프로젝트(geniet #ECECEC / runmile #F2F4F6)에서 흰 글자가 안 보였음. 전용 `--semantic-button-text-neutral-solid` 토큰 신설(fill 명도 대비: 어두운 fill=흰 / 밝은 fill=어두운 글자) + styleMap neutral.solid 텍스트를 이걸로 전환. cashpobi #111→흰, geniet→#666, runmile→#4E5968.
+  - **"캐포비 secondary 없음" 가드 3중**: (1) React Button `PROJECT_TONE_DENYLIST` dev console.warn, (2) validator 하드게이트 룰 `cashwalk-biz-no-secondary`, (3) MCP Button 가이드 pitfall. 캐포비 검정/회색 CTA 는 `color="neutral"`.
 
 - b887f41: 캐포비 admin `cashwalk-biz-tab` 패턴 가이드에 **Tab vs Filter 의사결정 가이드** 보강 — Figma 캐포비 Library(DesignGuide/Tab 3544:206) 정합.
 
@@ -561,7 +561,7 @@
   - **화면 배치 순서** — 페이지 타이틀 → Tab → FilterBar → 데이터 영역.
   - **DO/Don't 안티패턴** — 큰 분류를 Filter 로·조건 좁히기를 Tab 으로 만들기 금지, Tab 중첩 금지, Underline·Box 혼용 금지, FilterBar CTA 1개 제한 등.
 
-  컴포넌트(`Tabs` line/chip · `FilterBar`)·브랜드 토큰 cascade 는 변경 없음 — 가이드(문서) 보강만.
+  컴포넌트(`Tabs` line/chip · `FilterBar`)·프로젝트 토큰 cascade 는 변경 없음 — 가이드(문서) 보강만.
 
 - 6cd3190: `CheckboxGroup` 범용화 — "전체선택 + 체크 리스트"를 한 컴포넌트로 (ConsentChecklist 흡수, antd Checkbox.Group 대응).
   - **데이터 모드(`items`)** 추가 — `value`/`onValueChange` 로 선택 관리 + `selectAll`(자식 선택 비율로 checked/indeterminate/unchecked **자동 파생**) + `badge`([필수]/[선택]/NEW 도메인 중립 슬롯)·`detail`(약관 전문 등 펼침) + `expandable`. 각 행은 `Checkbox` 를 재사용(지표 단일 소스).
@@ -593,11 +593,11 @@
   **ConfirmTooltip (신규)** — 인라인 popconfirm. 흰 말풍선 + 제목/본문 + 1~2 액션 버튼(검정 secondary CTA) + 방향 tail.
   - `react`: `<ConfirmTooltip open title description actions={"dual"|"single"} placement confirmLabel cancelLabel bodyWidth onConfirm onCancel>{trigger}` — controlled.
   - `html`: `<nds-confirm-tooltip>` (light-DOM child = 트리거) + `nds-confirm-tooltip-confirm`/`nds-confirm-tooltip-cancel` 이벤트.
-  - `styles`: `.nds-confirm-tooltip__*` 블록 — 색은 전부 semantic role 토큰(surface.default / textRole.strong·subtle / button.bgSecondary·textSecondary)이라 brand cascade 로 해석. radius(10/6)·본문 폭(280)은 geometry.
+  - `styles`: `.nds-confirm-tooltip__*` 블록 — 색은 전부 semantic role 토큰(surface.default / textRole.strong·subtle / button.bgSecondary·textSecondary)이라 project cascade 로 해석. radius(10/6)·본문 폭(280)은 geometry.
   - Tooltip(다크 hover 안내)과 분리 — 사용자의 응답/결정이 필요한 가벼운 확인용. 차단형·긴 본문은 Modal/Popup.
 
-  **Tooltip (캐포비 정합)** — 다른 브랜드는 영향 없음.
-  - `--nds-tooltip-bg` 슬롯 신설(미설정 시 `surface.inverse` fallback = 기존 동작). 캐포비만 brand 토큰맵에서 `--semantic-fill-neutral-default`(#333)로 override — base inverse(#111)가 아닌 Figma 다크그레이.
+  **Tooltip (캐포비 정합)** — 다른 프로젝트는 영향 없음.
+  - `--nds-tooltip-bg` 슬롯 신설(미설정 시 `surface.inverse` fallback = 기존 동작). 캐포비만 project 토큰맵에서 `--semantic-fill-neutral-default`(#333)로 override — base inverse(#111)가 아닌 Figma 다크그레이.
   - 캐포비 리치 본문(`[data-rich]`)을 Figma compact 스펙으로 정렬: padding 14/16, gap 6, 제목 13 Medium · 본문 12/18.
 
   MCP `COMPONENT_GUIDES.ConfirmTooltip` 등록 + Tooltip 가이드에 ConfirmTooltip 교차참조. Storybook 스토리 · AllComponents 카탈로그 · componentInventory 추가.
@@ -627,15 +627,15 @@
 - 2ae9ac5: Decision Log 누적 + get_guide 선택적 로딩(aspects) — "학습하는 DS" 파이프라인의 결정/스킬 단계 보강.
   - **Decision Log (`designDecisions.jsonl`)** — `save_design_spec` 이 `design-spec.json`(매번 덮어씀) 옆에 화면의 `decisions[]` + 노드별 `rationale` 을 한 줄씩 누적한다. 결정의 시간순 이력/메모리 소스(다음 단계 Memory Read 의 입력).
     - MCP 안(`saveDesignSpec`)에서 추출하므로 PTY·stream·외부 소비 프로젝트 모두 동일하게 적용.
-    - 화면 정체성(brand·surface·intent·name) 기준 dedup — 재저장/auto-fix 루프 중복 방지, 화면을 번갈아 저장해도 각 화면 기준 비교.
+    - 화면 정체성(project·surface·intent·name) 기준 dedup — 재저장/auto-fix 루프 중복 방지, 화면을 번갈아 저장해도 각 화면 기준 비교.
     - `ok` 를 dedup 해시에 포함 — 결정은 그대로인데 validation 이 false→true 로 바뀌면 새 행으로 남겨 '최종 승인 상태'를 기록(검증 전이 추적).
     - 최근 N행 상한(기본 200)으로 무한 증가/풀파일 비용 방지. 소비 프로젝트는 gitignore 권장.
     - 순수 코어(`buildDesignDecisionRow`) + IO(`appendDesignDecisionRow`/`readDesignDecisions`) 분리, best-effort(never throws).
-  - **`get_guide({ aspects })`** — principles 가이드를 화면이 실제 필요한 측면(slice)만 골라 슬림하게 받는 친화적 파라미터. `DESIGN_PRINCIPLES` 가 이미 aspect별 top-level 키(brandTone/colors/typography/spacing/elevation/shapes/dos/donts/bannedPatterns)로 쪼개져 있어 데이터 재구조화 없이 `pickSections` 경로 재사용.
-    - 별칭: `radius`→shapes, `color`→colors, `tone`→brandTone, `font`→typography, `shadow`→elevation, `dos-donts`→dos+donts+bannedPatterns 등. `sections` 와 병합 가능.
+  - **`get_guide({ aspects })`** — principles 가이드를 화면이 실제 필요한 측면(slice)만 골라 슬림하게 받는 친화적 파라미터. `DESIGN_PRINCIPLES` 가 이미 aspect별 top-level 키(projectTone/colors/typography/spacing/elevation/shapes/dos/donts/bannedPatterns)로 쪼개져 있어 데이터 재구조화 없이 `pickSections` 경로 재사용.
+    - 별칭: `radius`→shapes, `color`→colors, `tone`→projectTone, `font`→typography, `shadow`→elevation, `dos-donts`→dos+donts+bannedPatterns 등. `sections` 와 병합 가능.
     - principles 토픽에만 적용(컴포넌트/패턴은 키 체계가 달라 무시 — 배치 누수·오인 에러 없음). 일부 aspect 만 오타면 `_unknownAspects` 마커로 알림, 전부 미지면 `validAspects` 동반 에러.
-  - **`get_guide({ topic: 'principles' })` 학습된 원칙 승격(Decision Log → Principles)** — `<cwd>/designDecisions.jsonl` 에서 같은 브랜드의 서로 다른 화면 N개(기본 3) 이상에서 반복된 결정/근거를 `_learnedPrinciples` 블록으로 끌어올려 principles 응답에 머지한다. "반복된 결정 → 브랜드 관습" 을 자동 원칙화하는 단계.
-    - brand = 명시 인자 → `cwd` 의 `nudge.brand` 마커 순으로 해석. cwd = 명시 인자 → MCP 프로세스 cwd(= `save_design_spec` 의 기본 기록 위치). 둘 다 best-effort — 파일 없음/임계 미만이면 응답 불변.
+  - **`get_guide({ topic: 'principles' })` 학습된 원칙 승격(Decision Log → Principles)** — `<cwd>/designDecisions.jsonl` 에서 같은 프로젝트의 서로 다른 화면 N개(기본 3) 이상에서 반복된 결정/근거를 `_learnedPrinciples` 블록으로 끌어올려 principles 응답에 머지한다. "반복된 결정 → 프로젝트 관습" 을 자동 원칙화하는 단계.
+    - project = 명시 인자 → `cwd` 의 `nudge.project` 마커 순으로 해석. cwd = 명시 인자 → MCP 프로세스 cwd(= `save_design_spec` 의 기본 기록 위치). 둘 다 best-effort — 파일 없음/임계 미만이면 응답 불변.
     - 화면별 최신 행으로 접어 재저장이 카운트를 부풀리지 않게 하고, ok=true 결정만 집계. count 내림차순 상한(기본 8). `aspects`/`sections` 슬라이스 뒤에 마커를 붙여 슬림 호출에도 항상 노출.
     - 순수 집계(`promoteDesignDecisions`)는 공용 코어(mockup-core)에 위치 — MCP·데스크탑·외부 소비 프로젝트가 동일 규칙 공유. `NUDGE_LEARNED_PRINCIPLES=0` opt-out, `NUDGE_PROMOTE_THRESHOLD` 로 임계 조정.
   - 결정 로그 read-side(타입·상수·`readDesignDecisions`·`promoteDesignDecisions`)를 공용 코어 `@nudge-design/mockup-core/tools/design-decisions` 로 단일화(데스크탑 Memory Read 와 SSOT 공유). mcp 는 re-export 로 API 호환 유지.
@@ -645,11 +645,11 @@
   - 새 MCP 도구 2개:
     - `save_design_spec` — 경량 DesignSpec 을 카탈로그 기준으로 검증한 뒤 `<cwd>/design-spec.json` 으로 저장. `ok:false` 면 violations 를 고쳐 재저장(validate-before-code). 코드 작성 전에 사용자에게 보여주고 동의를 받는 soft 승인 게이트.
     - `validate_design_spec` — 파일 쓰기 없이 스펙만 검증(자기교정 루프용).
-  - DesignSpec 은 *의도*만 담는다: 컴포넌트 트리(시멘틱 이름)·시멘틱 토큰 이름(hex 금지)·brand/surface·결정 근거. 좌표·resolved 색·px·이미지는 담지 않는다 — 그건 코드→Figma `scene.json`(역방향 추출) 담당.
+  - DesignSpec 은 *의도*만 담는다: 컴포넌트 트리(시멘틱 이름)·시멘틱 토큰 이름(hex 금지)·project/surface·결정 근거. 좌표·resolved 색·px·이미지는 담지 않는다 — 그건 코드→Figma `scene.json`(역방향 추출) 담당.
   - 컴포넌트 어휘는 `scene.ts` 의 `ndsTagToComponentName` 규칙을 공유(`Button` 또는 `nds-button` 둘 다 허용) — 정방향 spec ↔ 역방향 scene 을 컴포넌트 정체성으로 JOIN 가능(Phase 3 인스턴스 승격 대비).
-  - 검증 룰: 시멘틱 토큰 only(raw hex/rgb → error, raw 팔레트 → warn), 카탈로그에 없는 토큰 → error, 브랜드 실재 검사(silent base-blue 폴백 가드, html-validator 의 unknown-brand-slug 와 동일 의미), 컴포넌트 존재(unknown → warn), prop enum 위반 → error.
+  - 검증 룰: 시멘틱 토큰 only(raw hex/rgb → error, raw 팔레트 → warn), 카탈로그에 없는 토큰 → error, 프로젝트 실재 검사(silent base-blue 폴백 가드, html-validator 의 unknown-project-slug 와 동일 의미), 컴포넌트 존재(unknown → warn), prop enum 위반 → error.
   - `get_guide({ topic: 'pattern:design-spec' })` 추가 — 스펙 스키마·soft gate·언제 쓰는지 SSOT. CLAUDE.md html 템플릿에도 조건부 `§1-bis` 단계로 안내(단순 화면은 생략).
-  - 카탈로그(tokenSet/componentNames/propAllowedValues/ndsAttrEnums + 브랜드 셋)는 `configureDesignSpec` 으로 주입(configureHtmlValidator 패턴 미러). `validateDesignSpec` 는 순수 함수 — vitest 단위검증 20건.
+  - 카탈로그(tokenSet/componentNames/propAllowedValues/ndsAttrEnums + 프로젝트 셋)는 `configureDesignSpec` 으로 주입(configureHtmlValidator 패턴 미러). `validateDesignSpec` 는 순수 함수 — vitest 단위검증 20건.
 
 - 8077540: 목업 런타임 미등록 회귀 수정 + 재발방지 가드.
   - **html 런타임 등록 누락 수정** — `define()` 은 하지만 `runtime.ts`(standalone 번들 side-effect 엔트리)에 import 되지 않아 단일파일 HTML 목업에서 미등록(빈 박스)이던 컴포넌트 10종을 등록: `nds-stepper`, `nds-pagination`, `nds-popup`, `nds-text-button`, `nds-coach-mark`, `nds-empty-state`, `nds-online-indicator`, `nds-snackbar`, `nds-snackbar-host`, `nds-sparkline`. 이 중 7종은 `index.ts` 배럴 export 도 함께 복원(react↔html parity).
@@ -683,9 +683,9 @@
   - MCP `COMPONENT_GUIDES.NoticeAlert` 등록 — variant 의미·강조 예산·pitfalls·examplesHtml. Storybook 스토리 + AllComponents 카탈로그 + 인벤토리 엔트리.
 
 - 26df7ba: Pagination — 캐포비(cashwalk-biz) 박스형 스타일 추가 (Figma 배너광고 리포트 3001:31310).
-  - `<html data-brand="cashwalk-biz">` cascade 만으로 각 페이지/화살표가 개별 보더 박스(white + Border/Normal #EEE, r8, 34h)로 렌더되고, 활성 페이지는 캐포비 시그니처 검정 채움(Fill/Neutral #333 + 흰 텍스트)이 된다.
-  - markup/props/attribute 변경 없음 — base(NudgeEAP·Trost 등 다른 브랜드)는 기존 borderless + brand 채움 그대로. `:where()` 0-specificity 라 base 규칙 뒤에 추가.
-  - Storybook `Brand/캐포비 박스형` 스토리 + MCP `COMPONENT_GUIDES.Pagination` 함정·figmaNodeUrl 갱신.
+  - `<html data-project="cashwalk-biz">` cascade 만으로 각 페이지/화살표가 개별 보더 박스(white + Border/Normal #EEE, r8, 34h)로 렌더되고, 활성 페이지는 캐포비 시그니처 검정 채움(Fill/Neutral #333 + 흰 텍스트)이 된다.
+  - markup/props/attribute 변경 없음 — base(NudgeEAP·Trost 등 다른 프로젝트)는 기존 borderless + project 채움 그대로. `:where()` 0-specificity 라 base 규칙 뒤에 추가.
+  - Storybook `Project/캐포비 박스형` 스토리 + MCP `COMPONENT_GUIDES.Pagination` 함정·figmaNodeUrl 갱신.
 
 - 24d2f0c: `pattern:consent` 가이드 신설 — 약관/개인정보 동의 화면을 전용 컴포넌트 대신 Checkbox(indeterminate) 조립 패턴으로 안내.
 
@@ -698,7 +698,7 @@
   - `/ds-audit` 스킬에 점검 카테고리 8 "패턴 잎 커버리지" 추가(.claude SSOT + Codex 미러 재생성).
 
 - b887f41: PhoneInput 분리형 박스 레이아웃 + 자동 하이픈 (캐포비 Figma 3001:40209·3902 폼).
-  - **레이아웃**: 국가코드 다이얼 + 구분선 + 번호 입력이 합쳐진 단일 필드 → **국가코드 드롭다운 박스 + 번호 입력 박스가 분리된 두 박스(gap)** 로 변경. 내부 구분선(`__divider`) 제거. 두 박스 모두 base Input 시멘틱 토큰(`--nds-input-height`=48 · `--nds-input-radius`=md · `--nds-input-border-color`/`-background`)을 상속 — Input 과 둥근 모서리·높이·brand cascade 자동 일관.
+  - **레이아웃**: 국가코드 다이얼 + 구분선 + 번호 입력이 합쳐진 단일 필드 → **국가코드 드롭다운 박스 + 번호 입력 박스가 분리된 두 박스(gap)** 로 변경. 내부 구분선(`__divider`) 제거. 두 박스 모두 base Input 시멘틱 토큰(`--nds-input-height`=48 · `--nds-input-radius`=md · `--nds-input-border-color`/`-background`)을 상속 — Input 과 둥근 모서리·높이·project cascade 자동 일관.
   - **자동 하이픈**: 새 `autoFormat` prop(기본 on, html `auto-format` 속성). 화면에는 KR(+82) 모바일 3-4-4 하이픈을 자동 삽입하고 `value`/`onValueChange` 는 숫자만 다룸(예: `01012345678`). KR 외 국가는 규칙 미정의라 숫자 패스스루. `autoFormat={false}` 로 비활성.
   - focus/error 보더는 base Input 토큰(`input.borderFocus`/`input.borderError`)으로 각 박스에 적용.
   - MCP `COMPONENT_GUIDES.PhoneInput` 에 `figmaNodeUrl` + 레이아웃·하이픈 설명 갱신.
@@ -722,12 +722,12 @@
 - 2a4e6de: Toast ↔ Snackbar 의미 재정리 — "인터랙션 있는 알림은 자동으로 사라지면 안 된다"를 기준으로 역할을 갈랐다.
   - **Toast = 인터랙션 없는 일시 메시지** 전용으로 축소. 자동으로 사라지므로 `action`(되돌리기/다시시도)·닫기 버튼·캐포비 흰 카드 chrome 을 제거했다. **`ToastData.action` 제거(breaking)** — `toast(msg, { action })` 를 쓰던 곳은 Snackbar 로 옮겨야 한다. 남은 책임: message + variant(default/success/error/warning/info) + 자동닫힘 + multi-stack.
   - **Snackbar = 액션/닫기가 있는 카드형 알림**으로 확장. 인라인(`<Snackbar>`, 부모가 표시 통제)에 더해 **`Snackbar.Provider` + `useSnackbar()`** 인프라를 신설 — 포지셔닝(top/bottom/top-right) · 자동닫힘 · 단일 교체(maxCount=1) · 스택을 DS 가 관리한다. HTML 미러로 **`<nds-snackbar-host>`** 매니저 신설(+ 누락돼 있던 `<nds-snackbar>` export 복구).
-  - **캐포비 admin 흰 카드 알림(구 Toast) → Snackbar 로 이관.** Default/Success/Error/Warning/Info 5개 state 의 흰 카드 외형(흰 배경 + 그림자 + radius 8) · status 칩 아이콘(24) · 닫기 X · 우측 상단 고정 · 단일 교체를 `data-brand="cashwalk-biz"` cascade + `brand="cashwalk-biz"`(칩 아이콘 렌더)로 Snackbar 가 직접 렌더한다(이전엔 호스트 커스텀 렌더 필요). variant 색은 인라인 style 대신 CSS(`data-variant`)로 옮겨 브랜드 카드 cascade 가 배경을 덮을 수 있게 했다.
+  - **캐포비 admin 흰 카드 알림(구 Toast) → Snackbar 로 이관.** Default/Success/Error/Warning/Info 5개 state 의 흰 카드 외형(흰 배경 + 그림자 + radius 8) · status 칩 아이콘(24) · 닫기 X · 우측 상단 고정 · 단일 교체를 `data-project="cashwalk-biz"` cascade + `project="cashwalk-biz"`(칩 아이콘 렌더)로 Snackbar 가 직접 렌더한다(이전엔 호스트 커스텀 렌더 필요). variant 색은 인라인 style 대신 CSS(`data-variant`)로 옮겨 프로젝트 카드 cascade 가 배경을 덮을 수 있게 했다.
 
-  MCP 가이드(`COMPONENT_GUIDES.Toast`/`Snackbar`) 의미·캐포비 brand spec(matrixOverrides) 을 Snackbar 로 이관, Storybook 스토리(Snackbar 에 Provider·캐포비·인터랙션 테스트 추가 / Toast 에서 action·캐포비 스토리 제거) · AllComponents 설명 · componentInventory 동기화.
+  MCP 가이드(`COMPONENT_GUIDES.Toast`/`Snackbar`) 의미·캐포비 project spec(matrixOverrides) 을 Snackbar 로 이관, Storybook 스토리(Snackbar 에 Provider·캐포비·인터랙션 테스트 추가 / Toast 에서 action·캐포비 스토리 제거) · AllComponents 설명 · componentInventory 동기화.
 
 - 26df7ba: Tabs 에 `variant="segment"` 추가하고 SegmentedControl 컴포넌트 폐기(흡수).
-  - **Tabs variant='segment'**: 연결된 회색 트랙 위 균등 분할 단일선택(iOS 세그먼트). active = 흰색 떠오름(surface.default + shadow), tone='color' 면 브랜드 채움. mobile(36) / pc(40, 아이콘 동반). react/styles/html 3면 미러.
+  - **Tabs variant='segment'**: 연결된 회색 트랙 위 균등 분할 단일선택(iOS 세그먼트). active = 흰색 떠오름(surface.default + shadow), tone='color' 면 프로젝트 채움. mobile(36) / pc(40, 아이콘 동반). react/styles/html 3면 미러.
   - **SegmentedControl 제거**: 컴포넌트(`SegmentedControl` / `nds-segmented`) · 스타일 · export · 스토리 · 카탈로그 · 인벤토리 · MCP 가이드 전부 삭제. 기존 SegmentedControl 사용처는 `Tabs variant="segment"` 로 마이그레이션(SegmentedControl 의 default/solid 중 default(흰 raised)만 흡수, solid 는 폐지).
   - AllComponents · Tabs 스토리에 segment(mobile/pc) 노출. MCP 가이드·인벤토리·검증룰 cross-ref 를 Tabs variant=segment 로 갱신.
 
@@ -737,7 +737,7 @@
   - **`prefix`** (기본 `""`) — `#` 강제 제거, 해시태그는 `prefix="#"` 로 opt-in. (저장값엔 prefix 미포함, 표시 시 부착.)
   - **`pattern`**(정규식)·**`validate`**(함수)·**`onInvalid`** / `nds-tag-invalid` 이벤트 — 이메일 등 형식 검증. 실패 시 추가 안 됨(입력 유지).
   - `addButtonLabel` 추가.
-  - **치수/색 정합**: 입력칸·추가버튼이 Input 과 동일한 `--nds-input-height`/`--nds-input-radius`/`--nds-input-padding-x` 슬롯을 추종 → 캐포비 admin 40px/radius4, base 48/8 로 cascade(둘이 항상 flush). 입력칸 색은 input 시멘틱(`input.bg`·`borderDefault`·`borderFocus`·`borderError`·`placeholder`·`helpertext*`), 추가버튼 채움은 button 시멘틱(`button.bgSecondary`/`textSecondary` = 브랜드 검정 CTA), 칩은 `surface.subtle`·`icon.disabled`. 전부 시멘틱 cascade(리터럴 0).
+  - **치수/색 정합**: 입력칸·추가버튼이 Input 과 동일한 `--nds-input-height`/`--nds-input-radius`/`--nds-input-padding-x` 슬롯을 추종 → 캐포비 admin 40px/radius4, base 48/8 로 cascade(둘이 항상 flush). 입력칸 색은 input 시멘틱(`input.bg`·`borderDefault`·`borderFocus`·`borderError`·`placeholder`·`helpertext*`), 추가버튼 채움은 button 시멘틱(`button.bgSecondary`/`textSecondary` = 프로젝트 검정 CTA), 칩은 `surface.subtle`·`icon.disabled`. 전부 시멘틱 cascade(리터럴 0).
   - 추가버튼은 입력칸에 붙는 정사각 affordance라 IconButton(최대 36·고스트)/Button(40px 없음·radius8)으론 정렬이 깨져 인라인 유지 — 단 button 시멘틱 토큰으로 버튼 시스템과 일관.
   - 버그 수정: 한글 IME 조합 중 Enter 로 마지막 글자가 중복 입력되던 문제 — `isComposing`(keyCode 229) 가드로 조합 확정 전 Enter 무시.
 
@@ -756,7 +756,7 @@
 
 - 6834bfd: Toggle 라벨 내장 status 변형 + tone 추가 (어드민 리스트 노출 토글용).
   - `onLabel`/`offLabel`(HTML `on-label`/`off-label`) — 트랙 **안**에 on/off 텍스트(예: 노출/미노출). 주면 폭 auto + 큰 썸(30 / thumb 25, Figma 캐포비 3172:577). 켜짐=라벨 좌측, 꺼짐=라벨 우측.
-  - `tone="brand"`(기본) | `"success"` — 켜짐 트랙 색. success 는 초록(semantic status-success 토큰 = `iconRole.statusSuccess`), raw hex 없이 5 브랜드 자동 대응.
+  - `tone="project"`(기본) | `"success"` — 켜짐 트랙 색. success 는 초록(semantic status-success 토큰 = `iconRole.statusSuccess`), raw hex 없이 5 프로젝트 자동 대응.
   - react `Toggle` / html `<nds-toggle>` 미러, `@nudge-design/styles` `.nds-toggle__inner-label` + labeled/tone 규칙 추가. 기본 토글 동작·DOM 무변경(회귀 없음).
 
 - b887f41: OtpInput → **VerificationCodeInput** 개명 + 단일 코드 필드로 책임 정리.

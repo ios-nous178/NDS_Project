@@ -43,7 +43,7 @@ export interface ContextRow {
   loggedAt: string;
   tool: string;
   kind: ContextKind;
-  brand?: string;
+  project?: string;
   surface?: string;
   /** 같은 kind 직전 행과 동일하면 적재 생략하기 위한 dedup 해시. */
   hash: string;
@@ -53,7 +53,7 @@ export interface ContextRow {
 interface Projected {
   kind: ContextKind;
   payload: Record<string, unknown>;
-  brand?: string;
+  project?: string;
   surface?: string;
   /** 로그/스냅샷을 적재할 프로젝트 루트 힌트 (build 처럼 args.cwd 가 없을 때 결과에서 유도). */
   cwdHint?: string;
@@ -89,7 +89,7 @@ export function captureContext(ctx: ToolAfterCallContext): void {
       loggedAt: new Date().toISOString(),
       tool: ctx.name,
       kind: projected.kind,
-      ...(projected.brand ? { brand: projected.brand } : {}),
+      ...(projected.project ? { project: projected.project } : {}),
       ...(projected.surface ? { surface: projected.surface } : {}),
       hash: hashPayload(projected.kind, payload),
       payload,
@@ -128,7 +128,7 @@ function projectPrd(args: ToolArgs, result: unknown): Projected | null {
   if (!prd) return null;
   return {
     kind: "prd",
-    brand: strField(args.brand),
+    project: strField(args.project),
     surface: strField(args.surface),
     payload: {
       prd: prd.slice(0, MAX_PRD_CHARS),
@@ -153,7 +153,7 @@ function projectBuild(args: ToolArgs, result: unknown): Projected | null {
   }
   return {
     kind: "build-output",
-    brand: strField(args.brand),
+    project: strField(args.project),
     surface: strField(args.surface) ?? strField(objField(result, "intent")),
     // outputPath = <cwd>/dist/index.html → 두 단계 위가 프로젝트 루트.
     cwdHint: path.dirname(path.dirname(outputPath)),
@@ -176,7 +176,7 @@ function projectValidate(args: ToolArgs, result: unknown): Projected | null {
   if (!filePath && violationCount === undefined) return null;
   return {
     kind: "validate",
-    brand: strField(args.brand),
+    project: strField(args.project),
     payload: {
       ...(filePath ? { filePath } : {}),
       ...(violationCount !== undefined ? { violationCount } : {}),
@@ -224,7 +224,7 @@ function projectGuide(args: ToolArgs): Projected | null {
   if (topics.length === 0) return null;
   return {
     kind: "guide-demand",
-    brand: strField(args.brand),
+    project: strField(args.project),
     payload: {
       topics,
       ...(strField(args.view) ? { view: strField(args.view) } : {}),

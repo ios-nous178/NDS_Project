@@ -31,7 +31,7 @@ type LookupCatalog = "component" | "icon" | "token";
 
 interface PromptEvent {
   kind: "prompt";
-  brand?: string;
+  project?: string;
   surface?: string;
   text: string;
   chars?: number;
@@ -50,20 +50,20 @@ interface ComponentLookupEvent {
   suggestions?: string[];
   /** 이 조회를 유발한 유저 원 요청 (find_* 의 userRequest 인자). 환각 → "왜" 연결용. */
   userRequest?: string;
-  /** 브랜드 컨텍스트(있으면) — 환각/공백을 브랜드별로 그룹핑. */
-  brand?: string;
+  /** 프로젝트 컨텍스트(있으면) — 환각/공백을 프로젝트별로 그룹핑. */
+  project?: string;
 }
 
 /** validate_html_mockup → 검증 룰 위반 집계. "어떤 룰이 자주 깨지나" = 객관적 DS 공백. */
 interface ValidationEvent {
   kind: "validation";
-  /** ruleKind = 룰 분류(invariant/model-guard/brand-policy) — model-guard 히트 0 추적(폐기 후보)용. */
+  /** ruleKind = 룰 분류(invariant/model-guard/project-policy) — model-guard 히트 0 추적(폐기 후보)용. */
   rules: Array<{ rule: string; severity: string; ruleKind?: string; count: number }>;
   errorCount: number;
   warnCount: number;
   /** validate 의 코드 점수 overall(0~100, D1). */
   scoreOverall?: number;
-  brand?: string;
+  project?: string;
   mockupFile?: string;
 }
 
@@ -72,7 +72,7 @@ interface QualityEvent {
   kind: "quality";
   ok: boolean;
   overall?: number;
-  brand?: string;
+  project?: string;
 }
 
 /** get_guide → 가이드 수요/미스. resolved=false = 그 topic 가이드가 없음. */
@@ -98,8 +98,8 @@ interface FeedbackEvent {
   category?: string;
   /** 관련 대상(컴포넌트/토큰/화면명 등). */
   target?: string;
-  /** 관련 브랜드 슬러그. */
-  brand?: string;
+  /** 관련 프로젝트 슬러그. */
+  project?: string;
   /** ISO timestamp(있으면). */
   ts?: string;
   /** 수집 출처 — "tool"(log_feedback) | "transcript"(afterCall 자동 캡처). */
@@ -196,7 +196,7 @@ function projectSatisfaction(args: ToolArgs, result: unknown): FeedbackEvent[] {
       sentiment,
       ...(scoreOverall !== undefined ? { scoreOverall } : {}),
       ...(screen ? { target: screen } : {}),
-      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(strField(args.project) ? { project: strField(args.project) } : {}),
     },
   ];
 }
@@ -225,7 +225,7 @@ function projectValidation(args: ToolArgs, result: unknown): ValidationEvent[] {
       errorCount: typeof sev?.error === "number" ? sev.error : 0,
       warnCount: typeof sev?.warn === "number" ? sev.warn : 0,
       ...(typeof scores?.overall === "number" ? { scoreOverall: scores.overall } : {}),
-      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(strField(args.project) ? { project: strField(args.project) } : {}),
       ...(strField(args.filePath) ? { mockupFile: strField(args.filePath) } : {}),
     },
   ];
@@ -240,7 +240,7 @@ function projectQuality(args: ToolArgs, result: unknown): QualityEvent[] {
       kind: "quality",
       ok: obj.ok === true,
       ...(typeof obj.overall === "number" ? { overall: obj.overall } : {}),
-      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(strField(args.project) ? { project: strField(args.project) } : {}),
     },
   ];
 }
@@ -271,7 +271,7 @@ function projectFeedback(args: ToolArgs): FeedbackEvent[] {
       source: "tool",
       ...(strField(args.category) ? { category: strField(args.category) } : {}),
       ...(strField(args.target) ? { target: strField(args.target) } : {}),
-      ...(strField(args.brand) ? { brand: strField(args.brand) } : {}),
+      ...(strField(args.project) ? { project: strField(args.project) } : {}),
       ...(sentiment ? { sentiment } : {}),
       ...(scoreOverall !== undefined ? { scoreOverall } : {}),
     },
@@ -298,8 +298,8 @@ function projectLookup(
   const query = strField(args.query);
   const obj = asObject(result);
   const userRequest = strField(args.userRequest)?.slice(0, MAX_USER_REQUEST_CHARS);
-  const brand = strField(args.brand);
-  const meta = { ...(userRequest ? { userRequest } : {}), ...(brand ? { brand } : {}) };
+  const project = strField(args.project);
+  const meta = { ...(userRequest ? { userRequest } : {}), ...(project ? { project } : {}) };
 
   if (exact) {
     const miss = hasErrorWithSuggestions(obj);
@@ -384,7 +384,7 @@ function projectPrompt(args: ToolArgs, result: unknown): PromptEvent[] {
   return [
     {
       kind: "prompt",
-      brand: strField(args.brand),
+      project: strField(args.project),
       surface: strField(args.surface),
       text: prd.slice(0, MAX_PROMPT_CHARS),
       chars: prd.length,

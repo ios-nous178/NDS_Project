@@ -79,7 +79,7 @@ html[data-theme="dark"] .navbar__title {
   color: #f1f5f9;
 }
 
-.navbar__brand {
+.navbar__project {
   display: inline-flex;
   align-items: center;
   gap: 0;

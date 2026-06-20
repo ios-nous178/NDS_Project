@@ -24,6 +24,6 @@ export const ToggleOverlay: ServiceOverlay = {
   ],
   servicePitfalls: [
     "캐포비 admin 의 알림/환경 설정 row 는 좌측 라벨 + 우측 Toggle 의 justify-between 패턴 — 라벨과 Toggle 사이를 인라인 spacing 으로 박지 말 것.",
-    "Toggle 의 On 트랙은 brand 와 무관한 시스템 green (긍정/활성 시그널) — Checkbox 의 Yellow/500 Primary 와 색이 다르다고 임의로 맞추지 말 것.",
+    "Toggle 의 On 트랙은 project 와 무관한 시스템 green (긍정/활성 시그널) — Checkbox 의 Yellow/500 Primary 와 색이 다르다고 임의로 맞추지 말 것.",
   ],
 };

@@ -57,7 +57,7 @@ usagePolicy:
 
 - `price`/`originalPrice`/`reward.amount` 는 모두 number — 자동 천단위 콤마. 외부에서 '13,900' 문자열로 가공해서 넘기지 말 것.
 - `discountPercent` 는 number (예: 31). 0 또는 undefined 면 자동 숨김 — '0%' 표시 X.
-- 할인율 색은 `cv.textRole.statusError` 시멘틱 — 브랜드별 자동 매핑. raw hex(#ED3E14 등) 로 override 금지.
+- 할인율 색은 `cv.textRole.statusError` 시멘틱 — 프로젝트별 자동 매핑. raw hex(#ED3E14 등) 로 override 금지.
 - 썸네일 좌상단: `rankingNumber` > `badge` > `soldOut` 우선순위. 동시 지정 시 상위 슬롯만 렌더 — 직접 가드 불필요.
 - title 은 자동 2줄 ellipsis. size='md' 는 min-height 44px 로 2줄 정렬 보장 — 그 이상 보여주려면 디테일 화면.
 - 가격 단위('원')는 절대 Bold 로 키우지 말 것 — 가격 본문(Black)과 시각 무게 같아짐. Pretendard Regular 12 고정.

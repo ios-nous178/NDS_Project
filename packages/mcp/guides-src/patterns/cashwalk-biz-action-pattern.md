@@ -26,12 +26,12 @@ references:
     image: references/cashwalk-biz-action-pattern-3993-965.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3993-965
     caption: AddButton 3변형 + FilterBar 우측 Primary CTA + 안티패턴 + 결정 트리 + Do/Don't. metrics 는 이 노드 실측 기준.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐포비 Action docs (Figma 4023-1128)
     image: references/cashwalk-biz-action-docs-4023-1128.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4023-1128
     caption: 언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary

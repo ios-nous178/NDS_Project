@@ -1,0 +1,66 @@
+---
+sidebar_position: 12
+title: Project Chrome
+description: 프로젝트별 헤더, 푸터, 바텀네비 (목업 전용)
+---
+
+# Project Chrome
+
+프로젝트 화면의 반복 chrome(헤더·푸터·바텀네비)입니다. 구조·아이콘 매핑·프로젝트 색은 DS 가
+`nds-project-chrome` 한 곳에서 관리하고, 화면에서는 **태그 한 줄**로 꺼내 씁니다.
+
+:::info Breaking — 공개 react 프로젝트 chrome 제거
+공개 react 패키지에서 프로젝트별 chrome 컴포넌트(`GenietAppBar` · `TrostFooter` ·
+`NudgeEAPWebHeader` · `RunmileBottomNav` · `CashwalkBizWebHeader` …)는 **제거됐습니다**.
+프로젝트 chrome 은 이제 목업 전용 `@nudge-design/html` 의 `nds-project-*` 웹컴포넌트로만 제공됩니다.
+공개 primitive 가 필요하면 `Header` · `BottomNav` · [`Footer`](/components/app-footer) +
+프로젝트 토큰을 쓰세요. (로고는 `ProjectLogo` + `@nudge-design/assets` 의 프로젝트 로고 데이터로 —
+프로젝트 전용 `NudgeEAPLogo` 컴포넌트는 제거됐고, 6변종·DAIN 마크는 assets SSOT 로 이관됐습니다.)
+:::
+
+## HTML 목업 — `nds-project-*`
+
+`@nudge-design/html` 이 5개 프로젝트의 완성형 header/footer/bottom-nav 를 제공합니다. 로고 asset 은
+기본적으로 `/assets` 아래 project-first taxonomy 에서 찾고, 공유용 HTML처럼 경로가 다르면
+`asset-base-url` 만 바꿉니다.
+
+```html
+<nds-project-header project="nudge-eap" surface="web"></nds-project-header>
+<!-- ...page content... -->
+<nds-project-bottom-nav project="nudge-eap" active-key="home"></nds-project-bottom-nav>
+<nds-project-footer project="nudge-eap"></nds-project-footer>
+
+<nds-trost-header></nds-trost-header>
+<nds-trost-bottom-nav active-key="counsel"></nds-trost-bottom-nav>
+<nds-trost-footer></nds-trost-footer>
+
+<nds-project-header
+  project="geniet"
+  asset-base-url="https://cdn.example.com/nds/assets"
+></nds-project-header>
+```
+
+## 프로젝트 × 표면 커버리지
+
+| Project       | Header (`surface`)         | Footer (`surface`) | BottomNav         |
+| ----------- | -------------------------- | ------------------ | ----------------- |
+| Geniet      | web / mobile / webview     | app                | ✅ 5탭            |
+| Trost       | web / mobile / webview     | app (dark)         | ✅ 5탭            |
+| NudgeEAP    | web / mobile / webview     | web / app          | ✅ 5탭            |
+| Runmile     | web / mobile / webview     | app                | ✅ 5탭            |
+| CashwalkBiz | web / mobile / webview     | web                | ➖ 웹 전용(없음)  |
+
+## 호출 기준
+
+- 헤더: `<nds-project-header project="..." surface="web|mobile|webview">`. surface 미지정 시 프로젝트 기본값.
+- 푸터: `<nds-project-footer project="..." surface="web|app">`.
+- 바텀네비: `<nds-project-bottom-nav project="..." active-key="...">` 한 줄로 프로젝트별 5탭(라벨/아이콘/색)이
+  자동 렌더됩니다. 제네릭 `nds-footer-tab-bar` 에 아이콘 SVG 를 직접 슬롯으로 주입하지 마세요.
+- CashwalkBiz 는 웹 전용이라 bottom-nav 가 없습니다(빈 렌더).
+- 프로젝트 alias: `nds-{nudge-eap|trost|geniet|runmile|cashwalk-biz}-{header|footer|bottom-nav}`.
+
+## 관련 base 컴포넌트 (공개 primitive)
+
+- `Header`: 프로젝트-무관 글로벌 헤더 (variant app/webview/web).
+- `BottomNav`: 프로젝트-무관 모바일 하단 탭 (compound + 슬롯).
+- [`Footer`](/components/app-footer): 프로젝트-무관 푸터 base compound (Info/TabBar/Web).

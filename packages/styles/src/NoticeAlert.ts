@@ -3,7 +3,7 @@
    (gC7CyAVloVvU896avolddQ node 5283:206).
    notice.md 패턴 SSOT 정합: padding 16 · gap 8 · min-height 52 · Body3 Medium ·
    info=중립 회색 / Notice=블루 / Caution=옐로우 / Success=그린 / Error=레드.
-   브랜드 분기는 슬롯으로 — Notice 색·본문 텍스트색은 var() 슬롯이라 브랜드(트로스트=중립 톤)가
+   프로젝트 분기는 슬롯으로 — Notice 색·본문 텍스트색은 var() 슬롯이라 프로젝트(트로스트=중립 톤)가
    값만 덮는다. error 만 본문 텍스트 기본값이 상태색(레드). 아이콘 색은 variant 별 status 토큰. */
 import { cv, fontFamily, fontWeight, radius, typeScale } from "@nudge-design/tokens";
 
@@ -20,7 +20,7 @@ export const noticeAlertStyles = `
     width: 100%;
     min-height: 52px;
     padding: var(--semantic-inset-card);
-    /* radius 슬롯 — 브랜드(지니어트·트로스트 = Shape/MD 8)가 override. 기본 lg(12). */
+    /* radius 슬롯 — 프로젝트(지니어트·트로스트 = Shape/MD 8)가 override. 기본 lg(12). */
     border-radius: var(--nds-notice-alert-radius, ${radius.lg}px);
     box-sizing: border-box;
     font-family: ${fontFamily.web};
@@ -31,14 +31,14 @@ export const noticeAlertStyles = `
   }
 
   /* ── variant 별 컨테이너 배경 / 본문 색 ──
-     본문 색은 --nds-notice-alert-text 슬롯으로 — 브랜드(트로스트=Text/Normal 통일)가 한 번에 덮는다.
+     본문 색은 --nds-notice-alert-text 슬롯으로 — 프로젝트(트로스트=Text/Normal 통일)가 한 번에 덮는다.
      기본값은 variant 별 현행 유지(대부분 strong, error 만 status-error). */
   :where(.${NA_CLASS}[data-variant="info"]) {
     background: ${cv.surface.section};
     color: var(--nds-notice-alert-text, ${cv.textRole.strong});
   }
   :where(.${NA_CLASS}[data-variant="notice"]) {
-    /* Notice 배경 — 패턴 기본 블루, 슬롯으로 브랜드(트로스트=중립 subtle) override */
+    /* Notice 배경 — 패턴 기본 블루, 슬롯으로 프로젝트(트로스트=중립 subtle) override */
     background: var(--nds-notice-alert-notice-bg, ${cv.surface.statusInfo});
     color: var(--nds-notice-alert-text, ${cv.textRole.strong});
   }
@@ -66,7 +66,7 @@ export const noticeAlertStyles = `
     height: 20px;
   }
   :where(.${NA_CLASS}[data-variant="notice"] .${NA_ICON_CLASS}) {
-    /* Notice 아이콘 색 — 패턴 기본 블루, 슬롯으로 브랜드(트로스트=중립) override */
+    /* Notice 아이콘 색 — 패턴 기본 블루, 슬롯으로 프로젝트(트로스트=중립) override */
     color: var(--nds-notice-alert-notice-icon, ${cv.textRole.statusInfo});
   }
   :where(.${NA_CLASS}[data-variant="caution"] .${NA_ICON_CLASS}) {

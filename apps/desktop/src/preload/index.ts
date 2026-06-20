@@ -266,7 +266,7 @@ const harness = {
   /** PRD → 캐포비 어드민 Page Pattern 1차 추천(키워드 점수). intake 추천 카드 전용. */
   recommendPagePattern: (args: {
     prd: string;
-    brand?: string;
+    project?: string;
     surface?: string;
   }): Promise<RecommendPagePatternResult> =>
     ipcRenderer.invoke("intake:recommend-page-pattern", args),

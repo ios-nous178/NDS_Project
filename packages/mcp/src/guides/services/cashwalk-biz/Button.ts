@@ -2,12 +2,12 @@ import type { ServiceOverlay } from "../types.js";
 
 /**
  * Cashwalk-biz (Cashwalk for Business) Button overlay.
- * Source: legacy COMPONENT_GUIDES.Button.brandMatrix['cashwalk-biz'] (제거됨, 이쪽으로 마이그레이션) + Figma 3098:1032.
+ * Source: legacy COMPONENT_GUIDES.Button.projectMatrix['cashwalk-biz'] (제거됨, 이쪽으로 마이그레이션) + Figma 3098:1032.
  *
  * 빠진 내용 (의도적, 새 모델 분리):
  *   - Disabled 페어 / 사이즈 매트릭스 (sm 40 / xs 36) / shape (default·pill) / 관련 컴포넌트 (TextButton, IconButton)
- *     → COMPONENT_GUIDES.Button.matrixOverrides['cashwalk-biz'] (overlay 아닌 base 안의 brand-aware metadata, Figma 450:68 v2 결정).
- *   - 색 정보 (#FFD200 등) → 토큰 SSOT (packages/tokens/src/brands/cashwalk-biz.semantic.ts) 가 담당.
+ *     → COMPONENT_GUIDES.Button.matrixOverrides['cashwalk-biz'] (overlay 아닌 base 안의 project-aware metadata, Figma 450:68 v2 결정).
+ *   - 색 정보 (#FFD200 등) → 토큰 SSOT (packages/tokens/src/projects/cashwalk-biz.semantic.ts) 가 담당.
  */
 export const ButtonOverlay: ServiceOverlay = {
   preferredPatterns: [

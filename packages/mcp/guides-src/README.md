@@ -11,7 +11,7 @@
 1. 해당 `.md` 수정 — frontmatter(YAML) = 구조 필드(usagePolicy/매트릭스/references/figmaNodeUrl…),
    본문 = `## summary`(prose) · `## pitfalls`/`## rules`(`- ` 불릿) · `## examples.do` 류(코드 펜스).
 2. `pnpm --filter @nudge-design/mcp build:guides` → `src/guides.generated.ts` 재생성, 같이 커밋.
-3. `pnpm lint`(check-ssot)가 stale·스키마 위반(미지 필드·브랜드 키·summary 누락)을 차단한다.
+3. `pnpm lint`(check-ssot)가 stale·스키마 위반(미지 필드·프로젝트 키·summary 누락)을 차단한다.
 
 ## 규칙
 

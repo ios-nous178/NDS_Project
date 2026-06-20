@@ -108,17 +108,17 @@ export const popupStyles = `
     color: ${cv.surface.default};
   }
 
-  /* confirm = 주 액션 CTA. confirmCta 토큰(base=brand 참조)으로 브랜드별 자기 색이 되고,
-     캐포비만 :root 에서 neutral 검정으로 override 된다 — data-brand 속성 없는 standalone
-     목업에서도 검정으로 나오게(옛 [data-brand] 캐스케이드 회귀 해소). */
+  /* confirm = 주 액션 CTA. confirmCta 토큰(base=project 참조)으로 프로젝트별 자기 색이 되고,
+     캐포비만 :root 에서 neutral 검정으로 override 된다 — data-project 속성 없는 standalone
+     목업에서도 검정으로 나오게(옛 [data-project] 캐스케이드 회귀 해소). */
   :where(.${POPUP_BTN_CONFIRM_CLASS}) {
     background: ${cv.confirmCta.bg};
     color: ${cv.confirmCta.text};
   }
 
-  /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
+  /* ─── actionsLayout="end" — 우측 정렬 hug (프로젝트 무관; 캐포비 admin 기본).
      split(기본)은 위: 2버튼 50/50, 1버튼 세로 스택. end 는 1·2버튼 모두 우측 hug row.
-     data-layout 은 resolveActionsLayout(브랜드 기본 + prop override)이 설정. pill/색은 별도. ─── */
+     data-layout 은 resolveActionsLayout(프로젝트 기본 + prop override)이 설정. pill/색은 별도. ─── */
   :where(.${POPUP_ACTIONS_CLASS}[data-layout="end"]),
   :where(.${POPUP_ACTIONS_CLASS}[data-layout="end"][data-single="true"]) {
     flex-direction: row;
@@ -132,25 +132,25 @@ export const popupStyles = `
   /* ─── CashwalkBiz 확인/결정 팝업 — Figma ModalGuide ①②④ (3418-471) 정합 ───
      base Popup 은 가운데 정렬 + 50/50 회색 버튼이지만, 캐포비는 Modal 확인창과 동일하게
      좌측 정렬 본문 + 우측 hug pill 푸터(검정 confirm · outlined 취소). 텍스트/버튼 토큰은 Modal cashwalk 와 통일. */
-  :where([data-brand="cashwalk-biz"] .${POPUP_CONTENT_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${POPUP_CONTENT_CLASS}) {
     max-width: var(--nds-popup-max-width, 480px);
     padding: ${spacing[32]}px;
     gap: var(--semantic-gap-wide);
     border-radius: var(--nds-popup-radius, 16px);
   }
 
-  :where([data-brand="cashwalk-biz"] .${POPUP_TEXT_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${POPUP_TEXT_CLASS}) {
     align-items: flex-start;
     text-align: left;
   }
 
-  :where([data-brand="cashwalk-biz"] .${POPUP_TITLE_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${POPUP_TITLE_CLASS}) {
     font-size: ${typeScale.headline5.fontSize}px;
     line-height: ${typeScale.headline5.lineHeight}px;
     color: ${cv.textRole.strong};
   }
 
-  :where([data-brand="cashwalk-biz"] .${POPUP_DESC_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${POPUP_DESC_CLASS}) {
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;
     color: ${cv.textRole.normal};
@@ -158,12 +158,12 @@ export const popupStyles = `
 
   /* 푸터 배치(우측 hug)는 actionsLayout="end"(data-layout) 가 담당 —
      resolveActionsLayout 가 cashwalk-biz 기본을 "end" 로 잡는다. 여기서는 gap·pill·색만. */
-  :where([data-brand="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}),
-  :where([data-brand="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}[data-single="true"]) {
+  :where([data-project="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}),
+  :where([data-project="cashwalk-biz"] .${POPUP_ACTIONS_CLASS}[data-single="true"]) {
     gap: ${spacing[8]}px;
   }
 
-  :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${POPUP_BTN_CLASS}) {
     min-height: 44px;
     padding: ${spacing[12]}px ${spacing[18]}px;
     border: 1px solid transparent;
@@ -173,13 +173,13 @@ export const popupStyles = `
     font-weight: 500;
   }
 
-  :where([data-brand="cashwalk-biz"] .${POPUP_BTN_CANCEL_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${POPUP_BTN_CANCEL_CLASS}) {
     background: ${cv.surface.default};
     border-color: ${cv.button.borderNeutral};
     color: ${cv.textRole.strong};
   }
 
-  /* confirm(검정 CTA)은 더 이상 [data-brand] 캐스케이드로 분기하지 않는다 — confirmCta 토큰이
+  /* confirm(검정 CTA)은 더 이상 [data-project] 캐스케이드로 분기하지 않는다 — confirmCta 토큰이
      캐포비 :root 에서 neutral 검정으로 덮이므로 standalone 목업에서도 적용된다(Modal 과 동일). */
 
   @keyframes nds-popup-fade-in {

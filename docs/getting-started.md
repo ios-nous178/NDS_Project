@@ -69,7 +69,7 @@ import { Button, Badge } from "@nudge-design/react";
 function App() {
   return (
     <div>
-      <Badge variant="fill" color="brand">
+      <Badge variant="fill" color="project">
         신규
       </Badge>
       <Button variant="solid" size="lg" onClick={() => alert("클릭!")}>
@@ -187,7 +187,7 @@ NDS 컴포넌트는 세 가지 방식으로 스타일을 확장할 수 있습니
 ## 다음 단계
 
 - [컴포넌트 한눈에 보기](/components/overview) — 전체 컴포넌트 목록
-- [브랜드별 컴포넌트 커버리지](/components/brand-coverage) — 브랜드 × 컴포넌트 Figma 정합 현황
+- [프로젝트별 컴포넌트 커버리지](/components/project-coverage) — 프로젝트 × 컴포넌트 Figma 정합 현황
 - [디자인 토큰](/tokens/colors) — 색상, 타이포그래피, 간격
 - [디자인 원칙](/guide/design-principles) — NDS의 핵심 원칙
 

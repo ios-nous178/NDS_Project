@@ -1,5 +1,5 @@
 {
-  "$comment": "find_asset 한글 검색 보강 — 자산 id → 한글 태그(동의어 포함). build-asset-catalog.mjs 가 이 태그를 catalog 의 search 토큰에 머지한다(영문 path 토큰 뒤에 append). id 는 카테고리/브랜드를 넘어 전역 매칭(같은 id=같은 의미라 충돌 없음). 자산을 추가하면 의미 있는 id 에 한글 태그를 여기 추가하고 `pnpm --filter @nudge-design/mcp build:assets` 로 재생성해 함께 커밋. (번호 profile/logo/rank 등 의미 없는 id 는 카테고리 alias 로 충분 — 생략 가능.)",
+  "$comment": "find_asset 한글 검색 보강 — 자산 id → 한글 태그(동의어 포함). build-asset-catalog.mjs 가 이 태그를 catalog 의 search 토큰에 머지한다(영문 path 토큰 뒤에 append). id 는 카테고리/프로젝트를 넘어 전역 매칭(같은 id=같은 의미라 충돌 없음). 자산을 추가하면 의미 있는 id 에 한글 태그를 여기 추가하고 `pnpm --filter @nudge-design/mcp build:assets` 로 재생성해 함께 커밋. (번호 profile/logo/rank 등 의미 없는 id 는 카테고리 alias 로 충분 — 생략 가능.)",
   "byId": {
     "alcohol": ["술", "주류"],
     "all": ["전체", "모두"],

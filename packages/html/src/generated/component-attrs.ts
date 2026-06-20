@@ -150,7 +150,7 @@ export const COMPONENT_ATTRS = {
         "line"
       ],
       "color": [
-        "brand",
+        "project",
         "neutral",
         "success",
         "error",
@@ -220,24 +220,6 @@ export const COMPONENT_ATTRS = {
       "title"
     ],
     "enums": {}
-  },
-  "nds-brand-logo": {
-    "observedAttributes": [
-      "alt",
-      "brand",
-      "height",
-      "href",
-      "width"
-    ],
-    "enums": {
-      "brand": [
-        "trost",
-        "geniet",
-        "nudge-eap",
-        "cashwalk-biz",
-        "runmile"
-      ]
-    }
   },
   "nds-breadcrumb": {
     "observedAttributes": [
@@ -445,7 +427,7 @@ export const COMPONENT_ATTRS = {
         "ghost"
       ],
       "color": [
-        "brand",
+        "project",
         "neutral",
         "success",
         "error",
@@ -1046,6 +1028,16 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {}
   },
+  "nds-project-logo": {
+    "observedAttributes": [
+      "alt",
+      "height",
+      "href",
+      "project",
+      "width"
+    ],
+    "enums": {}
+  },
   "nds-quick-menu": {
     "observedAttributes": [
       "fixed",
@@ -1419,7 +1411,7 @@ export const COMPONENT_ATTRS = {
     ],
     "enums": {
       "tone": [
-        "brand",
+        "project",
         "success"
       ]
     }

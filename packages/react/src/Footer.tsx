@@ -400,7 +400,7 @@ const FooterWebCompound = Object.assign(FooterWeb, {
 });
 
 /**
- * Base `Footer` compound — `{Brand}Footer` (`NudgeEAPFooter` / `TrostFooter` /
+ * Base `Footer` compound — `{Project}Footer` (`NudgeEAPFooter` / `TrostFooter` /
  * `CashwalkBizFooter` / `GenietFooter`) 의 빌딩 블록.
  *
  *   - `.Info` — 회사 정보 푸터 (홈페이지 하단)
@@ -408,7 +408,7 @@ const FooterWebCompound = Object.assign(FooterWeb, {
  *   - `.Web` — 데스크톱 PC 푸터 골격 (`.Web.Row` / `.Web.Divider` / `.Web.Section`)
  *   - `.Links` / `.CompanyInfo` / `.Extra` — 컴포지션 슬롯
  *
- * 브랜드 화면에서는 `{Brand}Footer` 를 사용하고, 베이스는 커스텀 푸터 구성 시에만 직접
+ * 프로젝트 화면에서는 `{Project}Footer` 를 사용하고, 베이스는 커스텀 푸터 구성 시에만 직접
  * 호출.
  */
 export const Footer = Object.assign(

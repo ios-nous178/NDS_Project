@@ -2,7 +2,7 @@
 
 > **생성된 파일.** SSOT 는 루트 `CLAUDE.md` — 이 파일을 직접 고치지 말고 CLAUDE.md 수정 후 `pnpm sync:agents-md`. Codex 전용 추가 내용은 `<!-- codex:begin -->` ~ `<!-- codex:end -->` 블록 안에만 쓰면 재생성 시 보존된다. `pnpm lint` 의 sync-agents-md --check 가 drift 를 차단한다.
 
-캐시워크 계열 멀티브랜드 디자인 시스템 모노레포. 도메인·색·톤이 의도적으로 다른 5개 브랜드를 토큰으로 흡수해 코드는 한 벌로 유지한다 (EAP 는 첫 적용 영역일 뿐, EAP 전문 회사가 아님): **Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile**.
+캐시워크 계열 멀티프로젝트 디자인 시스템 모노레포. 도메인·색·톤이 의도적으로 다른 5개 프로젝트를 토큰으로 흡수해 코드는 한 벌로 유지한다 (EAP 는 첫 적용 영역일 뿐, EAP 전문 회사가 아님): **Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile**.
 
 ## DS 사용 규칙 SSOT
 
@@ -15,7 +15,7 @@
 
 작업 중 규칙을 직접 확인해야 하면 MCP 도구 호출:
 
-- `get_guide({ topic: 'principles' })` / `get_guide({ topic: 'dos-donts' })` — 브랜드 톤, 시멘틱, 금지 패턴
+- `get_guide({ topic: 'principles' })` / `get_guide({ topic: 'dos-donts' })` — 프로젝트 톤, 시멘틱, 금지 패턴
 - `get_guide({ topic: 'component:<Name>' })` — props 함정 포함 (Chip.label, Select.onValueChange, Tabs.onTabChange 등)
 - `get_guide({ topic: 'pattern:<name>' })` — cta-group / icon-color / notice / dropdown / dense-list
 - `get_guide({ topic: 'admin-cms' })` — CMS / 어드민 화면 규칙
@@ -27,7 +27,7 @@
 
 - `/ds-component <figma>` — Figma 컴포넌트 **생성/업데이트** (react+styles+html 3면 미러 + 스토리·AllComponents·MCP 가이드·검증·스토리북)
 - `/ds-fix <붙여넣은 피드백>` — 목업 피드백 → **DS 자율 수정 루프** (컴포넌트/토큰/패턴/검증룰 트리아지·라우팅. 컴포넌트는 /ds-component 재사용)
-- `/ds-audit [Component|all]` — **DS 정합성·완전성 감사** (3면 미러 drift · 외부전파 누락 · 토큰 위반 · figma sync · 브랜드 커버리지)
+- `/ds-audit [Component|all]` — **DS 정합성·완전성 감사** (3면 미러 drift · 외부전파 누락 · 토큰 위반 · figma sync · 프로젝트 커버리지)
 - `/ds-release` — **MCPB 릴리즈** (changeset → version → 비개발자 톤 release notes → push)
 - `/prd-extract <figma|png>` — 기획서 → 상세 PRD 마크다운
 
@@ -95,10 +95,10 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 
 컴포넌트 1개 = 미러 3면 + 스토리 + 카탈로그 + MCP 가이드 + parity + 테스트 비용. 편입 전 체크:
 
-1. **2+ 브랜드에서 사용** 또는 브랜드 전용이어야 하는 명시적 사유 (예: 캐포비 어드민 패턴)
+1. **2+ 프로젝트에서 사용** 또는 프로젝트 전용이어야 하는 명시적 사유 (예: 캐포비 어드민 패턴)
 2. **Figma 가이드 노드 존재** (`figmaNodeUrl`) — 디자인 근거 없는 컴포넌트는 받지 않는다
 3. **앱 비즈니스 로직 없음** — 데이터 fetch/도메인 규칙이 들어가면 앱 컴포넌트
-4. **react + html 미러 동시 제공이 기본** — 단면 제공은 `mirror-parity-baseline.json` 에 사유 박제 필수 (예: Asset=react 유틸, BrandChrome=html 목업 셸)
+4. **react + html 미러 동시 제공이 기본** — 단면 제공은 `mirror-parity-baseline.json` 에 사유 박제 필수 (예: Asset=react 유틸, ProjectChrome=html 목업 셸)
 
 ### 신규 컴포넌트 추가 (전체 자동화는 `/ds-component`)
 
@@ -117,30 +117,30 @@ DESIGN.md               ← 디자인 토큰 YAML 정의
 ### 신규 / 수정 토큰
 
 1. `packages/tokens/src/{colors|spacing|typography|elevation|motion|...}.ts` 수정
-2. 시멘틱은 두 갈래만 사용 — Figma 정합 토큰은 `--semantic-*` (색: bg/text/icon/fill/border/button*/input + 여백: gap/gap-title/inset 모두 SSOT 1:1 미러), DS 자체 컴포넌트 슬롯은 `--nds-*` (`--nds-sidebar-_`, `--nds-chip-_`, `--nds-{brand}-_` 등). raw hex 신규 추가 금지. 옛 prefix(`--eap-_`, `--color-semantic-_`)는 폐기. `--gap-_`/`--inset-_`는`--semantic-gap-_`/`--semantic-inset-\*`의 deprecated alias — 새 코드는`--semantic-` prefix 사용.
+2. 시멘틱은 두 갈래만 사용 — Figma 정합 토큰은 `--semantic-*` (색: bg/text/icon/fill/border/button*/input + 여백: gap/gap-title/inset 모두 SSOT 1:1 미러), DS 자체 컴포넌트 슬롯은 `--nds-*` (`--nds-sidebar-_`, `--nds-chip-_`, `--nds-{project}-_` 등). raw hex 신규 추가 금지. 옛 prefix(`--eap-_`, `--color-semantic-_`)는 폐기. `--gap-_`/`--inset-_`는`--semantic-gap-_`/`--semantic-inset-\*`의 deprecated alias — 새 코드는`--semantic-` prefix 사용.
 3. 토큰 정의 의도는 `DESIGN.md` YAML 에도 동기화
 4. `pnpm build --filter @nudge-design/tokens` (의존 패키지가 import 하므로 필수)
-5. ★ `pnpm lint:brand-completeness` — base 시멘틱 leaf 는 4개 브랜드에 **명시 정의 or waiver**(`scripts/brand-completeness-baseline.json`, 사유 필수) 둘 중 하나여야 한다. silent base-fallback(브랜드 화면에 base 파랑이 새는 버그 클래스) 차단 게이트. `--nds-*` 슬롯명 오타(소비처 없는 슬롯)도 함께 검출.
+5. ★ `pnpm lint:project-completeness` — base 시멘틱 leaf 는 4개 프로젝트에 **명시 정의 or waiver**(`scripts/project-completeness-baseline.json`, 사유 필수) 둘 중 하나여야 한다. silent base-fallback(프로젝트 화면에 base 파랑이 새는 버그 클래스) 차단 게이트. `--nds-*` 슬롯명 오타(소비처 없는 슬롯)도 함께 검출.
 
-### 브랜드 차이는 토큰으로만 — 컴포넌트에 브랜드 분기 금지 (★)
+### 프로젝트 차이는 토큰으로만 — 컴포넌트에 프로젝트 분기 금지 (★)
 
-컴포넌트 스타일은 **브랜드를 모른다**. 색·배경·보더·radius 의 브랜드별 차이는 컴포넌트가 참조하는 토큰 하나(`cv.*` 또는 `--nds-*` 슬롯)를 **브랜드 토큰 파일(`packages/tokens/src/brands/<brand>.ts`)이 값만 덮어서** 컴포넌트로 흘려보낸다. 컴포넌트 `*.ts` 스타일/색 맵에 다음을 박지 않는다:
+컴포넌트 스타일은 **프로젝트를 모른다**. 색·배경·보더·radius 의 프로젝트별 차이는 컴포넌트가 참조하는 토큰 하나(`cv.*` 또는 `--nds-*` 슬롯)를 **프로젝트 토큰 파일(`packages/tokens/src/projects/<project>.ts`)이 값만 덮어서** 컴포넌트로 흘려보낸다. 컴포넌트 `*.ts` 스타일/색 맵에 다음을 박지 않는다:
 
-- ❌ `[data-brand="..."]` 셀렉터로 색·배경·보더를 갈아끼우는 오버라이드 블록 (예: 현재 Snackbar/Modal/Popup/Tooltip 등의 cashwalk-biz 카드 블록 — 마이그레이션 대상). → 해당 슬롯(`--nds-snackbar-*` 등)을 만들고 브랜드 파일에서 값만 override.
+- ❌ `[data-project="..."]` 셀렉터로 색·배경·보더를 갈아끼우는 오버라이드 블록 (예: 현재 Snackbar/Modal/Popup/Tooltip 등의 cashwalk-biz 카드 블록 — 마이그레이션 대상). → 해당 슬롯(`--nds-snackbar-*` 등)을 만들고 프로젝트 파일에서 값만 override.
 - ❌ `cv.*` 헬퍼를 우회한 raw `var(--semantic-*)` 문자열·하드코딩 hex·타 컴포넌트 토큰 차용. → 자기 컴포넌트 토큰을 `cv.*` 로 참조 (`Button.tsx` styleMap·`Chip.tsx` 색 맵이 모범).
 
-이유: 브랜드 분기가 컴포넌트에 흩어지면 (1) 신규 브랜드 추가 시 전 컴포넌트를 뒤져야 하고 (2) `pnpm lint:brand-completeness` 게이트가 못 잡으며 (3) 한 컴포넌트가 토큰 SSOT 를 우회해 drift 가 샌다.
+이유: 프로젝트 분기가 컴포넌트에 흩어지면 (1) 신규 프로젝트 추가 시 전 컴포넌트를 뒤져야 하고 (2) `pnpm lint:project-completeness` 게이트가 못 잡으며 (3) 한 컴포넌트가 토큰 SSOT 를 우회해 drift 가 샌다.
 
-예외 — 토큰으로 표현 불가한 **구조적** 차이(요소 추가/숨김 등)에 한해 `[data-brand]` 허용. 단 그 안에서도 색·간격·radius 는 반드시 토큰. 기존 위반 인벤토리는 작업 메모리 `token-drift.md` 참고.
+예외 — 토큰으로 표현 불가한 **구조적** 차이(요소 추가/숨김 등)에 한해 `[data-project]` 허용. 단 그 안에서도 색·간격·radius 는 반드시 토큰. 기존 위반 인벤토리는 작업 메모리 `token-drift.md` 참고.
 
-#### 색은 슬롯에 넣고 우선순위로 합성 — variant × brand (★ 마이그레이션 패턴)
+#### 색은 슬롯에 넣고 우선순위로 합성 — variant × project (★ 마이그레이션 패턴)
 
-**원칙: 컴포넌트 CSS 는 색을 "직접" 박지 않는다.** 항상 `--nds-*` 슬롯에 넣고, `var()` 폴백 체인으로 **brand > variant > 기본** 우선순위를 합성한다 — 그래야 컴포넌트가 브랜드·variant 어느 쪽도 모른 채 한 자리에서 합성된다. (`background: var(--semantic-bg-status-info)` 처럼 variant 룰이 색을 직접 박는 옛 패턴은 브랜드가 그 위를 `[data-brand]` cascade 로만 덮을 수 있어 컴포넌트에 브랜드 분기가 새는 원인.)
+**원칙: 컴포넌트 CSS 는 색을 "직접" 박지 않는다.** 항상 `--nds-*` 슬롯에 넣고, `var()` 폴백 체인으로 **project > variant > 기본** 우선순위를 합성한다 — 그래야 컴포넌트가 프로젝트·variant 어느 쪽도 모른 채 한 자리에서 합성된다. (`background: var(--semantic-bg-status-info)` 처럼 variant 룰이 색을 직접 박는 옛 패턴은 프로젝트가 그 위를 `[data-project]` cascade 로만 덮을 수 있어 컴포넌트에 프로젝트 분기가 새는 원인.)
 
 패턴 (예: Snackbar 배경):
 
 ```css
-/* 컴포넌트 root — ① 브랜드 override > ② variant > ③ 기본 */
+/* 컴포넌트 root — ① 프로젝트 override > ② variant > ③ 기본 */
 background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv.surface.section}));
 /* variant 룰은 background 를 직접 안 박고 ② 슬롯만 set, 값은 글로벌 시멘틱 참조 */
 :where(.nds-snackbar[data-variant="info"]) {
@@ -148,24 +148,24 @@ background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv
 }
 ```
 
-- **① `--nds-{c}-{prop}`** — 브랜드 서피스 override. 브랜드 파일 `components.{c}.{prop}` 가 emit. variant 를 통째로 덮음(예: 캐포비 Snackbar "variant 무시 흰카드"). 평소엔 unset → ②로 폴백.
+- **① `--nds-{c}-{prop}`** — 프로젝트 서피스 override. 프로젝트 파일 `components.{c}.{prop}` 가 emit. variant 를 통째로 덮음(예: 캐포비 Snackbar "variant 무시 흰카드"). 평소엔 unset → ②로 폴백.
 - **② `--nds-{c}-variant-{prop}`** — variant 룰이 set. 값은 ③ 글로벌 시멘틱을 참조.
-- **③ 글로벌 시멘틱 `--semantic-*-status-*`** — variant 색의 **브랜드 커스텀 지점**. 브랜드 `semantic.ts` 에서 `--semantic-bg-status-info` 등을 덮으면 그 색을 쓰는 **모든** 컴포넌트(Snackbar·Banner·NoticeAlert…)가 따라간다.
+- **③ 글로벌 시멘틱 `--semantic-*-status-*`** — variant 색의 **프로젝트 커스텀 지점**. 프로젝트 `semantic.ts` 에서 `--semantic-bg-status-info` 등을 덮으면 그 색을 쓰는 **모든** 컴포넌트(Snackbar·Banner·NoticeAlert…)가 따라간다.
 
-작동 원리: 룰이 전부 `:where()`(특정성 0)라 옛날엔 `[data-brand]` 블록을 **source-order 뒤**에 둬서 variant 를 덮었다. 이를 **`var()` 우선순위 + custom property 상속**으로 대체 — ①(`--nds-snackbar-bg`)이 `[data-brand]`/`:root` 조상에 정의되면 상속돼 var 체인 최우선으로 이기므로, variant 룰의 특정성과 무관하게 브랜드가 이긴다.
+작동 원리: 룰이 전부 `:where()`(특정성 0)라 옛날엔 `[data-project]` 블록을 **source-order 뒤**에 둬서 variant 를 덮었다. 이를 **`var()` 우선순위 + custom property 상속**으로 대체 — ①(`--nds-snackbar-bg`)이 `[data-project]`/`:root` 조상에 정의되면 상속돼 var 체인 최우선으로 이기므로, variant 룰의 특정성과 무관하게 프로젝트가 이긴다.
 
-**확장(YAGNI)** — "브랜드 X 가 _이 컴포넌트의_ info 만 글로벌과 다르게"(예: Banner info ≠ Snackbar info)는 ③(글로벌)으론 안 된다. 그땐 ②를 `var(--nds-snackbar-info-bg, var(--semantic-bg-status-info))` 로 **한 겹 끼우면** 컴포넌트-per-variant 슬롯이 생긴다. **단 실제 요구가 생기기 전엔 만들지 않는다** — 4 variant × N prop × M 컴포넌트로 슬롯 폭발 금지. 캐포비는 ①만 필요하므로 지금은 ①+②③ 만 구현.
+**확장(YAGNI)** — "프로젝트 X 가 _이 컴포넌트의_ info 만 글로벌과 다르게"(예: Banner info ≠ Snackbar info)는 ③(글로벌)으론 안 된다. 그땐 ②를 `var(--nds-snackbar-info-bg, var(--semantic-bg-status-info))` 로 **한 겹 끼우면** 컴포넌트-per-variant 슬롯이 생긴다. **단 실제 요구가 생기기 전엔 만들지 않는다** — 4 variant × N prop × M 컴포넌트로 슬롯 폭발 금지. 캐포비는 ①만 필요하므로 지금은 ①+②③ 만 구현.
 
-**예외(진짜 구조)** — _요소 자체의 추가/숨김_(예: 모달 가운데정렬용 spacer 숨김, 없던 행/요소 추가)은 토큰화 불가 → `[data-brand]` 유지. 단 **아이콘 "모양" 교체**(캐포비 에러 아이콘·DatePicker 캘린더 글리프)는 구조처럼 보여도 `mask-image` 의 SVG URL 을 `--nds-{c}-icon` 슬롯에 담으면 토큰화 가능 (custom property 는 mask URL 값을 담음, 색은 `currentColor`=토큰) → 아래 숙제 참조.
+**예외(진짜 구조)** — _요소 자체의 추가/숨김_(예: 모달 가운데정렬용 spacer 숨김, 없던 행/요소 추가)은 토큰화 불가 → `[data-project]` 유지. 단 **아이콘 "모양" 교체**(캐포비 에러 아이콘·DatePicker 캘린더 글리프)는 구조처럼 보여도 `mask-image` 의 SVG URL 을 `--nds-{c}-icon` 슬롯에 담으면 토큰화 가능 (custom property 는 mask URL 값을 담음, 색은 `currentColor`=토큰) → 아래 숙제 참조.
 
-#### brand 분기 마이그레이션 — 잔여 숙제 (점진)
+#### project 분기 마이그레이션 — 잔여 숙제 (점진)
 
-슬롯-합성으로 Snackbar·FormSection·Toggle·SelectedItemsPanel·TagInput·Pagination 의 색/radius 분기 이전 완료. 남은 `[data-brand]`:
+슬롯-합성으로 Snackbar·FormSection·Toggle·SelectedItemsPanel·TagInput·Pagination 의 색/radius 분기 이전 완료. 남은 `[data-project]`:
 
-- **HelperText(=`InputHelper` 일반화) 통합 (★, 합성 전용)** — Input·Textarea·Select·FormField 가 헬퍼텍스트+캐포비 에러아이콘 `::before` 를 각자 구현(4중 중복, 별점 3중중복과 같은 클래스). 기존 공개 compound `InputHelper`(variant `default/success/error/disabled` + icon)를 공용 `.nds-helper-text` 클래스로 일반화해 4종이 재사용 → 상태색 1벌 + 캐포비 에러아이콘 `[data-brand] .nds-helper-text::before` **1줄**(현 4벌, base 변화 0). 결정: info status·success 아이콘·에러 mask토큰은 보류(현행 유지). **단독 사용 금지 — Input/FormField 합성 전용**(아래 합성-전용 부류).
+- **HelperText(=`InputHelper` 일반화) 통합 (★, 합성 전용)** — Input·Textarea·Select·FormField 가 헬퍼텍스트+캐포비 에러아이콘 `::before` 를 각자 구현(4중 중복, 별점 3중중복과 같은 클래스). 기존 공개 compound `InputHelper`(variant `default/success/error/disabled` + icon)를 공용 `.nds-helper-text` 클래스로 일반화해 4종이 재사용 → 상태색 1벌 + 캐포비 에러아이콘 `[data-project] .nds-helper-text::before` **1줄**(현 4벌, base 변화 0). 결정: info status·success 아이콘·에러 mask토큰은 보류(현행 유지). **단독 사용 금지 — Input/FormField 합성 전용**(아래 합성-전용 부류).
 - **합성 전용(standalone 금지) 부류 — ✅ 메커니즘 구현됨 (컨벤션)** — 부모 없이는 의미 없는 서브 컴포넌트는 가이드 frontmatter 에 `standalone: false` + `composeWith: [부모…]` 를 설정한다(`ComponentGuide` 필드 · `build-guides` 허용). `get_guide` 가 `_standaloneAdvisory`("⚠ 합성 전용 — 단독 사용 금지")로 부각해 AI 의 단독 오용을 차단. **적용**: `ValidationChip`(composeWith Input·FormField). **신규 합성 전용 컴포넌트(예: HelperText)는 빌드 시 반드시 `standalone:false` 설정** — 이게 "전부 일관되게" 의 강제 지점. (`Card.*` 서브파트 등은 자체 가이드가 없어 부모 가이드에서 문서화.)
-- **브랜드 아이콘 스왑 → `--nds-{c}-icon` mask 토큰** — DatePicker 캘린더 글리프처럼 "브랜드가 아이콘 모양만 바꾸는" `[data-brand]` 는 mask-image URL 슬롯으로 이전(컴포넌트가 브랜드 모름). 위 HelperText 에러 아이콘과 같은 패턴.
-- **Modal·Popup** — `[data-brand]` 대부분 **배치/구조**(가운데 spacer 숨김·좌측 정렬·gap·typography·size) = 예외 유지가 정답. 순수 색(footer 취소버튼 bg/border/text)만 슬롯化 대상. confirm CTA 는 이미 confirmCta 토큰.
+- **프로젝트 아이콘 스왑 → `--nds-{c}-icon` mask 토큰** — DatePicker 캘린더 글리프처럼 "프로젝트가 아이콘 모양만 바꾸는" `[data-project]` 는 mask-image URL 슬롯으로 이전(컴포넌트가 프로젝트 모름). 위 HelperText 에러 아이콘과 같은 패턴.
+- **Modal·Popup** — `[data-project]` 대부분 **배치/구조**(가운데 spacer 숨김·좌측 정렬·gap·typography·size) = 예외 유지가 정답. 순수 색(footer 취소버튼 bg/border/text)만 슬롯化 대상. confirm CTA 는 이미 confirmCta 토큰.
 
 ### 가이드 · 패턴 · 원칙만 추가
 

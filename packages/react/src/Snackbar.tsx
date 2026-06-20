@@ -42,7 +42,7 @@ const cx = (...classNames: Array<string | undefined | false | null>) =>
 
 /**
  * 기본(인라인) 아이콘 — 옅은 틴트 카드 위의 가는 라인 글리프(20×20).
- * 브랜드 카드(캐포비 흰 카드)는 `SnackbarChipIcon`(둥근 사각형 칩)을 `icon` prop 으로 주입한다.
+ * 프로젝트 카드(캐포비 흰 카드)는 `SnackbarChipIcon`(둥근 사각형 칩)을 `icon` prop 으로 주입한다.
  */
 const DefaultIcon: React.FC<{ variant: SnackbarVariant }> = ({ variant }) => {
   if (variant === "success") {
@@ -96,7 +96,7 @@ const DefaultIcon: React.FC<{ variant: SnackbarVariant }> = ({ variant }) => {
 };
 
 /**
- * 브랜드 카드용 status 칩 아이콘(24×24) — 둥근 사각형 칩(currentColor) + 흰 글리프.
+ * 프로젝트 카드용 status 칩 아이콘(24×24) — 둥근 사각형 칩(currentColor) + 흰 글리프.
  * 색은 `--nds-snackbar-icon`(variant 별 status 색)을 따른다. 캐포비 admin Snackbar SSOT(Figma 3001:51644).
  */
 export const SnackbarChipIcon: React.FC<{ variant: SnackbarVariant }> = ({ variant }) => (
@@ -133,8 +133,8 @@ export const SnackbarChipIcon: React.FC<{ variant: SnackbarVariant }> = ({ varia
 
 /**
  * 인라인 Snackbar — 부모가 mount/unmount 로 표시 여부를 통제하는 선언형 알림 카드.
- * variant 배경/아이콘 색은 CSS(`data-variant`)가 결정한다 — 브랜드 카드(캐포비 흰 카드)가
- * `data-brand` cascade 로 배경을 덮어쓸 수 있도록 인라인 style 로 박지 않는다.
+ * variant 배경/아이콘 색은 CSS(`data-variant`)가 결정한다 — 프로젝트 카드(캐포비 흰 카드)가
+ * `data-project` cascade 로 배경을 덮어쓸 수 있도록 인라인 style 로 박지 않는다.
  *
  * 자동 사라짐·포지셔닝·단일교체가 필요하면 `Snackbar.Provider` + `useSnackbar()` 를 사용한다.
  */
@@ -203,8 +203,8 @@ SnackbarBase.displayName = "Snackbar";
 /* ─── Provider infra (imperative / managed) ─── */
 
 export type SnackbarPosition = "top" | "bottom" | "top-right";
-/** 브랜드 프리셋 — 카드 외형(흰 카드 + status 칩 아이콘)이 다른 브랜드만 명시한다. */
-export type SnackbarBrand = "default" | "cashwalk-biz";
+/** 프로젝트 프리셋 — 카드 외형(흰 카드 + status 칩 아이콘)이 다른 프로젝트만 명시한다. */
+export type SnackbarProject = "default" | "cashwalk-biz";
 
 export interface SnackbarData {
   /** 고유 식별자 */
@@ -230,7 +230,7 @@ interface SnackbarContextValue {
   snackbars: SnackbarData[];
   dismiss: (id: string) => void;
   position: SnackbarPosition;
-  brand: SnackbarBrand;
+  project: SnackbarProject;
   portalContainer?: HTMLElement | null;
 }
 
@@ -249,8 +249,8 @@ export interface SnackbarProviderProps {
   duration?: number;
   /** 최대 동시 표시 개수 (1이면 단일 교체) @default 3 */
   maxCount?: number;
-  /** 브랜드 카드 외형 @default "default" */
-  brand?: SnackbarBrand;
+  /** 프로젝트 카드 외형 @default "default" */
+  project?: SnackbarProject;
   /** 포털 컨테이너 */
   portalContainer?: HTMLElement | null;
   /** 앱 콘텐츠 (하위에서 useSnackbar 사용 가능) */
@@ -264,7 +264,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
   position = "bottom",
   duration = 4000,
   maxCount = 3,
-  brand = "default",
+  project = "default",
   portalContainer,
   children,
 }) => {
@@ -302,7 +302,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 
   return (
     <SnackbarContext.Provider
-      value={{ snackbar, snackbars, dismiss, position, brand, portalContainer }}
+      value={{ snackbar, snackbars, dismiss, position, project, portalContainer }}
     >
       {children}
       {mounted && <SnackbarViewport />}
@@ -313,7 +313,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 /* ─── Viewport + managed item (internal) ─── */
 
 const SnackbarViewport: React.FC = () => {
-  const { snackbars, dismiss, position, brand, portalContainer } = useSnackbar();
+  const { snackbars, dismiss, position, project, portalContainer } = useSnackbar();
 
   return (
     <WebPortal container={portalContainer}>
@@ -325,7 +325,7 @@ const SnackbarViewport: React.FC = () => {
         aria-relevant="additions"
       >
         {snackbars.map((s) => (
-          <ManagedSnackbar key={s.id} data={s} brand={brand} onDismiss={dismiss} />
+          <ManagedSnackbar key={s.id} data={s} project={project} onDismiss={dismiss} />
         ))}
       </div>
     </WebPortal>
@@ -334,9 +334,9 @@ const SnackbarViewport: React.FC = () => {
 
 const ManagedSnackbar: React.FC<{
   data: SnackbarData;
-  brand: SnackbarBrand;
+  project: SnackbarProject;
   onDismiss: (id: string) => void;
-}> = ({ data, brand, onDismiss }) => {
+}> = ({ data, project, onDismiss }) => {
   const [exiting, setExiting] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -353,9 +353,9 @@ const ManagedSnackbar: React.FC<{
     if (exiting) onDismiss(data.id);
   };
 
-  // 브랜드 카드(캐포비)는 status 칩 아이콘을 쓴다. variant 가 없으면 아이콘 없음(중립 메시지).
+  // 프로젝트 카드(캐포비)는 status 칩 아이콘을 쓴다. variant 가 없으면 아이콘 없음(중립 메시지).
   const icon =
-    brand === "cashwalk-biz" && data.variant ? (
+    project === "cashwalk-biz" && data.variant ? (
       <SnackbarChipIcon variant={data.variant} />
     ) : undefined;
 

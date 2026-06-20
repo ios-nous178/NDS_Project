@@ -12,7 +12,7 @@ import { coreGuideMeta } from "../components/guideMeta";
 const chipGuideMeta = coreGuideMeta("Chip");
 
 const VARIANTS: ChipVariant[] = ["fill", "outlined", "ghost"];
-const COLORS: ChipColor[] = ["brand", "neutral", "success", "error", "caution"];
+const COLORS: ChipColor[] = ["project", "neutral", "success", "error", "caution"];
 
 const VARIANT_USAGE: Record<ChipVariant, string> = {
   fill: "선택됨 (강조)",
@@ -21,7 +21,7 @@ const VARIANT_USAGE: Record<ChipVariant, string> = {
 };
 
 const COLOR_LABEL: Record<ChipColor, string> = {
-  brand: "브랜드",
+  project: "프로젝트",
   neutral: "일반",
   success: "완료",
   error: "오류",
@@ -59,7 +59,7 @@ const meta: Meta<ChipProps> = {
   args: {
     label: "심리상담",
     variant: "outlined",
-    color: "brand",
+    color: "project",
     size: "md",
   },
 };
@@ -80,11 +80,11 @@ export const Overview: Story = {
         maxWidth: 240,
       }}
     >
-      <Chip label="선택됨" variant="fill" color="brand" />
-      <Chip label="선택 가능" variant="outlined" color="brand" />
+      <Chip label="선택됨" variant="fill" color="project" />
+      <Chip label="선택 가능" variant="outlined" color="project" />
       <Chip label="보조" variant="ghost" color="neutral" />
       <Chip label="대면" variant="ghost" color="neutral" size="sm" icon={<PinIcon size={14} color="currentColor" />} />
-      <Chip label="필터" variant="fill" color="brand" onRemove={() => {}} />
+      <Chip label="필터" variant="fill" color="project" onRemove={() => {}} />
     </div>
   ),
 };
@@ -121,8 +121,8 @@ export const Sizes: Story = {
   name: "Spec/Sizes",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: "var(--semantic-gap-default)" }}>
-      <Chip label="Small" size="sm" variant="fill" color="brand" />
-      <Chip label="Medium" size="md" variant="fill" color="brand" />
+      <Chip label="Small" size="sm" variant="fill" color="project" />
+      <Chip label="Medium" size="md" variant="fill" color="project" />
     </div>
   ),
 };
@@ -162,7 +162,7 @@ function ToggleChipsExample() {
           key={s}
           label={s}
           variant={selected.has(s) ? "fill" : "outlined"}
-          color="brand"
+          color="project"
           onClick={() => toggle(s)}
         />
       ))}
@@ -185,7 +185,7 @@ function RemovableChipsExample() {
           key={f}
           label={f}
           variant="fill"
-          color="brand"
+          color="project"
           onRemove={() => setFilters((prev) => prev.filter((x) => x !== f))}
         />
       ))}
@@ -197,8 +197,8 @@ export const Disabled: Story = {
   name: "State/Disabled",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
-      <Chip label="Disabled" variant="outlined" color="brand" disabled />
-      <Chip label="Disabled Filled" variant="fill" color="brand" disabled />
+      <Chip label="Disabled" variant="outlined" color="project" disabled />
+      <Chip label="Disabled Filled" variant="fill" color="project" disabled />
     </div>
   ),
 };
@@ -232,7 +232,7 @@ export const TrostFilterChips: Story = {
     docs: {
       description: {
         story:
-          "트로스트 필터칩(5107-130). color='neutral' 기본 = 회색(보더 #E5E5E5 + 텍스트 #606060), selected 시 브랜드 노랑 강조(보더 #FFF42E + subtle bg #FFFDD9 + 오렌지 텍스트 #FF9D00, outlined-selected 룩). height 30 · 좌우 padding 10. 색은 컴포넌트가 아니라 트로스트 토큰 override 가 슬롯에 주입(데모용 data-brand='trost' 래퍼).",
+          "트로스트 필터칩(5107-130). color='neutral' 기본 = 회색(보더 #E5E5E5 + 텍스트 #606060), selected 시 프로젝트 노랑 강조(보더 #FFF42E + subtle bg #FFFDD9 + 오렌지 텍스트 #FF9D00, outlined-selected 룩). height 30 · 좌우 padding 10. 색은 컴포넌트가 아니라 트로스트 토큰 override 가 슬롯에 주입(데모용 data-project='trost' 래퍼).",
       },
     },
   },
@@ -256,8 +256,8 @@ function TrostFilterChipsExample() {
     });
 
   return (
-    // data-brand="trost" → 트로스트 토큰이 Chip 슬롯(보더/bg/텍스트색·치수)을 override (데모용 래퍼)
-    <div data-brand="trost" style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)", maxWidth: 360 }}>
+    // data-project="trost" → 트로스트 토큰이 Chip 슬롯(보더/bg/텍스트색·치수)을 override (데모용 래퍼)
+    <div data-project="trost" style={{ display: "flex", flexWrap: "wrap", gap: "var(--semantic-gap-default)", maxWidth: 360 }}>
       {filters.map((f) => (
         <Chip
           key={f}
@@ -330,8 +330,8 @@ export const DisabledChipInteraction: Story = {
   name: "Interaction/Disabled Chip",
   render: () => (
     <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
-      <Chip label="비활성" variant="outlined" color="brand" disabled />
-      <Chip label="비활성 채움" variant="fill" color="brand" disabled />
+      <Chip label="비활성" variant="outlined" color="project" disabled />
+      <Chip label="비활성 채움" variant="fill" color="project" disabled />
     </div>
   ),
   play: async ({ canvasElement }) => {
@@ -377,7 +377,7 @@ export const DesignGuideOverview: Story = {
                 borderRadius: 8,
               }}
             >
-              <Chip label={variant} variant={variant} color="brand" />
+              <Chip label={variant} variant={variant} color="project" />
               <DesignGuideBadge meta={chipGuideMeta} />
             </div>
           ))}

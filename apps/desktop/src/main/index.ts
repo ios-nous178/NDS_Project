@@ -58,7 +58,7 @@ function bootstrapBundledAssetDirs(): void {
   );
   setIfPresent(
     "NUDGE_DS_ASSETS_DIR",
-    findUp(join("packages", "assets", "dist", "files"), "brand-logos"),
+    findUp(join("packages", "assets", "dist", "files"), "project-logos"),
   );
 }
 

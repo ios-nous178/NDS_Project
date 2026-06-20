@@ -1,33 +1,33 @@
 import React, { useEffect, useRef } from "react";
-import { brandThemes } from "../brand-themes";
+import { projectThemes } from "../project-themes";
 
 /**
- * BrandScope — 한 스토리에 여러 브랜드를 동시에 렌더할 때 **각 브랜드의 색을 그 브랜드
+ * ProjectScope — 한 스토리에 여러 프로젝트를 동시에 렌더할 때 **각 프로젝트의 색을 그 프로젝트
  * 엘리먼트에만** 스코프한다.
  *
- * 왜 필요한가: preview.ts 의 brand decorator 는 **전역 선택 브랜드 1개**의 cssVars(`--semantic-*`)
- * 만 스토리 래퍼에 깐다. 그래서 `<nds-brand-header brand="trost">` 처럼 brand 속성으로 5브랜드를
- * 한 화면에 그리면, 구조/로고는 브랜드별이지만 색(var(--semantic-*))은 전부 전역 브랜드(기본
- * nudge-eap) 값을 상속해 "전부 EAP 색"이 된다. 각 엘리먼트를 자기 브랜드의 cssVars + data-brand
- * 로 감싸 그 서브트리만 브랜드 토큰을 덮어쓴다(custom property 상속 → 안쪽이 이김).
- * 단일 브랜드 스토리(Sidebar=cashwalk-biz)도 toolbar 선택과 무관하게 자기 색을 고정한다.
+ * 왜 필요한가: preview.ts 의 project decorator 는 **전역 선택 프로젝트 1개**의 cssVars(`--semantic-*`)
+ * 만 스토리 래퍼에 깐다. 그래서 `<nds-project-header project="trost">` 처럼 project 속성으로 5프로젝트를
+ * 한 화면에 그리면, 구조/로고는 프로젝트별이지만 색(var(--semantic-*))은 전부 전역 프로젝트(기본
+ * nudge-eap) 값을 상속해 "전부 EAP 색"이 된다. 각 엘리먼트를 자기 프로젝트의 cssVars + data-project
+ * 로 감싸 그 서브트리만 프로젝트 토큰을 덮어쓴다(custom property 상속 → 안쪽이 이김).
+ * 단일 프로젝트 스토리(Sidebar=cashwalk-biz)도 toolbar 선택과 무관하게 자기 색을 고정한다.
  */
-export function BrandScope({
-  brand,
+export function ProjectScope({
+  project,
   children,
   style,
   className,
 }: {
-  brand: string;
+  project: string;
   children: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
 }) {
-  const vars = brandThemes[brand]?.cssVars ?? {};
+  const vars = projectThemes[project]?.cssVars ?? {};
   return React.createElement(
     "div",
     {
-      "data-brand": brand,
+      "data-project": project,
       className,
       // display:contents → 레이아웃 영향 없이 custom property 만 이 서브트리에 상속.
       style: { display: "contents", ...vars, ...style } as React.CSSProperties,
@@ -37,10 +37,10 @@ export function BrandScope({
 }
 
 /**
- * NdsTag — Storybook 에서 목업 전용 html 웹컴포넌트(`nds-brand-*`, `nds-sidebar` 등)를
+ * NdsTag — Storybook 에서 목업 전용 html 웹컴포넌트(`nds-project-*`, `nds-sidebar` 등)를
  * React 스토리로 렌더하는 헬퍼.
  *
- * 왜 필요한가: 브랜드 chrome·사이드바는 공개 react 패키지에서 제거돼 목업 전용 html
+ * 왜 필요한가: 프로젝트 chrome·사이드바는 공개 react 패키지에서 제거돼 목업 전용 html
  * 웹컴포넌트가 SSOT 다. 이걸 Storybook(React) 에서 보이게 하려면
  *   1) custom element 등록 — `.storybook/preview.ts` 의 `import "@nudge-design/html/runtime"`.
  *   2) 데이터 주입 — custom element 는 attribute 로 받으므로 ref 로 명령형 set.
@@ -56,7 +56,7 @@ export interface NdsJsonSlot {
 }
 
 export interface NdsTagProps {
-  /** custom element 태그명 (예: "nds-brand-header"). */
+  /** custom element 태그명 (예: "nds-project-header"). */
   tag: string;
   /** attribute 맵. boolean true → 빈 속성, false/null/undefined → 제거. */
   attrs?: Record<string, string | number | boolean | null | undefined>;

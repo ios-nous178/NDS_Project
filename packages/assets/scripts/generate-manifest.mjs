@@ -39,10 +39,10 @@ function classify(relPath) {
   if (parts[0] === "shared") {
     return { scope: "shared", category: parts[1] ?? "unknown" };
   }
-  if (parts[0] === "brand") {
+  if (parts[0] === "project") {
     return {
-      scope: "brand",
-      brand: parts[1],
+      scope: "project",
+      project: parts[1],
       category: parts[2] ?? "unknown",
       group: parts[3],
     };

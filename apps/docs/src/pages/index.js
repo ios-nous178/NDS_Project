@@ -138,7 +138,7 @@ function ComponentPreviewGrid() {
               <span className={styles.previewBadge}>Stable</span>
             </div>
             <div className={styles.previewBody}>
-              <Badge variant="fill" color="brand">
+              <Badge variant="fill" color="project">
                 신규
               </Badge>
               <Badge variant="ghost" color="success">

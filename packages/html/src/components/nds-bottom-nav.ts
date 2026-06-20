@@ -2,7 +2,7 @@
  * <nds-bottom-nav> + <nds-bottom-nav-item> — DS BottomNav 의 vanilla Web Component 버전.
  *
  * react(BottomNav.tsx) 미러: 같은 class/`data-slot`/active 동작/치수를 공유한다.
- * 브랜드 색은 `--nds-bottomnav-*` 슬롯으로만 흘러든다 (컴포넌트는 브랜드 모름).
+ * 프로젝트 색은 `--nds-bottomnav-*` 슬롯으로만 흘러든다 (컴포넌트는 프로젝트 모름).
  *
  *   <nds-bottom-nav active-key="home">
  *     <nds-bottom-nav-item item-key="home" label="홈" href="/">

@@ -12,7 +12,7 @@
 |---|---|---|
 | 새 컴포넌트 / 컴포넌트 수정 | Figma 가이드 노드 → react/styles/html 3면 | `/ds-component` |
 | 토큰 추가/수정 | `packages/tokens/src/` + `DESIGN.md` | — |
-| 브랜드 색 차이 | `packages/tokens/src/brands/<brand>.ts` | — |
+| 프로젝트 색 차이 | `packages/tokens/src/projects/<project>.ts` | — |
 | 목업 피드백 → DS 반영 | 컴포넌트/토큰/가이드 트리아지 | `/ds-fix` |
 | 문서/가이드 | `packages/mcp/guides-src/**` 또는 `docs/` | — |
 | 정합성 감사 | drift·전파·토큰·figma sync | `/ds-audit` |
@@ -24,7 +24,7 @@
 ## 황금률 4가지
 
 1. **추측하지 말고 조회한다** — props·토큰·아이콘은 MCP 도구(`find_component`·`find_token`·`get_guide`)로 확인. 환각이 가장 흔한 회귀 원인.
-2. **브랜드 분기를 컴포넌트에 박지 않는다** — 색·radius 차이는 `tokens/src/brands/*` 에서 토큰 값으로만. ([ARCHITECTURE.md](ARCHITECTURE.md) "브랜드는 토큰으로만")
+2. **프로젝트 분기를 컴포넌트에 박지 않는다** — 색·radius 차이는 `tokens/src/projects/*` 에서 토큰 값으로만. ([ARCHITECTURE.md](ARCHITECTURE.md) "프로젝트는 토큰으로만")
 3. **react 를 고치면 html 도 고친다** — 3면 미러. `pnpm lint:mirror-parity` 가 차단.
 4. **커밋 전 `pnpm fix`** — 생성물 재생성 누락이 CI 실패 1위.
 
@@ -71,7 +71,7 @@ CI 실패의 최다 원인은 **생성물 커밋 누락**입니다. 게이트(`c
 | 게이트 | 의미 | 해소 |
 |---|---|---|
 | `mirror-parity` | react↔html set/enum drift | html 미러 맞추기 or baseline 사유 |
-| `brand-completeness` | base 시멘틱이 5브랜드에 정의/waiver | 브랜드 토큰 채우기 |
+| `project-completeness` | base 시멘틱이 5프로젝트에 정의/waiver | 프로젝트 토큰 채우기 |
 | `storybook-catalog` | 신규 컴포넌트 스토리/inventory 누락 | gallery 스토리 + inventory 등록 |
 | `guide-figma-links` | **신규 가이드 figmaNodeUrl 누락 차단** | frontmatter 에 노드 추가 (admission ②) |
 | `input-tests` | 입력 컴포넌트 포커스 보존 테스트 | mount-once 테스트 추가 |
@@ -84,12 +84,12 @@ CI 실패의 최다 원인은 **생성물 커밋 누락**입니다. 게이트(`c
 
 컴포넌트 1개 = 미러 3면 + 스토리 + 카탈로그 + MCP 가이드 + parity + 테스트 비용. 받기 전 체크:
 
-1. **2+ 브랜드 사용** 또는 브랜드 전용이어야 할 명시 사유
+1. **2+ 프로젝트 사용** 또는 프로젝트 전용이어야 할 명시 사유
 2. **Figma 가이드 노드 존재**(`figmaNodeUrl`) — 디자인 근거 없는 컴포넌트는 받지 않음
 3. **앱 비즈니스 로직 없음** — 데이터 fetch/도메인 규칙이 들어가면 앱 컴포넌트
 4. **react + html 미러 동시 제공**(단면 제공은 baseline 에 사유 박제)
 
-전문은 [CLAUDE.md](CLAUDE.md) "DS 편입 기준(admission)". 편입·폐기·브랜드·품질을 아우르는 운영 규칙 전체는 [GOVERNANCE.md](GOVERNANCE.md).
+전문은 [CLAUDE.md](CLAUDE.md) "DS 편입 기준(admission)". 편입·폐기·프로젝트·품질을 아우르는 운영 규칙 전체는 [GOVERNANCE.md](GOVERNANCE.md).
 
 ---
 

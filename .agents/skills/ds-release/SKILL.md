@@ -80,16 +80,16 @@ pnpm version-packages
 
 **2. 2단 구조** — 1단: 무엇이 바뀌었나(사용자 관점). 2단: 왜 좋아졌나/뭐가 가능해졌나. 숫자("5종 동시 추가")·Before→After 화살표 적극.
 
-**3. 큰 릴리즈는 3단 섹션** — `배경` / `주요 변경사항` / `기대효과`. minor 이상(0.x.0)·신규 브랜드/컴포넌트 다수면 적용. patch 한두 건이면 단순 bullet.
+**3. 큰 릴리즈는 3단 섹션** — `배경` / `주요 변경사항` / `기대효과`. minor 이상(0.x.0)·신규 프로젝트/컴포넌트 다수면 적용. patch 한두 건이면 단순 bullet.
 
 **4. 번역 예시** — 개발자 톤(좌) → 공유용 톤(우):
 
 | Before (커밋/코드 톤)                                                | After (공유용 톤)                                                                      |
 | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `InputGroup 추가, FormField density="admin" 기반 compact admin form` | **어드민 폼 구조 표준화** · 라벨/description/다중입력 정렬 개선 · admin UI 일관성 강화 |
-| `AppBar/WebHeader/AppFooter/WebFooter 컴포넌트 unify`                | **브랜드 헤더/푸터 단일화** · `<Header>`/`<Footer>` 하나로 통합 · 로고 6종 DS 내장     |
+| `AppBar/WebHeader/AppFooter/WebFooter 컴포넌트 unify`                | **프로젝트 헤더/푸터 단일화** · `<Header>`/`<Footer>` 하나로 통합 · 로고 6종 DS 내장     |
 | `feat(mcp): visual reference gate + 5 retro bypass patterns`         | **MCP 가드레일 강화** · 시각 레퍼런스 확인 단계 추가 · 반복 우회/재작업 대응           |
-| `refactor(coverage): brand × component coverage SSOT 단일화`         | **브랜드별 컴포넌트 커버리지 단일 출처화** · 어떤 브랜드가 뭘 지원하는지 한눈에        |
+| `refactor(coverage): project × component coverage SSOT 단일화`         | **프로젝트별 컴포넌트 커버리지 단일 출처화** · 어떤 프로젝트가 뭘 지원하는지 한눈에        |
 
 **5. 길이** — 한 릴리즈당 5~8 항목 권장. 10 넘으면 묶거나 빼기.
 

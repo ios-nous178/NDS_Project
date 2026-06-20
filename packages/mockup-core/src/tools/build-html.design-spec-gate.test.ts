@@ -20,8 +20,8 @@ function withWorkspace(files: Record<string, string>, fn: (cwd: string) => void)
   }
 }
 
-const indexHtml = (brand: string) => `<!doctype html>
-<html data-brand="${brand}"><head><meta charset="utf-8"></head>
+const indexHtml = (project: string) => `<!doctype html>
+<html data-project="${project}"><head><meta charset="utf-8"></head>
 <body>
   <script type="application/json" data-prd-coverage>{"requirements":[]}</script>
   <nds-button>확인</nds-button>
@@ -29,7 +29,7 @@ const indexHtml = (brand: string) => `<!doctype html>
 
 const spec = (extra: Record<string, unknown> = {}) =>
   JSON.stringify({
-    screen: { brand: "cashwalk-biz", surface: "web", surfaceKind: "admin", ...extra },
+    screen: { project: "cashwalk-biz", surface: "web", surfaceKind: "admin", ...extra },
     tree: [],
   });
 
@@ -86,7 +86,7 @@ test("skipDesignSpec:true (=allowIncomplete) → 게이트 우회", () => {
   });
 });
 
-test("비-캐포비 브랜드(nudge-eap) → 게이트 적용 안 함", () => {
+test("비-캐포비 프로젝트(nudge-eap) → 게이트 적용 안 함", () => {
   withWorkspace({ "index.html": indexHtml("nudge-eap") }, (cwd) => {
     assert.deepEqual(gateRules(cwd), []);
   });
@@ -101,7 +101,7 @@ test("캐포비라도 nudge.surface=service 로 명시되면 게이트 끔", () 
   );
 });
 
-test("브랜드 별칭(cashpobi/data-brand) 도 캐포비로 정규화돼 게이트 적용", () => {
+test("프로젝트 별칭(cashpobi/data-project) 도 캐포비로 정규화돼 게이트 적용", () => {
   withWorkspace({ "index.html": indexHtml("cashpobi") }, (cwd) => {
     assert.deepEqual(gateRules(cwd), ["cashwalk-biz-admin-missing-design-spec"]);
   });

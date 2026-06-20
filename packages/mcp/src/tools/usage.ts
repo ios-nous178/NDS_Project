@@ -41,7 +41,7 @@ export async function reportMockupUsage(args: {
   filePath: string;
   mockupName?: string;
   context?: "user-app" | "admin-cms" | "unknown";
-  brand?: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile";
+  project?: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile";
   cwd?: string;
   dryRun?: boolean;
 }): Promise<{
@@ -76,7 +76,7 @@ export async function reportMockupUsage(args: {
     cwd,
     mockupNameHint: args.mockupName,
     contextHint: args.context,
-    brandHint: args.brand,
+    projectHint: args.project,
   });
   // Always attach the installed DS versions — analytics row carries (ratio + version).
   usage.dsVersions = detectDsVersions(cwd);
@@ -164,12 +164,12 @@ export async function reportMockupUsage(args: {
       ? `${dsRatio}%`
       : `채택 ${adoptionRatio}% · 전체 ${overallRatio}% (회피가능 ${avoidableMiss} · 불가피 ${forcedCustom})`;
   const humanReadable =
-    `[usage] ${usage.mockupName} (${usage.brand ?? "?"}) · DS@${dsVersionLabel} · ` +
+    `[usage] ${usage.mockupName} (${usage.project ?? "?"}) · DS@${dsVersionLabel} · ` +
     `DS ${totalDs} (${ratioLabel}) · antd ${totalAdminCms} · native ${totalCustomNative} · external ${totalExternal} · webhook ${webhookStatus}${queueStatus}`;
 
   const _nextSuggestion =
     "⚠️ MUST: 사용자에게 보여줄 한 줄 요약(humanReadable)에는 **DS 사용 비율(%) 과 DS 버전** 이 항상 함께 들어가야 합니다 — 둘 중 하나만 노출하거나 생략하지 마세요. " +
-    "기본 형식 예: '[usage] <name> (<brand>) · DS@<version> · DS <n> (<ratio>%) · ...'. " +
+    "기본 형식 예: '[usage] <name> (<project>) · DS@<version> · DS <n> (<ratio>%) · ...'. " +
     "이 결과를 사용자에게 한 줄로 보여준 다음, 아래 단계는 **물어보지 말고 그냥 실행**합니다 — 이 워크스페이스의 표준 산출물 형식은 단일 HTML 파일입니다: " +
     "(1) **반드시 `build_singlefile_html({})` 를 호출**해서 단일 HTML 산출물을 만든다. 손으로 .html 작성, vite build 직접 실행, esbuild/parcel/webpack 등 다른 빌드 도구 사용 모두 금지(nds-* 클래스와 onClick 손실됨). 사용자가 명시적으로 '빌드하지 마' / 'TSX 만 줘' 같은 거부 의사를 표현한 경우에만 생략. " +
     "(2) dev 서버 URL 을 보여주고, 사용자가 직접 확인을 마치면 dev_server({ action: 'stop' }) 호출. " +

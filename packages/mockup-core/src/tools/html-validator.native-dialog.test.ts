@@ -4,7 +4,7 @@ import { validateHtmlSource, type HtmlValidationContext } from "./html-validator
 
 /**
  * native-dialog-in-mockup — 목업 <script> 에서 네이티브 alert()/confirm()/prompt() 사용 감지
- * (회고: 캐포비 온보딩 — "완료"를 alert() 로 띄움. OS 회색 박스라 브랜드 스타일 0).
+ * (회고: 캐포비 온보딩 — "완료"를 alert() 로 띄움. OS 회색 박스라 프로젝트 스타일 0).
  * DS 는 <nds-modal>(확인/완료/안내) + Toast 패턴을 제공한다.
  */
 const CTX: HtmlValidationContext = {

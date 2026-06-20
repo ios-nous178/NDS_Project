@@ -18,7 +18,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 
 1. **Storybook = 시각 정답(SSOT).** 스토리북이 보여주는 모습에 컴포넌트를 맞춘다. 반대로 스토리를 컴포넌트에 맞추지 않는다.
 2. **토큰-퍼스트, raw hex/px 금지.** 색은 semantic 토큰(`cv.*` / `--semantic-*`), 크기는 `sizing.*`/`spacing.*`/`radius.*`. **Figma hex 가 어떤 토큰에도 안 맞으면 새 값을 지어내지 말고 멈춰서 사용자/디자이너에게 flag.** (예: 토글 `#60be34`, 보더 `#111` — 토큰 부재 시 보고)
-3. **브랜드는 cascade 로.** 컴포넌트는 hex 를 박지 않는다. 브랜드 분기(예: 캐포비 admin input 40px/radius4, 캐포비 시그니처 검정 버튼)는 `data-brand` cascade + `--nds-*` 슬롯/시멘틱 토큰으로. Figma 노드의 브랜드/페이지로 어느 브랜드인지 먼저 파악.
+3. **프로젝트는 cascade 로.** 컴포넌트는 hex 를 박지 않는다. 프로젝트 분기(예: 캐포비 admin input 40px/radius4, 캐포비 시그니처 검정 버튼)는 `data-project` cascade + `--nds-*` 슬롯/시멘틱 토큰으로. Figma 노드의 프로젝트/페이지로 어느 프로젝트인지 먼저 파악.
 4. **3면 미러 lockstep.** `react .tsx` ↔ `styles .ts` ↔ `html nds-*.ts` 는 같은 클래스명·`data-slot`·동작·치수를 공유한다. 하나만 고치고 끝내지 않는다.
 5. **외부 전파는 1급 단계** (가장 자주 누락). Storybook 스토리 + **AllComponents 카탈로그** + **MCP 가이드(guides-src/\*.md + build:guides)** + **changeset**. 빠지면 외부 프로젝트에 전파 안 됨.
 
@@ -34,7 +34,7 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 | Storybook 스토리   | `apps/storybook/src/stories/{Component}.stories.tsx`                                    | interaction test 포함 권장                                                   |
 | ★ 카탈로그         | `apps/storybook/src/stories/AllComponents.stories.tsx`                                  | import + 엔트리 (자주 누락)                                                  |
 | ★ MCP 가이드       | `packages/mcp/guides-src/components/{Component}.md` + `build:guides` 재생성             | summary·pitfalls·examplesHtml(do/dont)·`figmaNodeUrl`·sizeMatrix·stateMatrix |
-| 토큰(신규 필요 시) | `packages/tokens/src/**` + `DESIGN.md`                                                  | 새 시멘틱 토큰은 base + 브랜드. `pnpm build --filter @nudge-design/tokens`   |
+| 토큰(신규 필요 시) | `packages/tokens/src/**` + `DESIGN.md`                                                  | 새 시멘틱 토큰은 base + 프로젝트. `pnpm build --filter @nudge-design/tokens`   |
 | 데스크탑 검증      | `apps/desktop/src/main/catalog.ts` / `packages/mockup-core/src/tools/catalog-config.ts` | 새 `nds-*` 태그/attr 이면 검증 컨텍스트에 들어가는지 확인                    |
 | 테스트             | `packages/react/test/**`, `packages/html/test/**`                                       | 동작/DOM parity                                                              |
 | changeset          | `.changeset/{name}.md`                                                                  | react/styles/html (minor 또는 patch) + mcp patch                             |
@@ -43,23 +43,23 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
 
 ### Phase 0 — 인테이크 & 생성/업데이트 판별
 
-- Figma URL → `fileKey` + `nodeId` 추출. `get_screenshot` + `get_metadata` + `get_design_context` 로 구조/치수/색/상태/브랜드를 읽는다. (큰 화면이면 컴포넌트 인스턴스 노드만 design_context.)
+- Figma URL → `fileKey` + `nodeId` 추출. `get_screenshot` + `get_metadata` + `get_design_context` 로 구조/치수/색/상태/프로젝트를 읽는다. (큰 화면이면 컴포넌트 인스턴스 노드만 design_context.)
 - 컴포넌트 이름 확정. **존재 여부 확인**: `find_component({ name })`(MCP) + `ls packages/react/src | grep -i {name}`.
   - 없으면 → **신규 생성**(풀 표면).
   - 있으면 → **업데이트**(기존 구현 읽고 diff. 새 컴포넌트/새 토큰 슬롯을 함부로 만들지 말 것 — 기존 패턴 재사용).
-- 브랜드 스코프 파악(base 공통 vs 특정 브랜드 분기).
+- 프로젝트 스코프 파악(base 공통 vs 특정 프로젝트 분기).
 
 ### Phase 1 — 스펙 추출 (토큰-퍼스트)
 
 - 모든 치수 → `sizing.*`/`spacing.*`/`radius.*` 토큰 버킷으로 라운드(가장 가까운 값). raw px 는 geometry(예: 특정 radius)만.
 - 모든 색 → `find_token({ query })` 로 semantic 토큰 매칭. **매핑 실패 hex 는 flag**(지어내지 않음).
-- 상태 매트릭스(default/hover/active/disabled/checked…), 사이즈 변형, 브랜드 분기, 인터랙션을 정리.
+- 상태 매트릭스(default/hover/active/disabled/checked…), 사이즈 변형, 프로젝트 분기, 인터랙션을 정리.
 - 같은 역할 컴포넌트의 기존 토큰/패턴을 먼저 본다(`get_guide({ topic: 'component:<Near>' })`, `get_guide({ topic: 'principles' | 'dos-donts' })`).
 
 ### Phase 2 — 구현 (3면 미러)
 
 - `react/src/{Component}.tsx` 작성/수정 + `index.ts` export.
-- `styles/src/{Component}.ts` — 토큰 참조 CSS. `:where()` 로 0-specificity, `--nds-{component}-*` 슬롯으로 브랜드 override 여지.
+- `styles/src/{Component}.ts` — 토큰 참조 CSS. `:where()` 로 0-specificity, `--nds-{component}-*` 슬롯으로 프로젝트 override 여지.
 - `html/src/components/nds-{component}.ts` — 같은 class/`data-slot`/치수. `observedAttributes`, 속성 forward, 런타임 등록. `index.ts` export.
 - 세 면의 클래스명·slot·동작·치수가 동일한지 교차 확인.
 
@@ -88,8 +88,8 @@ Figma 디자인 가이드를 받아 DS 컴포넌트를 **모든 표면에 미러
   - html 구현은 mount-once 패턴 필수 — input 은 `_mount()` 에서 한 번만 만들고 `update()` 는 값/노출만 패치 (`replaceChildren` 으로 input 재생성 금지 — AddressPicker "한 글자마다 끊김" 회귀 클래스).
   - `pnpm lint:input-focus` 통과 확인 (`scripts/check-input-tests.mjs` — 신규 컴포넌트는 ALLOWLIST 에 넣지 말고 테스트를 쓴다).
 - 토큰 빌드(토큰 손댔으면): `pnpm build --filter @nudge-design/tokens` → 의존 패키지 빌드.
-- **정합 검증("스타일 다 맞아?")** — 빌드된 브랜드 CSS 실측값을 Figma 치수와 대조:
-  - `packages/html/dist/standalone/brand.*.css` 에서 `--nds-*` / 토큰 resolved 값을 grep → Figma metadata(height/padding/radius/color)와 1:1 비교. 어긋나면 컴포넌트가 아니라 **토큰/브랜드 cascade** 를 의심.
+- **정합 검증("스타일 다 맞아?")** — 빌드된 프로젝트 CSS 실측값을 Figma 치수와 대조:
+  - `packages/html/dist/standalone/project.*.css` 에서 `--nds-*` / 토큰 resolved 값을 grep → Figma metadata(height/padding/radius/color)와 1:1 비교. 어긋나면 컴포넌트가 아니라 **토큰/프로젝트 cascade** 를 의심.
 - HTML 산출물 검증: 예시 마크업에 `validate_html_mockup` (위반 0).
 - **생성물 일괄 재생성(필수 마지막 단계)**: `pnpm fix` — 모든 파생 생성물(guides.generated.ts·catalog.json·metadata/\*·미러 등)을 올바른 빌드 순서로 재생성하고, 쓰기 모드 없는 게이트(runtime-registry·storybook-catalog·mirror-parity 등)까지 검증한다. 출력된 "재생성된 파일" 목록을 변경분과 **같이 staged** 해야 CI(`pnpm lint`)가 통과한다. (CI 터짐의 최다 원인 = 생성물 커밋 누락 — 이 단계가 그걸 닫는다.)
 

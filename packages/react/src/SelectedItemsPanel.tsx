@@ -19,7 +19,7 @@ const LEGACY_ROW_LABEL_CLASS = `${LEGACY_ROW_CLASS}__label`;
 const ROW_REMOVE_CLASS = `${ROW_CLASS}__remove`;
 const LEGACY_ROW_REMOVE_CLASS = `${LEGACY_ROW_CLASS}__remove`;
 
-/* ─── Inline icons (브랜드 무관 · 16/20px, currentColor) ─── */
+/* ─── Inline icons (프로젝트 무관 · 16/20px, currentColor) ─── */
 
 const PlusIcon = () => (
   <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">

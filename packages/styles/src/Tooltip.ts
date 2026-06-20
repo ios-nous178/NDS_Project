@@ -23,7 +23,7 @@ export const tooltipStyles = `
     position: absolute;
     z-index: ${zIndex.tooltip};
     padding: ${spacing[14]}px ${spacing[16]}px;
-    /* 단일 다크 톤 #333333 (Figma 1380:13). --nds-tooltip-bg = 전 브랜드 동일 — base theme :root emit. */
+    /* 단일 다크 톤 #333333 (Figma 1380:13). --nds-tooltip-bg = 전 프로젝트 동일 — base theme :root emit. */
     background: var(--nds-tooltip-bg);
     color: ${cv.textRole.inverse};
     font-size: var(--nds-tooltip-font-size, ${typeScale.caption1.fontSize}px);
@@ -118,8 +118,8 @@ export const tooltipStyles = `
   }
 
   /* ─── 캐포비(cashwalk-biz) 어드민 Tooltip 배경 — Figma 4018:1161 ───
-     배경(#333)은 --nds-tooltip-bg 슬롯을 brand 토큰맵(cashwalk-biz.ts components.tooltip.bg=fill-neutral)에서
-     override — 컴포넌트 CSS 엔 hex 없음, 시멘틱 cascade. 다른 브랜드는 슬롯 미설정 → surface.inverse.
-     (리치-compact [data-brand] 분기는 제거 — 긴 본문 3줄+ 은 가이드상 Modal/Notice 로 분리하므로
+     배경(#333)은 --nds-tooltip-bg 슬롯을 project 토큰맵(cashwalk-biz.ts components.tooltip.bg=fill-neutral)에서
+     override — 컴포넌트 CSS 엔 hex 없음, 시멘틱 cascade. 다른 프로젝트는 슬롯 미설정 → surface.inverse.
+     (리치-compact [data-project] 분기는 제거 — 긴 본문 3줄+ 은 가이드상 Modal/Notice 로 분리하므로
       툴팁에 캐포비 전용 compact 타이포/여백 분기를 둘 이유가 없음.) */
 `;

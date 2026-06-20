@@ -4,16 +4,16 @@ references:
   - label: Cashwalk for Business · NoticeAlertGuide
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3902-1212
     caption: 캐포비 라이브러리 인라인 알림 박스 가이드 — state(info/caution/error) 기준 anatomy·token mapping·Use Cases·Do/Don't SSOT. DS 에서는 notice 패턴 + 5 variant 로 흡수.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: Trost · Alert 가이드
     url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5283-206
-    caption: 트로스트 Alert 가이드 — 5 variant(info/Notice/Caution/Success/Error)·2 size(52/72)·anatomy(container padding 16·gap 8·radius 8 · icon 20 · Body3 Medium). 트로스트는 Notice=중립 surface·본문 Text/Normal·radius 8 로 브랜드 토큰 override(base 는 Notice=블루·본문 strong 유지).
-    brand: trost
+    caption: 트로스트 Alert 가이드 — 5 variant(info/Notice/Caution/Success/Error)·2 size(52/72)·anatomy(container padding 16·gap 8·radius 8 · icon 20 · Body3 Medium). 트로스트는 Notice=중립 surface·본문 Text/Normal·radius 8 로 프로젝트 토큰 override(base 는 Notice=블루·본문 strong 유지).
+    project: trost
 ---
 
 ## summary
 
-폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스 — DS notice 패턴의 구현체. 입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됨. Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구)과 분리 — 인라인 지속 메시지만 NoticeAlert. 5 variant — info(중립 회색) / notice(블루·차분한 공지) / caution(옐로우 배경·아이콘) / success(그린·완료) / error(레드 배경+레드 텍스트·조치 필요). 컨테이너 = padding 16 · gap 8 · radius 8(트로스트·지니어트)~12(base) · min-height 52(1줄)/72(2줄·자동) · 좌측 status 아이콘 20×20 + 본문 Body3 Medium (notice.md 패턴 SSOT 정합). 색은 임의 hex 금지, semantic status 토큰 binding. **브랜드 override(슬롯)** — 트로스트는 Notice=중립 surface+neutral 아이콘, 본문 텍스트 전 variant Text/Normal, radius 8(`--nds-notice-alert-{notice-bg,notice-icon,text,radius}`). base/캐포비는 Notice=블루·본문 strong(error 만 레드) 유지. notice 패턴 규칙(강조 예산·화면당 색 박스 1개)을 그대로 따른다.
+폼·페이지 내부에 인라인으로 영구 노출되는 안내/주의/에러 박스 — DS notice 패턴의 구현체. 입력 컨텍스트 옆에 머무르며 명시적으로 닫기 전까지 유지됨. Toast(액션 결과·자동 사라짐) · Banner(페이지 상단 전역 띠) · Modal(즉각 판단 요구)과 분리 — 인라인 지속 메시지만 NoticeAlert. 5 variant — info(중립 회색) / notice(블루·차분한 공지) / caution(옐로우 배경·아이콘) / success(그린·완료) / error(레드 배경+레드 텍스트·조치 필요). 컨테이너 = padding 16 · gap 8 · radius 8(트로스트·지니어트)~12(base) · min-height 52(1줄)/72(2줄·자동) · 좌측 status 아이콘 20×20 + 본문 Body3 Medium (notice.md 패턴 SSOT 정합). 색은 임의 hex 금지, semantic status 토큰 binding. **프로젝트 override(슬롯)** — 트로스트는 Notice=중립 surface+neutral 아이콘, 본문 텍스트 전 variant Text/Normal, radius 8(`--nds-notice-alert-{notice-bg,notice-icon,text,radius}`). base/캐포비는 Notice=블루·본문 strong(error 만 레드) 유지. notice 패턴 규칙(강조 예산·화면당 색 박스 1개)을 그대로 따른다.
 
 ## pitfalls
 

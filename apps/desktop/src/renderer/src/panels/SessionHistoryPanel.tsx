@@ -511,7 +511,7 @@ export function SessionHistoryPanel({
                   <span>
                     {fmtTime(s.createdAt)} · {statusKo(s.status)}
                   </span>
-                  {s.brand && <MetaChip label={s.brand} />}
+                  {s.project && <MetaChip label={s.project} />}
                   {s.surface && <MetaChip label={s.surface} />}
                   {s.intent && <MetaChip label={s.intent} />}
                   {/* 이어가기 — CLI 네이티브 대화가 남아있는(resumable) 끝난 세션만. 라이브/편집 중엔 숨김. */}
@@ -684,7 +684,7 @@ export function sessionTitle(s: ChatSession): string {
   return deriveMockupName(s.mockupFile);
 }
 
-/** "brand-foo/index.html" → "brand-foo", "a/b/page.html" → "page". index 류는 부모 폴더가 의미. */
+/** "project-foo/index.html" → "project-foo", "a/b/page.html" → "page". index 류는 부모 폴더가 의미. */
 function deriveMockupName(mockupFile?: string): string {
   if (!mockupFile) return "새 세션";
   const parts = mockupFile.split("/").filter(Boolean);

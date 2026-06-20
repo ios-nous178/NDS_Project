@@ -8,7 +8,7 @@ stateMatrix:
 
 ## summary
 
-캐포비 어드민 **popconfirm** — 트리거(버튼/링크) 옆에서 가볍게 확인받는 **흰 말풍선**. 제목 + 보조 본문 + 1~2 액션 버튼(검정 secondary CTA) + 방향 tail. `open` controlled, 트리거 클릭 핸들러에서 토글. 확인/취소는 React `onConfirm`/`onCancel`, HTML `nds-confirm-tooltip-confirm`/`nds-confirm-tooltip-cancel` 이벤트. **Tooltip(다크 hover 안내)과 분리** — 이건 사용자의 응답/결정이 필요한 경우. 색은 전부 semantic 토큰이라 brand cascade 로 해석(캐포비 = 검정 CTA).
+캐포비 어드민 **popconfirm** — 트리거(버튼/링크) 옆에서 가볍게 확인받는 **흰 말풍선**. 제목 + 보조 본문 + 1~2 액션 버튼(검정 secondary CTA) + 방향 tail. `open` controlled, 트리거 클릭 핸들러에서 토글. 확인/취소는 React `onConfirm`/`onCancel`, HTML `nds-confirm-tooltip-confirm`/`nds-confirm-tooltip-cancel` 이벤트. **Tooltip(다크 hover 안내)과 분리** — 이건 사용자의 응답/결정이 필요한 경우. 색은 전부 semantic 토큰이라 project cascade 로 해석(캐포비 = 검정 CTA).
 
 ## pitfalls
 

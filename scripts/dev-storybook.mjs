@@ -10,7 +10,7 @@ const DEFAULT_PORT = Number.parseInt(process.env.STORYBOOK_PORT ?? "6006", 10);
 const MAX_PORT = DEFAULT_PORT + 20;
 
 /* ── 1. 사전 빌드 ─────────────────────────────────────────────
- * preview.ts / brand-themes.ts 가 packages/{tokens,react}/dist 의 CSS 를
+ * preview.ts / project-themes.ts 가 packages/{tokens,react}/dist 의 CSS 를
  * import 하므로, dist 가 없거나 stale 이면 스토리북이 옛 스타일을 보여준다.
  * turbo 가 토폴로지(tokens → icons → styles → react)와 캐시를 처리한다.
  * mcp/html 은 스토리북에 불필요해서 react 의존 체인만 빌드. */

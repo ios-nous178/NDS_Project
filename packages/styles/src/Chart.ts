@@ -1,7 +1,7 @@
 /* Chart — 캐포비 어드민 통계 화면 차트 스타일 (line / grouped-bar).
  * Figma: 🗄️ 캐포비 Library › 퀴즈 통계 (node 3001:47404)
  * 데이터 시리즈 색은 --nds-chart-* 슬롯 토큰 (기본값 = base theme components.chart → tokens.css :root).
- *   line  = Primary Yellow #FFD200 (브랜드)
+ *   line  = Primary Yellow #FFD200 (프로젝트)
  *   bar 1 = Blue #007AFF (남성)
  *   bar 2 = Orange #FF8437 (여성)
  */
@@ -20,7 +20,7 @@ const CHART_LEGEND_DOT_CLASS = `${CHART_CLASS}__legend-dot`;
 export const chartStyles = `
   :where(.${CHART_CLASS}) {
     /* --nds-chart-* 기본값은 tokens.css :root 가 emit (base theme components.chart).
-       요소 레벨에 정의하면 브랜드 :root override 를 마스킹하므로 여기 두지 말 것. */
+       요소 레벨에 정의하면 프로젝트 :root override 를 마스킹하므로 여기 두지 말 것. */
     display: block;
     width: 100%;
     font-family: ${fontFamily.web};

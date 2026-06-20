@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { brandThemes } from "../brand-themes";
+import { projectThemes } from "../project-themes";
 
 /* ─── 토큰 카테고리 분류 ─── */
 
@@ -50,9 +50,9 @@ function groupTokens(vars: Record<string, string>) {
 /* ─── 토큰 에디터 컴포넌트 ─── */
 
 function TokenEditor() {
-  const [brand, setBrand] = useState("trost");
-  const theme = brandThemes[brand];
-  const storageKey = `nds-token-overrides:${brand}`;
+  const [project, setProject] = useState("trost");
+  const theme = projectThemes[project];
+  const storageKey = `nds-token-overrides:${project}`;
   const [overrides, setOverrides] = useState<Record<string, string>>(() => {
     try {
       const raw = sessionStorage.getItem(storageKey);
@@ -64,17 +64,17 @@ function TokenEditor() {
   const [search, setSearch] = useState("");
   const changeCount = Object.keys(overrides).length;
 
-  // 브랜드 변경 시 해당 브랜드 저장값 로드
+  // 프로젝트 변경 시 해당 프로젝트 저장값 로드
   useEffect(() => {
     try {
-      const raw = sessionStorage.getItem(`nds-token-overrides:${brand}`);
+      const raw = sessionStorage.getItem(`nds-token-overrides:${project}`);
       setOverrides(raw ? JSON.parse(raw) : {});
     } catch {
       setOverrides({});
     }
-  }, [brand]);
+  }, [project]);
 
-  // CSS 변수 실시간 적용 + sessionStorage 브랜드별 저장
+  // CSS 변수 실시간 적용 + sessionStorage 프로젝트별 저장
   useEffect(() => {
     const root = document.documentElement;
     const merged = { ...theme.cssVars, ...overrides };
@@ -115,7 +115,7 @@ function TokenEditor() {
     const lines = Object.entries(overrides)
       .map(([k, v]) => `      "${k}": "${v}",`)
       .join("\n");
-    const code = `// brand-themes.ts에 붙여넣기\ncssVars: {\n${lines}\n}`;
+    const code = `// project-themes.ts에 붙여넣기\ncssVars: {\n${lines}\n}`;
     navigator.clipboard.writeText(code).then(() => alert("클립보드에 복사되었습니다!"));
   }, [overrides, changeCount]);
 
@@ -160,7 +160,7 @@ function TokenEditor() {
           토큰 에디터
         </h1>
         <p style={{ fontSize: 14, color: "#666", margin: 0 }}>
-          브랜드 토큰을 실시간으로 수정하고 미리보기할 수 있습니다. 수정사항은 "코드 복사"로 내보낼
+          프로젝트 토큰을 실시간으로 수정하고 미리보기할 수 있습니다. 수정사항은 "코드 복사"로 내보낼
           수 있습니다.
         </p>
       </div>
@@ -175,20 +175,20 @@ function TokenEditor() {
           flexWrap: "wrap",
         }}
       >
-        {/* 브랜드 선택 */}
+        {/* 프로젝트 선택 */}
         <div style={{ display: "flex", gap: 6 }}>
-          {Object.values(brandThemes).map((t) => (
+          {Object.values(projectThemes).map((t) => (
             <button
               key={t.name}
-              onClick={() => setBrand(t.name)}
+              onClick={() => setProject(t.name)}
               style={{
                 padding: "var(--semantic-inset-chip) var(--semantic-inset-card)",
                 borderRadius: 8,
                 fontSize: 13,
-                fontWeight: brand === t.name ? 700 : 500,
-                border: brand === t.name ? "2px solid #333" : "1px solid #E5E5E5",
-                background: brand === t.name ? "#F4F5F7" : "#fff",
-                color: brand === t.name ? "#333" : "#666",
+                fontWeight: project === t.name ? 700 : 500,
+                border: project === t.name ? "2px solid #333" : "1px solid #E5E5E5",
+                background: project === t.name ? "#F4F5F7" : "#fff",
+                color: project === t.name ? "#333" : "#666",
                 cursor: "pointer",
                 fontFamily: "inherit",
               }}
@@ -310,7 +310,7 @@ function TokenEditor() {
 
       {Object.keys(theme.cssVars).length === 0 && (
         <div style={{ textAlign: "center", padding: "60px 0", color: "#999" }}>
-          <p style={{ fontSize: 16 }}>이 브랜드는 기본 토큰을 사용합니다.</p>
+          <p style={{ fontSize: 16 }}>이 프로젝트는 기본 토큰을 사용합니다.</p>
           <p style={{ fontSize: 14, marginTop: 8 }}>오버라이드할 CSS 변수가 없습니다.</p>
         </div>
       )}

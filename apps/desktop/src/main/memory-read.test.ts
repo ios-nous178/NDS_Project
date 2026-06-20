@@ -10,7 +10,7 @@ function mk(over: Partial<DesignDecisionRow> & { ts: string }): DesignDecisionRo
   return {
     ts: over.ts,
     ok: over.ok ?? true,
-    screen: over.screen ?? { brand: "trost", surface: "web", intent: "로그인" },
+    screen: over.screen ?? { project: "trost", surface: "web", intent: "로그인" },
     decisions: over.decisions ?? [],
     rationales: over.rationales ?? [],
     componentsUsed: over.componentsUsed ?? [],
@@ -28,40 +28,40 @@ test("formatMemoryRead: 결정·근거가 섹션에 포함된다", () => {
   const out = formatMemoryRead([
     mk({
       ts: "2026-06-01T00:00:00.000Z",
-      decisions: ["CTA 는 brandSolid 고정"],
+      decisions: ["CTA 는 projectSolid 고정"],
       rationales: [{ path: "tree[0]", component: "Button", rationale: "주목도 우선" }],
     }),
   ]);
   assert.ok(out, "섹션이 생성되어야 함");
   assert.match(out, /Memory Read/);
-  assert.match(out, /CTA 는 brandSolid 고정/);
+  assert.match(out, /CTA 는 projectSolid 고정/);
   assert.match(out, /Button: 주목도 우선/);
 });
 
-test("formatMemoryRead: 다른 브랜드 결정은 제외(브랜드 필터)", () => {
+test("formatMemoryRead: 다른 프로젝트 결정은 제외(프로젝트 필터)", () => {
   const rows = [
-    mk({ ts: "t1", screen: { brand: "trost" }, decisions: ["TROST 결정"] }),
-    mk({ ts: "t2", screen: { brand: "geniet" }, decisions: ["GENIET 결정"] }),
+    mk({ ts: "t1", screen: { project: "trost" }, decisions: ["TROST 결정"] }),
+    mk({ ts: "t2", screen: { project: "geniet" }, decisions: ["GENIET 결정"] }),
   ];
-  const out = formatMemoryRead(rows, { brand: "trost" });
+  const out = formatMemoryRead(rows, { project: "trost" });
   assert.ok(out);
   assert.match(out, /TROST 결정/);
   assert.doesNotMatch(out, /GENIET 결정/);
 });
 
-test("formatMemoryRead: 브랜드 alias(cashpobi→cashwalk-biz)도 매칭", () => {
+test("formatMemoryRead: 프로젝트 alias(cashpobi→cashwalk-biz)도 매칭", () => {
   const out = formatMemoryRead(
-    [mk({ ts: "t1", screen: { brand: "cashwalk-biz" }, decisions: ["캐포비 결정"] })],
-    { brand: "cashpobi" },
+    [mk({ ts: "t1", screen: { project: "cashwalk-biz" }, decisions: ["캐포비 결정"] })],
+    { project: "cashpobi" },
   );
-  assert.ok(out, "별칭 brand 가 정규화되어 매칭되어야 함");
+  assert.ok(out, "별칭 project 가 정규화되어 매칭되어야 함");
   assert.match(out, /캐포비 결정/);
 });
 
-test("formatMemoryRead: 브랜드를 아는데 같은 브랜드 결정이 없으면 null", () => {
+test("formatMemoryRead: 프로젝트를 아는데 같은 프로젝트 결정이 없으면 null", () => {
   const out = formatMemoryRead(
-    [mk({ ts: "t1", screen: { brand: "geniet" }, decisions: ["GENIET"] })],
-    { brand: "trost" },
+    [mk({ ts: "t1", screen: { project: "geniet" }, decisions: ["GENIET"] })],
+    { project: "trost" },
   );
   assert.equal(out, null);
 });
@@ -116,8 +116,8 @@ test("buildMemoryRead: jsonl 을 읽어 섹션을 만든다", () => {
     const rows = [
       mk({
         ts: "t1",
-        screen: { brand: "trost", intent: "홈" },
-        decisions: ["헤더는 brand Header"],
+        screen: { project: "trost", intent: "홈" },
+        decisions: ["헤더는 project Header"],
       }),
     ];
     writeFileSync(
@@ -125,9 +125,9 @@ test("buildMemoryRead: jsonl 을 읽어 섹션을 만든다", () => {
       rows.map((r) => JSON.stringify(r)).join("\n") + "\n",
       "utf-8",
     );
-    const out = buildMemoryRead(dir, { brand: "trost" });
+    const out = buildMemoryRead(dir, { project: "trost" });
     assert.ok(out);
-    assert.match(out, /헤더는 brand Header/);
+    assert.match(out, /헤더는 project Header/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

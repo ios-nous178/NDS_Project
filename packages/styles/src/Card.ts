@@ -59,7 +59,7 @@ export const cardStyles = `
     border: none;
   }
 
-  /* Platform 사이즈 프리셋 (Trost) — 슬롯을 ROOT 에 set 해 브랜드 상속값을 이긴다.
+  /* Platform 사이즈 프리셋 (Trost) — 슬롯을 ROOT 에 set 해 프로젝트 상속값을 이긴다.
      data-platform 미지정이면 어떤 룰도 매칭 안 되므로 현행 렌더 유지. */
   :where(.${CARD_ROOT_CLASS}[data-platform="pc"]) {
     --nds-card-padding: ${spacing[28]}px;

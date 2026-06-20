@@ -29,7 +29,7 @@ const CTX: HtmlValidationContext = {
 
 const v = (html: string) => validateHtmlSource(html, { context: CTX });
 const vCashwalk = (html: string) =>
-  validateHtmlSource(html, { context: CTX, surface: "admin", brand: "cashwalk-biz" });
+  validateHtmlSource(html, { context: CTX, surface: "admin", project: "cashwalk-biz" });
 const has = (html: string, rule: string) => v(html).some((x) => x.rule === rule);
 const hit = (html: string, rule: string) => v(html).find((x) => x.rule === rule);
 const hasCashwalk = (html: string, rule: string) => vCashwalk(html).some((x) => x.rule === rule);

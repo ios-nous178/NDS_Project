@@ -6,7 +6,7 @@
  *     size="sm"
  *     thumbnail="/img/p.jpg"
  *     thumbnail-alt="상품 이미지"
- *     product-title="브랜드 텀블러 500ml"
+ *     product-title="프로젝트 텀블러 500ml"
  *     original-price="20000"
  *     discount-percent="30"
  *     price="14000"

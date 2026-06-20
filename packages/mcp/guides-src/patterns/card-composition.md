@@ -18,18 +18,18 @@ Card 의 List/Thumb/Cover 3 base variant 위에 얹는 도메인 Composition 슬
 
 ## rules
 
-- **Slot 1 — kcal chip**: 식품 칼로리 표시 (예: 109 kcal). Chip tinted brand xs · Body 4. base variant 의 padding 안쪽, Title 직후 또는 Metadata 라인 인라인.
+- **Slot 1 — kcal chip**: 식품 칼로리 표시 (예: 109 kcal). Chip tinted project xs · Body 4. base variant 의 padding 안쪽, Title 직후 또는 Metadata 라인 인라인.
 - **Slot 2 — star rating + review count**: ★ + 평점 + (리뷰 N개). Metadata 라인 좌측. 리뷰 없는 카드는 '리뷰 없음' 으로 fallback (mute color).
 - **Slot 3 — promotion badge**: top-right absolute (Card.Root 기준). 리뷰가 없는 카드에만 노출. 같은 그리드 안에서 promotion + review 동시 노출 금지.
 - **Slot 4 — nutrition tag chip row**: 0-3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.
 - **Slot 5 — like overlay**: top-right absolute, Media 슬롯 위 (이미지 over). 'heart 아이콘 + 999+' 형태. Cover variant 의 Media 위에만, Thumb/List 사용 X.
 - **Slot 6 — author meta**: avatar(xs 20-24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.
-- **Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale brand (CashwalkBiz 빨강 / Geniet mint600). 1줄에 1개.
+- **Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale project (CashwalkBiz 빨강 / Geniet mint600). 1줄에 1개.
 - **Slot 8 — strikethrough price + sale price**: 정가(취소선 + mute) + 할인가(Bold + Strong). discount badge 와 같은 라인에 정렬. 가격 표시는 카드당 1쌍.
 - **Slot 9 — shipping chip**: '무료배송' 같은 정책 라벨. ghost/line variant · neutral color. Metadata 라인 우측 또는 가격 라인 하단.
 - **Slot 10 — certification chip**: '식약처 인증 제품' 같은 신뢰성 라벨. success/info color · ghost variant · check icon prefix. Status 슬롯 또는 Metadata 라인 하단.
 - **Slot 11 — ranking leading**: 1/2/3 등은 gold/silver/bronze medal 아이콘, 4+ 는 큰 숫자 + neutral subtle bg. Leading 슬롯 (List variant 의 좌측). 트렌딩/랭킹 카드 전용.
-- **Slot 12 — macro nutrition bar**: 탄/단/지 비율 가로 progress bar (3색 분할: 탄=brand info, 단=brand success, 지=brand caution). 라벨은 % 와 함께. Cover/Thumb 의 Description 하단 또는 Footer.
+- **Slot 12 — macro nutrition bar**: 탄/단/지 비율 가로 progress bar (3색 분할: 탄=project info, 단=project success, 지=project caution). 라벨은 % 와 함께. Cover/Thumb 의 Description 하단 또는 Footer.
 - **Slot 13 — category banner header**: Card 상단 4px 색 라인 + 카테고리 라벨 (다이어트/혈당/저당 등). 같은 그리드 안에서 카테고리별로 색이 다름 (info/caution/critical). Cover/Thumb 의 Media 위 또는 별도 헤더 라인.
 - **Slot 14 — friend social proof**: avatar(xs) + 'N명이 먹어봤어요' 같은 카운트 라벨. Footer 슬롯 또는 Description 하단. 신뢰감/추천 의도 카드에만.
 - **Slot 15 — trending count**: '최근 7일간 100만+' 같은 시계열 활동 카운트. Caption · Strong. Metadata 라인 하단. 랭킹 카드의 핵심 정보로 사용.

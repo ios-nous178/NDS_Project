@@ -112,7 +112,7 @@
       "since": "2026-06"
     },
     {
-      "key": "BrandChrome::html-only::html 전용(nds-brand-chrome) — react 미러가 없음",
+      "key": "ProjectChrome::html-only::html 전용(nds-project-chrome) — react 미러가 없음",
       "reason": "html 전용 목업 셸 래퍼 — react 소비처는 헤더/푸터를 직접 조립",
       "since": "2026-06"
     },

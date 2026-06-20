@@ -42,9 +42,9 @@ const gate = (id) => GATES.find((g) => g.id === id);
 
 // ── 1.5 tokens 를 먼저 단독 빌드해 dist 를 못박는다 (leaf 의존성 선행) ─────────
 // mockup-core#build 는 `rm -rf dist && tsc` 인데, 그 tsc 가 @nudge-design/tokens/
-// brand-profiles(.d.ts) 를 워크스페이스 심볼릭링크로 읽는다. 한 번의 멀티패키지 turbo
+// project-profiles(.d.ts) 를 워크스페이스 심볼릭링크로 읽는다. 한 번의 멀티패키지 turbo
 // 빌드 안에서 tokens 가 cache-hit 처리되며 dist materialize 타이밍이 어긋나면, 소비자
-// (mockup-core) tsc 가 brand-profiles 를 간헐적으로 못 찾는 레이스가 있었다(TS2307).
+// (mockup-core) tsc 가 project-profiles 를 간헐적으로 못 찾는 레이스가 있었다(TS2307).
 // tokens 를 **별도의 완료된 turbo 호출**로 먼저 빌드해 dist 가 디스크에 확정된 뒤
 // 체인을 빌드하면, 두 turbo 호출 사이의 순서가 보장돼 레이스가 사라진다.
 run("tokens 빌드 (leaf 의존성 선행 — mockup-core tsc 입력 보장)", [

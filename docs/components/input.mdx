@@ -269,11 +269,11 @@ import { SearchIcon } from "@nudge-design/icons";
 | variant    | 토큰                                | 컬러      | 용도                       |
 | ---------- | ----------------------------------- | --------- | -------------------------- |
 | `default`  | Text/Muted/Default                  | `#999999` | 일반 도움말                |
-| `success`  | Text/Brand/Default                  | `#2B96ED` | 폼 검증 통과 (브랜드 톤)   |
+| `success`  | Text/Brand/Default                  | `#2B96ED` | 폼 검증 통과 (프로젝트 톤)   |
 | `error`    | Text/Status/Error                   | `#F13F00` | 폼 오류                    |
 | `disabled` | Text/Disabled/Default               | `#C7C7C7` | 비활성 상태                |
 
-> Banner/Toast의 success(녹색)와 의도적으로 구분 — 폼 검증 통과는 브랜드 톤을 사용합니다.
+> Banner/Toast의 success(녹색)와 의도적으로 구분 — 폼 검증 통과는 프로젝트 톤을 사용합니다.
 
 ---
 
@@ -363,7 +363,7 @@ div [data-slot="root"]
 | `fullWidth` | `boolean` | `true` | 컴포넌트 너비 |
 | `fieldWidth` | `FieldWidth` | — | 입력 필드 가로 너비 6단계 스케일 (xs 120 / sm 200 / md 304 / lg 400 / xl 488 / full 100%). 지정 시 `fullWidth` 보다 우선. 폼 내부 일반 입력은 `md`(304), 모달 메인 입력은 `lg`(400) 권장. |
 | `size` | `InputSize` | `"default"` | 입력 필드 높이 변형 |
-| `variant` | `"box" \| "line"` | — | 외형 변형 — `"box"` / `"line"`(하단 라인). 미지정 시 box, 단 런마일(`[data-brand="runmile"]`)은 line 으로 cascade. 런마일에서 box 가 필요하면 `variant="box"` 로 opt-out. |
+| `variant` | `"box" \| "line"` | — | 외형 변형 — `"box"` / `"line"`(하단 라인). 미지정 시 box, 단 런마일(`[data-project="runmile"]`)은 line 으로 cascade. 런마일에서 box 가 필요하면 `variant="box"` 로 opt-out. |
 | `slotProps` | `InputSlotProps` | — | 슬롯 프롭 |
 | `wrapperClassName` | `string` | — | 래퍼 클래스 |
 | `wrapperStyle` | `CSSProperties` | — | 래퍼 스타일 |

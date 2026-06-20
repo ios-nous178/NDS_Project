@@ -189,10 +189,10 @@ export const modalStyles = `
     background-color: ${cv.surface.subtle};
   }
 
-  /* confirm = 주 액션 CTA(positive/기본). confirmCta 토큰은 base 에서 brand 색을 var() 로 참조하므로
-     브랜드별 자기 brand 색이 되고(트로스트=노랑), 캐포비만 neutral 검정으로 override 된다(토큰 :root 로 흘러
-     data-brand 속성 없는 standalone 목업에서도 적용 — 옛 [data-brand] 캐스케이드 회귀 해소).
-     텍스트색은 confirmCta.text(브랜드별 자기 값: 트로스트=검정/나머지=흰/캐포비=흰) — 노랑 위 검은글씨
+  /* confirm = 주 액션 CTA(positive/기본). confirmCta 토큰은 base 에서 project 색을 var() 로 참조하므로
+     프로젝트별 자기 project 색이 되고(트로스트=노랑), 캐포비만 neutral 검정으로 override 된다(토큰 :root 로 흘러
+     data-project 속성 없는 standalone 목업에서도 적용 — 옛 [data-project] 캐스케이드 회귀 해소).
+     텍스트색은 confirmCta.text(프로젝트별 자기 값: 트로스트=검정/나머지=흰/캐포비=흰) — 노랑 위 검은글씨
      회귀 해소. Popup 은 이미 동일, Modal 도 text-inverse 하드코딩 제거해 정렬. */
   :where(.${FOOTER_CONFIRM_CLASS}) {
     background-color: ${cv.confirmCta.bg};
@@ -212,7 +212,7 @@ export const modalStyles = `
   }
 
   /* confirmTone="destructive" — 비가역 액션(삭제·차단·해지)은 검정 Neutral CTA + 흰 텍스트.
-     트로스트 모달 가이드(171:9899): Destructive=Black, Positive=Yellow. 브랜드 무관히
+     트로스트 모달 가이드(171:9899): Destructive=Black, Positive=Yellow. 프로젝트 무관히
      neutral-solid 버튼 토큰으로 합성(트로스트 #1A1A1A, 캐포비도 동일 검정과 일치). */
   :where(.${FOOTER_CONFIRM_CLASS}[data-confirm-tone="destructive"]) {
     background-color: ${cv.button.bgNeutral};
@@ -226,10 +226,10 @@ export const modalStyles = `
     border-color: ${cv.button.bgNeutralHover};
   }
 
-  /* ─── actionsLayout="end" — 우측 정렬 hug (브랜드 무관; 캐포비 admin 기본).
+  /* ─── actionsLayout="end" — 우측 정렬 hug (프로젝트 무관; 캐포비 admin 기본).
      split(기본)은 위 .footer-action{flex:1} 가로 균등. end 는 1·2버튼 모두 128px 고정 폭
-     (Figma ModalGuide 3418-471 갱신 — w128). data-layout 은 resolveActionsLayout(브랜드 기본 + prop override)이 설정.
-     pill 모양/색은 별도(브랜드 토큰/cascade) — 배치만 여기서. ─── */
+     (Figma ModalGuide 3418-471 갱신 — w128). data-layout 은 resolveActionsLayout(프로젝트 기본 + prop override)이 설정.
+     pill 모양/색은 별도(프로젝트 토큰/cascade) — 배치만 여기서. ─── */
   :where(.${FOOTER_CLASS}[data-layout="end"]) {
     justify-content: flex-end;
   }
@@ -249,7 +249,7 @@ export const modalStyles = `
   }
 
   /* ============================================================
-     CashwalkBiz (admin) brand cascade — Figma "Cashwalk for Business
+     CashwalkBiz (admin) project cascade — Figma "Cashwalk for Business
      ModalGuide" 3418:471. 일반 EAP 모바일 모달(332/294)과 다른
      admin desktop 다이얼로그 스펙:
        · 너비 480 / radius 16 / padding 32 균등 / gap 20
@@ -261,10 +261,10 @@ export const modalStyles = `
        · confirm = 검정 CTA (button.bgNeutral — 캐포비 tone=Primary+Neutral, Secondary 없음)
        · cancel  = white + neutral 회색 보더
      기존 props 만으로 4가지 admin 패턴 모두 표현 가능 — Modal API
-     변경 없이 CSS cascade 만 추가. <html data-brand="cashwalk-biz"> 가
+     변경 없이 CSS cascade 만 추가. <html data-project="cashwalk-biz"> 가
      박혀 있을 때만 자동 적용.
   ============================================================ */
-  :where([data-brand="cashwalk-biz"] .${CONTENT_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${CONTENT_CLASS}) {
     max-width: var(--nds-modal-max-width, 480px);
     gap: ${spacing[20]}px;
     padding: ${spacing[32]}px;
@@ -272,18 +272,18 @@ export const modalStyles = `
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.12);
   }
 
-  :where([data-brand="cashwalk-biz"] .${HEADER_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${HEADER_CLASS}) {
     gap: 0;
   }
 
   /* 캐포비는 타이틀 좌측 정렬 — 중앙 정렬용 좌측 ghost spacer 제거 */
-  :where([data-brand="cashwalk-biz"] .${HEADER_SPACER_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${HEADER_SPACER_CLASS}) {
     display: none;
   }
 
   /* CashwalkBiz Title2 = DS headline5 (18/26). 캐포비 typeScale 가
      별도 변수로 노출되지 않아 동일 픽셀 매핑인 headline5 사용. */
-  :where([data-brand="cashwalk-biz"] .${HEADER_TITLE_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${HEADER_TITLE_CLASS}) {
     flex: 1;
     text-align: left;
     font-size: ${typeScale.headline5.fontSize}px;
@@ -292,7 +292,7 @@ export const modalStyles = `
     color: ${cv.textRole.strong};
   }
 
-  :where([data-brand="cashwalk-biz"] .${CLOSE_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${CLOSE_CLASS}) {
     flex: 0 0 24px;
     width: 24px;
     height: 24px;
@@ -303,7 +303,7 @@ export const modalStyles = `
 
   /* CashwalkBiz Body2 = DS body3 (14/20) — 픽셀 매핑. 본문은 좌측 정렬 + 콘텐츠 슬롯과 20px gap
      (Figma ④ Confirm+Slot 은 헤더·설명·슬롯·푸터가 모두 형제인 평면 gap-20 — 설명↔슬롯도 20). */
-  :where([data-brand="cashwalk-biz"] .${BODY_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${BODY_CLASS}) {
     gap: ${spacing[20]}px;
     text-align: left;
     font-size: ${typeScale.body3.fontSize}px;
@@ -312,11 +312,11 @@ export const modalStyles = `
   }
 
   /* gap:20 으로 통일했으므로 body→footer 추가 margin 제거 */
-  :where([data-brand="cashwalk-biz"] .${BODY_CLASS}:has(+ .${FOOTER_CLASS})) {
+  :where([data-project="cashwalk-biz"] .${BODY_CLASS}:has(+ .${FOOTER_CLASS})) {
     margin-bottom: 0;
   }
 
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${FOOTER_CLASS}) {
     gap: ${spacing[8]}px;
   }
 
@@ -324,7 +324,7 @@ export const modalStyles = `
      resolveActionsLayout 가 cashwalk-biz 기본을 "end" 로 잡는다. 여기서는 색/pill 모양만. */
 
   /* CashwalkBiz 버튼: pill / 48px / Body2(14/20) Medium (Figma 3418-471 — 44→48 갱신) */
-  :where([data-brand="cashwalk-biz"] .${FOOTER_ACTION_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${FOOTER_ACTION_CLASS}) {
     height: 48px;
     padding: ${spacing[12]}px ${spacing[18]}px;
     border-radius: 9999px;
@@ -333,18 +333,18 @@ export const modalStyles = `
     font-weight: 500;
   }
 
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CANCEL_CLASS}) {
+  :where([data-project="cashwalk-biz"] .${FOOTER_CANCEL_CLASS}) {
     background-color: ${cv.surface.default};
     border-color: ${cv.button.borderNeutral};
     color: ${cv.textRole.strong};
   }
 
-  :where([data-brand="cashwalk-biz"] .${FOOTER_CANCEL_CLASS}:hover) {
+  :where([data-project="cashwalk-biz"] .${FOOTER_CANCEL_CLASS}:hover) {
     background-color: ${cv.surface.subtle};
     border-color: ${cv.button.borderNeutral};
   }
 
-  /* confirm(검정 CTA)은 더 이상 여기서 [data-brand] 캐스케이드로 분기하지 않는다 —
+  /* confirm(검정 CTA)은 더 이상 여기서 [data-project] 캐스케이드로 분기하지 않는다 —
      base 규칙이 confirmCta 토큰을 쓰고, 캐포비 :root 가 그 토큰을 neutral 검정으로 덮는다.
-     (그래야 data-brand 속성 없는 standalone 목업에서도 노랑이 아니라 검정으로 나온다.) */
+     (그래야 data-project 속성 없는 standalone 목업에서도 노랑이 아니라 검정으로 나온다.) */
 `;

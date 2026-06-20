@@ -1,6 +1,6 @@
 /**
  * Nudge 마크 — docs 사이트 로고(apps/docs/static/img/logo.svg)와 동일한 path.
- * fill 을 currentColor 로 두어 상위 color 로 톤(브랜드 노랑/흰색)을 입힌다.
+ * fill 을 currentColor 로 두어 상위 color 로 톤(프로젝트 노랑/흰색)을 입힌다.
  */
 export function Logo({ size = 22 }: { size?: number }): React.JSX.Element {
   return (

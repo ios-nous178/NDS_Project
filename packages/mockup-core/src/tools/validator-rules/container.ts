@@ -1,10 +1,10 @@
 /**
  * 컨테이너 룰 그룹 — html-validator.ts(오케스트레이터)에서 순수 이동(pure-move).
- * Card / Footer / 영역별 CTA / 브랜드 모달 정책 검사.
+ * Card / Footer / 영역별 CTA / 프로젝트 모달 정책 검사.
  */
 import * as cheerio from "cheerio";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
-import { canonicalBrandSlug } from "../standalone-assets.js";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
+import { canonicalProjectSlug } from "../standalone-assets.js";
 import {
   type DomElement,
   type HtmlViolation,
@@ -110,11 +110,11 @@ export function collectContainerViolations(
     });
   }
 
-  // 모달 정책 — 브랜드 프로필 modal.* 선언에 따라 발화(현재 선언 브랜드 = cashwalk-biz).
-  const modalBrand = canonicalBrandSlug(
-    $("html").attr("data-brand") ?? $("body").attr("data-brand"),
+  // 모달 정책 — 프로젝트 프로필 modal.* 선언에 따라 발화(현재 선언 프로젝트 = cashwalk-biz).
+  const modalProject = canonicalProjectSlug(
+    $("html").attr("data-project") ?? $("body").attr("data-project"),
   );
-  const modalPolicy = getBrandProfile(modalBrand)?.modal;
+  const modalPolicy = getProjectProfile(modalProject)?.modal;
   if (modalPolicy) {
     // 단일 버튼 모달 = 우측 정렬 hug 검정 pill — full-width 아님 (modal.singleButtonLayout="hug-right").
     // 흔한 회귀: 버튼 1개인데 full-width 로 깔림(다른 화면의 full-width 적용 버튼을 잘못 가져옴).
@@ -134,17 +134,17 @@ export function collectContainerViolations(
         if (buttons[0].attribs?.["full-width"] === undefined) return;
         const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
         out.push({
-          rule: "brand-modal-single-button-fullwidth",
+          rule: "project-modal-single-button-fullwidth",
           line: lineNumberAt(source, offset),
           selector: describeElement(el as unknown as DomElement),
           detail: "캐포비 모달의 단일 버튼에 full-width 가 붙음.",
           suggestion:
-            "캐포비(cashwalk-biz) 단일 버튼 모달은 우측 정렬 + hug 너비 검정 pill 입니다 — full-width 아님. <nds-button> 에서 full-width 를 제거하고 <div slot=\"footer\"> 로 감싸면 footer cascade 가 우측 hug 로 정렬합니다(버튼 2개일 때만 가로 분할). get_guide({ topic: 'component:Modal', brand: 'cashwalk-biz' }) 참조.",
+            "캐포비(cashwalk-biz) 단일 버튼 모달은 우측 정렬 + hug 너비 검정 pill 입니다 — full-width 아님. <nds-button> 에서 full-width 를 제거하고 <div slot=\"footer\"> 로 감싸면 footer cascade 가 우측 hug 로 정렬합니다(버튼 2개일 때만 가로 분할). get_guide({ topic: 'component:Modal', project: 'cashwalk-biz' }) 참조.",
         });
       });
 
     // 확인/팝업 모달의 주 action 은 검정 CTA(color="neutral") — primary(노랑) 금지
-    //   (modal.confirmCtaColor="neutral" 선언 브랜드만).
+    //   (modal.confirmCtaColor="neutral" 선언 프로젝트만).
     //   근본 원인: <nds-button>/Button 은 color 생략 시 기본값이 primary(노랑)라, 모달 footer 버튼에
     //   color 를 안 적으면 자동으로 노랑이 된다(가이드는 neutral 이라고만 말하고 기본값은 노랑 →
     //   5회+ 재발). isPrimarySolidButton = color 가 primary 이거나 생략(=기본 primary)인 solid 버튼.
@@ -171,14 +171,14 @@ export function collectContainerViolations(
           const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
           const omitted = !(btn.attribs ?? {}).color;
           out.push({
-            rule: "brand-modal-confirm-cta",
+            rule: "project-modal-confirm-cta",
             line: lineNumberAt(source, offset),
             selector: describeElement(btn),
             detail: omitted
               ? "캐포비 확인/팝업 모달의 주 action 버튼에 color 가 생략됨 — Button 기본값이 primary(노랑)라 자동으로 노랑 CTA 가 됩니다."
               : '캐포비 확인/팝업 모달의 주 action 버튼이 color="primary"(노랑) 입니다.',
             suggestion:
-              '캐포비 확인/팝업 모달의 주 action(확인/적용/완료/만들기)은 브랜드 시그니처 검정 CTA — color="neutral" variant="solid" shape="pill" 을 명시하세요(예: <nds-button color="neutral" variant="solid" shape="pill">비즈니스 그룹 만들기</nds-button>). color 를 생략하면 기본값 primary(노랑)로 떨어집니다. 본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/데이터 모달뿐(max-width 720+). get_guide({ topic: \'component:Modal\', brand: \'cashwalk-biz\' }) 참조.',
+              '캐포비 확인/팝업 모달의 주 action(확인/적용/완료/만들기)은 프로젝트 시그니처 검정 CTA — color="neutral" variant="solid" shape="pill" 을 명시하세요(예: <nds-button color="neutral" variant="solid" shape="pill">비즈니스 그룹 만들기</nds-button>). color 를 생략하면 기본값 primary(노랑)로 떨어집니다. 본문 풀폭 옐로우 적용 버튼이 정상인 곳은 선택/데이터 모달뿐(max-width 720+). get_guide({ topic: \'component:Modal\', project: \'cashwalk-biz\' }) 참조.',
           });
         });
       });
@@ -206,7 +206,7 @@ export function collectContainerViolations(
         if (!stacked) return;
         const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
         out.push({
-          rule: "brand-modal-footer-stacked",
+          rule: "project-modal-footer-stacked",
           line: lineNumberAt(source, offset),
           selector: describeElement(el as unknown as DomElement),
           detail: "모달 footer 의 두 버튼이 세로로 스택되어 있습니다.",
@@ -216,7 +216,7 @@ export function collectContainerViolations(
       });
 
     // 모달 footer 버튼은 전부 pill — 보조(취소/아웃라인) 버튼에 shape="pill" 빠뜨려 각진 버튼이
-    //   섞이는 재발 차단 (modal.footerButtonShape="pill" 선언 브랜드만).
+    //   섞이는 재발 차단 (modal.footerButtonShape="pill" 선언 프로젝트만).
     if (modalPolicy.footerButtonShape === "pill")
       $("nds-modal").each((_i, el) => {
         if (el.type !== "tag") return;
@@ -231,12 +231,12 @@ export function collectContainerViolations(
           if ((btn.attribs ?? {}).shape === "pill") return; // 이미 pill 이면 OK
           const offset = (btn as unknown as { startIndex?: number }).startIndex ?? 0;
           out.push({
-            rule: "brand-modal-footer-button-shape",
+            rule: "project-modal-footer-button-shape",
             line: lineNumberAt(source, offset),
             selector: describeElement(btn),
             detail: '캐포비 모달 footer 버튼에 shape="pill" 이 없어 각진(default) 버튼이 됩니다.',
             suggestion:
-              '캐포비(cashwalk-biz) 모달 버튼은 주·보조 모두 pill 입니다 — 모든 footer 버튼에 shape="pill" 을 명시하세요(예: <nds-button variant="outlined" shape="pill">취소</nds-button> + <nds-button color="neutral" variant="solid" shape="pill">확인</nds-button>). 보조 버튼에 빠뜨리면 pill+각진 버튼이 섞입니다. get_guide({ topic: \'component:Modal\', brand: \'cashwalk-biz\' }) 참조.',
+              '캐포비(cashwalk-biz) 모달 버튼은 주·보조 모두 pill 입니다 — 모든 footer 버튼에 shape="pill" 을 명시하세요(예: <nds-button variant="outlined" shape="pill">취소</nds-button> + <nds-button color="neutral" variant="solid" shape="pill">확인</nds-button>). 보조 버튼에 빠뜨리면 pill+각진 버튼이 섞입니다. get_guide({ topic: \'component:Modal\', project: \'cashwalk-biz\' }) 참조.',
           });
         });
       });

@@ -20,7 +20,7 @@ import type {
   JSXMemberExpression,
 } from "@babel/types";
 import type {
-  Brand,
+  Project,
   Context,
   MockupUsage,
   DsUsageEntry,
@@ -103,8 +103,8 @@ interface ImportInfo {
 export interface ParseOptions {
   /** Override the context auto-detected from imports. */
   contextHint?: Context;
-  /** Override brand auto-detected from filename/path. */
-  brandHint?: Brand;
+  /** Override project auto-detected from filename/path. */
+  projectHint?: Project;
   /** Override mockup display name. */
   mockupNameHint?: string;
   /** Working directory used to relativize `mockupFile`. Defaults to cwd. */
@@ -197,7 +197,7 @@ export function parseMockupSource(
   const external = [...externalCounts.values()].sort(sortByComponent);
 
   const context: Context = opts.contextHint ?? detectContext(importMap);
-  const brand: Brand = opts.brandHint ?? detectBrand(absPath);
+  const project: Project = opts.projectHint ?? detectProject(absPath);
   const mockupName = opts.mockupNameHint ?? defaultMockupName(absPath);
 
   const totalDs = sumCount(ds);
@@ -248,7 +248,7 @@ export function parseMockupSource(
     mockupFile: relativeSafe(absPath, cwd),
     mockupName,
     context,
-    brand,
+    project,
     ds,
     adminCms,
     customNative,
@@ -293,7 +293,7 @@ function emptyUsage(
     mockupFile: relativeSafe(absPath, cwd),
     mockupName: opts.mockupNameHint ?? defaultMockupName(absPath),
     context: opts.contextHint ?? "unknown",
-    brand: opts.brandHint ?? detectBrand(absPath),
+    project: opts.projectHint ?? detectProject(absPath),
     ds: [],
     adminCms: [],
     customNative: [],
@@ -323,7 +323,7 @@ function defaultMockupName(absPath: string): string {
   return basename(absPath).replace(/\.(stories\.)?(tsx|jsx|ts|js)$/i, "");
 }
 
-function detectBrand(absPath: string): Brand {
+function detectProject(absPath: string): Project {
   const lower = absPath.toLowerCase();
   if (/(trost)/i.test(lower)) return "trost";
   if (/(geniet)/i.test(lower)) return "geniet";

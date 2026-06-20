@@ -137,13 +137,13 @@ for (const [varName, value] of base) {
 const GROUP_INTROS = {
   surface: "페이지·서피스·섹션 등 **배경 색상**. UI 의 가장 기본 레이어.",
   textRole:
-    "**텍스트 위계** — strong → normal → subtle → muted 순으로 약해짐. 브랜드·상태 색상 포함.",
+    "**텍스트 위계** — strong → normal → subtle → muted 순으로 약해짐. 프로젝트·상태 색상 포함.",
   iconRole: "**아이콘 색상** — 텍스트와 같은 위계를 따름.",
   borderRole: "**경계선** — strong / normal / subtle 위계.",
   button: "버튼 컴포넌트가 사용하는 fill / border / text 색상. 대개 컴포넌트 통해 사용.",
   fill: "Chip · Badge · Tag 등 fill 형태 컴포넌트 색상.",
   input: "Input · Field 입력 영역 색상.",
-  primary: "Primary 팔레트 — 브랜드 메인 색상 (legacy palette).",
+  primary: "Primary 팔레트 — 프로젝트 메인 색상 (legacy palette).",
   secondary: "Secondary 팔레트 — 보조 강조 색상 (legacy palette).",
   error: "Error 팔레트 (legacy).",
   caution: "Caution 팔레트 (legacy).",
@@ -175,7 +175,7 @@ lines.push("");
 lines.push("# 시멘틱 토큰");
 lines.push("");
 lines.push(
-  "디자인 시스템 컴포넌트가 사용하는 모든 시멘틱 토큰을 한 페이지에서 시각적으로 확인. NudgeEAP 가 기본값, **Trost / Geniet** 은 해당 브랜드에서 다른 값일 때만 카드 하단에 표시됩니다.",
+  "디자인 시스템 컴포넌트가 사용하는 모든 시멘틱 토큰을 한 페이지에서 시각적으로 확인. NudgeEAP 가 기본값, **Trost / Geniet** 은 해당 프로젝트에서 다른 값일 때만 카드 하단에 표시됩니다.",
 );
 lines.push("");
 lines.push(

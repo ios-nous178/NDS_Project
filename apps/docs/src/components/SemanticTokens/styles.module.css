@@ -182,9 +182,9 @@
   text-overflow: ellipsis;
 }
 
-/* ─── 브랜드 dots ─── */
-.colBrands,
-.brands {
+/* ─── 프로젝트 dots ─── */
+.colProjects,
+.projects {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -192,7 +192,7 @@
   justify-content: flex-start;
 }
 
-.brandWrap {
+.projectWrap {
   display: inline-flex;
   align-items: center;
   gap: 3px;
@@ -202,11 +202,11 @@
   cursor: help;
 }
 
-.brandLabel {
+.projectLabel {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
-.brandDot {
+.projectDot {
   display: inline-block;
   width: 14px;
   height: 14px;

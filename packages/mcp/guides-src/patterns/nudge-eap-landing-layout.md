@@ -30,7 +30,7 @@ references:
   - label: NudgeEAP 랜딩 SSOT — PC_법정의무교육 (Figma 323:939)
     image: references/nudge-eap-landing-323-939.png
     caption: NudgeEAP 홍보/랜딩 페이지 SSOT 스크린샷 (B2B 도입 유치, 1920/1400 rail, 80h pill CTA, 8 stacked sections).
-    brand: nudge-eap
+    project: nudge-eap
 ---
 
 ## summary

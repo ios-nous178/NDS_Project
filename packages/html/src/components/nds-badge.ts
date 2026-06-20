@@ -2,9 +2,9 @@
  * <nds-badge> — Web Component version of React Badge.
  *
  * DOM:
- *   <nds-badge variant="fill" color="brand" size="md">NEW</nds-badge>
+ *   <nds-badge variant="fill" color="project" size="md">NEW</nds-badge>
  *
- *   → <span class="nds-badge" data-slot="root" data-variant="fill" data-color="brand"
+ *   → <span class="nds-badge" data-slot="root" data-variant="fill" data-color="project"
  *           data-size="md" data-shape="default">
  *       <span class="nds-badge__label" data-slot="label">NEW</span>
  *     </span>
@@ -18,13 +18,13 @@ import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 
 export type BadgeVariant = "fill" | "ghost" | "line";
-export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
+export type BadgeColor = "project" | "neutral" | "success" | "error" | "caution" | "info";
 export type BadgeSize = "sm" | "md" | "lg";
 export type BadgeShape = "default" | "pill";
 export type BadgeType = "label" | "dot" | "count";
 
 const VARIANTS: readonly BadgeVariant[] = ["fill", "ghost", "line"];
-const COLORS: readonly BadgeColor[] = ["brand", "neutral", "success", "error", "caution", "info"];
+const COLORS: readonly BadgeColor[] = ["project", "neutral", "success", "error", "caution", "info"];
 const SIZES: readonly BadgeSize[] = ["sm", "md", "lg"];
 const SHAPES: readonly BadgeShape[] = ["default", "pill"];
 const TYPES: readonly BadgeType[] = ["label", "dot", "count"];

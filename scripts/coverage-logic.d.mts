@@ -1,20 +1,20 @@
 /**
  * Types for coverage-logic.mjs (pure, node-free).
- * Storybook 의 BrandComponentCoverage.stories.tsx 가 .mjs 를 import 할 때 타입을 제공한다.
+ * Storybook 의 ProjectComponentCoverage.stories.tsx 가 .mjs 를 import 할 때 타입을 제공한다.
  */
-export type Brand = "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile";
+export type Project = "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile";
 export type Status = "synced" | "code" | "missing";
 
 export interface ManifestData {
   reactExports: ReadonlySet<string>;
   htmlExports: ReadonlySet<string>;
-  brandChrome: Record<Brand, ReadonlySet<string>>;
+  projectChrome: Record<Project, ReadonlySet<string>>;
 }
 
 export interface CoverageComponent {
   nds: string | null;
-  brandChrome?: boolean;
-  figmaByBrand?: Partial<Record<Brand, string>>;
+  projectChrome?: boolean;
+  figmaByProject?: Partial<Record<Project, string>>;
 }
 
 export interface CoverageSummary {
@@ -23,23 +23,23 @@ export interface CoverageSummary {
   gaps: number;
   reactCovered: number;
   htmlCovered: number;
-  figmaPerBrand: Record<Brand, number>;
+  figmaPerProject: Record<Project, number>;
 }
 
-export const BRANDS: readonly Brand[];
-export const BRAND_LABEL: Record<Brand, string>;
+export const PROJECTS: readonly Project[];
+export const PROJECT_LABEL: Record<Project, string>;
 
-export function hasBrandFigma(c: CoverageComponent, brand: Brand): boolean;
+export function hasProjectFigma(c: CoverageComponent, project: Project): boolean;
 export function isReactCovered(c: CoverageComponent, manifest: ManifestData): boolean;
-export function reactStatus(c: CoverageComponent, brand: Brand, manifest: ManifestData): Status;
-export function htmlStatus(c: CoverageComponent, brand: Brand, manifest: ManifestData): Status;
+export function reactStatus(c: CoverageComponent, project: Project, manifest: ManifestData): Status;
+export function htmlStatus(c: CoverageComponent, project: Project, manifest: ManifestData): Status;
 export function summarize(
   components: CoverageComponent[],
   manifest: ManifestData,
 ): CoverageSummary;
 
 export interface CoverageCell {
-  brand: Brand;
+  project: Project;
   react: Status;
   html: Status;
   figmaHref: string | null;
@@ -62,10 +62,10 @@ export interface CoverageGroup {
 }
 export interface CoverageChromeRow {
   name: string;
-  present: Record<Brand, boolean>;
+  present: Record<Project, boolean>;
 }
 export interface CoverageView {
-  brands: { id: Brand; label: string }[];
+  projects: { id: Project; label: string }[];
   summary: CoverageSummary;
   groups: CoverageGroup[];
   chromeMatrix: CoverageChromeRow[];

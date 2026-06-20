@@ -27,12 +27,12 @@ references:
     image: references/cashwalk-biz-selection-pattern-3995-1036.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3995-1036
     caption: Trigger + 좌우 분할 Modal Picker(트리/선택 누적) + SelectedItemsPanel + 결정 트리 + Do/Don't. metrics 는 이 노드 실측 기준.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐포비 Selection docs (Figma 4023-1194)
     image: references/cashwalk-biz-selection-docs-4023-1194.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=4023-1194
     caption: 언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary

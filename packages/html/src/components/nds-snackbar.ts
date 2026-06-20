@@ -18,8 +18,8 @@ export type SnackbarVariant = "info" | "success" | "warning" | "error";
 const VARIANTS: readonly SnackbarVariant[] = ["info", "success", "warning", "error"];
 // variant 색(bg/fg/icon)은 styles 의 [data-variant] 룰이 ②슬롯(--nds-snackbar-variant-bg)·
 // --nds-snackbar-icon 으로 결정한다 — react Snackbar.tsx 와 동일하게 여기선 색을 안 박는다.
-// (과거: VARIANT_CONFIG 을 ①브랜드-override 슬롯 --nds-snackbar-bg 에 inline 으로 써서
-//  캐포비 흰카드 [data-brand] override 를 덮어버리는 버그가 있었다 — 슬롯 위계를 깨뜨림.)
+// (과거: VARIANT_CONFIG 을 ①프로젝트-override 슬롯 --nds-snackbar-bg 에 inline 으로 써서
+//  캐포비 흰카드 [data-project] override 를 덮어버리는 버그가 있었다 — 슬롯 위계를 깨뜨림.)
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby", "title"] as const;
 
 export class NdsSnackbar extends NdsElement {
@@ -51,7 +51,7 @@ export class NdsSnackbar extends NdsElement {
     const variant = normalize(this.getAttribute("variant"), VARIANTS, "info");
     const hasDesc = Boolean(this.getAttribute("description"));
     // data-variant 만 set → 색은 styles [data-variant] 가 ②슬롯/icon 으로 합성하고,
-    // 브랜드(캐포비 흰카드)는 [data-brand] 가 ①--nds-snackbar-bg 로 덮는다. (react 미러)
+    // 프로젝트(캐포비 흰카드)는 [data-project] 가 ①--nds-snackbar-bg 로 덮는다. (react 미러)
     this._root.dataset.variant = variant;
     this._root.dataset.hasDesc = hasDesc ? "true" : "false";
 

@@ -3,11 +3,11 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-
 sizeMatrix:
   panel: padding inset-modal · border border.normal · radius xl(16) · bg surface.subtle
   title: headline4 18/26 Bold · text.strong
-  count: headline4 18/26 Bold · text.brand (강조 개수)
+  count: headline4 18/26 Bold · text.project (강조 개수)
   actionPrimary: fill.neutral bg · text.inverse · radius md(8) · body3 Bold · + 아이콘 16
   actionGhost: transparent + border.strong · text.subtle · radius md(8) · refresh 아이콘 16
   body: flex column · gap 8 · overflow-y auto (max-height = --nds-selected-items-panel-body-max-height)
-  selectedItemRow: "padding 8/12/8/16 · radius lg(12) · bg surface.section · label body1 · 삭제 X 20px. **캐포비(cashwalk-biz)**: bg gray/200(#eee) · radius 10 · 삭제 = 원형 serchdelete 아이콘 (Figma 3001:18463, data-brand cascade 자동)."
+  selectedItemRow: "padding 8/12/8/16 · radius lg(12) · bg surface.section · label body1 · 삭제 X 20px. **캐포비(cashwalk-biz)**: bg gray/200(#eee) · radius 10 · 삭제 = 원형 serchdelete 아이콘 (Figma 3001:18463, data-project cascade 자동)."
 usagePolicy:
   useFor:
     - 캐시워크 포 비즈니스 admin 의 다중 선택 결과 패널 (선택한 항목/지역/카테고리/멤버 N개)
@@ -28,9 +28,9 @@ usagePolicy:
 ## pitfalls
 
 - **선택한 항목/지역/카테고리/멤버 등 '동적 다중 선택 결과'를 Chip/ActionChip 으로 인라인 나열 금지** — 노란 outlined 칩은 SelectionButton 과 시각적으로 같아 혼동되고, '추가 선택/선택 해제'·개수 강조·개별 제거 affordance 가 빠진다. 회색 `SelectedItemsPanel`(surface.subtle 패널) + `SelectedItemRow`(라벨 + 삭제 X) 로 그릴 것. 지역 picker 는 한 예시일 뿐이며, 그 경우에도 row 컴포넌트는 동일하다.
-- 개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.brand 색으로 강조 렌더. 타이틀은 명사만.
+- 개수를 타이틀 문자열에 직접 넣지 말 것 — `count` prop/속성이 text.project 색으로 강조 렌더. 타이틀은 명사만.
 - 헤더 액션은 **선택 해제(onClear)** 가 기본이고 **추가 선택(onAdd)은 옵션** — 임의의 버튼을 헤더에 더 끼워넣지 말 것. **★ 피커 모달 우측 패널에서는 '추가 선택' 노출 금지 → 선택 해제만.** React 는 `onAdd` 미전달 시 자동 숨김이지만, **HTML 웹컴포넌트(`nds-selected-items-panel`)는 추가/해제 둘 다 기본 렌더라 모달에서는 `hide-add` 속성을 반드시 줘야 한다**(안 주면 모달 안에 '추가 선택'이 떠서 회귀). '추가 선택'은 모달 밖에서만 쓰며, 시각 스펙은 **secondary Button + plus(+) 아이콘**.
-- **캐포비 admin 타겟팅에서 추가 경로(add 어포던스)는 하나만** — 패널 밖 별도 추가 버튼 + 패널 안 '추가 선택' 을 둘 다 두지 말 것(중복 UI, 회귀). 추가는 패널 onAdd(=모달 열기) 한 곳으로 통일하고, 그 클릭이 **2단 모달**(좌: 검색+체크박스 트리, 우: SelectedItemsPanel `hide-add` + 선택 해제, 풋터: full-width '적용')을 띄운다 — 모달이 안 뜨고 페이지에 인라인으로 또 그리면 안 된다. 캐포비 admin validator 에서만 `selected-item-add-affordance-duplicated` 로 막는다(다른 브랜드/표면 전역 룰 아님).
+- **캐포비 admin 타겟팅에서 추가 경로(add 어포던스)는 하나만** — 패널 밖 별도 추가 버튼 + 패널 안 '추가 선택' 을 둘 다 두지 말 것(중복 UI, 회귀). 추가는 패널 onAdd(=모달 열기) 한 곳으로 통일하고, 그 클릭이 **2단 모달**(좌: 검색+체크박스 트리, 우: SelectedItemsPanel `hide-add` + 선택 해제, 풋터: full-width '적용')을 띄운다 — 모달이 안 뜨고 페이지에 인라인으로 또 그리면 안 된다. 캐포비 admin validator 에서만 `selected-item-add-affordance-duplicated` 로 막는다(다른 프로젝트/표면 전역 룰 아님).
 - **같은 항목을 패널에 중복 추가 금지** — 추가 시 이미 있으면 무시(유니크). 같은 항목이 두 줄 = 회귀(검증룰 selected-item-row-duplicated).
 - 본문 항목 삭제는 SelectedItemRow 의 onRemove(또는 nds-selected-item-remove / nds-region-remove 이벤트)로 — 패널이 항목 상태를 들고 있지 않음(controlled). 호스트가 리스트를 갱신.
 - 본문이 길어지면 화면을 덮지 않도록 `--nds-selected-items-panel-body-max-height` 로 스크롤 제한.

@@ -44,11 +44,11 @@ export interface BottomNavProps extends Omit<React.HTMLAttributes<HTMLElement>, 
 }
 
 /**
- * BottomNav — 모바일 하단 탭 바 primitive (브랜드 무관).
+ * BottomNav — 모바일 하단 탭 바 primitive (프로젝트 무관).
  *
- * 브랜드는 모른다 — 색/배경/보더/높이는 전부 `--nds-bottomnav-*` 슬롯으로 노출되고,
- * 브랜드 토큰 파일이 값만 덮는다. 브랜드별 아이콘/라벨은 호출부(`BottomNav.Item`)가
- * 주입한다. (`{Brand}BottomNav` 래퍼 대신 이 primitive + 브랜드 토큰을 쓴다.)
+ * 프로젝트는 모른다 — 색/배경/보더/높이는 전부 `--nds-bottomnav-*` 슬롯으로 노출되고,
+ * 프로젝트 토큰 파일이 값만 덮는다. 프로젝트별 아이콘/라벨은 호출부(`BottomNav.Item`)가
+ * 주입한다. (`{Project}BottomNav` 래퍼 대신 이 primitive + 프로젝트 토큰을 쓴다.)
  *
  * compound API:
  *   <BottomNav activeKey="home" onChange={setKey}>

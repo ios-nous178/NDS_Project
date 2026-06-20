@@ -24,8 +24,8 @@
 import { NdsElement, define } from "../base/nds-element.js";
 import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 import {
-  BRAND_TONE_DENYLIST,
-  BRAND_VARIANT_WHITELIST,
+  PROJECT_TONE_DENYLIST,
+  PROJECT_VARIANT_WHITELIST,
   BUTTON_COLORS,
   BUTTON_SHAPES,
   BUTTON_SIZES,
@@ -42,28 +42,28 @@ import {
 const BUTTON_CLASS = "nds-button";
 const BUTTON_LABEL_CLASS = `${BUTTON_CLASS}__label`;
 
-/* react Button.tsx warnIfBrandRestricted 미러 — dev-only console.warn (런타임 영향 없음). */
+/* react Button.tsx warnIfProjectRestricted 미러 — dev-only console.warn (런타임 영향 없음). */
 const warnedKeys = new Set<string>();
-function warnIfBrandRestricted(brand: string | null, variant: ButtonVariant, color: ButtonColor) {
-  if (!brand) return;
-  const allow = BRAND_VARIANT_WHITELIST[brand];
+function warnIfProjectRestricted(project: string | null, variant: ButtonVariant, color: ButtonColor) {
+  if (!project) return;
+  const allow = PROJECT_VARIANT_WHITELIST[project];
   if (allow && !allow.includes(variant)) {
-    const key = `${brand}:v:${variant}`;
+    const key = `${project}:v:${variant}`;
     if (!warnedKeys.has(key)) {
       warnedKeys.add(key);
       console.warn(
-        `[nds/Button] variant="${variant}" 는 brand="${brand}" Figma 가이드에 없음 — ` +
+        `[nds/Button] variant="${variant}" 는 project="${project}" Figma 가이드에 없음 — ` +
           `허용된 variant: [${allow.join(", ")}]. 디자인 인텐트가 어긋날 수 있어요.`,
       );
     }
   }
-  const deny = BRAND_TONE_DENYLIST[brand];
+  const deny = PROJECT_TONE_DENYLIST[project];
   if (deny && deny.includes(color)) {
-    const key = `${brand}:c:${color}`;
+    const key = `${project}:c:${color}`;
     if (!warnedKeys.has(key)) {
       warnedKeys.add(key);
       console.warn(
-        `[nds/Button] color="${color}" 는 brand="${brand}" Figma 가이드에 없는 tone 입니다. ` +
+        `[nds/Button] color="${color}" 는 project="${project}" Figma 가이드에 없는 tone 입니다. ` +
           `검정/회색 CTA 는 color="neutral" 을 쓰세요 (secondary 아님).`,
       );
     }
@@ -206,9 +206,9 @@ export class NdsButton extends NdsElement {
     const fullWidth = this.boolAttr("full-width");
     const type = this._normalizedType();
 
-    // Brand-aware 경고 (dev-only) — react Button.tsx 미러.
+    // Project-aware 경고 (dev-only) — react Button.tsx 미러.
     if (typeof document !== "undefined") {
-      warnIfBrandRestricted(document.documentElement.getAttribute("data-brand"), variant, color);
+      warnIfProjectRestricted(document.documentElement.getAttribute("data-project"), variant, color);
     }
 
     const cfg = sizeConfig[size];
@@ -234,7 +234,7 @@ export class NdsButton extends NdsElement {
 
     // React Button.tsx 의 인라인 CSS 변수 키와 1:1 동일
     const vars: Record<string, string | number> = {
-      // 높이는 브랜드가 size별로 override 가능 (지니어트 sm 40·xs 36). 미설정 시 base 토큰. (react 미러)
+      // 높이는 프로젝트가 size별로 override 가능 (지니어트 sm 40·xs 36). 미설정 시 base 토큰. (react 미러)
       "--nds-button-height": `var(--nds-button-height-${size}, ${cfg.height}px)`,
       "--nds-button-padding-x": `${cfg.px}px`,
       "--nds-button-gap": `${cfg.gap}px`,

@@ -5,7 +5,7 @@ import iconCatalog from "../../../../metadata/iconCatalog.json";
 /**
  * 아이콘 카탈로그 — 공유 컴포넌트(@nudge-design/catalog)의 얇은 래퍼.
  * 분류/그리드/검색/복사 로직은 storybook Icons 스토리와 단일 컴포넌트를 공유하며,
- * 데이터(브랜드·kebab·CashwalkBiz 카테고리)는 metadata/iconCatalog.json SSOT 에서 온다.
+ * 데이터(프로젝트·kebab·CashwalkBiz 카테고리)는 metadata/iconCatalog.json SSOT 에서 온다.
  * docs 관례: import 문 복사(copyMode="import") · 32px.
  */
 export default function IconCatalog() {

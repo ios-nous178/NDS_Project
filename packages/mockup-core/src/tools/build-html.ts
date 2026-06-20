@@ -19,13 +19,13 @@ import * as cheerio from "cheerio";
 import { getAugmentedPath, getToolProcessEnv } from "./process-env.js";
 import {
   loadStandaloneAssets,
-  listStandaloneBrands,
-  canonicalBrandSlug,
+  listStandaloneProjects,
+  canonicalProjectSlug,
   canonicalPagePattern,
   CASHWALK_BIZ_PAGE_PATTERNS,
-  BRAND_ALIASES,
+  PROJECT_ALIASES,
 } from "./standalone-assets.js";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
 import { inlineDsAssetReferences } from "./asset-inliner.js";
 import {
   countHtmlUsage,
@@ -36,7 +36,7 @@ import {
   NEUTRAL_SCORES,
   validateHtmlMockup,
   readSurfaceMarker,
-  readBrandMarker,
+  readProjectMarker,
   type ValidateHtmlMockupResult,
 } from "./html-validator.js";
 import { validatePrdCoverage, type ValidatePrdCoverageResult } from "./prd-coverage.js";
@@ -88,10 +88,10 @@ export interface BuildSinglefileHtmlArgs {
    */
   intent?: "react" | "html";
   /**
-   * html intent 한정: inline 할 브랜드 토큰 CSS 선택. 생략 시 index.html 의 data-brand /
-   * body.brand-* → 워크스페이스 nudge.brand 마커 → baseOnlyBrand(nudge-eap) 순으로 자동 감지.
+   * html intent 한정: inline 할 프로젝트 토큰 CSS 선택. 생략 시 index.html 의 data-project /
+   * body.project-* → 워크스페이스 nudge.project 마커 → baseOnlyProject(nudge-eap) 순으로 자동 감지.
    */
-  brand?: string;
+  project?: string;
   /**
    * @deprecated 더 이상 게이트가 아니다 — html intent 빌드는 데스크탑·외부 MCP 모두 항상 스탬프 바를 박는다
    * (DS 버전·사용률이 어떤 경로로 생성됐든 목업에 노출되도록). 호환을 위해 인자는 계속 수용하되 효과 없음.
@@ -283,17 +283,17 @@ export async function buildSinglefileHtml(
   let assetsInlined = 0;
   let assetsMissing: string[] = [];
   let assetsBroken: string[] = [];
-  let brandWarning: string | undefined;
+  let projectWarning: string | undefined;
 
   if (intent === "html") {
     // ── 무번들러 경로: prebuilt DS runtime/CSS 를 사용자 index.html 에 inline → 단일 파일.
     //    bare import / vite 불필요. 순수 cheerio 문자열 연산.
-    const inlined = buildHtmlSinglefileNoBundler(cwd, args.brand, outputPath);
+    const inlined = buildHtmlSinglefileNoBundler(cwd, args.project, outputPath);
     if (!inlined.ok) return { ...fail(inlined.error ?? "html inline build failed"), intent };
     assetsInlined = inlined.assetsInlined ?? 0;
     assetsMissing = inlined.assetsMissing ?? [];
     assetsBroken = inlined.assetsBroken ?? [];
-    brandWarning = inlined.brandWarning;
+    projectWarning = inlined.projectWarning;
   } else {
     // ── react 경로: 기존 vite single-file 빌드. JSX 컴파일이 필요해 번들러 유지. ──
     let pkg: Record<string, unknown>;
@@ -495,10 +495,10 @@ export async function buildSinglefileHtml(
     // 단일 파일에 inline 안 되는 로컬 이미지 — 내부 미리보기·외부 단독 파일 모두 깨진다.
     annotations.push(
       `[!] broken images — 단일 파일에 안 박힘 (${assetsBroken.length}): ${assetsBroken.join(", ")} ` +
-        `→ @nudge-design/assets/files/… 규약(get_brand 의 inlineRef) 또는 http(s)/data: 로 교체`,
+        `→ @nudge-design/assets/files/… 규약(get_project 의 inlineRef) 또는 http(s)/data: 로 교체`,
     );
   }
-  if (brandWarning) annotations.push(`[!] ${brandWarning}`);
+  if (projectWarning) annotations.push(`[!] ${projectWarning}`);
   if (routerWarning) annotations.push(`[!] ${routerWarning}`);
   if (validation) {
     annotations.push(`validate ${validation.ok ? "ok" : `${validation.violations.length}건 위반`}`);
@@ -601,18 +601,18 @@ export async function buildSinglefileHtml(
  */
 function buildHtmlSinglefileNoBundler(
   cwd: string,
-  argBrand: string | undefined,
+  argProject: string | undefined,
   outputPath: string,
 ): {
   ok: boolean;
   error?: string;
-  brand?: string;
+  project?: string;
   assetsInlined?: number;
   assetsMissing?: string[];
   /** 단일 파일에 inline 안 되는 로컬 이미지 경로 (src/srcset) — 깨질 참조. */
   assetsBroken?: string[];
-  /** 브랜드를 명시했는데 미지 slug 라 base 로 폴백된 경우의 경고(조용한 블루 회귀 방지). */
-  brandWarning?: string;
+  /** 프로젝트를 명시했는데 미지 slug 라 base 로 폴백된 경우의 경고(조용한 블루 회귀 방지). */
+  projectWarning?: string;
 } {
   const sourcePath = path.join(cwd, "index.html");
   if (!fs.existsSync(sourcePath)) {
@@ -641,34 +641,34 @@ function buildHtmlSinglefileNoBundler(
     if (!isExternal($(el).attr("href") ?? "")) $(el).remove();
   });
 
-  // 2) 브랜드 해석 후 prebuilt 자산 로드.
-  const resolved = resolveHtmlBrand($, cwd, argBrand);
-  const brand = resolved.brand;
+  // 2) 프로젝트 해석 후 prebuilt 자산 로드.
+  const resolved = resolveHtmlProject($, cwd, argProject);
+  const project = resolved.project;
   let css: string;
   let runtimeJs: string;
-  let brandWarning: string | undefined;
+  let projectWarning: string | undefined;
   try {
-    const assets = loadStandaloneAssets(brand);
+    const assets = loadStandaloneAssets(project);
     css = assets.css;
     runtimeJs = assets.runtimeJs;
-    const canonicalWs = canonicalBrandSlug(resolved.workspaceBrand);
+    const canonicalWs = canonicalProjectSlug(resolved.workspaceProject);
     if (!assets.recognized) {
-      // 브랜드를 명시했는데 미지 slug 라 base 로 폴백 → 색이 base(블루)로 잘못 나간다.
+      // 프로젝트를 명시했는데 미지 slug 라 base 로 폴백 → 색이 base(블루)로 잘못 나간다.
       // 조용히 넘기지 말고 정식 slug 목록과 함께 경고(회고: cashpobi → 블루 버튼).
-      const known = listStandaloneBrands().join(", ");
-      brandWarning =
-        `브랜드 '${assets.requested}' 를 모릅니다 — base '${assets.brand}' 토큰으로 폴백됐습니다(색이 기본값으로 렌더됨). ` +
-        `data-brand / brand 인자를 정식 slug 로 교정하세요: ${known}. ` +
+      const known = listStandaloneProjects().join(", ");
+      projectWarning =
+        `프로젝트 '${assets.requested}' 를 모릅니다 — base '${assets.project}' 토큰으로 폴백됐습니다(색이 기본값으로 렌더됨). ` +
+        `data-project / project 인자를 정식 slug 로 교정하세요: ${known}. ` +
         `(예: cashpobi/cashwalk → cashwalk-biz)`;
     } else if (resolved.source === "inferred") {
-      // 자동보정: html 에 브랜드 선언이 없어 워크스페이스(폴더명/brief)로 추론해 적용 → 명시 권장.
-      brandWarning =
-        `브랜드 '${assets.brand}' 를 워크스페이스(폴더명/brief)에서 추론해 적용했습니다. ` +
-        `<html data-brand="${assets.brand}"> 또는 <nds-brand-header brand="${assets.brand}"> 로 명시하면 더 안정적입니다.`;
-    } else if (canonicalWs && canonicalWs !== assets.brand) {
-      // 드리프트 교차검증: 명시 브랜드 ≠ 워크스페이스 의도 → 오타/실수 가능.
-      brandWarning =
-        `선언된 브랜드 '${assets.brand}' 가 워크스페이스 의도 '${resolved.workspaceBrand}' 와 다릅니다 ` +
+      // 자동보정: html 에 프로젝트 선언이 없어 워크스페이스(폴더명/brief)로 추론해 적용 → 명시 권장.
+      projectWarning =
+        `프로젝트 '${assets.project}' 를 워크스페이스(폴더명/brief)에서 추론해 적용했습니다. ` +
+        `<html data-project="${assets.project}"> 또는 <nds-project-header project="${assets.project}"> 로 명시하면 더 안정적입니다.`;
+    } else if (canonicalWs && canonicalWs !== assets.project) {
+      // 드리프트 교차검증: 명시 프로젝트 ≠ 워크스페이스 의도 → 오타/실수 가능.
+      projectWarning =
+        `선언된 프로젝트 '${assets.project}' 가 워크스페이스 의도 '${resolved.workspaceProject}' 와 다릅니다 ` +
         `(폴더명/brief 기준). 오타/드리프트인지 확인하세요.`;
     }
   } catch (err) {
@@ -707,11 +707,11 @@ function buildHtmlSinglefileNoBundler(
   }
   return {
     ok: true,
-    brand,
+    project,
     assetsInlined: assetInline.inlined.length,
     assetsMissing: assetInline.missing,
     assetsBroken,
-    brandWarning,
+    projectWarning,
   };
 }
 
@@ -745,30 +745,30 @@ function collectNonInlinableImgRefs($: cheerio.CheerioAPI): string[] {
   return [...broken];
 }
 
-/** 브랜드를 어디서 알아냈는지 — 경고/자동보정 판단용. */
-type BrandSource = "arg" | "attr" | "marker" | "chrome" | "inferred" | "none";
+/** 프로젝트를 어디서 알아냈는지 — 경고/자동보정 판단용. */
+type ProjectSource = "arg" | "attr" | "marker" | "chrome" | "inferred" | "none";
 
 /**
- * 워크스페이스의 "브랜드 의도" 신호에서 brand 추론(자동보정용). html 에 브랜드가 전혀
+ * 워크스페이스의 "프로젝트 의도" 신호에서 project 추론(자동보정용). html 에 프로젝트가 전혀
  * 없을 때 마지막 폴백으로 쓰며, 이렇게 잡힌 건 source:'inferred' 라 build 가 "명시 권장" 경고.
- *   ① brief.md / CLAUDE.md / AGENTS.md 의 "브랜드: X" → ② 폴더명 prefix(별칭 허용).
+ *   ① brief.md / CLAUDE.md / AGENTS.md 의 "프로젝트: X" → ② 폴더명 prefix(별칭 허용).
  */
-export function inferWorkspaceBrand(cwd: string): string | undefined {
+export function inferWorkspaceProject(cwd: string): string | undefined {
   let known: string[] = [];
   try {
-    known = listStandaloneBrands();
+    known = listStandaloneProjects();
   } catch {
     return undefined; // manifest 없으면(단위 테스트 등) 추론 skip
   }
   if (known.length === 0) return undefined;
 
-  // ① 워크스페이스 문서의 "브랜드: X" (get_setup 이 박는 SSOT)
+  // ① 워크스페이스 문서의 "프로젝트: X" (get_setup 이 박는 SSOT)
   for (const f of ["brief.md", "CLAUDE.md", "AGENTS.md"]) {
     try {
       const txt = fs.readFileSync(path.join(cwd, f), "utf-8");
-      const m = txt.match(/브랜드\s*[:：]\s*([a-z0-9_-]+)/i);
+      const m = txt.match(/프로젝트\s*[:：]\s*([a-z0-9_-]+)/i);
       if (m) {
-        const c = canonicalBrandSlug(m[1]);
+        const c = canonicalProjectSlug(m[1]);
         if (c && known.includes(c)) return c;
       }
     } catch {
@@ -778,10 +778,10 @@ export function inferWorkspaceBrand(cwd: string): string | undefined {
 
   // ② 폴더명 prefix(예: cashwalk-biz-screen-7c4806). 정식 slug + 별칭 키 중 가장 긴 매칭 우선.
   const base = path.basename(cwd).toLowerCase();
-  const candidates = [...known, ...Object.keys(BRAND_ALIASES)].sort((a, b) => b.length - a.length);
+  const candidates = [...known, ...Object.keys(PROJECT_ALIASES)].sort((a, b) => b.length - a.length);
   for (const cand of candidates) {
     if (base === cand || base.startsWith(`${cand}-`) || base.startsWith(`${cand}_`)) {
-      const c = canonicalBrandSlug(cand);
+      const c = canonicalProjectSlug(cand);
       if (c && known.includes(c)) return c;
     }
   }
@@ -789,38 +789,38 @@ export function inferWorkspaceBrand(cwd: string): string | undefined {
 }
 
 /**
- * html intent inline 시 적용할 브랜드 결정.
- *   ① 명시 인자 → ② <html data-brand> / <body class="brand-*"> → ③ nudge.brand 마커 →
- *   ④ nds-brand-* chrome 컴포넌트의 brand 속성 → ⑤ 워크스페이스 추론(폴더명/brief, 자동보정) →
- *   ⑥ none(loadStandaloneAssets 가 baseOnlyBrand 폴백).
+ * html intent inline 시 적용할 프로젝트 결정.
+ *   ① 명시 인자 → ② <html data-project> / <body class="project-*"> → ③ nudge.project 마커 →
+ *   ④ nds-project-* chrome 컴포넌트의 project 속성 → ⑤ 워크스페이스 추론(폴더명/brief, 자동보정) →
+ *   ⑥ none(loadStandaloneAssets 가 baseOnlyProject 폴백).
  *
- * 회고(2026-06): 브랜드를 <html data-brand> 없이 <nds-brand-header brand="cashwalk-biz"> 처럼
+ * 회고(2026-06): 프로젝트를 <html data-project> 없이 <nds-project-header project="cashwalk-biz"> 처럼
  * chrome 속성에만 선언하면 ②~③ 이 비어 base(블루)로 빌드돼 색이 틀렸다. ④ chrome / ⑤ 추론을
- * 폴백에 추가해 silent 블루 폴백을 막는다. workspaceBrand 는 ②~④ 명시값과의 드리프트 교차검증용.
+ * 폴백에 추가해 silent 블루 폴백을 막는다. workspaceProject 는 ②~④ 명시값과의 드리프트 교차검증용.
  */
-function resolveHtmlBrand(
+function resolveHtmlProject(
   $: cheerio.CheerioAPI,
   cwd: string,
-  argBrand: string | undefined,
-): { brand?: string; source: BrandSource; workspaceBrand?: string } {
-  const workspaceBrand = inferWorkspaceBrand(cwd);
-  const wrap = (brand: string | undefined, source: BrandSource) => ({
-    brand,
+  argProject: string | undefined,
+): { project?: string; source: ProjectSource; workspaceProject?: string } {
+  const workspaceProject = inferWorkspaceProject(cwd);
+  const wrap = (project: string | undefined, source: ProjectSource) => ({
+    project,
     source,
-    workspaceBrand,
+    workspaceProject,
   });
 
-  const fromArg = argBrand?.trim();
+  const fromArg = argProject?.trim();
   if (fromArg) return wrap(fromArg, "arg");
 
-  const dataBrand = $("html").attr("data-brand") ?? $("body").attr("data-brand");
-  if (dataBrand?.trim()) return wrap(dataBrand.trim(), "attr");
+  const dataProject = $("html").attr("data-project") ?? $("body").attr("data-project");
+  if (dataProject?.trim()) return wrap(dataProject.trim(), "attr");
 
   const bodyClass = $("body").attr("class") ?? "";
-  const classMatch = bodyClass.match(/\bbrand-([a-z0-9-]+)\b/i);
+  const classMatch = bodyClass.match(/\bproject-([a-z0-9-]+)\b/i);
   if (classMatch) return wrap(classMatch[1], "attr");
 
-  const markerPath = path.join(cwd, "nudge.brand");
+  const markerPath = path.join(cwd, "nudge.project");
   if (fs.existsSync(markerPath)) {
     try {
       const marker = fs.readFileSync(markerPath, "utf-8").trim();
@@ -830,16 +830,16 @@ function resolveHtmlBrand(
     }
   }
 
-  // brand chrome 컴포넌트(header/footer/bottom-nav)의 brand 속성 — 정당한 명시 선언이라 경고 안 함.
+  // project chrome 컴포넌트(header/footer/bottom-nav)의 project 속성 — 정당한 명시 선언이라 경고 안 함.
   const fromChrome = $(
-    "nds-brand-header[brand], nds-brand-footer[brand], nds-brand-bottom-nav[brand]",
+    "nds-project-header[project], nds-project-footer[project], nds-project-bottom-nav[project]",
   )
     .first()
-    .attr("brand");
+    .attr("project");
   if (fromChrome?.trim()) return wrap(fromChrome.trim(), "chrome");
 
   // 마지막 폴백: 워크스페이스 의도로 추론(자동보정 + "명시 권장" 경고 대상).
-  if (workspaceBrand) return wrap(workspaceBrand, "inferred");
+  if (workspaceProject) return wrap(workspaceProject, "inferred");
 
   return wrap(undefined, "none");
 }
@@ -1147,8 +1147,8 @@ export function auditMockupWorkspace(
   // DesignSpec-first 게이트 — 캐포비 어드민은 코드를 바로 만들지 말고 Page Pattern 분류부터.
   // design-spec.json(유효 pagePattern 선언) 이 없으면 빌드를 막아 save_design_spec 을 먼저 부르게 한다.
   // allowIncomplete(=skipDesignSpec) / skipAudit 로 명시 우회 가능한 소프트 게이트.
-  // 표면 마커(nudge.surface)는 외부 프로젝트에 없을 수 있어 brand(data-brand/nudge.brand, 신뢰성 높음)를
-  // 주 신호로 쓴다 — 캐포비는 DS 의 어드민 전용 브랜드이므로 surface=service 가 명시되지 않은 한 어드민으로 본다.
+  // 표면 마커(nudge.surface)는 외부 프로젝트에 없을 수 있어 project(data-project/nudge.project, 신뢰성 높음)를
+  // 주 신호로 쓴다 — 캐포비는 DS 의 어드민 전용 프로젝트이므로 surface=service 가 명시되지 않은 한 어드민으로 본다.
   if (!opts?.skipDesignSpec) {
     const dsGate = auditCashwalkBizAdminDesignSpec(cwd);
     if (dsGate) violations.push(dsGate);
@@ -1291,32 +1291,32 @@ function auditPrdCoverageManifest(content: string): WorkspaceAuditViolation | nu
 
 /**
  * 캐포비 어드민 DesignSpec-first 게이트.
- * 캐포비(cashwalk-biz)는 DS 의 어드민 전용 브랜드 — 어드민 화면은 코드를 바로 만들지 말고
+ * 캐포비(cashwalk-biz)는 DS 의 어드민 전용 프로젝트 — 어드민 화면은 코드를 바로 만들지 말고
  * Page Pattern(Onboarding/Dashboard/List/Detail/Form) 분류부터 한다. design-spec.json 에
  * 유효한 screen.pagePattern 이 선언돼 있지 않으면 빌드를 막아 save_design_spec 을 먼저 부르게 한다.
  *
- * 브랜드 신호: index.html 의 data-brand → nudge.brand 마커 (신뢰성 높음, 외부 프로젝트에도 존재).
+ * 프로젝트 신호: index.html 의 data-project → nudge.project 마커 (신뢰성 높음, 외부 프로젝트에도 존재).
  * 표면 신호: nudge.surface 마커가 service 로 명시된 경우에만 게이트를 끈다 — 마커는 외부 프로젝트에
- * 없을 수 있으므로 부재 시엔 어드민 브랜드 = 게이트 ON 으로 본다.
+ * 없을 수 있으므로 부재 시엔 어드민 프로젝트 = 게이트 ON 으로 본다.
  * design-spec.json 의 전체 카탈로그 검증은 validate_design_spec(MCP) 담당 — 여기선 게이트에 필요한
  * "pagePattern 이 5종 중 하나로 선언됐는가" 만 가볍게 본다(mockup-core 는 MCP 검증기를 import 하지 않음).
  */
 function auditCashwalkBizAdminDesignSpec(cwd: string): WorkspaceAuditViolation | null {
-  // 브랜드 — index.html data-brand 우선, 없으면 nudge.brand 마커.
-  let brandRaw: string | undefined;
+  // 프로젝트 — index.html data-project 우선, 없으면 nudge.project 마커.
+  let projectRaw: string | undefined;
   const indexPath = path.join(cwd, "index.html");
   if (fs.existsSync(indexPath)) {
     try {
       const html = fs.readFileSync(indexPath, "utf-8");
-      const m = html.match(/\bdata-brand\s*=\s*["']([^"']+)["']/i);
-      if (m) brandRaw = m[1];
+      const m = html.match(/\bdata-project\s*=\s*["']([^"']+)["']/i);
+      if (m) projectRaw = m[1];
     } catch {
       // ignore — 빌드 단계에서 어차피 잡힌다
     }
   }
-  if (!brandRaw) brandRaw = readBrandMarker(cwd) ?? undefined;
-  // 게이트 적용 여부 = 브랜드 프로필 admin.pagePatternSystem (현재 선언 브랜드 = cashwalk-biz).
-  if (!getBrandProfile(brandRaw)?.admin?.pagePatternSystem) return null;
+  if (!projectRaw) projectRaw = readProjectMarker(cwd) ?? undefined;
+  // 게이트 적용 여부 = 프로젝트 프로필 admin.pagePatternSystem (현재 선언 프로젝트 = cashwalk-biz).
+  if (!getProjectProfile(projectRaw)?.admin?.pagePatternSystem) return null;
 
   // 표면 — service 로 명시된 캐포비 화면만 게이트 제외(드문 경우). admin/미선언은 게이트 ON.
   if (readSurfaceMarker(cwd) === "service") return null;
@@ -1420,7 +1420,7 @@ function auditVisualReferences(cwd: string): WorkspaceAuditViolation | null {
       files: [],
       detail:
         "시각 레퍼런스가 워크스페이스에 없습니다 (references.md / .references/ 둘 다 없음). " +
-        "톤 판단 근거 없이 mockup 을 빌드하면 brandTone 형용사만 보고 화면을 만들게 됩니다.\n" +
+        "톤 판단 근거 없이 mockup 을 빌드하면 projectTone 형용사만 보고 화면을 만들게 됩니다.\n" +
         `사용자에게 물어보세요: "${fallbackQuestion}"\n${fixHint}`,
     };
   }

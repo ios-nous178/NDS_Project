@@ -4,7 +4,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-
 
 ## summary
 
-국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드는 countries 데이터에서 조회. 국기 이모지 없이 다이얼코드/ISO코드/국가명만 표시(텍스트 이모지 금지 규칙 준수). 레이아웃 = 국가코드 드롭다운 박스 + 번호 입력 박스가 분리된 두 박스(gap). 두 박스 모두 base Input 시멘틱 토큰(height 48 · radius md · border/background)을 상속하므로 brand cascade(--nds-input-*)가 그대로 적용됨.
+국가 코드 + 휴대폰 번호 입력. ISO code 관리 + 다이얼 코드는 countries 데이터에서 조회. 국기 이모지 없이 다이얼코드/ISO코드/국가명만 표시(텍스트 이모지 금지 규칙 준수). 레이아웃 = 국가코드 드롭다운 박스 + 번호 입력 박스가 분리된 두 박스(gap). 두 박스 모두 base Input 시멘틱 토큰(height 48 · radius md · border/background)을 상속하므로 project cascade(--nds-input-*)가 그대로 적용됨.
 
 ## pitfalls
 

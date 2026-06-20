@@ -225,7 +225,7 @@ export const HelperVariants: StoryObj<InputProps> = {
     docs: {
       description: {
         story:
-          "Section_Input 294:12 정합화 후 추가된 helper variant 4종. Banner/Toast의 녹색 success와 구분되도록 success는 브랜드 톤(파랑)을 사용합니다.",
+          "Section_Input 294:12 정합화 후 추가된 helper variant 4종. Banner/Toast의 녹색 success와 구분되도록 success는 프로젝트 톤(파랑)을 사용합니다.",
       },
     },
   },

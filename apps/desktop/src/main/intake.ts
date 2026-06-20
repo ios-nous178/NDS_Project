@@ -7,7 +7,7 @@ import type { AgentType } from "./agent-runner.js";
 /**
  * 목업 인테이크 — 에이전트 시작 *전에* 하네스가 게이트 충족 파일을 결정론적으로 작성한다.
  *
- * "모델이 알아서 시각 레퍼런스 게이트를 지키길" 기대하는 대신, 폼 입력(브랜드·표면·기획서·
+ * "모델이 알아서 시각 레퍼런스 게이트를 지키길" 기대하는 대신, 폼 입력(프로젝트·표면·기획서·
  * 스크린샷)을 받아 `<projectPath>/<slug>/` 서브폴더에 references.md / brief.md / CLAUDE.md /
  * AGENTS.md 를 써두고 PTY 첫 프롬프트를 시드한다. Electron 비의존(순수 fs) — 단위 테스트 용이.
  *
@@ -36,11 +36,11 @@ const PLATFORM_GUIDANCE: Record<Platform, string> = {
     "모바일 웹 기준(좁은 뷰포트, ~390px). 한 손 조작·세로 스크롤·큰 탭 타겟. 데스크탑 전용 호버 의존 금지.",
   "web-responsive":
     "데스크탑+모바일 반응형. 모바일(~390px)과 데스크탑(~1280px) 양쪽이 자연스럽게 동작하도록 브레이크포인트를 설계한다.",
-  app: "모바일 앱 화면(네이티브 느낌). 앱 헤더/바텀 내비 등 브랜드 앱 크롬을 사용하고 ~390px 폭을 기준으로 한다.",
+  app: "모바일 앱 화면(네이티브 느낌). 앱 헤더/바텀 내비 등 프로젝트 앱 크롬을 사용하고 ~390px 폭을 기준으로 한다.",
 };
 
-/** guides.ts:126 `DS_ADMIN_BRANDS` 미러 — 자체 어드민 디자인을 가진 브랜드(antd 우회, DS 로 제작). */
-const DS_ADMIN_BRANDS = ["cashwalk-biz"];
+/** guides.ts:126 `DS_ADMIN_PROJECTS` 미러 — 자체 어드민 디자인을 가진 프로젝트(antd 우회, DS 로 제작). */
+const DS_ADMIN_PROJECTS = ["cashwalk-biz"];
 
 const ALLOWED_IMAGE_EXT = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"]);
 const ALLOWED_DOC_EXT = new Set([".pdf", ".md", ".markdown", ".txt", ".html", ".htm"]);
@@ -61,10 +61,10 @@ export type AttachmentInput = ScreenshotInput;
 
 export interface RunIntakeArgs {
   projectPath: string;
-  brand: string;
+  project: string;
   surface: Surface;
   screenName: string;
-  /** 사용자가 편집한 슬러그(없으면 brand-kebab(screenName) 자동). */
+  /** 사용자가 편집한 슬러그(없으면 project-kebab(screenName) 자동). */
   slug?: string;
   prd: string;
   extraRequirements?: string;
@@ -102,9 +102,9 @@ export interface RunIntakeResult {
   seedPrompt?: string;
 }
 
-/** 어드민 && 자체 어드민 디자인 없는 브랜드 → antd CMS, 그 외 → HTML(NDS web component). */
-export function resolveIntent(surface: Surface, brand: string): "html" | "admin-cms" {
-  if (surface === "admin" && !DS_ADMIN_BRANDS.includes(brand)) return "admin-cms";
+/** 어드민 && 자체 어드민 디자인 없는 프로젝트 → antd CMS, 그 외 → HTML(NDS web component). */
+export function resolveIntent(surface: Surface, project: string): "html" | "admin-cms" {
+  if (surface === "admin" && !DS_ADMIN_PROJECTS.includes(project)) return "admin-cms";
   return "html";
 }
 
@@ -120,12 +120,12 @@ function shortHash(s: string): string {
   return createHash("sha256").update(s).digest("hex").slice(0, 6);
 }
 
-/** brand-<kebab(screenName)>; kebab 이 비면(한글 등) screen-<hash> 폴백. */
-export function computeSlug(brand: string, screenName: string, override?: string): string {
+/** project-<kebab(screenName)>; kebab 이 비면(한글 등) screen-<hash> 폴백. */
+export function computeSlug(project: string, screenName: string, override?: string): string {
   const overridden = override?.trim();
-  if (overridden) return kebab(overridden) || `${brand}-screen-${shortHash(screenName)}`;
+  if (overridden) return kebab(overridden) || `${project}-screen-${shortHash(screenName)}`;
   const screenSlug = kebab(screenName) || `screen-${shortHash(screenName)}`;
-  return `${brand}-${screenSlug}`;
+  return `${project}-${screenSlug}`;
 }
 
 /** 이미 존재하는 서브폴더면 -2, -3 … suffix(비파괴). */
@@ -206,34 +206,34 @@ function saveFiles(files: ScreenshotInput[], destDir: string, fallbackStem: stri
  * CLAUDE.md = AGENTS.md 로 워크스페이스에 쓰는 부트스트랩 본문.
  *
  * MCP `getClaudeMdTemplate`(packages/mcp/src/tools/guides.ts)의 축약 미러다 — 하네스는
- * vite/npm 스캐폴딩을 빼고 surface/brand 컨텍스트를 더한 자체본을 쓴다(의도된 fork).
+ * vite/npm 스캐폴딩을 빼고 surface/project 컨텍스트를 더한 자체본을 쓴다(의도된 fork).
  * 단, **완료 게이트**(DS 뱃지·webhook 상태·적용 레퍼런스 보고)는 MCP 템플릿과 동기 유지한다 —
  * codex 는 --append-system-prompt 가 없어 이 AGENTS.md 가 유일한 standing instruction 이기 때문.
  */
 function bootstrapDoc(
-  brand: string,
+  project: string,
   surface: Surface,
   intent: string,
   hasHtmlMockup = false,
 ): string {
   return `# DS 목업 워크스페이스
 
-브랜드: ${brand} · 표면: ${surface} · 타겟: ${intent}
+프로젝트: ${project} · 표면: ${surface} · 타겟: ${intent}
 
 > ★ **표면(surface)이 화면 이름 통념을 지배한다.** 이 작업의 표면은 **${surface}** 다. 화면 제목이 '회원가입/로그인/온보딩'처럼 소비자 플로우를 연상시켜도 \`surface=${surface}\` 를 먼저 확정하고 모든 레이아웃을 거기 맞춘다.${
     surface === "admin"
-      ? " surface=admin 이면 **어드민 화면**이다 — admin-shell(사이드바+톱바) 또는 어드민 온보딩(중앙 카드)으로 만들고, **소비자 brand chrome(`<nds-brand-header>`/`<nds-brand-footer>`/`<nds-brand-bottom-nav>`)은 사용 금지**(build_singlefile_html 이 error 로 차단). 캐포비 어드민 패턴은 get_guide({topic:'pattern:cashwalk-biz-page-patterns'}) 와 pattern:admin-shell 참조."
-      : " surface=service 이면 소비자 화면이다 — 브랜드 chrome(header/footer/bottom-nav)을 쓰고 어드민 사이드바(nds-sidebar)는 쓰지 않는다."
+      ? " surface=admin 이면 **어드민 화면**이다 — admin-shell(사이드바+톱바) 또는 어드민 온보딩(중앙 카드)으로 만들고, **소비자 project chrome(`<nds-project-header>`/`<nds-project-footer>`/`<nds-project-bottom-nav>`)은 사용 금지**(build_singlefile_html 이 error 로 차단). 캐포비 어드민 패턴은 get_guide({topic:'pattern:cashwalk-biz-page-patterns'}) 와 pattern:admin-shell 참조."
+      : " surface=service 이면 소비자 화면이다 — 프로젝트 chrome(header/footer/bottom-nav)을 쓰고 어드민 사이드바(nds-sidebar)는 쓰지 않는다."
   }
 ${
   hasHtmlMockup
-    ? "\n> ★ **기존 HTML 목업이 입력으로 들어왔다(brief/*.html, references.md 에 구조·콘텐츠 원본으로 등록).** 이건 재설계가 아니라 **재현**이다 — 원본의 구조/섹션 순서/정보 위계/문구를 보존하고 primitive(버튼·입력·색·여백)만 <nds-*> + 시멘틱 토큰으로 교체한다. 새 UI 방향 제안 금지. 워크플로우: get_guide({ topic: 'pattern:html-mockup-intake' }). 브랜드 톤/색은 Figma/스크린샷이 있으면 대조, 없으면 브랜드 토큰 기준.\n"
+    ? "\n> ★ **기존 HTML 목업이 입력으로 들어왔다(brief/*.html, references.md 에 구조·콘텐츠 원본으로 등록).** 이건 재설계가 아니라 **재현**이다 — 원본의 구조/섹션 순서/정보 위계/문구를 보존하고 primitive(버튼·입력·색·여백)만 <nds-*> + 시멘틱 토큰으로 교체한다. 새 UI 방향 제안 금지. 워크플로우: get_guide({ topic: 'pattern:html-mockup-intake' }). 프로젝트 톤/색은 Figma/스크린샷이 있으면 대조, 없으면 프로젝트 토큰 기준.\n"
     : ""
 }
 이 폴더는 Nudge DS 목업 작업 공간입니다. **nudge-eap-ds MCP 서버가 규칙의 SSOT** 입니다.
 - references.md = 시각 레퍼런스(있으면 게이트 충족). brief.md = 기획서 + 추가 요구사항.
 - brief.md 의 "UI 방향 결정" 섹션이 있으면 그 결정을 우선한다. auto/propose 모드면 코드 작성 전 방향 판단/제안을 먼저 끝낸다.
-- 워크플로우(intent=${intent}): get_guide({topic:'principles'}) + dos-donts → get_brand({brand:'${brand}'})
+- 워크플로우(intent=${intent}): get_guide({topic:'principles'}) + dos-donts → get_project({project:'${project}'})
   → get_guide({topic:'pattern:ui-direction-proposal'})
   → (복잡/다단계 화면이거나 구성 합의가 필요하면) save_design_spec 으로 경량 DesignSpec 작성·검증(ok:true) 후 사용자에게 보여주고 동의 — 단순 화면은 생략. 룰·스키마: get_guide({topic:'pattern:design-spec'})
   → ⛔ 단, 캐포비(cashwalk-biz) 어드민 화면은 복잡도 무관 save_design_spec 필수(생략 금지) — validate 가 5종 Page Pattern(surfaceKind:'admin'+pagePattern) 을 hard error 로 강제. 먼저 get_guide({topic:'pattern:cashwalk-biz-page-patterns'}) 로 분류.
@@ -256,7 +256,7 @@ function briefDoc(args: RunIntakeArgs, intent: string, docNames: string[]): stri
         .map((n) => `- brief/${n}`)
         .join(
           "\n",
-        )}\n- 이 HTML 은 이미 정해진 디자인의 정답 소스다. 구조/섹션 순서/정보 위계/문구를 보존하고, primitive(버튼·입력·색·여백 등)만 \`<nds-*>\` + \`--semantic-*\`/\`--nds-\` 토큰으로 교체해 충실히 재현한다. 레이아웃을 새로 제안하지 말 것.\n- 워크플로우: \`get_guide({ topic: 'pattern:html-mockup-intake' })\`.\n- 브랜드 톤/색 정합은 Figma/스크린샷이 있으면 대조, 없으면 브랜드 토큰을 기준으로 한다.\n`
+        )}\n- 이 HTML 은 이미 정해진 디자인의 정답 소스다. 구조/섹션 순서/정보 위계/문구를 보존하고, primitive(버튼·입력·색·여백 등)만 \`<nds-*>\` + \`--semantic-*\`/\`--nds-\` 토큰으로 교체해 충실히 재현한다. 레이아웃을 새로 제안하지 말 것.\n- 워크플로우: \`get_guide({ topic: 'pattern:html-mockup-intake' })\`.\n- 프로젝트 톤/색 정합은 Figma/스크린샷이 있으면 대조, 없으면 프로젝트 토큰을 기준으로 한다.\n`
     : "";
   const attachSection = otherDocs.length
     ? `\n## 첨부 문서 (반드시 읽을 것)\n${otherDocs.map((n) => `- brief/${n}`).join("\n")}\n`
@@ -278,7 +278,7 @@ function briefDoc(args: RunIntakeArgs, intent: string, docNames: string[]): stri
     : "";
   return `# ${args.screenName}
 
-브랜드: ${args.brand} · 표면: ${args.surface} · intent: ${intent}
+프로젝트: ${args.project} · 표면: ${args.surface} · intent: ${intent}
 ${platformSection}${pagePatternSection}
 ## 기획
 ${args.prd?.trim() || "(미입력)"}
@@ -304,7 +304,7 @@ function seedPrompt(
     : "시각 레퍼런스 게이트가 UI 방향 판단보다 우선한다. 레퍼런스가 없으면 방향 제안/질문은 가능하지만 index.html 작성과 빌드는 Figma/스크린샷 1개 이상을 받은 뒤 진행.";
   // HTML 목업 재현이면 방향 제안 자체가 부적절(이미 디자인이 정해짐) → htmlSourceLine 이 재현을 지시.
   const htmlSourceLine = hasHtmlMockup
-    ? "★ 기존 HTML 목업이 첨부됐다(brief/*.html, references.md 에 구조·콘텐츠 원본으로 등록). 이건 재설계가 아니라 재현이다 — 원본의 구조/섹션 순서/정보 위계/문구를 보존하고 primitive(버튼·입력·색·여백)만 <nds-*> + 시멘틱 토큰으로 교체해 충실히 옮겨. 새 UI 방향을 제안하지 말고 get_guide({ topic: 'pattern:html-mockup-intake' }) 워크플로우를 따라. 구조 게이트는 이 HTML 로 충족 — 브랜드 톤/색만 Figma/스크린샷이 있으면 대조(없으면 브랜드 토큰 기준). "
+    ? "★ 기존 HTML 목업이 첨부됐다(brief/*.html, references.md 에 구조·콘텐츠 원본으로 등록). 이건 재설계가 아니라 재현이다 — 원본의 구조/섹션 순서/정보 위계/문구를 보존하고 primitive(버튼·입력·색·여백)만 <nds-*> + 시멘틱 토큰으로 교체해 충실히 옮겨. 새 UI 방향을 제안하지 말고 get_guide({ topic: 'pattern:html-mockup-intake' }) 워크플로우를 따라. 구조 게이트는 이 HTML 로 충족 — 프로젝트 톤/색만 Figma/스크린샷이 있으면 대조(없으면 프로젝트 토큰 기준). "
     : "";
   const directionLine = hasHtmlMockup
     ? ""
@@ -319,18 +319,18 @@ function seedPrompt(
       : "";
   const surfaceLine =
     args.surface === "admin"
-      ? "표면=admin 이 화면 이름 통념보다 우선한다 — '가입/로그인/온보딩'이라도 소비자 플로우가 아니라 어드민 화면(admin-shell 또는 어드민 온보딩 카드)으로 만들고 소비자 brand chrome(nds-brand-header/footer/bottom-nav)은 쓰지 마(빌드가 error 로 차단). "
-      : "표면=service 이 화면 이름 통념보다 우선한다 — 어드민 사이드바(nds-sidebar) 대신 소비자 brand chrome 을 쓴다. ";
+      ? "표면=admin 이 화면 이름 통념보다 우선한다 — '가입/로그인/온보딩'이라도 소비자 플로우가 아니라 어드민 화면(admin-shell 또는 어드민 온보딩 카드)으로 만들고 소비자 project chrome(nds-project-header/footer/bottom-nav)은 쓰지 마(빌드가 error 로 차단). "
+      : "표면=service 이 화면 이름 통념보다 우선한다 — 어드민 사이드바(nds-sidebar) 대신 소비자 project chrome 을 쓴다. ";
   const pagePattern = canonicalPagePattern(args.selectedPagePattern);
   const pagePatternLine = pagePattern
     ? `이 캐포비 어드민 화면의 Page Pattern 은 '${pagePattern}' 으로 이미 확정됐어(추천 카드 선택) — save_design_spec 의 screen.pagePattern 에 그대로 넣고 재분류하지 마. `
     : "";
-  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 브랜드=${args.brand}, 표면=${args.surface}, 타겟 intent=${intent}. ${surfaceLine}${pagePatternLine}${platformLine}${htmlSourceLine}${visualLine} ${visualGateLine} ${directionLine}`;
+  return `이 폴더의 CLAUDE.md/AGENTS.md, ${hasVisual ? "references.md, " : ""}brief.md 를 먼저 읽고 목업을 만들어줘. 프로젝트=${args.project}, 표면=${args.surface}, 타겟 intent=${intent}. ${surfaceLine}${pagePatternLine}${platformLine}${htmlSourceLine}${visualLine} ${visualGateLine} ${directionLine}`;
 }
 
 export function runIntake(args: RunIntakeArgs): RunIntakeResult {
   try {
-    const intent = resolveIntent(args.surface, args.brand);
+    const intent = resolveIntent(args.surface, args.project);
 
     // ── 첨부 사전 검증(확장자/크기/합계) — 디렉토리 만들기 전에 막는다. ──
     const screenshots = args.screenshots ?? [];
@@ -344,7 +344,7 @@ export function runIntake(args: RunIntakeArgs): RunIntakeResult {
     }
 
     // ── 슬러그 + 워크스페이스(중복 시 비파괴 suffix). ──
-    const baseSlug = computeSlug(args.brand, args.screenName, args.slug);
+    const baseSlug = computeSlug(args.project, args.screenName, args.slug);
     const { slug, dir: workspaceDir } = uniqueWorkspaceDir(args.projectPath, baseSlug);
     mkdirSync(workspaceDir, { recursive: true });
 
@@ -357,7 +357,7 @@ export function runIntake(args: RunIntakeArgs): RunIntakeResult {
     // ── HTML 목업 첨부 = 구조·콘텐츠·문구의 '정답' 원본(재설계가 아니라 재현 대상). ──
     // 회고(2026-06): HTML 기획서가 brief/ 의 일반 문서로만 분류돼 시각 게이트를 못 채우고, 결과적으로
     // 사용자가 완성된 렌더 디자인을 건넸는데도 하네스가 "스크린샷을 달라"며 빌드를 막던 역설이 있었다.
-    // 렌더되는 HTML 목업은 '구조' 차원의 시각 레퍼런스이므로 게이트를 충족시키고, 브랜드 톤/색 정합만
+    // 렌더되는 HTML 목업은 '구조' 차원의 시각 레퍼런스이므로 게이트를 충족시키고, 프로젝트 톤/색 정합만
     // Figma/스크린샷이 있으면 보강하도록 seed/brief 에 soft 로 안내한다(결정: 구조만 충족).
     const savedHtmlDocs = savedDocs.filter((n) => /\.html?$/i.test(n));
     const hasHtmlMockup = savedHtmlDocs.length > 0;
@@ -380,22 +380,22 @@ export function runIntake(args: RunIntakeArgs): RunIntakeResult {
 
     // ── brief.md + 부트스트랩(CLAUDE.md = AGENTS.md). ──
     writeFileSync(join(workspaceDir, "brief.md"), briefDoc(args, intent, savedDocs), "utf8");
-    const bootstrap = bootstrapDoc(args.brand, args.surface, intent, hasHtmlMockup);
+    const bootstrap = bootstrapDoc(args.project, args.surface, intent, hasHtmlMockup);
     writeFileSync(join(workspaceDir, "CLAUDE.md"), bootstrap, "utf8");
     writeFileSync(join(workspaceDir, "AGENTS.md"), bootstrap, "utf8");
 
-    // ── 브랜드 SSOT 마커(nudge.brand). ──
-    // 회고(2026-06): 브랜드를 chrome 속성에만 선언 → 빌드가 base(블루)로 폴백해 색이 틀림.
-    // 워크스페이스 생성 시 정식 brand 를 단일 파일에 박아, build_singlefile_html 의 resolveHtmlBrand 가
+    // ── 프로젝트 SSOT 마커(nudge.project). ──
+    // 회고(2026-06): 프로젝트를 chrome 속성에만 선언 → 빌드가 base(블루)로 폴백해 색이 틀림.
+    // 워크스페이스 생성 시 정식 project 를 단일 파일에 박아, build_singlefile_html 의 resolveHtmlProject 가
     // html 선언이 누락돼도 이 마커를 최우선 출처로 읽게 한다(추론조차 불필요). UI 가 canonical slug 제공.
-    writeFileSync(join(workspaceDir, "nudge.brand"), `${args.brand}\n`, "utf8");
+    writeFileSync(join(workspaceDir, "nudge.project"), `${args.project}\n`, "utf8");
 
     // ── 표면 SSOT 마커(nudge.surface). ──
     // 회고(2026-06): cashwalk-biz 는 admin/service 가 둘 다 intent='html' 로 붕괴해(resolveIntent)
     // intent 필드만으로는 어드민/소비자 구분이 사라진다. 그 구분을 지닌 유일한 변수가 surface 인데,
     // prose(CLAUDE.md/brief)로만 선언돼 에이전트가 화면이름 통념('가입=소비자')으로 덮어써도 막을 게 없었다.
     // surface 를 머신 마커로 박아, build_singlefile_html / validate_html_mockup 이 이를 읽어
-    // "선언 admin 인데 소비자 brand chrome" 같은 표면 불일치를 결정론적으로 차단하게 한다.
+    // "선언 admin 인데 소비자 project chrome" 같은 표면 불일치를 결정론적으로 차단하게 한다.
     writeFileSync(join(workspaceDir, "nudge.surface"), `${args.surface}\n`, "utf8");
 
     // ── Page Pattern SSOT 마커(nudge.pagePattern) — 추천 카드에서 고른 캐포비 어드민 패턴. ──

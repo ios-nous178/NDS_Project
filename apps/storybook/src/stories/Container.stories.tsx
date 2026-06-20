@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from "@storybook/react";
  * 따라서 스토리도 raw <div className="nds-container"> 로만 렌더한다(컴포넌트 import 없음).
  * 룰 전체: get_guide({ topic: 'pattern:container-section' }) — Figma 5303:111.
  *
- *  - base   .nds-container          : 전 브랜드 공용 (PC 1200/40 · Tablet 768/24 · Mobile 100%/16)
+ *  - base   .nds-container          : 전 프로젝트 공용 (PC 1200/40 · Tablet 768/24 · Mobile 100%/16)
  *  - Trost  .nds-container--pc      : PC 일반 컨텐츠 (max 1080 · 좌우 24)
  *  - Trost  .nds-container--wide    : PC-Wide 테이블/대시보드 (max 1200 · 좌우 24)
  *  - 가산    .nds-section-surface    : 흰 컨텐츠 카드 (BG/Surface/Default + radius 16)

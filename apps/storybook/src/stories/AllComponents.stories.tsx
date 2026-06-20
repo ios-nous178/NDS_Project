@@ -24,19 +24,19 @@ type ComponentGuide = {
 const GUIDES: Record<string, ComponentGuide> =
   (componentGuides as { components?: Record<string, ComponentGuide> }).components ?? {};
 
-function isBrandSpecificEntry(entry: {
+function isProjectSpecificEntry(entry: {
   name?: string;
   storybookTitle?: string;
   category?: string;
 }) {
-  const brandPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
+  const projectPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
   return Boolean(
-    entry.storybookTitle?.startsWith("Brands/") ||
-    brandPrefixes.some(
+    entry.storybookTitle?.startsWith("Projects/") ||
+    projectPrefixes.some(
       (prefix) => entry.storybookTitle?.includes(`/${prefix}/`) || entry.name?.startsWith(prefix),
     ) ||
-    entry.category === "브랜드" ||
-    entry.category === "Brand",
+    entry.category === "프로젝트" ||
+    entry.category === "Project",
   );
 }
 
@@ -326,7 +326,7 @@ function Catalog() {
   const [syncedOnly, setSyncedOnly] = useState(false);
 
   const catalogInventory = useMemo(
-    () => inventory.filter((entry) => !isBrandSpecificEntry(entry)),
+    () => inventory.filter((entry) => !isProjectSpecificEntry(entry)),
     [],
   );
 

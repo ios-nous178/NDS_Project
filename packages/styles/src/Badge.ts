@@ -73,7 +73,7 @@ export const badgeStyles = `
   /* variant × color → bg/fg/border 슬롯 합성. react/html 은 data-variant/data-color 만 set, 색은 여기서. */
 
   /* ── fill ── */
-  :where(.${BADGE_CLASS}[data-variant="fill"][data-color="brand"]) {
+  :where(.${BADGE_CLASS}[data-variant="fill"][data-color="project"]) {
     --nds-badge-bg: ${cv.fill.brand};
     --nds-badge-fg: var(--semantic-button-text-default, #ffffff);
     --nds-badge-border: transparent;
@@ -105,7 +105,7 @@ export const badgeStyles = `
   }
 
   /* ── ghost ── */
-  :where(.${BADGE_CLASS}[data-variant="ghost"][data-color="brand"]) {
+  :where(.${BADGE_CLASS}[data-variant="ghost"][data-color="project"]) {
     --nds-badge-bg: ${cv.surface.brandSubtle};
     --nds-badge-fg: ${cv.textRole.brand};
     --nds-badge-border: transparent;
@@ -137,7 +137,7 @@ export const badgeStyles = `
   }
 
   /* ── line ── */
-  :where(.${BADGE_CLASS}[data-variant="line"][data-color="brand"]) {
+  :where(.${BADGE_CLASS}[data-variant="line"][data-color="project"]) {
     --nds-badge-bg: transparent;
     --nds-badge-fg: ${cv.textRole.brand};
     --nds-badge-border: ${cv.borderRole.brand};

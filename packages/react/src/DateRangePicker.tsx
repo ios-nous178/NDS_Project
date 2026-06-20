@@ -18,7 +18,7 @@ import {
   startOfDay,
   toDateKey,
 } from "./internal/dateCore.js";
-import { useBrand } from "./internal/useBrand.js";
+import { useProject } from "./internal/useProject.js";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
 
 /* ─── Constants ─── */
@@ -192,8 +192,8 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const minDay = minDate ? startOfDay(minDate) : undefined;
   const maxDay = maxDate ? startOfDay(maxDate) : undefined;
   const today = useMemo(() => startOfDay(new Date()), []);
-  const brand = useBrand();
-  const TriggerCalendarIcon = brand === "cashwalk-biz" ? CashwalkBizCalendarIcon : CalendarIcon;
+  const project = useProject();
+  const TriggerCalendarIcon = project === "cashwalk-biz" ? CashwalkBizCalendarIcon : CalendarIcon;
   const resolvedStatus = error ? "error" : status;
   const disabledDateKeys = useMemo(
     () => new Set(disabledDates?.map((d) => toDateKey(startOfDay(d))) ?? []),

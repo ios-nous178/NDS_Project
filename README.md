@@ -1,6 +1,6 @@
 # Nudge Design System
 
-5개 브랜드(**Trost · Geniet · NudgeEAP · CashwalkBiz · Runmile**)가 공유하는 디자인 토큰, React 컴포넌트, 바닐라 웹컴포넌트, 아이콘, Storybook, 문서를 관리하는 모노레포입니다.
+5개 프로젝트(**Trost · Geniet · NudgeEAP · CashwalkBiz · Runmile**)가 공유하는 디자인 토큰, React 컴포넌트, 바닐라 웹컴포넌트, 아이콘, Storybook, 문서를 관리하는 모노레포입니다.
 
 > **처음 오셨나요?** → [ONBOARDING.md](ONBOARDING.md) (역할별 시작) · [ARCHITECTURE.md](ARCHITECTURE.md) (구조·패키지 그래프) · [GLOSSARY.md](GLOSSARY.md) (용어) · [CONTRIBUTING.md](CONTRIBUTING.md) (기여 플로우) · [GOVERNANCE.md](GOVERNANCE.md) (운영·확장·개선 규칙)
 
@@ -20,7 +20,7 @@
 | --- | --- | --- |
 | [`@nudge-design/tokens`](packages/tokens) | npm | 색·타이포·spacing·radius·motion 토큰 (TS export + CSS 변수) |
 | [`@nudge-design/icons`](packages/icons) | npm | Figma 기준 SVG 아이콘. `currentColor` + `size`/`color` prop |
-| [`@nudge-design/assets`](packages/assets) | npm | 브랜드 로고 등 자산 SSOT (브랜드 스왑 인터페이스) |
+| [`@nudge-design/assets`](packages/assets) | npm | 프로젝트 로고 등 자산 SSOT (프로젝트 스왑 인터페이스) |
 | [`@nudge-design/styles`](packages/styles) | npm | react·html 공용 CSS 번들 (토큰 참조) |
 | [`@nudge-design/react`](packages/react) | npm | React 컴포넌트 (~111종) — Props 의 SSOT |
 | [`@nudge-design/html`](packages/html) | npm | 바닐라 웹컴포넌트(`nds-*`) — react 미러 |
@@ -44,7 +44,7 @@ flowchart TB
     TW["@nudge-design/tailwind-preset"]
   end
 
-  BR["brands/*<br/>토큰 값 오버라이드<br/>(trost · geniet · nudge-eap · cashwalk-biz · runmile)"]
+  BR["projects/*<br/>토큰 값 오버라이드<br/>(trost · geniet · nudge-eap · cashwalk-biz · runmile)"]
 
   subgraph APPS["apps/ (내부 검수 · 배포)"]
     direction LR
@@ -73,19 +73,19 @@ flowchart TB
   MCP -->|CLAUDE.md 강제| EXT
 ```
 
-> 화살표는 import / 제공 방향. `brands/*`는 토큰 값 오버라이드 레이어로 같은 시멘틱 변수에 다른 값을 주입하고, `@nudge-design/mcp`는 토큰·컴포넌트·아이콘 카탈로그 + 사용 규칙을 외부 소비자에게 강제하는 SSOT 입니다. **전체 10개 패키지 그래프·빌드 순서는 [ARCHITECTURE.md](ARCHITECTURE.md).**
+> 화살표는 import / 제공 방향. `projects/*`는 토큰 값 오버라이드 레이어로 같은 시멘틱 변수에 다른 값을 주입하고, `@nudge-design/mcp`는 토큰·컴포넌트·아이콘 카탈로그 + 사용 규칙을 외부 소비자에게 강제하는 SSOT 입니다. **전체 10개 패키지 그래프·빌드 순서는 [ARCHITECTURE.md](ARCHITECTURE.md).**
 
 ```text
 NudgeEAPDesignSystem
 ├─ apps
 │  ├─ docs              # Docusaurus 문서 사이트
-│  ├─ storybook         # Storybook (컴포넌트 + 브랜드 목업)
+│  ├─ storybook         # Storybook (컴포넌트 + 프로젝트 목업)
 │  ├─ web-server        # 배포용 서버 (랜딩 + docs + storybook)
 │  └─ desktop           # 데스크탑 카탈로그
 ├─ packages
 │  ├─ tokens            # 디자인 토큰 (기반)
 │  ├─ icons             # 아이콘 (기반)
-│  ├─ assets            # 브랜드 로고/자산 (기반)
+│  ├─ assets            # 프로젝트 로고/자산 (기반)
 │  ├─ styles            # react·html 공용 CSS 번들
 │  ├─ react             # React 컴포넌트 (Props SSOT)
 │  ├─ html              # 바닐라 웹컴포넌트 (react 미러)
@@ -93,7 +93,7 @@ NudgeEAPDesignSystem
 │  ├─ mcp               # MCP 서버 (외부 소비자 SSOT)
 │  ├─ mockup-core       # 목업 빌드/검증 코어 (내부)
 │  └─ catalog           # docs·SB 공용 카탈로그 UI (내부)
-├─ brands               # 브랜드별 설정
+├─ projects               # 프로젝트별 설정
 ├─ docs                 # 문서 소스 (Docusaurus)
 ├─ harness              # 하네스 파이프라인 프롬프트
 ├─ metadata             # Figma 연결 메타데이터
@@ -122,7 +122,7 @@ pnpm typecheck                      # 전체 타입 체크
 pnpm test                           # 전체 테스트
 pnpm --filter @nudge-design/tokens build   # 토큰만 빌드
 pnpm --filter @nudge-design/icons build    # 아이콘 생성 + 빌드
-pnpm generate:brand-coverage            # 브랜드별 컴포넌트 커버리지 재생성
+pnpm generate:project-coverage            # 프로젝트별 컴포넌트 커버리지 재생성
 ```
 
 ### 버전 / 릴리즈 (Changesets)
@@ -186,9 +186,9 @@ import "@nudge-design/tokens/css"; // CSS 변수
 import { nudgeEapPreset } from "@nudge-design/tailwind-preset";
 ```
 
-## 멀티 브랜드
+## 멀티 프로젝트
 
-5개 브랜드를 CSS 변수 오버라이드로 지원합니다. Storybook 툴바에서 브랜드를 전환하면 동일 컴포넌트가 브랜드별 스타일로 렌더링됩니다.
+5개 프로젝트를 CSS 변수 오버라이드로 지원합니다. Storybook 툴바에서 프로젝트를 전환하면 동일 컴포넌트가 프로젝트별 스타일로 렌더링됩니다.
 
 - **NudgeEAP** (블루) — 기본 토큰, 기업 EAP 멘탈케어
 - **Trost** (옐로우) — 심리 상담 플랫폼
@@ -208,10 +208,10 @@ flowchart LR
   subgraph SEM["2. Semantic CSS 변수<br/>@nudge-design/tokens/css"]
     direction TB
     SMN["--semantic-* (Figma SSOT)<br/>색: bg/text/icon/fill/border/button*/input<br/>여백: gap-* · gap-title-* · inset-*"]
-    NDS["--nds-* (DS 자체 컴포넌트 슬롯)<br/>sidebar / chip / 브랜드별 app-bar 등"]
+    NDS["--nds-* (DS 자체 컴포넌트 슬롯)<br/>sidebar / chip / 프로젝트별 app-bar 등"]
   end
 
-  BR["3. Brand override<br/>brands/{trost,geniet,nudge-eap,cashwalk-biz,runmile}<br/>(같은 변수에 다른 값)"]
+  BR["3. Project override<br/>projects/{trost,geniet,nudge-eap,cashwalk-biz,runmile}<br/>(같은 변수에 다른 값)"]
 
   CMP["4. 컴포넌트<br/>@nudge-design/react<br/>var(--semantic-bg-brand-default) …"]
 
@@ -222,13 +222,13 @@ flowchart LR
   SEM --> CMP
 ```
 
-> 컴포넌트는 raw hex 도 raw TS 토큰도 아니라 **시멘틱 CSS 변수만** 읽습니다. 브랜드 전환은 시멘틱 변수 값만 갈아끼우면 되고, 새 브랜드를 추가해도 컴포넌트 코드는 그대로입니다.
+> 컴포넌트는 raw hex 도 raw TS 토큰도 아니라 **시멘틱 CSS 변수만** 읽습니다. 프로젝트 전환은 시멘틱 변수 값만 갈아끼우면 되고, 새 프로젝트를 추가해도 컴포넌트 코드는 그대로입니다.
 
 ## Storybook 도구
 
 Storybook 하단 패널에서 사용할 수 있는 도구:
 
-- **토큰 에디터** — 브랜드별 CSS 변수를 실시간 편집
+- **토큰 에디터** — 프로젝트별 CSS 변수를 실시간 편집
 - **스펙 오버레이** — hover 시 요소의 크기, 폰트, 색상, 패딩 등 CSS 스펙 표시
 - **CSS 편집기** — 요소 선택 후 스타일 직접 수정, undo/redo, 디자인 리포트 생성
 - **HTML/PNG 내보내기** — 목업을 standalone HTML 또는 PNG 스크린샷으로 저장

@@ -119,7 +119,7 @@ export class NdsAddressPicker extends NdsElement {
     });
 
     // 검색 버튼은 DS Button 을 합성 (react 의 <Button color="neutral" size="field"> 미러).
-    // neutral = 5개 브랜드 공통 정의(캐포비 Figma 는 secondary tone 없음 → 회색/검정 CTA 는 neutral).
+    // neutral = 5개 프로젝트 공통 정의(캐포비 Figma 는 secondary tone 없음 → 회색/검정 CTA 는 neutral).
     const button = document.createElement("nds-button");
     button.setAttribute("type", "button");
     button.setAttribute("color", "neutral");

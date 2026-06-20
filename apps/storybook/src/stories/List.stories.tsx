@@ -47,7 +47,7 @@ function CardExample() {
           title="이지훈 상담사"
           description="청소년 / 진로"
           trailing={
-            <Badge variant="fill" color="brand">
+            <Badge variant="fill" color="project">
               신규
             </Badge>
           }
@@ -207,7 +207,7 @@ function PcAvatarExample() {
 }
 
 function PcTableExample() {
-  // PC Table — body 가 가로 컬럼 행. date│category│name(flex-spacer)│status(brand). h64(tablePc).
+  // PC Table — body 가 가로 컬럼 행. date│category│name(flex-spacer)│status(project). h64(tablePc).
   // 기본 표 전용 — 정렬·페이지네이션·셀 편집이 필요하면 DataTable.
   const rows = [
     { date: "2026.05.20", category: "개인 상담", name: "김민지 상담사", status: "완료" },
@@ -259,7 +259,7 @@ function PcCompactExample() {
 }
 
 function MobileThumbnailActionExample() {
-  // Mobile Thumbnail — h124(thumbnailMobile). 72×72 썸네일 + 3번째 줄 brand 액션 링크.
+  // Mobile Thumbnail — h124(thumbnailMobile). 72×72 썸네일 + 3번째 줄 project 액션 링크.
   const Thumb = () => (
     <div
       aria-hidden="true"

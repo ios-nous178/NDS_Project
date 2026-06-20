@@ -3,7 +3,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3082-
 sizeMatrix:
   top: label 위, control 아래. 모바일/일반 폼 기본. label-row column flex.
   left: label 좌측 고정(width 기본 180px, labelWidth prop), control 우측 1fr. 라벨 시작점 = control 시작점 (root align-items:flex-start 로 top 정렬) — Figma 정합. 입력 높이와 무관하게 라벨이 항상 control 상단에 붙는다 (예전 baseline 보정 padding-top 은 중앙 끌어내림 + 고정 px 라 입력 높이가 다르면 라벨이 처지던 버그여서 제거).
-  density:default: label 13/18 Medium · helper 13/18 Regular (Input Typography 표준, Figma 4247:1964 · 브랜드 무관). 자체 padding 0 — 부모 stack 이 간격 결정.
+  density:default: label 13/18 Medium · helper 13/18 Regular (Input Typography 표준, Figma 4247:1964 · 프로젝트 무관). 자체 padding 0 — 부모 stack 이 간격 결정.
   density:admin: label body1 16/24 (≡ Figma Subtitle1/Medium · admin density 전용 override), helper 13/18 (공용 Input Typography helper — base 와 동일), 자체 py-24 → stack 시 자동 시각 48px 간격 (Figma FormSection 3387:871 표준).
 ---
 
@@ -24,7 +24,7 @@ Input / Textarea / Select 같은 form control 의 label / helper / error / count
 ## recommended
 
 - 모바일/일반 폼: <nds-form-field label='이름' helper='실명' required> + <nds-input>
-- 캐시워크 포 비즈니스 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input / nds-select> (size 미지정 → 캐포비 brand 48px cascade)
+- 캐시워크 포 비즈니스 admin 표준 (단일 input): <nds-form-field label='Label' label-position='left' density='admin'> + <nds-input / nds-select> (size 미지정 → 캐포비 project 48px cascade)
 - 캐시워크 포 비즈니스 admin 표준 (row 다중 input): density='admin' FormField 안에 <nds-input-group> 으로 input 묶기 — gap 12 균등 분할 (Figma 3466:17405 패턴)
 - FormSection (FormField 두 개 이상 stack): 부모는 <div class='form-card'> (radius 16, padding 24, white bg) + 안에 <nds-form-field density='admin'> 들을 그냥 flex column 으로 쌓기. 각 FormField 의 py-24 가 자동으로 시각 48px 간격을 만듦.
 - 글자수 카운터: counter='12 / 200' — Textarea 같이 max-length 가 명확할 때만.

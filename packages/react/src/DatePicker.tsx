@@ -17,12 +17,12 @@ import {
   toDateKey,
 } from "./internal/dateCore.js";
 import { addDismissableLayerListeners, WebPortal } from "./internal/web.js";
-import { useBrand } from "./internal/useBrand.js";
+import { useProject } from "./internal/useProject.js";
 
 /*
  * DatePicker 는 Calendar 컴포넌트를 합성하지 않고 자체 month-grid(buildMonthGrid +
  * DP_GRID/DP_DAY)를 들고 있다 — 의도된 분리다(2026-06 결정, 현행 유지).
- *   · DatePicker  = input 트리거 + dismissable popover + 브랜드 글리프 + min/max·단일선택에
+ *   · DatePicker  = input 트리거 + dismissable popover + 프로젝트 글리프 + min/max·단일선택에
  *                   특화된 경량 그리드. 팝오버 폭/포커스/키보드 흐름이 트리거에 묶여 있다.
  *   · Calendar    = 마커/범위 등 부가기능을 가진 독립 인라인 월 뷰(팝오버 아님).
  * 두 grid 의 셀 렌더·치수 토큰은 거의 같지만 컨테이너/상호작용 모델이 달라 공용 코어로
@@ -247,10 +247,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     }
   };
 
-  // brand 별 트리거 아이콘 swap — CashwalkBiz 는 자체 캘린더 글리프(filled + dot grid).
-  // 다른 브랜드는 공용 CalendarIcon. 향후 brand glyph 추가 시 같은 분기에 더하면 됨.
-  const brand = useBrand();
-  const TriggerCalendarIcon = brand === "cashwalk-biz" ? CashwalkBizCalendarIcon : CalendarIcon;
+  // project 별 트리거 아이콘 swap — CashwalkBiz 는 자체 캘린더 글리프(filled + dot grid).
+  // 다른 프로젝트는 공용 CalendarIcon. 향후 project glyph 추가 시 같은 분기에 더하면 됨.
+  const project = useProject();
+  const TriggerCalendarIcon = project === "cashwalk-biz" ? CashwalkBizCalendarIcon : CalendarIcon;
   const resolvedStatus = error ? "error" : status;
   const canClear = allowClear && !!value && !disabled;
 

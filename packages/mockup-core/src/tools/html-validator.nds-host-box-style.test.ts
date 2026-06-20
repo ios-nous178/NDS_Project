@@ -14,34 +14,34 @@ const has = (v: ReturnType<typeof validateHtmlSource>, rule: string) =>
   v.find((x) => x.rule === rule);
 
 // 재현: 호스트 margin → 무시 → 딱 붙음
-const HOST_MARGIN = `<html data-brand="cashwalk-biz"><body>
+const HOST_MARGIN = `<html data-project="cashwalk-biz"><body>
   <nds-selection-button-group style="margin-bottom:16px"></nds-selection-button-group>
   <nds-selected-items-panel></nds-selected-items-panel>
 </body></html>`;
 
 // 호스트 width / padding 도 동일하게 드롭
-const HOST_SIZE = `<html data-brand="cashwalk-biz"><body>
+const HOST_SIZE = `<html data-project="cashwalk-biz"><body>
   <nds-select style="width:240px; padding:8px"></nds-select>
 </body></html>`;
 
 // 정답: wrapper div 에 간격
-const WRAPPED = `<html data-brand="cashwalk-biz"><body>
+const WRAPPED = `<html data-project="cashwalk-biz"><body>
   <div style="margin-bottom:16px"><nds-selection-button-group></nds-selection-button-group></div>
   <nds-selected-items-panel></nds-selected-items-panel>
 </body></html>`;
 
 // 호스트에 커스텀 프로퍼티(슬롯/토큰)·display:contents 만 — 허용
-const HOST_VARS_OK = `<html data-brand="cashwalk-biz"><body>
+const HOST_VARS_OK = `<html data-project="cashwalk-biz"><body>
   <nds-card style="--nds-card-gap: var(--semantic-gap-default); display:contents"></nds-card>
 </body></html>`;
 
 // 예외 컴포넌트(display:contents 미사용) — 호스트 스타일 OK
-const EXEMPT = `<html data-brand="cashwalk-biz"><body>
+const EXEMPT = `<html data-project="cashwalk-biz"><body>
   <nds-input-group style="width:320px"></nds-input-group>
 </body></html>`;
 
 test("호스트 margin → nds-host-box-style warn (딱 붙음 재현)", () => {
-  const v = validateHtmlSource(HOST_MARGIN, { surface: "admin", brand: "cashwalk-biz" });
+  const v = validateHtmlSource(HOST_MARGIN, { surface: "admin", project: "cashwalk-biz" });
   const hit = has(v, "nds-host-box-style");
   assert.ok(hit, "호스트 margin 은 위반이어야 함");
   assert.equal(hit?.severity, "warn");
@@ -49,7 +49,7 @@ test("호스트 margin → nds-host-box-style warn (딱 붙음 재현)", () => {
 });
 
 test("호스트 width/padding 도 드롭 대상", () => {
-  const v = validateHtmlSource(HOST_SIZE, { surface: "admin", brand: "cashwalk-biz" });
+  const v = validateHtmlSource(HOST_SIZE, { surface: "admin", project: "cashwalk-biz" });
   const hit = has(v, "nds-host-box-style");
   assert.ok(hit, "width/padding 도 위반");
   assert.match(String(hit?.detail), /width/);
@@ -57,12 +57,12 @@ test("호스트 width/padding 도 드롭 대상", () => {
 });
 
 test("wrapper div 에 간격(정답) → 위반 없음", () => {
-  const v = validateHtmlSource(WRAPPED, { surface: "admin", brand: "cashwalk-biz" });
+  const v = validateHtmlSource(WRAPPED, { surface: "admin", project: "cashwalk-biz" });
   assert.equal(has(v, "nds-host-box-style"), undefined, "wrapper div 는 일반 박스라 통과");
 });
 
 test("호스트에 --nds-*/--semantic-* 변수 + display:contents 는 허용", () => {
-  const v = validateHtmlSource(HOST_VARS_OK, { surface: "admin", brand: "cashwalk-biz" });
+  const v = validateHtmlSource(HOST_VARS_OK, { surface: "admin", project: "cashwalk-biz" });
   assert.equal(
     has(v, "nds-host-box-style"),
     undefined,
@@ -71,6 +71,6 @@ test("호스트에 --nds-*/--semantic-* 변수 + display:contents 는 허용", (
 });
 
 test("display:contents 미사용 예외 컴포넌트(input-group)는 호스트 스타일 통과", () => {
-  const v = validateHtmlSource(EXEMPT, { surface: "admin", brand: "cashwalk-biz" });
+  const v = validateHtmlSource(EXEMPT, { surface: "admin", project: "cashwalk-biz" });
   assert.equal(has(v, "nds-host-box-style"), undefined, "예외 태그는 오탐 없음");
 });

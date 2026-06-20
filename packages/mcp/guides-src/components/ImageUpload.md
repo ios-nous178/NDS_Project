@@ -16,7 +16,7 @@ usagePolicy:
   useFor:
     - 캐시워크 포 비즈니스 admin 의 콘텐츠/상품/배너 등록 폼 단일 이미지 슬롯
     - "권장 사이즈 명시가 필요한 업로드 영역 (예: 200×200, 4:3)"
-    - user-app 에서도 호환 — 시멘틱 토큰 cascade 로 자동 브랜드 톤
+    - user-app 에서도 호환 — 시멘틱 토큰 cascade 로 자동 프로젝트 톤
   doNotUseFor:
     - 다중 이미지 (gallery / carousel) — 별도 multi-uploader 컴포넌트
     - 사용자 아바타 업로드 — Avatar + 별도 modal 패턴

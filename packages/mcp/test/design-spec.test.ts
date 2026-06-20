@@ -25,8 +25,8 @@ beforeAll(() => {
       "--semantic-button-bg-primary",
       "--color-blue-500",
     ]),
-    componentNames: new Set(["Button", "Card", "Chip", "BrandHeader"]),
-    brands: new Set(["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"]),
+    componentNames: new Set(["Button", "Card", "Chip", "ProjectHeader"]),
+    projects: new Set(["trost", "geniet", "cashwalk-biz", "nudge-eap", "runmile"]),
     propAllowedValues: new Map([
       ["Button", new Map([["color", ["primary", "secondary", "neutral"]]])],
     ]),
@@ -37,7 +37,7 @@ beforeAll(() => {
 });
 
 const validSpec: DesignSpec = {
-  screen: { brand: "geniet", surface: "app", intent: "리뷰 상세" },
+  screen: { project: "geniet", surface: "app", intent: "리뷰 상세" },
   tree: [
     {
       component: "Card",
@@ -65,32 +65,32 @@ describe("validateDesignSpec", () => {
     const r = validateDesignSpec(validSpec);
     expect(r.ok).toBe(true);
     expect(r.summary.error).toBe(0);
-    expect(r.brand).toBe("geniet");
+    expect(r.project).toBe("geniet");
     expect(r.componentsUsed).toEqual(["Button", "Card"]);
     expect(r.tokensUsed).toContain("--semantic-bg-default");
   });
 
-  it("normalizes a brand alias (cashpobi -> cashwalk-biz)", () => {
+  it("normalizes a project alias (cashpobi -> cashwalk-biz)", () => {
     const r = validateDesignSpec({
       ...validSpec,
-      screen: { brand: "cashpobi", surface: "web", intent: "x" },
+      screen: { project: "cashpobi", surface: "web", intent: "x" },
     });
-    expect(r.brand).toBe("cashwalk-biz");
-    expect(r.violations.map((v) => v.rule)).not.toContain("unknown-brand");
+    expect(r.project).toBe("cashwalk-biz");
+    expect(r.violations.map((v) => v.rule)).not.toContain("unknown-project");
   });
 
-  it("flags an unknown brand slug (guards the base-blue silent fallback)", () => {
+  it("flags an unknown project slug (guards the base-blue silent fallback)", () => {
     const r = validateDesignSpec({
       ...validSpec,
-      screen: { brand: "totally-made-up", surface: "app", intent: "x" },
+      screen: { project: "totally-made-up", surface: "app", intent: "x" },
     });
-    expect(r.violations.map((v) => v.rule)).toContain("unknown-brand");
+    expect(r.violations.map((v) => v.rule)).toContain("unknown-project");
     expect(r.ok).toBe(false);
   });
 
   it("flags an invalid surface", () => {
     expect(
-      rules({ ...validSpec, screen: { brand: "geniet", surface: "tablet", intent: "x" } }),
+      rules({ ...validSpec, screen: { project: "geniet", surface: "tablet", intent: "x" } }),
     ).toContain("invalid-surface");
   });
 
@@ -176,7 +176,7 @@ describe("validateDesignSpec", () => {
   it("requires a page pattern for a cashwalk-biz admin screen", () => {
     const r = validateDesignSpec({
       ...validSpec,
-      screen: { brand: "cashwalk-biz", surface: "web", intent: "정산 목록", surfaceKind: "admin" },
+      screen: { project: "cashwalk-biz", surface: "web", intent: "정산 목록", surfaceKind: "admin" },
     });
     expect(r.violations.map((v) => v.rule)).toContain("cashwalk-biz-admin-page-pattern");
     expect(r.ok).toBe(false);
@@ -186,7 +186,7 @@ describe("validateDesignSpec", () => {
     const r = validateDesignSpec({
       ...validSpec,
       screen: {
-        brand: "cashwalk-biz",
+        project: "cashwalk-biz",
         surface: "web",
         intent: "정산 목록",
         surfaceKind: "admin",
@@ -201,7 +201,7 @@ describe("validateDesignSpec", () => {
     const r = validateDesignSpec({
       ...validSpec,
       screen: {
-        brand: "cashpobi",
+        project: "cashpobi",
         surface: "web",
         intent: "보드",
         surfaceKind: "admin",
@@ -216,7 +216,7 @@ describe("validateDesignSpec", () => {
     const r = validateDesignSpec({
       ...validSpec,
       screen: {
-        brand: "cashwalk-biz",
+        project: "cashwalk-biz",
         surface: "web",
         intent: "프로모션 홈",
         surfaceKind: "service",
@@ -225,10 +225,10 @@ describe("validateDesignSpec", () => {
     expect(r.violations.map((v) => v.rule)).not.toContain("cashwalk-biz-admin-page-pattern");
   });
 
-  it("does NOT require a page pattern for another brand's admin screen", () => {
+  it("does NOT require a page pattern for another project's admin screen", () => {
     const r = validateDesignSpec({
       ...validSpec,
-      screen: { brand: "trost", surface: "web", intent: "관리", surfaceKind: "admin" },
+      screen: { project: "trost", surface: "web", intent: "관리", surfaceKind: "admin" },
     });
     expect(r.violations.map((v) => v.rule)).not.toContain("cashwalk-biz-admin-page-pattern");
   });
@@ -238,7 +238,7 @@ describe("parseDesignSpecInput", () => {
   it("parses a JSON string", () => {
     const { spec, parseError } = parseDesignSpecInput(JSON.stringify(validSpec));
     expect(parseError).toBeNull();
-    expect((spec as DesignSpec).screen.brand).toBe("geniet");
+    expect((spec as DesignSpec).screen.project).toBe("geniet");
   });
 
   it("passes an object through unchanged", () => {
@@ -272,12 +272,12 @@ describe("saveDesignSpec", () => {
     expect(r.path).toBe(path.join(dir, "design-spec.json"));
     expect(r.ok).toBe(true);
     const onDisk = JSON.parse(fs.readFileSync(r.path!, "utf-8")) as DesignSpec;
-    expect(onDisk.screen.brand).toBe("geniet");
+    expect(onDisk.screen.project).toBe("geniet");
   });
 
   it("writes the file even when invalid (inspectable), but ok:false", () => {
     const r = saveDesignSpec({
-      spec: { ...validSpec, screen: { brand: "totally-made-up", surface: "app", intent: "x" } },
+      spec: { ...validSpec, screen: { project: "totally-made-up", surface: "app", intent: "x" } },
       cwd: dir,
     });
     expect(r.written).toBe(true);
@@ -311,7 +311,7 @@ describe("design decision log", () => {
           rationale: "Geniet secondary = dark inverse",
         },
       ]);
-      expect(row!.screen).toMatchObject({ brand: "geniet", surface: "app", intent: "리뷰 상세" });
+      expect(row!.screen).toMatchObject({ project: "geniet", surface: "app", intent: "리뷰 상세" });
       expect(row!.ok).toBe(true);
       expect(row!.ts).toBe("2026-06-02T00:00:00.000Z");
       expect(row!.hash).toMatch(/^[0-9a-f]{12}$/);
@@ -319,7 +319,7 @@ describe("design decision log", () => {
 
     it("returns null when there is no decision content (decision log, not save log)", () => {
       const bare: DesignSpec = {
-        screen: { brand: "geniet", surface: "app", intent: "x" },
+        screen: { project: "geniet", surface: "app", intent: "x" },
         tree: [{ component: "Card" }],
       };
       expect(buildDesignDecisionRow(bare, okResult as never, "t")).toBeNull();
@@ -327,7 +327,7 @@ describe("design decision log", () => {
 
     it("logs a spec that has only node rationale (no screen decisions)", () => {
       const onlyRationale: DesignSpec = {
-        screen: { brand: "geniet", surface: "app", intent: "x" },
+        screen: { project: "geniet", surface: "app", intent: "x" },
         tree: [{ component: "Card", rationale: "본문 카드" }],
       };
       const row = buildDesignDecisionRow(onlyRationale, okResult as never, "t");
@@ -425,11 +425,11 @@ describe("design decision log", () => {
     it("dedups per-screen, so re-saving an earlier screen unchanged is skipped", () => {
       const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-interleave-"));
       const A: DesignSpec = {
-        screen: { brand: "geniet", surface: "app", intent: "A" },
+        screen: { project: "geniet", surface: "app", intent: "A" },
         tree: [{ component: "Card", rationale: "a" }],
       };
       const B: DesignSpec = {
-        screen: { brand: "geniet", surface: "web", intent: "B" },
+        screen: { project: "geniet", surface: "web", intent: "B" },
         tree: [{ component: "Card", rationale: "b" }],
       };
       expect(appendDesignDecisionRow(dir, row(A, true, "t1"))).toBe(true);
@@ -466,7 +466,7 @@ describe("design decision log", () => {
       const bareDir = fs.mkdtempSync(path.join(os.tmpdir(), "ds-bare-"));
       saveDesignSpec({
         spec: {
-          screen: { brand: "geniet", surface: "app", intent: "x" },
+          screen: { project: "geniet", surface: "app", intent: "x" },
           tree: [{ component: "Card" }],
         },
         cwd: bareDir,
@@ -482,7 +482,7 @@ describe("design decision log", () => {
       const res = saveDesignSpec({
         spec: {
           screen: {
-            brand: "cashwalk-biz",
+            project: "cashwalk-biz",
             surface: "web",
             intent: "배너 광고 목록",
             surfaceKind: "admin",
@@ -504,7 +504,7 @@ describe("design decision log", () => {
       saveDesignSpec({
         spec: {
           screen: {
-            brand: "cashwalk-biz",
+            project: "cashwalk-biz",
             surface: "web",
             intent: "캠페인 상세",
             surfaceKind: "admin",
@@ -525,7 +525,7 @@ describe("promoteDesignDecisions (Decision Log → Principles)", () => {
   const row = (over: Partial<DesignDecisionRow> & { ts: string }): DesignDecisionRow => ({
     ts: over.ts,
     ok: over.ok ?? true,
-    screen: over.screen ?? { brand: "trost", surface: "web", intent: "화면" },
+    screen: over.screen ?? { project: "trost", surface: "web", intent: "화면" },
     decisions: over.decisions ?? [],
     rationales: over.rationales ?? [],
     componentsUsed: [],
@@ -534,46 +534,46 @@ describe("promoteDesignDecisions (Decision Log → Principles)", () => {
   });
 
   // 같은 결정을 N개의 '서로 다른' 화면에 박는다.
-  const screensWith = (decision: string, n: number, brand = "trost"): DesignDecisionRow[] =>
+  const screensWith = (decision: string, n: number, project = "trost"): DesignDecisionRow[] =>
     Array.from({ length: n }, (_, i) =>
       row({
         ts: `t${i}`,
-        screen: { brand, surface: "web", intent: `화면-${i}` },
+        screen: { project, surface: "web", intent: `화면-${i}` },
         decisions: [decision],
       }),
     );
 
   it("promotes a decision repeated across >= threshold distinct screens", () => {
-    const out = promoteDesignDecisions(screensWith("CTA 는 brandSolid", 3), {
-      brand: "trost",
+    const out = promoteDesignDecisions(screensWith("CTA 는 projectSolid", 3), {
+      project: "trost",
       threshold: 3,
     });
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ text: "CTA 는 brandSolid", count: 3, kind: "decision" });
+    expect(out[0]).toMatchObject({ text: "CTA 는 projectSolid", count: 3, kind: "decision" });
   });
 
   it("does NOT promote below threshold", () => {
     expect(
-      promoteDesignDecisions(screensWith("드문 결정", 2), { brand: "trost", threshold: 3 }),
+      promoteDesignDecisions(screensWith("드문 결정", 2), { project: "trost", threshold: 3 }),
     ).toEqual([]);
   });
 
   it("counts distinct screens only — re-saves of the same screen do not inflate count", () => {
     const rows = [
-      row({ ts: "t1", screen: { brand: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
-      row({ ts: "t2", screen: { brand: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
-      row({ ts: "t3", screen: { brand: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
+      row({ ts: "t1", screen: { project: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
+      row({ ts: "t2", screen: { project: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
+      row({ ts: "t3", screen: { project: "trost", intent: "동일화면" }, decisions: ["반복 결정"] }),
     ];
     // 같은 화면 3행 → 화면 1개 → threshold 3 미달.
-    expect(promoteDesignDecisions(rows, { brand: "trost", threshold: 3 })).toEqual([]);
+    expect(promoteDesignDecisions(rows, { project: "trost", threshold: 3 })).toEqual([]);
   });
 
-  it("filters by brand (alias normalized) and excludes other brands", () => {
+  it("filters by project (alias normalized) and excludes other projects", () => {
     const rows = [
       ...screensWith("캐포비 규칙", 3, "cashwalk-biz"),
       ...screensWith("지니어트 규칙", 3, "geniet"),
     ];
-    const out = promoteDesignDecisions(rows, { brand: "cashpobi", threshold: 3 }); // alias → cashwalk-biz
+    const out = promoteDesignDecisions(rows, { project: "cashpobi", threshold: 3 }); // alias → cashwalk-biz
     expect(out.map((p) => p.text)).toEqual(["캐포비 규칙"]);
   });
 
@@ -581,23 +581,23 @@ describe("promoteDesignDecisions (Decision Log → Principles)", () => {
     const rows = Array.from({ length: 3 }, (_, i) =>
       row({
         ts: `t${i}`,
-        screen: { brand: "trost", intent: `화면-${i}` },
+        screen: { project: "trost", intent: `화면-${i}` },
         rationales: [{ path: "tree[0]", component: "Button", rationale: "주목도 우선" }],
       }),
     );
-    const out = promoteDesignDecisions(rows, { brand: "trost", threshold: 3 });
+    const out = promoteDesignDecisions(rows, { project: "trost", threshold: 3 });
     expect(out).toHaveLength(1);
     expect(out[0]).toMatchObject({ kind: "rationale", count: 3, components: ["Button"] });
   });
 
   it("ignores ok=false rows by default (okOnly)", () => {
     const rows = screensWith("미통과 결정", 3).map((r) => ({ ...r, ok: false }));
-    expect(promoteDesignDecisions(rows, { brand: "trost", threshold: 3 })).toEqual([]);
+    expect(promoteDesignDecisions(rows, { project: "trost", threshold: 3 })).toEqual([]);
   });
 
   it("sorts by count desc and caps at max", () => {
     const rows = [...screensWith("자주", 4), ...screensWith("가끔", 3)];
-    const out = promoteDesignDecisions(rows, { brand: "trost", threshold: 3, max: 1 });
+    const out = promoteDesignDecisions(rows, { project: "trost", threshold: 3, max: 1 });
     expect(out).toHaveLength(1);
     expect(out[0].text).toBe("자주");
     expect(out[0].count).toBe(4);

@@ -1,15 +1,15 @@
 import { addons, types } from "storybook/manager-api";
 import React from "react";
 import { ICON_NAMES, ICON_SVGS } from "./icon-registry";
-import { brandThemes } from "../src/brand-themes";
+import { projectThemes } from "../src/project-themes";
 
 const ADDON_ID = "nds-token-editor";
 const PANEL_ID = `${ADDON_ID}/panel`;
 const TOKEN_OVERRIDE_KEY = "nds-token-overrides";
 
 addons.setConfig({
-  brandTitle: "NUDGE Design",
-  brandImage: "./favicon.svg",
+  projectTitle: "NUDGE Design",
+  projectImage: "./favicon.svg",
 });
 
 /* ─── 토큰 분류 ─── */
@@ -45,22 +45,22 @@ function groupTokens(vars: Record<string, string>) {
   return groups;
 }
 
-/* ─── 브랜드 데이터 (brand-themes.ts SSOT 사용) ─── */
+/* ─── 프로젝트 데이터 (project-themes.ts SSOT 사용) ─── */
 
-const BRANDS: Record<string, { label: string; cssVars: Record<string, string> }> =
+const PROJECTS: Record<string, { label: string; cssVars: Record<string, string> }> =
   Object.fromEntries(
-    Object.entries(brandThemes).map(([key, t]) => [key, { label: t.label, cssVars: t.cssVars }]),
+    Object.entries(projectThemes).map(([key, t]) => [key, { label: t.label, cssVars: t.cssVars }]),
   );
 
-/* ─── 유틸: preview iframe의 브랜드 읽기 ─── */
+/* ─── 유틸: preview iframe의 프로젝트 읽기 ─── */
 
-function readBrandFromPreview(): string {
+function readProjectFromPreview(): string {
   try {
     const iframe = document.querySelector<HTMLIFrameElement>("#storybook-preview-iframe");
     if (iframe?.src) {
       const url = new URL(iframe.src);
       const g = url.searchParams.get("globals") || "";
-      const m = g.match(/brand:([^;]+)/);
+      const m = g.match(/project:([^;]+)/);
       if (m) return m[1];
     }
   } catch {
@@ -69,28 +69,28 @@ function readBrandFromPreview(): string {
   return "nudge-eap";
 }
 
-/** 브랜드별 오버라이드 저장 키 */
-const bKey = (brand: string) => `${TOKEN_OVERRIDE_KEY}:${brand}`;
+/** 프로젝트별 오버라이드 저장 키 */
+const bKey = (project: string) => `${TOKEN_OVERRIDE_KEY}:${project}`;
 
 /* ─── Panel ─── */
 
 function TokenEditorPanel() {
-  const [brand, setBrand] = React.useState(readBrandFromPreview);
+  const [project, setProject] = React.useState(readProjectFromPreview);
   const [overrides, setOverrides] = React.useState<Record<string, string>>(() => {
     try {
-      return JSON.parse(sessionStorage.getItem(bKey(brand)) || "{}");
+      return JSON.parse(sessionStorage.getItem(bKey(project)) || "{}");
     } catch {
       return {};
     }
   });
   const [search, setSearch] = React.useState("");
 
-  // iframe URL 변경 감지 (툴바에서 브랜드 변경 시 URL이 바뀜)
+  // iframe URL 변경 감지 (툴바에서 프로젝트 변경 시 URL이 바뀜)
   React.useEffect(() => {
     const interval = setInterval(() => {
-      const current = readBrandFromPreview();
-      if (current && current !== brand && BRANDS[current]) {
-        setBrand(current);
+      const current = readProjectFromPreview();
+      if (current && current !== project && PROJECTS[current]) {
+        setProject(current);
         try {
           setOverrides(JSON.parse(sessionStorage.getItem(bKey(current)) || "{}"));
         } catch {
@@ -99,16 +99,16 @@ function TokenEditorPanel() {
       }
     }, 500);
     return () => clearInterval(interval);
-  }, [brand]);
+  }, [project]);
 
-  const theme = BRANDS[brand] || BRANDS["nudge-eap"];
+  const theme = PROJECTS[project] || PROJECTS["nudge-eap"];
   const changeCount = Object.keys(overrides).length;
 
-  // 브랜드 전환 (패널에서 클릭)
-  const switchBrand = React.useCallback((newBrand: string) => {
-    setBrand(newBrand);
+  // 프로젝트 전환 (패널에서 클릭)
+  const switchProject = React.useCallback((newProject: string) => {
+    setProject(newProject);
     try {
-      setOverrides(JSON.parse(sessionStorage.getItem(bKey(newBrand)) || "{}"));
+      setOverrides(JSON.parse(sessionStorage.getItem(bKey(newProject)) || "{}"));
     } catch {
       setOverrides({});
     }
@@ -117,8 +117,8 @@ function TokenEditorPanel() {
     if (iframe?.src) {
       const url = new URL(iframe.src);
       const globals = url.searchParams.get("globals") || "";
-      const newGlobals = globals.replace(/brand:[^;]*/, "").replace(/^;|;$/g, "");
-      url.searchParams.set("globals", `brand:${newBrand}${newGlobals ? ";" + newGlobals : ""}`);
+      const newGlobals = globals.replace(/project:[^;]*/, "").replace(/^;|;$/g, "");
+      url.searchParams.set("globals", `project:${newProject}${newGlobals ? ";" + newGlobals : ""}`);
       iframe.src = url.toString();
     }
   }, []);
@@ -126,9 +126,9 @@ function TokenEditorPanel() {
   // sessionStorage + iframe :root 반영
   React.useEffect(() => {
     if (changeCount > 0) {
-      sessionStorage.setItem(bKey(brand), JSON.stringify(overrides));
+      sessionStorage.setItem(bKey(project), JSON.stringify(overrides));
     } else {
-      sessionStorage.removeItem(bKey(brand));
+      sessionStorage.removeItem(bKey(project));
     }
     const iframe = document.querySelector<HTMLIFrameElement>("#storybook-preview-iframe");
     if (iframe?.contentDocument) {
@@ -138,7 +138,7 @@ function TokenEditorPanel() {
         root.style.setProperty(key, value);
       }
     }
-  }, [overrides, changeCount, theme, brand]);
+  }, [overrides, changeCount, theme, project]);
 
   const handleChange = (key: string, value: string) =>
     setOverrides((p) => ({ ...p, [key]: value }));
@@ -150,7 +150,7 @@ function TokenEditorPanel() {
     });
   const handleResetAll = () => {
     setOverrides({});
-    sessionStorage.removeItem(bKey(brand));
+    sessionStorage.removeItem(bKey(project));
   };
   const handleExport = () => {
     if (changeCount === 0) return;
@@ -185,19 +185,19 @@ function TokenEditorPanel() {
           alignItems: "center",
         },
       },
-      ...Object.entries(BRANDS).map(([key, b]) =>
+      ...Object.entries(PROJECTS).map(([key, b]) =>
         React.createElement(
           "button",
           {
             key,
-            onClick: () => switchBrand(key),
+            onClick: () => switchProject(key),
             style: {
               padding: "4px 10px",
               borderRadius: 6,
               fontSize: 11,
-              fontWeight: brand === key ? 700 : 400,
-              border: brand === key ? "1.5px solid #333" : "1px solid #DDD",
-              background: brand === key ? "#F4F5F7" : "#fff",
+              fontWeight: project === key ? 700 : 400,
+              border: project === key ? "1.5px solid #333" : "1px solid #DDD",
+              background: project === key ? "#F4F5F7" : "#fff",
               color: "#333",
               cursor: "pointer",
             },
@@ -600,9 +600,9 @@ function CssEditorPanel() {
   };
 
   const buildCssContent = (): string => {
-    const brand = readBrandFromPreview();
+    const project = readProjectFromPreview();
     const now = new Date();
-    const header = `/* NudgeEAP Design Override — ${brand} — ${now.toISOString().slice(0, 10)} */\n`;
+    const header = `/* NudgeEAP Design Override — ${project} — ${now.toISOString().slice(0, 10)} */\n`;
     const parts: string[] = [header];
 
     // 토큰 오버라이드
@@ -640,14 +640,14 @@ function CssEditorPanel() {
   const handleDownloadCss = () => {
     const content = buildCssContent();
     if (!content.trim()) return;
-    const brand = readBrandFromPreview();
+    const project = readProjectFromPreview();
     const now = new Date();
     const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
     const blob = new Blob([content], { type: "text/css" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `override-${brand}-${dateStr}.css`;
+    a.download = `override-${project}-${dateStr}.css`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -660,7 +660,7 @@ function CssEditorPanel() {
     setReportBusy(true);
     try {
       const iframe = document.querySelector<HTMLIFrameElement>("#storybook-preview-iframe");
-      const brand = readBrandFromPreview();
+      const project = readProjectFromPreview();
       const storyName = (() => {
         try {
           if (iframe?.src) {
@@ -708,8 +708,8 @@ function CssEditorPanel() {
 
       // 변경 항목 수집
       const tokenItems = Object.entries(tokenOvr).map(([k, v]) => {
-        const brandTheme = BRANDS[brand] || BRANDS["nudge-eap"];
-        const orig = brandTheme.cssVars[k] || "—";
+        const projectTheme = PROJECTS[project] || PROJECTS["nudge-eap"];
+        const orig = projectTheme.cssVars[k] || "—";
         const shortName = k.replace(/^--(nds-|color-semantic-)/, "");
         return { name: shortName, varName: k, from: orig, to: v };
       });
@@ -762,7 +762,7 @@ h2{font-size:16px;margin:28px 0 12px;display:flex;align-items:center;gap:8px}
 <body>
 <h1>📋 디자인 변경 리포트</h1>
 <div class="meta">
-<span>🏷 ${brand}</span>
+<span>🏷 ${project}</span>
 <span>📄 ${storyName}</span>
 <span>📅 ${dateStr}</span>
 </div>
@@ -822,7 +822,7 @@ ${screenshotDataUrl ? `<img class="screenshot" src="${screenshotDataUrl}" alt="�
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `design-report-${brand}-${storyName}-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}.html`;
+      a.download = `design-report-${project}-${storyName}-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1776,8 +1776,8 @@ ${screenshotDataUrl ? `<img class="screenshot" src="${screenshotDataUrl}" alt="�
       ),
       showPalette &&
         (() => {
-          const brand = readBrandFromPreview();
-          const theme = BRANDS[brand] || BRANDS["nudge-eap"];
+          const project = readProjectFromPreview();
+          const theme = PROJECTS[project] || PROJECTS["nudge-eap"];
           const colorTokens = Object.entries(theme.cssVars).filter(([, v]) => /^#|^rgb/.test(v));
           const sizeTokens = Object.entries(theme.cssVars).filter(([, v]) => /^\d+px$/.test(v));
           return h(
@@ -1934,7 +1934,7 @@ function getStoryName(): string {
   return "mockup";
 }
 
-/** 폰트 CDN 링크 (브랜드별) */
+/** 폰트 CDN 링크 (프로젝트별) */
 const FONT_LINKS: Record<string, string> = {
   trost:
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">',
@@ -2059,7 +2059,7 @@ function HtmlExportPanel() {
       });
 
       const storyName = getStoryName();
-      const brand = readBrandFromPreview();
+      const project = readProjectFromPreview();
 
       canvas.toBlob((blob: Blob | null) => {
         if (!blob) {
@@ -2069,12 +2069,12 @@ function HtmlExportPanel() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${storyName}-${brand}@${scale}x.png`;
+        a.download = `${storyName}-${project}@${scale}x.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        setStatus(`${storyName}-${brand}@${scale}x.png 저장 완료!`);
+        setStatus(`${storyName}-${project}@${scale}x.png 저장 완료!`);
       }, "image/png");
     } catch (err) {
       setStatus(`오류: ${err instanceof Error ? err.message : String(err)}`);
@@ -2096,7 +2096,7 @@ function HtmlExportPanel() {
 
     try {
       const doc = iframe.contentDocument;
-      const brand = readBrandFromPreview();
+      const project = readProjectFromPreview();
       const baseUrl = iframe.src;
 
       // 1. 모든 스타일시트의 CSS 규칙 수집
@@ -2111,7 +2111,7 @@ function HtmlExportPanel() {
         }
       }
 
-      // 2. :root 인라인 스타일 (브랜드 CSS 변수 오버라이드) 수집
+      // 2. :root 인라인 스타일 (프로젝트 CSS 변수 오버라이드) 수집
       const rootStyle = doc.documentElement.style;
       let rootVars = "";
       for (let i = 0; i < rootStyle.length; i++) {
@@ -2150,13 +2150,13 @@ function HtmlExportPanel() {
 
       // 7. standalone HTML 생성
       const storyName = getStoryName();
-      const fontLink = FONT_LINKS[brand] || FONT_LINKS["nudge-eap"];
+      const fontLink = FONT_LINKS[project] || FONT_LINKS["nudge-eap"];
       const html = `<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${storyName} — ${(BRANDS[brand] || BRANDS["nudge-eap"]).label}</title>
+<title>${storyName} — ${(PROJECTS[project] || PROJECTS["nudge-eap"]).label}</title>
 ${fontLink}
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2173,13 +2173,13 @@ ${bodyClone.innerHTML}
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${storyName}-${brand}.html`;
+      a.download = `${storyName}-${project}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      setStatus(`${storyName}-${brand}.html 저장 완료!`);
+      setStatus(`${storyName}-${project}.html 저장 완료!`);
     } catch (err) {
       setStatus(`오류: ${err instanceof Error ? err.message : String(err)}`);
     } finally {

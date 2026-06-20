@@ -146,7 +146,7 @@
         "line"
       ],
       "color": [
-        "brand",
+        "project",
         "neutral",
         "success",
         "error",
@@ -216,24 +216,6 @@
       "title"
     ],
     "enums": {}
-  },
-  "nds-brand-logo": {
-    "observedAttributes": [
-      "alt",
-      "brand",
-      "height",
-      "href",
-      "width"
-    ],
-    "enums": {
-      "brand": [
-        "trost",
-        "geniet",
-        "nudge-eap",
-        "cashwalk-biz",
-        "runmile"
-      ]
-    }
   },
   "nds-breadcrumb": {
     "observedAttributes": [
@@ -441,7 +423,7 @@
         "ghost"
       ],
       "color": [
-        "brand",
+        "project",
         "neutral",
         "success",
         "error",
@@ -1042,6 +1024,16 @@
     ],
     "enums": {}
   },
+  "nds-project-logo": {
+    "observedAttributes": [
+      "alt",
+      "height",
+      "href",
+      "project",
+      "width"
+    ],
+    "enums": {}
+  },
   "nds-quick-menu": {
     "observedAttributes": [
       "fixed",
@@ -1415,7 +1407,7 @@
     ],
     "enums": {
       "tone": [
-        "brand",
+        "project",
         "success"
       ]
     }

@@ -268,7 +268,7 @@ export function SessionDashboardPanel({
                           : c.green
                     }
                   />
-                  {s.brand && <Chip label={s.brand} />}
+                  {s.project && <Chip label={s.project} />}
                   {s.surface && <Chip label={s.surface} />}
                   {s.intent && <Chip label={s.intent} />}
                   <Chip label={`파일 ${item.files.filter((f) => f.exists).length}`} />
@@ -315,7 +315,7 @@ export function SessionDashboardPanel({
                           : c.green
                     }
                   />
-                  {selected.session.brand && <Chip label={`brand ${selected.session.brand}`} />}
+                  {selected.session.project && <Chip label={`project ${selected.session.project}`} />}
                   {selected.session.surface && (
                     <Chip label={`surface ${selected.session.surface}`} />
                   )}
@@ -331,9 +331,9 @@ export function SessionDashboardPanel({
                   }}
                 >
                   <div>
-                    brand:{" "}
+                    project:{" "}
                     <span style={{ fontFamily: mono, color: c.text }}>
-                      {selected.session.brand ?? "-"}
+                      {selected.session.project ?? "-"}
                     </span>
                   </div>
                   <div>

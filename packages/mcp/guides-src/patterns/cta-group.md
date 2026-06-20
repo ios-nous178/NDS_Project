@@ -20,8 +20,8 @@ metrics:
 - 다이얼로그/모달의 왼쪽(보조) 버튼 라벨은 항상 **닫기**. '취소'는 사용자가 진행 중이던 작업이 취소된다고 오해할 수 있어 사용 금지. 자세한 라이팅 룰은 get_guide({ topic: 'ux-writing' }) 참고.
 - 거절 가능한 비파괴 옵션이 항상 1개 이상 있어야 한다. CTA가 '확인' 하나뿐인 다이얼로그는 다크패턴 — get_guide({ topic: 'pattern:dark-patterns' }) 참고.
 - 외부 링크는 화살표보다 Link/ExternalLink 성격의 아이콘을 검토.
-- 모달/팝업 푸터의 액션 그룹은 별도 규칙 — 버튼 `shape="pill"` + 배치는 `actionsLayout`(react=actionsLayout / html=actions-layout 속성; 생략 시 브랜드 기본 강제: 캐포비=end 우측 hug, 그 외=split 가로 분할). 일반 화면 cta-group 규칙을 모달 푸터에 그대로 적용(사각 shape·full-width)하지 말 것. 푸터 결정 트리는 get_guide({ topic: 'component:Modal' }) 참고.
-- 모달/팝업 버튼 2개는 항상 **가로 정렬 유지** — 라벨이 길어 한 줄에 안 들어가도 세로로 스택하지 말고 **라벨을 축약**한다(예: '비즈니스 그룹 만들기'→'그룹 만들기'). 모달 버튼 라벨은 1~2 단어. `flex-direction:column`/`actions-layout="stack"` 금지(validator brand-modal-footer-stacked).
+- 모달/팝업 푸터의 액션 그룹은 별도 규칙 — 버튼 `shape="pill"` + 배치는 `actionsLayout`(react=actionsLayout / html=actions-layout 속성; 생략 시 프로젝트 기본 강제: 캐포비=end 우측 hug, 그 외=split 가로 분할). 일반 화면 cta-group 규칙을 모달 푸터에 그대로 적용(사각 shape·full-width)하지 말 것. 푸터 결정 트리는 get_guide({ topic: 'component:Modal' }) 참고.
+- 모달/팝업 버튼 2개는 항상 **가로 정렬 유지** — 라벨이 길어 한 줄에 안 들어가도 세로로 스택하지 말고 **라벨을 축약**한다(예: '비즈니스 그룹 만들기'→'그룹 만들기'). 모달 버튼 라벨은 1~2 단어. `flex-direction:column`/`actions-layout="stack"` 금지(validator project-modal-footer-stacked).
 - 캐포비 확인/팝업 모달의 주 action 버튼은 `color="neutral"`(검정 CTA)를 **명시** — color 를 생략하면 Button 기본값 primary(노랑)로 떨어진다(반복 회귀). 노랑 풀폭 '적용'은 선택/데이터 등 대형 모달에서만.
 
 ## avoid

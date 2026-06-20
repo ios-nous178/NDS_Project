@@ -1,7 +1,7 @@
 /* BottomNav — 모바일 하단 탭 바. react(BottomNav.tsx) ↔ html(nds-bottom-nav.ts) 공용 CSS.
  *
  * 색·배경·보더·높이는 전부 `--nds-bottomnav-*` 슬롯으로 노출 (기본값은 글로벌 시멘틱).
- * 브랜드 차이는 브랜드 토큰 파일이 슬롯 값만 덮어 흘려보낸다 — 컴포넌트는 브랜드를 모른다. */
+ * 프로젝트 차이는 프로젝트 토큰 파일이 슬롯 값만 덮어 흘려보낸다 — 컴포넌트는 프로젝트를 모른다. */
 import {
   cv,
   fontFamily,

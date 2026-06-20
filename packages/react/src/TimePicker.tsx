@@ -83,7 +83,7 @@ export interface TimePickerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /**
    * 빠른설정 프리셋 칩 (예: `[{ label: "자정까지", value: "23:59" }]`). 클릭하면 value 를 즉시 세팅.
    * 시간 필드 트레일링(시계아이콘 우측)에 붙는 회색 중립 보조 액션 칩으로 렌더 —
-   * 노란 brand Chip / SelectionButton 이 아니다(캐포비 어드민 시간 인풋, Figma 3001:19122).
+   * 노란 project Chip / SelectionButton 이 아니다(캐포비 어드민 시간 인풋, Figma 3001:19122).
    */
   presets?: TimePickerPreset[];
 }

@@ -4,14 +4,14 @@
  * Runmile Figma library (file `Wd1BqKFPvrlLORr7E6EwjB`, frame 107:1045) 의 SNS 로그인
  * 버튼용 자산. 4 서비스 × 2 색상 = 8 자산. 모두 60×60 SVG.
  *
- * brand-logo 와 분리한 이유:
- *   - SNS 자산은 brand 차원이 아니라 *제3자 서비스* 차원 (네이버/카카오/구글/애플)
- *   - 색상 차원이 brand 의 LogoVariant 와 호환되지 않음 (white/main/black)
+ * project-logo 와 분리한 이유:
+ *   - SNS 자산은 project 차원이 아니라 *제3자 서비스* 차원 (네이버/카카오/구글/애플)
+ *   - 색상 차원이 project 의 LogoVariant 와 호환되지 않음 (white/main/black)
  *   - 외부 소비자는 보통 SNS 8개 묶음을 통째로 호스팅하므로 별도 카테고리가 맞다
  *
  * 색상 컨벤션:
  *   - `white`  — 밝은 배경 위 / inverse 톤 (=서비스 로고가 흰색)
- *   - `main`   — 서비스 브랜드 시그니처 색상 (naver green / kakao yellow / google multi / apple — 미존재)
+ *   - `main`   — 서비스 프로젝트 시그니처 색상 (naver green / kakao yellow / google multi / apple — 미존재)
  *   - `black`  — 어두운 배경 위 / mono (=서비스 로고가 검은색)
  *
  * 모든 SNS 가 모든 색상을 가지지 않는다 (Figma SSOT 기준):

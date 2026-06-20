@@ -7,7 +7,7 @@ referenceInputs:
     - 프롬프트에 첨부된 이미지/링크
   minimum: 최소 정답 1장 + 오답 1장. 가능하면 총 6-10장.
   format: "[good|bad] source=<figma-url|image-name> caption=<1-line reason>"
-  fallbackQuestion: "두 가지만 먼저 확인할게요. ① 시각 기준 — Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료로 진행해도 될지, 정답/오답 레퍼런스가 있으면 함께(정답 1-2장·피해야 할 오답 1-2장 + 각 1줄 캡션) 알려 주세요. ② 화면 영역 — 이 화면이 (a) 외부 제공 B2B 어드민[Nudge DS], (b) 사내 백오피스·운영툴/CMS[antd v5], (c) 일반 서비스(앱/웹)[Nudge DS] 중 무엇인가요? 캐포비처럼 어드민·서비스가 함께 있는 브랜드면 어느 쪽인지, 어드민이면 페이지패턴 5종(onboarding/dashboard/list/detail/form) 중 어디에 가까운지도 알려 주세요."
+  fallbackQuestion: "두 가지만 먼저 확인할게요. ① 시각 기준 — Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료로 진행해도 될지, 정답/오답 레퍼런스가 있으면 함께(정답 1-2장·피해야 할 오답 1-2장 + 각 1줄 캡션) 알려 주세요. ② 화면 영역 — 이 화면이 (a) 외부 제공 B2B 어드민[Nudge DS], (b) 사내 백오피스·운영툴/CMS[antd v5], (c) 일반 서비스(앱/웹)[Nudge DS] 중 무엇인가요? 캐포비처럼 어드민·서비스가 함께 있는 프로젝트면 어느 쪽인지, 어드민이면 페이지패턴 5종(onboarding/dashboard/list/detail/form) 중 어디에 가까운지도 알려 주세요."
 examples:
   - verdict: good
     source: Figma node or approved screenshot
@@ -33,12 +33,12 @@ metrics:
 
 - 목업 작성 전에는 프롬프트에 이미지, 스크린샷, Figma 링크, figmaNodeUrl 이 이미 있어도 항상 사용자에게 시각 레퍼런스 확인 질문을 한다.
 - 단, 같은 목업 작업에서 이미 질문했고 사용자가 답했거나, references.md 의 첫 줄 `task:` 슬러그가 현재 task 와 일치하면 다시 묻지 말고 읽어서 적용한다. 이전 task 의 stale references.md (예: cashwalk-biz-form 작업물이 남은 상태에서 geniet-diary 시작) 는 없는 것으로 간주.
-- references.md 첫 줄은 `task: <brand>-<screen-slug>` 형식 필수 (예: `task: geniet-diary-hub`). 이게 staleness 판정 기준.
+- references.md 첫 줄은 `task: <project>-<screen-slug>` 형식 필수 (예: `task: geniet-diary-hub`). 이게 staleness 판정 기준.
 - 새 목업 요청에서 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 `동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?` 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지 말 것(깊은 재귀/전체 디스크/유사도 검색 금지).
 - 사용자 응답으로 기존 첨부/링크를 기준으로 진행해도 되는지, 추가 정답/오답 레퍼런스가 있는지 확인한다.
 - 권장 세트는 정답 1-2장 + 오답 1-2장. 각 레퍼런스는 '왜 맞는지/틀린지' 1줄 캡션을 붙인다.
 - `source` 로 허용되는 것은 Figma URL (`figma.com/...`) 또는 이미지 파일 (`.png/.jpg/.jpeg/.webp/.gif/.svg`) 뿐. PRD/spec/요구사항 `.md` 는 source 가 아니다 (텍스트 문서는 spec 이지 visual reference 가 아님).
-- 레퍼런스를 받은 뒤에는 brandTone 문장보다 레퍼런스 캡션을 우선한다.
+- 레퍼런스를 받은 뒤에는 projectTone 문장보다 레퍼런스 캡션을 우선한다.
 - 구현 전 references.md 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적는다.
 - 완료 보고에는 어떤 reference cue 를 실제 화면에 반영했는지 2-4개로 요약하고, 최종 산출물의 full 절대경로를 반드시 포함한다.
 

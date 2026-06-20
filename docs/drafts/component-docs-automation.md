@@ -29,7 +29,7 @@ react 125개 컴포넌트의 Props JSDoc 커버리지: **92% (1,280 / 1,392 prop
 | import 구문 · 컴포넌트 존재 여부                                        | ✅     | `packages/react/src/index.ts`                  |
 | figmaNodeUrl · validPropValues · 매트릭스 값                            | ✅     | guides-src frontmatter (이미 구조화됨)         |
 | 코드 예제                                                               | ✅(준) | 스토리 render 추출 또는 가이드 코드블록 재사용 |
-| 사용 정책("이럴 때 쓰지 마세요") · props 함정 · 브랜드 오버라이드 prose | ❌     | 사람 판단 — guides-src 에만 1회 작성           |
+| 사용 정책("이럴 때 쓰지 마세요") · props 함정 · 프로젝트 오버라이드 prose | ❌     | 사람 판단 — guides-src 에만 1회 작성           |
 
 기존 파이프라인이 이미 절반을 증명한다: `generate-guide-docs.mjs` 가 MCP 소스에서
 `docs/guide/*.md` 를 생성하고 gates 가 stale 을 차단하는 구조가 **컴포넌트 문서에만 아직 없을 뿐**이다.
@@ -56,7 +56,7 @@ packages/mcp/guides-src/components/*.md ──────┘        (gates.mjs 
 
 ## 4. 리스크
 
-- 기존 mdx 의 손맛(브랜드별 스크린샷 멘트, 정합 검증 콜아웃)이 템플릿화되며 평준화됨 —
+- 기존 mdx 의 손맛(프로젝트별 스크린샷 멘트, 정합 검증 콜아웃)이 템플릿화되며 평준화됨 —
   partial 메커니즘으로 완화.
 - 가이드가 없는 컴포넌트(현재 FormSection·SelectionButton 2건)는 생성 자체가 불가 →
   가이드 작성이 선행 조건이 되며, 이는 오히려 가이드 공백을 막는 순기능.
@@ -85,7 +85,7 @@ prose·Playground·예제(특히 8개 인터랙티브 문서)를 guides-src 로 
 | Props 표 자동 생성 컴포넌트                | **107** (mappable 전부)                        |
 | 자동 생성된 prop 행                        | **1,561**                                      |
 | JSDoc 설명 누락 prop                       | **0** (구현 전 7건 → 소스 JSDoc 보강으로 해소) |
-| 자동화 제외(카탈로그·브랜드셸·별칭 페이지) | 11 (react 단일 컴포넌트 아님)                  |
+| 자동화 제외(카탈로그·프로젝트셸·별칭 페이지) | 11 (react 단일 컴포넌트 아님)                  |
 
 **추출 방식:** `typescript`(5.9.3, 이미 설치됨) 컴파일러 API 로 `<Title>Props` 인터페이스의 직접
 선언 prop 을 파싱(상속된 HTML 속성 제외 — 기존 mdx 관례와 동일). 기본값은 JSDoc `@default` 우선,

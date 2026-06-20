@@ -1,5 +1,5 @@
 export { IconCatalog } from "./IconCatalog.js";
-export { BrandCoverageTable } from "./BrandCoverageTable.js";
+export { ProjectCoverageTable } from "./ProjectCoverageTable.js";
 export {
   COMPONENT_CATEGORY_ORDER,
   orderedCategories,
@@ -7,15 +7,15 @@ export {
 } from "./inventory.js";
 export type { InventoryLike } from "./inventory.js";
 export type {
-  IconBrandId,
-  IconCatalogBrand,
+  IconProjectId,
+  IconCatalogProject,
   IconCatalogCashwalkEntry,
   IconCatalogData,
   IconCatalogIcon,
   IconCatalogMode,
   IconCatalogProps,
   IconComponentType,
-  BrandCoverageTableProps,
+  ProjectCoverageTableProps,
   CoverageCell,
   CoverageChromeRow,
   CoverageGroup,

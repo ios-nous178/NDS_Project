@@ -20,7 +20,7 @@ const sizeConfig = {
 const LABELED = { trackH: 30, thumbSize: 25, thumbOffset: 2.5 } as const;
 
 export type ToggleSize = keyof typeof sizeConfig;
-export type ToggleTone = "brand" | "success";
+export type ToggleTone = "project" | "success";
 /* ─── Utils ─── */
 
 const cx = (...classNames: Array<string | undefined | false | null>) =>
@@ -45,7 +45,7 @@ export interface ToggleProps extends Omit<
   onLabel?: React.ReactNode;
   /** 트랙 안에 표시되는 꺼짐 라벨 (예: "미노출"). */
   offLabel?: React.ReactNode;
-  /** 켜짐 트랙 색. brand(기본·브랜드색) | success(초록 — 노출/활성 status). */
+  /** 켜짐 트랙 색. project(기본·브랜드색) | success(초록 — 노출/활성 status). */
   tone?: ToggleTone;
   /** 크기 (라벨 내장 변형에서는 무시 — 고정 30/25). */
   size?: ToggleSize;
@@ -63,7 +63,7 @@ export const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
       label,
       onLabel,
       offLabel,
-      tone = "brand",
+      tone = "project",
       size = "md",
       disabled = false,
       className,

@@ -159,7 +159,7 @@ export class NdsToggle extends NdsElement {
     const labeled =
       this.getAttribute("on-label") !== null || this.getAttribute("off-label") !== null;
     this._track.dataset.labeled = labeled ? "true" : "false";
-    this._track.dataset.tone = this.attr("tone", "brand");
+    this._track.dataset.tone = this.attr("tone", "project");
 
     if (labeled) {
       this._track.style.removeProperty("--nds-toggle-track-w");

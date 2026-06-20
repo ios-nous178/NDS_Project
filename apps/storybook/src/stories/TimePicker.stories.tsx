@@ -34,7 +34,7 @@ export const WithPresets: Story = {
   render: function Render() {
     const [t, setT] = useState("18:00");
     return (
-      <div style={{ width: 360 }} data-brand="cashwalk-biz">
+      <div style={{ width: 360 }} data-project="cashwalk-biz">
         <TimePicker
           label="노출 종료 시간"
           value={t}

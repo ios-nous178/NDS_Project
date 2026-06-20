@@ -1,5 +1,5 @@
 /**
- * Trost(트로스트) 브랜드 자산 메타데이터.
+ * Trost(트로스트) 프로젝트 자산 메타데이터.
  *
  * 디자이너 Figma 의 native Export(PNG 1x/3x) 원본. Figma 노드 트리가 아닌
  * Export zip 에서 편입돼 figmaNodeId 는 보유하지 않는다 (Geniet 와 동일).
@@ -29,9 +29,9 @@ export interface TrostAssetMeta {
 }
 
 const DIR: Record<TrostAssetCategory, string> = {
-  "psych-tests": "brand/trost/images/psych-tests",
-  profiles: "brand/trost/images/profiles",
-  misc: "brand/trost/images/misc",
+  "psych-tests": "project/trost/images/psych-tests",
+  profiles: "project/trost/images/profiles",
+  misc: "project/trost/images/misc",
 };
 
 function meta(category: TrostAssetCategory, id: string, has3x: boolean): TrostAssetMeta {

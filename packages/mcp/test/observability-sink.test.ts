@@ -241,7 +241,7 @@ describe("recordObservability 디스패처", () => {
 
   it("미지원 툴이면 null(무동작)", async () => {
     vi.stubGlobal("fetch", fakeFetch());
-    const out = await recordObservability({ name: "get_brand", args: {}, result: { ok: true } });
+    const out = await recordObservability({ name: "get_project", args: {}, result: { ok: true } });
     expect(out).toBeNull();
     expect(posts).toHaveLength(0);
   });

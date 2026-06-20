@@ -1,10 +1,10 @@
 /**
- * nds-input size별 inline 높이 — 브랜드 :root cascade 보존 검사.
+ * nds-input size별 inline 높이 — 프로젝트 :root cascade 보존 검사.
  *
  * 회고(2026-06): 캐포비 admin 폼에서 nds-input(default)과 nds-select 높이가 어긋났던 버그는
- * fc223c7a 에서 brand --nds-input-height 를 40→48 로 올려(base 와 동일) 해소됐다. 이후 옛
+ * fc223c7a 에서 project --nds-input-height 를 40→48 로 올려(base 와 동일) 해소됐다. 이후 옛
  * compact(40) size 는 admin 표준에서 폐기·API 에서 제거. default 는 여전히 inline 높이를 박지
- * 않아야 브랜드 :root 48 cascade 가 보존된다(브랜드 미지정 환경은 CSS fallback 48). field 는
+ * 않아야 프로젝트 :root 48 cascade 가 보존된다(프로젝트 미지정 환경은 CSS fallback 48). field 는
  * 작성자가 명시한 의도이므로 inline 유지(값은 default 와 동일 48).
  */
 
@@ -17,12 +17,12 @@ import {
 
 const flush = () => new Promise<void>((r) => setTimeout(r, 0));
 
-describe("nds-input — size별 inline 높이 (브랜드 cascade 보존)", () => {
+describe("nds-input — size별 inline 높이 (프로젝트 cascade 보존)", () => {
   it("registers as a custom element", () => {
     expect(customElements.get("nds-input")).toBe(NdsInput);
   });
 
-  it("size=default 는 --nds-input-height 를 inline 으로 박지 않는다 (브랜드 :root 48 cascade 보존)", async () => {
+  it("size=default 는 --nds-input-height 를 inline 으로 박지 않는다 (프로젝트 :root 48 cascade 보존)", async () => {
     const el = document.createElement("nds-input");
     el.setAttribute("label", "이름");
     document.body.appendChild(el);

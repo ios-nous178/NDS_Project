@@ -1,19 +1,19 @@
 /**
- * 목업 공통 레이아웃 헬퍼 — 브랜드 공통
+ * 목업 공통 레이아웃 헬퍼 — 프로젝트 공통
  *
- * brand-fixtures의 데이터를 기반으로 어떤 브랜드든 동일한 API로
+ * project-fixtures의 데이터를 기반으로 어떤 프로젝트든 동일한 API로
  * 헤더/푸터/StickyBar를 렌더링합니다.
  *
  * Usage:
  *   import { MockupLayout, useIsMobile } from "./mockup-layout";
  *
- *   <MockupLayout brand="trost" activeGnbKey="medicine" disclaimer="고지">
+ *   <MockupLayout project="trost" activeGnbKey="medicine" disclaimer="고지">
  *     {내용}
  *   </MockupLayout>
  */
 import React, { useState } from "react";
 import { Header, Footer, Button, TrendingKeywords } from "@nudge-design/react";
-import { getBrandFixture } from "../brand-fixtures";
+import { getProjectFixture } from "../project-fixtures";
 
 /* ═══════════════════════════════════════
    유틸
@@ -34,13 +34,13 @@ export function useIsMobile(breakpoint = 640) {
 }
 
 /* ═══════════════════════════════════════
-   MockupHeader — 브랜드 공통 반응형 헤더
+   MockupHeader — 프로젝트 공통 반응형 헤더
    single: NudgeEAP (1단 헤더)
    double: Trost, Geniet (2단 헤더 — MainBar + NavBar)
    ═══════════════════════════════════════ */
 
 export interface MockupHeaderProps {
-  brand: string;
+  project: string;
   activeGnbKey?: string;
   /** 모바일 웹뷰 모드 */
   webview?: boolean;
@@ -49,14 +49,14 @@ export interface MockupHeaderProps {
 }
 
 export function MockupHeader({
-  brand,
+  project,
   activeGnbKey = "home",
   webview,
   webviewTitle,
   onSearch,
 }: MockupHeaderProps) {
   const isMobile = useIsMobile();
-  const b = getBrandFixture(brand);
+  const b = getProjectFixture(project);
 
   // 모바일 웹뷰
   if (isMobile && webview) {
@@ -82,7 +82,7 @@ export function MockupHeader({
         <Header.MainBar>
           <Header.Logo
             src={b.logo.headerMobile.src}
-            alt={brand}
+            alt={project}
             href="/"
             style={{ height: b.logo.headerMobile.height, width: "auto" }}
           />
@@ -99,7 +99,7 @@ export function MockupHeader({
         <Header.MainBar maxWidth={b.header.pcMaxWidth}>
           <Header.Logo
             src={b.logo.headerPc.src}
-            alt={brand}
+            alt={project}
             href="/"
             width={b.logo.headerPc.width}
             height={b.logo.headerPc.height}
@@ -130,7 +130,7 @@ export function MockupHeader({
       >
         <Header.Logo
           src={b.logo.headerPc.src}
-          alt={brand}
+          alt={project}
           href="/"
           width={b.logo.headerPc.width}
           height={b.logo.headerPc.height}
@@ -174,19 +174,19 @@ export function MockupHeader({
 }
 
 /* ═══════════════════════════════════════
-   MockupFooter — 브랜드 공통 푸터
+   MockupFooter — 프로젝트 공통 푸터
    darkBg: true → 다크 배경 (Trost)
    darkBg: false/undefined → 기본 라이트 배경
    ═══════════════════════════════════════ */
 
 export interface MockupFooterProps {
-  brand: string;
+  project: string;
   disclaimer?: string;
 }
 
-export function MockupFooter({ brand, disclaimer }: MockupFooterProps) {
+export function MockupFooter({ project, disclaimer }: MockupFooterProps) {
   const isMobile = useIsMobile();
-  const b = getBrandFixture(brand);
+  const b = getProjectFixture(project);
   const dark = b.footer.darkBg;
 
   return (
@@ -337,8 +337,8 @@ export function Accordion({ items }: { items: { question: string; answer: string
 
 export interface MockupLayoutProps {
   children: React.ReactNode;
-  /** 브랜드 키 ("trost" | "geniet" | "nudge-eap") */
-  brand: string;
+  /** 프로젝트 키 ("trost" | "geniet" | "nudge-eap") */
+  project: string;
   /** GNB 활성 키 */
   activeGnbKey?: string;
   /** 모바일 웹뷰 모드 */
@@ -354,7 +354,7 @@ export interface MockupLayoutProps {
 
 export function MockupLayout({
   children,
-  brand,
+  project,
   activeGnbKey = "home",
   webview,
   webviewTitle,
@@ -373,14 +373,14 @@ export function MockupLayout({
       }}
     >
       <MockupHeader
-        brand={brand}
+        project={project}
         activeGnbKey={activeGnbKey}
         webview={webview}
         webviewTitle={webviewTitle}
         onSearch={onSearch}
       />
       {children}
-      <MockupFooter brand={brand} disclaimer={disclaimer} />
+      <MockupFooter project={project} disclaimer={disclaimer} />
       {stickyBottom && <StickyBottomBar>{stickyBottom}</StickyBottomBar>}
     </div>
   );

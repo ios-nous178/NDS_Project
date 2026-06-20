@@ -455,8 +455,8 @@ export const WithIconsAndSlots: Story = {
     docs: {
       description: {
         story:
-          "아이콘은 `currentColor` 로 그려서 브랜드/variant 별 텍스트 색을 자동 상속한다. " +
-          "캐포비 처럼 primary text 가 검정(#000)인 브랜드에서도 흰 아이콘이 노란 배경 위에 떠 보이는 문제를 막는다.",
+          "아이콘은 `currentColor` 로 그려서 프로젝트/variant 별 텍스트 색을 자동 상속한다. " +
+          "캐포비 처럼 primary text 가 검정(#000)인 프로젝트에서도 흰 아이콘이 노란 배경 위에 떠 보이는 문제를 막는다.",
       },
     },
   },
@@ -614,10 +614,10 @@ export const InputWithFieldButton: Story = {
    트로스트 ButtonGuide 4스타일 → DS color × variant 매핑.
    Primary(검정)=neutral/solid · Yellow(노랑)=primary/solid ·
    Secondary(블루)=secondary/solid · Outlined(취소·닫기)=neutral/outlined.
-   색은 트로스트 brand 토큰이 슬롯으로 흘려주므로 data-brand="trost" 래퍼만 둔다(색 하드코딩 X). */
+   색은 트로스트 project 토큰이 슬롯으로 흘려주므로 data-project="trost" 래퍼만 둔다(색 하드코딩 X). */
 
 export const TrostStyleMapping: Story = {
-  name: "Brand/Trost Style Mapping",
+  name: "Project/Trost Style Mapping",
   parameters: {
     docs: {
       description: {
@@ -627,12 +627,12 @@ export const TrostStyleMapping: Story = {
           "Secondary(옅은 블루 bg #EDF0FF / text #4968FF Point)=`color='secondary' variant='solid'`, " +
           "Outlined(흰+gray border / text #333, 취소·닫기)=`color='neutral' variant='outlined'`. " +
           "트로스트 'Primary'(검정)는 DS `color='primary'`(=노랑)가 아니라는 점에 주의. " +
-          "색은 data-brand='trost' 컨텍스트의 브랜드 토큰이 흘려준다(컴포넌트 색 하드코딩 금지).",
+          "색은 data-project='trost' 컨텍스트의 프로젝트 토큰이 흘려준다(컴포넌트 색 하드코딩 금지).",
       },
     },
   },
   render: () => (
-    <div data-brand="trost" style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+    <div data-project="trost" style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
       <Button color="neutral" variant="solid">
         Primary (검정)
       </Button>
@@ -655,7 +655,7 @@ export const TrostStyleMapping: Story = {
    Outlined/Primary(주황 라인) · Outlined/Neutral(gray 라인). 5 size: Mini40/S44/M48/L52/XL56. */
 
 export const RunmileStyleMapping: Story = {
-  name: "Brand/Runmile Style Mapping",
+  name: "Project/Runmile Style Mapping",
   parameters: {
     docs: {
       description: {
@@ -666,12 +666,12 @@ export const RunmileStyleMapping: Story = {
           "Soft/Neutral=`color='neutral' variant='soft'`(회색 옅은 BG · 가벼운 보조), " +
           "Outlined/Primary · Outlined/Neutral. " +
           "검정 솔리드를 Secondary로 부르지 말 것 — color='secondary' 사용 시 dev console 경고. " +
-          "색은 data-brand='runmile' 컨텍스트의 브랜드 토큰이 흘려준다(색 하드코딩 금지).",
+          "색은 data-project='runmile' 컨텍스트의 프로젝트 토큰이 흘려준다(색 하드코딩 금지).",
       },
     },
   },
   render: () => (
-    <div data-brand="runmile" style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}>
+    <div data-project="runmile" style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}>
       <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
         <Button color="primary" variant="solid">
           Solid/Primary (주황)
@@ -689,7 +689,7 @@ export const RunmileStyleMapping: Story = {
           Outlined/Neutral
         </Button>
       </div>
-      {/* 5 size — Mini 40 / S 44 / M 48 / L 52 / XL 56 (런마일 brand 높이 override) */}
+      {/* 5 size — Mini 40 / S 44 / M 48 / L 52 / XL 56 (런마일 project 높이 override) */}
       <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
         <Button color="primary" variant="solid" size="mini">
           Mini 40

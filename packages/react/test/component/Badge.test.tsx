@@ -38,7 +38,7 @@ describe("Badge 접근성", () => {
 
 describe("Badge variant 조합", () => {
   const variants = ["fill", "ghost", "line"] as const;
-  const colors = ["brand", "neutral", "success", "caution", "error", "info"] as const;
+  const colors = ["project", "neutral", "success", "caution", "error", "info"] as const;
   const sizes = ["sm", "md", "lg"] as const;
 
   it.each(variants)("variant=%s 가 크래시 없이 렌더링된다", (variant) => {

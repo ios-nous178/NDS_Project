@@ -32,7 +32,7 @@ export interface CashwalkBizAssetMeta {
 
 export const CASHWALK_BIZ_ASSET_METADATA: Record<CashwalkBizAssetId, CashwalkBizAssetMeta> = {
   "charge-alert-bell": {
-    filename: "brand/cashwalk-biz/illustrations/charge-alert-bell.png",
+    filename: "project/cashwalk-biz/illustrations/charge-alert-bell.png",
     mimeType: "image/png",
     width: 400,
     height: 413,
@@ -40,28 +40,28 @@ export const CASHWALK_BIZ_ASSET_METADATA: Record<CashwalkBizAssetId, CashwalkBiz
     figmaNodeName: "img/alarm",
   },
   quiz: {
-    filename: "brand/cashwalk-biz/illustrations/quiz.png",
+    filename: "project/cashwalk-biz/illustrations/quiz.png",
     mimeType: "image/png",
     width: 140,
     height: 144,
     retina: ["2x", "3x"],
   },
   channel: {
-    filename: "brand/cashwalk-biz/illustrations/channel.png",
+    filename: "project/cashwalk-biz/illustrations/channel.png",
     mimeType: "image/png",
     width: 110,
     height: 130,
     retina: ["2x", "3x"],
   },
   message: {
-    filename: "brand/cashwalk-biz/illustrations/message.png",
+    filename: "project/cashwalk-biz/illustrations/message.png",
     mimeType: "image/png",
     width: 107,
     height: 120,
     retina: ["2x", "3x"],
   },
   ads: {
-    filename: "brand/cashwalk-biz/illustrations/ads.png",
+    filename: "project/cashwalk-biz/illustrations/ads.png",
     mimeType: "image/png",
     width: 109,
     height: 139,

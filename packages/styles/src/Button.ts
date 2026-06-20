@@ -34,7 +34,7 @@ export const buttonStyles = `
     font-size: var(--nds-button-font-size, ${typeScale.body1.fontSize}px);
     line-height: var(--nds-button-line-height, ${typeScale.body1.lineHeight}px);
     font-weight: var(--nds-button-font-weight, ${fontWeight.bold});
-    /* 전 브랜드 공통 룰: 라벨은 항상 1줄. 컨테이너 폭 부족으로 wrap 되면 size 선택이 잘못된 신호다.
+    /* 전 프로젝트 공통 룰: 라벨은 항상 1줄. 컨테이너 폭 부족으로 wrap 되면 size 선택이 잘못된 신호다.
      * 가이드(MCP Button) 와 동기화 — host 가 white-space: normal 로 덮어쓰지 못하게 nowrap 강제. */
     white-space: nowrap;
     cursor: pointer;

@@ -4,7 +4,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1354-
 
 ## summary
 
-PC 화면 우측 고정(sticky/fixed) 영역에서 자주 쓰는 **전역 액션 2~4개(3개 권장)**를 빠르게 노출하는 보조 navigation. Container(width 120 · radius 12 · White · overlay shadow) + Header("QUICK MENU" Bold 13 brand) + Menu Item × N(IconCircle 60 + 라벨) + 하단 TOP(맨 위로) 버튼으로 구성. 고빈도·즉시성·전역 도달이 핵심 — 페이지별 컨텍스트 액션과 분리한다.
+PC 화면 우측 고정(sticky/fixed) 영역에서 자주 쓰는 **전역 액션 2~4개(3개 권장)**를 빠르게 노출하는 보조 navigation. Container(width 120 · radius 12 · White · overlay shadow) + Header("QUICK MENU" Bold 13 project) + Menu Item × N(IconCircle 60 + 라벨) + 하단 TOP(맨 위로) 버튼으로 구성. 고빈도·즉시성·전역 도달이 핵심 — 페이지별 컨텍스트 액션과 분리한다.
 
 ## pitfalls
 
@@ -14,7 +14,7 @@ PC 화면 우측 고정(sticky/fixed) 영역에서 자주 쓰는 **전역 액션
 - 라벨은 **한글 8자 이내** — 두 줄 wrap 방지. `showLabel=false`(아이콘만)는 식별성 저하라 비권장.
 - **icon = inline SVG 문자열 (이름/이모지 아님).** `icon` 은 innerHTML 로 주입되므로 `"icon":"home"` 같은 이름/이모지를 넣으면 텍스트로 흘러나온다. `find_icon({ name })` → 반환 inline SVG 를 넣는다. Icon Library 의 32px line style 로 통일. React `QuickMenu` 의 `icon: ReactNode` 와 대칭, nds-sidebar 와 동일 규약.
 - 한 페이지에 **두 개 이상 노출 금지**. 위치는 PC 우측 고정 — top 172 / right 24~40 / z-index 900(모달·토스트보다 아래). 오프셋은 `--nds-quickmenu-top/right/z` 로 override.
-- 색을 hex 로 박지 말 것 — 헤더는 `--semantic-text-brand-default`(brand cascade)라 브랜드별 색이 자동 적용된다.
+- 색을 hex 로 박지 말 것 — 헤더는 `--semantic-text-brand-default`(project cascade)라 프로젝트별 색이 자동 적용된다.
 
 ## recommended
 

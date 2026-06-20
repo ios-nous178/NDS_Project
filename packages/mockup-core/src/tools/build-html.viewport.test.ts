@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { buildSinglefileHtml } from "./build-html.js";
-import { listStandaloneBrands } from "./standalone-assets.js";
+import { listStandaloneProjects } from "./standalone-assets.js";
 
 /**
  * build_singlefile_html viewport meta 주입 (B3).
@@ -14,7 +14,7 @@ import { listStandaloneBrands } from "./standalone-assets.js";
  */
 const hasManifest = (() => {
   try {
-    return listStandaloneBrands().includes("nudge-eap");
+    return listStandaloneProjects().includes("nudge-eap");
   } catch {
     return false;
   }
@@ -34,7 +34,7 @@ function withWorkspace(
 const countViewport = (html: string) => (html.match(/name=["']viewport["']/gi) ?? []).length;
 
 const indexHtml = (head: string) => `<!doctype html>
-<html data-brand="nudge-eap"><head>${head}</head>
+<html data-project="nudge-eap"><head>${head}</head>
 <body>
   <script type="application/json" data-prd-coverage>{"requirements":[]}</script>
   <nds-button id="ok-btn">확인</nds-button>

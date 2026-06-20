@@ -10,7 +10,7 @@
 
 - **제목 + 설명 묶음에는 Text 를 두 번 쌓지 말 것** → Heading(level 로 폰트+gap 자동). Text 는 단일 텍스트 런 전용.
 - **variant 는 size+line-height 만** 결정한다 — 헤딩 스케일(`headline*`)을 줘도 자동 bold/색이 되지 않는다. 굵기는 `weight`, 색은 `tone` 으로 따로 준다.
-- **색은 `tone` 으로만** — raw hex/인라인 색 금지. 브랜드별 색 차이는 컴포넌트가 모르고 `--semantic-text-*`(tone) 토큰이 흘려보낸다.
+- **색은 `tone` 으로만** — raw hex/인라인 색 금지. 프로젝트별 색 차이는 컴포넌트가 모르고 `--semantic-text-*`(tone) 토큰이 흘려보낸다.
 - `maxLines` 는 **CSS line-clamp(측정 없음)** — 정적으로 N줄에서 잘림. 펼침/접힘 토글이 필요하면 `expandable`.
 - `expandable` 본문에 **폰트 사이즈를 섞으면** line-height 측정 정확도가 떨어진다 — 단일 톤 텍스트에만. (html `<nds-text expandable>` 는 expandable 여부가 mount 시 1회 확정 — 런타임 토글 비대상.)
 - 짧은 텍스트에 `expandable` 을 줘도 토글은 자동으로 숨겨진다 — 한두 줄짜리엔 굳이 쓰지 않는다.

@@ -82,7 +82,7 @@ export interface ListItemProps extends Omit<React.LiHTMLAttributes<HTMLLIElement
   size?: ListItemSize;
   /**
    * Trost Thumbnail(모바일) 전용 — 3번째 줄 인라인 액션 링크 (예: "주문 다시하기").
-   * metadata 아래에 brand 색 텍스트 링크로 렌더. onActionLinkSelect 와 함께 사용.
+   * metadata 아래에 project 색 텍스트 링크로 렌더. onActionLinkSelect 와 함께 사용.
    * 다른 layout 에서는 무시되지 않으나 가이드상 Thumbnail 합성 전용.
    */
   actionLink?: React.ReactNode;

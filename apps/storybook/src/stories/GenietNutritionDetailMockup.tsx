@@ -251,7 +251,7 @@ export default function GenietNutritionDetailMockup() {
   const displayedNutrients = expandedNutrients ? food.nutrients : food.nutrients.slice(0, 5);
 
   return (
-    <MockupLayout brand="geniet" activeGnbKey="review">
+    <MockupLayout project="geniet" activeGnbKey="review">
       {/* ═══ 1. 브레드크럼 ═══ */}
       <Section noPadding>
         <div style={{ padding: `${isMobile ? 12 : 16}px 0` }}>
@@ -303,7 +303,7 @@ export default function GenietNutritionDetailMockup() {
                 justifyContent: isMobile ? "center" : "flex-start",
               }}
             >
-              <Badge variant="ghost" color="brand">
+              <Badge variant="ghost" color="project">
                 {food.category}
               </Badge>
               <Badge variant="ghost" color="success">
@@ -387,7 +387,7 @@ export default function GenietNutritionDetailMockup() {
               }}
             >
               {food.tags.map((tag) => (
-                <Chip key={tag} label={tag} variant="ghost" color="brand" size="sm" />
+                <Chip key={tag} label={tag} variant="ghost" color="project" size="sm" />
               ))}
             </div>
           </div>
@@ -521,7 +521,7 @@ export default function GenietNutritionDetailMockup() {
                   <span style={{ fontWeight: idx === 0 ? 700 : 400, color: G.black }}>
                     {f.name}
                     {idx === 0 && (
-                      <Badge variant="ghost" color="brand" size="sm" style={{ marginLeft: 8 }}>
+                      <Badge variant="ghost" color="project" size="sm" style={{ marginLeft: 8 }}>
                         현재
                       </Badge>
                     )}
@@ -648,7 +648,7 @@ export default function GenietNutritionDetailMockup() {
                   {deal.imageInitial}
                   {deal.badge && (
                     <div style={{ position: "absolute", top: 8, left: 8 }}>
-                      <Badge variant="fill" color="brand" size="sm">
+                      <Badge variant="fill" color="project" size="sm">
                         {deal.badge}
                       </Badge>
                     </div>
@@ -723,7 +723,7 @@ export default function GenietNutritionDetailMockup() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {["콜레스테롤 관리", "키토 식단", "이유식", "건강한 지방", "전문가 추천"].map(
                 (tag) => (
-                  <Chip key={tag} label={tag} variant="ghost" color="brand" size="sm" />
+                  <Chip key={tag} label={tag} variant="ghost" color="project" size="sm" />
                 ),
               )}
             </div>
@@ -775,7 +775,7 @@ export default function GenietNutritionDetailMockup() {
                 >
                   <div style={{ display: "flex", gap: 6 }}>
                     {review.tags.map((tag) => (
-                      <Chip key={tag} label={tag} variant="outlined" color="brand" size="sm" />
+                      <Chip key={tag} label={tag} variant="outlined" color="project" size="sm" />
                     ))}
                   </div>
                   <span
@@ -912,7 +912,7 @@ export default function GenietNutritionDetailMockup() {
               key={tag}
               label={tag}
               variant="outlined"
-              color="brand"
+              color="project"
               size="md"
               onClick={() => {}}
             />

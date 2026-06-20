@@ -16,7 +16,7 @@
  *  - inline-svg           : <svg> (DS 아이콘 화이트리스트와 대조)
  *  - native-interactive   : <button>/<input>/<select> 가 nds-* 클래스/태그 없이 사용됨
  *  - raw-landmark         : sidebar/footer/header 를 raw landmark 로 구현했지만 nds-* 대체재가 있음
- *  - manual-brand-header  : 브랜드 화면(data-brand/nds-brand-*)인데 base nds-header 에 로고/메뉴/auth 손수 조립
+ *  - manual-project-header  : 프로젝트 화면(data-project/nds-project-*)인데 base nds-header 에 로고/메뉴/auth 손수 조립
  *  - non-inlinable-img-src: 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (src/srcset)
  *  - text-icon-substitute : x/× 같은 텍스트를 아이콘 대체로 사용
  *  - unknown-token        : var(--xxx) 의 --xxx 가 카탈로그에 없음
@@ -30,15 +30,15 @@
  * 검출 룰 (JSX 에서 포팅 — 컨테이너 / 카운팅 / 시각 위계):
  *  - card-slot-double-padding   : <nds-card-header|body|footer> 에 외곽 padding
  *  - neutral-solid-cta        : <nds-button color="neutral"> 가 solid (variant 미지정, 캐포비 제외)
- *  - brand-denied-button-color: 캐포비 <nds-button color="secondary"> — 캐포비엔 secondary tone 없음(neutral 사용)
+ *  - project-denied-button-color: 캐포비 <nds-button color="secondary"> — 캐포비엔 secondary tone 없음(neutral 사용)
  *  - heading-decorative-icon    : <h3>/<h4> 안에 <svg> / icon 들어감
  *  - nested-card                : <nds-card> 안에 <nds-card>
  *  - card-badge-overuse         : 1 nds-card 안 nds-chip + nds-badge ≥ 3
  *  - card-footer-button-overuse : nds-card-footer 안 nds-button ≥ 3
  *  - primary-cta-per-container  : 영역 1개 안 primary solid nds-button > 1
- *  - brand-modal-single-button-fullwidth : 캐포비 모달 단일 footer 버튼이 full-width (우측 hug 여야 함)
- *  - brand-modal-confirm-cta : 캐포비 확인/팝업 모달 footer 주 action 이 primary(노랑)/색생략 (검정 neutral 이어야 함)
- *  - brand-modal-footer-stacked : 모달 footer 두 버튼 세로 스택 (가로 유지 + 라벨 축약)
+ *  - project-modal-single-button-fullwidth : 캐포비 모달 단일 footer 버튼이 full-width (우측 hug 여야 함)
+ *  - project-modal-confirm-cta : 캐포비 확인/팝업 모달 footer 주 action 이 primary(노랑)/색생략 (검정 neutral 이어야 함)
+ *  - project-modal-footer-stacked : 모달 footer 두 버튼 세로 스택 (가로 유지 + 라벨 축약)
  *  - primary-cta-overuse        : 페이지 레벨 primary solid nds-button > 1
  *  - chip-overuse               : nds-chip > 8
  *  - chip-as-entry-grid         : nds-chip ≥ 6 을 그리드/아이콘 타일로 나열 (진입 그리드를 chip 으로 오용 → quick-action-grid)
@@ -46,10 +46,10 @@
  *  - repeated-h1                : <h1> ≥ 2
  *  - repeated-h2                : <h2> ≥ 4
  *  - bold-overuse               : inline font-weight bold/700+ ≥ 5
- *  - brand-bg-overuse           : --semantic-bg-brand-* 사용 ≥ 2
+ *  - project-bg-overuse           : --semantic-bg-brand-* 사용 ≥ 2
  *  - decorative-shadow          : inline box-shadow (focus ring 제외) ≥ 4
  *  - tone-on-tone-filled        : 연한 primary bg + filled/soft chip/badge
- *  - visual-emphasis-overload   : gradient / chip / badge / brand-bg / icon 동시 ≥ 4
+ *  - visual-emphasis-overload   : gradient / chip / badge / project-bg / icon 동시 ≥ 4
  *  - primary-color-role-overload: primary 계열 색상이 여러 역할로 과다 사용
  *
  * 의도적으로 포팅하지 않은 JSX 룰:
@@ -65,13 +65,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as cheerio from "cheerio";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
 import {
-  canonicalBrandSlug,
+  canonicalProjectSlug,
   canonicalPagePattern,
   CASHWALK_BIZ_PAGE_PATTERNS,
   type CashwalkBizPagePattern,
-  listStandaloneBrands,
+  listStandaloneProjects,
 } from "./standalone-assets.js";
 import {
   type DomElement,
@@ -115,7 +115,7 @@ export function configureHtmlValidator(ctx: HtmlValidationContext) {
  *  warn  : 시각 위계 / 패턴 가이드 위반. 의도된 trade-off 일 수 있음.
  *  info  : 정보성 권고.
  *
- * raw-landmark 는 컨텍스트에 따라 (brand 변형 가용 vs 아님) 달라지므로 push 시점에 명시.
+ * raw-landmark 는 컨텍스트에 따라 (project 변형 가용 vs 아님) 달라지므로 push 시점에 명시.
  */
 /**
  * 룰 분류(kind) — 수명 정책의 입력. 분류는 1차 패스이며 재분류 환영.
@@ -127,49 +127,49 @@ export function configureHtmlValidator(ctx: HtmlValidationContext) {
  *                텔레메트리(rule-stats) 기준 30일 히트 0 인 warn/info 룰은 폐기 후보
  *                (/ds-audit 가 리포트. error 룰은 "룰이 효과적이라 위반이 사라진" 경우와
  *                구분이 안 되므로 후보에서 제외).
- *  brand-policy: 특정 브랜드의 의미/정책 분기 — 브랜드 프로필(brand-profiles)이 발화를 결정.
+ *  project-policy: 특정 프로젝트의 의미/정책 분기 — 프로젝트 프로필(project-profiles)이 발화를 결정.
  *
- * brand-policy 네이밍 컨벤션:
- *  - `brand-*`        : 프로필 데이터로 일반화된 정책 룰 — 어떤 브랜드든 같은 정책을 선언하면 발화.
+ * project-policy 네이밍 컨벤션:
+ *  - `project-*`        : 프로필 데이터로 일반화된 정책 룰 — 어떤 프로젝트든 같은 정책을 선언하면 발화.
  *  - `cashwalk-biz-*` : 캐포비 어드민 Page Pattern System 의 콘텐츠 룰(onboarding/sidebar/페이지 패턴
- *                       골격) — 패턴 내용 자체가 캐포비 어드민 DS 라 브랜드명 유지. 발화 게이트만
+ *                       골격) — 패턴 내용 자체가 캐포비 어드민 DS 라 프로젝트명 유지. 발화 게이트만
  *                       프로필(admin.pagePatternSystem)이 결정.
  *
  * 2026-06 룰 id 일반화(텔레메트리 조인 시 legacy 매핑):
- *  - cashwalk-biz-no-secondary                → brand-denied-button-color
- *  - cashwalk-biz-toast                       → brand-banned-notification
- *  - cashwalk-biz-modal-primary-cta           → brand-modal-confirm-cta
- *  - cashwalk-biz-modal-single-button-fullwidth → brand-modal-single-button-fullwidth
- *  - cashwalk-biz-modal-footer-stacked        → brand-modal-footer-stacked
+ *  - cashwalk-biz-no-secondary                → project-denied-button-color
+ *  - cashwalk-biz-toast                       → project-banned-notification
+ *  - cashwalk-biz-modal-primary-cta           → project-modal-confirm-cta
+ *  - cashwalk-biz-modal-single-button-fullwidth → project-modal-single-button-fullwidth
+ *  - cashwalk-biz-modal-footer-stacked        → project-modal-footer-stacked
  */
-export type RuleKind = "invariant" | "model-guard" | "brand-policy";
+export type RuleKind = "invariant" | "model-guard" | "project-policy";
 export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: RuleKind }> = {
   // contract / DS 미사용
   "native-interactive": { severity: "error", kind: "invariant" },
   // DS 반영도(dsRatio)가 최소선 미달 — "DS 반영"을 강제하는 집계 게이트(E1).
   "low-ds-ratio": { severity: "error", kind: "invariant" },
   "raw-landmark": { severity: "warn", kind: "invariant" },
-  // 브랜드 화면인데 base nds-header 를 손수 조립 (회고: brand chrome 미사용 안티패턴)
-  "manual-brand-header": { severity: "warn", kind: "model-guard" },
-  // admin/CMS 셸 사이드바·톱바의 브랜드 로고를 컴포넌트(nds-sidebar[brand]/nds-brand-logo) 대신
+  // 프로젝트 화면인데 base nds-header 를 손수 조립 (회고: project chrome 미사용 안티패턴)
+  "manual-project-header": { severity: "warn", kind: "model-guard" },
+  // admin/CMS 셸 사이드바·톱바의 프로젝트 로고를 컴포넌트(nds-sidebar[project]/nds-project-logo) 대신
   // 텍스트 placeholder·수동 base64 <img> 로 손수 박음 (회고: 백오피스 CMS 로고를 에셋 패키지 두고
-  // 텍스트→base64 추출 우회). 캐포비 온보딩 한정 text-logo 차단을 모든 브랜드 admin 셸로 일반화.
+  // 텍스트→base64 추출 우회). 캐포비 온보딩 한정 text-logo 차단을 모든 프로젝트 admin 셸로 일반화.
   "admin-sidebar-logo-not-component": { severity: "warn", kind: "model-guard" },
-  // 선언 표면=admin 인데 소비자 brand chrome(header/footer/bottom-nav) 사용 (회고: 가입 admin 화면을 소비자 플로우로 오제작)
+  // 선언 표면=admin 인데 소비자 project chrome(header/footer/bottom-nav) 사용 (회고: 가입 admin 화면을 소비자 플로우로 오제작)
   "admin-surface-consumer-chrome": { severity: "error", kind: "invariant" },
   // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
   "service-surface-admin-shell": { severity: "warn", kind: "invariant" },
   // full 문서(<head> 존재)인데 <meta name="viewport"> 누락 — 모바일이 데스크탑 폭으로 렌더돼
   // 반응형(@media)이 안 먹고 카드/다열 그리드가 짓눌림(회고: 모바일 카드 4열 짓눌림·글자 세로 쪼개짐)
   "missing-viewport-meta": { severity: "warn", kind: "invariant" },
-  // 캐포비 어드민(surface=admin + brand=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
-  "cashwalk-biz-admin-page-pattern": { severity: "error", kind: "brand-policy" },
+  // 캐포비 어드민(surface=admin + project=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
+  "cashwalk-biz-admin-page-pattern": { severity: "error", kind: "project-policy" },
   // 캐포비 어드민 onboarding 패턴인데 shell(사이드바/풀하이트 셸)이 있음 — 온보딩은 비로그인 진입 화면이라 shell 금지
-  "cashwalk-biz-onboarding-no-shell": { severity: "error", kind: "brand-policy" },
+  "cashwalk-biz-onboarding-no-shell": { severity: "error", kind: "project-policy" },
   // 캐포비 어드민 onboarding 인데 중앙 카드+로고 골격이 안 보임 — 권고(레이아웃 계약 환기)
-  "cashwalk-biz-onboarding-skeleton": { severity: "info", kind: "brand-policy" },
-  // 온보딩 카드에 <nds-brand-logo> 컴포넌트가 없음 — raw img/svg 로고 조립 또는 누락(skeleton 의 빈틈 보완)
-  "onboarding-missing-brand-logo": { severity: "warn", kind: "model-guard" },
+  "cashwalk-biz-onboarding-skeleton": { severity: "info", kind: "project-policy" },
+  // 온보딩 카드에 <nds-project-logo> 컴포넌트가 없음 — raw img/svg 로고 조립 또는 누락(skeleton 의 빈틈 보완)
+  "onboarding-missing-project-logo": { severity: "warn", kind: "model-guard" },
   // 소셜 로그인을 텍스트/이니셜(G/K/N)로 때움 — sns-logos 자산 미사용
   "onboarding-social-bare-text": { severity: "warn", kind: "model-guard" },
   // 성공/완료 상태를 체크 없는 민무늬 초록 원으로 표현 — check-circle 아이콘 미사용
@@ -180,8 +180,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 멀티스텝 온보딩의 [이전 단계] 버튼이 카드 안에 있음 — 카드와 분리해 하단 푸터에 둬야 함.
   "onboarding-back-button-inside-card": { severity: "warn", kind: "invariant" },
   // 온보딩에 상단 GNB/글로벌 헤더(raw <header>/.topbar/nds-header 등) 부착 — 비로그인 진입 화면은
-  // shell·GNB 없는 탈색 캔버스 중앙 카드. 브랜드 식별은 카드 안 <nds-brand-logo> 에셋만(텍스트 로고 금지).
-  "cashwalk-biz-onboarding-no-gnb": { severity: "error", kind: "brand-policy" },
+  // shell·GNB 없는 탈색 캔버스 중앙 카드. 프로젝트 식별은 카드 안 <nds-project-logo> 에셋만(텍스트 로고 금지).
+  "cashwalk-biz-onboarding-no-gnb": { severity: "error", kind: "project-policy" },
   // 온보딩 카드에 inset 패딩이 없어 컨텐츠/CTA 가 카드 모서리에 full-bleed 로 붙음 — 가이드 카드 padding 48 미적용.
   "onboarding-card-no-padding": { severity: "error", kind: "invariant" },
   // 멀티스텝 온보딩(Stepper 존재)인데 제출 CTA 가 카드 안에 있음 — 카드 *아래* 분리 footer-nav(hug)로 빼야 함.
@@ -191,22 +191,22 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
   "consent-raw-checkbox": { severity: "warn", kind: "model-guard" },
   // 캐포비 사이드바인데 로고 / 계정 블록(account slot) 누락 — 회귀 #1(로고+로그인영역 유실)
-  "cashwalk-biz-sidebar-incomplete": { severity: "error", kind: "brand-policy" },
+  "cashwalk-biz-sidebar-incomplete": { severity: "error", kind: "project-policy" },
   // 캐포비 사이드바인데 로그아웃(footer-actions) 누락 — 권고
-  "cashwalk-biz-sidebar-logout": { severity: "warn", kind: "brand-policy" },
+  "cashwalk-biz-sidebar-logout": { severity: "warn", kind: "project-policy" },
   // 사이드바가 풀하이트 셸(.nds-shell) 밖 — 100vh 가 화면을 못 채움(회귀: 높이 안 참)
-  "cashwalk-biz-sidebar-shell": { severity: "error", kind: "brand-policy" },
+  "cashwalk-biz-sidebar-shell": { severity: "error", kind: "project-policy" },
   // 캐포비 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 금지(회귀: 퍼포멘토 등의 full-width 를 잘못 가져옴)
-  "brand-modal-single-button-fullwidth": { severity: "warn", kind: "brand-policy" },
+  "project-modal-single-button-fullwidth": { severity: "warn", kind: "project-policy" },
   // 캐포비 확인/팝업 모달 footer 의 주 action 이 primary(노랑) — 색 생략 시 Button 기본값이 primary 라
   // 자동으로 노랑이 됨. 캐포비 확인 모달 주 action = 검정 CTA(color="neutral"). 5회+ 재발한 회귀의 근본.
-  "brand-modal-confirm-cta": { severity: "error", kind: "brand-policy" },
+  "project-modal-confirm-cta": { severity: "error", kind: "project-policy" },
   // 모달 footer 의 두 버튼이 세로로 스택됨 — 라벨이 길어도 가로 유지 + 라벨 축약이 원칙(세로 금지).
-  "brand-modal-footer-stacked": { severity: "warn", kind: "brand-policy" },
+  "project-modal-footer-stacked": { severity: "warn", kind: "project-policy" },
   // 캐포비 모달 footer 버튼에 shape="pill" 누락 — 주·보조 모두 pill 이어야 하는데 보조에 빠뜨려 각진 버튼 섞임.
-  "brand-modal-footer-button-shape": { severity: "warn", kind: "brand-policy" },
-  // data-brand / brand-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
-  "unknown-brand-slug": { severity: "error", kind: "model-guard" },
+  "project-modal-footer-button-shape": { severity: "warn", kind: "project-policy" },
+  // data-project / project-* 에 미지 slug → base(블루)로 조용히 폴백돼 색이 틀림 (회고: cashpobi)
+  "unknown-project-slug": { severity: "error", kind: "model-guard" },
   // 단일 파일 빌드에 inline 안 되는 로컬 이미지 경로 (회고: 내부/외부 모두 깨짐)
   "non-inlinable-img-src": { severity: "warn", kind: "invariant" },
   "unknown-nds-tag": { severity: "error", kind: "model-guard" },
@@ -240,7 +240,7 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   //   통째로 지워져 빈 박스/깨진 버튼이 됨(회귀: nds-button 라벨을 textContent 로 갈아끼움).
   "nds-custom-element-content-mutation": { severity: "warn", kind: "model-guard" },
   // 캐포비 admin 성별 타겟팅은 SelectionButtonGroup(전체/특정) + selection chip 묶음으로 고정.
-  "cashwalk-biz-gender-selection-control": { severity: "warn", kind: "brand-policy" },
+  "cashwalk-biz-gender-selection-control": { severity: "warn", kind: "project-policy" },
   // 선택 결과 add 어포던스 중복(외부 추가 + 패널 '추가 선택') — 모달 1개로 통일해야 함.
   // 가이드(SelectedItemsPanel 3641)가 "검증룰이 막음"이라 명시한 회귀이고, 현장에서 재발("또 두개
   // 노출")했으므로 warn→error 로 승격해 빌드 게이트가 실제로 막게 함.
@@ -275,10 +275,10 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "heading-decorative-icon": { severity: "warn", kind: "invariant" },
   // 컨테이너 / 카운팅
   "card-slot-double-padding": { severity: "warn", kind: "invariant" },
-  "neutral-solid-cta": { severity: "warn", kind: "brand-policy" },
-  "brand-denied-button-color": { severity: "warn", kind: "brand-policy" },
+  "neutral-solid-cta": { severity: "warn", kind: "project-policy" },
+  "project-denied-button-color": { severity: "warn", kind: "project-policy" },
   // 캐포비 알림 SSOT 는 Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 는 캐포비에서 미사용 — 전면 금지.
-  "brand-banned-notification": { severity: "error", kind: "brand-policy" },
+  "project-banned-notification": { severity: "error", kind: "project-policy" },
   "nested-card": { severity: "warn", kind: "invariant" },
   "card-badge-overuse": { severity: "warn", kind: "invariant" },
   "card-footer-button-overuse": { severity: "warn", kind: "invariant" },
@@ -290,7 +290,7 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "repeated-h1": { severity: "error", kind: "invariant" },
   "repeated-h2": { severity: "warn", kind: "invariant" },
   "bold-overuse": { severity: "warn", kind: "invariant" },
-  "brand-bg-overuse": { severity: "warn", kind: "invariant" },
+  "project-bg-overuse": { severity: "warn", kind: "invariant" },
   "decorative-shadow": { severity: "warn", kind: "invariant" },
   "tone-on-tone-filled": { severity: "warn", kind: "invariant" },
   "visual-emphasis-overload": { severity: "warn", kind: "invariant" },
@@ -358,7 +358,7 @@ function severityFor(rule: string): HtmlViolationSeverity {
  * DS 에 대체재가 있는데 raw 마크업으로 그린 avoidable 미스다(forced 와 구분되는 개념).
  *
  * native <button>/<input>/<select>/<textarea> 는 별도(native-interactive)로 집계하므로 여기선 제외하고,
- *  (a) raw landmark <header>/<footer>/<aside>  — nds-brand-header/footer/sidebar 대체재 존재
+ *  (a) raw landmark <header>/<footer>/<aside>  — nds-project-header/footer/sidebar 대체재 존재
  *  (b) 인터랙티브 ARIA role 을 선언한 div/span  — role="button|tab|checkbox…" = 컨트롤 재발명
  *  (c) onclick 핸들러가 달린 div/span           — 버튼 재발명(DS 는 addEventListener+nds-button 권장)
  * 만 잡는다. role/onclick 은 작성자가 인터랙션 의도를 명시한 강한 신호라 오탐이 낮다.
@@ -536,13 +536,13 @@ function isNonInlinableImgRef(rawUrl: string): boolean {
   return !INLINABLE_IMG_PREFIXES.some((p) => url.startsWith(p));
 }
 
-function resolveDocumentBrand($: cheerio.CheerioAPI, declaredBrand?: string): string | undefined {
-  const classBrand = ($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1];
+function resolveDocumentProject($: cheerio.CheerioAPI, declaredProject?: string): string | undefined {
+  const classProject = ($("body").attr("class") ?? "").match(/\bproject-([a-z0-9-]+)\b/i)?.[1];
   return (
-    canonicalBrandSlug(declaredBrand) ??
-    canonicalBrandSlug($("html").attr("data-brand")) ??
-    canonicalBrandSlug($("body").attr("data-brand")) ??
-    canonicalBrandSlug(classBrand)
+    canonicalProjectSlug(declaredProject) ??
+    canonicalProjectSlug($("html").attr("data-project")) ??
+    canonicalProjectSlug($("body").attr("data-project")) ??
+    canonicalProjectSlug(classProject)
   );
 }
 
@@ -667,7 +667,7 @@ function checkStyleString(
  * 허용: --nds-* / --semantic-* 커스텀 프로퍼티(슬롯·토큰 전달), display(:contents / :none 등 의도적 토글).
  * 제외 태그: display:contents 를 안 쓰는 소수 컴포넌트.
  */
-const HOST_CONTENTS_EXEMPT_TAGS = new Set(["nds-brand-chrome", "nds-input-group", "nds-inspector"]);
+const HOST_CONTENTS_EXEMPT_TAGS = new Set(["nds-project-chrome", "nds-input-group", "nds-inspector"]);
 const HOST_DROPPED_PROP =
   /^(?:margin|padding|width|height|min-width|max-width|min-height|max-height|flex|align-self|justify-self|gap|row-gap|column-gap|background|border|box-shadow|position|top|right|bottom|left|transform|overflow)(?:-[a-z]+)*$/;
 
@@ -729,11 +729,11 @@ function buttonHandlerCandidates(tag: string, attrs: Record<string, string>): st
 
 export function validateHtmlSource(
   source: string,
-  options?: { context?: HtmlValidationContext; surface?: HtmlSurface; brand?: string },
+  options?: { context?: HtmlValidationContext; surface?: HtmlSurface; project?: string },
 ): HtmlViolation[] {
   const ctx = options?.context ?? configured;
   const surface = options?.surface ?? null;
-  const declaredBrand = options?.brand;
+  const declaredProject = options?.project;
   const violations: HtmlViolation[] = [];
   // E1 집계: DS 반영도(dsRatio) 게이트용. nds-* 태그/실재 nds 클래스(채택) vs native 미교체(미반영).
   let ndsTagCount = 0;
@@ -743,7 +743,7 @@ export function validateHtmlSource(
   //     eligible 미스로 분모에 가산 — div 로 재발명한 컴포넌트가 비율에서 invisible 하던 사각지대를 막는다.
   let avoidableReinventionCount = 0;
   const $ = cheerio.load(source, { xmlMode: false });
-  const documentBrand = resolveDocumentBrand($, declaredBrand);
+  const documentProject = resolveDocumentProject($, declaredProject);
   const pagePattern = resolveDocumentPagePattern($);
   const scriptText = $("script")
     .map((_i, el) => $(el).text())
@@ -777,7 +777,7 @@ export function validateHtmlSource(
 
   // ─── 네이티브 alert()/confirm()/prompt() 사용 감지 — 문서 전역 1회 ───
   //   목업에서 알림·확인·완료를 네이티브 다이얼로그로 처리하지 말 것 — OS 기본 회색 박스라
-  //   브랜드 스타일이 0 이고 디자인 일관성이 깨진다(흔한 회귀: "완료"를 alert() 로 띄움).
+  //   프로젝트 스타일이 0 이고 디자인 일관성이 깨진다(흔한 회귀: "완료"를 alert() 로 띄움).
   //   DS 는 <nds-modal>(확인/완료/안내) 과 Toast 패턴(일시 알림)을 제공한다.
   //   선행 `.`/식별자를 lookbehind 로 배제해 `el.alert(` 같은 메서드 오탐을 막고,
   //   window./globalThis. prefix 만 허용 매칭한다.
@@ -794,7 +794,7 @@ export function validateHtmlSource(
         rule: "native-dialog-in-mockup",
         line: idx >= 0 ? lineNumberAt(source, idx) : 1,
         selector: "(script)",
-        detail: `<script> 에서 네이티브 ${fn}() 사용 — OS 기본 회색 다이얼로그라 브랜드 스타일이 0 이고 디자인 일관성이 깨집니다(흔한 회귀: "완료"를 alert 로 처리).`,
+        detail: `<script> 에서 네이티브 ${fn}() 사용 — OS 기본 회색 다이얼로그라 프로젝트 스타일이 0 이고 디자인 일관성이 깨집니다(흔한 회귀: "완료"를 alert 로 처리).`,
         suggestion:
           "확인/완료/안내는 <nds-modal>(open 속성 토글) 로, 일시적 알림은 Toast 패턴으로 띄우세요. window.alert/confirm/prompt 는 목업에서 쓰지 않습니다.",
         severity: "warn",
@@ -1071,11 +1071,11 @@ export function validateHtmlSource(
     if (
       (tag === "aside" && ctx.ndsTagSet.has("nds-sidebar")) ||
       (tag === "footer" &&
-        (ctx.ndsTagSet.has("nds-brand-footer") ||
+        (ctx.ndsTagSet.has("nds-project-footer") ||
           ctx.ndsTagSet.has("nds-footer") ||
           ctx.ndsTagSet.has("nds-footer-info"))) ||
       (tag === "header" &&
-        (ctx.ndsTagSet.has("nds-brand-header") || ctx.ndsTagSet.has("nds-header")))
+        (ctx.ndsTagSet.has("nds-project-header") || ctx.ndsTagSet.has("nds-header")))
     ) {
       // 예외: admin-shell 이 처방하는 셸 chrome 은 raw <header>/<aside> 가 정답이다.
       //   pattern:admin-shell SSOT 가 <header class="nds-shell__topbar"> / <aside class="nds-shell__sidebar">
@@ -1085,27 +1085,27 @@ export function validateHtmlSource(
       const landmarkClass = String(attrs.class ?? "");
       const isAdminShellChrome = /\bnds-shell__/.test(landmarkClass);
       if (!isAdminShellChrome) {
-        const hasBrandHeader = ctx.ndsTagSet.has("nds-brand-header");
-        const hasBrandFooter = ctx.ndsTagSet.has("nds-brand-footer");
-        // brand-header/footer 가 있는데도 raw <header>/<footer> 를 쓰는 건 contract 위반에 가까움.
+        const hasProjectHeader = ctx.ndsTagSet.has("nds-project-header");
+        const hasProjectFooter = ctx.ndsTagSet.has("nds-project-footer");
+        // project-header/footer 가 있는데도 raw <header>/<footer> 를 쓰는 건 contract 위반에 가까움.
         // (회고: validator 추천을 "soft suggestion" 으로 오해해 reference 스크린샷 fidelity 우선)
-        // 이 경우엔 error 로 승격, brand 변형이 없는 일반 landmark 대체는 warn.
-        const isBrandReplaceable =
-          (tag === "footer" && hasBrandFooter) || (tag === "header" && hasBrandHeader);
-        // 표면=admin 이면 소비자 brand/nds-header 가 아니라 admin-shell chrome 으로 유도해야 한다.
-        //   (admin-surface-consumer-chrome 룰이 brand chrome 을 error 로 막으므로, 여기서 nds-header/
-        //    brand-header 를 권하면 두 룰이 서로 모순된다.)
+        // 이 경우엔 error 로 승격, project 변형이 없는 일반 landmark 대체는 warn.
+        const isProjectReplaceable =
+          (tag === "footer" && hasProjectFooter) || (tag === "header" && hasProjectHeader);
+        // 표면=admin 이면 소비자 project/nds-header 가 아니라 admin-shell chrome 으로 유도해야 한다.
+        //   (admin-surface-consumer-chrome 룰이 project chrome 을 error 로 막으므로, 여기서 nds-header/
+        //    project-header 를 권하면 두 룰이 서로 모순된다.)
         const adminSuggestion =
           tag === "aside"
             ? "어드민 사이드바는 admin-shell 슬롯으로 둔다: <aside class=\"nds-shell__sidebar\"><nds-sidebar>…</nds-sidebar></aside>. get_guide({ topic: 'pattern:admin-shell' }) 참조 (소비자 chrome 금지)."
             : tag === "header"
-              ? "어드민 톱바는 <header class=\"nds-shell__topbar\"> (admin-shell). nds-header/nds-brand-header(소비자 chrome)로 바꾸지 말 것 — admin-surface-consumer-chrome 룰에 걸린다. get_guide({ topic: 'pattern:admin-shell' }) 참조."
+              ? "어드민 톱바는 <header class=\"nds-shell__topbar\"> (admin-shell). nds-header/nds-project-header(소비자 chrome)로 바꾸지 말 것 — admin-surface-consumer-chrome 룰에 걸린다. get_guide({ topic: 'pattern:admin-shell' }) 참조."
               : "어드민 화면은 보통 푸터가 없다 — admin-shell(사이드바+톱바+content) 위에 콘텐츠만 둔다. get_guide({ topic: 'pattern:admin-shell' }) 참조.";
         violations.push({
           rule: "raw-landmark",
           line,
           selector,
-          severity: isBrandReplaceable ? "error" : "warn",
+          severity: isProjectReplaceable ? "error" : "warn",
           detail: `<${tag}> 를 raw landmark 로 구현함`,
           suggestion:
             surface === "admin"
@@ -1113,11 +1113,11 @@ export function validateHtmlSource(
               : tag === "aside"
                 ? "사이드바는 <nds-sidebar> 우선 사용. get_guide({ topic: 'component:Sidebar', target: 'html' }) 참조."
                 : tag === "footer"
-                  ? hasBrandFooter
-                    ? "[error] 사용자 앱/브랜드 화면의 푸터는 raw <footer> 금지. <nds-brand-footer brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|app' asset-base-url='/assets'> 로 반드시 교체. get_guide({ topic: 'component:BrandFooter', target: 'html' }) 참조."
+                  ? hasProjectFooter
+                    ? "[error] 사용자 앱/프로젝트 화면의 푸터는 raw <footer> 금지. <nds-project-footer project='geniet|trost|nudge-eap|cashwalk-biz' surface='web|app' asset-base-url='/assets'> 로 반드시 교체. get_guide({ topic: 'component:ProjectFooter', target: 'html' }) 참조."
                     : "푸터는 <nds-footer-info> / <nds-footer-web> 우선 사용. get_guide({ topic: 'component:Footer', target: 'html' }) 참조."
-                  : hasBrandHeader
-                    ? "[error] 사용자 앱/브랜드 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-brand-header brand='geniet|trost|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'> 로 반드시 교체. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조."
+                  : hasProjectHeader
+                    ? "[error] 사용자 앱/프로젝트 화면의 헤더는 raw <header> 또는 nds-header 손수 조립 금지. <nds-project-header project='geniet|trost|nudge-eap|cashwalk-biz' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'> 로 반드시 교체. get_guide({ topic: 'component:ProjectHeader', target: 'html' }) 참조."
                     : "헤더는 <nds-header> 우선 사용. get_guide({ topic: 'component:Header', target: 'html' }) 참조.",
         });
       }
@@ -1132,7 +1132,7 @@ export function validateHtmlSource(
         selector,
         detail: `"${text}" 텍스트를 아이콘처럼 사용함`,
         suggestion:
-          "텍스트 기호 대신 find_icon({ query: 'close' }) / 브랜드 전용 아이콘을 사용하세요.",
+          "텍스트 기호 대신 find_icon({ query: 'close' }) / 프로젝트 전용 아이콘을 사용하세요.",
       });
     }
 
@@ -1173,7 +1173,7 @@ export function validateHtmlSource(
           detail: `${offenders.slice(0, 2).join(", ")}${offenders.length > 2 ? " …" : ""}`,
           suggestion:
             "이 경로는 단일 HTML 빌드에 inline 되지 않아 내부 미리보기·외부 단독 파일 모두 깨집니다. " +
-            "DS 자산이면 @nudge-design/assets/files/{category}/{id}.png 규약(get_brand 의 inlineRef)으로 바꾸면 build_singlefile_html 이 base64 inline 합니다. " +
+            "DS 자산이면 @nudge-design/assets/files/{category}/{id}.png 규약(get_project 의 inlineRef)으로 바꾸면 build_singlefile_html 이 base64 inline 합니다. " +
             "외부 이미지는 http(s):// 절대 URL 또는 data: URI 를 사용하세요. (상대경로 /…, ./…, ../… 는 호스팅 앱 전용)",
         });
       }
@@ -1268,14 +1268,14 @@ export function validateHtmlSource(
       });
     }
 
-    // 7. nds-button color="neutral" + solid(default) — base/cool-gray 브랜드에선 비활성처럼 보임.
+    // 7. nds-button color="neutral" + solid(default) — base/cool-gray 프로젝트에선 비활성처럼 보임.
     //    명시적으로 variant 가 outlined/soft/text 계열이면 OK.
-    //    ※ 검정 CTA 슬롯이 neutral 인 브랜드(프로필 cta.blackCta="neutral" — 현재 캐포비)는
+    //    ※ 검정 CTA 슬롯이 neutral 인 프로젝트(프로필 cta.blackCta="neutral" — 현재 캐포비)는
     //      neutral solid = 정당한 검정 CTA 라 면제.
     if (
       tag === "nds-button" &&
       attrs.color === "neutral" &&
-      getBrandProfile(documentBrand)?.cta?.blackCta !== "neutral"
+      getProjectProfile(documentProject)?.cta?.blackCta !== "neutral"
     ) {
       const variant = attrs.variant;
       const isNonSolid =
@@ -1292,37 +1292,37 @@ export function validateHtmlSource(
       }
     }
 
-    // 7b. 브랜드 금지 Button color — 프로필 cta.deniedButtonColors 선언 브랜드에서 발화.
+    // 7b. 프로젝트 금지 Button color — 프로필 cta.deniedButtonColors 선언 프로젝트에서 발화.
     //     (현재 선언 = 캐포비 secondary: ButtonGuide(3098:1032) tone 은 Primary + Neutral 둘뿐.)
     if (tag === "nds-button" && attrs.color) {
-      const denied = getBrandProfile(documentBrand)?.cta?.deniedButtonColors?.find(
+      const denied = getProjectProfile(documentProject)?.cta?.deniedButtonColors?.find(
         (d) => d.color === attrs.color,
       );
       if (denied) {
         violations.push({
-          rule: "brand-denied-button-color",
+          rule: "project-denied-button-color",
           line,
           selector,
           detail: `<nds-button color="${attrs.color}">`,
-          suggestion: `이 브랜드(${documentBrand})에는 color="${attrs.color}" tone 이 없습니다. ${denied.useInstead}. get_guide({ topic: 'component:Button' }) 참조.`,
+          suggestion: `이 프로젝트(${documentProject})에는 color="${attrs.color}" tone 이 없습니다. ${denied.useInstead}. get_guide({ topic: 'component:Button' }) 참조.`,
         });
       }
     }
 
-    // 7c. 브랜드 금지 알림 컴포넌트 — 프로필 notifications.bannedComponents 선언 브랜드에서 발화.
+    // 7c. 프로젝트 금지 알림 컴포넌트 — 프로필 notifications.bannedComponents 선언 프로젝트에서 발화.
     //     (현재 선언 = 캐포비 nds-toast: 알림 SSOT 는 Snackbar(흰 카드 chrome·우측 상단 고정·
     //      상태 칩 아이콘·닫기 X). 예외 없음.)
     {
-      const banned = getBrandProfile(documentBrand)?.notifications?.bannedComponents?.find(
+      const banned = getProjectProfile(documentProject)?.notifications?.bannedComponents?.find(
         (b) => b.tag === tag,
       );
       if (banned) {
         violations.push({
-          rule: "brand-banned-notification",
+          rule: "project-banned-notification",
           line,
           selector,
           detail: `<${tag}>`,
-          suggestion: `이 브랜드(${documentBrand})에서 <${tag}> 는 금지 — 알림 SSOT 는 <${banned.useInstead}> 입니다. 캐포비 기준: <nds-snackbar-host brand="cashwalk-biz"> + <nds-snackbar> (흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X). get_guide({ topic: 'component:Snackbar', brand: '${documentBrand}' }) 참조.`,
+          suggestion: `이 프로젝트(${documentProject})에서 <${tag}> 는 금지 — 알림 SSOT 는 <${banned.useInstead}> 입니다. 캐포비 기준: <nds-snackbar-host project="cashwalk-biz"> + <nds-snackbar> (흰 카드 chrome·우측 상단 고정·상태 칩 아이콘·닫기 X). get_guide({ topic: 'component:Snackbar', project: '${documentProject}' }) 참조.`,
         });
       }
     }
@@ -1444,14 +1444,14 @@ export function validateHtmlSource(
   collectContainerViolations(source, $, violations);
   collectSelectedItemsPanelViolations(source, $, violations);
 
-  // ─── 브랜드 화면에서 base nds-header 손수 조립 감지 ───
+  // ─── 프로젝트 화면에서 base nds-header 손수 조립 감지 ───
   //   회고: RunmileWebHeader 가이드가 "HTML 대응 없음" 이라 base <nds-header> 에
-  //   로고/메뉴/auth 를 손으로 붙여 브랜드 GNB 를 조립 = 안티패턴. surface 분기도 안 됨.
-  //   브랜드 컨텍스트(<html data-brand> 또는 nds-brand-* chrome 사용)가 있는데
-  //   base nds-header 에 GNB 자식(logo/menu/auth)을 직접 박았으면 nds-brand-header 로 유도.
-  const hasDataBrand = $("html[data-brand], body[data-brand]").length > 0;
-  const hasBrandChrome = $("nds-brand-header, nds-brand-footer, nds-brand-bottom-nav").length > 0;
-  if (hasDataBrand || hasBrandChrome) {
+  //   로고/메뉴/auth 를 손으로 붙여 프로젝트 GNB 를 조립 = 안티패턴. surface 분기도 안 됨.
+  //   프로젝트 컨텍스트(<html data-project> 또는 nds-project-* chrome 사용)가 있는데
+  //   base nds-header 에 GNB 자식(logo/menu/auth)을 직접 박았으면 nds-project-header 로 유도.
+  const hasDataProject = $("html[data-project], body[data-project]").length > 0;
+  const hasProjectChrome = $("nds-project-header, nds-project-footer, nds-project-bottom-nav").length > 0;
+  if (hasDataProject || hasProjectChrome) {
     $("nds-header").each((_i, el) => {
       if (el.type !== "tag") return;
       const $el = $(el);
@@ -1461,26 +1461,26 @@ export function validateHtmlSource(
       if (!hasGnbChildren) return;
       const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
       violations.push({
-        rule: "manual-brand-header",
+        rule: "manual-project-header",
         line: lineNumberAt(source, offset),
         selector: describeElement(el as unknown as DomElement),
-        detail: "브랜드 화면에서 base <nds-header> 에 로고/메뉴/auth 를 손수 조립함.",
+        detail: "프로젝트 화면에서 base <nds-header> 에 로고/메뉴/auth 를 손수 조립함.",
         suggestion:
-          "브랜드 헤더는 손수 조립 금지. <nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'> 한 줄로 교체하면 로고/메뉴/auth 가 BRAND_DATA 에서 자동 렌더되고 surface 로 PC·모바일·웹뷰가 분기됩니다. get_guide({ topic: 'component:BrandHeader', target: 'html' }) 참조.",
+          "프로젝트 헤더는 손수 조립 금지. <nds-project-header project='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'> 한 줄로 교체하면 로고/메뉴/auth 가 PROJECT_DATA 에서 자동 렌더되고 surface 로 PC·모바일·웹뷰가 분기됩니다. get_guide({ topic: 'component:ProjectHeader', target: 'html' }) 참조.",
       });
     });
   }
 
-  // ─── admin/CMS 셸 사이드바·톱바의 브랜드 로고를 컴포넌트로 안 박고 손수 조립 ───
+  // ─── admin/CMS 셸 사이드바·톱바의 프로젝트 로고를 컴포넌트로 안 박고 손수 조립 ───
   //   회고(2026-06): 백오피스 CMS 사이드바 로고를 텍스트 placeholder 로 두거나 빌드 산출물에서
   //   로고 base64 를 추출해 raw <img data:…> 로 박는 우회가 반복됐다("에셋 패키지에 있는데 어렵게
-  //   가져옴"). 5개 브랜드 로고는 brand-logo-defaults 에 data URI 로 내장 — <nds-sidebar brand> 가
-  //   사이드바 로고를 자동 주입하고, chrome 밖이면 <nds-brand-logo brand>. 캐포비 온보딩 한정이던
-  //   text-logo 차단(cashwalk-biz-onboarding-no-gnb)을 모든 브랜드 admin 셸 사이드바로 일반화.
+  //   가져옴"). 5개 프로젝트 로고는 project-logo-defaults 에 data URI 로 내장 — <nds-sidebar project> 가
+  //   사이드바 로고를 자동 주입하고, chrome 밖이면 <nds-project-logo project>. 캐포비 온보딩 한정이던
+  //   text-logo 차단(cashwalk-biz-onboarding-no-gnb)을 모든 프로젝트 admin 셸 사이드바로 일반화.
   {
     const shellChrome = $(".nds-shell__sidebar, .nds-shell__topbar, nds-sidebar");
     const hasProperLogo =
-      $("nds-sidebar[brand]").length > 0 || $("nds-brand-logo").length > 0;
+      $("nds-sidebar[project]").length > 0 || $("nds-project-logo").length > 0;
     if (shellChrome.length > 0 && !hasProperLogo) {
       // 계정/아바타 영역의 data img 오탐 제외 (로고가 아님)
       const avatarSel =
@@ -1490,11 +1490,11 @@ export function validateHtmlSource(
       const imgLogo = shellChrome
         .find('img[src^="data:image"], img[src*="logo" i], img[alt*="logo" i]')
         .filter((_i, el) => el.type === "tag" && $(el).closest(avatarSel).length === 0);
-      // class*=logo 박스에 직계 텍스트만 있고 실제 로고 마크업(img/svg/nds-brand-logo)이 없으면 텍스트 로고.
+      // class*=logo 박스에 직계 텍스트만 있고 실제 로고 마크업(img/svg/nds-project-logo)이 없으면 텍스트 로고.
       const textLogo = shellChrome.find('[class*="logo" i]').filter((_i, el) => {
         if (el.type !== "tag") return false;
         const $el = $(el);
-        if ($el.find("img, svg, nds-brand-logo").length > 0) return false;
+        if ($el.find("img, svg, nds-project-logo").length > 0) return false;
         return $el.clone().children().remove().end().text().trim().length > 0;
       });
       const offenderNode = imgLogo.get(0) ?? textLogo.get(0);
@@ -1507,10 +1507,10 @@ export function validateHtmlSource(
           line: lineNumberAt(source, offset),
           selector: describeElement(offenderNode as unknown as DomElement),
           detail: isDataUri
-            ? "admin/CMS 셸 사이드바·톱바의 브랜드 로고를 수동 base64 <img data:…> 로 박음 — 에셋 패키지 로고를 손수 추출/인라인한 우회."
-            : "admin/CMS 셸 사이드바·톱바의 브랜드 로고를 텍스트/raw <img> 로 손수 조립함(에셋 패키지에 실 로고 있음).",
+            ? "admin/CMS 셸 사이드바·톱바의 프로젝트 로고를 수동 base64 <img data:…> 로 박음 — 에셋 패키지 로고를 손수 추출/인라인한 우회."
+            : "admin/CMS 셸 사이드바·톱바의 프로젝트 로고를 텍스트/raw <img> 로 손수 조립함(에셋 패키지에 실 로고 있음).",
           suggestion:
-            '브랜드 로고는 손수 박지 말 것. 사이드바면 <nds-sidebar brand="trost|geniet|nudge-eap|cashwalk-biz|runmile"> 만 두면 BrandHeader 와 동일 로고 SSOT 가 data URI 로 자동 주입된다(텍스트 placeholder·35KB base64 추출 금지). chrome 밖이면 <nds-brand-logo brand="…">. React/antd 등 호스팅 앱은 import { getBrandLogo } from "@nudge-design/assets" 또는 <BrandLogo brand="…" />. 자산 목록은 get_brand({ brand, assetKind: "brandLogos" }). get_guide({ topic: "pattern:admin-shell" }) · get_guide({ topic: "component:BrandLogo" }).',
+            '프로젝트 로고는 손수 박지 말 것. 사이드바면 <nds-sidebar project="trost|geniet|nudge-eap|cashwalk-biz|runmile"> 만 두면 ProjectHeader 와 동일 로고 SSOT 가 data URI 로 자동 주입된다(텍스트 placeholder·35KB base64 추출 금지). chrome 밖이면 <nds-project-logo project="…">. React/antd 등 호스팅 앱은 import { getProjectLogo } from "@nudge-design/assets" 또는 <ProjectLogo project="…" />. 자산 목록은 get_project({ project, assetKind: "projectLogos" }). get_guide({ topic: "pattern:admin-shell" }) · get_guide({ topic: "component:ProjectLogo" }).',
         });
       }
     }
@@ -1522,31 +1522,31 @@ export function validateHtmlSource(
   //   지배 변수로 삼아, '가입/로그인/온보딩' 같은 화면 이름 통념 때문에 admin 을 소비자 플로우로
   //   오제작하는 것을 차단한다. (표면이 화면 이름 통념을 지배한다.)
   if (surface === "admin") {
-    // admin 화면 = admin-shell(사이드바+톱바) 또는 어드민 온보딩(중앙 카드). 소비자 brand chrome 은
+    // admin 화면 = admin-shell(사이드바+톱바) 또는 어드민 온보딩(중앙 카드). 소비자 project chrome 은
     // 마케팅/앱 표면 전용이라 admin 에 쓰이면 표면을 잘못 잡은 것 → error.
-    $("nds-brand-header, nds-brand-footer, nds-brand-bottom-nav").each((_i, el) => {
+    $("nds-project-header, nds-project-footer, nds-project-bottom-nav").each((_i, el) => {
       if (el.type !== "tag") return;
       const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
       violations.push({
         rule: "admin-surface-consumer-chrome",
         line: lineNumberAt(source, offset),
         selector: describeElement(el as unknown as DomElement),
-        detail: `선언된 표면=admin 인데 소비자 brand chrome <${el.tagName.toLowerCase()}> 사용.`,
+        detail: `선언된 표면=admin 인데 소비자 project chrome <${el.tagName.toLowerCase()}> 사용.`,
         suggestion:
-          "표면=admin 화면은 소비자 brand chrome(nds-brand-header/footer/bottom-nav)을 쓰지 않는다. admin-shell(사이드바+톱바: get_guide({ topic: 'pattern:admin-shell' })) 또는 어드민 온보딩 카드로 만들 것. 캐포비 어드민 패턴: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }). 표면 자체가 잘못 선언됐다면 nudge.surface 마커/brief 의 표면을 먼저 확인.",
+          "표면=admin 화면은 소비자 project chrome(nds-project-header/footer/bottom-nav)을 쓰지 않는다. admin-shell(사이드바+톱바: get_guide({ topic: 'pattern:admin-shell' })) 또는 어드민 온보딩 카드로 만들 것. 캐포비 어드민 패턴: get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }). 표면 자체가 잘못 선언됐다면 nudge.surface 마커/brief 의 표면을 먼저 확인.",
       });
     });
 
-    // ─── Page Pattern System 브랜드 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ───
-    //   (현재 선언 브랜드 = cashwalk-biz. 적용 여부는 브랜드 프로필 admin.pagePatternSystem 이 결정.)
+    // ─── Page Pattern System 프로젝트 어드민이면 5종 Page Pattern 중 하나를 선언했는지 강제 ───
+    //   (현재 선언 프로젝트 = cashwalk-biz. 적용 여부는 프로젝트 프로필 admin.pagePatternSystem 이 결정.)
     //   어드민 화면은 Onboarding/Dashboard/List/Detail/Form 5종으로 표준화돼 있다.
     //   "분류 없이 컴포넌트부터 배치하지 않는다"(pattern:cashwalk-biz-page-patterns)를 권고가 아닌
     //   하드 게이트로: 루트(html/body/.mockup-screen)에 data-page-pattern 마커가 없거나 5종이 아니면 error.
-    const effBrand =
-      canonicalBrandSlug(declaredBrand) ??
-      canonicalBrandSlug($("html").attr("data-brand") ?? $("body").attr("data-brand")) ??
-      canonicalBrandSlug(($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1]);
-    if (getBrandProfile(effBrand)?.admin?.pagePatternSystem) {
+    const effProject =
+      canonicalProjectSlug(declaredProject) ??
+      canonicalProjectSlug($("html").attr("data-project") ?? $("body").attr("data-project")) ??
+      canonicalProjectSlug(($("body").attr("class") ?? "").match(/\bproject-([a-z0-9-]+)\b/i)?.[1]);
+    if (getProjectProfile(effProject)?.admin?.pagePatternSystem) {
       const markerNodes = $("[data-page-pattern]");
       if (markerNodes.length === 0) {
         violations.push({
@@ -1554,10 +1554,10 @@ export function validateHtmlSource(
           line: 1,
           selector: "<html|body|.mockup-screen>",
           detail:
-            "캐포비 어드민 화면(surface=admin, brand=cashwalk-biz)인데 Page Pattern 선언이 없습니다.",
+            "캐포비 어드민 화면(surface=admin, project=cashwalk-biz)인데 Page Pattern 선언이 없습니다.",
           suggestion: `루트 요소에 data-page-pattern="${CASHWALK_BIZ_PAGE_PATTERNS.join(
             "|",
-          )}" 중 하나를 선언하세요(예: <html data-brand="cashwalk-biz" data-page-pattern="list">). 어떤 패턴인지 먼저 고르고 그 골격에 컴포넌트를 끼웁니다 — get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) 로 5종(Onboarding/Dashboard/List/Detail/Form) 확인.`,
+          )}" 중 하나를 선언하세요(예: <html data-project="cashwalk-biz" data-page-pattern="list">). 어떤 패턴인지 먼저 고르고 그 골격에 컴포넌트를 끼웁니다 — get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) 로 5종(Onboarding/Dashboard/List/Detail/Form) 확인.`,
         });
       } else {
         markerNodes.each((_i, el) => {
@@ -1602,7 +1602,7 @@ export function validateHtmlSource(
         // ─── 상단 GNB/글로벌 헤더도 금지 (cashwalk-biz-onboarding-no-gnb) ───
         //   no-shell 룰은 사이드바/풀하이트 셸만 잡아, 상단에 GNB 바(raw <header>/.topbar/nds-header)를
         //   붙여 로고를 텍스트로 박는 회귀를 놓쳤다. 온보딩은 비로그인 진입 화면 → shell 도 GNB 도 없고,
-        //   브랜드 식별은 카드 안 <nds-brand-logo> 에셋 하나뿐. nds-brand-header/footer/bottom-nav 는
+        //   프로젝트 식별은 카드 안 <nds-project-logo> 에셋 하나뿐. nds-project-header/footer/bottom-nav 는
         //   admin-surface-consumer-chrome 가 따로 잡으므로 여기선 raw/base 헤더만 본다.
         $(
           'header:not(.nds-shell__topbar), nds-header, .gnb, [class*="gnb" i], .topbar, .top-bar, .app-bar, .app-header, .global-nav, .navbar',
@@ -1616,14 +1616,14 @@ export function validateHtmlSource(
             selector: describeElement(el as unknown as DomElement),
             detail: `온보딩에 상단 GNB/글로벌 헤더(<${tag}>)가 있습니다 — 온보딩은 shell 도 GNB 도 없는 탈색 캔버스 중앙 카드입니다(텍스트 로고도 금지).`,
             suggestion:
-              "온보딩에서 GNB/상단 헤더를 제거하세요. 브랜드 식별은 카드 상단의 <nds-brand-logo brand=\"cashwalk-biz\"> 에셋 하나뿐 — \"cashwalk for business\" 같은 텍스트 로고나 raw <header> 로 GNB 를 조립하지 않습니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }) · get_guide({ topic: 'component:BrandLogo' }).",
+              "온보딩에서 GNB/상단 헤더를 제거하세요. 프로젝트 식별은 카드 상단의 <nds-project-logo project=\"cashwalk-biz\"> 에셋 하나뿐 — \"cashwalk for business\" 같은 텍스트 로고나 raw <header> 로 GNB 를 조립하지 않습니다. get_guide({ topic: 'pattern:cashwalk-biz-page-onboarding' }) · get_guide({ topic: 'component:ProjectLogo' }).",
           });
         });
 
         // 중앙 카드+로고 골격 부재는 권고(info). 정적으로 '중앙 카드'를 단정하기 어려우니
         // false-positive 를 줄이려 둘 다(로고·카드) 안 보일 때만 환기한다(명백히 골격 미완).
         const hasLogo =
-          $("nds-brand-logo, [data-nds-logo]").length > 0 ||
+          $("nds-project-logo, [data-nds-logo]").length > 0 ||
           $('img[alt*="logo" i], img[src*="logo" i], [class*="logo" i]').length > 0 ||
           $("svg").length > 0;
         const hasCard =
@@ -1640,18 +1640,18 @@ export function validateHtmlSource(
           });
         }
 
-        // ─── 1) 온보딩 카드에 브랜드 로고 컴포넌트가 없음 (onboarding-missing-brand-logo) ───
-        //   skeleton 룰은 로고+카드 둘 다 없을 때만 info 로 환기한다. 카드는 있는데 <nds-brand-logo>
+        // ─── 1) 온보딩 카드에 프로젝트 로고 컴포넌트가 없음 (onboarding-missing-project-logo) ───
+        //   skeleton 룰은 로고+카드 둘 다 없을 때만 info 로 환기한다. 카드는 있는데 <nds-project-logo>
         //   만 빠진(=raw img/svg 로고를 조립했거나 아예 누락한) 케이스를 별도 warn 으로 잡는다.
-        if ($("nds-brand-logo").length === 0) {
+        if ($("nds-project-logo").length === 0) {
           violations.push({
-            rule: "onboarding-missing-brand-logo",
+            rule: "onboarding-missing-project-logo",
             line: 1,
             selector: "<onboarding root>",
             detail:
-              "온보딩 카드에 브랜드 로고가 없음 — <nds-brand-logo> 컴포넌트가 하나도 없습니다.",
+              "온보딩 카드에 프로젝트 로고가 없음 — <nds-project-logo> 컴포넌트가 하나도 없습니다.",
             suggestion:
-              '<nds-brand-logo brand="cashwalk-biz" height="40"> 로 카드 상단에 박을 것. raw <img>/<svg> 로 로고를 조립하지 말 것. get_guide({ topic: \'component:BrandLogo\' }).',
+              '<nds-project-logo project="cashwalk-biz" height="40"> 로 카드 상단에 박을 것. raw <img>/<svg> 로 로고를 조립하지 말 것. get_guide({ topic: \'component:ProjectLogo\' }).',
           });
         }
 
@@ -1898,10 +1898,10 @@ export function validateHtmlSource(
           const offset = (el as unknown as { startIndex?: number }).startIndex ?? 0;
           const line = lineNumberAt(source, offset);
           const selector = describeElement(el as unknown as DomElement);
-          // 로고: 명시 logo-src 또는 brand= 자동주입 둘 다 인정.
+          // 로고: 명시 logo-src 또는 project= 자동주입 둘 다 인정.
           // 계정/푸터: account/footer-actions 속성 또는 <script type="application/json" slot="..."> 자식 둘 다 인정
           //   (신규 ready-made 폼이 한글 JSON 을 텍스트 노드로 전달 — 속성 이스케이프·인코딩 사고 차단).
-          const hasLogo = !!attribs["logo-src"]?.trim() || !!attribs["brand"]?.trim();
+          const hasLogo = !!attribs["logo-src"]?.trim() || !!attribs["project"]?.trim();
           const hasAccount =
             !!attribs["account"]?.trim() || $(el).find('script[slot="account"]').length > 0;
           const hasFooterActions =
@@ -1910,7 +1910,7 @@ export function validateHtmlSource(
 
           if (!hasLogo || !hasAccount) {
             const missing = [
-              !hasLogo && "로고(brand 또는 logo-src)",
+              !hasLogo && "로고(project 또는 logo-src)",
               !hasAccount && "계정 블록(account)",
             ]
               .filter(Boolean)
@@ -1921,7 +1921,7 @@ export function validateHtmlSource(
               selector,
               detail: `캐포비 어드민 사이드바에 ${missing} 누락 — 로고+로그인영역이 빠진 채 렌더됩니다.`,
               suggestion:
-                '<nds-sidebar brand="cashwalk-biz">(로고 자동 주입) + 계정 블록은 <script type="application/json" slot="account">{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}</script> 로 채울 것. ready-made: get_guide({ topic: \'pattern:cashwalk-biz-admin-sidebar\' }) 의 HTML 그대로 복붙(brand/account/footer-actions 이미 포함). 35KB data URI 를 logo-src 에 붙이거나 header 에 raw div 로 손수 조립하지 말 것.',
+                '<nds-sidebar project="cashwalk-biz">(로고 자동 주입) + 계정 블록은 <script type="application/json" slot="account">{"email":…,"balanceLabel":…,"balance":…,"actions":[{"label":"충전하기","variant":"solid"},{"label":"내역보기","variant":"outlined"}]}</script> 로 채울 것. ready-made: get_guide({ topic: \'pattern:cashwalk-biz-admin-sidebar\' }) 의 HTML 그대로 복붙(project/account/footer-actions 이미 포함). 35KB data URI 를 logo-src 에 붙이거나 header 에 raw div 로 손수 조립하지 말 것.',
             });
           }
 
@@ -1945,7 +1945,7 @@ export function validateHtmlSource(
               detail:
                 "사이드바가 풀하이트 셸(.nds-shell) 밖에 있습니다 — full-height(100vh)가 화면을 못 채우거나 레이아웃이 깨집니다.",
               suggestion:
-                '<div class="nds-shell" data-brand="cashwalk-biz"><nds-sidebar .../><main class="nds-shell__main">…</main></div> 형태로 감쌀 것. get_guide({ topic: \'pattern:admin-shell\' }) 또는 pattern:cashwalk-biz-admin-sidebar 의 셸 예시 참조.',
+                '<div class="nds-shell" data-project="cashwalk-biz"><nds-sidebar .../><main class="nds-shell__main">…</main></div> 형태로 감쌀 것. get_guide({ topic: \'pattern:admin-shell\' }) 또는 pattern:cashwalk-biz-admin-sidebar 의 셸 예시 참조.',
             });
           }
         });
@@ -1961,34 +1961,34 @@ export function validateHtmlSource(
         selector: describeElement(el as unknown as DomElement),
         detail: "선언된 표면=service 인데 어드민 사이드바(nds-sidebar) 사용.",
         suggestion:
-          "표면=service(소비자) 화면은 어드민 사이드바 대신 브랜드 chrome(nds-brand-header/footer/bottom-nav)을 쓴다. 정말 어드민 화면이라면 표면 선언(nudge.surface)을 admin 으로 바로잡을 것.",
+          "표면=service(소비자) 화면은 어드민 사이드바 대신 프로젝트 chrome(nds-project-header/footer/bottom-nav)을 쓴다. 정말 어드민 화면이라면 표면 선언(nudge.surface)을 admin 으로 바로잡을 것.",
       });
     });
   }
 
-  // ─── 미지 브랜드 slug (회고: cashpobi → base 블루 폴백) ───
-  //   data-brand / <body class="brand-*"> 로 브랜드를 선언했는데 정식 slug 가 아니면
+  // ─── 미지 프로젝트 slug (회고: cashpobi → base 블루 폴백) ───
+  //   data-project / <body class="project-*"> 로 프로젝트를 선언했는데 정식 slug 가 아니면
   //   loadStandaloneAssets 가 base(nudge-eap)로 조용히 폴백 → 색이 기본값으로 잘못 렌더된다.
-  //   별칭(canonicalBrandSlug)으로 정규화해도 정식 brand 가 아니면 error 로 잡아 교정 유도.
+  //   별칭(canonicalProjectSlug)으로 정규화해도 정식 project 가 아니면 error 로 잡아 교정 유도.
   {
     const declared =
-      $("html").attr("data-brand") ??
-      $("body").attr("data-brand") ??
-      ($("body").attr("class") ?? "").match(/\bbrand-([a-z0-9-]+)\b/i)?.[1];
+      $("html").attr("data-project") ??
+      $("body").attr("data-project") ??
+      ($("body").attr("class") ?? "").match(/\bproject-([a-z0-9-]+)\b/i)?.[1];
     if (declared?.trim()) {
       let known: string[] = [];
       try {
-        known = listStandaloneBrands();
+        known = listStandaloneProjects();
       } catch {
         known = []; // manifest 없으면(단위 테스트 등) 룰 skip
       }
-      const canonical = canonicalBrandSlug(declared);
+      const canonical = canonicalProjectSlug(declared);
       if (known.length > 0 && (!canonical || !known.includes(canonical))) {
         violations.push({
-          rule: "unknown-brand-slug",
+          rule: "unknown-project-slug",
           line: 1,
-          selector: `data-brand="${declared.trim()}"`,
-          detail: `미지 브랜드 slug '${declared.trim()}' — base 로 폴백돼 색이 기본값(블루)으로 렌더됩니다.`,
+          selector: `data-project="${declared.trim()}"`,
+          detail: `미지 프로젝트 slug '${declared.trim()}' — base 로 폴백돼 색이 기본값(블루)으로 렌더됩니다.`,
           suggestion: `정식 slug 로 교정: ${known.join(", ")}. (예: cashpobi/cashwalk → cashwalk-biz)`,
         });
       }
@@ -2039,7 +2039,7 @@ export function validateHtmlSource(
   const screenCount = Math.max(1, $(".mockup-screen").length);
   collectDocumentLevelViolations(source, $, violations, screenCount, {
     surface,
-    brand: documentBrand,
+    project: documentProject,
     pagePattern,
   });
 
@@ -2092,22 +2092,22 @@ function hasAncestorNdsTag(el: DomElement): boolean {
 export interface ValidateHtmlMockupArgs {
   source?: string;
   filePath?: string;
-  /** 워크스페이스 루트(nudge.surface / nudge.brand 마커 탐색 시작점). 없으면 filePath 의 디렉토리에서 위로 탐색. */
+  /** 워크스페이스 루트(nudge.surface / nudge.project 마커 탐색 시작점). 없으면 filePath 의 디렉토리에서 위로 탐색. */
   cwd?: string;
   /** 선언된 제작 표면. 없으면 nudge.surface 마커에서 읽는다. 화면 이름 통념을 지배. */
   surface?: HtmlSurface;
-  /** 브랜드 slug. 없으면 nudge.brand 마커 → HTML data-brand 순으로 읽는다. 캐포비 어드민 패턴 게이트 입력. */
-  brand?: string;
+  /** 프로젝트 slug. 없으면 nudge.project 마커 → HTML data-project 순으로 읽는다. 캐포비 어드민 패턴 게이트 입력. */
+  project?: string;
 }
 
 /**
- * nudge.brand 마커를 startDir 에서 위로 최대 5단계 탐색해 선언된 브랜드를 읽는다.
- * (readSurfaceMarker 와 동일 SSOT 패턴 — build-html 의 resolveHtmlBrand 가 nudge.brand 를 읽는 것과 일치.)
+ * nudge.project 마커를 startDir 에서 위로 최대 5단계 탐색해 선언된 프로젝트를 읽는다.
+ * (readSurfaceMarker 와 동일 SSOT 패턴 — build-html 의 resolveHtmlProject 가 nudge.project 를 읽는 것과 일치.)
  */
-export function readBrandMarker(startDir: string): string | null {
+export function readProjectMarker(startDir: string): string | null {
   let dir = startDir;
   for (let i = 0; i < 5; i++) {
-    const marker = path.join(dir, "nudge.brand");
+    const marker = path.join(dir, "nudge.project");
     if (fs.existsSync(marker)) {
       try {
         const value = fs.readFileSync(marker, "utf-8").trim();
@@ -2126,7 +2126,7 @@ export function readBrandMarker(startDir: string): string | null {
 
 /**
  * nudge.surface 마커를 startDir 에서 위로 최대 5단계 탐색해 선언된 표면을 읽는다.
- * (build-html 의 resolveHtmlBrand 가 nudge.brand 를 cwd 에서 읽는 것과 동일 SSOT 패턴.)
+ * (build-html 의 resolveHtmlProject 가 nudge.project 를 cwd 에서 읽는 것과 동일 SSOT 패턴.)
  */
 export function readSurfaceMarker(startDir: string): HtmlSurface {
   let dir = startDir;
@@ -2193,12 +2193,12 @@ const SCORE_DIMENSIONS: ScoreDimension[] = [
 
 /** rule → 품질 차원. 매핑 안 된 rule 은 점수에 반영 안 함(보수적). */
 const RULE_DIMENSION: Record<string, ScoreDimension> = {
-  // color (color-tokens): raw 색·미지 토큰·그라데이션·과한 brand/tone-on-tone 색
+  // color (color-tokens): raw 색·미지 토큰·그라데이션·과한 project/tone-on-tone 색
   "inline-color": "color",
   "unknown-token": "color",
   "gradient-banned": "color",
   "tone-on-tone-filled": "color",
-  "brand-bg-overuse": "color",
+  "project-bg-overuse": "color",
   "primary-color-role-overload": "color",
   // typography
   "repeated-h1": "typography",
@@ -2214,10 +2214,10 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   // layout (layout-structure): 카드 중첩·CTA 위계·칩 과다·장식
   "cashwalk-biz-sidebar-shell": "layout",
   "cashwalk-biz-admin-page-pattern": "layout",
-  "brand-modal-single-button-fullwidth": "layout",
-  "brand-modal-confirm-cta": "layout",
-  "brand-modal-footer-stacked": "layout",
-  "brand-modal-footer-button-shape": "layout",
+  "project-modal-single-button-fullwidth": "layout",
+  "project-modal-confirm-cta": "layout",
+  "project-modal-footer-stacked": "layout",
+  "project-modal-footer-button-shape": "layout",
   "raw-landmark": "layout",
   "nested-card": "layout",
   "card-badge-overuse": "layout",
@@ -2236,15 +2236,15 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "decorative-shadow": "layout",
   "visual-emphasis-overload": "layout",
   "raw-shell-pattern": "layout",
-  // component (component-compliance): DS 미사용·브랜드 크롬·attr enum·뱃지
+  // component (component-compliance): DS 미사용·프로젝트 크롬·attr enum·뱃지
   "native-interactive": "component",
   "low-ds-ratio": "component",
-  "manual-brand-header": "component",
+  "manual-project-header": "component",
   "admin-surface-consumer-chrome": "component",
   "service-surface-admin-shell": "component",
   "cashwalk-biz-sidebar-incomplete": "component",
   "cashwalk-biz-sidebar-logout": "component",
-  "unknown-brand-slug": "component",
+  "unknown-project-slug": "component",
   "non-inlinable-img-src": "component",
   "unknown-nds-tag": "component",
   "unknown-nds-class": "component",
@@ -2252,7 +2252,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "nds-json-attr-unparseable": "component",
   "ds-badge-missing": "component",
   "neutral-solid-cta": "component",
-  "brand-denied-button-color": "component",
+  "project-denied-button-color": "component",
   "button-without-interaction": "component",
   "date-as-text-input": "component",
   "amount-as-text-input": "component",
@@ -2261,7 +2261,7 @@ const RULE_DIMENSION: Record<string, ScoreDimension> = {
   "avoidable-reinvention": "component",
   "nds-custom-element-content-mutation": "component",
   "cashwalk-biz-gender-selection-control": "component",
-  "onboarding-missing-brand-logo": "component",
+  "onboarding-missing-project-logo": "component",
   "onboarding-social-bare-text": "component",
   "onboarding-success-plain-circle": "component",
   "verification-manual-assembly": "component",
@@ -2384,7 +2384,7 @@ export interface ValidateHtmlMockupResult {
     rule: string;
     count: number;
     severity: HtmlViolationSeverity;
-    /** 룰 분류(invariant/model-guard/brand-policy) — 텔레메트리 rule-stats 조인·수명 정책용. */
+    /** 룰 분류(invariant/model-guard/project-policy) — 텔레메트리 rule-stats 조인·수명 정책용. */
     kind?: RuleKind;
     lines: number[];
   }>;
@@ -2428,7 +2428,7 @@ function trimViolationsForResponse(violations: HtmlViolation[]): HtmlViolation[]
     // 행(=위반) 자체는 드롭하지 않고 selector 만 빼므로, 위반당 1행을 적재하는 telemetry(rule-stats
     // 수명정책)의 룰별 카운트는 그대로 유지된다.
     // 주의: 첫 N(=5)건은 full 유지 — raw-landmark 처럼 같은 rule 이라도 위반마다 suggestion 이
-    // 다른 케이스(header→BrandHeader / footer→BrandFooter)가 있어 무조건 dedup 하면 신호가 샌다.
+    // 다른 케이스(header→ProjectHeader / footer→ProjectFooter)가 있어 무조건 dedup 하면 신호가 샌다.
     return {
       rule: v.rule,
       line: v.line,
@@ -2495,10 +2495,10 @@ export function validateHtmlMockup(args: ValidateHtmlMockupArgs): ValidateHtmlMo
   // 선언 표면: 명시 인자 > nudge.surface 마커. 화면 이름 통념을 지배(표면 불일치 룰의 입력).
   const surface: HtmlSurface =
     args.surface ?? (markerStartDir ? readSurfaceMarker(markerStartDir) : null);
-  // 브랜드: 명시 인자 > nudge.brand 마커 (없으면 validateHtmlSource 가 HTML data-brand 로 폴백).
-  const brand =
-    args.brand ?? (markerStartDir ? (readBrandMarker(markerStartDir) ?? undefined) : undefined);
-  const rawViolations = validateHtmlSource(source, { surface, brand });
+  // 프로젝트: 명시 인자 > nudge.project 마커 (없으면 validateHtmlSource 가 HTML data-project 로 폴백).
+  const project =
+    args.project ?? (markerStartDir ? (readProjectMarker(markerStartDir) ?? undefined) : undefined);
+  const rawViolations = validateHtmlSource(source, { surface, project });
   const violations = trimViolationsForResponse(rawViolations);
   const violationsByRule = summarizeByRule(rawViolations);
   const severitySummary = summarizeSeverity(rawViolations);

@@ -49,17 +49,17 @@ export const NoArrows: Story = {
 };
 
 export const CashwalkBizBoxed: Story = {
-  name: "Brand/캐포비 박스형",
+  name: "Project/캐포비 박스형",
   parameters: {
     docs: {
       description: {
         story:
-          'data-brand="cashwalk-biz" cascade — 각 페이지/화살표가 개별 보더 박스(radius 4, 34h)로 렌더되고 활성 페이지는 캐포비 시그니처 검정 채움(Figma 캐포비 Library PaginationGuide 4118:1186). 끝 도달한 Prev/Next 는 옅은 회색 박스(boxed disabled). 마크업/props 는 base 와 동일.',
+          'data-project="cashwalk-biz" cascade — 각 페이지/화살표가 개별 보더 박스(radius 4, 34h)로 렌더되고 활성 페이지는 캐포비 시그니처 검정 채움(Figma 캐포비 Library PaginationGuide 4118:1186). 끝 도달한 Prev/Next 는 옅은 회색 박스(boxed disabled). 마크업/props 는 base 와 동일.',
       },
     },
   },
   render: () => (
-    <div data-brand="cashwalk-biz">
+    <div data-project="cashwalk-biz">
       <PaginationExample page={1} totalPages={5} siblings={2} onPageChange={() => {}} />
     </div>
   ),

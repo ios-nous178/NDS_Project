@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   configureSetup,
-  getBrand,
+  getProject,
   getHtmlEntryImports,
   getSetup,
   getSetupInstructions,
@@ -21,7 +21,7 @@ function configureWithManifest(manifest: Partial<Manifest>) {
       components: [],
       icons: [],
       tokens: [],
-      brands: [],
+      projects: [],
       ...manifest,
     },
     installMode: "dev",
@@ -55,8 +55,8 @@ function htmlSetupPackages(): Manifest["packages"] {
   ];
 }
 
-describe("setup brand registry", () => {
-  it("exposes cashwalk-biz when tokens css export exists even without a brand DESIGN.md entry", () => {
+describe("setup project registry", () => {
+  it("exposes cashwalk-biz when tokens css export exists even without a project DESIGN.md entry", () => {
     configureWithManifest({
       packages: [
         {
@@ -76,18 +76,18 @@ describe("setup brand registry", () => {
       ],
     });
 
-    const result = getBrand({ brand: "cashwalk-biz" });
+    const result = getProject({ project: "cashwalk-biz" });
     expect("detail" in result ? result.detail.ok : false).toBe(true);
     expect("detail" in result ? result.detail.cssImport : null).toBe(
       "@nudge-design/tokens/css/cashwalk-biz",
     );
     expect("detail" in result ? result.detail.ready : false).toBe(true);
 
-    const imports = getHtmlEntryImports({ brand: "cashwalk-biz" });
+    const imports = getHtmlEntryImports({ project: "cashwalk-biz" });
     expect(imports.code).toContain(`import "@nudge-design/tokens/css/cashwalk-biz";`);
   });
 
-  it("slims the bundled brand roster on a detail call (keeps detail, drops heavy per-brand meta)", () => {
+  it("slims the bundled project roster on a detail call (keeps detail, drops heavy per-project meta)", () => {
     configureWithManifest({
       packages: [
         {
@@ -100,30 +100,30 @@ describe("setup brand registry", () => {
       ],
     });
 
-    const result = getBrand({ brand: "cashwalk-biz" }) as {
-      brands: Array<Record<string, unknown>>;
+    const result = getProject({ project: "cashwalk-biz" }) as {
+      projects: Array<Record<string, unknown>>;
       detail: Record<string, unknown>;
     };
     // detail 은 보존
     expect(result.detail.ok).toBe(true);
     // 로스터는 slug/name/ready 만 — description/cssImport/version/primaryColor 는 제거(중복)
-    expect(result.brands.length).toBeGreaterThan(0);
-    for (const b of result.brands) {
+    expect(result.projects.length).toBeGreaterThan(0);
+    for (const b of result.projects) {
       expect(Object.keys(b).sort()).toEqual(["name", "ready", "slug"]);
     }
   });
 
-  it("keeps get_brand detail summary-only by default and fetches one assetKind on demand", () => {
+  it("keeps get_project detail summary-only by default and fetches one assetKind on demand", () => {
     configureWithManifest({
-      brands: [
+      projects: [
         {
           slug: "runmile",
           name: "Runmile",
-          description: "Runmile brand",
+          description: "Runmile project",
           version: "0.1.10",
           designMdRelPath: "DESIGN.md",
           cssImport: "@nudge-design/tokens/css/runmile",
-          jsExport: "@nudge-design/tokens/brands",
+          jsExport: "@nudge-design/tokens/projects",
           ready: true,
           primaryColor: null,
           keyColors: {},
@@ -132,15 +132,15 @@ describe("setup brand registry", () => {
       ],
     });
 
-    const summary = getBrand({ brand: "runmile" }) as { detail: Record<string, unknown> };
-    expect(summary.detail.brandIconCount).toBeTypeOf("number");
-    expect(summary.detail.brandComponentCount).toBeTypeOf("number");
+    const summary = getProject({ project: "runmile" }) as { detail: Record<string, unknown> };
+    expect(summary.detail.projectIconCount).toBeTypeOf("number");
+    expect(summary.detail.projectComponentCount).toBeTypeOf("number");
     expect(summary.detail.assetSummary).toBeTypeOf("object");
     expect(summary.detail.assets).toBeUndefined();
-    expect(summary.detail.brandIcons).toBeUndefined();
-    expect(summary.detail.brandComponents).toBeUndefined();
+    expect(summary.detail.projectIcons).toBeUndefined();
+    expect(summary.detail.projectComponents).toBeUndefined();
 
-    const detailed = getBrand({ brand: "runmile", assetKind: "illustrations" }) as {
+    const detailed = getProject({ project: "runmile", assetKind: "illustrations" }) as {
       detail: { assets?: { illustrations?: { files?: unknown[] } }; assetKind?: string };
     };
     expect(detailed.detail.assetKind).toBe("illustrations");
@@ -149,7 +149,7 @@ describe("setup brand registry", () => {
 
     // snsLogos 파일은 붙여넣기용 inlineRef 를 줘야 한다(profileImages/illustrations 와 parity).
     // 없으면 작성자가 경로를 손으로 조립하다 "계속 못 가져오네" 로 빠진다.
-    const sns = getBrand({ brand: "runmile", assetKind: "snsLogos" }) as {
+    const sns = getProject({ project: "runmile", assetKind: "snsLogos" }) as {
       detail: { assets?: { snsLogos?: { files?: Array<{ inlineRef?: string }> } } };
     };
     const snsFiles = sns.detail.assets?.snsLogos?.files ?? [];
@@ -231,26 +231,26 @@ describe("html setup visual reference guardrail", () => {
     expect(content).toContain("full absolute path");
   });
 
-  it("brand 와 함께 claude-md 셋업 시 nudge.brand 마커를 canonical slug 로 박는다", () => {
-    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-brand-marker-"));
+  it("project 와 함께 claude-md 셋업 시 nudge.project 마커를 canonical slug 로 박는다", () => {
+    const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-project-marker-"));
 
     // 별칭(cashpobi)으로 호출해도 정식 slug 로 정규화돼 마커에 기록돼야 한다.
-    const result = getSetup({ step: "claude-md", cwd, brand: "cashpobi", intent: "html" });
+    const result = getSetup({ step: "claude-md", cwd, project: "cashpobi", intent: "html" });
 
     expect("ok" in result ? result.ok : false).toBe(true);
-    expect("brandMarker" in result ? result.brandMarker : undefined).toBe("cashwalk-biz");
-    const markerPath = path.join(cwd, "nudge.brand");
+    expect("projectMarker" in result ? result.projectMarker : undefined).toBe("cashwalk-biz");
+    const markerPath = path.join(cwd, "nudge.project");
     expect(fs.existsSync(markerPath)).toBe(true);
     expect(fs.readFileSync(markerPath, "utf-8").trim()).toBe("cashwalk-biz");
   });
 
-  it("brand 없이 셋업하면 nudge.brand 마커를 만들지 않는다", () => {
+  it("project 없이 셋업하면 nudge.project 마커를 만들지 않는다", () => {
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-no-marker-"));
 
     const result = getSetup({ step: "agents-md", cwd });
 
     expect("ok" in result ? result.ok : false).toBe(true);
-    expect(fs.existsSync(path.join(cwd, "nudge.brand"))).toBe(false);
+    expect(fs.existsSync(path.join(cwd, "nudge.project"))).toBe(false);
   });
 
   it("includes an explicit references.md step in full html setup", () => {
@@ -280,7 +280,7 @@ describe("html setup visual reference guardrail", () => {
 
 type ExternalStarterResult = {
   ok: boolean;
-  brand: string | null;
+  project: string | null;
   files: {
     claudeMd: { ok: boolean; filePath?: string; error?: string };
     agentsMd: { ok: boolean; filePath?: string; error?: string };
@@ -319,19 +319,19 @@ describe("get_setup external-starter (도구 중립 온보딩)", () => {
     expect(result.promptTemplates[0].prompt).toContain("NDS");
   });
 
-  it("캐포비 브랜드면 어드민 Page-Pattern 프롬프트를 덧붙이고 nudge.brand 마커를 박는다", () => {
+  it("캐포비 프로젝트면 어드민 Page-Pattern 프롬프트를 덧붙이고 nudge.project 마커를 박는다", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-starter-cpb-"));
 
     const result = getSetup({
       step: "external-starter",
       cwd,
-      brand: "cashpobi",
+      project: "cashpobi",
       intent: "html",
     }) as ExternalStarterResult;
 
-    expect(result.brand).toBe("cashwalk-biz");
-    expect(fs.readFileSync(path.join(cwd, "nudge.brand"), "utf-8").trim()).toBe("cashwalk-biz");
+    expect(result.project).toBe("cashwalk-biz");
+    expect(fs.readFileSync(path.join(cwd, "nudge.project"), "utf-8").trim()).toBe("cashwalk-biz");
     const titles = result.promptTemplates.map((t) => t.title);
     expect(titles.some((t) => t.includes("캐포비"))).toBe(true);
   });
@@ -354,9 +354,9 @@ describe("get_setup external-starter (도구 중립 온보딩)", () => {
 });
 
 describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", () => {
-  it("intent:'admin' + 게이트 밖 브랜드(trost)는 차단되고 셋업 본문이 없다", () => {
+  it("intent:'admin' + 게이트 밖 프로젝트(trost)는 차단되고 셋업 본문이 없다", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
-    const result = getSetup({ step: "full", intent: "admin", brand: "trost" }) as Record<
+    const result = getSetup({ step: "full", intent: "admin", project: "trost" }) as Record<
       string,
       unknown
     >;
@@ -369,7 +369,7 @@ describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", 
     expect(result.commands).toBeUndefined();
   });
 
-  it("운영자 키워드 자유발화(브랜드 미지정)는 확답 질문만 반환한다 (ambiguous 하드스톱)", () => {
+  it("운영자 키워드 자유발화(프로젝트 미지정)는 확답 질문만 반환한다 (ambiguous 하드스톱)", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
     const result = getSetup({ step: "full", intent: "어드민 화면 만들어줘" }) as Record<
       string,
@@ -384,7 +384,7 @@ describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", 
 
   it("운영자 키워드 + nudge-eap 도 확답 질문 (EAP 는 b2b 어드민=DS / 사내 CMS=antd 둘 다 가능)", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
-    const result = getSetup({ step: "full", intent: "EAP 어드민 목업", brand: "eap" }) as Record<
+    const result = getSetup({ step: "full", intent: "EAP 어드민 목업", project: "eap" }) as Record<
       string,
       unknown
     >;
@@ -397,7 +397,7 @@ describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", 
     const result = getSetup({
       step: "full",
       intent: "캐포비 CMS 화면",
-      brand: "cashpobi",
+      project: "cashpobi",
     }) as Record<string, unknown>;
     expect(result.intent).toBe("html");
     expect(result.needsClarification).toBeUndefined();
@@ -422,16 +422,16 @@ describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", 
     expect(result.needsClarification).toBeUndefined();
   });
 
-  it("intent:'admin' + brand='eap' claude-md 는 DS(html) 템플릿 + nudge.surface=admin 마커", () => {
+  it("intent:'admin' + project='eap' claude-md 는 DS(html) 템플릿 + nudge.surface=admin 마커", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-admin-md-"));
-    const result = getSetup({ step: "claude-md", cwd, intent: "admin", brand: "eap" }) as Record<
+    const result = getSetup({ step: "claude-md", cwd, intent: "admin", project: "eap" }) as Record<
       string,
       unknown
     >;
     expect(result.ok).toBe(true);
     expect(result.intent).toBe("html");
-    expect(result.brandMarker).toBe("nudge-eap");
+    expect(result.projectMarker).toBe("nudge-eap");
     expect(result.surfaceMarker).toBe("admin");
     expect(fs.readFileSync(path.join(cwd, "nudge.surface"), "utf-8").trim()).toBe("admin");
     // DS(html) 템플릿이 나가야 한다 — antd 백오피스 본문이 아니라
@@ -443,7 +443,7 @@ describe("영역 3분화 라우팅 — get_setup 하드게이트/하드스톱", 
   it("차단된 claude-md 호출은 파일을 만들지 않는다", () => {
     configureWithManifest({ packages: htmlSetupPackages() });
     const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "nudge-eap-blocked-md-"));
-    const result = getSetup({ step: "claude-md", cwd, intent: "admin", brand: "trost" }) as Record<
+    const result = getSetup({ step: "claude-md", cwd, intent: "admin", project: "trost" }) as Record<
       string,
       unknown
     >;

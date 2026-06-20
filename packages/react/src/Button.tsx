@@ -10,7 +10,7 @@ export type ButtonColor = "primary" | "secondary" | "neutral";
  * - `pill`    : radius full (9999px) — 모달 확인/취소, BottomCTA, 격식 컨텍스트
  *
  * Figma ButtonGuide(캐포비 3098:1032) 의 "When to use · Shape" 가이드와 정합.
- * 다른 브랜드에서도 사용 가능 — radius 만 바꿈, color×variant 매트릭스와 직교.
+ * 다른 프로젝트에서도 사용 가능 — radius 만 바꿈, color×variant 매트릭스와 직교.
  */
 export type ButtonShape = "default" | "pill";
 
@@ -114,7 +114,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     // Figma: Solid/Primary (eap-button-bg-*)
     solid: {
       enabled: {
-        // Figma Solid/Primary = --semantic-button-bg-default (브랜드 buttonBg override). bg-brand 직참조 금지.
+        // Figma Solid/Primary = --semantic-button-bg-default (프로젝트 buttonBg override). bg-brand 직참조 금지.
         background: cv.button.bgDefault,
         text: cv.button.textDefault,
         border: cv.borderRole.brand,
@@ -126,17 +126,17 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
         border: cv.button.bgDisabled,
       },
       hover: {
-        // semantic-button-bg-hover 슬롯 — brand 별로 fill.brandHover 와 다른 hover 톤을 명시할 수 있다.
+        // semantic-button-bg-hover 슬롯 — project 별로 fill.brandHover 와 다른 hover 톤을 명시할 수 있다.
         // Runmile 의 경우 fill.brandHover (어두운 톤 #E84A28) 가 아닌 가벼운 톤 (orange/400 #FF805C) 이 SSOT.
         background: cv.button.bgHover,
         text: cv.button.textDefault,
         border: cv.button.bgHover,
       },
     },
-    // Primary Soft — "brand-tinted soft" 버튼.
-    // bg = surface.brandSubtle (브랜드별 옅은 brand 톤) + text = textRole.brand (brand 색).
-    // 모든 브랜드에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
-    // (이전 statusInfo bg + brand text 조합은 CashwalkBiz 처럼 brand/info hue 가 다른 브랜드에서
+    // Primary Soft — "project-tinted soft" 버튼.
+    // bg = surface.brandSubtle (프로젝트별 옅은 project 톤) + text = textRole.brand (project 색).
+    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
+    // (이전 statusInfo bg + project text 조합은 CashwalkBiz 처럼 project/info hue 가 다른 프로젝트에서
     //  파랑 bg + 노랑 text 같은 부조화가 발생.)
     soft: {
       enabled: {
@@ -158,8 +158,8 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
       },
     },
     // Figma: Outlined
-    // Outlined/Primary — 전용 button-outlined 토큰 사용 (브랜드별 분기: 캐포비 #111, 나머지 brand색).
-    // borderRole.brand/textRole.brand 직참조 금지 — 그러면 캐포비가 brand 노랑으로 잘못 렌더됨.
+    // Outlined/Primary — 전용 button-outlined 토큰 사용 (프로젝트별 분기: 캐포비 #111, 나머지 project색).
+    // borderRole.brand/textRole.brand 직참조 금지 — 그러면 캐포비가 project 노랑으로 잘못 렌더됨.
     outlined: {
       enabled: {
         background: cv.button.bgOutlined,
@@ -179,11 +179,11 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
   },
   secondary: {
-    // Figma: Solid/Secondary — 브랜드별 의도가 다른 슬롯.
-    //   · NudgeEAP : `--semantic-bg-brand-subtle` + brand blue 텍스트
+    // Figma: Solid/Secondary — 프로젝트별 의도가 다른 슬롯.
+    //   · NudgeEAP : `--semantic-bg-brand-subtle` + project blue 텍스트
     //   · Trost    : 옅은 cobalt bg (#EFF1FA) + cobalt 텍스트
     //   · Geniet   : 검정 bg (#333333) + 흰 텍스트  ← dark inverse 패턴
-    // 슬롯 자체가 브랜드별 override 를 받으므로 컴포넌트는 슬롯만 박는다.
+    // 슬롯 자체가 프로젝트별 override 를 받으므로 컴포넌트는 슬롯만 박는다.
     solid: {
       enabled: {
         background: cv.button.bgSecondary,
@@ -243,7 +243,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
   },
   neutral: {
-    // Solid/Neutral — `buttonBg.neutral` / `buttonText.neutral` 슬롯에서 brand 별 톤 매핑.
+    // Solid/Neutral — `buttonBg.neutral` / `buttonText.neutral` 슬롯에서 project 별 톤 매핑.
     //   · NudgeEAP base : cool-gray fill + white text (#9CA2AE / #FFFFFF — 기존 패턴 유지)
     //   · Geniet        : neutral gray filled (#ECECEC) + gray text
     //   · Runmile       : light gray filled (#F2F4F6) + gray800 text
@@ -293,7 +293,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
       },
       disabled: {
         background: cv.surface.default,
-        // Outlined Disabled 텍스트는 brand 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
+        // Outlined Disabled 텍스트는 project 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
         text: cv.button.textNeutralDisabled,
         border: cv.button.borderNeutralDisabled,
         fontWeight: fontWeight.medium,
@@ -308,46 +308,46 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
   },
 };
 
-/* ─── Brand-restricted variants ───
- * 각 브랜드의 Figma 라이브러리에 존재하는 variant 만 화이트리스트로 명시.
+/* ─── Project-restricted variants ───
+ * 각 프로젝트의 Figma 라이브러리에 존재하는 variant 만 화이트리스트로 명시.
  * 누락 키는 "제약 없음" 으로 간주한다. 런타임 영향 없음 — dev-only console.warn 만.
  *
  *   Geniet 207:1853 → Solid / Stroke(=Outlined) 두 스타일만 있음.
  *     soft 는 Geniet Figma 에 없음 → 사용 시 경고.
  */
-const BRAND_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
+const PROJECT_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
   geniet: ["solid", "outlined"],
 };
 
-/* 브랜드별 미정의 tone — 사용 시 경고. 캐포비 Figma ButtonGuide(3098:1032) 는 Primary + Neutral 만 정의,
+/* 프로젝트별 미정의 tone — 사용 시 경고. 캐포비 Figma ButtonGuide(3098:1032) 는 Primary + Neutral 만 정의,
  * Secondary tone 이 없음. 검정/회색 CTA 는 color="neutral" 사용(color="secondary" 아님). */
-const BRAND_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
+const PROJECT_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
   "cashwalk-biz": ["secondary"],
   // 런마일 ButtonGuide(5124:390) tone = Primary + Neutral 둘뿐. 검정 CTA = color="neutral".
   runmile: ["secondary"],
 };
 
 const warnedKeys = new Set<string>();
-function warnIfBrandRestricted(brand: string | null, variant: ButtonVariant, color: ButtonColor) {
-  if (!brand) return;
-  const allow = BRAND_VARIANT_WHITELIST[brand];
+function warnIfProjectRestricted(project: string | null, variant: ButtonVariant, color: ButtonColor) {
+  if (!project) return;
+  const allow = PROJECT_VARIANT_WHITELIST[project];
   if (allow && !allow.includes(variant)) {
-    const key = `${brand}:v:${variant}`;
+    const key = `${project}:v:${variant}`;
     if (!warnedKeys.has(key)) {
       warnedKeys.add(key);
       console.warn(
-        `[nds/Button] variant="${variant}" 는 brand="${brand}" Figma 가이드에 없음 — ` +
+        `[nds/Button] variant="${variant}" 는 project="${project}" Figma 가이드에 없음 — ` +
           `허용된 variant: [${allow.join(", ")}]. 디자인 인텐트가 어긋날 수 있어요.`,
       );
     }
   }
-  const deny = BRAND_TONE_DENYLIST[brand];
+  const deny = PROJECT_TONE_DENYLIST[project];
   if (deny && deny.includes(color)) {
-    const key = `${brand}:c:${color}`;
+    const key = `${project}:c:${color}`;
     if (!warnedKeys.has(key)) {
       warnedKeys.add(key);
       console.warn(
-        `[nds/Button] color="${color}" 는 brand="${brand}" Figma 가이드에 없는 tone 입니다. ` +
+        `[nds/Button] color="${color}" 는 project="${project}" Figma 가이드에 없는 tone 입니다. ` +
           `캐포비는 검정/회색 CTA 에 color="neutral" 을 쓰세요 (secondary 아님).`,
       );
     }
@@ -421,12 +421,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const state = disabled ? variantSet.disabled : variantSet.enabled;
     const hover = variantSet.hover;
 
-    // Brand-aware 경고: process.env.NODE_ENV !== "production" 에서만, document 가 있을 때.
+    // Project-aware 경고: process.env.NODE_ENV !== "production" 에서만, document 가 있을 때.
     // @types/node 의존 없이 process 를 안전하게 참조하기 위해 globalThis 캐스팅 사용.
     const proc = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process;
     if (proc && proc.env?.NODE_ENV !== "production" && typeof document !== "undefined") {
-      const brand = document.documentElement.getAttribute("data-brand");
-      warnIfBrandRestricted(brand, variant, color);
+      const project = document.documentElement.getAttribute("data-project");
+      warnIfProjectRestricted(project, variant, color);
     }
 
     return (
@@ -442,7 +442,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cx(BUTTON_CLASS, className)}
         style={
           {
-            // 높이는 브랜드가 size별로 override 가능 (지니어트 sm 40·xs 36). 미설정 시 base 토큰.
+            // 높이는 프로젝트가 size별로 override 가능 (지니어트 sm 40·xs 36). 미설정 시 base 토큰.
             "--nds-button-height": `var(--nds-button-height-${size}, ${sizeStyle.height}px)`,
             "--nds-button-padding-x": `${sizeStyle.px}px`,
             "--nds-button-gap": `${sizeStyle.gap}px`,

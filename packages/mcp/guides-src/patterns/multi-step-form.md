@@ -22,7 +22,7 @@
 - ⑤ 비동기 검증은 게이트에 묶는다(MUST) — 중복확인·인증 같은 async 결과는 boolean 으로 ③ 게이트에 연결. 대기 중엔 '다음' 버튼 로딩, **낙관적 전진 금지**(응답 전 다음 단계로 못 감).
 - ⑥ 제출 계약(MUST) — 마지막 단계의 primary 는 '제출'(submitLabel). 제출 중 버튼 비활성+스피너, 폼 비활성. 서버 오류는 **모든 단계 값 보존** + 상단 Alert(component:NoticeAlert). 성공은 Toast + 다음 화면 이동.
 - ⑦ 접근성(MUST) — Stepper 현재 단계 `aria-current="step"`. 단계 전환 시 **포커스를 새 단계 Heading 으로 이동**. 에러는 스크린리더에 알림(role/aria-live).
-- ⑧ 컴포넌트 승격 기준(governance) — 다단계 셸을 다시 DS 컴포넌트로 만들려면 **2개 이상 브랜드의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다. 둘 중 하나라도 없으면 이 패턴으로 조립한다(예전 셸이 제거된 이유).
+- ⑧ 컴포넌트 승격 기준(governance) — 다단계 셸을 다시 DS 컴포넌트로 만들려면 **2개 이상 프로젝트의 실제 채택 + Figma 가이드 노드** 둘 다 충족해야 한다. 둘 중 하나라도 없으면 이 패턴으로 조립한다(예전 셸이 제거된 이유).
 
 ## avoid
 
@@ -34,7 +34,7 @@
 - 단계 값을 각 단계 컴포넌트 로컬 state 나 URL 에만 분산 보관 — 뒤로/앞으로 버그. 부모 단일 state 가 SSOT.
 - 이산 단계에 ProgressBar 를 하드코딩 %로 — 셀 수 있으면 Stepper.
 - 비동기 응답 전 낙관적 전진 — ⑤ 위반.
-- 진행/버튼 색을 raw hex — semantic/state 토큰으로 5 브랜드 자동 대응.
+- 진행/버튼 색을 raw hex — semantic/state 토큰으로 5 프로젝트 자동 대응.
 
 ## readyMade.note
 

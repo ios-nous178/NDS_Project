@@ -54,7 +54,7 @@ export interface ChatSession extends ResumeRecipe {
   createdAt: string;
   updatedAt: string;
   /** 인테이크 세션 메타(Level 3 검증/표시용). bare 세션이면 undefined. */
-  brand?: string;
+  project?: string;
   surface?: Surface;
   intent?: "html" | "admin-cms";
   /** 전송 방식. 기록 클릭 시 렌더러가 raw(xterm) vs 구조화(카드) 재생을 분기. 옛 세션은 undefined=pty. */
@@ -243,7 +243,7 @@ export function readSessions(projectPath: string): ChatSession[] {
             createdAt: prev.createdAt,
             screenName: s.screenName ?? prev.screenName,
             customTitle: s.customTitle ?? prev.customTitle,
-            brand: s.brand ?? prev.brand,
+            project: s.project ?? prev.project,
             surface: s.surface ?? prev.surface,
             intent: s.intent ?? prev.intent,
             transport: s.transport ?? prev.transport,

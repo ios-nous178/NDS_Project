@@ -41,7 +41,7 @@ module.exports = {
       items: [
         "components/overview",
         "components/gallery",
-        "components/brand-coverage",
+        "components/project-coverage",
         "components/icons",
         {
           type: "category",

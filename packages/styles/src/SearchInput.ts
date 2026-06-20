@@ -31,7 +31,7 @@ export const searchInputStyles = `
     align-items: center;
     width: 100%;
     /* Input 과 동일 토큰(sizing.input.default=48) — min-height 를 리터럴로 박지 않고 var(--nds-input-height)
-       체인으로 상속해 브랜드 :root override(예: 캐포비 admin 48)를 그대로 따라간다. 리터럴을 박으면 한 행의
+       체인으로 상속해 프로젝트 :root override(예: 캐포비 admin 48)를 그대로 따라간다. 리터럴을 박으면 한 행의
        nds-input/nds-select 와 높이가 어긋남(회귀: 캐포비 리스트 검색). */
     min-height: var(--nds-search-input-height, var(--nds-input-height, ${sizing.input.default}px));
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));

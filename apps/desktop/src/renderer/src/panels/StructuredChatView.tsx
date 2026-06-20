@@ -144,7 +144,7 @@ function DesignSpecCard({
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: c.text }}>📐 DesignSpec</span>
-        {m.brand && (
+        {m.project && (
           <span
             style={{
               fontSize: 10.5,
@@ -154,7 +154,7 @@ function DesignSpecCard({
               padding: "1px 7px",
             }}
           >
-            {m.brand}
+            {m.project}
             {screen.surface ? ` · ${screen.surface}` : ""}
           </span>
         )}

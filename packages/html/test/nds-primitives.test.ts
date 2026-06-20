@@ -41,7 +41,7 @@ describe("nds-badge", () => {
   it("renders span.nds-badge with data-attrs (색·치수는 styles CSS) + label child", async () => {
     const el = document.createElement("nds-badge");
     el.setAttribute("variant", "fill");
-    el.setAttribute("color", "brand");
+    el.setAttribute("color", "project");
     el.setAttribute("size", "lg");
     el.setAttribute("shape", "pill");
     el.textContent = "NEW";
@@ -53,7 +53,7 @@ describe("nds-badge", () => {
     // 색(variant×color)·치수(size)·shape 라운드는 @nudge-design/styles 의 .nds-badge
     // CSS 룰이 data-attr 로 합성 — WC 는 data-attr 만 set, 인라인 색/치수는 더 이상 안 박힌다.
     expect(root.dataset.variant).toBe("fill");
-    expect(root.dataset.color).toBe("brand");
+    expect(root.dataset.color).toBe("project");
     expect(root.dataset.size).toBe("lg");
     expect(root.dataset.shape).toBe("pill");
     expect(root.style.height).toBe("");

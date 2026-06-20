@@ -254,7 +254,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
   // 의도적으로 MCP 핸들러의 report(Google Sheets usage POST)·withStats(analyze) 를 붙이지 않는다:
   // DS 사용량 보고의 단일 'ship moment' 은 Export(export-runner → reportHtmlMockupUsage)다. 파일 열 때마다
   // 검증이 자동 POST 하면 같은 목업이 사용량 행을 중복 적재한다. cwd 는 filePath 의 dirname 으로 자동 폴백되어
-  // nudge.surface/nudge.brand 마커를 그대로 읽으므로 별도 전달 불필요.
+  // nudge.surface/nudge.project 마커를 그대로 읽으므로 별도 전달 불필요.
   ipcMain.handle(
     "validate:run",
     async (_e, args: { filePath: string }): Promise<ValidateHtmlMockupResult> => {
@@ -484,7 +484,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
           cwdOverride: s.cwd,
           mockupFile: s.mockupFile,
           screenName: s.screenName,
-          brand: s.brand,
+          project: s.project,
           surface: s.surface,
           intent: s.intent,
           transport: "pty",
@@ -503,7 +503,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
     "intake:recommend-page-pattern",
     async (
       _e,
-      args: { prd?: string; brand?: string; surface?: string },
+      args: { prd?: string; project?: string; surface?: string },
     ): Promise<RecommendPagePatternResult> => recommendPagePattern(args?.prd ?? ""),
   );
 
@@ -535,7 +535,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
       logAppEvent(args.projectPath, {
         type: "intake_created",
         mockupFile: `${r.slug}/index.html`,
-        payload: { brand: args.brand, surface: args.surface, intent: r.intent, slug: r.slug },
+        payload: { project: args.project, surface: args.surface, intent: r.intent, slug: r.slug },
       });
 
       const sessionId = randomUUID();
@@ -549,7 +549,7 @@ export function registerIpcHandlers(getWindow: () => BrowserWindow | null): void
           initialPrompt: r.seedPrompt,
           mockupFile: `${r.slug}/index.html`,
           screenName: args.screenName,
-          brand: args.brand,
+          project: args.project,
           surface: args.surface,
           intent: r.intent,
           cols: args.cols,

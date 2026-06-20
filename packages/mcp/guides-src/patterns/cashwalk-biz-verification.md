@@ -12,7 +12,7 @@
 - ② 인증코드 입력은 `nds-verification-code-input` (MUST) — 일반 `nds-input` 금지. 단일 박스 + 붙여넣기/`one-time-code` 자동완성 + `code-complete`(length 충족 시) 이벤트를 자연 지원한다. 자리별 6칸 박스도 만들지 말 것(component:VerificationCodeInput).
 - ③ 전송/재전송은 **full-width 검정 버튼 하나**(MUST) — `<nds-button color="neutral" full-width>`. "인증번호 받기" 로 시작해 코드 전송 후 라벨을 "인증번호 재전송" 으로 토글한다. 캐포비 검정 CTA 는 `color="neutral"`(secondary 아님 — Figma 미정의).
   - 라벨 토글은 `btn.textContent = "재전송"` 또는 `setAttribute` 로 해도 안전하다(nds-button 이 라벨을 자동 복원). 단 **재전송을 별도 텍스트/링크로 흩뿌리지 말 것** — 한 버튼의 상태 전환이다.
-- ④ 남은시간 타이머는 **앱이 합성하는 인라인 요소**(MUST, DS 컴포넌트 아님) — 코드 입력 우측에 겹쳐 배치하거나(레시피A) 코드 입력 옆에 둔다. 색은 브랜드 강조색(캐포비 `#FD9B02` = `--semantic-text-accent` 계열, raw hex 대신 토큰). 앱이 `setInterval` 로 `mm:ss` 갱신, 만료 시 ③ 버튼을 "재전송" 활성.
+- ④ 남은시간 타이머는 **앱이 합성하는 인라인 요소**(MUST, DS 컴포넌트 아님) — 코드 입력 우측에 겹쳐 배치하거나(레시피A) 코드 입력 옆에 둔다. 색은 프로젝트 강조색(캐포비 `#FD9B02` = `--semantic-text-accent` 계열, raw hex 대신 토큰). 앱이 `setInterval` 로 `mm:ss` 갱신, 만료 시 ③ 버튼을 "재전송" 활성.
 - ⑤ 에러 메시지는 `nds-notice-alert variant="error"` + **비어있지 않은 message**(MUST) — `message=""` 인 alert 를 노출하면 아이콘만 든 빈 박스가 된다. 에러가 없을 땐 **`hidden` 속성으로 토글**(보일 때 message 를 채운다). `nds-notice-alert` 는 `[hidden]` 을 존중한다.
 - ⑥ 확정은 하단 CTA (MUST) — 별도 "인증하기" 버튼을 만들지 않는다. `code-complete` 에서 자동검증하거나 하단 [다음]/[계정 생성](primary, multi-step 이면 cta-group)에서 일괄 검증. 검증 실패는 ⑤ 에러, 성공은 다음 단계/모달.
 - ⑦ 성공 표시 아이콘은 DS 로 (MUST) — 완료 모달/화면의 체크는 `nds-notice-alert variant="success"`(원+흰 체크) · `nds-result-state status="success"` · 또는 `find_icon` 의 `CashwalkBizCheckCircleOnIcon`. **원과 체크를 같은 `fill="currentColor"` 로 둔 hand-roll SVG 금지** — 체크가 원과 같은 색이라 안 보인다(초록-온-초록). 체크는 흰색 knockout 이거나 stroke 여야 한다.
@@ -48,7 +48,7 @@
     <div style="position:relative">
       <!-- ② 코드 입력은 nds-verification-code-input -->
       <nds-verification-code-input id="v-code" length="6" auto-focus></nds-verification-code-input>
-      <!-- ④ 남은시간 타이머 = 앱 합성 인라인 요소(브랜드 강조색·토큰) -->
+      <!-- ④ 남은시간 타이머 = 앱 합성 인라인 요소(프로젝트 강조색·토큰) -->
       <span id="v-timer"
         style="position:absolute; right:16px; top:50%; transform:translateY(-50%);
                color:var(--semantic-text-accent, #FD9B02); font-variant-numeric:tabular-nums;">3:00</span>

@@ -4,7 +4,7 @@
  *
  *   ① 컴포넌트 스토리(title) ⊆ metadata/componentInventory.json (storybookTitle)
  *   ② react 공개 export ⊆ inventory (name)
- *   ③ 카탈로그에 뜨는 inventory 엔트리(비브랜드 Components/*)는 **gallery 태그 스토리 ≥1** 보유
+ *   ③ 카탈로그에 뜨는 inventory 엔트리(비프로젝트 Components/*)는 **gallery 태그 스토리 ≥1** 보유
  *      — AllComponents 가 `tags:["gallery"]` 스토리를 composeStories 로 인라인 렌더하므로,
  *        gallery 스토리가 없으면 그 컴포넌트는 라이브 프리뷰 없이 placeholder 카드가 된다.
  *
@@ -59,16 +59,16 @@ function loadReactComponents() {
   return names;
 }
 
-/** AllComponents 가 카탈로그에서 숨기는 브랜드 전용 엔트리 (AllComponents.stories.tsx 와 동일 규칙). */
-function isBrandSpecificEntry(entry) {
-  const brandPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
+/** AllComponents 가 카탈로그에서 숨기는 프로젝트 전용 엔트리 (AllComponents.stories.tsx 와 동일 규칙). */
+function isProjectSpecificEntry(entry) {
+  const projectPrefixes = ["Geniet", "Trost", "NudgeEAP", "CashwalkBiz", "Runmile"];
   return Boolean(
-    entry.storybookTitle?.startsWith("Brands/") ||
-      brandPrefixes.some(
+    entry.storybookTitle?.startsWith("Projects/") ||
+      projectPrefixes.some(
         (prefix) => entry.storybookTitle?.includes(`/${prefix}/`) || entry.name?.startsWith(prefix),
       ) ||
-      entry.category === "브랜드" ||
-      entry.category === "Brand",
+      entry.category === "프로젝트" ||
+      entry.category === "Project",
   );
 }
 
@@ -109,10 +109,10 @@ for (const name of reactComponents) {
   problems.push(`react 컴포넌트가 metadata/componentInventory.json 에 없음: ${name}`);
 }
 
-// ③ 카탈로그에 뜨는 inventory 엔트리(비브랜드 Components/*) → gallery 태그 스토리 ≥1
+// ③ 카탈로그에 뜨는 inventory 엔트리(비프로젝트 Components/*) → gallery 태그 스토리 ≥1
 for (const entry of inventory) {
   if (!entry.storybookTitle?.startsWith("Components/")) continue;
-  if (isBrandSpecificEntry(entry)) continue;
+  if (isProjectSpecificEntry(entry)) continue;
   const story = stories.get(entry.storybookTitle);
   if (story?.gallery) continue;
   const key = `gallery:${entry.name}`;
@@ -141,7 +141,7 @@ if (problems.length > 0) {
   for (const p of problems) console.error(`- ${p}`);
   console.error(
     "\n신규 컴포넌트는 inventory 등록 + 개별 *.stories.tsx 에 대표 스토리를 tags:[\"gallery\"] 로 태깅하세요. " +
-      "의도된 제외(브랜드 셸/어드민/유틸 등)는 scripts/storybook-catalog-baseline.json 에 사유와 함께 추가.",
+      "의도된 제외(프로젝트 셸/어드민/유틸 등)는 scripts/storybook-catalog-baseline.json 에 사유와 함께 추가.",
   );
   process.exit(1);
 }

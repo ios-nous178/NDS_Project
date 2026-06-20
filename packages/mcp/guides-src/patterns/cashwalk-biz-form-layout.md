@@ -23,7 +23,7 @@ metrics:
   fieldWidth: Field Width 6단계 px 고정 — xs120/sm200/md304(default)/lg400/xl488/full100%. 폼 일반 입력 Medium 304, Textarea Full. 스케일 SSOT=pattern:cashwalk-biz-input.
   labelTypography: "Pretendard Medium 16/24 #666"
   requiredMarker: "라벨 옆 ' *' #FC3500"
-  fieldHeight: 48px (nds-input/nds-select 동일 — 캐포비 brand :root 가 --nds-input-height 48 로 cascade; size 미지정이면 자동 48. 옛 size="compact"(40) 는 폐기·제거됨)
+  fieldHeight: 48px (nds-input/nds-select 동일 — 캐포비 project :root 가 --nds-input-height 48 로 cascade; size 미지정이면 자동 48. 옛 size="compact"(40) 는 폐기·제거됨)
   fieldRadius: 10px
   fieldBorder: "1px #D8D8D8"
   fieldBg: white
@@ -45,15 +45,15 @@ references:
   - label: 캐시워크 포 비즈니스 admin 폼 SSOT — 퀴즈 등록하기 (Figma 290:1197)
     image: references/cashwalk-biz-form-290-1197.png
     caption: 캐시워크 포 비즈니스 admin 폼 페이지 SSOT 스크린샷. 본 가이드 metrics 는 이 노드 실측 기준.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐시워크 포 비즈니스 사이드바 — 광고/운영/관리 3섹션 (Figma 168:1250)
     image: references/cashwalk-biz-sidebar-168-1250.png
     caption: 본문 좌측 LNB. 폼 페이지의 사이드바 컨텍스트.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐시워크 포 비즈니스 사이드바 — 서브메뉴 펼침 변형 (Figma 290:1593)
     image: references/cashwalk-biz-sidebar-290-1593.png
     caption: 퀴즈 관리 sub-item 펼친 상태 (등록하기/목록/통계). 폼 진입 경로.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary
@@ -68,7 +68,7 @@ references:
 - **섹션 카드**: 카드 padding **48px × 36px**, `radius 16px`, border 1px `#ECECEC`, bg white, soft shadow `0 10px 20px rgba(102,102,102,0.05)`.
 - **필드 레이아웃 = 라벨-인라인-좌측 (label column)** — admin 폼 가독성/정렬 위해 라벨이 필드 좌측 고정 폭. 라벨 컬럼 **172px**. 입력 필드 가로 너비는 **Field Width 6단계 스케일**(xs 120 / sm 200 / **md 304 default** / lg 400 / xl 488 / full 100%)에서 **px 고정**으로 선택 — 폼 일반 입력 = **Medium 304px**, 같은 행 input 은 같은 사이즈로 통일, Textarea 는 Full(100%). (임의 너비 ~684/228 류·hug·% 금지 — 스케일·use case 는 `pattern:cashwalk-biz-input` 의 Field Width 가 SSOT.) 라벨은 control 상단(top) 정렬 — 라벨 시작점 = 입력 시작점 (FormField left 모드, Figma 정합).
 - **라벨 타이포**: Pretendard **Medium 16 / lh 24, #666** (text.subtle). 'strong' 색을 쓰지 않는다 — 빽빽한 폼에서 라벨은 subtle 로 둬도 위계가 명확.
-- **필드 컴포넌트**: 높이 **48px** (`nds-input`/`nds-select` 동일 — size 미지정이면 캐포비 brand :root 가 `--nds-input-height` 48 로 cascade 해 자동 정렬. **`size="compact"`(40) 는 폐기·제거됐으니 admin 에 쓰지 말 것** — 단일 필드 48 과 어긋남), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.
+- **필드 컴포넌트**: 높이 **48px** (`nds-input`/`nds-select` 동일 — size 미지정이면 캐포비 project :root 가 `--nds-input-height` 48 로 cascade 해 자동 정렬. **`size="compact"`(40) 는 폐기·제거됐으니 admin 에 쓰지 말 것** — 단일 필드 48 과 어긋남), `radius 10px`, border 1px `#D8D8D8`, bg white, placeholder 16px #999. 검정 focus border·정확한 radius 는 `pattern:cashwalk-biz-input` 참조.
 - **행 높이**: ~102-106px (라벨+필드+helper 포함). 라벨↔필드 ~5px, 필드↔helper ~10-14px.
 - **Helper text**: Pretendard Regular **13 / lh 18, #666** (Input Typography 표준, Figma 4247:1964). 글자 수 카운터(`0/30`) 는 helper 와 동일 13/18 #999 우측 정렬.
 - **필수 마커**: 라벨 옆 ` *` color **`#FC3500`** (Coral Red-Orange). 'optional' 표기 X.
@@ -90,7 +90,7 @@ references:
 - 하단 액션을 **센터** 정렬하거나 알약 cluster 로 묶기 — 하단 [취소][저장] 은 **콘텐츠 끝 우측 정렬**이 표준(별도 흰 배경 바·sticky 고정 없이 페이지 배경 위).
 - CTA 모양을 8px rounded 사각형 — Figma 는 56h rounded-28 알약 (pill).
 - 필드 border-radius 를 8px 로 — Figma 는 10px.
-- 필수 라벨을 brand yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.
+- 필수 라벨을 project yellow 로 강조 — 노랑은 활성/선택용. 필수는 빨강-주황 별표만.
 - 캐포비 타겟팅 지역 선택을 Chip 인라인 나열/평면 CheckboxGroup/작은 팝오버로 구현 — 폼 페이지 `SelectedItemsPanel` + 대형 선택 모달(`CheckboxTree` + `SelectedItemsPanel hide-add`)이 SSOT.
 - 캐포비 타겟팅 성별 선택을 Select/RadioGroup/CheckboxGroup 로 구현 — `SelectionButtonGroup` + selected Chip 묶음이 SSOT.
 - 한 폼 안에 카드 간격 일정한 24px — Figma 는 의미 단위 64-80px 가변.

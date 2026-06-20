@@ -1,19 +1,19 @@
 /**
- * brand-modal-footer-button-shape — 캐포비 모달 footer 버튼은 전부 shape="pill".
+ * project-modal-footer-button-shape — 캐포비 모달 footer 버튼은 전부 shape="pill".
  * 보조(취소/아웃라인) 버튼에 pill 을 빠뜨려 각진 버튼이 섞이는 재발 차단.
- * 정책 SSOT = brand-profiles.ts cashwalk-biz.modal.footerButtonShape="pill".
+ * 정책 SSOT = project-profiles.ts cashwalk-biz.modal.footerButtonShape="pill".
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { validateHtmlSource } from "./html-validator.js";
 
-const OPTS = { surface: "admin" as const, brand: "cashwalk-biz" };
+const OPTS = { surface: "admin" as const, project: "cashwalk-biz" };
 const doc = (body: string) =>
-  `<html data-brand="cashwalk-biz"><head></head><body>${body}</body></html>`;
+  `<html data-project="cashwalk-biz"><head></head><body>${body}</body></html>`;
 const has = (v: ReturnType<typeof validateHtmlSource>, rule: string) =>
   v.find((x) => x.rule === rule);
 
-test("재현: 보조 버튼에 shape=pill 누락 → brand-modal-footer-button-shape warn", () => {
+test("재현: 보조 버튼에 shape=pill 누락 → project-modal-footer-button-shape warn", () => {
   const v = validateHtmlSource(
     doc(
       `<nds-modal open max-width="480"><p>중복 그룹</p><div slot="footer">` +
@@ -23,7 +23,7 @@ test("재현: 보조 버튼에 shape=pill 누락 → brand-modal-footer-button-s
     ),
     OPTS,
   );
-  const hit = has(v, "brand-modal-footer-button-shape");
+  const hit = has(v, "project-modal-footer-button-shape");
   assert.ok(hit, "pill 빠진 보조 버튼이 잡혀야 함");
   assert.equal(hit?.severity, "warn");
 });
@@ -38,5 +38,5 @@ test("두 버튼 모두 shape=pill → 위반 아님", () => {
     ),
     OPTS,
   );
-  assert.equal(has(v, "brand-modal-footer-button-shape"), undefined);
+  assert.equal(has(v, "project-modal-footer-button-shape"), undefined);
 });

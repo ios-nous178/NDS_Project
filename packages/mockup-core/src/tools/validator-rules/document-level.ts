@@ -3,7 +3,7 @@
  * 전역 totals(칩/카드/CTA/헤딩/강조 장치) + 캐포비 어드민 Page Pattern scope 룰 + DS 뱃지 검사.
  */
 import * as cheerio from "cheerio";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
 import {
   type DocumentValidationScope,
   type DomElement,
@@ -13,17 +13,17 @@ import {
   lineNumberAt,
 } from "./types.js";
 
-/** 어드민 Page Pattern System 적용 scope — 브랜드 프로필(admin.pagePatternSystem)이 결정. */
+/** 어드민 Page Pattern System 적용 scope — 프로젝트 프로필(admin.pagePatternSystem)이 결정. */
 function isPagePatternAdminScope(scope: DocumentValidationScope): boolean {
   return (
-    scope.surface === "admin" && getBrandProfile(scope.brand)?.admin?.pagePatternSystem === true
+    scope.surface === "admin" && getProjectProfile(scope.project)?.admin?.pagePatternSystem === true
   );
 }
 
 /**
  * 문서 전체 카운트 룰 — 전역 totals 기반.
  *  - chip-overuse / card-everything / primary-cta-overuse
- *  - repeated-h1 / repeated-h2 / bold-overuse / brand-bg-overuse / decorative-shadow
+ *  - repeated-h1 / repeated-h2 / bold-overuse / project-bg-overuse / decorative-shadow
  *  - tone-on-tone-filled / visual-emphasis-overload / primary-color-role-overload
  */
 export function collectDocumentLevelViolations(
@@ -330,15 +330,15 @@ export function collectDocumentLevelViolations(
     });
   }
 
-  // Brand BG 한 화면 1곳 — --semantic-bg-brand-default | subtle 2회 이상이면 위반
-  const brandBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) ?? [];
-  if (brandBgMatches.length >= 2 * screenCount) {
+  // Project BG 한 화면 1곳 — --semantic-bg-brand-default | subtle 2회 이상이면 위반
+  const projectBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) ?? [];
+  if (projectBgMatches.length >= 2 * screenCount) {
     out.push({
-      rule: "brand-bg-overuse",
+      rule: "project-bg-overuse",
       line: 1,
-      detail: `Brand background 토큰이 ${brandBgMatches.length}회 사용됨 (한 화면 최대 1곳).`,
+      detail: `Project background 토큰이 ${projectBgMatches.length}회 사용됨 (한 화면 최대 1곳).`,
       suggestion:
-        "Brand BG 는 의미 있는 notice / 핵심 강조 1곳에만. 나머지는 var(--semantic-bg-surface*) 또는 elevated 사용.",
+        "Project BG 는 의미 있는 notice / 핵심 강조 1곳에만. 나머지는 var(--semantic-bg-surface*) 또는 elevated 사용.",
     });
   }
 

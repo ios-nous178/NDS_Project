@@ -3,7 +3,7 @@ name: ds-audit
 description: >-
   Nudge DS 의 정합성·완전성을 감사한다 — 컴포넌트 하나(또는 DS 전체)에 대해 react/styles/html 3면 미러
   drift, 외부 전파 누락(export·스토리·AllComponents·MCP 가이드·changeset), 토큰 위반(raw hex·폐기 alias),
-  Figma sync 누락(figmaNodeUrl), 브랜드×컴포넌트 커버리지, 빌드/타입 정합을 점검해 리포트한다. 고치진 않고
+  Figma sync 누락(figmaNodeUrl), 프로젝트×컴포넌트 커버리지, 빌드/타입 정합을 점검해 리포트한다. 고치진 않고
   **드리프트/공백을 찾아 보고**(수정은 /ds-fix·/ds-component 로 위임). 트리거: "DS 정합성 점검", "이 컴포넌트
   미러/외부전파 다 됐나 감사", "DS 감사 돌려줘", "스타일 시안이랑 맞는지 점검", "/ds-audit [Component|all]", "$ds-audit [Component|all]".
 ---
@@ -42,9 +42,9 @@ description: >-
 
 - `COMPONENT_GUIDES.{C}.figmaNodeUrl` 누락/깨짐. `get_guide({ topic: 'figma-sync' })`(MCP)로 sync 안 된 컴포넌트 목록.
 
-### 5. 브랜드 × 컴포넌트 커버리지
+### 5. 프로젝트 × 컴포넌트 커버리지
 
-- 어떤 브랜드(Trost/Geniet/NudgeEAP/CashwalkBiz/Runmile)가 어떤 컴포넌트를 지원하는지 SSOT 대조. 브랜드 분기(`data-brand`)가 있어야 할 곳에 없는지/raw 하드코딩인지.
+- 어떤 프로젝트(Trost/Geniet/NudgeEAP/CashwalkBiz/Runmile)가 어떤 컴포넌트를 지원하는지 SSOT 대조. 프로젝트 분기(`data-project`)가 있어야 할 곳에 없는지/raw 하드코딩인지.
 
 ### 6. 빌드·타입 정합
 
@@ -55,7 +55,7 @@ description: >-
 ### 7. (옵션) 시안 정합 게이트 — Figma URL 동봉 시
 
 - `get_metadata`/`get_design_context` 로 시안 실측(height/padding/radius/color) 추출.
-- 빌드된 브랜드 CSS(`packages/html/dist/standalone/brand.*.css`)의 `--nds-*`/resolved 값과 1:1 대조. 어긋나면 컴포넌트가 아니라 **토큰/브랜드 cascade** 를 의심하라고 보고.
+- 빌드된 프로젝트 CSS(`packages/html/dist/standalone/project.*.css`)의 `--nds-*`/resolved 값과 1:1 대조. 어긋나면 컴포넌트가 아니라 **토큰/프로젝트 cascade** 를 의심하라고 보고.
 
 ### 8. 패턴 잎(leaf) 커버리지 — **추천 패턴의 모든 조각은 실제 nds-\* 컴포넌트로 존재해야 한다**
 
@@ -66,10 +66,10 @@ description: >-
 
 ### 9. validator 룰 수명 (model-guard 폐기 후보 + 미분류 부채)
 
-- **룰 분류 SSOT**: `packages/mockup-core/src/tools/html-validator.ts` 의 `RULE_META` — `invariant`(DS 계약, 폐기 대상 아님) / `model-guard`(AI 실수 패턴 가드 — 모델 세대 바뀌면 죽은 룰로 쌓임) / `brand-policy`(브랜드 분기 — 프로필 일반화 대상).
+- **룰 분류 SSOT**: `packages/mockup-core/src/tools/html-validator.ts` 의 `RULE_META` — `invariant`(DS 계약, 폐기 대상 아님) / `model-guard`(AI 실수 패턴 가드 — 모델 세대 바뀌면 죽은 룰로 쌓임) / `project-policy`(프로젝트 분기 — 프로필 일반화 대상).
 - **폐기 후보 리포트**: 텔레메트리 서버(nudge-telemetry-api, `:8091`)가 살아 있으면 validation 이벤트의 룰별 히트(`ruleKind` 포함)를 조회해, **`model-guard` 중 최근 30일 히트 0 인 `warn`/`info` 룰**을 폐기 후보로 나열. `error` 룰은 제외 — "룰이 효과적이라 위반이 사라진" 경우와 구분 불가. 서버 미가용이면 이 항목은 skip 하고 명시.
-- **분류 부채**: `RULE_META` 에 없는 신규 룰(분류 누락) → flag. `brand-policy` 룰 중 브랜드 slug 가 코드에 하드코딩된 것의 수 = 프로필 일반화 잔여 지표로 보고.
-- **프로필 ↔ 가이드 정합**: `packages/tokens/src/brand-profiles.ts` 의 정책(blackCta·deniedButtonColors·modal·bannedComponents)과 가이드 본문(`packages/mcp/guides-src/`)의 브랜드 정책 prose(Button/Modal/Snackbar/Toast 가이드의 캐포비 단락)가 어긋나면 flag — 정책 데이터의 SSOT 는 프로필, prose 는 그 서술이다.
+- **분류 부채**: `RULE_META` 에 없는 신규 룰(분류 누락) → flag. `project-policy` 룰 중 프로젝트 slug 가 코드에 하드코딩된 것의 수 = 프로필 일반화 잔여 지표로 보고.
+- **프로필 ↔ 가이드 정합**: `packages/tokens/src/project-profiles.ts` 의 정책(blackCta·deniedButtonColors·modal·bannedComponents)과 가이드 본문(`packages/mcp/guides-src/`)의 프로젝트 정책 prose(Button/Modal/Snackbar/Toast 가이드의 캐포비 단락)가 어긋나면 flag — 정책 데이터의 SSOT 는 프로필, prose 는 그 서술이다.
 - **자동 삭제 금지** — 후보 나열 + 사유까지만. 삭제 결정은 사람.
 
 ### 10. 미러 baseline 분류 부채 (TRIAGE-PENDING)

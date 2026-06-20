@@ -37,7 +37,7 @@ export function TokenGrid({ children }) {
         <span className={styles.colName}>토큰</span>
         <span className={styles.colHex}>값</span>
         <span className={styles.colCssVar}>CSS 변수</span>
-        <span className={styles.colBrands}>브랜드</span>
+        <span className={styles.colProjects}>프로젝트</span>
         <span className={styles.colMeta}>가이드</span>
         <span className={styles.colAction}></span>
       </div>
@@ -46,12 +46,12 @@ export function TokenGrid({ children }) {
   );
 }
 
-function BrandDot({ label, color }) {
+function ProjectDot({ label, color }) {
   if (!isColorValue(color)) return null;
   return (
-    <span className={styles.brandWrap} title={`${label} · ${color}`}>
-      <span className={styles.brandLabel}>{label[0]}</span>
-      <span className={styles.brandDot} style={{ backgroundColor: color }} aria-hidden="true" />
+    <span className={styles.projectWrap} title={`${label} · ${color}`}>
+      <span className={styles.projectLabel}>{label[0]}</span>
+      <span className={styles.projectDot} style={{ backgroundColor: color }} aria-hidden="true" />
     </span>
   );
 }
@@ -110,9 +110,9 @@ export function TokenCard({ name, cssVar, base, trost, geniet, guide, figmaNode 
       <code className={`${styles.colName} ${styles.name}`}>{name}</code>
       <code className={`${styles.colHex} ${styles.hex}`}>{base}</code>
       <code className={`${styles.colCssVar} ${styles.cssVar}`}>{cssVar}</code>
-      <div className={`${styles.colBrands} ${styles.brands}`}>
-        {showTrost && <BrandDot label="Trost" color={trost} />}
-        {showGeniet && <BrandDot label="Geniet" color={geniet} />}
+      <div className={`${styles.colProjects} ${styles.projects}`}>
+        {showTrost && <ProjectDot label="Trost" color={trost} />}
+        {showGeniet && <ProjectDot label="Geniet" color={geniet} />}
       </div>
       <div className={`${styles.colMeta} ${styles.meta}`}>
         {guide === "core" && (

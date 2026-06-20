@@ -249,7 +249,7 @@ export const formRowStyles = `
    Section(세로 블록)은 컴포넌트화하지 않고 룰만 — get_guide({ topic: 'pattern:container-section' }).
 
    Trost device-variant 모디파이어 (Figma 5303:111, opt-in, 가산) — 기존 base 디폴트(1200/반응형)는
-   그대로 두고 클래스 추가로만 적용한다. 다른 브랜드는 base 를 그대로 쓰므로 영향 없음.
+   그대로 두고 클래스 추가로만 적용한다. 다른 프로젝트는 base 를 그대로 쓰므로 영향 없음.
    - .nds-container--pc    : Trost PC 일반 컨텐츠 (max 1080 · 좌우 24)
    - .nds-container--wide  : Trost PC-Wide 테이블/대시보드 (max 1200 · 좌우 24)
    둘 다 모바일(<768)에서는 base 와 동일하게 100% / 좌우 16 으로 collapse. ─── */

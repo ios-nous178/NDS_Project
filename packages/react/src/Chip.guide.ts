@@ -8,7 +8,7 @@
 import type { GuideMeta } from "@nudge-design/tokens";
 
 export type ChipVariantKey = "fill" | "outlined" | "ghost";
-export type ChipColorKey = "brand" | "neutral" | "success" | "error" | "caution";
+export type ChipColorKey = "project" | "neutral" | "success" | "error" | "caution";
 
 export const chipVariantGuide: Record<ChipVariantKey, GuideMeta> = {
   fill: { status: "core", figmaNode: "171:10856" },
@@ -17,7 +17,7 @@ export const chipVariantGuide: Record<ChipVariantKey, GuideMeta> = {
 };
 
 export const chipColorGuide: Record<ChipColorKey, GuideMeta> = {
-  brand: { status: "core", figmaNode: "171:10856" },
+  project: { status: "core", figmaNode: "171:10856" },
   neutral: { status: "core", figmaNode: "171:10856" },
   success: { status: "core", figmaNode: "171:10856" },
   error: { status: "core", figmaNode: "171:10856" },

@@ -219,15 +219,15 @@ claude
 
 현재 **19개 도구**. 각 도구의 인자·호출 시점 전체 레퍼런스는 [docs/guide/mcp-tools-reference.mdx](../../docs/guide/mcp-tools-reference.mdx) 참고 (registry.ts 에서 자동 생성).
 
-| 카테고리                                      | 도구                                                                                                                                                    |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 브랜드 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회 | `get_brand` · `find_component` · `find_icon` · `find_token` · `find_asset`                                                                              |
-| 가이드 · 패턴 · 원칙                          | `get_guide`                                                                                                                                             |
-| 설계 보조 (DesignSpec · 페이지 패턴)          | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
-| 목업 빌드 · 검증 · 변환                       | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
-| Dev 서버 / 미리보기                           | `dev_server`                                                                                                                                            |
-| 외부 프로젝트 셋업                            | `get_setup`                                                                                                                                             |
-| 피드백 · 텔레메트리                           | `log_feedback` · `prompt_satisfaction`                                                                                                                  |
+| 카테고리                                        | 도구                                                                                                                                                    |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 프로젝트 · 컴포넌트 · 아이콘 · 토큰 · 에셋 조회 | `get_project` · `find_component` · `find_icon` · `find_token` · `find_asset`                                                                            |
+| 가이드 · 패턴 · 원칙                            | `get_guide`                                                                                                                                             |
+| 설계 보조 (DesignSpec · 페이지 패턴)            | `recommend_page_pattern` · `save_design_spec` · `validate_design_spec`                                                                                  |
+| 목업 빌드 · 검증 · 변환                         | `build_singlefile_html` · `validate_html_mockup` · `validate_prd_coverage` · `score_mockup_quality` · `convert_html_to_ds_html` · `suggest_replacement` |
+| Dev 서버 / 미리보기                             | `dev_server`                                                                                                                                            |
+| 외부 프로젝트 셋업                              | `get_setup`                                                                                                                                             |
+| 피드백 · 텔레메트리                             | `log_feedback` · `prompt_satisfaction`                                                                                                                  |
 
 <!-- END: tools -->
 
@@ -275,7 +275,7 @@ claude
 현재 HTML(`<nds-*>`) 목업 기본 루프:
 
 1. (첫 응답) 사용자에게 Figma/스크린샷 요청 → `references.md` 작성 (코드·조회 전).
-2. `get_guide({ topics: ["principles", "pattern:..."] })` · `get_brand({ brand })` ·
+2. `get_guide({ topics: ["principles", "pattern:..."] })` · `get_project({ project })` ·
    `find_component` / `find_icon` / `find_token` 로 추측 없이 조회.
 3. `save_design_spec`(의도 합의, `validate_design_spec` 으로 사전 검증) →
    `build_singlefile_html`(DS 검증 + PRD 커버리지 + 사용량 리포트 자동).

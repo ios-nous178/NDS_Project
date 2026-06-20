@@ -1,6 +1,6 @@
 /* Auto-generated companion for packages/react/src/Agreement.tsx.
  * 약관 동의 — 전체동의(master) + 필수/선택 항목 cascade. 체크 인디케이터 토큰은
- * Checkbox / CheckboxTree 와 동일(브랜드 cascade = fill.brand). 색/radius 는 semantic 토큰만. */
+ * Checkbox / CheckboxTree 와 동일(프로젝트 cascade = fill.brand). 색/radius 는 semantic 토큰만. */
 import { cv, fontFamily, fontWeight, radius, sizing, spacing, transition, typeScale } from "@nudge-design/tokens";
 
 const AG_CLASS = "nds-agreement";

@@ -2,7 +2,7 @@
  * 흰 배경 말풍선 + 제목/본문 + 1~2 액션 버튼(검정 secondary CTA) + 방향 tail.
  * Tooltip(다크 hover 안내)과 분리 — 이건 "사용자의 응답/결정이 필요한" 가벼운 확인 팝업.
  *
- * 색은 전부 semantic role 토큰 (브랜드 cascade 로 해석) — 컴포넌트엔 hex 없음.
+ * 색은 전부 semantic role 토큰 (프로젝트 cascade 로 해석) — 컴포넌트엔 hex 없음.
  *   · 본문 표면      : surface.default (캐포비 #FFF)
  *   · 제목           : textRole.strong (캐포비 #111 — Figma #212121 근사)
  *   · 본문 설명      : textRole.subtle (캐포비 #666 — Figma #595959 근사)

@@ -54,7 +54,7 @@ describe("find_icon({ query }) — 미스 대칭화", () => {
 });
 
 // 소셜/간편 로그인 로고는 아이콘이 아니라 sns-logos 자산이다. find_icon 으로 찾으면 0 매치라
-// 작성자가 이니셜/이모지로 때우거나 계속 헛삽질했다("계속 못 가져오네"). social-brand 질의는
+// 작성자가 이니셜/이모지로 때우거나 계속 헛삽질했다("계속 못 가져오네"). social-project 질의는
 // 에러가 아니라 자산 경로 + pattern:social-login 으로 리다이렉트해야 한다.
 describe("find_icon — 소셜 로그인 → sns-logos 자산 리다이렉트", () => {
   it.each(["kakao", "naver", "google", "apple", "카카오", "소셜 로그인", "간편로그인"])(

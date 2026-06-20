@@ -4,7 +4,7 @@
  *
  *   node apps/desktop/scripts/score-smoke.mjs [path/to/mockup.html]
  *
- * 환경변수: CLAUDE_BIN(기본 PATH 의 'claude') · BRAND · SURFACE.
+ * 환경변수: CLAUDE_BIN(기본 PATH 의 'claude') · PROJECT · SURFACE.
  * 실제 모델을 호출하므로 토큰을 쓴다. 앱(electron) 없이 scorer.ts 만 type-strip 로 로드.
  */
 import { readFileSync } from "node:fs";
@@ -24,7 +24,7 @@ const html = file
 console.error(`[score-smoke] scoring ${file ?? "(inline sample)"} … (실제 claude 호출)`);
 const res = await scoreMockupQuality({
   html,
-  brand: process.env.BRAND,
+  project: process.env.PROJECT,
   surface: process.env.SURFACE,
   bin: process.env.CLAUDE_BIN ?? "claude",
   env: process.env,

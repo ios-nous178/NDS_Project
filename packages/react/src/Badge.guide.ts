@@ -8,7 +8,7 @@
 import type { GuideMeta } from "@nudge-design/tokens";
 
 export type BadgeVariantKey = "fill" | "ghost" | "line";
-export type BadgeColorKey = "brand" | "neutral" | "success" | "error" | "caution" | "info";
+export type BadgeColorKey = "project" | "neutral" | "success" | "error" | "caution" | "info";
 
 export const badgeVariantGuide: Record<BadgeVariantKey, GuideMeta> = {
   fill: { status: "core", figmaNode: "171:10856" },
@@ -17,7 +17,7 @@ export const badgeVariantGuide: Record<BadgeVariantKey, GuideMeta> = {
 };
 
 export const badgeColorGuide: Record<BadgeColorKey, GuideMeta> = {
-  brand: { status: "core", figmaNode: "171:10856" },
+  project: { status: "core", figmaNode: "171:10856" },
   neutral: { status: "core", figmaNode: "171:10856" },
   success: { status: "core", figmaNode: "171:10856" },
   error: { status: "core", figmaNode: "171:10856" },

@@ -18,7 +18,7 @@ metrics:
 - Social (8): like, comment, share, ripple, bubble, message-quiz, banner, calendar.
 - GNB (8): gnb-banner, gnb-channel, gnb-chat, gnb-quiz, gnb-member, gnb-setting, gnb-cash, download.
 - Selection (6): radio-off/on, checkbox-off/on/error/on-green. Checkbox 의 'on-green' 은 success 표시용 별도 variant.
-- 캐시워크 포 비즈니스 모드에서 brand prefix 아이콘이 별도 제공되기 전까지는 공용 아이콘을 사용하되, 의미가 같은 캐시워크 포 비즈니스 카탈로그 항목을 우선 fallback 후보로 본다.
+- 캐시워크 포 비즈니스 모드에서 project prefix 아이콘이 별도 제공되기 전까지는 공용 아이콘을 사용하되, 의미가 같은 캐시워크 포 비즈니스 카탈로그 항목을 우선 fallback 후보로 본다.
 - 동일 카테고리(Action / Status 등) 내 아이콘은 동일 weight / stroke 로 통일.
 - Checkbox 의 error / on-green 분기는 가이드에 명시된 의미(에러 표시 / 성공 표시) 그대로 사용.
 

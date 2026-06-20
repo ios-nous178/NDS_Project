@@ -11,7 +11,7 @@ import { Header } from "@nudge-design/react";
  *   - transparent : 56px, 배경 투명 (옛 AppBar transparent)
  *   - web         : 데스크탑 80px grid 3열, max-width 1200 (옛 WebHeader)
  *
- * 브랜드 색은 토큰(--semantic-*)이 자동 적용. 로고/메뉴 콘텐츠만 props 로 주입.
+ * 프로젝트 색은 토큰(--semantic-*)이 자동 적용. 로고/메뉴 콘텐츠만 props 로 주입.
  */
 const meta: Meta<typeof Header> = {
   title: "Components/Header",
@@ -140,8 +140,8 @@ export const Web: Story = {
 };
 
 /*
- * 브랜드 완성형 헤더(로고·메뉴·CTA 가 브랜드별로 박힌 것)는 목업 전용
- * `nds-brand-chrome`(`<nds-brand-header brand="..." surface="web">`)으로 렌더된다 —
- * 공개 react 패키지의 브랜드 chrome 컴포넌트는 제거됨. 사용 가이드는 MCP
- * `get_guide({ topic: 'component:BrandHeader' })`. 위 스토리들은 브랜드-무관 base `Header` 데모.
+ * 프로젝트 완성형 헤더(로고·메뉴·CTA 가 프로젝트별로 박힌 것)는 목업 전용
+ * `nds-project-chrome`(`<nds-project-header project="..." surface="web">`)으로 렌더된다 —
+ * 공개 react 패키지의 프로젝트 chrome 컴포넌트는 제거됨. 사용 가이드는 MCP
+ * `get_guide({ topic: 'component:ProjectHeader' })`. 위 스토리들은 프로젝트-무관 base `Header` 데모.
  */

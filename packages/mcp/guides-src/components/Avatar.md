@@ -10,7 +10,7 @@ sizeMatrix:
 
 ## summary
 
-사용자 / 상담사 / 앱을 시각적으로 표현하는 이미지 단위 + fallback(이니셜 1자 Bold / 기본 아이콘). **Shape 3종 × Size 5종 = 15 variants**(Figma 1337:8). Shape: `circle`(인물 프로필·댓글·채팅·헤더 식별, 기본) · `rounded`(앱 아이콘·상담사 카드 썸네일, 사이즈별 radius 4~12) · `square`(콘텐츠 카드·일러스트·제품 이미지, radius 0). Size 키 `xs/sm/md/lg/xl` = `24/32/48/64/96px`. 정사각 비율 이미지를 swap 하고 clipsContent 로 모서리 밖을 자른다. 색은 semantic 토큰(bg=surface.section, fallback=text subtle)으로 5 브랜드 cascade.
+사용자 / 상담사 / 앱을 시각적으로 표현하는 이미지 단위 + fallback(이니셜 1자 Bold / 기본 아이콘). **Shape 3종 × Size 5종 = 15 variants**(Figma 1337:8). Shape: `circle`(인물 프로필·댓글·채팅·헤더 식별, 기본) · `rounded`(앱 아이콘·상담사 카드 썸네일, 사이즈별 radius 4~12) · `square`(콘텐츠 카드·일러스트·제품 이미지, radius 0). Size 키 `xs/sm/md/lg/xl` = `24/32/48/64/96px`. 정사각 비율 이미지를 swap 하고 clipsContent 로 모서리 밖을 자른다. 색은 semantic 토큰(bg=surface.section, fallback=text subtle)으로 5 프로젝트 cascade.
 
 ## pitfalls
 

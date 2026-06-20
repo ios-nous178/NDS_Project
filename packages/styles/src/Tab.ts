@@ -114,7 +114,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    /* tone=color 활성 텍스트 — brand(기본) 또는 브랜드 액센트(트로스트=Point 코발트) */
+    /* tone=color 활성 텍스트 — project(기본) 또는 프로젝트 액센트(트로스트=Point 코발트) */
     color: var(--nds-tab-accent-text, ${cv.textRole.brand});
   }
 
@@ -141,7 +141,7 @@ export const tabsStyles = `
   /* ─── chip variant ─── */
 
   :where(.${TAB_LIST_CLASS}[data-variant="chip"]) {
-    /* 칩 스트립은 투명 — 각 칩이 자기 bg(subtle/brand/neutral)를 칠한다. 회색 페이지 위에
+    /* 칩 스트립은 투명 — 각 칩이 자기 bg(subtle/project/neutral)를 칠한다. 회색 페이지 위에
        흰 띠로 떠 보이지 않게. (line variant 와 동일 처리. 흰 배경이 필요하면 부모가 칠한다.) */
     background: transparent;
     gap: var(--semantic-gap-default);
@@ -185,7 +185,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    /* 채움=accent(트로스트 Point 코발트), 텍스트=accentOn(코발트 위 흰). 비-Trost 는 brand fallback. */
+    /* 채움=accent(트로스트 Point 코발트), 텍스트=accentOn(코발트 위 흰). 비-Trost 는 project fallback. */
     background: var(--nds-tab-accent-fill, ${cv.surface.brand});
     color: var(--nds-tab-accent-on, ${cv.button.textDefault});
     font-weight: ${fontWeight.bold};
@@ -206,7 +206,7 @@ export const tabsStyles = `
 
   /* ─── segment variant (구 SegmentedControl 흡수) ───
      연결된 회색 트랙(surface.subtle) 위 균등 분할. active = 흰색 떠오름(surface.default + shadow).
-     mobile 36 / pc 40(아이콘 동반). tone="color" 면 active 가 브랜드 채움. */
+     mobile 36 / pc 40(아이콘 동반). tone="color" 면 active 가 프로젝트 채움. */
   :where(.${TAB_LIST_CLASS}[data-variant="segment"]) {
     display: flex;
     align-items: stretch;

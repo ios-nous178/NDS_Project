@@ -3,11 +3,11 @@
  * src/files 하위 자산 taxonomy 를 dist/files/ 로 복사.
  *
  * tsc 는 .ts 만 빌드하므로 PNG/WEBP/SVG 는 따로 복사해야 한다.
- * 그래야 `@nudge-design/assets/files/{brand|shared}/{path}` import 가 동작하고,
+ * 그래야 `@nudge-design/assets/files/{project|shared}/{path}` import 가 동작하고,
  * apps/storybook · packages/html/test-fixture 도 이 디렉토리를 동기화 소스로 쓴다.
  *
  * public taxonomy:
- *   - brand/{slug}/... — 브랜드/프로덕트 전용 자산
+ *   - project/{slug}/... — 프로젝트/프로덕트 전용 자산
  *   - shared/...       — 제3자/공용 자산
  *
  * 주의: 여기서 만든 dist/files 전체(래스터 포함)는 빌드 산출물이지만 npm tgz 에 전부

@@ -252,14 +252,14 @@ function CashbizSnackbarInner() {
 /**
  * 캐포비 admin Snackbar — **흰 카드**(흰 배경 + 그림자 + radius 8) · 우측 상단 고정(`position="top-right"`)
  * · 동시 1개(`maxCount={1}`, 새 알림이 기존 교체) · status 칩 아이콘 + 닫기 X. 흰 카드/검정 메시지는
- * `data-brand="cashwalk-biz"` cascade + `brand="cashwalk-biz"`(칩 아이콘)로 적용된다.
+ * `data-project="cashwalk-biz"` cascade + `project="cashwalk-biz"`(칩 아이콘)로 적용된다.
  * 기존 캐포비 "토스트"였던 5개 state(Default/Success/Error/Warning/Info)가 Snackbar 로 이관됐다.
  */
 export const CashbizTopRight: Story = {
-  name: "Brand/Cashbiz Top-Right (흰 카드 · Single)",
-  globals: { brand: "cashwalk-biz" },
+  name: "Project/Cashbiz Top-Right (흰 카드 · Single)",
+  globals: { project: "cashwalk-biz" },
   render: () => (
-    <SnackbarProvider position="top-right" maxCount={1} brand="cashwalk-biz" duration={5000}>
+    <SnackbarProvider position="top-right" maxCount={1} project="cashwalk-biz" duration={5000}>
       <CashbizSnackbarInner />
     </SnackbarProvider>
   ),
@@ -274,18 +274,18 @@ export const CashbizTopRight: Story = {
  */
 function PhoneFrame({
   label,
-  brand,
+  project,
   children,
 }: {
   label: string;
-  brand?: string;
+  project?: string;
   children: (frame: HTMLElement | null) => React.ReactNode;
 }) {
   const [frame, setFrame] = useState<HTMLElement | null>(null);
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
       <span style={frameLabel}>{label}</span>
-      <div ref={setFrame} data-brand={brand} style={phoneFrame}>
+      <div ref={setFrame} data-project={project} style={phoneFrame}>
         <div
           style={{ padding: "16px 16px", display: "flex", flexDirection: "column", gap: 10 }}
           aria-hidden

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { resolveActionsLayout, type ActionsLayout } from "@nudge-design/tokens";
-import { useBrand } from "./internal/useBrand.js";
+import { useProject } from "./internal/useProject.js";
 
 type DivProps = React.HTMLAttributes<HTMLDivElement>;
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -326,13 +326,13 @@ export interface ModalFooterProps extends Omit<DivProps, "children"> {
   /** 커스텀 푸터 콘텐츠 (기본 버튼 그룹 대신 사용) */
   children?: React.ReactNode;
   /**
-   * 버튼 배치. 생략 시 현재 브랜드 기본값이 적용된다(캐포비=end, 그 외=split).
-   * `split`=가로 균등, `end`=우측 hug. 색/pill 모양은 브랜드 토큰이 별도로 결정.
+   * 버튼 배치. 생략 시 현재 프로젝트 기본값이 적용된다(캐포비=end, 그 외=split).
+   * `split`=가로 균등, `end`=우측 hug. 색/pill 모양은 프로젝트 토큰이 별도로 결정.
    */
   actionsLayout?: ActionsLayout;
   /**
    * 확인 버튼 톤. `destructive`=비가역 액션(삭제·차단·해지) → 검정 Neutral CTA + 흰 텍스트.
-   * 생략/`default`=브랜드 confirm 색(positive — 트로스트=노랑). @default "default"
+   * 생략/`default`=프로젝트 confirm 색(positive — 트로스트=노랑). @default "default"
    */
   confirmTone?: "default" | "destructive";
   /** 취소 버튼에 전달할 추가 props */
@@ -356,8 +356,8 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
 }) => {
   const { onClose: contextOnClose } = useModalContext();
   const handleClose = customOnClose || contextOnClose || (() => {});
-  const brand = useBrand();
-  const resolvedLayout = resolveActionsLayout(brand, actionsLayout);
+  const project = useProject();
+  const resolvedLayout = resolveActionsLayout(project, actionsLayout);
 
   if (children) {
     return (
@@ -464,9 +464,9 @@ export interface ModalProps {
   closeText?: string;
   /** 하단 버튼 그룹 표시 여부 */
   showModalButtonGroup?: boolean;
-  /** 푸터 버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split). `split`|`end`. */
+  /** 푸터 버튼 배치. 생략 시 프로젝트 기본(캐포비=end, 그 외=split). `split`|`end`. */
   actionsLayout?: ActionsLayout;
-  /** 확인 버튼 톤. `destructive`=검정 Neutral CTA(삭제·차단). 생략=브랜드 confirm 색. @default "default" */
+  /** 확인 버튼 톤. `destructive`=검정 Neutral CTA(삭제·차단). 생략=프로젝트 confirm 색. @default "default" */
   confirmTone?: "default" | "destructive";
   /** 콘텐츠 최대 너비 (px) */
   maxWidth?: number;

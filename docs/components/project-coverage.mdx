@@ -1,0 +1,25 @@
+---
+sidebar_position: 2
+title: 프로젝트 컴포넌트 커버리지
+---
+
+import ProjectCoverage from "@site/src/components/ProjectCoverage";
+
+# 프로젝트 × 컴포넌트 커버리지
+
+NDS 가 결국 갖춰야 할 **목표 컴포넌트** 리스트를 baseline 으로,
+5개 프로젝트 × 2개 패키지(`@nudge-design/react`, `@nudge-design/html`) 의 구현 현황을 보여줍니다.
+
+범례 — `●` 코드 + 해당 프로젝트 Figma 가이드 둘 다 ✓ · `○` 코드 있음, 이 프로젝트 Figma 가이드 미정합 · `—` 코드 없음.
+
+> 아래 보드는 Storybook `Coverage/Project × Component` 와 **같은 공유 컴포넌트**
+> (`@nudge-design/catalog` 의 `ProjectCoverageTable`)로 렌더링됩니다. 판정·요약 계산은
+> `scripts/coverage-logic.mjs` SSOT, 데이터는 `metadata/{tdsComponents,coverage-manifest}.json` 입니다.
+
+<ProjectCoverage />
+
+## 갱신 방법
+
+1. 프로젝트별 Figma 가이드가 새로 추가되면 `metadata/tdsComponents.json` 의 해당 컴포넌트 `figmaByProject` 객체에 URL 추가 → `○` 가 `●` 로 점등.
+2. `projectChrome: true` 컴포넌트(예: Navbar→AppBar)는 `packages/react/src/{project}/` 폴더에 파일이 있어야 코드 있음으로 판정됩니다.
+3. `pnpm generate:project-coverage` 실행 → `metadata/coverage-manifest.json`(보드 데이터 출처) 재생성.

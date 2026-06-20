@@ -13,7 +13,7 @@ export type ValidationChipState = "incomplete" | "complete" | "error";
 /* ─── State → semantic color ─── */
 /**
  * 아이콘·텍스트가 같은 색을 쓰므로 root 에 `color` 한 번만 박고 SVG 는 `currentColor`.
- * incomplete = 아직 미충족(muted), complete = 충족(brand), error = 형식 위반(status-error).
+ * incomplete = 아직 미충족(muted), complete = 충족(project), error = 형식 위반(status-error).
  * 색·레이아웃은 styles/src/ValidationChip.ts 의 .nds-validation-chip / [data-state] 룰에서만
  * 정의한다 — react/html 은 data-state 만 set(JS 색맵 우회 금지).
  */
@@ -67,7 +67,7 @@ const ErrorGlyph: React.FC = () => (
 /* ─── Props ─── */
 
 export interface ValidationChipProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** 검증 상태 (Figma "state"): incomplete(미충족·muted) · complete(충족·brand) · error(위반·status-error) */
+  /** 검증 상태 (Figma "state"): incomplete(미충족·muted) · complete(충족·project) · error(위반·status-error) */
   state?: ValidationChipState;
   /** 라벨 래퍼에 추가할 클래스 */
   labelClassName?: string;
@@ -78,7 +78,7 @@ export interface ValidationChipProps extends React.HTMLAttributes<HTMLSpanElemen
  *
  * 16px 아이콘 + 12px 라벨, gap 4px. 읽기 전용 status 인디케이터 — 클릭 동작 없음.
  * 회원가입 비밀번호/이메일 규칙처럼 Input 아래 한 줄에 여러 개를 나열해(pattern:form-validation)
- * 입력값이 규칙을 충족할 때마다 incomplete → complete(Brand Blue) 로 전환한다.
+ * 입력값이 규칙을 충족할 때마다 incomplete → complete(Project Blue) 로 전환한다.
  *
  * Chip/Badge 와 혼동 금지 — Chip 은 선택·필터용 인터랙티브 태그, Badge 는 상태 라벨,
  * ValidationChip 은 검증 규칙 1개의 충족 신호다.

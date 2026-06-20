@@ -5,7 +5,7 @@
  * toast viewport 는 document.body 로 portal 렌더링한다.
  *
  * Toast 는 **인터랙션 없는 단일 다크 일시 메시지** 전용 — 자동으로 사라지므로 액션/닫기 버튼이나
- * 색 변형(success/error…)·브랜드 카드(캐포비 흰 카드)는 두지 않는다. 그런 알림은 <nds-snackbar>,
+ * 색 변형(success/error…)·프로젝트 카드(캐포비 흰 카드)는 두지 않는다. 그런 알림은 <nds-snackbar>,
  * 심각한 오류·결정 요청은 Modal/Alert 를 사용한다. 동시에 1개만 노출이 기본이다.
  */
 

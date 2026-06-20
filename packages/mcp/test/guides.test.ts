@@ -33,13 +33,13 @@ describe("getGuide", () => {
   });
 
   // 회귀: cashpobi(=cashwalk-biz 별칭) admin-cms 가이드를 호출하면 NudgeEAPCMS antd 패턴이 아니라
-  //   DS(html) 경로로 우회돼야 한다. isDsAdminBrand 가 별칭 정규화를 안 해서 brand='cashpobi' 가 새어나가
+  //   DS(html) 경로로 우회돼야 한다. isDsAdminProject 가 별칭 정규화를 안 해서 project='cashpobi' 가 새어나가
   //   240px Sider / INFO / CMS MENU / 'Copyright Nudge EAP' 가 캐포비에 잘못 적용된 사고를 고친 케이스.
-  for (const brand of ["cashpobi", "cash-pobi", "cashwalkbiz", "cashwalk-biz"]) {
-    it(`routes admin-cms guide to DS(html) path for brand='${brand}' (no NudgeEAPCMS antd)`, () => {
-      const r = getGuide({ topic: "admin-cms", brand }) as Record<string, unknown>;
+  for (const project of ["cashpobi", "cash-pobi", "cashwalkbiz", "cashwalk-biz"]) {
+    it(`routes admin-cms guide to DS(html) path for project='${project}' (no NudgeEAPCMS antd)`, () => {
+      const r = getGuide({ topic: "admin-cms", project }) as Record<string, unknown>;
       expect(r.intent).toBe("html");
-      expect(r.brand).toBe("cashwalk-biz");
+      expect(r.project).toBe("cashwalk-biz");
       // NudgeEAPCMS antd 가이드 본문(Sider/footer/searchForm 등)이 새어나오면 안 된다
       expect(r.layout).toBeUndefined();
       expect(r.searchForm).toBeUndefined();
@@ -47,16 +47,16 @@ describe("getGuide", () => {
     });
   }
 
-  // 영역 3분화: nudge-eap 은 어드민(b2b) 하드게이트 브랜드 — intent:'admin' 일 때만 DS 우회.
+  // 영역 3분화: nudge-eap 은 어드민(b2b) 하드게이트 프로젝트 — intent:'admin' 일 때만 DS 우회.
   // topic 호출만으로는(사내 백오피스=NudgeEAPCMS 일 수 있음) antd 백오피스 가이드를 준다.
-  for (const brand of ["nudge-eap", "nudgeeap", "nudge", "eap"]) {
-    it(`routes admin intent to DS(html) path for brand='${brand}' (b2b admin, no antd)`, () => {
-      const r = getGuide({ topic: "backoffice", intent: "admin", brand: brand as never }) as Record<
+  for (const project of ["nudge-eap", "nudgeeap", "nudge", "eap"]) {
+    it(`routes admin intent to DS(html) path for project='${project}' (b2b admin, no antd)`, () => {
+      const r = getGuide({ topic: "backoffice", intent: "admin", project: project as never }) as Record<
         string,
         unknown
       >;
       expect(r.intent).toBe("html");
-      expect(r.brand).toBe("nudge-eap");
+      expect(r.project).toBe("nudge-eap");
       expect(r.layout).toBeUndefined();
       expect(r.searchForm).toBeUndefined();
       expect((r.techStack as { forbidden?: string[] })?.forbidden).toContain("antd");
@@ -67,12 +67,12 @@ describe("getGuide", () => {
   }
 
   it("nudge-eap + topic backoffice (no admin intent) stays on the antd backoffice guide", () => {
-    const r = getGuide({ topic: "backoffice", brand: "nudge-eap" }) as Record<string, unknown>;
+    const r = getGuide({ topic: "backoffice", project: "nudge-eap" }) as Record<string, unknown>;
     expect(r.intent).toBe("backoffice");
     expect(r.layout).toBeTypeOf("object");
   });
 
-  it("brandless backoffice guide is neutral (no hardcoded Nudge EAP footer) and surfaces the gate notice", () => {
+  it("projectless backoffice guide is neutral (no hardcoded Nudge EAP footer) and surfaces the gate notice", () => {
     const r = getGuide({ topic: "backoffice" }) as Record<string, unknown>;
     expect(r.intent).toBe("backoffice");
     // 영역(어드민 하드게이트) 안내가 상단에 보여야 한다
@@ -100,8 +100,8 @@ describe("getGuide", () => {
     expect(alias.searchForm).toEqual(canonical.searchForm);
   });
 
-  it("flags an outside-gate brand on the backoffice guide as b2b-admin-unsupported (advisory only)", () => {
-    const r = getGuide({ topic: "backoffice", brand: "trost" }) as Record<string, unknown>;
+  it("flags an outside-gate project on the backoffice guide as b2b-admin-unsupported (advisory only)", () => {
+    const r = getGuide({ topic: "backoffice", project: "trost" }) as Record<string, unknown>;
     expect(r.intent).toBe("backoffice");
     expect(String(r._advisory)).toContain("미지원");
   });
@@ -122,9 +122,9 @@ describe("getGuide aspects (selective principle loading)", () => {
     expect(slim.elevation).toBeUndefined();
   });
 
-  it("resolves color→colors and tone→brandTone aliases", () => {
+  it("resolves color→colors and tone→projectTone aliases", () => {
     const slim = getGuide({ topic: "principles", aspects: ["color", "tone"] });
-    expect(aspectKeys(slim).sort()).toEqual(["brandTone", "colors"]);
+    expect(aspectKeys(slim).sort()).toEqual(["colors", "projectTone"]);
   });
 
   it("expands dos-donts into dos + donts + bannedPatterns", () => {
@@ -212,7 +212,7 @@ describe("getGuide view (response slimming)", () => {
     const slim = getGuide({ topic: "pattern:cashwalk-biz-admin-sidebar", view: "examples" });
     const readyMade = (slim as { _readyMade?: { html?: string; shellHtml?: string } })._readyMade;
     expect(readyMade).toBeDefined();
-    expect(readyMade?.html).toContain('<nds-sidebar brand="cashwalk-biz"');
+    expect(readyMade?.html).toContain('<nds-sidebar project="cashwalk-biz"');
     expect(readyMade?.html).toContain('slot="account"');
     expect(readyMade?.html).toContain("충전 잔액");
     expect(readyMade?.html).toContain('slot="items"');
@@ -318,10 +318,10 @@ describe("getGuide principles — learned principles promotion", () => {
     }
   });
 
-  const mk = (intent: string, decision: string, brand = "trost"): DesignDecisionRow => ({
+  const mk = (intent: string, decision: string, project = "trost"): DesignDecisionRow => ({
     ts: `t-${intent}`,
     ok: true,
-    screen: { brand, surface: "web", intent },
+    screen: { project, surface: "web", intent },
     decisions: [decision],
     rationales: [],
     componentsUsed: [],
@@ -336,48 +336,48 @@ describe("getGuide principles — learned principles promotion", () => {
     );
   };
 
-  const decision = "CTA 는 항상 brandSolid";
-  const threeScreens = (brand = "trost"): DesignDecisionRow[] => [
-    mk("login", decision, brand),
-    mk("signup", decision, brand),
-    mk("home", decision, brand),
+  const decision = "CTA 는 항상 projectSolid";
+  const threeScreens = (project = "trost"): DesignDecisionRow[] => [
+    mk("login", decision, project),
+    mk("signup", decision, project),
+    mk("home", decision, project),
   ];
 
   it("merges _learnedPrinciples into the principles response when a decision recurs >= threshold", () => {
     seed(threeScreens());
-    const r = getGuide({ topic: "principles", brand: "trost", cwd: dir });
+    const r = getGuide({ topic: "principles", project: "trost", cwd: dir });
     const learned = r._learnedPrinciples as Record<string, unknown> | undefined;
     expect(learned).toBeTypeOf("object");
-    expect(learned!.brand).toBe("trost");
+    expect(learned!.project).toBe("trost");
     const principles = learned!.principles as Array<{ text: string; count: number }>;
     expect(principles[0]).toMatchObject({ text: decision, count: 3 });
   });
 
   it("omits _learnedPrinciples below threshold (only 2 screens, default threshold 3)", () => {
     seed([mk("login", decision), mk("signup", decision)]);
-    const r = getGuide({ topic: "principles", brand: "trost", cwd: dir });
+    const r = getGuide({ topic: "principles", project: "trost", cwd: dir });
     expect(r._learnedPrinciples).toBeUndefined();
   });
 
   it("omits _learnedPrinciples when there is no decision log (no crash)", () => {
-    const r = getGuide({ topic: "principles", brand: "trost", cwd: dir });
+    const r = getGuide({ topic: "principles", project: "trost", cwd: dir });
     expect(r._learnedPrinciples).toBeUndefined();
     expect(r._advisory).toBeTypeOf("string"); // 정상 principles 응답은 그대로
   });
 
   it("survives aspect/section slicing (marker attached after pickSections)", () => {
     seed(threeScreens());
-    const r = getGuide({ topic: "principles", brand: "trost", cwd: dir, aspects: ["spacing"] });
+    const r = getGuide({ topic: "principles", project: "trost", cwd: dir, aspects: ["spacing"] });
     expect(Object.keys(r)).toContain("spacing");
     expect(r._learnedPrinciples).toBeTypeOf("object");
   });
 
-  it("infers brand from the nudge.brand marker when brand arg is omitted", () => {
+  it("infers project from the nudge.project marker when project arg is omitted", () => {
     seed(threeScreens());
-    fs.writeFileSync(path.join(dir, "nudge.brand"), "trost\n", "utf-8");
+    fs.writeFileSync(path.join(dir, "nudge.project"), "trost\n", "utf-8");
     const r = getGuide({ topic: "principles", cwd: dir });
     const learned = r._learnedPrinciples as Record<string, unknown> | undefined;
-    expect(learned?.brand).toBe("trost");
+    expect(learned?.project).toBe("trost");
   });
 
   it("respects NUDGE_LEARNED_PRINCIPLES=0 opt-out", () => {
@@ -385,7 +385,7 @@ describe("getGuide principles — learned principles promotion", () => {
     const prev = process.env.NUDGE_LEARNED_PRINCIPLES;
     try {
       process.env.NUDGE_LEARNED_PRINCIPLES = "0";
-      const r = getGuide({ topic: "principles", brand: "trost", cwd: dir });
+      const r = getGuide({ topic: "principles", project: "trost", cwd: dir });
       expect(r._learnedPrinciples).toBeUndefined();
     } finally {
       if (prev === undefined) delete process.env.NUDGE_LEARNED_PRINCIPLES;
@@ -400,7 +400,7 @@ describe("resolveIntentRouting — 영역 3분화 매트릭스", () => {
     expect(resolveIntentRouting("트로스트 마이페이지 목업").kind).toBe("html");
   });
 
-  it("운영자 키워드 자유발화는 브랜드 유무와 무관하게 확답 요구 (캐포비 제외)", () => {
+  it("운영자 키워드 자유발화는 프로젝트 유무와 무관하게 확답 요구 (캐포비 제외)", () => {
     for (const utterance of [
       "어드민 화면",
       "백오피스 만들어줘",
@@ -419,28 +419,28 @@ describe("resolveIntentRouting — 영역 3분화 매트릭스", () => {
       const r = resolveIntentRouting(intent, "cashpobi");
       expect(r.kind).toBe("html");
       expect(r.kind === "html" && r.surface).toBe("admin");
-      expect(r.kind === "html" && r.brand).toBe("cashwalk-biz");
+      expect(r.kind === "html" && r.project).toBe("cashwalk-biz");
     }
   });
 
-  it("intent:'admin' 하드게이트 — 게이트 브랜드는 html, 밖은 차단, 미지정은 질문", () => {
+  it("intent:'admin' 하드게이트 — 게이트 프로젝트는 html, 밖은 차단, 미지정은 질문", () => {
     const eap = resolveIntentRouting("admin", "eap");
     expect(eap.kind).toBe("html");
     expect(eap.kind === "html" && eap.surface).toBe("admin");
-    expect(eap.kind === "html" && eap.brand).toBe("nudge-eap");
+    expect(eap.kind === "html" && eap.project).toBe("nudge-eap");
 
     const blocked = resolveIntentRouting("admin", "trost");
     expect(blocked.kind).toBe("blocked-admin");
-    expect(blocked.kind === "blocked-admin" && blocked.requestedBrand).toBe("trost");
+    expect(blocked.kind === "blocked-admin" && blocked.requestedProject).toBe("trost");
     expect(
-      blocked.kind === "blocked-admin" && blocked.supportedAdminBrands.includes("nudge-eap"),
+      blocked.kind === "blocked-admin" && blocked.supportedAdminProjects.includes("nudge-eap"),
     ).toBe(true);
 
     expect(resolveIntentRouting("admin", undefined).kind).toBe("ambiguous-operator");
   });
 
-  it("미지(unknown) 브랜드 + intent:'admin' 은 차단 (지원 확인 불가)", () => {
-    const r = resolveIntentRouting("admin", "some-unknown-brand");
+  it("미지(unknown) 프로젝트 + intent:'admin' 은 차단 (지원 확인 불가)", () => {
+    const r = resolveIntentRouting("admin", "some-unknown-project");
     expect(r.kind).toBe("blocked-admin");
   });
 

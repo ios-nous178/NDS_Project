@@ -179,20 +179,20 @@ const reactDist = path.join(repoRoot, "packages/react/dist");
 const iconsDist = path.join(repoRoot, "packages/icons/dist");
 const tokensCssPath = path.join(repoRoot, "packages/tokens/dist/tokens.css");
 const tokensDistDir = path.join(repoRoot, "packages/tokens/dist");
-const tokensBrandsDir = path.join(tokensDistDir, "brands");
+const tokensProjectsDir = path.join(tokensDistDir, "projects");
 const tokensPkgPath = path.join(repoRoot, "packages/tokens/package.json");
-const brandsRoot = path.join(repoRoot, "brands");
+const projectsRoot = path.join(repoRoot, "projects");
 
-/* ─── 브랜드 수집 ──────────────────────────────────────────────
- * brands/{name}/DESIGN.md 의 YAML 프론트매터(--- ... ---)에서
+/* ─── 프로젝트 수집 ──────────────────────────────────────────────
+ * projects/{name}/DESIGN.md 의 YAML 프론트매터(--- ... ---)에서
  * version / name / description / colors.* / typography.*.fontFamily 를 읽고,
- * packages/tokens/package.json 의 exports 와 dist/brands 디렉토리를 함께 보고
+ * packages/tokens/package.json 의 exports 와 dist/projects 디렉토리를 함께 보고
  * - css export 존재 여부
  * - JS theme export 존재 여부
- * 를 정리한다. 새 브랜드 폴더가 추가되면 자동으로 잡힌다.
+ * 를 정리한다. 새 프로젝트 폴더가 추가되면 자동으로 잡힌다.
  * ───────────────────────────────────────────────────────────── */
 
-function readBrandFrontmatter(designMdPath) {
+function readProjectFrontmatter(designMdPath) {
   if (!fs.existsSync(designMdPath)) return null;
   const text = fs.readFileSync(designMdPath, "utf-8");
   const match = text.match(/^---\s*\n([\s\S]*?)\n---/);
@@ -264,7 +264,7 @@ function stripQuotes(s) {
   return s.replace(/^"|"$/g, "");
 }
 
-function collectBrands() {
+function collectProjects() {
   const tokensPkg = fs.existsSync(tokensPkgPath)
     ? JSON.parse(fs.readFileSync(tokensPkgPath, "utf-8"))
     : { exports: {} };
@@ -273,17 +273,17 @@ function collectBrands() {
     .map((k) => k.replace(/^\.\/css\//, ""));
   const hasBaseCssExport = Boolean(tokensPkg.exports?.["./css"]);
 
-  const jsThemes = fs.existsSync(tokensBrandsDir)
+  const jsThemes = fs.existsSync(tokensProjectsDir)
     ? fs
-        .readdirSync(tokensBrandsDir)
+        .readdirSync(tokensProjectsDir)
         .filter((f) => f.endsWith(".d.ts") && !f.endsWith(".d.ts.map"))
         .map((f) => f.replace(/\.d\.ts$/, ""))
         .filter((n) => n !== "index" && n !== "types")
     : [];
 
-  const dirs = fs.existsSync(brandsRoot)
+  const dirs = fs.existsSync(projectsRoot)
     ? fs
-        .readdirSync(brandsRoot, { withFileTypes: true })
+        .readdirSync(projectsRoot, { withFileTypes: true })
         .filter((d) => d.isDirectory())
         .map((d) => d.name)
     : [];
@@ -295,8 +295,8 @@ function collectBrands() {
   ]);
 
   return [...slugs].map((slug) => {
-    const designMd = path.join(brandsRoot, slug, "DESIGN.md");
-    const fm = readBrandFrontmatter(designMd) ?? {
+    const designMd = path.join(projectsRoot, slug, "DESIGN.md");
+    const fm = readProjectFrontmatter(designMd) ?? {
       version: undefined,
       name: slug,
       description: undefined,
@@ -309,7 +309,7 @@ function collectBrands() {
       : slug === "nudge-eap" && hasBaseCssExport
         ? "@nudge-design/tokens/css"
         : null;
-    const jsExport = jsThemes.includes(slug) ? `@nudge-design/tokens/brands` : null;
+    const jsExport = jsThemes.includes(slug) ? `@nudge-design/tokens/projects` : null;
 
     return {
       slug,
@@ -327,7 +327,7 @@ function collectBrands() {
         onSurface: fm.colors["on-surface"] ?? null,
       },
       fontFamilies: fm.fontFamilies,
-      designMdRelPath: fs.existsSync(designMd) ? `brands/${slug}/DESIGN.md` : "",
+      designMdRelPath: fs.existsSync(designMd) ? `projects/${slug}/DESIGN.md` : "",
       cssImport,
       jsExport,
       ready: Boolean(cssImport),
@@ -438,10 +438,10 @@ function parseCssVars(file) {
 
 const tokenGroupOf = (name) => name.replace(/^--/, "").split("-")[0];
 
-// base = tokens.css = nudge-eap. 나머지 dist/*.css 는 브랜드 테마(full token set).
-// 같은 이름·다른 값 → brandValues 오버라이드. base 에 없는 이름 → 브랜드 고유 토큰.
+// base = tokens.css = nudge-eap. 나머지 dist/*.css 는 프로젝트 테마(full token set).
+// 같은 이름·다른 값 → projectValues 오버라이드. base 에 없는 이름 → 프로젝트 고유 토큰.
 const baseMap = parseCssVars(tokensCssPath);
-const brandCssMaps = fs.existsSync(tokensDistDir)
+const projectCssMaps = fs.existsSync(tokensDistDir)
   ? fs
       .readdirSync(tokensDistDir)
       .filter((f) => f.endsWith(".css") && f !== "tokens.css")
@@ -452,41 +452,41 @@ const brandCssMaps = fs.existsSync(tokensDistDir)
       }))
   : [];
 
-// base(공통) 토큰 — 브랜드가 값을 덮으면 brandValues 에 기록.
+// base(공통) 토큰 — 프로젝트가 값을 덮으면 projectValues 에 기록.
 const baseTokens = [...baseMap.entries()].map(([name, value]) => {
   const entry = { name, value, group: tokenGroupOf(name) };
-  const brandValues = {};
-  for (const { slug, map } of brandCssMaps) {
+  const projectValues = {};
+  for (const { slug, map } of projectCssMaps) {
     const bv = map.get(name);
-    if (bv !== undefined && bv !== value) brandValues[slug] = bv;
+    if (bv !== undefined && bv !== value) projectValues[slug] = bv;
   }
-  if (Object.keys(brandValues).length) entry.brandValues = brandValues;
+  if (Object.keys(projectValues).length) entry.projectValues = projectValues;
   return entry;
 });
 
-// base 에 없는 브랜드 고유 토큰 (예: geniet --color-mint-*).
-const uniqueMap = new Map(); // name -> { value, brands:Set, brandValues:{} }
-for (const { slug, map } of brandCssMaps) {
+// base 에 없는 프로젝트 고유 토큰 (예: geniet --color-mint-*).
+const uniqueMap = new Map(); // name -> { value, projects:Set, projectValues:{} }
+for (const { slug, map } of projectCssMaps) {
   for (const [name, value] of map) {
     if (baseMap.has(name)) continue; // 오버라이드는 위에서 처리됨
     if (!uniqueMap.has(name)) {
-      uniqueMap.set(name, { value, brands: new Set([slug]), brandValues: {} });
+      uniqueMap.set(name, { value, projects: new Set([slug]), projectValues: {} });
     } else {
       const u = uniqueMap.get(name);
-      u.brands.add(slug);
-      if (value !== u.value) u.brandValues[slug] = value;
+      u.projects.add(slug);
+      if (value !== u.value) u.projectValues[slug] = value;
     }
   }
 }
-const brandTokens = [...uniqueMap.entries()].map(([name, u]) => {
-  const entry = { name, value: u.value, group: tokenGroupOf(name), brands: [...u.brands].sort() };
-  if (Object.keys(u.brandValues).length) entry.brandValues = u.brandValues;
+const projectTokens = [...uniqueMap.entries()].map(([name, u]) => {
+  const entry = { name, value: u.value, group: tokenGroupOf(name), projects: [...u.projects].sort() };
+  if (Object.keys(u.projectValues).length) entry.projectValues = u.projectValues;
   return entry;
 });
 
-const tokens = [...baseTokens, ...brandTokens];
+const tokens = [...baseTokens, ...projectTokens];
 
-const brands = collectBrands();
+const projects = collectProjects();
 
 // @nudge-design/html 의 custom element 태그 목록 — validate_html_mockup 이
 // "이 <nds-foo> 태그가 진짜 존재하나?" 를 알기 위해 catalog 에 박아둔다.
@@ -647,7 +647,7 @@ const catalog = {
   components: components.sort((a, b) => a.name.localeCompare(b.name)),
   icons: icons.sort(),
   tokens: tokens.sort((a, b) => a.name.localeCompare(b.name)),
-  brands: brands.sort((a, b) => a.slug.localeCompare(b.slug)),
+  projects: projects.sort((a, b) => a.slug.localeCompare(b.slug)),
   ndsHtmlTags,
   ndsHtmlElements,
 };
@@ -673,5 +673,5 @@ if (fs.existsSync(legacyManifestPath)) {
 console.log(
   `[mcp] catalog written: ${path.relative(repoRoot, outPath)} ` +
     `(components=${catalog.components.length}, icons=${catalog.icons.length}, ` +
-    `tokens=${catalog.tokens.length}, brands=${catalog.brands.length})`,
+    `tokens=${catalog.tokens.length}, projects=${catalog.projects.length})`,
 );

@@ -298,7 +298,7 @@ for (const file of files) {
   const srcPath = path.join(REACT_SRC, `${title}.tsx`);
   if (!fs.existsSync(srcPath)) {
     // baseline.skip 에 없는데 react 소스가 없는 mdx = orphan (제거/리네임된 컴포넌트 페이지가 잔존).
-    // 의도적 비-컴포넌트 페이지(overview·gallery·icons·brand-coverage 등)나 html 전용 컴포넌트는
+    // 의도적 비-컴포넌트 페이지(overview·gallery·icons·project-coverage 등)나 html 전용 컴포넌트는
     // scripts/component-docs-baseline.json 의 skip 에 등재한다(위 286 줄에서 먼저 걸러짐).
     results.orphan.push({ file, title });
     continue;

@@ -26,7 +26,7 @@ stateMatrix:
   rowDefault: static row (button 시멘틱은 onItemClick 있을 때만)
   rowHover: opacity 0.7 (button 일 때만, PC only)
   moreHover: text cv.textRole.strong
-  note: 탭 active 톤은 시멘틱 토큰 참조이므로 브랜드 theme(`brands/*.semantic.ts`)에 따라 자동 적용. 브랜드별 raw 매핑은 토큰 파일이 SSOT.
+  note: 탭 active 톤은 시멘틱 토큰 참조이므로 프로젝트 theme(`projects/*.semantic.ts`)에 따라 자동 적용. 프로젝트별 raw 매핑은 토큰 파일이 SSOT.
 usagePolicy:
   useFor:
     - PC 사이드바 커뮤니티 인기글 랭킹 (메인·카테고리·리스트 페이지 공통)
@@ -52,9 +52,9 @@ usagePolicy:
 - Rank 는 컴포넌트 내부에서 두 자리 zero-padded 로 자동 변환 — `items` 에 별도 rank 필드 넘기지 말 것. 배열 순서가 곧 순위.
 - Count 는 컴포넌트가 자동 포맷 (`[N]` / 999 초과 `[+999]`) — 외부에서 문자열로 가공해서 넘기지 말 것.
 - 최대 10개 row 까지만 노출하는 것이 디자인 가이드. 초과분은 시각적으로는 잘리지 않지만, `onMoreClick` 으로 별도 페이지/모달로 분기할 것.
-- Active 탭은 한 그룹에 하나만 — `activeTabKey` 단일 키 prop 사용. 자동으로 brand-subtle pill + brand text 톤 적용.
-- 탭 active 톤은 브랜드 시멘틱(`cv.surface.brandSubtle` + `cv.textRole.brand`)으로 자동 매핑 — raw hex 로 override 금지. 브랜드별 실제 색은 `packages/tokens/src/brands/{geniet,nudge-eap,trost}.semantic.ts` SSOT 참조.
-- Rank 색을 강조색(red/brand 등)으로 변경 금지 — Rank 는 보조 정렬 지표일 뿐, Count(red) 와 시각 위계 충돌.
+- Active 탭은 한 그룹에 하나만 — `activeTabKey` 단일 키 prop 사용. 자동으로 project-subtle pill + project text 톤 적용.
+- 탭 active 톤은 프로젝트 시멘틱(`cv.surface.brandSubtle` + `cv.textRole.brand`)으로 자동 매핑 — raw hex 로 override 금지. 프로젝트별 실제 색은 `packages/tokens/src/projects/{geniet,nudge-eap,trost}.semantic.ts` SSOT 참조.
+- Rank 색을 강조색(red/project 등)으로 변경 금지 — Rank 는 보조 정렬 지표일 뿐, Count(red) 와 시각 위계 충돌.
 - Count 를 title 왼쪽에 두는 등 순서 변경 금지 — 항상 rank → title → count.
 - Title 은 한 줄 truncate 고정 (CSS `text-overflow: ellipsis`). 두 줄 wrap 시 시각적 그리드 깨짐.
 - `onMoreClick` 미지정 시 더보기 영역이 숨겨짐 — '더보기' 가 필요한 화면이면 콜백 필수.

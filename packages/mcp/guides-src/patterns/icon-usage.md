@@ -3,7 +3,7 @@ metrics:
   maxHeadingIconsPerScreen: 4
   allowedLocations: AppBar buttons / Bottom Tab / IconButton / 카테고리 그룹 / 상태 아이콘 / Form field affordance
   consistencyRule: same-hierarchy-text → same-icon-decision
-  selectionPriority: brand-specific → nudge-eap-default → mockup-default(MockupLinear/MockupBold) → generated-custom
+  selectionPriority: project-specific → nudge-eap-default → mockup-default(MockupLinear/MockupBold) → generated-custom
   relatedPatterns: icon-color, iconography
 ---
 
@@ -14,7 +14,7 @@ metrics:
 ## rules
 
 - **flex 행 안 인라인 아이콘은 `flex-shrink:0` + 고정 width/height 필수** — 텍스트 옆(상태 뱃지 옆 [i], 칩 안, 라벨 옆)에 둔 SVG 는 flex 자식이라 공간이 부족하면 가로폭이 0 까지 눌려 세로로 찌그러진다(회귀: '반려' 뱃지 옆 [i] 아이콘이 1px 너비로 찌그러짐). DS 입력/체크박스는 아이콘 슬롯에 이미 flex-shrink:0 을 주지만(Input prefix/suffix·Checkbox indicator), 손수 넣은 SVG 는 작성자가 `flex-shrink:0; width:16px; height:16px` 를 직접 줘야 한다. find_icon 산출 SVG 도 컨테이너가 flex 면 동일.
-- **필수 선택 순서**: 브랜드 전용 아이콘 → NudgeEAP 기본 아이콘 → MockupLinear*/MockupBold* 목업 기본 아이콘 → 자체 생성 SVG. find_icon 으로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 이동.
+- **필수 선택 순서**: 프로젝트 전용 아이콘 → NudgeEAP 기본 아이콘 → MockupLinear*/MockupBold* 목업 기본 아이콘 → 자체 생성 SVG. find_icon 으로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 이동.
 - 허용 위치 (화이트리스트):
     · AppBar / Header 기능 버튼 (검색 · 알림 · 뒤로가기 · 메뉴)
     · Bottom Tab Navigation

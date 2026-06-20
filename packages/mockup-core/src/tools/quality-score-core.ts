@@ -73,7 +73,7 @@ export function clampScore(v: unknown): number {
 }
 
 /** 채점 지시문(rubric). HTML 은 stdin 으로 파이프되므로 본문엔 넣지 않는다. */
-export function buildScoringPrompt(brand?: string, surface?: string): string {
+export function buildScoringPrompt(project?: string, surface?: string): string {
   return [
     "당신은 Nudge 디자인 시스템 기준의 UX 품질 평가자입니다. 표준입력(stdin)으로 주어지는 HTML 목업을 보고 4개 항목을 0~100 정수로 채점하세요.",
     "코드 스타일·토큰·문법이 아니라 사용자 경험·흐름·인터랙션·폼 품질만 봅니다(코드 품질은 별도 정적 검증이 함).",
@@ -82,7 +82,7 @@ export function buildScoringPrompt(brand?: string, surface?: string): string {
     "- interaction-quality: 상호작용 명료성·피드백·상태 표현(hover/empty/loading/disabled/선택 등)",
     "- flow-patterns: 사용자 흐름의 자연스러움·단계 연결·CTA 위계",
     "- form-patterns: 폼이 있으면 라벨/도움말/에러/검증 흐름의 완성도(폼이 없으면 100)",
-    brand || surface ? `맥락 — 브랜드:${brand ?? "?"} / 표면:${surface ?? "?"}` : "",
+    project || surface ? `맥락 — 프로젝트:${project ?? "?"} / 표면:${surface ?? "?"}` : "",
     "각 항목마다 점수와 함께 **감점 사유(왜 만점이 아닌가)를 한국어 1-2문장**으로 reasons 에 적으세요(만점이면 빈 문자열). 가장 큰 개선점은 notes 에.",
     "도구를 절대 사용하지 말고(파일을 읽거나 명령 실행 금지), 출력은 오직 아래 형태의 JSON 한 개만(코드펜스·설명 없이):",
     '{"ux-patterns":0,"interaction-quality":0,"flow-patterns":0,"form-patterns":0,"reasons":{"ux-patterns":"감점 사유","interaction-quality":"감점 사유","flow-patterns":"감점 사유","form-patterns":"감점 사유"},"notes":"한국어 1-3문장, 가장 큰 개선점 1가지"}',

@@ -7,17 +7,17 @@
  * **DS 빌드 때 한 번** 해서 prebuilt 자산으로 떨군다:
  *
  *   dist/standalone/
- *     nudge-ds.runtime.js   ← runtime.js 를 esbuild IIFE 로 묶은 단일 파일(브랜드 무관)
+ *     nudge-ds.runtime.js   ← runtime.js 를 esbuild IIFE 로 묶은 단일 파일(프로젝트 무관)
  *     tokens.css            ← 공통(base) 토큰 — @nudge-design/tokens/css
- *     brand.<slug>.css      ← 브랜드 delta(:root override) — trost/geniet/...
+ *     project.<slug>.css      ← 프로젝트 delta(:root override) — trost/geniet/...
  *     styles.css            ← nds-* 컴포넌트 스타일(351KB, dist/styles.css 미러)
  *     reset.css             ← minimal reset (vanilla HTML 워크플로우)
- *     manifest.json         ← 브랜드별 CSS 조합 SSOT + runtime 파일명
+ *     manifest.json         ← 프로젝트별 CSS 조합 SSOT + runtime 파일명
  *
  * mockup-core(build_singlefile_html html intent)가 이 디렉터리를 런타임에 fs-read 해서
  * 사용자 index.html 에 inline 한다 → 외부의존성 0 인 단일 HTML 산출.
  *
- * CSS 는 조각으로 둔다(per-brand 사전 concat 안 함) — base/styles 가 브랜드 수만큼
+ * CSS 는 조각으로 둔다(per-project 사전 concat 안 함) — base/styles 가 프로젝트 수만큼
  * 중복되는 걸 피하고, 조합/순서는 inline 시 manifest 를 따라 mockup-core 가 한다.
  *
  *   node scripts/build-standalone.mjs
@@ -38,8 +38,8 @@ const RUNTIME_ENTRY = path.join(HTML_PKG, "dist/runtime.js");
 const STYLES_CSS = path.join(HTML_PKG, "dist/styles.css");
 const OUT = path.join(HTML_PKG, "dist/standalone");
 
-/** base 토큰 CSS 만 쓰는 브랜드(별도 delta 없음). catalog 의 cssImport==="@nudge-design/tokens/css". */
-const BASE_ONLY_BRAND = "nudge-eap";
+/** base 토큰 CSS 만 쓰는 프로젝트(별도 delta 없음). catalog 의 cssImport==="@nudge-design/tokens/css". */
+const BASE_ONLY_PROJECT = "nudge-eap";
 
 /**
  * minimal reset — vanilla HTML 워크플로우. tokens.css 이후, styles.css 이전 cascade 전제.
@@ -90,7 +90,7 @@ if (!fs.existsSync(tokensBase)) {
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
-// 1) runtime.js → IIFE 단일 파일 (브랜드 무관). esbuild 가 workspace symlink 를 따라
+// 1) runtime.js → IIFE 단일 파일 (프로젝트 무관). esbuild 가 workspace symlink 를 따라
 //    @nudge-design/tokens·icons/vanilla 의 확장자 없는 import 까지 해석해 전부 인라인한다.
 console.log("[build-standalone] esbuild → nudge-ds.runtime.js (IIFE)");
 await build({
@@ -109,19 +109,19 @@ fs.copyFileSync(tokensBase, path.join(OUT, "tokens.css"));
 fs.copyFileSync(STYLES_CSS, path.join(OUT, "styles.css"));
 fs.writeFileSync(path.join(OUT, "reset.css"), RESET_CSS, "utf-8");
 
-// 3) 브랜드 delta CSS 복사(tokens.css 외 모든 *.css) + manifest 조립.
-const brands = {
-  [BASE_ONLY_BRAND]: ["tokens.css", "styles.css", "reset.css"],
+// 3) 프로젝트 delta CSS 복사(tokens.css 외 모든 *.css) + manifest 조립.
+const projects = {
+  [BASE_ONLY_PROJECT]: ["tokens.css", "styles.css", "reset.css"],
 };
 for (const file of fs.readdirSync(TOKENS_DIST)) {
   if (!file.endsWith(".css") || file === "tokens.css") continue;
   const slug = file.slice(0, -".css".length);
-  const dest = `brand.${slug}.css`;
+  const dest = `project.${slug}.css`;
   fs.copyFileSync(path.join(TOKENS_DIST, file), path.join(OUT, dest));
-  brands[slug] = ["tokens.css", dest, "styles.css", "reset.css"];
+  projects[slug] = ["tokens.css", dest, "styles.css", "reset.css"];
 }
 
-const manifest = { runtime: "nudge-ds.runtime.js", baseOnlyBrand: BASE_ONLY_BRAND, brands };
+const manifest = { runtime: "nudge-ds.runtime.js", baseOnlyProject: BASE_ONLY_PROJECT, projects };
 fs.writeFileSync(
   path.join(OUT, "manifest.json"),
   `${JSON.stringify(manifest, null, 2)}\n`,
@@ -131,5 +131,5 @@ fs.writeFileSync(
 const sizeKb = (p) => (fs.statSync(path.join(OUT, p)).size / 1024).toFixed(1);
 console.log(
   `\n✓ dist/standalone/ 생성 — runtime ${sizeKb("nudge-ds.runtime.js")}KB · ` +
-    `styles ${sizeKb("styles.css")}KB · 브랜드 ${Object.keys(brands).join(", ")}`,
+    `styles ${sizeKb("styles.css")}KB · 프로젝트 ${Object.keys(projects).join(", ")}`,
 );

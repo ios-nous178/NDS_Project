@@ -34,7 +34,7 @@ scene 스키마 SSOT: `packages/mockup-core/src/tools/figma/scene.ts` 의 `Figma
   `currentColor` 는 추출 시점의 실제 색으로 치환되어 들어옵니다.
 - **이미지** — `data:` URL(인라인 base64)만. 외부 URL 은 건너뜁니다(무유출 단일 산출물 기조).
 - **텍스트/폰트** — family + weight 로 사용 가능한 폰트를 매칭합니다(스타일명 공백·하이픈 무시 →
-  `Semi Bold` == `SemiBold`). **브랜드 폰트를 로컬에 설치하거나 Figma 조직에 공유**해 두면
+  `Semi Bold` == `SemiBold`). **프로젝트 폰트를 로컬에 설치하거나 Figma 조직에 공유**해 두면
   그대로 사용하고, 어디에도 없을 때만 `Inter` 로 폴백합니다.
 
 ## 한계 (v1)
@@ -42,4 +42,4 @@ scene 스키마 SSOT: `packages/mockup-core/src/tools/figma/scene.ts` 의 `Figma
 - **평면 absolute 배치** — Auto Layout/제약 없음. flex 구조 유래 Auto Layout 은 후속(Phase 2).
 - **일반 레이어** — DS 컴포넌트 인스턴스가 아님. 레이어 이름만 DS 컴포넌트명(`Button` 등)으로 표기.
   Figma DS 라이브러리가 publish 되면 `scene.json` 의 `dsComponent`/`props` 메타로 인스턴스 승격 예정(Phase 3).
-- **폰트 부재 시 폴백** — 브랜드 폰트가 로컬·조직 어디에도 없으면 `Inter` 로 대체됩니다(설치하면 해결).
+- **폰트 부재 시 폴백** — 프로젝트 폰트가 로컬·조직 어디에도 없으면 `Inter` 로 대체됩니다(설치하면 해결).

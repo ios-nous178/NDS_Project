@@ -1,17 +1,17 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { BRANDS, BRAND_LABEL, reactStatus, htmlStatus } from "./coverage-logic.mjs";
+import { PROJECTS, PROJECT_LABEL, reactStatus, htmlStatus } from "./coverage-logic.mjs";
 
 /**
- * Brand × Component Coverage manifest builder.
+ * Project × Component Coverage manifest builder.
  *
  * 단일 SSOT — 두 곳이 이걸 통해 같은 판정 데이터를 본다:
- *   1) scripts/generate-brand-coverage.mjs  (docs MDX 생성)
- *   2) apps/storybook/.../BrandComponentCoverage.stories.tsx (보드 UI)
+ *   1) scripts/generate-project-coverage.mjs  (docs MDX 생성)
+ *   2) apps/storybook/.../ProjectComponentCoverage.stories.tsx (보드 UI)
  *
  * Storybook 은 metadata/coverage-manifest.json 을 import 해서 사용한다.
- * `pre*` 훅에서 generate:brand-coverage 가 매번 돌기 때문에 파일은 항상 fresh.
+ * `pre*` 훅에서 generate:project-coverage 가 매번 돌기 때문에 파일은 항상 fresh.
  */
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,9 +22,9 @@ const reactSrcDir = path.join(rootDir, "packages", "react", "src");
 const reactIndexPath = path.join(reactSrcDir, "index.ts");
 const htmlIndexPath = path.join(rootDir, "packages", "html", "src", "index.ts");
 
-// 브랜드 상수·셀 판정 로직의 SSOT 는 coverage-logic.mjs (node-free, 스토리도 공유).
-// 기존 소비처(generate-brand-coverage.mjs)가 이 모듈에서 import 하던 심볼을 그대로 재노출한다.
-export { BRANDS, BRAND_LABEL, reactStatus, htmlStatus };
+// 프로젝트 상수·셀 판정 로직의 SSOT 는 coverage-logic.mjs (node-free, 스토리도 공유).
+// 기존 소비처(generate-project-coverage.mjs)가 이 모듈에서 import 하던 심볼을 그대로 재노출한다.
+export { PROJECTS, PROJECT_LABEL, reactStatus, htmlStatus };
 
 async function readReactExports() {
   const src = await fs.readFile(reactIndexPath, "utf8");
@@ -45,13 +45,13 @@ async function readHtmlExports() {
   return exports;
 }
 
-async function readBrandChromeFor(brand) {
-  const brandDir = path.join(reactSrcDir, brand);
+async function readProjectChromeFor(project) {
+  const projectDir = path.join(reactSrcDir, project);
   let entries;
   try {
-    entries = await fs.readdir(brandDir, { withFileTypes: true });
+    entries = await fs.readdir(projectDir, { withFileTypes: true });
   } catch (e) {
-    // 브랜드 chrome 통합으로 일부 브랜드 dir(geniet/runmile/cashwalk-biz)은 제거됨 — chrome 0.
+    // 프로젝트 chrome 통합으로 일부 프로젝트 dir(geniet/runmile/cashwalk-biz)은 제거됨 — chrome 0.
     if (e.code === "ENOENT") return new Set();
     throw e;
   }
@@ -66,10 +66,10 @@ async function readBrandChromeFor(brand) {
   return names;
 }
 
-async function readBrandChrome() {
+async function readProjectChrome() {
   const out = {};
-  for (const b of BRANDS) {
-    out[b] = await readBrandChromeFor(b);
+  for (const b of PROJECTS) {
+    out[b] = await readProjectChromeFor(b);
   }
   return out;
 }
@@ -78,23 +78,23 @@ async function readBrandChrome() {
 
 /** 메모리상 manifest 객체 (Set 포함). docs generator 가 직접 소비. */
 export async function buildManifest() {
-  const [reactExports, htmlExports, brandChrome] = await Promise.all([
+  const [reactExports, htmlExports, projectChrome] = await Promise.all([
     readReactExports(),
     readHtmlExports(),
-    readBrandChrome(),
+    readProjectChrome(),
   ]);
-  return { reactExports, htmlExports, brandChrome };
+  return { reactExports, htmlExports, projectChrome };
 }
 
 /** 직렬화 — Storybook 이 import 할 수 있게 Set → sorted array. */
 export function serializeManifest(manifest, generatedAt = new Date().toISOString()) {
   return {
-    brands: BRANDS,
-    brandLabel: BRAND_LABEL,
+    projects: PROJECTS,
+    projectLabel: PROJECT_LABEL,
     reactExports: [...manifest.reactExports].sort(),
     htmlExports: [...manifest.htmlExports].sort(),
-    brandChrome: Object.fromEntries(
-      BRANDS.map((b) => [b, [...(manifest.brandChrome[b] ?? [])].sort()]),
+    projectChrome: Object.fromEntries(
+      PROJECTS.map((b) => [b, [...(manifest.projectChrome[b] ?? [])].sort()]),
     ),
     generatedAt,
   };

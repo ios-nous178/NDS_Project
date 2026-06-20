@@ -99,15 +99,15 @@ function absoluteMockupPath(session: ChatSession, projectPath: string): string |
   return join(base, session.mockupFile);
 }
 
-function readBrandMarker(startDir: string | null): string | undefined {
+function readProjectMarker(startDir: string | null): string | undefined {
   if (!startDir) return undefined;
   let dir = startDir;
   for (let i = 0; i < 5; i++) {
-    const marker = join(dir, "nudge.brand");
+    const marker = join(dir, "nudge.project");
     if (existsSync(marker)) {
       try {
-        const brand = readFileSync(marker, "utf8").trim();
-        if (brand) return brand;
+        const project = readFileSync(marker, "utf8").trim();
+        if (project) return project;
       } catch {
         return undefined;
       }
@@ -120,11 +120,11 @@ function readBrandMarker(startDir: string | null): string | undefined {
 }
 
 function hydrateSessionContext(session: ChatSession, projectPath: string): ChatSession {
-  if (session.brand) return session;
+  if (session.project) return session;
   const mockupPath = absoluteMockupPath(session, projectPath);
   const markerStart = mockupPath ? dirname(mockupPath) : (session.cwd ?? projectPath);
-  const brand = readBrandMarker(markerStart);
-  return brand ? { ...session, brand } : session;
+  const project = readProjectMarker(markerStart);
+  return project ? { ...session, project } : session;
 }
 
 function workspaceDirs(session: ChatSession, projectPath: string): string[] {

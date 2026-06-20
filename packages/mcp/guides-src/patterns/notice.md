@@ -17,7 +17,7 @@ references:
   - label: Cashpobi Alert 디자인 가이드
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=984-6787
     caption: 캐포비 라이브러리의 인라인 알림 박스 가이드 — 5 variant(info/Notice/Caution/Success/Error)·2 size(52/72)·anatomy·Usage 경계·DO/Don't. 이 DS에서는 notice 패턴으로 흡수.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary

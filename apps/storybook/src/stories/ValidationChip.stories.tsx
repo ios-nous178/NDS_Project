@@ -27,7 +27,7 @@ const meta: Meta<typeof ValidationChip> = {
     state: {
       control: "select",
       options: STATES,
-      description: "Figma `state` — incomplete(muted) → complete(brand) → error(status-error)",
+      description: "Figma `state` — incomplete(muted) → complete(project) → error(status-error)",
     },
     children: {
       control: "text",
@@ -61,7 +61,7 @@ export const States: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // 입력값이 규칙을 충족하면 chip 이 Brand Blue 로 전환되는 신호 — data-state 로 잠금
+    // 입력값이 규칙을 충족하면 chip 이 Project Blue 로 전환되는 신호 — data-state 로 잠금
     const complete = canvas.getByText("6자 이상", { selector: '[data-state="complete"] *' });
     expect(complete).toBeInTheDocument();
   },

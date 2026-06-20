@@ -32,7 +32,7 @@ import { SelectionButtonGroup } from "@nudge-design/react";
 ### 자주 하는 실수
 
 - **Tab variant="segment"과 혼동** — segment는 연결된 회색 트랙(뷰/상태 전환)이고, SelectionButtonGroup은 폼 입력(개별 브랜드색 버튼)입니다. 폼 안 단일 선택이면 이 컴포넌트입니다.
-- **선택색을 hex로 박기** — selected 상태는 `--semantic-bg-brand-subtle` / `--semantic-border-brand-default` 캐스케이드로 5개 브랜드에 자동 대응합니다. 직접 색을 지정하지 마세요.
+- **선택색을 hex로 박기** — selected 상태는 `--semantic-bg-brand-subtle` / `--semantic-border-brand-default` 캐스케이드로 5개 프로젝트에 자동 대응합니다. 직접 색을 지정하지 마세요.
 - **손으로 width 지정** — 그룹 내 옵션은 등폭이 기본입니다. "전체"(좁음) / "특정 지역"(넓음)처럼 라벨 길이가 달라도 컴포넌트가 가장 넓은 옵션 기준으로 자동 균등하게 그립니다. 컨테이너 100%로 늘리려면 `fullWidth`를 쓰세요.
 - **"특정 X" 선택 결과를 또 다른 노란 outlined 버튼·칩으로 인라인 나열** — 선택 버튼과 시각적으로 동일해 혼동됩니다. 소수 고정 선택지는 toggle Chip, 동적 다중 선택은 SelectedItemsPanel + SelectedItemRow로 그리세요.
 

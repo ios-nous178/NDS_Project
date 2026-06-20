@@ -23,7 +23,7 @@ dist/styles.css               ← 생성물 (번들된 단일 CSS)
 
 - 각 컴포넌트 스타일은 `<Component>.ts` 에 `xxxStyles` 템플릿 리터럴로 작성하고, 추출기가 토큰 값을 평가해 `dist/styles.css` 로 병합합니다.
 - 새 컴포넌트 스타일 파일을 만들면 **자동으로 번들**됩니다(별도 index 등록 불필요).
-- 색은 `cv.*`(토큰) 로만 — raw hex 금지. 브랜드 차이는 `tokens/src/brands/*` 가 토큰 값으로 흘려보냄(`[data-brand]` 색 분기 지양).
+- 색은 `cv.*`(토큰) 로만 — raw hex 금지. 프로젝트 차이는 `tokens/src/projects/*` 가 토큰 값으로 흘려보냄(`[data-project]` 색 분기 지양).
 
 ## 빌드
 

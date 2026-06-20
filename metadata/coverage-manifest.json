@@ -1,12 +1,12 @@
 {
-  "brands": [
+  "projects": [
     "trost",
     "geniet",
     "nudge-eap",
     "cashwalk-biz",
     "runmile"
   ],
-  "brandLabel": {
+  "projectLabel": {
     "trost": "Trost",
     "geniet": "Geniet",
     "nudge-eap": "NudgeEAP",
@@ -31,7 +31,6 @@
     "Banner",
     "BottomNav",
     "BottomSheet",
-    "BrandLogo",
     "Breadcrumb",
     "Button",
     "Calendar",
@@ -83,6 +82,7 @@
     "PriceTag",
     "ProductCard",
     "ProgressBar",
+    "ProjectLogo",
     "QuickMenu",
     "Radio",
     "ResultState",
@@ -142,10 +142,6 @@
     "BottomNav",
     "BottomNavItem",
     "BottomSheet",
-    "BrandBottomNav",
-    "BrandFooter",
-    "BrandHeader",
-    "BrandLogo",
     "Breadcrumb",
     "BreadcrumbItem",
     "Button",
@@ -220,6 +216,10 @@
     "PriceTag",
     "ProductCard",
     "ProgressBar",
+    "ProjectBottomNav",
+    "ProjectFooter",
+    "ProjectHeader",
+    "ProjectLogo",
     "QuickMenu",
     "Radio",
     "RegionRow",
@@ -263,7 +263,7 @@
     "VerificationCodeInput",
     "VideoPlayer"
   ],
-  "brandChrome": {
+  "projectChrome": {
     "trost": [],
     "geniet": [],
     "nudge-eap": [],

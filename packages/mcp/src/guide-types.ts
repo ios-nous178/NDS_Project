@@ -50,9 +50,9 @@ export interface ComponentGuide {
    * 값은 'no-html-equivalent' 만 허용 (현재 정의된 마커).
    * 라우터는 이 값이 있으면 `_htmlAdvisory` 한 줄을 응답에 첨부하고 react examples 를 그대로 노출.
    *
-   * 브랜드 크롬(BrandX WebHeader / AppBar / Footer)에도 이 마커를 쓰되, 라우터의
-   * `brandChromeHtmlRedirect(name)` 가 컴포넌트 이름으로 `<nds-brand-header>` / `<nds-brand-footer>`
-   * 표지판 advisory 를 자동 생성한다 (막다른 길 안내가 아니라 brand wrapper 로 유도). 단, 본문
+   * 프로젝트 크롬(ProjectX WebHeader / AppBar / Footer)에도 이 마커를 쓰되, 라우터의
+   * `projectChromeHtmlRedirect(name)` 가 컴포넌트 이름으로 `<nds-project-header>` / `<nds-project-footer>`
+   * 표지판 advisory 를 자동 생성한다 (막다른 길 안내가 아니라 project wrapper 로 유도). 단, 본문
    * summary/recommended 에도 wrapper 한 줄을 같이 박아 조회 순서와 무관하게 노출되게 할 것
    * (BottomNav 가이드 패턴 — 회고: 진입점 하나만 보고 멈추는 실수 방지).
    */
@@ -63,11 +63,11 @@ export interface ComponentGuide {
   sizeMatrix?: Record<string, string>;
   /** state(active/hover/disabled) 별 토큰/배경 매핑 */
   stateMatrix?: Record<string, string>;
-  /** brand 별 sizeMatrix/stateMatrix 의 부분 override + 자유 dimensions 객체.
-   *  service overlay 가 아니라 base 안의 brand-aware metadata (Figma 450:68 v2 결정).
+  /** project 별 sizeMatrix/stateMatrix 의 부분 override + 자유 dimensions 객체.
+   *  service overlay 가 아니라 base 안의 project-aware metadata (Figma 450:68 v2 결정).
    *
-   *  brand 가 지정된 get_guide 호출 시 router 가 해당 brand 의 override 를 base 매트릭스에 deep merge 한다.
-   *  dimensions 는 base 에 없는 spec 을 brand 별로 신설할 때 사용 (예: Modal Cashwalk-biz 의 admin desktop 변형 width/radius/padding/typography). */
+   *  project 가 지정된 get_guide 호출 시 router 가 해당 project 의 override 를 base 매트릭스에 deep merge 한다.
+   *  dimensions 는 base 에 없는 spec 을 project 별로 신설할 때 사용 (예: Modal Cashwalk-biz 의 admin desktop 변형 width/radius/padding/typography). */
   matrixOverrides?: Partial<
     Record<
       "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile",
@@ -79,17 +79,17 @@ export interface ComponentGuide {
       }
     >
   >;
-  /** brand 별 valid prop 값 — Pattern 'Brand-aware Base' (Figma 450:68 v2).
-   *  예: BrandHeader.activeKey = { trost: ['home','counsel',...], geniet: ['home','community',...] }.
-   *  brand 가 지정된 get_guide 호출 시 router 가 해당 brand 값만 응답에 fold. */
+  /** project 별 valid prop 값 — Pattern 'Project-aware Base' (Figma 450:68 v2).
+   *  예: ProjectHeader.activeKey = { trost: ['home','counsel',...], geniet: ['home','community',...] }.
+   *  project 가 지정된 get_guide 호출 시 router 가 해당 project 값만 응답에 fold. */
   validPropValues?: Partial<
     Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile", Record<string, string[]>>
   >;
-  /** brand 별 필요 파일 manifest — Pattern 'Brand-aware Base'.
+  /** project 별 필요 파일 manifest — Pattern 'Project-aware Base'.
    *  예: { trost: ['trost-logo.svg'], geniet: ['geniet-logo-pc.webp', ...] }. 호스트 앱이 public/ 에 배치해야 할 자산. */
   assetManifest?: Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile", string[]>>;
-  /** brand 별 강제 prop 값 — Pattern 'Brand-aware Base'.
-   *  예: { footerTone: { trost: 'dark', '*': 'light' } } — 키 '*' 는 명시 안 된 brand 의 default. */
+  /** project 별 강제 prop 값 — Pattern 'Project-aware Base'.
+   *  예: { footerTone: { trost: 'dark', '*': 'light' } } — 키 '*' 는 명시 안 된 project 의 default. */
   forcedProps?: Record<
     string,
     Partial<Record<"trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile" | "*", string>>
@@ -104,7 +104,7 @@ export interface ComponentGuide {
     /** 패키지 내 상대경로 (`references/...`) — MCP server 가 절대경로로 풀어준다. */
     image?: string;
     caption?: string;
-    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
+    project?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
   }>;
   /** 접근성 가이드 (aria/대비/타겟 사이즈 등) */
   accessibility?: string[];
@@ -141,7 +141,7 @@ export interface PatternGuide {
     source: string;
     caption: string;
   }>;
-  /** 대표 Figma 노드 URL — 단일 레퍼런스 (브랜드 가이드 / 어드민 표준 등). */
+  /** 대표 Figma 노드 URL — 단일 레퍼런스 (프로젝트 가이드 / 어드민 표준 등). */
   figmaNodeUrl?: string;
   /** 추가 레퍼런스 (스크린샷 URL · Figma 다중 노드 등). label/caption 으로 무엇을 보여주는지 식별. */
   references?: Array<{
@@ -151,7 +151,7 @@ export interface PatternGuide {
     /** 로컬 이미지 경로 (`apps/storybook/public/...` 등). */
     image?: string;
     caption?: string;
-    brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
+    project?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap" | "runmile";
   }>;
   /**
    * 복붙용 ready-made 트리(예: 캐포비 사이드바 HTML/React/SHELL). `_` prefix 라 pickSections 가

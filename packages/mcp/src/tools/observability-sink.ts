@@ -45,7 +45,7 @@ interface RecordValidationArgs extends RecordBase {
 
 interface RecordQualityArgs extends RecordBase {
   filePath?: string;
-  brand?: string;
+  project?: string;
   surface?: string;
   codeScores: { overall: number; dimensions?: Record<string, number> } | null;
   llm: LlmScoreResult;
@@ -335,7 +335,7 @@ function qualityEndpoint(args: {
         codeOverall: scores?.overall,
         codeDimensions: dimensions,
         llm: args.quality?.llm,
-        brand: args.quality?.brand,
+        project: args.quality?.project,
         surface: args.quality?.surface,
       },
     },
@@ -560,7 +560,7 @@ export async function recordObservability(
     cwd?: string;
     source?: string;
     filePath?: string;
-    brand?: string;
+    project?: string;
     surface?: string;
   };
   switch (name) {
@@ -595,7 +595,7 @@ export async function recordObservability(
         tool: name,
         cwd: a.cwd,
         filePath: a.filePath,
-        brand: a.brand,
+        project: a.project,
         surface: a.surface,
         dsVersion,
         codeScores: r.codeScores ?? null,
@@ -634,7 +634,7 @@ export async function recordQualityObservability(
         sessionId,
         client,
         mockupFile,
-        brand: args.brand,
+        project: args.project,
         surface: args.surface,
         dsVersion: args.dsVersion,
         codeScores: args.codeScores,

@@ -493,14 +493,14 @@ export function validateMockupSource(
 
   if (
     /(linear|radial|conic)-gradient\s*\(/.test(source) &&
-    /(logo|brand|accent|hero|card|badge|chip|background)/i.test(source)
+    /(logo|project|accent|hero|card|badge|chip|background)/i.test(source)
   ) {
     violations.push({
       rule: "logo-color-as-ui-accent",
       line: 1,
       detail: "gradient/accent 색상이 UI surface나 강조 요소로 사용된 정황.",
       suggestion:
-        "브랜드 로고 컬러는 UI accent color가 아닙니다. 로고 표현 용도로만 두고 UI는 DS semantic token을 사용하세요. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
+        "프로젝트 로고 컬러는 UI accent color가 아닙니다. 로고 표현 용도로만 두고 UI는 DS semantic token을 사용하세요. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
     });
   }
 
@@ -687,16 +687,16 @@ export function validateMockupSource(
     });
   }
 
-  // ─── Brand BG 한 화면 1곳 ─────────────────────────────
+  // ─── Project BG 한 화면 1곳 ─────────────────────────────
   // --semantic-bg-brand-default / --semantic-bg-brand-subtle 가 2회 이상이면 위반.
-  const brandBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) || [];
-  if (brandBgMatches.length >= 2) {
+  const projectBgMatches = source.match(/var\(--semantic-bg-brand-(?:default|subtle)\)/g) || [];
+  if (projectBgMatches.length >= 2) {
     violations.push({
-      rule: "brand-bg-overuse",
+      rule: "project-bg-overuse",
       line: 1,
-      detail: `Brand background 토큰이 ${brandBgMatches.length}회 사용됨 (한 화면에 최대 1곳).`,
+      detail: `Project background 토큰이 ${projectBgMatches.length}회 사용됨 (한 화면에 최대 1곳).`,
       suggestion:
-        "Brand BG 는 의미 있는 notice / 핵심 강조 1곳에만. 나머지는 var(--semantic-bg-surface*) 또는 elevated 사용. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
+        "Project BG 는 의미 있는 notice / 핵심 강조 1곳에만. 나머지는 var(--semantic-bg-surface*) 또는 elevated 사용. get_guide({ topic: 'pattern:visual-antipatterns' }) 참조.",
     });
   }
 
@@ -846,9 +846,9 @@ const CHECKLIST_SPEC: Array<{ id: string; label: string; ruleIds: string[] }> = 
     ruleIds: ["non-4pt-spacing"],
   },
   {
-    id: "brand-bg-single",
-    label: "Brand BG 1개 이하",
-    ruleIds: ["brand-bg-overuse"],
+    id: "project-bg-single",
+    label: "Project BG 1개 이하",
+    ruleIds: ["project-bg-overuse"],
   },
   {
     id: "heading-no-icon",

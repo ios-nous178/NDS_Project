@@ -22,7 +22,7 @@ import "@nudge-design/react/styles.css";   // 공용 CSS 번들
 src/<Component>.tsx          ← 구현 + Props (SSOT)
 src/<Component>.guide.ts     ← (일부) props 가이드 메타
 src/index.ts                 ← 공개 export 배럴
-src/{geniet,trost,...}/      ← 브랜드 chrome(header/footer/bottom-nav)
+src/{geniet,trost,...}/      ← 프로젝트 chrome(header/footer/bottom-nav)
 ```
 
 스타일은 이 패키지가 아니라 `@nudge-design/styles` 에 있습니다(react·html 공용). 색은 `cv.*` 헬퍼로 토큰을 참조하고 raw hex 를 박지 않습니다.

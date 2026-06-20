@@ -27,7 +27,7 @@ export interface MediaCardProps extends Omit<React.HTMLAttributes<HTMLDivElement
   imageOverlay?: React.ReactNode;
   /** 미디어 영역 가로:세로 (CSS aspect-ratio 문법, 기본 "4 / 3") */
   imageAspectRatio?: string;
-  /** 제목 위 보조 라벨 (브랜드 / 카테고리 / 회차 등) */
+  /** 제목 위 보조 라벨 (프로젝트 / 카테고리 / 회차 등) */
   eyebrow?: React.ReactNode;
   /** 제목 */
   title: React.ReactNode;

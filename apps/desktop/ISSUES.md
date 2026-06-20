@@ -54,9 +54,9 @@ runtime/CSS 는 `build_singlefile_html`(export) 시점에만 inline(`buildHtmlSi
 
 **수정**:
 
-- `packages/mockup-core/src/tools/standalone-assets.ts` — `injectStandaloneRuntime(html, brand?)`
+- `packages/mockup-core/src/tools/standalone-assets.ts` — `injectStandaloneRuntime(html, project?)`
   추가. 미리보기 서빙 직전 in-memory 로 DS runtime/CSS 를 head/body 에 주입(원본 무변경·멱등,
-  이미 인라인된 dist 는 `STANDALONE_MARKER` 로 감지해 skip). 브랜드는 `data-brand`/`body.brand-*`
+  이미 인라인된 dist 는 `STANDALONE_MARKER` 로 감지해 skip). 프로젝트는 `data-project`/`body.project-*`
   자동 감지.
 - `apps/desktop/src/main/mockup-protocol.ts` — HTML 서빙 시 `injectStandaloneRuntime(raw)` 후
   스탬프 주입. NDS% 카운트는 원본(raw) 기준 유지(주입본으로 세지 않음).

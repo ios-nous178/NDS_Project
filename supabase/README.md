@@ -50,7 +50,7 @@ curl -sf -X POST "$URL" -H "Authorization: Bearer $ANON" -H 'Content-Type: appli
   -d '{"kind":"observability","client":{"agent":"claude"},"records":[{"path":"/mockup-runs/import","body":{"runId":"smoke-run","status":"completed"}}]}'
 # 3) usage 봉투
 curl -sf -X POST "$URL" -H "Authorization: Bearer $ANON" -H 'Content-Type: application/json' \
-  -d '{"kind":"usage","usage":{"usageId":"smoke-u1","date":"2026-06-12","mockupFile":"a.html","brand":"trost","meta":{"dsRatio":90,"adoptionRatio":95}}}'
+  -d '{"kind":"usage","usage":{"usageId":"smoke-u1","date":"2026-06-12","mockupFile":"a.html","project":"trost","meta":{"dsRatio":90,"adoptionRatio":95}}}'
 # 4) 무유출: anon 으로 직접 읽기/쓰기 → 0행/거부여야 함
 curl -s "https://<ref>.supabase.co/rest/v1/mcp_events?select=*" -H "apikey: $ANON" -H "Authorization: Bearer $ANON"
 # 5) 원문 drop: artifacts body 에 content 를 넣어 POST → obs_records.record 에 content 없음 확인 (Studio)

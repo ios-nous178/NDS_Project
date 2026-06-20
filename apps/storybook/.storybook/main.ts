@@ -7,7 +7,7 @@ const storybookDir = dirname(fileURLToPath(import.meta.url));
 const appDir = resolve(storybookDir, "..");
 const workspaceRoot = resolve(appDir, "../..");
 
-// preview.ts / brand-themes.ts 가 dist CSS 를 import 한다 — 없으면 스토리북이
+// preview.ts / project-themes.ts 가 dist CSS 를 import 한다 — 없으면 스토리북이
 // 스타일 없이(또는 stale 하게) 뜨므로 기동 자체를 막고 빌드 방법을 안내한다.
 // (pnpm --filter storybook dev 는 dev-storybook.mjs 가 사전 빌드를 보장한다)
 const requiredDistCss = ["packages/tokens/dist/tokens.css", "packages/react/dist/styles.css"];

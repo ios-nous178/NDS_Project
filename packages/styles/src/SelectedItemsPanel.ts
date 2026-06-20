@@ -1,6 +1,6 @@
 /* SelectedItemsPanel + SelectedItemRow (legacy alias: RegionRow) — 다중 선택 결과 패널.
  * 헤더(타이틀 + 개수 + 추가/해제 액션) 고정, 본문은 children 슬롯(리스트/폼/테이블 swap).
- * 색·radius 는 semantic 토큰으로 브랜드 cascade. */
+ * 색·radius 는 semantic 토큰으로 프로젝트 cascade. */
 import {
   cv,
   fontFamily,
@@ -191,14 +191,14 @@ export const selectedItemsPanelStyles = `
   }
 
   /* ─── 캐포비(cashwalk-biz) SelectedItemRow 삭제 글리프 — Figma 3001:18463 ───
-     민자 X(svg) 숨기고 ::before 에 원형 serchdelete 아이콘을 mask 로 swap (요소 교체=구조적 → [data-brand] 유지).
-     gray/200 fill·radius 10 은 브랜드 슬롯(components.selected-item-row)으로 이전. 색(currentColor→hover statusError)은 base 상속. */
-  :where([data-brand="cashwalk-biz"] .${ROW_REMOVE_CLASS}) svg,
-  :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS}) svg {
+     민자 X(svg) 숨기고 ::before 에 원형 serchdelete 아이콘을 mask 로 swap (요소 교체=구조적 → [data-project] 유지).
+     gray/200 fill·radius 10 은 프로젝트 슬롯(components.selected-item-row)으로 이전. 색(currentColor→hover statusError)은 base 상속. */
+  :where([data-project="cashwalk-biz"] .${ROW_REMOVE_CLASS}) svg,
+  :where([data-project="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS}) svg {
     display: none;
   }
-  :where([data-brand="cashwalk-biz"] .${ROW_REMOVE_CLASS})::before,
-  :where([data-brand="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS})::before {
+  :where([data-project="cashwalk-biz"] .${ROW_REMOVE_CLASS})::before,
+  :where([data-project="cashwalk-biz"] .${LEGACY_ROW_REMOVE_CLASS})::before {
     content: "";
     display: block;
     width: 20px;

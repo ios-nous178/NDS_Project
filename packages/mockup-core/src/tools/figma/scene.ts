@@ -358,7 +358,7 @@ export function buildFigmaSceneScript(): string {
       var svgMarkup = (el.outerHTML || "").split("currentColor").join(cs.color);
       return { type: "svg", name: dsTag || "icon", x: b.x, y: b.y, w: b.w, h: b.h, svg: svgMarkup, absolute: absolute, dsComponent: dsTag };
     }
-    // leaf: image. SVG data URL(예: 브랜드 로고 <img src="data:image/svg+xml...">)은
+    // leaf: image. SVG data URL(예: 프로젝트 로고 <img src="data:image/svg+xml...">)은
     // raster 가 아니라 벡터 — figma.createImage 가 SVG 를 못 받아 회색 박스로 폴백되던
     // 원인. → svg 노드로 방출해 플러그인이 createNodeFromSvg 로 진짜 로고를 만들게 한다.
     if (tag === "img" && el.currentSrc && el.currentSrc.indexOf("data:") === 0) {

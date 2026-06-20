@@ -25,13 +25,13 @@ export const SHAPE_RADIUS: Record<ButtonShape, string> = {
   pill: "9999px",
 };
 
-/* ─── Brand-restricted variants / tones (react Button.tsx 미러 — SSOT 통일 전까지 수동 동기화) ─── */
-export const BRAND_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
+/* ─── Project-restricted variants / tones (react Button.tsx 미러 — SSOT 통일 전까지 수동 동기화) ─── */
+export const PROJECT_VARIANT_WHITELIST: Record<string, ReadonlyArray<ButtonVariant>> = {
   geniet: ["solid", "outlined"],
 };
 
-/** 브랜드별 미정의 tone — 사용 시 dev 경고. 캐포비·런마일은 Secondary 없음(검정 CTA = neutral). */
-export const BRAND_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
+/** 프로젝트별 미정의 tone — 사용 시 dev 경고. 캐포비·런마일은 Secondary 없음(검정 CTA = neutral). */
+export const PROJECT_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
   "cashwalk-biz": ["secondary"],
   runmile: ["secondary"],
 };
@@ -112,7 +112,7 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
   primary: {
     solid: {
       enabled: {
-        // Figma Solid/Primary = --semantic-button-bg-default (브랜드 buttonBg override). bg-brand 직참조 금지.
+        // Figma Solid/Primary = --semantic-button-bg-default (프로젝트 buttonBg override). bg-brand 직참조 금지.
         background: cv.button.bgDefault,
         text: cv.button.textDefault,
         border: cv.borderRole.brand,
@@ -123,7 +123,7 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.button.bgDisabled,
       },
       hover: {
-        // semantic-button-bg-hover 슬롯 — brand 별 hover 톤(Runmile orange/400 등)을 명시.
+        // semantic-button-bg-hover 슬롯 — project 별 hover 톤(Runmile orange/400 등)을 명시.
         background: cv.button.bgHover,
         text: cv.button.textDefault,
         border: cv.button.bgHover,
@@ -146,7 +146,7 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.surface.brandSubtle,
       },
     },
-    // Outlined/Primary — 전용 button-outlined 토큰 (캐포비 #111, 나머지 brand색). react Button 미러.
+    // Outlined/Primary — 전용 button-outlined 토큰 (캐포비 #111, 나머지 project색). react Button 미러.
     outlined: {
       enabled: {
         background: cv.button.bgOutlined,
@@ -255,7 +255,7 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.borderRole.normal,
       },
     },
-    // Figma: Outlined/Neutral — 전용 button-outlined-neutral 토큰(브랜드 분기: 캐포비 #111,
+    // Figma: Outlined/Neutral — 전용 button-outlined-neutral 토큰(프로젝트 분기: 캐포비 #111,
     // 런마일 #4E5968). textRole.normal/borderRole.normal 직참조 금지 — react Button 미러.
     outlined: {
       enabled: {
@@ -265,7 +265,7 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         fontWeight: fontWeight.medium,
       },
       disabled: {
-        // Outlined Disabled 텍스트는 brand 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
+        // Outlined Disabled 텍스트는 project 별 다른 톤 (Figma 런마일 = gray600 #919CAA).
         background: cv.surface.default,
         text: cv.button.textNeutralDisabled,
         border: cv.button.borderNeutralDisabled,

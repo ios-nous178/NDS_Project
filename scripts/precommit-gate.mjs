@@ -4,7 +4,7 @@
  *
  * `pnpm lint` 풀체인은 빌드 의존이라 pre-commit 에 못 넣는다. 대신 staged 경로에
  * 매칭되는 **무빌드 게이트만** 골라 실행한다 (목표 <15초). dist/catalog 를 읽는
- * 게이트(mcp-catalog, mirror-parity, brand-completeness, component-guides, guide-docs)는
+ * 게이트(mcp-catalog, mirror-parity, project-completeness, component-guides, guide-docs)는
  * stale dist 오탐이 있어 여기서 빼고 — `pnpm fix` 와 CI 가 담당한다.
  *
  * 게이트 정의는 scripts/gates.mjs (check-ssot / fix-all 과 공유).

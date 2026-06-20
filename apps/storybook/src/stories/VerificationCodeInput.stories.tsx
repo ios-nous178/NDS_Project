@@ -114,10 +114,10 @@ export const InVerificationForm: Story = {
   },
 };
 
-// 캐포비 본인인증 — 별도 full-width [재전송] + 인라인 버튼 없는 코드 입력 + brand 타이머 + 하단 [다음].
+// 캐포비 본인인증 — 별도 full-width [재전송] + 인라인 버튼 없는 코드 입력 + project 타이머 + 하단 [다음].
 export const CashbizVerification: Story = {
   name: "Recipe/CashwalkBiz 본인인증",
-  globals: { brand: "cashwalk-biz" },
+  globals: { project: "cashwalk-biz" },
   render: () => {
     const [code, setCode] = useState("");
     return (

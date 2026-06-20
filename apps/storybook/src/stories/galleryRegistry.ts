@@ -25,14 +25,14 @@ interface StoryModule {
 
 // Vite 정적 변환 — Icons/Tokens/AllComponents/자기 자신 등 비대상은 제외(번들 비대 방지).
 // composeStories 에 project annotation 은 넘기지 않는다 — preview.ts 의 withSpecOverlay/withCssEditor
-// 같은 toolbar decorator 재주입을 피하고, 브랜드 CSS 는 AllComponents 루트에서 cascade 시킨다.
+// 같은 toolbar decorator 재주입을 피하고, 프로젝트 CSS 는 AllComponents 루트에서 cascade 시킨다.
 const storyModules = import.meta.glob<StoryModule>(
   [
     "./*.stories.tsx",
     "!./AllComponents.stories.tsx",
     "!./Icons*.stories.tsx",
     "!./*Tokens.stories.tsx",
-    "!./BrandComponentCoverage.stories.tsx",
+    "!./ProjectComponentCoverage.stories.tsx",
     "!./SurfaceLayers.stories.tsx",
     "!./TokenEditor.stories.tsx",
   ],

@@ -7,13 +7,13 @@ import { validateHtmlSource } from "./html-validator.js";
  *  - cashwalk-biz-onboarding-no-gnb        : 온보딩에 상단 GNB/글로벌 헤더 부착 + 텍스트 로고
  *  - onboarding-card-no-padding            : 카드에 inset 패딩이 없어 CTA full-bleed
  *  - onboarding-multistep-cta-inside-card  : Stepper 멀티스텝인데 제출 CTA 가 카드 안
- * 온보딩 룰은 surface=admin + brand=cashwalk-biz + data-page-pattern="onboarding" 스코프.
+ * 온보딩 룰은 surface=admin + project=cashwalk-biz + data-page-pattern="onboarding" 스코프.
  */
-const OPTS = { surface: "admin" as const, brand: "cashwalk-biz" };
+const OPTS = { surface: "admin" as const, project: "cashwalk-biz" };
 
 const onboarding = (body: string) =>
-  `<html data-brand="cashwalk-biz" data-page-pattern="onboarding"><head></head><body>` +
-  `<nds-brand-logo brand="cashwalk-biz"></nds-brand-logo>${body}</body></html>`;
+  `<html data-project="cashwalk-biz" data-page-pattern="onboarding"><head></head><body>` +
+  `<nds-project-logo project="cashwalk-biz"></nds-project-logo>${body}</body></html>`;
 
 const has = (v: ReturnType<typeof validateHtmlSource>, rule: string) =>
   v.find((x) => x.rule === rule);

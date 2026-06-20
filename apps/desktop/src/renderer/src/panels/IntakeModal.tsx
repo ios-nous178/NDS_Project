@@ -16,7 +16,7 @@ import {
 } from "../ui/theme.js";
 import type { RecommendPagePatternResult } from "@nudge-design/mockup-core";
 
-const BRANDS: { slug: string; label: string }[] = [
+const PROJECTS: { slug: string; label: string }[] = [
   { slug: "trost", label: "Trost" },
   { slug: "geniet", label: "Geniet" },
   { slug: "nudge-eap", label: "NudgeEAP" },
@@ -130,8 +130,8 @@ interface DocItem {
   sourcePath?: string;
 }
 
-function previewIntent(surface: Surface, brand: string): "html" | "admin-cms" {
-  return surface === "admin" && brand !== "cashwalk-biz" ? "admin-cms" : "html";
+function previewIntent(surface: Surface, project: string): "html" | "admin-cms" {
+  return surface === "admin" && project !== "cashwalk-biz" ? "admin-cms" : "html";
 }
 
 function kebab(s: string): string {
@@ -157,7 +157,7 @@ export function IntakeModal({
   // 전송 방식 — stream-json(구조화, claude 기본) / pty(raw TUI). claude 는 구조화가 기본이라
   // 대화가 카드형으로 보이고 DB(api-sink)에 메시지가 기록된다. codex 는 stream-json 미지원 → pty.
   const [transport, setTransport] = useState<Transport>("stream-json");
-  const [brand, setBrand] = useState("");
+  const [project, setProject] = useState("");
   const [surface, setSurface] = useState<Surface>("service");
   // 고객용 화면의 제작 대상 플랫폼(웹 데스크탑/모바일/반응형 · 앱).
   const [platform, setPlatform] = useState<Platform>("web-responsive");
@@ -183,11 +183,11 @@ export function IntakeModal({
   );
 
   const autoSlug = useMemo(() => {
-    if (!brand || !screenName.trim()) return "";
-    return `${brand}-${kebab(screenName) || "screen"}`;
-  }, [brand, screenName]);
+    if (!project || !screenName.trim()) return "";
+    return `${project}-${kebab(screenName) || "screen"}`;
+  }, [project, screenName]);
   const effectiveSlug = slugDirty ? slug : autoSlug;
-  const intent = previewIntent(surface, brand);
+  const intent = previewIntent(surface, project);
   const isAdminCms = intent === "admin-cms";
 
   const addFiles = useCallback((files: FileList | File[]) => {
@@ -233,7 +233,7 @@ export function IntakeModal({
     setPrd((prev) => (prev.trim() ? `${prev.trim()}\n\n${template}` : template));
   }, []);
 
-  const canSubmit = !!brand && !!screenName.trim() && !busy;
+  const canSubmit = !!project && !!screenName.trim() && !busy;
 
   const submit = useCallback(async () => {
     if (!canSubmit) return;
@@ -249,7 +249,7 @@ export function IntakeModal({
       }
       const res = await window.harness.startIntake({
         projectPath,
-        brand,
+        project,
         surface,
         screenName: screenName.trim(),
         slug: slugDirty ? slug.trim() : undefined,
@@ -278,7 +278,7 @@ export function IntakeModal({
         selectedDirection,
         // 캐포비 어드민에서 카드로 고른 패턴만 전달 — main 이 nudge.pagePattern 마커로 박는다.
         selectedPagePattern:
-          surface === "admin" && brand === "cashwalk-biz" ? pagePattern || undefined : undefined,
+          surface === "admin" && project === "cashwalk-biz" ? pagePattern || undefined : undefined,
       });
       if (!res.ok || !res.sessionId) {
         if (res.code === "not-found") {
@@ -299,7 +299,7 @@ export function IntakeModal({
   }, [
     canSubmit,
     projectPath,
-    brand,
+    project,
     surface,
     platform,
     screenName,
@@ -327,11 +327,11 @@ export function IntakeModal({
   const field: React.CSSProperties = { marginBottom: 14 };
 
   // Page Pattern 추천 카드는 캐포비 어드민에서만(5종 시스템의 적용 범위와 동일).
-  const showPatternCard = surface === "admin" && brand === "cashwalk-biz";
+  const showPatternCard = surface === "admin" && project === "cashwalk-biz";
   const fetchPatternRec = async (): Promise<void> => {
     setRecLoading(true);
     try {
-      const rec = await window.harness.recommendPagePattern({ prd, brand, surface });
+      const rec = await window.harness.recommendPagePattern({ prd, project, surface });
       setPatternRec(rec);
       // 1차 추천(top)을 미리 선택 — 사용자가 다른 후보로 바꿀 수 있음. 이미 골랐으면 유지.
       if (rec.top) setPagePattern((prev) => prev || rec.top!);
@@ -445,12 +445,12 @@ export function IntakeModal({
         </div>
 
         <div style={field}>
-          {label("브랜드 *")}
+          {label("프로젝트 *")}
           <Dropdown
-            value={brand}
-            options={BRANDS.map((b) => ({ value: b.slug, label: b.label }))}
-            onChange={setBrand}
-            placeholder="브랜드 선택"
+            value={project}
+            options={PROJECTS.map((b) => ({ value: b.slug, label: b.label }))}
+            onChange={setProject}
+            placeholder="프로젝트 선택"
             mono
           />
         </div>
@@ -517,7 +517,7 @@ export function IntakeModal({
                 setSlug(e.target.value);
                 setSlugDirty(true);
               }}
-              placeholder="brand-screen"
+              placeholder="project-screen"
               style={{ ...input, fontFamily: mono, fontSize: 12, padding: "4px 8px" }}
             />
           </div>

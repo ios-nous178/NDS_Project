@@ -8,12 +8,12 @@ figmaNodeUrl: https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B
 
 ## pitfalls
 
-- **★ 어드민(b2b 하드게이트 브랜드) = nds-sidebar 가 정답.** 사내 백오피스는 antd Layout.Sider 가 규칙이지만(get_guide({ topic:'backoffice' })), 어드민(외부 제공 b2b)은 캐포비(cashwalk-biz)·넛지EAP(nudge-eap)만 지원하며 antd 가 아니라 이 목업 전용 `<nds-sidebar>`(nds-brand-chrome 흡수) 를 쓴다. (공개 react `Sidebar` 컴포넌트는 제거됨 — 화면 chrome 은 목업 html.) `intent='admin' + brand` 면 라우터도 antd 가 아니라 html/DS 로 보낸다(캐포비는 CMS 발화도 우회). 캐포비는 자체 admin DS(sidebar 300px · admin 토큰) — `:root[data-brand='cashwalk-biz']` cascade 로 brand-subtle bg + 노란 indicator 가 자동 적용, 색 hex 박지 말 것.
+- **★ 어드민(b2b 하드게이트 프로젝트) = nds-sidebar 가 정답.** 사내 백오피스는 antd Layout.Sider 가 규칙이지만(get_guide({ topic:'backoffice' })), 어드민(외부 제공 b2b)은 캐포비(cashwalk-biz)·넛지EAP(nudge-eap)만 지원하며 antd 가 아니라 이 목업 전용 `<nds-sidebar>`(nds-project-chrome 흡수) 를 쓴다. (공개 react `Sidebar` 컴포넌트는 제거됨 — 화면 chrome 은 목업 html.) `intent='admin' + project` 면 라우터도 antd 가 아니라 html/DS 로 보낸다(캐포비는 CMS 발화도 우회). 캐포비는 자체 admin DS(sidebar 300px · admin 토큰) — `:root[data-project='cashwalk-biz']` cascade 로 project-subtle bg + 노란 indicator 가 자동 적용, 색 hex 박지 말 것.
 - items prop 은 flat SidebarItem[] 또는 SidebarSection[] 둘 다 받지만, **섹션 라벨이 필요하면** SidebarSection[] 으로 넘길 것. flat 배열 안에 빈 객체로 'spacer' 만들지 말 것.
 - 활성 상태는 `activeKey` 로만 결정. 각 item 에 isActive 같은 boolean 을 박지 말 것 — controlled 패턴 깨짐.
-- 캐시워크 포 비즈니스 브랜드는 `data-brand='cashwalk-biz'` 가 :root 에 있을 때 자동으로 brand-subtle bg + 노란 indicator 톤. 다른 브랜드는 NudgeEAP 토큰 cascade.
+- 캐시워크 포 비즈니스 프로젝트는 `data-project='cashwalk-biz'` 가 :root 에 있을 때 자동으로 project-subtle bg + 노란 indicator 톤. 다른 프로젝트는 NudgeEAP 토큰 cascade.
 - **★ HTML `<nds-sidebar>` 의 item `icon` = inline SVG 문자열 (이름 아님).** `icon` 은 innerHTML 로 주입되므로 `"icon":"home"` 이나 `"icon":"CashwalkBizGnbBannerIcon"` 처럼 **이름/컴포넌트명을 넣으면 그대로 텍스트로 렌더**된다(라벨 옆에 글자). 절차: `find_icon({ name })` → 반환 inline SVG 를 `icon` 에 주입. **HTML 목업이라 아이콘이 안 된다는 건 사실이 아니다**(런타임 한계 X — inline SVG 로 들어간다). `items` 가 JSON 속성이라 SVG 안 `"` 는 `\"` 로 이스케이프.
-- GNB 아이콘은 brand-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', brand:'<slug>' }).iconSet 또는 find_icon({ query:'CashwalkBizGnb' }) 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)
+- GNB 아이콘은 project-specific 우선 — 자세한 목록은 get_guide({ topic:'component:Sidebar', project:'<slug>' }).iconSet 또는 find_icon({ query:'CashwalkBizGnb' }) 참조. (이때 얻은 이름을 그대로 HTML icon 에 넣지 말고 find_icon 으로 SVG 를 받아 주입.)
 - **★ items JSON 이스케이프 함정 — 사이드바가 로고만 뜨고 메뉴가 통째로 사라지는 #1 원인.** 단일따옴표 `items='...'` 안에서 JSON **구조용 따옴표까지** `\"` 로 이스케이프하면(`items='[{\"key\"...]'`) HTML 속성에서 백슬래시는 리터럴이라 JSON 파싱이 깨지고, 컴포넌트가 메뉴를 통째로 버린다(로고/헤더만 렌더). 구조용 따옴표는 **bare**, SVG 내부 따옴표만 `\"`. 헷갈리면 `<script type="application/json" slot="items">` 자식을 쓰면 이스케이프가 아예 필요 없다. 빌드 validator(`nds-json-attr-unparseable`)가 깨진 JSON 을 error 로 잡아 빌드를 막고, 컴포넌트도 조용히 비우지 않고 console.warn 한다.
 - 서브메뉴는 1단계까지만 허용 — children 안에 또 children 넣어서 트리화 금지 (트리는 별도 컴포넌트로).
 - collapsed=true 일 때 라벨/뱃지/캐럿/유저 메타 모두 숨김 — 그래도 의미가 전달되도록 모든 item.label 은 string 으로 두기 (tooltip 자동 부착).
@@ -23,7 +23,7 @@ figmaNodeUrl: https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B
 
 ## recommended
 
-- **캐포비 어드민이면 ready-made 픽업**: items 를 손으로 만들지 말고 `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' })` 의 복붙 HTML 트리(아이콘 inline 완료)를 쓰고 active-key 만 화면 키로. BrandHeader/Footer 처럼 한 번에 끌어온다.
+- **캐포비 어드민이면 ready-made 픽업**: items 를 손으로 만들지 말고 `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' })` 의 복붙 HTML 트리(아이콘 inline 완료)를 쓰고 active-key 만 화면 키로. ProjectHeader/Footer 처럼 한 번에 끌어온다.
 - 섹션 그룹: items 를 SidebarSection[] 로 — `[{"key":"content","label":"콘텐츠 운영","items":[...]},{"key":"system","label":"시스템","items":[...]}]`.
 - icon-only 사이드바: `collapsed` + `show-toggle` 페어. 토글 버튼은 헤더에 자동 노출(여닫기).
 - 뱃지: item.badge=12 (숫자/문자).
@@ -54,6 +54,6 @@ figmaNodeUrl: https://www.figma.com/design/9lJ9XCwVYFSoZGcmRuJtI4/%ED%95%9C%EA%B
 
 ```html
 <!-- 사내 백오피스(=antd 영역)에서 nds-sidebar 사용 — 백오피스는 antd Layout.Sider. -->
-<!-- ★ 단, 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 정반대 — nds-sidebar 가 정답이다. 아래 pitfalls 참고 -->
+<!-- ★ 단, 어드민 하드게이트 프로젝트(캐포비/넛지EAP)는 정반대 — nds-sidebar 가 정답이다. 아래 pitfalls 참고 -->
 <nds-sidebar items='...'></nds-sidebar>
 ```

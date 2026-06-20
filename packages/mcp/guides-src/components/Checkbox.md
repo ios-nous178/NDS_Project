@@ -15,8 +15,8 @@ figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5158-
 - 상태 SSOT 는 호스트의 `checked` **프로퍼티** — `el.checked = true` 로 코드에서 바꿔도 `change` 는 발생하지 않는다(네이티브 동일, 사용자 입력에만 발화). 전체선택 헤더는 ①헤더 `change` → 자식 `.checked` 를 일괄 set, ②자식 `change` → 선택 수로 헤더 `checked`/`indeterminate` 3상태 재계산, 두 방향을 직접 잇는다. `onclick` 시점엔 아직 토글 전이라 상태가 안 settled — 반드시 `change` 를 들을 것. (`.click()` 만으론 호스트 토글이 안 됨.)
 - **시/도 ▸ 시/군구 같은 계층 트리는 CheckboxTree** 가 부모 indeterminate 를 자동 계산 — 직접 indeterminate 를 손계산해 트리를 손조립하지 말 것. component:CheckboxTree.
 - 소규모 고정 옵션 다중선택(예: 연령대 10대~70대)은 **SelectChip**(`<nds-chip selected>`) 우선 — 체크박스 리스트는 약관 동의·긴 가변 리스트·행 단위 선택에. (`pattern:cashwalk-biz-badge-chip`)
-- **트로스트(Controls 가이드 5158:108)**: 컨트롤 박스 24×24, on(checked) 상태는 브랜드 노랑이 아닌 **다크 #333 채움 + 흰 체크**(노랑 위 가독성 — 트로스트 토큰 checkbox.checkedBg/checkColor). 라벨 우측 gap 12. 그룹은 vertical stack 행간 12. 필수면 그룹 라벨에 * , 미선택 시 그룹 하단 Helper 로 에러.
-- **런마일(Controls 가이드 5111:345)**: 박스 24×24, on(checked) = 브랜드 **오렌지 #FF5B37 채움 + 흰 체크**(트로스트 다크와 달리 런마일은 brand색=오렌지가 곧 on색 → checkedBg 미설정·fill.brand fallback). off=Border/Default + 흰 surface, disabled=BG/Disabled. 다중 선택·약관 동의·필터 옵션.
+- **트로스트(Controls 가이드 5158:108)**: 컨트롤 박스 24×24, on(checked) 상태는 프로젝트 노랑이 아닌 **다크 #333 채움 + 흰 체크**(노랑 위 가독성 — 트로스트 토큰 checkbox.checkedBg/checkColor). 라벨 우측 gap 12. 그룹은 vertical stack 행간 12. 필수면 그룹 라벨에 * , 미선택 시 그룹 하단 Helper 로 에러.
+- **런마일(Controls 가이드 5111:345)**: 박스 24×24, on(checked) = 프로젝트 **오렌지 #FF5B37 채움 + 흰 체크**(트로스트 다크와 달리 런마일은 project색=오렌지가 곧 on색 → checkedBg 미설정·fill.brand fallback). off=Border/Default + 흰 surface, disabled=BG/Disabled. 다중 선택·약관 동의·필터 옵션.
 
 ## examplesHtml.do
 

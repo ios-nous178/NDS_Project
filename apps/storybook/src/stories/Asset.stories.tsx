@@ -133,8 +133,8 @@ export const UnionAcc: Story = {
   ),
 };
 
-export const BrandSignature: Story = {
-  name: "Recipe/브랜드 시그니처 (Geniet/Trost)",
+export const ProjectSignature: Story = {
+  name: "Recipe/프로젝트 시그니처 (Geniet/Trost)",
   render: () => (
     <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
       <Asset size="xl" shape="rounded" content={{ type: "icon", icon: <GenietSaladIcon /> }} />

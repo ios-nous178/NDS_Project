@@ -97,7 +97,7 @@ function LikertWrappedExample() {
 function LabelLeftExample() {
   const [name, setName] = useState("");
   return (
-    <div data-brand="cashwalk-biz" style={{ width: 600 }}>
+    <div data-project="cashwalk-biz" style={{ width: 600 }}>
       <FormField
         label="이름"
         labelPosition="left"
@@ -152,7 +152,7 @@ function CashwalkBizAdminTextFieldExample() {
 
   return (
     <div
-      data-brand="cashwalk-biz"
+      data-project="cashwalk-biz"
       style={{ display: "flex", flexDirection: "column", gap: 20, width: 600 }}
     >
       {states.map((s) => (
@@ -176,13 +176,13 @@ function CashwalkBizAdminTextFieldExample() {
 
 function AdminFormSectionExample() {
   // CashwalkBiz Figma "기본 정보" FormSection (3466:17405) 재현 — 카드 chrome(white·radius16·padding24)은
-  // FormSection 컴포넌트가 data-brand cascade 로 소유(hex 직접 X). FormField 2개 density="admin" py-24 → 사이 48px.
+  // FormSection 컴포넌트가 data-project cascade 로 소유(hex 직접 X). FormField 2개 density="admin" py-24 → 사이 48px.
   const [single, setSingle] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   return (
-    <div data-brand="cashwalk-biz" style={{ width: 1000 }}>
+    <div data-project="cashwalk-biz" style={{ width: 1000 }}>
       <FormSection title="기본 정보">
         <FormField label="Label" labelPosition="left" density="admin">
           <Select
@@ -270,7 +270,7 @@ export const LabelLeft: Story = {
     docs: {
       description: {
         story:
-          'CashwalkBiz admin TextField 패턴. `labelPosition="left"` 라벨 좌측 고정 폼 (캐포비 brand 에서 입력 높이 48px cascade — size 미지정). 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
+          'CashwalkBiz admin TextField 패턴. `labelPosition="left"` 라벨 좌측 고정 폼 (캐포비 project 에서 입력 높이 48px cascade — size 미지정). 라벨 컬럼 너비 기본 180px (`labelWidth` 로 조정).',
       },
     },
   },

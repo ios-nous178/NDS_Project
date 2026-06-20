@@ -16,7 +16,7 @@ Split heavy **raster asset** delivery (not icons) from the DS code release train
 - `@nudge-design/assets` and `@nudge-design/icons` are currently part of the fixed Changesets group with React, tokens, styles, Tailwind preset, and HTML.
 - `scripts/sync-mcpb-version.mjs` uses `assets` and `icons` when deriving the root and MCPB manifest version.
 - `scripts/pack-local-packages.mjs` requires all packed packages to match the root DS version, including `assets` and `icons`.
-- `packages/assets/src` mixes brand, purpose, and product-specific assets at the root. NudgeEAP-only files such as `psych-tests`, `menu-app`, `rank`, and `eap-profiles` are not scoped by brand.
+- `packages/assets/src` mixes project, purpose, and product-specific assets at the root. NudgeEAP-only files such as `psych-tests`, `menu-app`, `rank`, and `eap-profiles` are not scoped by project.
 - Runtime fallbacks already exist:
   - assets: `NUDGE_DS_ASSETS_DIR` then package `dist/files` then MCPB sidecar
   - icons: `NUDGE_DS_ICONS_VANILLA` then package `vanilla` then MCPB sidecar
@@ -33,11 +33,11 @@ Split heavy **raster asset** delivery (not icons) from the DS code release train
 
 ## Asset Taxonomy
 
-Use brand-first paths for product-specific visuals, and `shared` only for truly cross-brand or third-party assets.
+Use project-first paths for product-specific visuals, and `shared` only for truly cross-project or third-party assets.
 
 ```txt
 files/
-  brand/
+  project/
     trost/
       logos/
     geniet/
@@ -69,7 +69,7 @@ files/
 Naming rules:
 
 - No source/Figma implementation names in public paths (`nudge-img` is removed from public naming).
-- Use brand slug directory for all brand/product assets.
+- Use project slug directory for all project/product assets.
 - Use `images` for generic app imagery that is not a reusable illustration system.
 - Use `illustrations` only for reusable empty/error/banner illustration assets.
 - Use `three-d` instead of `3d` in public paths to avoid awkward URL and identifier handling.
@@ -140,7 +140,7 @@ Do not store full copies forever once releases become frequent.
 - Exclude `assets` and `icons` from DS root/MCPB version derivation.
 - Set `packages/assets/package.json` and `packages/icons/package.json` to `0.0.1`.
 - Add `asset_version` and `icon_version` to `packages/mcp/manifest.json`.
-- Move `packages/assets/src` binary files into the brand-first `files/` taxonomy.
+- Move `packages/assets/src` binary files into the project-first `files/` taxonomy.
 - Update asset metadata filenames to the new public paths.
 - Keep the existing `@nudge-design/assets/nudge-img` export as a deprecated compatibility alias for now, but change returned filenames to the new paths.
 

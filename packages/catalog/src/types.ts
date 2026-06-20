@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 
 /** metadata/iconCatalog.json 의 데이터 계약. generate-icon-catalog.mjs 가 생성하는 SSOT. */
-export type IconBrandId =
+export type IconProjectId =
   | "nudge-eap"
   | "geniet"
   | "trost"
@@ -9,7 +9,7 @@ export type IconBrandId =
   | "runmile"
   | "mockup";
 
-export interface IconCatalogBrand {
+export interface IconCatalogProject {
   id: string;
   label: string;
 }
@@ -17,8 +17,8 @@ export interface IconCatalogBrand {
 export interface IconCatalogIcon {
   name: string;
   kebab: string;
-  /** generate-icon-catalog.mjs 가 IconBrandId 중 하나로 채우지만, JSON import 호환 위해 string. */
-  brand: string;
+  /** generate-icon-catalog.mjs 가 IconProjectId 중 하나로 채우지만, JSON import 호환 위해 string. */
+  project: string;
 }
 
 export interface IconCatalogCashwalkEntry {
@@ -30,7 +30,7 @@ export interface IconCatalogCashwalkEntry {
 }
 
 export interface IconCatalogData {
-  brands: IconCatalogBrand[];
+  projects: IconCatalogProject[];
   icons: IconCatalogIcon[];
   cashwalkBiz: IconCatalogCashwalkEntry[];
 }
@@ -44,23 +44,23 @@ export type IconRenderProps = {
 export type IconComponentType = ComponentType<IconRenderProps>;
 
 /**
- * - "all"          : 모든 아이콘 + 브랜드 칩 + 브랜드 그룹핑 (docs 카탈로그 · storybook 전체)
- * - "single-brand" : `brand` 한 브랜드만, 평면 그리드, 칩 없음 (storybook Trost/Geniet/Runmile)
+ * - "all"          : 모든 아이콘 + 프로젝트 칩 + 프로젝트 그룹핑 (docs 카탈로그 · storybook 전체)
+ * - "single-project" : `project` 한 프로젝트만, 평면 그리드, 칩 없음 (storybook Trost/Geniet/Runmile)
  * - "cashwalk-biz" : 큐레이션 카탈로그 + source 칩 + 카테고리 그룹핑 (storybook CashwalkBiz)
  */
-export type IconCatalogMode = "all" | "single-brand" | "cashwalk-biz";
+export type IconCatalogMode = "all" | "single-project" | "cashwalk-biz";
 
 export interface IconCatalogProps {
   /** metadata/iconCatalog.json (앱이 import 해서 주입) */
   data: IconCatalogData;
   mode?: IconCatalogMode;
-  /** mode="single-brand" 에서 표시할 브랜드 */
-  brand?: IconBrandId;
+  /** mode="single-project" 에서 표시할 프로젝트 */
+  project?: IconProjectId;
   /** 복사 페이로드: 전체 import 문 vs 컴포넌트명만 */
   copyMode?: "import" | "name";
   /** 카드 아이콘 렌더 크기(px). 기본 32. */
   iconSize?: number;
-  /** 아이콘 색 강제(브랜드 틴트 데모 등). 미지정 시 토큰 기본색(currentColor). */
+  /** 아이콘 색 강제(프로젝트 틴트 데모 등). 미지정 시 토큰 기본색(currentColor). */
   iconColor?: string;
   /** 카드 표면. dark = 어두운 배경 + 흰 아이콘. 기본 light. */
   surface?: "light" | "dark";
@@ -72,12 +72,12 @@ export interface IconCatalogProps {
   emptyLabel?: string;
 }
 
-/* ── Brand × Component Coverage ──────────────────────────────────────────────
+/* ── Project × Component Coverage ──────────────────────────────────────────────
  * view 모델은 coverage-logic.mjs 의 buildCoverageView 결과(SSOT). 컴포넌트는 dumb 렌더러. */
 export type CoverageStatus = "synced" | "code" | "missing";
 
 export interface CoverageCell {
-  brand: string;
+  project: string;
   react: CoverageStatus;
   html: CoverageStatus;
   figmaHref: string | null;
@@ -112,17 +112,17 @@ export interface CoverageSummary {
   gaps: number;
   reactCovered: number;
   htmlCovered: number;
-  figmaPerBrand: Record<string, number>;
+  figmaPerProject: Record<string, number>;
 }
 
 export interface CoverageView {
-  brands: { id: string; label: string }[];
+  projects: { id: string; label: string }[];
   summary: CoverageSummary;
   groups: CoverageGroup[];
   chromeMatrix: CoverageChromeRow[];
 }
 
-export interface BrandCoverageTableProps {
+export interface ProjectCoverageTableProps {
   /** coverage-logic.buildCoverageView 결과 */
   view: CoverageView;
   title?: string;

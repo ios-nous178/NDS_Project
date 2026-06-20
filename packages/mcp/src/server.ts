@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   ICON_METADATA,
@@ -64,8 +64,8 @@ import type { AnalyzeHtmlMockupResult } from "@nudge-design/mockup-core/tools/ht
 export { countHtmlUsage } from "@nudge-design/mockup-core/tools/html-analyzer";
 import { devServer, registerDevServerCleanup } from "@nudge-design/mockup-core/tools/preview";
 import {
-  canonicalBrandSlug,
-  listStandaloneBrands,
+  canonicalProjectSlug,
+  listStandaloneProjects,
 } from "@nudge-design/mockup-core/tools/standalone-assets";
 import { recommendPagePattern } from "@nudge-design/mockup-core/tools/page-pattern-recommender";
 import {
@@ -80,7 +80,7 @@ import { buildSinglefileHtml } from "@nudge-design/mockup-core/tools/build-html"
 import { validatePrdCoverage } from "@nudge-design/mockup-core/tools/prd-coverage";
 import { getGuide, VISUAL_REFERENCE_QUESTION } from "./tools/guides.js";
 import { configureDesignSpec, saveDesignSpec, validateDesignSpec } from "./tools/design-spec.js";
-import { configureSetup, getBrand, getSetup } from "./tools/setup.js";
+import { configureSetup, getProject, getSetup } from "./tools/setup.js";
 import { recordObservability } from "./tools/observability-sink.js";
 import { registerToolHandlers, type ToolArgs, type ToolHandlers } from "./tools/registry.js";
 import { configureClientIdentity } from "./tools/client-identity.js";
@@ -131,7 +131,7 @@ const bundledAssetVersion =
   undefined;
 
 // MCP가 실행되는 형태에 따라 "외부 자산이 어디 있느냐"가 달라진다.
-// 1) 개발 모드 (모노레포에서 직접 실행): 레포 루트가 있고 local-packages/*.tgz, brands/* 등을 참조 가능
+// 1) 개발 모드 (모노레포에서 직접 실행): 레포 루트가 있고 local-packages/*.tgz, projects/* 등을 참조 가능
 // 2) mcpb 번들 (Claude Desktop이 압축을 풀어 실행): 같은 디렉터리 안에 local-packages/만 동봉되어 있고
 //    leleos 레포 자체는 없다. install/update 안내가 달라야 한다.
 const installMode: "dev" | "mcpb" = (() => {
@@ -225,18 +225,18 @@ const htmlCtx = deriveHtmlValidationContext(manifest);
 configureHtmlValidator(htmlCtx);
 
 // DesignSpec(경량 IR) 검증기에도 같은 카탈로그를 주입한다 — prompt→spec→code 의 코드前 검증용.
-// 브랜드 셋은 자산 디렉토리에서 읽으므로(런타임엔 번들/dev 양쪽 해석됨) 방어적으로 — 미해석 시
-// brand 엄격검사는 design-spec 쪽에서 자동 skip 된다.
-let standaloneBrandSet = new Set<string>();
+// 프로젝트 셋은 자산 디렉토리에서 읽으므로(런타임엔 번들/dev 양쪽 해석됨) 방어적으로 — 미해석 시
+// project 엄격검사는 design-spec 쪽에서 자동 skip 된다.
+let standaloneProjectSet = new Set<string>();
 try {
-  standaloneBrandSet = new Set(listStandaloneBrands());
+  standaloneProjectSet = new Set(listStandaloneProjects());
 } catch {
-  standaloneBrandSet = new Set();
+  standaloneProjectSet = new Set();
 }
 configureDesignSpec({
   tokenSet,
   componentNames: new Set(componentByName.keys()),
-  brands: standaloneBrandSet,
+  projects: standaloneProjectSet,
   propAllowedValues,
   ndsAttrEnums: htmlCtx.ndsAttrEnums,
 });
@@ -323,14 +323,14 @@ function searchComponent(query: string, limit = 10) {
 }
 
 function getComponentGuideHint(name: string): string | undefined {
-  if (name === "BrandHeader") {
-    return "브랜드 웹/앱 헤더는 직접 조립하지 말고 get_guide({ topic: 'component:BrandHeader', target: 'html' }) 확인 후 <nds-brand-header> 사용.";
+  if (name === "ProjectHeader") {
+    return "프로젝트 웹/앱 헤더는 직접 조립하지 말고 get_guide({ topic: 'component:ProjectHeader', target: 'html' }) 확인 후 <nds-project-header> 사용.";
   }
-  if (name === "BrandFooter") {
-    return "브랜드 웹/앱 푸터는 직접 조립하지 말고 get_guide({ topic: 'component:BrandFooter', target: 'html' }) 확인 후 <nds-brand-footer> 사용.";
+  if (name === "ProjectFooter") {
+    return "프로젝트 웹/앱 푸터는 직접 조립하지 말고 get_guide({ topic: 'component:ProjectFooter', target: 'html' }) 확인 후 <nds-project-footer> 사용.";
   }
-  if (name === "BrandChrome") {
-    return "Wrapper/umbrella 항목입니다. 실제 목업에서는 BrandHeader + BrandFooter 가이드를 우선 호출하세요.";
+  if (name === "ProjectChrome") {
+    return "Wrapper/umbrella 항목입니다. 실제 목업에서는 ProjectHeader + ProjectFooter 가이드를 우선 호출하세요.";
   }
   return undefined;
 }
@@ -428,7 +428,7 @@ function socialLoginAssetRedirect(term: string) {
       '<button style="height:48px;background:#FEE500"><img src="@nudge-design/assets/files/shared/sns-logos/kakao-black.svg" width="18" height="18" alt=""> 카카오로 시작하기</button>',
     seeAlso: [
       "get_guide({ topic: 'pattern:social-login' }) — 배치·서비스 시그니처 색·라벨 규칙",
-      "get_brand({ assetKind: 'snsLogos' }) — 서비스별 inlineRef 경로 목록",
+      "get_project({ assetKind: 'snsLogos' }) — 서비스별 inlineRef 경로 목록",
     ],
   };
 }
@@ -557,12 +557,12 @@ export async function findIcon(args: {
   };
 }
 
-/* ───────────── find_asset (브랜드 이미지 검색) ───────────── */
+/* ───────────── find_asset (프로젝트 이미지 검색) ───────────── */
 
-// 브랜드 콘텐츠 이미지는 **원칙적으로 항상 pull**. 미스 시 AI 생성 금지 → placeholder + 경고.
+// 프로젝트 콘텐츠 이미지는 **원칙적으로 항상 pull**. 미스 시 AI 생성 금지 → placeholder + 경고.
 // 이 정책 문자열을 모든 find_asset 응답에 동봉해 "뭐가 있는지 몰라 못 가져옴 → 헛삽질/AI생성" 재발 차단.
 const ASSET_POLICY =
-  "에셋 정책: 이미지가 필요하면 ① 먼저 find_asset 으로 찾아 inlineRef 를 <img src> 에 그대로 박는다(build_singlefile_html 이 base64 인라인). ② 에셋에 없으면 회색 박스/empty-state placeholder 로 두고 '에셋 없음 — 추가 검토' 주석을 남긴다. ③ 브랜드 음식·일러스트·사진을 AI 로 생성하지 않는다(off-brand drift).";
+  "에셋 정책: 이미지가 필요하면 ① 먼저 find_asset 으로 찾아 inlineRef 를 <img src> 에 그대로 박는다(build_singlefile_html 이 base64 인라인). ② 에셋에 없으면 회색 박스/empty-state placeholder 로 두고 '에셋 없음 — 추가 검토' 주석을 남긴다. ③ 프로젝트 음식·일러스트·사진을 AI 로 생성하지 않는다(off-project drift).";
 
 // 한글/약어 → 카테고리·id 보조 검색어. 가산만 — 기존 매치를 제거하지 않으므로 오탐 최악은 "후보 1개 증가".
 const ASSET_SEARCH_ALIASES: Record<string, string[]> = {
@@ -616,7 +616,7 @@ function scoreAsset(query: string, entry: AssetCatalogEntry): number {
 
 function slimAsset(e: AssetCatalogEntry) {
   return {
-    brand: e.brand,
+    project: e.project,
     category: e.category,
     id: e.id,
     inlineRef: e.inlineRef,
@@ -626,24 +626,24 @@ function slimAsset(e: AssetCatalogEntry) {
 }
 
 /**
- * find_asset 통합 라우터 — @nudge-design/assets 브랜드 이미지 검색(아이콘 아님).
- *  - 인자 없음 → 브랜드×카테고리 인덱스
- *  - { query } (+ brand/category 필터) → 점수 매치 top N (inlineRef 포함)
+ * find_asset 통합 라우터 — @nudge-design/assets 프로젝트 이미지 검색(아이콘 아님).
+ *  - 인자 없음 → 프로젝트×카테고리 인덱스
+ *  - { query } (+ project/category 필터) → 점수 매치 top N (inlineRef 포함)
  *  - { id } → 정확/근접 id 매치
- *  - { brand } / { category } 만 → 해당 풀 목록
- * 모든 응답에 _policy(pull-first · 미스 placeholder · AI 브랜드이미지 금지) 동봉.
+ *  - { project } / { category } 만 → 해당 풀 목록
+ * 모든 응답에 _policy(pull-first · 미스 placeholder · AI 프로젝트이미지 금지) 동봉.
  */
 export function findAsset(args: {
   query?: string;
-  brand?: string;
+  project?: string;
   category?: string;
   id?: string;
   limit?: number;
 }) {
   const limit = clampLimit(args.limit, 20, 60);
-  const brand = args.brand ? (canonicalBrandSlug(args.brand) ?? args.brand) : undefined;
+  const project = args.project ? (canonicalProjectSlug(args.project) ?? args.project) : undefined;
   let pool = ASSET_CATALOG;
-  if (brand) pool = pool.filter((e) => e.brand === brand || e.brand === "shared");
+  if (project) pool = pool.filter((e) => e.project === project || e.project === "shared");
   if (args.category) {
     const c = args.category.toLowerCase();
     pool = pool.filter((e) => e.category.toLowerCase().includes(c));
@@ -654,7 +654,7 @@ export function findAsset(args: {
     const hits = exact.length ? exact : pool.filter((e) => e.id.includes(args.id as string));
     if (!hits.length) {
       return {
-        error: `에셋 id '${args.id}' 를 찾지 못했습니다${brand ? ` (brand=${brand})` : ""}. find_asset({ query }) 로 검색하거나 인자 없이 호출해 카테고리 인덱스를 보세요.`,
+        error: `에셋 id '${args.id}' 를 찾지 못했습니다${project ? ` (project=${project})` : ""}. find_asset({ query }) 로 검색하거나 인자 없이 호출해 카테고리 인덱스를 보세요.`,
         miss: true,
         _policy: ASSET_POLICY,
       };
@@ -674,7 +674,7 @@ export function findAsset(args: {
       .slice(0, limit);
     if (!matches.length) {
       return {
-        error: `No asset matched '${args.query}'${brand ? ` (brand=${brand})` : ""}. 인자 없이 find_asset 을 호출하면 브랜드×카테고리 인덱스를 볼 수 있습니다. 더 일반적인 키워드(food/profile/logo…)로 다시 시도하세요.`,
+        error: `No asset matched '${args.query}'${project ? ` (project=${project})` : ""}. 인자 없이 find_asset 을 호출하면 프로젝트×카테고리 인덱스를 볼 수 있습니다. 더 일반적인 키워드(food/profile/logo…)로 다시 시도하세요.`,
         miss: true,
         _onMiss:
           "에셋에 없는 이미지입니다 — AI 생성하지 말고 회색 박스/empty-state placeholder + '에셋 없음' 주석으로 두세요.",
@@ -688,9 +688,9 @@ export function findAsset(args: {
     };
   }
 
-  if (args.category || brand) {
+  if (args.category || project) {
     return {
-      brand: brand ?? "(all)",
+      project: project ?? "(all)",
       category: args.category ?? "(all)",
       count: pool.length,
       assets: pool.slice(0, limit).map(slimAsset),
@@ -703,9 +703,9 @@ export function findAsset(args: {
 
   return {
     _hint:
-      "이미지가 필요하면 find_asset({ query, brand }) 로 검색해 inlineRef 를 <img src> 에 박으세요(build_singlefile_html 이 base64 인라인). brand/category 로 필터, id 로 정확 매치.",
+      "이미지가 필요하면 find_asset({ query, project }) 로 검색해 inlineRef 를 <img src> 에 박으세요(build_singlefile_html 이 base64 인라인). project/category 로 필터, id 로 정확 매치.",
     total: ASSET_CATALOG.length,
-    brands: ASSET_CATALOG_SUMMARY,
+    projects: ASSET_CATALOG_SUMMARY,
     _policy: ASSET_POLICY,
   };
 }
@@ -718,24 +718,24 @@ export function findAsset(args: {
  *  - 둘 다 → query 우선
  */
 // export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
-export function findToken(args: { group?: string; query?: string; brand?: string }) {
-  const requestedBrand = args.brand?.trim().toLowerCase() || undefined;
-  const brand = requestedBrand ? (canonicalBrandSlug(requestedBrand) ?? requestedBrand) : undefined;
-  // brand 필터:
-  //  - 미지정 → base(shared, brands 필드 없음)만. 브랜드 고유 토큰이 크로스브랜드로
+export function findToken(args: { group?: string; query?: string; project?: string }) {
+  const requestedProject = args.project?.trim().toLowerCase() || undefined;
+  const project = requestedProject ? (canonicalProjectSlug(requestedProject) ?? requestedProject) : undefined;
+  // project 필터:
+  //  - 미지정 → base(shared, projects 필드 없음)만. 프로젝트 고유 토큰이 크로스프로젝트로
   //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: mint 안 보임).
-  //  - 지정 → shared + 그 브랜드 고유 토큰.
-  const inBrand = (t: Manifest["tokens"][number]) =>
-    brand ? !t.brands || t.brands.includes(brand) : !t.brands;
-  // brand 지정 시 시멘틱 값을 그 브랜드 실제 값으로 치환해 보여준다(이름은 공통).
+  //  - 지정 → shared + 그 프로젝트 고유 토큰.
+  const inProject = (t: Manifest["tokens"][number]) =>
+    project ? !t.projects || t.projects.includes(project) : !t.projects;
+  // project 지정 시 시멘틱 값을 그 프로젝트 실제 값으로 치환해 보여준다(이름은 공통).
   const view = (t: Manifest["tokens"][number]) => {
-    if (brand && t.brandValues && t.brandValues[brand] !== undefined) {
-      const { brandValues: _bv, ...rest } = t;
-      return { ...rest, value: t.brandValues[brand], baseValue: t.value, brand };
+    if (project && t.projectValues && t.projectValues[project] !== undefined) {
+      const { projectValues: _bv, ...rest } = t;
+      return { ...rest, value: t.projectValues[project], baseValue: t.value, project };
     }
     return t;
   };
-  const pool = manifest.tokens.filter(inBrand);
+  const pool = manifest.tokens.filter(inProject);
 
   if (args.query) {
     const normalizedQuery = args.query.trim().toLowerCase();
@@ -757,10 +757,10 @@ export function findToken(args: { group?: string; query?: string; brand?: string
   for (const t of pool) groups[t.group] = (groups[t.group] ?? 0) + 1;
   return {
     _hint:
-      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. Add `brand` (e.g. 'geniet', 'cashpobi') to scope to a brand's tokens + brand-specific values. No-arg call returns only the summary to save tokens.",
+      "Pass `group` (e.g. 'color', 'spacing', 'semantic') to get tokens, or `query` to search. Add `project` (e.g. 'geniet', 'cashpobi') to scope to a project's tokens + project-specific values. No-arg call returns only the summary to save tokens.",
     total: pool.length,
-    ...(brand ? { brand } : {}),
-    ...(requestedBrand && brand && requestedBrand !== brand ? { requestedBrand } : {}),
+    ...(project ? { project } : {}),
+    ...(requestedProject && project && requestedProject !== project ? { requestedProject } : {}),
     groups,
   };
 }
@@ -772,7 +772,7 @@ function visualReferencePrompt(toolName: string) {
     required: true,
     requiredFirstResponseQuestion: VISUAL_REFERENCE_QUESTION,
     fullGuide: "pattern:visual-reference",
-    next: "Ask this before code or DS lookup. After the user answers, write references.md with task:<brand>-<screen-slug> and [good]/[bad] visual sources. Full gate details: get_guide({ topic:'pattern:visual-reference' }).",
+    next: "Ask this before code or DS lookup. After the user answers, write references.md with task:<project>-<screen-slug> and [good]/[bad] visual sources. Full gate details: get_guide({ topic:'pattern:visual-reference' }).",
   };
 }
 
@@ -787,7 +787,7 @@ function visualReferencePromptStub(toolName: string) {
     tool: toolName,
     required: false,
     recap:
-      "레퍼런스 게이트는 이번 세션 첫 응답에서 안내됨. 새 mockup task 면 references.md 의 `task: <slug>` 가 현재 스코프(브랜드+화면)와 맞는지 확인 — 다르거나 없으면 get_guide({ topic: 'pattern:visual-reference' }) 로 풀 게이트 재조회.",
+      "레퍼런스 게이트는 이번 세션 첫 응답에서 안내됨. 새 mockup task 면 references.md 의 `task: <slug>` 가 현재 스코프(프로젝트+화면)와 맞는지 확인 — 다르거나 없으면 get_guide({ topic: 'pattern:visual-reference' }) 로 풀 게이트 재조회.",
   };
 }
 
@@ -957,12 +957,12 @@ function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
 }
 
 function isRawPaletteToken(token: Manifest["tokens"][number]) {
-  // base(nudge) 팔레트는 기존 동작 유지. 추가로 브랜드 고유 팔레트(--color-mint-500 등,
-  // brands 필드가 붙은 color 스케일 토큰)도 deprioritize 해 시멘틱 우선 규칙을 지킨다.
+  // base(nudge) 팔레트는 기존 동작 유지. 추가로 프로젝트 고유 팔레트(--color-mint-500 등,
+  // projects 필드가 붙은 color 스케일 토큰)도 deprioritize 해 시멘틱 우선 규칙을 지킨다.
   return (
     /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name) ||
     (token.group === "color" &&
-      Array.isArray(token.brands) &&
+      Array.isArray(token.projects) &&
       /^--color-[a-zA-Z]+-\d/.test(token.name))
   );
 }
@@ -1021,16 +1021,16 @@ function suggestReplacement(args: { snippet: string; rule?: string }) {
  * 데스크탑 추천 카드와 동일 함수. 응답은 ranked 5종 + top/confident + drill-down 힌트 + "Claude/
  * 사용자 확정" 안내를 담는다. 최종 확정(screen.pagePattern 선언)은 호출자가 한다(여기서 강제 X).
  */
-function recommendPagePatternTool(args: { prd?: string; brand?: string; surface?: string }) {
+function recommendPagePatternTool(args: { prd?: string; project?: string; surface?: string }) {
   const prd = String(args.prd ?? "");
-  const brand = canonicalBrandSlug(args.brand);
+  const project = canonicalProjectSlug(args.project);
   const surface = args.surface?.trim().toLowerCase();
   const rec = recommendPagePattern(prd);
 
-  // Page Pattern System 브랜드(프로필 admin.pagePatternSystem) 어드민에서만 hard 게이트.
-  // 브랜드/표면 미지정이면 advisory 로 동작.
+  // Page Pattern System 프로젝트(프로필 admin.pagePatternSystem) 어드민에서만 hard 게이트.
+  // 프로젝트/표면 미지정이면 advisory 로 동작.
   const appliesToCashwalkBizAdmin =
-    (!args.brand || getBrandProfile(brand)?.admin?.pagePatternSystem === true) &&
+    (!args.project || getProjectProfile(project)?.admin?.pagePatternSystem === true) &&
     (!surface || surface === "admin");
 
   const ranked = rec.ranked.map((c) => ({
@@ -1061,7 +1061,7 @@ function recommendPagePatternTool(args: { prd?: string; brand?: string; surface?
     humanReadable,
     note: appliesToCashwalkBizAdmin
       ? undefined
-      : "참고: Page Pattern 시스템은 cashwalk-biz 어드민 전용입니다. 다른 브랜드/표면엔 강제되지 않으니 advisory 로만 참고하세요.",
+      : "참고: Page Pattern 시스템은 cashwalk-biz 어드민 전용입니다. 다른 프로젝트/표면엔 강제되지 않으니 advisory 로만 참고하세요.",
   };
 }
 
@@ -1083,12 +1083,12 @@ configureClientIdentity({
 
 // export 는 테스트용 — 핸들러 응답 정형(stats 자동 동봉 등)을 단위로 잠근다.
 export const toolHandlers = {
-  get_brand: (args: ToolArgs) =>
+  get_project: (args: ToolArgs) =>
     withVisualReferencePrompt(
-      "get_brand",
-      getBrand(
+      "get_project",
+      getProject(
         args as {
-          brand?: string;
+          project?: string;
           assetKind?:
             | "logos"
             | "snsLogos"
@@ -1115,18 +1115,18 @@ export const toolHandlers = {
     withVisualReferencePrompt(
       "find_asset",
       findAsset(
-        args as { query?: string; brand?: string; category?: string; id?: string; limit?: number },
+        args as { query?: string; project?: string; category?: string; id?: string; limit?: number },
       ),
     ),
   find_token: (args: ToolArgs) =>
     withVisualReferencePrompt(
       "find_token",
-      findToken(args as { group?: string; query?: string; brand?: string }),
+      findToken(args as { group?: string; query?: string; project?: string }),
     ),
   suggest_replacement: (args: ToolArgs) =>
     suggestReplacement(args as { snippet: string; rule?: string }),
   recommend_page_pattern: (args: ToolArgs) =>
-    recommendPagePatternTool(args as { prd?: string; brand?: string; surface?: string }),
+    recommendPagePatternTool(args as { prd?: string; project?: string; surface?: string }),
   // 핸들러는 ack 만 반환 — 실제 수집은 afterCall → captureTelemetry → projectFeedback 가 처리.
   log_feedback: (args: ToolArgs) => {
     const text = typeof args.text === "string" ? args.text.trim() : "";
@@ -1148,7 +1148,7 @@ export const toolHandlers = {
   prompt_satisfaction: async (args: ToolArgs) => {
     const screen = typeof args.screen === "string" && args.screen ? args.screen : "(목업)";
     const scoreOverall = typeof args.scoreOverall === "number" ? args.scoreOverall : null;
-    const brand = typeof args.brand === "string" ? args.brand : undefined;
+    const project = typeof args.project === "string" ? args.project : undefined;
 
     if (!server.getClientCapabilities()?.elicitation) {
       return {
@@ -1208,7 +1208,7 @@ export const toolHandlers = {
       sentiment,
       scoreOverall,
       screen,
-      ...(brand ? { brand } : {}),
+      ...(project ? { project } : {}),
     };
   },
   get_guide: (args: ToolArgs) =>
@@ -1222,7 +1222,7 @@ export const toolHandlers = {
           target?: "react" | "html";
           sections?: string[];
           aspects?: string[];
-          brand?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
+          project?: "trost" | "geniet" | "cashwalk-biz" | "nudge-eap";
           serviceName?: string;
           cwd?: string;
         },
@@ -1235,7 +1235,7 @@ export const toolHandlers = {
         args as {
           step: string;
           tgzDir?: string;
-          brand?: string;
+          project?: string;
           withRouter?: boolean;
           includeTailwind?: boolean;
           intent?: string;
@@ -1391,7 +1391,7 @@ export const toolHandlers = {
     const typed = args as {
       html?: string;
       filePath?: string;
-      brand?: string;
+      project?: string;
       surface?: string;
       cwd?: string;
     };
@@ -1428,7 +1428,7 @@ export const toolHandlers = {
     } else {
       llm = await scoreMockupQuality({
         html,
-        brand: typed.brand,
+        project: typed.project,
         surface: typed.surface,
         bin,
         env: { ...process.env } as Record<string, string>,

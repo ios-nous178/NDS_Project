@@ -1,7 +1,7 @@
 import React from "react";
 
 export type BadgeVariant = "fill" | "ghost" | "line";
-export type BadgeColor = "brand" | "neutral" | "success" | "error" | "caution" | "info";
+export type BadgeColor = "project" | "neutral" | "success" | "error" | "caution" | "info";
 export type BadgeSize = "sm" | "md" | "lg";
 export type BadgeShape = "default" | "pill";
 /**

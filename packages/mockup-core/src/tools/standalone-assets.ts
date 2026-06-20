@@ -4,7 +4,7 @@
  * `@nudge-design/html` 빌드가 떨군 무번들러 자산을 읽어, build_singlefile_html 의 html
  * intent 경로가 사용자 index.html 에 inline 한다(외부의존성 0 단일 HTML).
  *
- *   dist/standalone/{nudge-ds.runtime.js, tokens.css, brand.<slug>.css, styles.css,
+ *   dist/standalone/{nudge-ds.runtime.js, tokens.css, project.<slug>.css, styles.css,
  *                    reset.css, manifest.json}
  *
  * mockup-core 는 plain tsc → esbuild 로 server.mjs 에 인라인되므로 자산을 import-time 에
@@ -17,29 +17,29 @@ import fs from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { BRAND_ALIAS_MAP } from "@nudge-design/tokens/brand-profiles";
+import { PROJECT_ALIAS_MAP } from "@nudge-design/tokens/project-profiles";
 
 export interface StandaloneAssets {
-  /** IIFE 런타임 JS 본문(모든 <nds-*> 등록). 브랜드 무관. */
+  /** IIFE 런타임 JS 본문(모든 <nds-*> 등록). 프로젝트 무관. */
   runtimeJs: string;
-  /** base 토큰 + (브랜드 delta) + styles + reset 를 순서대로 concat 한 CSS 본문. */
+  /** base 토큰 + (프로젝트 delta) + styles + reset 를 순서대로 concat 한 CSS 본문. */
   css: string;
-  /** 실제로 적용된 브랜드 slug(미지정/미지 → baseOnlyBrand). */
-  brand: string;
-  /** 호출자가 명시/감지해 넘긴 원래 brand 입력(정규화 전, trim 후). 미지정이면 undefined. */
+  /** 실제로 적용된 프로젝트 slug(미지정/미지 → baseOnlyProject). */
+  project: string;
+  /** 호출자가 명시/감지해 넘긴 원래 project 입력(정규화 전, trim 후). 미지정이면 undefined. */
   requested?: string;
   /**
-   * requested 가 정식 브랜드(별칭 정규화 포함)로 해석됐는지.
-   * false = 브랜드를 명시했는데 미지 slug 라 base 로 조용히 폴백됨 → 블루 회귀 신호.
-   * requested 가 undefined(브랜드 미지정 = base 의도)면 true.
+   * requested 가 정식 프로젝트(별칭 정규화 포함)로 해석됐는지.
+   * false = 프로젝트를 명시했는데 미지 slug 라 base 로 조용히 폴백됨 → 블루 회귀 신호.
+   * requested 가 undefined(프로젝트 미지정 = base 의도)면 true.
    */
   recognized: boolean;
 }
 
 interface StandaloneManifest {
   runtime: string;
-  baseOnlyBrand: string;
-  brands: Record<string, string[]>;
+  baseOnlyProject: string;
+  projects: Record<string, string[]>;
 }
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -269,23 +269,23 @@ function loadManifest(dir: string): StandaloneManifest {
 }
 
 /**
- * 브랜드 slug 별칭 → 정식 manifest slug.
+ * 프로젝트 slug 별칭 → 정식 manifest slug.
  *
- * 회고(2026-06): 데스크탑 목업에서 `data-brand="cashpobi"`(캐포비 통용명)로 작성하자
- * manifest 에 `cashpobi` 가 없어 조용히 baseOnlyBrand(nudge-eap = 블루)로 폴백 →
+ * 회고(2026-06): 데스크탑 목업에서 `data-project="cashpobi"`(캐포비 통용명)로 작성하자
+ * manifest 에 `cashpobi` 가 없어 조용히 baseOnlyProject(nudge-eap = 블루)로 폴백 →
  * 캐포비 시그니처 노란 버튼이 DS 기본 블루로 렌더됐다. 통용명/표기 흔들림을 정식 slug 로
  * 정규화하고, 그래도 미지면 호출부(build-html / validator)가 조용히 넘기지 말고 경고한다.
  *
- * SSOT 는 브랜드 프로필(@nudge-design/tokens brand-profiles)의 aliases — 여기는 파생.
+ * SSOT 는 프로젝트 프로필(@nudge-design/tokens project-profiles)의 aliases — 여기는 파생.
  * 새 별칭은 이 파일이 아니라 프로필에 추가한다.
  */
-export const BRAND_ALIASES: Record<string, string> = { ...BRAND_ALIAS_MAP };
+export const PROJECT_ALIASES: Record<string, string> = { ...PROJECT_ALIAS_MAP };
 
 /** 통용 별칭/표기흔들림을 정식 slug 로 정규화(소문자·trim 후). 미지정은 undefined, 미지 입력은 그대로. */
-export function canonicalBrandSlug(brand?: string): string | undefined {
-  const n = brand?.trim().toLowerCase();
+export function canonicalProjectSlug(project?: string): string | undefined {
+  const n = project?.trim().toLowerCase();
   if (!n) return undefined;
-  return BRAND_ALIASES[n] ?? n;
+  return PROJECT_ALIASES[n] ?? n;
 }
 
 /**
@@ -314,27 +314,27 @@ export function canonicalPagePattern(value?: string): CashwalkBizPagePattern | u
 }
 
 /**
- * 브랜드에 맞는 prebuilt 자산(runtime JS + 조합된 CSS)을 읽어 반환.
- * @param brand 브랜드 slug(별칭 허용). 미지정/미지 브랜드는 manifest.baseOnlyBrand 로 폴백하되,
- *   미지 브랜드는 `recognized:false` 로 표시해 호출부가 조용한 블루 회귀를 감지하게 한다.
+ * 프로젝트에 맞는 prebuilt 자산(runtime JS + 조합된 CSS)을 읽어 반환.
+ * @param project 프로젝트 slug(별칭 허용). 미지정/미지 프로젝트는 manifest.baseOnlyProject 로 폴백하되,
+ *   미지 프로젝트는 `recognized:false` 로 표시해 호출부가 조용한 블루 회귀를 감지하게 한다.
  */
-export function loadStandaloneAssets(brand?: string): StandaloneAssets {
+export function loadStandaloneAssets(project?: string): StandaloneAssets {
   const dir = resolveStandaloneDir();
   const manifest = loadManifest(dir);
 
-  const requested = brand?.trim() || undefined;
-  const canonical = canonicalBrandSlug(brand);
-  // 브랜드 미지정 = base 의도(recognized:true). 명시했는데 manifest 에 없으면 recognized:false.
-  const recognized = requested ? !!(canonical && manifest.brands[canonical]) : true;
-  const resolvedBrand =
-    canonical && manifest.brands[canonical] ? canonical : manifest.baseOnlyBrand;
+  const requested = project?.trim() || undefined;
+  const canonical = canonicalProjectSlug(project);
+  // 프로젝트 미지정 = base 의도(recognized:true). 명시했는데 manifest 에 없으면 recognized:false.
+  const recognized = requested ? !!(canonical && manifest.projects[canonical]) : true;
+  const resolvedProject =
+    canonical && manifest.projects[canonical] ? canonical : manifest.baseOnlyProject;
 
-  const cacheKey = `${dir}::${resolvedBrand}`;
+  const cacheKey = `${dir}::${resolvedProject}`;
   const hit = cache.get(cacheKey);
   // requested/recognized 는 호출별로 달라지므로 캐시 본문(runtime/css)만 재사용하고 매번 덧씌운다.
   if (hit) return { ...hit, requested, recognized };
 
-  const cssPieces = manifest.brands[resolvedBrand] ?? manifest.brands[manifest.baseOnlyBrand];
+  const cssPieces = manifest.projects[resolvedProject] ?? manifest.projects[manifest.baseOnlyProject];
   const css =
     cssPieces.map((file) => fs.readFileSync(path.join(dir, file), "utf-8")).join("\n") +
     // 목업 전용 디바이스 프레임 — 단일 파일 빌드·미리보기 양쪽에 항상 동봉(옵트인 클래스).
@@ -344,15 +344,15 @@ export function loadStandaloneAssets(brand?: string): StandaloneAssets {
   const runtimeJs =
     fs.readFileSync(path.join(dir, manifest.runtime), "utf-8") + "\n" + MOCKUP_FRAME_JS;
 
-  // 캐시에는 브랜드-불변 본문만 저장(requested/recognized 제외 — 매 호출 덧씌움).
-  const base: StandaloneAssets = { runtimeJs, css, brand: resolvedBrand, recognized: true };
+  // 캐시에는 프로젝트-불변 본문만 저장(requested/recognized 제외 — 매 호출 덧씌움).
+  const base: StandaloneAssets = { runtimeJs, css, project: resolvedProject, recognized: true };
   cache.set(cacheKey, base);
   return { ...base, requested, recognized };
 }
 
-/** 알려진 정식 브랜드 slug 목록(테스트/진단용). 별칭은 미포함. */
-export function listStandaloneBrands(): string[] {
-  return Object.keys(loadManifest(resolveStandaloneDir()).brands);
+/** 알려진 정식 프로젝트 slug 목록(테스트/진단용). 별칭은 미포함. */
+export function listStandaloneProjects(): string[] {
+  return Object.keys(loadManifest(resolveStandaloneDir()).projects);
 }
 
 /** prebuilt 인라인 자산을 식별하는 마커(중복 주입 방지 + build_singlefile_html 산출물 감지 공용). */
@@ -368,15 +368,15 @@ export const STANDALONE_MARKER = "data-nds-standalone";
  * 동일하게 렌더한다(원본 파일 무변경 = 비파괴, 멱등).
  *
  * - 이미 인라인된 산출물(STANDALONE_MARKER 존재 = dist)이면 그대로 둔다.
- * - 브랜드는 인자 우선, 없으면 <html|body data-brand> / <body class="brand-*"> 에서 감지.
+ * - 프로젝트는 인자 우선, 없으면 <html|body data-project> / <body class="project-*"> 에서 감지.
  * - 자산을 못 찾으면 원본을 그대로 반환(미리보기 자체는 살린다).
  */
-export function injectStandaloneRuntime(html: string, brand?: string): string {
+export function injectStandaloneRuntime(html: string, project?: string): string {
   if (html.includes(STANDALONE_MARKER)) return html;
 
   let assets: StandaloneAssets;
   try {
-    assets = loadStandaloneAssets(brand ?? detectBrandFromHtml(html));
+    assets = loadStandaloneAssets(project ?? detectProjectFromHtml(html));
   } catch {
     return html;
   }
@@ -407,18 +407,18 @@ export function injectStandaloneRuntime(html: string, brand?: string): string {
 }
 
 /**
- * <html|body data-brand="x">, <body class="… brand-x …">, 또는 nds-brand-* chrome 컴포넌트의
- * brand 속성에서 브랜드 slug 추출. (build-html 의 resolveHtmlBrand 와 동일 우선순위 — 미리보기↔빌드 일치)
+ * <html|body data-project="x">, <body class="… project-x …">, 또는 nds-project-* chrome 컴포넌트의
+ * project 속성에서 프로젝트 slug 추출. (build-html 의 resolveHtmlProject 와 동일 우선순위 — 미리보기↔빌드 일치)
  */
-function detectBrandFromHtml(html: string): string | undefined {
-  const dataBrand = html.match(/<(?:html|body)\b[^>]*\bdata-brand\s*=\s*["']([^"']+)["']/i);
-  if (dataBrand) return dataBrand[1].trim();
+function detectProjectFromHtml(html: string): string | undefined {
+  const dataProject = html.match(/<(?:html|body)\b[^>]*\bdata-project\s*=\s*["']([^"']+)["']/i);
+  if (dataProject) return dataProject[1].trim();
   const bodyClass = html.match(/<body\b[^>]*\bclass\s*=\s*["']([^"']*)["']/i);
-  const m = bodyClass?.[1].match(/\bbrand-([a-z0-9-]+)\b/i);
+  const m = bodyClass?.[1].match(/\bproject-([a-z0-9-]+)\b/i);
   if (m) return m[1];
-  // brand chrome 컴포넌트 속성(회고: brand 를 chrome 에만 선언하면 base 블루로 폴백됨).
+  // project chrome 컴포넌트 속성(회고: project 를 chrome 에만 선언하면 base 블루로 폴백됨).
   const chrome = html.match(
-    /<nds-brand-(?:header|footer|bottom-nav)\b[^>]*\bbrand\s*=\s*["']([^"']+)["']/i,
+    /<nds-project-(?:header|footer|bottom-nav)\b[^>]*\bproject\s*=\s*["']([^"']+)["']/i,
   );
   return chrome ? chrome[1].trim() : undefined;
 }

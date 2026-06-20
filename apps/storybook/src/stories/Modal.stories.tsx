@@ -6,25 +6,25 @@ import { cv, resolveActionsLayout } from "@nudge-design/tokens";
 import { getComponentDocsDescription } from "../componentDocs";
 import { createInteractionUser } from "./interactionTest";
 
-/** 정적 프리뷰용 — 현재 브랜드 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
+/** 정적 프리뷰용 — 현재 프로젝트 기본 버튼 배치(data-layout)를 실제 컴포넌트와 동일하게 해석. */
 function currentActionsLayout(): "split" | "end" {
-  const brand =
-    typeof document !== "undefined" ? document.documentElement.getAttribute("data-brand") : null;
-  return resolveActionsLayout(brand);
+  const project =
+    typeof document !== "undefined" ? document.documentElement.getAttribute("data-project") : null;
+  return resolveActionsLayout(project);
 }
 
 /* Modal 은 createPortal 로 document.body 에 mount 되므로 캐스케이드를
-   적용하려면 <html data-brand="cashwalk-biz"> 가 필요. 캐포비 admin 스토리는
-   브랜드 툴바와 무관하게 항상 cashwalk-biz 캐스케이드를 보여주기 위해
-   documentElement 의 data-brand 를 일시적으로 cashwalk-biz 로 고정한다. */
-function useForceCashwalkBizBrand() {
+   적용하려면 <html data-project="cashwalk-biz"> 가 필요. 캐포비 admin 스토리는
+   프로젝트 툴바와 무관하게 항상 cashwalk-biz 캐스케이드를 보여주기 위해
+   documentElement 의 data-project 를 일시적으로 cashwalk-biz 로 고정한다. */
+function useForceCashwalkBizProject() {
   useEffect(() => {
     const root = document.documentElement;
-    const prev = root.getAttribute("data-brand");
-    root.setAttribute("data-brand", "cashwalk-biz");
+    const prev = root.getAttribute("data-project");
+    root.setAttribute("data-project", "cashwalk-biz");
     return () => {
-      if (prev === null) root.removeAttribute("data-brand");
-      else root.setAttribute("data-brand", prev);
+      if (prev === null) root.removeAttribute("data-project");
+      else root.setAttribute("data-project", prev);
     };
   }, []);
 }
@@ -73,7 +73,7 @@ export function Example() {
             }}
           >
             <span style={{ fontWeight: 700, fontSize: 18 }}>알림</span>
-            <Badge variant="fill" color="brand">
+            <Badge variant="fill" color="project">
               NEW
             </Badge>
           </Modal.Header>
@@ -229,7 +229,7 @@ const meta: Meta<ModalProps> = {
     actionsLayout: {
       control: "radio",
       options: [undefined, "split", "end"],
-      description: "푸터 버튼 배치. 생략 시 브랜드 기본(캐포비=end, 그 외=split).",
+      description: "푸터 버튼 배치. 생략 시 프로젝트 기본(캐포비=end, 그 외=split).",
     },
   },
 };
@@ -304,7 +304,7 @@ function CompoundModalExample() {
             }}
           >
             <span style={{ fontWeight: 700, fontSize: 18, color: "#111111" }}>알림</span>
-            <Badge variant="fill" color="brand">
+            <Badge variant="fill" color="project">
               NEW
             </Badge>
           </Modal.Header>
@@ -708,7 +708,7 @@ const MODAL_SPEC_ROWS: Array<{ key: string; value: string }> = [
    4가지 슬롯 기반 패턴: Single / Dual / With Close / Confirm+Slot. */
 
 function CashwalkBizSingleActionExample() {
-  useForceCashwalkBizBrand();
+  useForceCashwalkBizProject();
   const [open, setOpen] = useState(false);
 
   return (
@@ -732,7 +732,7 @@ function CashwalkBizSingleActionExample() {
 }
 
 function CashwalkBizDualActionExample() {
-  useForceCashwalkBizBrand();
+  useForceCashwalkBizProject();
   const [open, setOpen] = useState(false);
 
   return (
@@ -758,7 +758,7 @@ function CashwalkBizDualActionExample() {
    `onClose` 를 전달하면 자동으로 cancel 버튼을 만들기 때문에 이 패턴은
    Compound API 로 명시적으로 조립한다. */
 function CashwalkBizWithCloseExample() {
-  useForceCashwalkBizBrand();
+  useForceCashwalkBizProject();
   const [open, setOpen] = useState(false);
 
   return (
@@ -786,7 +786,7 @@ function CashwalkBizWithCloseExample() {
    렌더되던 탓에, 타이틀이 없으면 X 가 space-between 에서 좌측으로 떨어지던 버그를 고정한다.
    close 버튼의 margin-left:auto 로 타이틀 유무와 무관하게 항상 우측이어야 한다. */
 function CashwalkBizCloseOnlyNoTitleExample() {
-  useForceCashwalkBizBrand();
+  useForceCashwalkBizProject();
   const [open, setOpen] = useState(false);
 
   return (
@@ -810,7 +810,7 @@ function CashwalkBizCloseOnlyNoTitleExample() {
 }
 
 function CashwalkBizConfirmSlotExample() {
-  useForceCashwalkBizBrand();
+  useForceCashwalkBizProject();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
 
@@ -865,7 +865,7 @@ function CashwalkBizConfirmSlotExample() {
 }
 
 export const CashwalkBizAdminSingleAction: Story = {
-  name: "Brand/CashwalkBiz Admin · ① Single Action",
+  name: "Project/CashwalkBiz Admin · ① Single Action",
   parameters: {
     docs: {
       description: {
@@ -879,7 +879,7 @@ export const CashwalkBizAdminSingleAction: Story = {
 };
 
 export const CashwalkBizAdminDualAction: Story = {
-  name: "Brand/CashwalkBiz Admin · ② Dual Action",
+  name: "Project/CashwalkBiz Admin · ② Dual Action",
   parameters: {
     docs: {
       description: {
@@ -893,7 +893,7 @@ export const CashwalkBizAdminDualAction: Story = {
 };
 
 export const CashwalkBizAdminWithClose: Story = {
-  name: "Brand/CashwalkBiz Admin · ③ With Close",
+  name: "Project/CashwalkBiz Admin · ③ With Close",
   parameters: {
     docs: {
       description: {
@@ -907,7 +907,7 @@ export const CashwalkBizAdminWithClose: Story = {
 };
 
 export const CashwalkBizAdminCloseOnlyNoTitle: Story = {
-  name: "Brand/CashwalkBiz Admin · ⑤ Close Only (no title)",
+  name: "Project/CashwalkBiz Admin · ⑤ Close Only (no title)",
   parameters: {
     docs: {
       description: {
@@ -921,7 +921,7 @@ export const CashwalkBizAdminCloseOnlyNoTitle: Story = {
 };
 
 export const CashwalkBizAdminConfirmSlot: Story = {
-  name: "Brand/CashwalkBiz Admin · ④ Confirm + Slot",
+  name: "Project/CashwalkBiz Admin · ④ Confirm + Slot",
   parameters: {
     docs: {
       description: {
@@ -999,7 +999,7 @@ export const Default: Story = {
 /* ─── Single / Dual Action ───────────────────────────────────────────────
    docs(개요)에서 클릭 없이 바로 UI 가 보이도록, 포털/오버레이 없이 컴포넌트와 동일한
    DS 클래스(nds-modal__*)로 카드만 인라인 렌더한다 — styles.css 가 그대로 적용되므로
-   브랜드 툴바를 cashwalk-biz 로 두면 우측 hug pill 푸터로 보인다.
+   프로젝트 툴바를 cashwalk-biz 로 두면 우측 hug pill 푸터로 보인다.
    (실제 열림/포커스/Esc 동작은 State/Default·Interaction 스토리 참고.) */
 
 function ModalStaticPreview({
@@ -1069,21 +1069,21 @@ export const DualAction: Story = {
   ),
 };
 
-/* confirmTone — positive(기본·브랜드 confirm 색) vs destructive(검정 Neutral CTA + 흰 텍스트).
-   브랜드 툴바를 trost 로 두면 positive=노랑+검은글씨 / destructive=검정+흰글씨 로 확인. */
+/* confirmTone — positive(기본·프로젝트 confirm 색) vs destructive(검정 Neutral CTA + 흰 텍스트).
+   프로젝트 툴바를 trost 로 두면 positive=노랑+검은글씨 / destructive=검정+흰글씨 로 확인. */
 export const ConfirmTone: Story = {
   name: "State/Confirm Tone (Positive vs Destructive)",
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <ModalStaticPreview
         title="기록을 저장할까요?"
-        body="Positive — confirmTone 생략(기본). 브랜드 confirm 색(트로스트=노랑+검은 글씨)."
+        body="Positive — confirmTone 생략(기본). 프로젝트 confirm 색(트로스트=노랑+검은 글씨)."
         cancelText="취소"
         confirmText="저장"
       />
       <ModalStaticPreview
         title="댓글을 차단할까요?"
-        body={'Destructive — confirmTone="destructive". 비가역 액션은 검정 Neutral CTA + 흰 텍스트(브랜드 무관).'}
+        body={'Destructive — confirmTone="destructive". 비가역 액션은 검정 Neutral CTA + 흰 텍스트(프로젝트 무관).'}
         cancelText="취소"
         confirmText="차단"
         confirmTone="destructive"

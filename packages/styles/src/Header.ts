@@ -38,7 +38,7 @@ export const headerStyles = `
   /* Root — flex variants (compact / webview / transparent).
      색은 JS 색맵을 우회하지 않는다 — react/html 은 data-variant / data-elevated 만 set,
      배경·하단보더는 [data-variant] 룰이, shadow 는 [data-elevated] 룰이 슬롯에 주입한다.
-     ① 슬롯(--nds-header-*) = 브랜드/인스턴스 override · ② [data-variant] 룰 = variant 차이.
+     ① 슬롯(--nds-header-*) = 프로젝트/인스턴스 override · ② [data-variant] 룰 = variant 차이.
      title font(body1+bold)·shadow none 은 3 variant 공통 상수 → 기본 룰에 직접. */
   :where(.${HEADER_CLASS}[data-variant="compact"]),
   :where(.${HEADER_CLASS}[data-variant="webview"]),

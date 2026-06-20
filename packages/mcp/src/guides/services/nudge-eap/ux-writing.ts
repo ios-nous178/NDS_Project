@@ -4,8 +4,8 @@ import type { ServiceOverlay } from "../types.js";
  * NudgeEAP UX Writing overlay.
  * Source: 기존 UX_WRITING_GUIDE 의 voiceTone 마지막 문장 + eapDomain 6개 (guides.ts:4068, 4129-4136).
  *
- * 멘탈케어/EAP 도메인 한정 룰. base UX_WRITING_GUIDE 는 brand-agnostic 토스 식 보이스톤만 유지.
- * (Trost 도 멘탈케어 brand 이므로 추후 category overlay 도입 시 이쪽으로 옮길 후보.)
+ * 멘탈케어/EAP 도메인 한정 룰. base UX_WRITING_GUIDE 는 project-agnostic 토스 식 보이스톤만 유지.
+ * (Trost 도 멘탈케어 project 이므로 추후 category overlay 도입 시 이쪽으로 옮길 후보.)
  */
 export const UxWritingOverlay: ServiceOverlay = {
   copyTone: {

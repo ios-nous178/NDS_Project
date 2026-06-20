@@ -3,7 +3,7 @@ references:
   - label: Tab vs Filter — 역할·배치·결정 트리 (DesignGuide)
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3544-206
     caption: FilterBar = 현재 view 안에서 조건 좁히기(다중 누적·쿼리 파라미터). Tab(view 전환)과 역할 구분. 배치 순서·결정 트리, 캐포비 admin 풀 스펙은 pattern:cashwalk-biz-tab.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary

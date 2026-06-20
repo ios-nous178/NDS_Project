@@ -7,7 +7,7 @@
 
 ## 한 문장 요약
 
-> **이 레포는 "디자인 시스템을 *만드는* 곳"입니다.** 5개 브랜드(Trost · Geniet · NudgeEAP · CashwalkBiz · Runmile)가 공유하는 토큰·컴포넌트·아이콘을 한곳에서 정의하고, 외부 프로덕트/목업 앱은 이걸 **npm 패키지 + MCP 가이드**로 *소비*만 합니다.
+> **이 레포는 "디자인 시스템을 *만드는* 곳"입니다.** 5개 프로젝트(Trost · Geniet · NudgeEAP · CashwalkBiz · Runmile)가 공유하는 토큰·컴포넌트·아이콘을 한곳에서 정의하고, 외부 프로덕트/목업 앱은 이걸 **npm 패키지 + MCP 가이드**로 *소비*만 합니다.
 
 핵심 설계 원칙은 **SSOT(Single Source of Truth)** — 같은 정보(색, 컴포넌트 props, 사용 규칙)는 한 곳에서만 정의하고 나머지는 거기서 파생됩니다. 그래서 이 레포에는 "직접 고치는 파일"과 "생성되는 파일(생성물)"이 섞여 있습니다. ([생성물](#생성물-generated-artifacts) 절 참고)
 
@@ -15,7 +15,7 @@
 
 ## 패키지 의존 그래프
 
-![Nudge Design System 패키지 아키텍처 개요 — 브랜드 토큰 override가 기반(tokens·icons·assets)에 주입되고, 공용 스타일·프리셋을 거쳐 컴포넌트(react·html)가 만들어지며, 내부 앱과 mockup-core→mcp→외부 소비자 두 갈래로 소비된다](docs/assets/architecture.svg)
+![Nudge Design System 패키지 아키텍처 개요 — 프로젝트 토큰 override가 기반(tokens·icons·assets)에 주입되고, 공용 스타일·프리셋을 거쳐 컴포넌트(react·html)가 만들어지며, 내부 앱과 mockup-core→mcp→외부 소비자 두 갈래로 소비된다](docs/assets/architecture.svg)
 
 *한눈 개요 — 위에서 아래로 빌드·의존 순서. 아래 mermaid 는 정확한 패키지별 의존 간선입니다.*
 
@@ -24,7 +24,7 @@ flowchart TB
   subgraph base["기반 (의존 없음)"]
     TK["tokens<br/>디자인 토큰"]
     IC["icons<br/>SVG 아이콘"]
-    AS["assets<br/>브랜드 로고"]
+    AS["assets<br/>프로젝트 로고"]
   end
 
   ST["styles<br/>공용 CSS 번들"]
@@ -55,7 +55,7 @@ flowchart TB
 |---|---|---|---|
 | **tokens** | npm | 색·타이포·spacing·radius·motion 토큰 (TS export + CSS 변수) | — |
 | **icons** | npm | Figma 기준 SVG 아이콘 → React/vanilla 컴포넌트 | — |
-| **assets** | npm | 브랜드 로고 등 래스터/벡터 에셋 (브랜드 스왑 인터페이스) | — |
+| **assets** | npm | 프로젝트 로고 등 래스터/벡터 에셋 (프로젝트 스왑 인터페이스) | — |
 | **styles** | npm | react/html 이 **공유하는 CSS 번들** (토큰 참조) | tokens |
 | **tailwind-preset** | npm | 토큰 기반 Tailwind theme preset | tokens |
 | **react** | npm | React 컴포넌트 (~111종) — Props 의 SSOT | tokens·icons·styles·assets |
@@ -86,18 +86,18 @@ packages/html/src/components/nds-button.ts  ← 바닐라 웹컴포넌트 (react
 
 ---
 
-## 브랜드는 토큰으로만 (`brands/*`)
+## 프로젝트는 토큰으로만 (`projects/*`)
 
-브랜드 차이(색·radius 등)는 **컴포넌트가 모릅니다.** 컴포넌트는 시멘틱 토큰 하나를 참조하고, 브랜드 토큰 파일이 그 **값만 덮어씁니다.**
+프로젝트 차이(색·radius 등)는 **컴포넌트가 모릅니다.** 컴포넌트는 시멘틱 토큰 하나를 참조하고, 프로젝트 토큰 파일이 그 **값만 덮어씁니다.**
 
 ```
-packages/tokens/src/brands/{trost,geniet,nudge-eap,cashwalk-biz,runmile}.ts
+packages/tokens/src/projects/{trost,geniet,nudge-eap,cashwalk-biz,runmile}.ts
 ```
 
-- 컴포넌트 CSS 에 `[data-brand="..."]` 색 분기를 박지 않습니다 → 브랜드별 차이는 토큰 값 override 로 흘려보냅니다.
-- 모든 base 시멘틱 leaf 는 5개 브랜드에 **명시 정의 or waiver** 여야 합니다 (`pnpm lint:brand-completeness` 게이트 — base 색이 브랜드 화면에 새는 버그 차단).
+- 컴포넌트 CSS 에 `[data-project="..."]` 색 분기를 박지 않습니다 → 프로젝트별 차이는 토큰 값 override 로 흘려보냅니다.
+- 모든 base 시멘틱 leaf 는 5개 프로젝트에 **명시 정의 or waiver** 여야 합니다 (`pnpm lint:project-completeness` 게이트 — base 색이 프로젝트 화면에 새는 버그 차단).
 
-자세한 규칙·마이그레이션 패턴은 [CLAUDE.md](CLAUDE.md) "브랜드 차이는 토큰으로만" 절이 SSOT 입니다.
+자세한 규칙·마이그레이션 패턴은 [CLAUDE.md](CLAUDE.md) "프로젝트 차이는 토큰으로만" 절이 SSOT 입니다.
 
 ---
 
@@ -135,7 +135,7 @@ packages/tokens/src/brands/{trost,geniet,nudge-eap,cashwalk-biz,runmile}.ts
 
 | 앱 | 용도 |
 |---|---|
-| `apps/storybook` | 컴포넌트 데모 + 브랜드 목업 (개발 중 시각 확인) |
+| `apps/storybook` | 컴포넌트 데모 + 프로젝트 목업 (개발 중 시각 확인) |
 | `apps/docs` | Docusaurus 문서 사이트 (`docs/` 소스 빌드, 컴포넌트 119+ 페이지) |
 | `apps/web-server` | 배포용 서버 (랜딩 + docs + storybook 묶음) |
 | `apps/desktop` | 데스크탑 카탈로그 (mockup-core 소비) |
@@ -150,7 +150,7 @@ packages/tokens/src/brands/{trost,geniet,nudge-eap,cashwalk-biz,runmile}.ts
 |---|---|---|
 | 새 컴포넌트 | `packages/react/src/` → styles → html → 스토리 → MCP 가이드 | `/ds-component` |
 | 토큰 추가/수정 | `packages/tokens/src/` + `DESIGN.md` | — |
-| 브랜드 색 차이 | `packages/tokens/src/brands/<brand>.ts` (컴포넌트 X) | — |
+| 프로젝트 색 차이 | `packages/tokens/src/projects/<project>.ts` (컴포넌트 X) | — |
 | 목업 피드백 반영 | DS 컴포넌트/토큰/가이드 트리아지 | `/ds-fix` |
 | 정합성 감사 | 3면 미러·전파·토큰·figma sync 점검 | `/ds-audit` |
 | 외부 배포 | changeset → MCPB | `/ds-release` |

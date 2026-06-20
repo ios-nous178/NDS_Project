@@ -4,13 +4,13 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { buildSinglefileHtml } from "./build-html.js";
-import { listStandaloneBrands } from "./standalone-assets.js";
+import { listStandaloneProjects } from "./standalone-assets.js";
 
 // 빌드는 prebuilt standalone 자산(DS CSS/runtime) manifest 가 있어야 동작한다.
 // 단위 테스트 환경에서 manifest 가 비면(클린 체크아웃 등) 통째로 skip.
 const hasManifest = (() => {
   try {
-    return listStandaloneBrands().includes("nudge-eap");
+    return listStandaloneProjects().includes("nudge-eap");
   } catch {
     return false;
   }
@@ -31,7 +31,7 @@ function withWorkspace(
 // emoji-banned 는 error-severity 룰 → 빌드 게이트 트리거에 사용.
 // data-prd-coverage 빈 매니페스트로 PRD 노이즈는 분리.
 const indexHtml = (extra = "") => `<!doctype html>
-<html data-brand="nudge-eap"><head><meta charset="utf-8"></head>
+<html data-project="nudge-eap"><head><meta charset="utf-8"></head>
 <body>
   <script type="application/json" data-prd-coverage>{"requirements":[]}</script>
   <nds-button id="ok-btn">확인</nds-button>

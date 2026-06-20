@@ -31,7 +31,7 @@ description: >-
 
 ### Phase 0 — 인테이크
 
-- 대상 확보: 인라인 HTML 문자열, 또는 `filePath`(빌드 산출물 — 보통 `build_singlefile_html` 결과 단일 파일). 브랜드/surface 가 있으면 채점 컨텍스트로 전달.
+- 대상 확보: 인라인 HTML 문자열, 또는 `filePath`(빌드 산출물 — 보통 `build_singlefile_html` 결과 단일 파일). 프로젝트/surface 가 있으면 채점 컨텍스트로 전달.
 - 아직 안 빌드됐으면 `build_singlefile_html` 로 먼저 산출물을 만든 뒤 채점(빌드 응답에는 D1 score 게이트가 이미 붙어 옴).
 
 ### Phase 1 — D1 (빠른 정적)
@@ -41,7 +41,7 @@ description: >-
 
 ### Phase 2 — D2 (정성)
 
-- `score_mockup_quality({ filePath|source, brand?, surface? })` → ux/interaction/flow/form 차원 점수 + overall.
+- `score_mockup_quality({ filePath|source, project?, surface? })` → ux/interaction/flow/form 차원 점수 + overall.
 - 실패/타임아웃이면 그대로 보고(미채점이라고 통과로 간주하지 않음 — verdict 는 D1 기준으로만, 단 "D2 미채점" 명시).
 
 ### Phase 3 — 종합 & 우선순위

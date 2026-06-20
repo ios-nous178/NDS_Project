@@ -39,7 +39,7 @@ function escHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-// 고정 팔레트 — 브랜드 cascade 와 무관한 "시스템 워터마크" 색. 어떤 목업 위에서도 동일하게 보인다.
+// 고정 팔레트 — 프로젝트 cascade 와 무관한 "시스템 워터마크" 색. 어떤 목업 위에서도 동일하게 보인다.
 const STAMP = {
   bg: "rgba(22,24,29,.82)", // 반투명 — 뒤 UI 가 비치게(backdrop-filter blur 와 함께).
   border: "rgba(255,255,255,.12)",

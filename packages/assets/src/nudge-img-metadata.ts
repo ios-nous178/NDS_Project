@@ -23,7 +23,7 @@
  *
  * raster PNG 라 dataUri 미제공 — 파일 호스팅 필수.
  * 외부 소비자는 `@nudge-design/assets/files/{filename}` 로 참조.
- * public path 에서는 Figma 섹션명 `nudge-img` 를 쓰지 않고 brand-first taxonomy 를 사용한다.
+ * public path 에서는 Figma 섹션명 `nudge-img` 를 쓰지 않고 project-first taxonomy 를 사용한다.
  */
 
 export type NudgeImgCategory =
@@ -61,8 +61,8 @@ function meta(
 ): NudgeImgMeta {
   const basePath =
     category === "eap-profiles"
-      ? "brand/nudge-eap/profiles"
-      : `brand/nudge-eap/images/${category === "3d" ? "three-d" : category}`;
+      ? "project/nudge-eap/profiles"
+      : `project/nudge-eap/images/${category === "3d" ? "three-d" : category}`;
   return {
     category,
     id,

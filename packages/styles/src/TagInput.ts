@@ -88,7 +88,7 @@ export const tiStyles = `
     justify-content: center;
     border: none;
     border-radius: var(--nds-input-radius, ${radius.md}px);
-    /* 기본 primary 채움(추가 어포던스). 캐포비는 primary(yellow)를 CTA 로 안 써 neutral(#111)로 브랜드 슬롯 override. */
+    /* 기본 primary 채움(추가 어포던스). 캐포비는 primary(yellow)를 CTA 로 안 써 neutral(#111)로 프로젝트 슬롯 override. */
     background: var(--nds-tag-input-add-bg, ${cv.button.bgDefault});
     color: var(--nds-tag-input-add-color, ${cv.button.textDefault});
     cursor: pointer;
@@ -125,21 +125,21 @@ export const tiStyles = `
   }
 
   /* ─── 캐포비(cashwalk-biz) stacked 태그 삭제 글리프 — SelectedItemRow 와 동일(Figma 3001:18463) ───
-     솔리드 원형 X(svg) 숨기고 ::before serchdelete mask 로 swap (요소 교체=구조적 → [data-brand] 유지).
-     색 gray(iconRole.normal)→hover red(statusError). gray fill·radius 10 은 브랜드 슬롯(components.tag-input)으로 이전. */
-  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) {
+     솔리드 원형 X(svg) 숨기고 ::before serchdelete mask 로 swap (요소 교체=구조적 → [data-project] 유지).
+     색 gray(iconRole.normal)→hover red(statusError). gray fill·radius 10 은 프로젝트 슬롯(components.tag-input)으로 이전. */
+  :where([data-project="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) {
     background: transparent;
     color: ${cv.iconRole.normal};
     opacity: 1;
   }
-  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}:hover) {
+  :where([data-project="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}:hover) {
     background: transparent;
     color: ${cv.textRole.statusError};
   }
-  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) svg {
+  :where([data-project="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS}) svg {
     display: none;
   }
-  :where([data-brand="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS})::before {
+  :where([data-project="cashwalk-biz"] .${TI_ROOT_CLASS}[data-variant="stacked"] .${TI_REMOVE_CLASS})::before {
     content: "";
     display: block;
     width: 18px;
@@ -187,7 +187,7 @@ export const tiStyles = `
     color: ${cv.textRole.normal};
   }
 
-  /* inline 칩 — 브랜드 tint pill (해시태그식) */
+  /* inline 칩 — 프로젝트 tint pill (해시태그식) */
   :where(.${TI_ROOT_CLASS}[data-variant="inline"] .${TI_TAG_CLASS}) {
     height: 26px;
     padding: 0 ${spacing[4]}px 0 ${spacing[10]}px;

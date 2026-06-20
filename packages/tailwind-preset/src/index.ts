@@ -69,8 +69,8 @@ import {
  *   - input.*    → Input group      (`--semantic-input-*`)
  *
  * 시멘틱 색상은 hex 가 아닌 CSS var 로 노출 — DS tokens.css 가 변경되면
- * tailwind 클래스도 자동 반영된다. brand override(예: Trost theme) 가 같은
- * var 를 redefine 하면 동일 클래스가 브랜드 색상으로 렌더된다.
+ * tailwind 클래스도 자동 반영된다. project override(예: Trost theme) 가 같은
+ * var 를 redefine 하면 동일 클래스가 프로젝트 색상으로 렌더된다.
  */
 export const nudgeEapPreset = {
   theme: {
@@ -264,7 +264,7 @@ function objectToPx(obj: Record<string, string | number>): Record<string, string
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 cashwalk-biz.css 가 var 를
  * 노란 톤으로 redefine 하므로 자동 캐포비 색상. 별도 색상 alias 만 추가:
- *   - `bg-cashwalk-biz-yellow-500` 같은 brand-prefixed
+ *   - `bg-cashwalk-biz-yellow-500` 같은 project-prefixed
  *   - `bg-brown-500` 같은 캐시워크 로고용
  *
  * Typography / radius / spacing 은 cashwalk-biz 가이드에 맞춘 별도 매핑.
@@ -328,7 +328,7 @@ export const cashwalkBizPreset = {
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 geniet.css 가 var 를 민트 톤으로
  * redefine 하므로 자동 지니어트 색상. 별도 색상 alias 만 추가:
- *   - `bg-geniet-neutral-*` · `bg-mint-*` 같은 브랜드 atomic
+ *   - `bg-geniet-neutral-*` · `bg-mint-*` 같은 프로젝트 atomic
  * Typography / radius(곡률 xl=18 · 2xl=23 포함) / shadow 는 지니어트 가이드 매핑.
  */
 export const genietPreset = {
@@ -398,7 +398,7 @@ export const genietPreset = {
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 runmile.css 가 var 를 오렌지 톤으로
  * redefine 하므로 자동 런마일 색상. 별도 색상 alias 만 추가:
- *   - `bg-runmile-neutral-*` · `bg-orange-*` 같은 브랜드 atomic
+ *   - `bg-runmile-neutral-*` · `bg-orange-*` 같은 프로젝트 atomic
  * Typography / radius(Toss 스타일 4/6/8/12/16/pill) / shadow 는 런마일 가이드 매핑.
  */
 export const runmilePreset = {

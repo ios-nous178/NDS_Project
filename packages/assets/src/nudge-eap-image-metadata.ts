@@ -1,3 +1,3 @@
-/** NudgeEAP brand-scoped screen image metadata. */
+/** NudgeEAP project-scoped screen image metadata. */
 
 export * from "./nudge-img-metadata.js";

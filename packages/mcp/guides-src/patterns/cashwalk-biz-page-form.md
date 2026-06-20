@@ -26,12 +26,12 @@ references:
     image: references/cashwalk-biz-form-pattern-3615-522.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3615-522
     caption: Step Progress + FormSection 반복 + 우측 미리보기 패널 + 좌/우 분리 Footer. metrics 는 이 노드 실측 기준.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐포비 Form docs — PRD→컴포넌트 매핑 포함 (Figma 3626-1041)
     image: references/cashwalk-biz-form-docs-3626-1041.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-1041
     caption: 언제 사용 · Section 구조 · Layout Spec · Validate Rule(PRD→컴포넌트 매핑) 원문 스펙 문서.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary

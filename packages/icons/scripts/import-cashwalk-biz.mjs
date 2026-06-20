@@ -34,7 +34,7 @@ const FROM_FIGMA = [
   "arrow-up",
   "arrow-down",
   "arrow-right",
-  "calendar", // DatePicker 트리거에서 brand 별 swap — CashwalkBiz 는 filled + dot grid 변종.
+  "calendar", // DatePicker 트리거에서 project 별 swap — CashwalkBiz 는 filled + dot grid 변종.
   "caution",
   "check",
   "check-circle-on",

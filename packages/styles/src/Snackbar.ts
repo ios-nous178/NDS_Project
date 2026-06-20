@@ -19,7 +19,7 @@ const SB_ACTION_CLASS = `${SB_CLASS}__action`;
 const SB_CLOSE_CLASS = `${SB_CLASS}__close`;
 
 export const snackbarStyles = `
-  /* 색 합성: ① --nds-snackbar-bg (브랜드 서피스 override) > ② --nds-snackbar-variant-bg (variant) > ③ 기본.
+  /* 색 합성: ① --nds-snackbar-bg (프로젝트 서피스 override) > ② --nds-snackbar-variant-bg (variant) > ③ 기본.
    * variant 룰은 background 를 직접 박지 않고 ②슬롯만 set → 캐포비가 ①로 전 variant 를 흰카드로 덮을 수 있다.
    * (CLAUDE.md '색은 슬롯에 넣고 우선순위로 합성' 참조.) */
   :where(.${SB_CLASS}) {
@@ -38,12 +38,12 @@ export const snackbarStyles = `
     box-sizing: border-box;
   }
 
-  /* variant 색 = ②슬롯에 글로벌 시멘틱 status 토큰을 넣는다(브랜드는 --semantic-*-status-* 로 커스텀).
-   * 아이콘 색은 variant 정체성이라 브랜드 override 와 무관하게 항상 variant 색을 유지. */
+  /* variant 색 = ②슬롯에 글로벌 시멘틱 status 토큰을 넣는다(프로젝트는 --semantic-*-status-* 로 커스텀).
+   * 아이콘 색은 variant 정체성이라 프로젝트 override 와 무관하게 항상 variant 색을 유지. */
   :where(.${SB_CLASS}[data-variant="info"]) {
     --nds-snackbar-variant-bg: var(--semantic-bg-status-info);
-    /* info 아이콘색 — 브랜드 scoped slot > brand fallback. 런마일 다크 토스트는 파랑(text-status-info),
-       미설정 브랜드는 brand 색 유지. */
+    /* info 아이콘색 — 프로젝트 scoped slot > project fallback. 런마일 다크 토스트는 파랑(text-status-info),
+       미설정 프로젝트는 project 색 유지. */
     --nds-snackbar-icon: var(--nds-snackbar-info-icon, var(--semantic-icon-brand-default));
   }
   :where(.${SB_CLASS}[data-variant="success"]) {
@@ -102,7 +102,7 @@ export const snackbarStyles = `
     height: 28px;
     padding: 0 var(--semantic-inset-chip);
     border: none;
-    /* 액션 칩 — 브랜드가 투명+Text/Brand 텍스트 버튼으로 덮을 수 있게 슬롯화(런마일). 미설정 시 흰 12% 칩. */
+    /* 액션 칩 — 프로젝트가 투명+Text/Brand 텍스트 버튼으로 덮을 수 있게 슬롯화(런마일). 미설정 시 흰 12% 칩. */
     background: var(--nds-snackbar-action-bg, rgba(255, 255, 255, 0.12));
     color: var(--nds-snackbar-action-color, inherit);
     font-family: inherit;

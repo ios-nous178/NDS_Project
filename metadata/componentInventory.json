@@ -17,7 +17,7 @@
     "name": "Badge",
     "category": "일반",
     "status": "implemented",
-    "description": "상태, 카테고리, 라벨을 짧게 표시하는 배지. fill/ghost/line × brand/neutral/success/error/caution/info 매트릭스.",
+    "description": "상태, 카테고리, 라벨을 짧게 표시하는 배지. fill/ghost/line × project/neutral/success/error/caution/info 매트릭스.",
     "storybookTitle": "Components/Display/Badge",
     "docsPath": "/components/badge",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856",
@@ -25,13 +25,13 @@
     "figmaSynced": true,
     "figmaSyncedAt": "2026-05-13",
     "usageSummary": "상태 표시, 카테고리 태그, 보조 라벨",
-    "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/ghost/line) × Color(brand/neutral/success/error/caution/info), Size(sm 22 / md 26 / lg 30, 모바일 기준), semantic 토큰 직접 바인딩."
+    "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/ghost/line) × Color(project/neutral/success/error/caution/info), Size(sm 22 / md 26 / lg 30, 모바일 기준), semantic 토큰 직접 바인딩."
   },
   {
     "name": "ValidationChip",
     "category": "일반",
     "status": "implemented",
-    "description": "입력 형식 요구사항의 실시간 충족 여부를 보여주는 인라인 표시. 16px 아이콘 + 12px 라벨. incomplete(muted)/complete(brand)/error(status-error) 3 states.",
+    "description": "입력 형식 요구사항의 실시간 충족 여부를 보여주는 인라인 표시. 16px 아이콘 + 12px 라벨. incomplete(muted)/complete(project)/error(status-error) 3 states.",
     "storybookTitle": "Components/Inputs/ValidationChip",
     "docsPath": "/components/validation-chip",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1413-569",
@@ -97,12 +97,12 @@
     "name": "BottomNav",
     "category": "내비게이션",
     "status": "implemented",
-    "description": "모바일 하단 고정 탭 바. compound + 슬롯(BottomNav.Item) · 활성/비활성 아이콘 · 배지 · --nds-bottomnav-* 토큰 슬롯으로 브랜드 색 흡수.",
+    "description": "모바일 하단 고정 탭 바. compound + 슬롯(BottomNav.Item) · 활성/비활성 아이콘 · 배지 · --nds-bottomnav-* 토큰 슬롯으로 프로젝트 색 흡수.",
     "storybookTitle": "Components/Navigation/BottomNav",
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "모바일 앱 하단 글로벌 네비게이션 (3~5탭)",
-    "notes": "브랜드 무관 primitive — 브랜드별 아이콘/라벨은 호출부가 주입하고, 색은 --nds-bottomnav-* 슬롯으로 브랜드 토큰이 덮는다. {Brand}BottomNav 래퍼 대체. figmaNodeUrl 확보 예정."
+    "notes": "프로젝트 무관 primitive — 프로젝트별 아이콘/라벨은 호출부가 주입하고, 색은 --nds-bottomnav-* 슬롯으로 프로젝트 토큰이 덮는다. {Project}BottomNav 래퍼 대체. figmaNodeUrl 확보 예정."
   },
   {
     "name": "Tab",
@@ -160,7 +160,7 @@
     "name": "Checkbox",
     "category": "입력",
     "status": "implemented",
-    "description": "다중/독립 항목 토글 체크박스. 20×20px, 4px radius, fillBrand 활성, indeterminate(부분 선택) 지원.",
+    "description": "다중/독립 항목 토글 체크박스. 20×20px, 4px radius, fillProject 활성, indeterminate(부분 선택) 지원.",
     "storybookTitle": "Components/Controls/Checkbox",
     "docsPath": "/components/checkbox-radio",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
@@ -180,7 +180,7 @@
     "figmaUrl": "",
     "figmaNodeId": "",
     "usageSummary": "저장 완료, 에러 알림, 정보 안내 (액션/닫기 없는 자동 사라짐 메시지)",
-    "notes": "액션(되돌리기/다시시도)·닫기·브랜드 카드가 필요하면 Snackbar 사용 — Toast 는 자동 사라짐 전용이라 action API 가 없다."
+    "notes": "액션(되돌리기/다시시도)·닫기·프로젝트 카드가 필요하면 Snackbar 사용 — Toast 는 자동 사라짐 전용이라 action API 가 없다."
   },
   {
     "name": "ResultState",
@@ -210,7 +210,7 @@
     "name": "Chip",
     "category": "입력",
     "status": "implemented",
-    "description": "선택/삭제 가능한 태그 컴포넌트. fill(선택됨) / outlined(선택 가능) / ghost(비활성) × brand/neutral/success/error/caution.",
+    "description": "선택/삭제 가능한 태그 컴포넌트. fill(선택됨) / outlined(선택 가능) / ghost(비활성) × project/neutral/success/error/caution.",
     "storybookTitle": "Components/Controls/Chip",
     "docsPath": "/components/chip",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-10856",
@@ -218,7 +218,7 @@
     "figmaSynced": true,
     "figmaSyncedAt": "2026-05-13",
     "usageSummary": "필터 태그, 카테고리 선택, 상담 주제 선택, 키워드 태그",
-    "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/outlined/ghost) × Color(brand/neutral/success/error/caution), Size(sm 24 / md 28, 모바일 기준), pill 라운드 고정, semantic 토큰 직접 바인딩."
+    "notes": "Figma 171:10856 기준 정합 완료 — Style(fill/outlined/ghost) × Color(project/neutral/success/error/caution), Size(sm 24 / md 28, 모바일 기준), pill 라운드 고정, semantic 토큰 직접 바인딩."
   },
   {
     "name": "Calendar",
@@ -429,12 +429,12 @@
     "category": "레이아웃",
     "status": "implemented",
     "description": "하단 푸터 base compound — Footer.Info(회사 정보) / Footer.TabBar(앱 탭바) / Footer.Web(데스크톱 PC 푸터 골격)",
-    "storybookTitle": "Brands/Geniet/개요",
+    "storybookTitle": "Projects/Geniet/개요",
     "docsPath": "/components/app-footer",
     "figmaUrl": "",
     "figmaNodeId": "",
-    "usageSummary": "{Brand}Footer 의 빌딩 블록 — base 직접 호출은 커스텀 푸터 구성 시에만.",
-    "notes": "Info는 데스크톱 웹, TabBar는 모바일 앱, Web 은 PC 풍부 푸터 골격. 브랜드 화면에서는 {Brand}Footer 사용."
+    "usageSummary": "{Project}Footer 의 빌딩 블록 — base 직접 호출은 커스텀 푸터 구성 시에만.",
+    "notes": "Info는 데스크톱 웹, TabBar는 모바일 앱, Web 은 PC 풍부 푸터 골격. 프로젝트 화면에서는 {Project}Footer 사용."
   },
   {
     "name": "Accordion",
@@ -610,7 +610,7 @@
     "name": "Radio",
     "category": "입력",
     "status": "implemented",
-    "description": "단일 선택 라디오 버튼. 20×20px, 2px borderNormal, 10px 내부 원(fillBrand). RadioGroup vertical/horizontal 레이아웃.",
+    "description": "단일 선택 라디오 버튼. 20×20px, 2px borderNormal, 10px 내부 원(fillProject). RadioGroup vertical/horizontal 레이아웃.",
     "storybookTitle": "Components/Controls/Radio",
     "docsPath": "/components/checkbox-radio",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
@@ -624,7 +624,7 @@
     "name": "Toggle",
     "category": "입력",
     "status": "implemented",
-    "description": "On/Off 스위치. md: 44×24 track, 18px thumb. Off=borderNormal, On=fillBrand. thumb 0.2s 슬라이드 애니메이션.",
+    "description": "On/Off 스위치. md: 44×24 track, 18px thumb. Off=borderNormal, On=fillProject. thumb 0.2s 슬라이드 애니메이션.",
     "storybookTitle": "Components/Controls/Toggle",
     "docsPath": "/components/toggle",
     "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=171-9904",
@@ -667,7 +667,7 @@
     "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3466-17405",
     "figmaNodeId": "3466:17405",
     "usageSummary": "어드민 폼에서 관련 FormField 행들을 제목 섹션으로 묶을 때",
-    "notes": "FormField density=\"admin\" 행과 짝으로 사용 — 카드 좌우 패딩은 FormSection, 행 간 세로 리듬은 admin FormField. 색·radius 는 data-brand cascade."
+    "notes": "FormField density=\"admin\" 행과 짝으로 사용 — 카드 좌우 패딩은 FormSection, 행 간 세로 리듬은 admin FormField. 색·radius 는 data-project cascade."
   },
   {
     "name": "FileUpload",
@@ -1034,7 +1034,7 @@
     "name": "FloatingCtaBanner",
     "category": "일반",
     "status": "implemented",
-    "description": "페이지 하단 sticky CTA 배너. pill + brand border + shadow. 일러스트 + 캡션 + CTA + chevron",
+    "description": "페이지 하단 sticky CTA 배너. pill + project border + shadow. 일러스트 + 캡션 + CTA + chevron",
     "storybookTitle": "Components/Display/FloatingCtaBanner",
     "docsPath": "/components/floating-cta-banner",
     "figmaUrl": "https://www.figma.com/design/xElupkAmYc8zHCiq0fowLD/?node-id=91-3",
@@ -1076,7 +1076,7 @@
     "figmaUrl": "https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3828-1577",
     "figmaNodeId": "3828:1577",
     "usageSummary": "캐포비 admin 의 다중 선택 결과 패널 (선택한 항목 N개 등). 본문은 INSTANCE_SWAP 슬롯으로 SelectedItemRow 리스트/폼/테이블 교체.",
-    "notes": "헤더 액션(추가 선택 / 선택 해제)은 고정 구성 — onAdd/onClear 콜백으로 제어. count 는 브랜드색(text.brand)으로 강조. 본문 스크롤은 --nds-selected-items-panel-body-max-height 로 제한."
+    "notes": "헤더 액션(추가 선택 / 선택 해제)은 고정 구성 — onAdd/onClear 콜백으로 제어. count 는 브랜드색(text.project)으로 강조. 본문 스크롤은 --nds-selected-items-panel-body-max-height 로 제한."
   },
   {
     "name": "CheckboxGroup",

@@ -7,10 +7,10 @@ import { fileURLToPath } from "node:url";
  *
  * @nudge-design/icons barrel(packages/icons/src/index.ts) 를 단 한 번 반영해
  * metadata/iconCatalog.json 을 생성한다. 이 파일이 "어떤 아이콘이 존재하고, 각 아이콘의
- * 브랜드(prefix)·kebab 이름이 무엇인가" + "CashwalkBiz 큐레이션 카탈로그(카테고리·source)" 의
+ * 프로젝트(prefix)·kebab 이름이 무엇인가" + "CashwalkBiz 큐레이션 카탈로그(카테고리·source)" 의
  * 단일 출처다. docs IconCatalog 와 storybook Icons*.stories 가 모두 이 JSON 을 소비한다.
  *
- * 이전에는 docs brandOf(3브랜드만), storybook brandOf(5), 그리고 CashwalkBiz 46행 ICON_MAP 이
+ * 이전에는 docs projectOf(3프로젝트만), storybook projectOf(5), 그리고 CashwalkBiz 46행 ICON_MAP 이
  * 각각 손으로 복제돼 docs 가 CashwalkBiz/Runmile/Mockup 을 "Common" 으로 흘리는 버그가 있었다.
  *
  * 출력은 결정적(타임스탬프 없음) → `--check` 는 순수 콘텐츠 비교. check-ssot 게이트가 stale 차단.
@@ -23,7 +23,7 @@ const iconsIndexPath = path.join(rootDir, "packages", "icons", "src", "index.ts"
 const outputPath = path.join(rootDir, "metadata", "iconCatalog.json");
 const checkMode = process.argv.includes("--check");
 
-export const BRANDS = [
+export const PROJECTS = [
   { id: "nudge-eap", label: "NudgeEAP" },
   { id: "geniet", label: "Geniet" },
   { id: "trost", label: "Trost" },
@@ -32,8 +32,8 @@ export const BRANDS = [
   { id: "mockup", label: "Mockup" },
 ];
 
-/** export 이름 prefix → 브랜드. (storybook brandOf 를 SSOT 로 흡수 + Runmile 누락 버그 교정) */
-export function brandOf(name) {
+/** export 이름 prefix → 프로젝트. (storybook projectOf 를 SSOT 로 흡수 + Runmile 누락 버그 교정) */
+export function projectOf(name) {
   if (name.startsWith("CashwalkBiz")) return "cashwalk-biz";
   if (name.startsWith("Geniet")) return "geniet";
   if (name.startsWith("Trost")) return "trost";
@@ -150,11 +150,11 @@ export function buildCatalog(iconNames) {
   const icons = iconNames.map((name) => ({
     name,
     kebab: pascalToKebab(name),
-    brand: brandOf(name),
+    project: projectOf(name),
   }));
 
   return {
-    brands: BRANDS,
+    projects: PROJECTS,
     icons,
     cashwalkBiz: CASHWALK_BIZ_CATALOG,
   };

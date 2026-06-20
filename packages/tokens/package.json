@@ -10,15 +10,15 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./brands": {
-      "types": "./dist/brands/index.d.ts",
-      "import": "./dist/brands/index.js",
-      "default": "./dist/brands/index.js"
+    "./projects": {
+      "types": "./dist/projects/index.d.ts",
+      "import": "./dist/projects/index.js",
+      "default": "./dist/projects/index.js"
     },
-    "./brand-profiles": {
-      "types": "./dist/brand-profiles.d.ts",
-      "import": "./dist/brand-profiles.js",
-      "default": "./dist/brand-profiles.js"
+    "./project-profiles": {
+      "types": "./dist/project-profiles.d.ts",
+      "import": "./dist/project-profiles.js",
+      "default": "./dist/project-profiles.js"
     },
     "./css": {
       "types": "./dist/css-stub.d.ts",

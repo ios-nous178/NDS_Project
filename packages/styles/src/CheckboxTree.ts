@@ -1,5 +1,5 @@
 /* Auto-generated companion for packages/react/src/CheckboxTree.tsx.
- * 검색 + 전체선택 + 계층 체크박스 트리. 색/radius 는 semantic 토큰으로 브랜드 cascade
+ * 검색 + 전체선택 + 계층 체크박스 트리. 색/radius 는 semantic 토큰으로 프로젝트 cascade
  * (캐포비 = fill.brand 옐로우). 들여쓰기는 --nds-checkbox-tree-indent * depth 로 계산. */
 import {
   cv,

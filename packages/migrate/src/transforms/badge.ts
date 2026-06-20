@@ -16,8 +16,8 @@ const BADGE_COLOR: Record<string, string> = {
   "badge-warning": "caution",
   "badge-caution": "caution",
   "badge-info": "info",
-  "badge-primary": "brand",
-  "badge-brand": "brand",
+  "badge-primary": "project",
+  "badge-project": "project",
   "badge-neutral": "neutral",
   "badge-secondary": "neutral",
 };

@@ -38,7 +38,7 @@ export const toastStyles = `
    * Toast item — 단일 다크 스타일 (Figma 1330:2). 색 변형(success/error…) 없음:
    * 비차단형 피드백 전용이며 심각한 알림은 Modal/Alert 로 라우팅한다.
    * bg/shadow(#212121·0.92 / y8 blur12 18%)는 role-based 시멘틱 변수(Figma SSOT) 집합 밖이라
-   * --nds-toast-* 컴포넌트 슬롯으로 토큰화 — 값 SSOT 는 tokens/src/brands/nudge-eap.ts (:root emit).
+   * --nds-toast-* 컴포넌트 슬롯으로 토큰화 — 값 SSOT 는 tokens/src/projects/nudge-eap.ts (:root emit).
    */
   :where(.${TOAST_ITEM_CLASS}) {
     display: inline-flex;

@@ -10,7 +10,7 @@ import { Button, ConfirmTooltip } from "@nudge-design/react";
  * (한 화면을 채울 만큼 길거나 차단형 결정이면 Modal/Popup 을 쓸 것.)
  *
  * `open` 은 controlled — 트리거 클릭 핸들러에서 토글한다. 색은 모두 semantic role 토큰이라
- * `data-brand="cashwalk-biz"` 아래에서 검정 CTA 로 해석된다. (Figma 4018:1226)
+ * `data-project="cashwalk-biz"` 아래에서 검정 CTA 로 해석된다. (Figma 4018:1226)
  */
 const meta: Meta<typeof ConfirmTooltip> = {
   title: "Components/Overlay/ConfirmTooltip",
@@ -32,7 +32,7 @@ const meta: Meta<typeof ConfirmTooltip> = {
   },
   decorators: [
     (Story) => (
-      <div data-brand="cashwalk-biz" style={{ padding: 140, display: "inline-flex" }}>
+      <div data-project="cashwalk-biz" style={{ padding: 140, display: "inline-flex" }}>
         <Story />
       </div>
     ),
@@ -70,7 +70,7 @@ export const Overview: Story = {
   decorators: [],
   render: () => (
     <div
-      data-brand="cashwalk-biz"
+      data-project="cashwalk-biz"
       style={{
         position: "relative",
         width: 300,

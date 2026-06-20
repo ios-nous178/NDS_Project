@@ -299,14 +299,14 @@ export const listStyles = `
     color: ${cv.textRole.strong};
     font-weight: ${fontWeight.bold};
   }
-  /* status 컬럼 = brand 색 (가이드: table status text = Text/Brand). */
+  /* status 컬럼 = project 색 (가이드: table status text = Text/Brand). */
   :where(.${LIST_ITEM_BODY_CLASS}[data-layout="table"] > [data-col="status"]) {
     margin-left: auto;
     color: ${cv.textRole.brand};
     font-weight: ${fontWeight.bold};
   }
 
-  /* ── Thumbnail(모바일) 3번째 줄 액션 링크 — brand 인라인 링크, metadata 와 구분 ── */
+  /* ── Thumbnail(모바일) 3번째 줄 액션 링크 — project 인라인 링크, metadata 와 구분 ── */
   :where(.${LIST_ITEM_ACTION_LINK_CLASS}) {
     align-self: flex-start;
     margin-top: ${spacing[4]}px;

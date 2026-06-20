@@ -1,22 +1,22 @@
 ---
 title: Footer
-description: 하단 푸터 컴포넌트. 브랜드별 단일 진입점({Brand}Footer)과 base Footer compound(`.Info` / `.TabBar` / `.Web`)를 제공합니다.
+description: 하단 푸터 컴포넌트. 프로젝트별 단일 진입점({Project}Footer)과 base Footer compound(`.Info` / `.TabBar` / `.Web`)를 제공합니다.
 ---
 
 # Footer
 
-`Footer` 는 브랜드-무관 base compound (`.Info` / `.TabBar` / `.Web`) 입니다. 공개 react 패키지의
-브랜드 chrome 정리로 **브랜드별 푸터 컴포넌트(`NudgeEAPFooter` / `TrostFooter` / `GenietFooter` /
+`Footer` 는 프로젝트-무관 base compound (`.Info` / `.TabBar` / `.Web`) 입니다. 공개 react 패키지의
+프로젝트 chrome 정리로 **프로젝트별 푸터 컴포넌트(`NudgeEAPFooter` / `TrostFooter` / `GenietFooter` /
 `CashwalkBizFooter` …)는 제거**됐습니다.
 
-- **목업(html)**: 브랜드 완성형 푸터는 `<nds-brand-footer brand="..." surface="web|app">` 한 줄.
-- **공개 primitive(react)**: 커스텀 푸터는 base `Footer` compound 로 조립 + 브랜드 토큰으로 색 분기.
+- **목업(html)**: 프로젝트 완성형 푸터는 `<nds-project-footer project="..." surface="web|app">` 한 줄.
+- **공개 primitive(react)**: 커스텀 푸터는 base `Footer` compound 로 조립 + 프로젝트 토큰으로 색 분기.
 
-> **Breaking 이력**: 옛 `AppFooter` / `{Brand}AppFooter` / `{Brand}WebFooter` / `TrostDesktopFooter` / `{Brand}Footer` named export 는 제거됐습니다. `nds-app-footer` className 도 `nds-footer` 로 통일.
+> **Breaking 이력**: 옛 `AppFooter` / `{Project}AppFooter` / `{Project}WebFooter` / `TrostDesktopFooter` / `{Project}Footer` named export 는 제거됐습니다. `nds-app-footer` className 도 `nds-footer` 로 통일.
 
-## 브랜드 완성형 푸터 (목업 전용 `nds-brand-footer`)
+## 프로젝트 완성형 푸터 (목업 전용 `nds-project-footer`)
 
-| Brand       | 지원 surface          | 핵심 slot                                                          |
+| Project       | 지원 surface          | 핵심 slot                                                          |
 | ----------- | --------------------- | ----------------------------------------------------------------- |
 | NudgeEAP    | `web` / `app`         | web: 약관·앱다운로드·ISO·DAIN·poweredBy / app: 회사정보·약관·로고  |
 | Trost       | `app` (dark)          | dark PC/앱 푸터 · 약관·SNS·앱다운로드                              |
@@ -25,14 +25,14 @@ description: 하단 푸터 컴포넌트. 브랜드별 단일 진입점({Brand}Fo
 | Runmile     | `app`                 | light 톤 · gray700 워드마크                                       |
 
 ```html
-<nds-brand-footer brand="nudge-eap" surface="web"></nds-brand-footer>
-<nds-brand-footer brand="trost" surface="app"></nds-brand-footer>
-<nds-brand-footer brand="cashwalk-biz"></nds-brand-footer>
+<nds-project-footer project="nudge-eap" surface="web"></nds-project-footer>
+<nds-project-footer project="trost" surface="app"></nds-project-footer>
+<nds-project-footer project="cashwalk-biz"></nds-project-footer>
 ```
 
 ## Base Footer compound
 
-브랜드 wrapper 가 부족하거나 커스텀 컴포지션이 필요한 경우 base 를 직접 사용합니다.
+프로젝트 wrapper 가 부족하거나 커스텀 컴포지션이 필요한 경우 base 를 직접 사용합니다.
 
 ## Footer.Info — 회사 정보 푸터
 
@@ -232,5 +232,5 @@ import Link from "next/link";
 
 - **Info**: 홈페이지 하단 공통. 약관 링크 + 회사 정보(주소/사업자번호/연락처) 배치. NudgeEAP/지니어트는 밝은 배경(`#FAFAFA`), 트로스트는 다크 배경(`#333`). 지니어트는 통신판매중개자 고지와 고객문의 시간 안내가 추가됨.
 - **TabBar**: 앱 하단 고정 네비. 아이콘+라벨 구조, active 상태에서 filled 아이콘 전환. 지니어트는 `border-top` 대신 상단 그림자 사용, 웹뷰(`WEBVIEW_CASHWALK`/`WEBVIEW_GENIET`)에서 숨김.
-- **Web**: PC 풍부 푸터의 공통 골격 (container + max-width + divider + row helper). 브랜드 wrapper 가 행 구성을 책임짐.
+- **Web**: PC 풍부 푸터의 공통 골격 (container + max-width + divider + row helper). 프로젝트 wrapper 가 행 구성을 책임짐.
 - 전 프로젝트 공통: 탭바 높이 56px, 라벨 11px, 아이콘 24px.

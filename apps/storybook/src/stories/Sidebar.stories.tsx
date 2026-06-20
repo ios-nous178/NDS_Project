@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { NdsTag, BrandScope } from "./_ndsTag";
+import { NdsTag, ProjectScope } from "./_ndsTag";
 
 /**
- * Sidebar(어드민 LNB) — 목업 전용 html `<nds-sidebar brand>`(nds-brand-chrome 흡수).
+ * Sidebar(어드민 LNB) — 목업 전용 html `<nds-sidebar project>`(nds-project-chrome 흡수).
  * 공개 react Sidebar 는 제거됨. 여닫기(collapse)·서브메뉴 토글 동작 보존.
  * 캐포비 어드민 ready-made 는 `get_guide({ topic:'pattern:cashwalk-biz-admin-sidebar' })`.
  */
 const meta: Meta = {
-  title: "Brands/Sidebar",
+  title: "Projects/Sidebar",
   parameters: { layout: "fullscreen" },
 };
 export default meta;
@@ -75,11 +75,11 @@ function SidebarDemo() {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <div style={{ height: "100vh", display: "flex" }}>
-      <BrandScope brand="cashwalk-biz">
+      <ProjectScope project="cashwalk-biz">
         <NdsTag
           tag="nds-sidebar"
           attrs={{
-            brand: "cashwalk-biz",
+            project: "cashwalk-biz",
             "active-key": "banner-list",
             "show-toggle": true,
             collapsed,
@@ -92,7 +92,7 @@ function SidebarDemo() {
           ]}
           listeners={{ "toggle-collapse": () => setCollapsed((c) => !c) }}
         />
-      </BrandScope>
+      </ProjectScope>
       <main style={{ flex: 1, padding: 24, color: "var(--semantic-text-subtle-default, #888)" }}>
         헤더의 토글 버튼으로 여닫기(collapse), '배너' 항목 클릭으로 서브메뉴 펼치기.
       </main>

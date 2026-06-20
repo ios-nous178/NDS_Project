@@ -4,8 +4,8 @@
     "overview.mdx": "손수정 허브 페이지(한눈에 보기) — 단일 react 컴포넌트 대응 없음",
     "gallery.mdx": "손수정 전체 카탈로그 페이지 — 단일 react 컴포넌트 대응 없음",
     "icons.mdx": "아이콘 카탈로그 페이지 — react 컴포넌트 아님",
-    "brand-coverage.mdx": "브랜드×컴포넌트 커버리지 표 페이지 — react 컴포넌트 아님",
+    "project-coverage.mdx": "프로젝트×컴포넌트 커버리지 표 페이지 — react 컴포넌트 아님",
     "checkbox-radio.mdx": "Checkbox + Radio 합본 페이지 — 두 컴포넌트를 한 문서에서 설명(단일 title 대응 불가)",
-    "brand-chrome.mdx": "html 전용 컴포넌트(nds-brand-chrome) — react 소스 없음, BrandChrome 가이드만 존재"
+    "project-chrome.mdx": "html 전용 컴포넌트(nds-project-chrome) — react 소스 없음, ProjectChrome 가이드만 존재"
   }
 }

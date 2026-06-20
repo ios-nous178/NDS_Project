@@ -5,7 +5,7 @@
  * snackbar viewport 를 document.body 로 portal 렌더링한다. (nds-toast 매니저의 Snackbar 판)
  *
  * 캐포비 admin 흰 카드 알림(자동 사라짐·우측 상단·단일 교체)이 이 host 의 주 사용처다 —
- * brand="cashwalk-biz" + data-brand cascade 로 흰 카드 외형이 적용된다.
+ * project="cashwalk-biz" + data-project cascade 로 흰 카드 외형이 적용된다.
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
@@ -21,7 +21,7 @@ const SB_CLOSE_CLASS = `${SB_CLASS}__close`;
 
 export type SnackbarVariant = "info" | "success" | "warning" | "error";
 export type SnackbarPosition = "top" | "bottom" | "top-right";
-export type SnackbarBrand = "default" | "cashwalk-biz";
+export type SnackbarProject = "default" | "cashwalk-biz";
 
 export interface SnackbarShowOptions {
   id?: string;
@@ -57,7 +57,7 @@ const CIRCLE_ICON_SVG: Record<SnackbarVariant, string> = {
   error: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.15"/><path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
 };
 
-/** 브랜드 카드용 status 칩(24×24) — 둥근 사각형 칩 + 흰 글리프. */
+/** 프로젝트 카드용 status 칩(24×24) — 둥근 사각형 칩 + 흰 글리프. */
 const CHIP_RECT = '<rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor"/>';
 const CHIP_ICON_SVG: Record<SnackbarVariant, string> = {
   info: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">${CHIP_RECT}<circle cx="12" cy="8" r="1.1" fill="#fff"/><path d="M12 11v5.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>`,
@@ -72,7 +72,7 @@ export class NdsSnackbarHost extends NdsElement {
   static elementName = "nds-snackbar-host";
 
   static get observedAttributes(): readonly string[] {
-    return ["position", "duration", "max-count", "brand"];
+    return ["position", "duration", "max-count", "project"];
   }
 
   private _viewport: HTMLDivElement | null = null;
@@ -178,8 +178,8 @@ export class NdsSnackbarHost extends NdsElement {
     this._viewport.replaceChildren(...this._items.map((item) => this._createItem(item)));
   }
 
-  private _brand(): SnackbarBrand {
-    return this.getAttribute("brand") === "cashwalk-biz" ? "cashwalk-biz" : "default";
+  private _project(): SnackbarProject {
+    return this.getAttribute("project") === "cashwalk-biz" ? "cashwalk-biz" : "default";
   }
 
   private _createItem(item: SnackbarHostItem): HTMLDivElement {
@@ -198,7 +198,7 @@ export class NdsSnackbarHost extends NdsElement {
       icon.className = SB_ICON_CLASS;
       icon.setAttribute("aria-hidden", "true");
       icon.innerHTML =
-        this._brand() === "cashwalk-biz"
+        this._project() === "cashwalk-biz"
           ? CHIP_ICON_SVG[item.variant]
           : CIRCLE_ICON_SVG[item.variant];
       root.appendChild(icon);

@@ -12,7 +12,7 @@ const meta: Meta<typeof FloatingCtaBanner> = {
     docs: {
       description: {
         component:
-          "페이지 하단 sticky CTA 배너. pill 모양 (radius 100) + brand border 1px + shadow. " +
+          "페이지 하단 sticky CTA 배너. pill 모양 (radius 100) + project border 1px + shadow. " +
           "좌측 아이콘(선택) + 캡션(보조) + 강조 CTA 텍스트 + 우측 chevron. " +
           "`floating=true` (기본) 시 `position: fixed` 로 화면 하단 중앙 고정.",
       },

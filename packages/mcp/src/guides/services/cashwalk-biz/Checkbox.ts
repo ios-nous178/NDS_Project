@@ -5,7 +5,7 @@ import type { ServiceOverlay } from "../types.js";
  * Source: Figma ControlsGuide 3295:547 (Controls · Checkbox / Toggle · 캐포비 admin 표준).
  *
  * 빠진 내용 (의도적, SSOT 분리):
- *   - Active 색상 hex (#FFD200 = Yellow/500) 는 토큰 SSOT (packages/tokens/src/brands/cashwalk-biz.semantic.ts) 가 담당.
+ *   - Active 색상 hex (#FFD200 = Yellow/500) 는 토큰 SSOT (packages/tokens/src/projects/cashwalk-biz.semantic.ts) 가 담당.
  *   - 4 states 매트릭스 (Off / On / Off Disabled / On Disabled) 는 base Checkbox 의 checked × disabled 조합 — overlay 가 아니라 base 의 prop 매트릭스로 충분.
  */
 export const CheckboxOverlay: ServiceOverlay = {

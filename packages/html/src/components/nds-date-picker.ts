@@ -160,7 +160,7 @@ export class NdsDatePicker extends NdsElement {
     triggerText.className = DP_TRIGGER_TEXT_CLASS;
 
     // Calendar 글리프는 CSS mask 로 그린다 (packages/styles/src/DatePicker.ts 의 :empty 규칙).
-    // 비어 있는 wrapper 를 두면 [data-brand="..."] cascade 가 brand 별 SVG 를 mask-image 로 swap 한다.
+    // 비어 있는 wrapper 를 두면 [data-project="..."] cascade 가 project 별 SVG 를 mask-image 로 swap 한다.
     const iconWrap = document.createElement("span");
     iconWrap.setAttribute("aria-hidden", "true");
     iconWrap.className = DP_ICON_CLASS;

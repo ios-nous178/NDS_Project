@@ -3,12 +3,12 @@
  *
  * Runmile Figma library (file `Wd1BqKFPvrlLORr7E6EwjB`, frame 21:136) 의 사용자
  * 프로필 기본 이미지 12종 + 기본 아바타 1종. 이미지 네이밍 가이드(5030:979)의
- * 용도중심 5분류 중 **avatar** 카테고리. 폴더: `brand/runmile/avatar/`.
+ * 용도중심 5분류 중 **avatar** 카테고리. 폴더: `project/runmile/avatar/`.
  *
  * 12종 그리드 + default 를 1x/@2x/@3x PNG 로 재export(전부 image/png). 24×24 슬롯
  * 표시지만 원본은 고밀도라 raster — dataUri 미제공, 파일 호스팅 필수.
  *
- * 외부 소비자는 `@nudge-design/assets/files/brand/runmile/avatar/...` 또는 CDN mirror 로 사용.
+ * 외부 소비자는 `@nudge-design/assets/files/project/runmile/avatar/...` 또는 CDN mirror 로 사용.
  */
 
 export type ProfileImageId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | "default";
@@ -26,9 +26,9 @@ export interface ProfileImageMeta {
 
 function avatar(id: number | "default", figmaNodeId: string): ProfileImageMeta {
   return {
-    filename: `brand/runmile/avatar/profile-${id}.png`,
-    filename2x: `brand/runmile/avatar/profile-${id}@2x.png`,
-    filename3x: `brand/runmile/avatar/profile-${id}@3x.png`,
+    filename: `project/runmile/avatar/profile-${id}.png`,
+    filename2x: `project/runmile/avatar/profile-${id}@2x.png`,
+    filename3x: `project/runmile/avatar/profile-${id}@3x.png`,
     mimeType: "image/png",
     figmaNodeId,
   };

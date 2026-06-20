@@ -6,20 +6,20 @@ sizeMatrix:
   root/transparent: min-height 56 / 배경 투명 / border none
   root/web: height 80 / bottom border 1px subtle / content max-width 1200 / grid 3열 (1fr auto 1fr)
   logo: "web: height 60 / max-width 200 / object-fit contain — compact: 자유 (props 로 사이즈 지정)"
-  menu-item: h 100% / px var(--semantic-inset-card-large) / headline-5(18·26) bold / 활성 시 brand 색 + bottom 3px
-  download-btn: px 14 / py 8 / radius 8 / bg surface.subtle / body-1 bold brand
-  auth-btn: px 18 / py 8 / radius 8 / 1px brand border / body-1 bold brand
+  menu-item: h 100% / px var(--semantic-inset-card-large) / headline-5(18·26) bold / 활성 시 project 색 + bottom 3px
+  download-btn: px 14 / py 8 / radius 8 / bg surface.subtle / body-1 bold project
+  auth-btn: px 18 / py 8 / radius 8 / 1px project border / body-1 bold project
 stateMatrix:
   menu-item/default: color textRole.strong
   menu-item/hover: color textRole.brand
-  menu-item/active: color textRole.brand + 3px brand 하단 보더
+  menu-item/active: color textRole.brand + 3px project 하단 보더
   download/hover: bg surface.disabled
   auth/hover: bg surface.brandSubtle
 ---
 
 ## summary
 
-base 헤더. variant 로 분기: compact(모바일 56px flex) / webview(56px, title 중앙 + back) / transparent(56px, 배경 투명) / web(데스크탑 80px grid 3열, max-width 1200). 브랜드 화면이면 base Header 가 아니라 brand chrome (TrostAppBar / NudgeEAPWebHeader / CashwalkBizWebHeader 등) 사용.
+base 헤더. variant 로 분기: compact(모바일 56px flex) / webview(56px, title 중앙 + back) / transparent(56px, 배경 투명) / web(데스크탑 80px grid 3열, max-width 1200). 프로젝트 화면이면 base Header 가 아니라 project chrome (TrostAppBar / NudgeEAPWebHeader / CashwalkBizWebHeader 등) 사용.
 
 ## pitfalls
 
@@ -27,7 +27,7 @@ base 헤더. variant 로 분기: compact(모바일 56px flex) / webview(56px, ti
 - Logo 는 src 기반 <img> 폴백 또는 children 으로 SVG 컴포넌트 직접 박기 — 둘 다 미지정 시 빈 영역. NudgeEAP 처럼 SVG 로고가 있으면 children 권장(선명함).
 - 메뉴 활성 표시는 activeKey 또는 MenuItem 의 active prop — 인라인 border-bottom 금지.
 - Auth 슬롯이 두 종류: 배열형(Header.AuthMenu — 로그인+회원가입 동시) vs 단일형(Header.AuthButton — 로그인/로그아웃 토글). 화면 디자인에 맞게 골라쓰기.
-- 브랜드 색은 tokens.css 가 자동 — 인라인 색상 override 금지. 클라이언트 로고만 per-tenant 이미지로 src/href 주입.
+- 프로젝트 색은 tokens.css 가 자동 — 인라인 색상 override 금지. 클라이언트 로고만 per-tenant 이미지로 src/href 주입.
 
 ## recommended
 

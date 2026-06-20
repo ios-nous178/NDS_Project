@@ -26,7 +26,7 @@
   - **multicolor**: `geniet-gpoint`(mint→currentColor)·`geniet-clover`·`geniet-lottomachine`·`geniet-moneypouch`·`geniet-shoe`·`geniet-quiz`·`geniet-invite`·`geniet-ticket`·`geniet-scale`
   - **생성기 수정**: `svgToComponent` 가 소스 viewBox 보존(기존 24×24 하드코딩) — 비-24 아이콘(체중계·쿠폰·바텀네비·invite 등) 잘림 해결. 그라디언트 `stop-color`→`stopColor` 등 React 속성 변환 추가.
 
-- 4ed845d: 아이콘 네이밍 일관성 정리 (브랜드 간 컨벤션 통일) — 일부 이름 변경(breaking)
+- 4ed845d: 아이콘 네이밍 일관성 정리 (프로젝트 간 컨벤션 통일) — 일부 이름 변경(breaking)
 
   기존 import 이름이 바뀌므로 소비처는 새 이름으로 교체 필요. 같은 글리프, 이름만 변경.
 
@@ -41,7 +41,7 @@
   - `GenietImgGroupIcon` → `GenietImageGroupIcon`
 
   **검색 지우기 통일 (`search-clear` → `search-delete`)**
-  - `RunmileSearchClearIcon` → `RunmileSearchDeleteIcon` (다른 3브랜드와 통일)
+  - `RunmileSearchClearIcon` → `RunmileSearchDeleteIcon` (다른 3프로젝트와 통일)
 
   **circle 어순 통일 (`circle-*` → `*-circle`, Material 관례)**
   - `GenietCirclePlusIcon` → `GenietPlusCircleIcon`
@@ -70,7 +70,7 @@
   - 전 패키지 `"type": "module"` + tsc `module: NodeNext` 전환, 소스 상대 임포트에 `.js` 확장자 명시 (NodeNext 가 컴파일 타임에 강제).
   - exports 맵에 `default` 조건 추가 — Node ≥22 `require(esm)` 으로 CJS 소비도 동작.
   - 효과: Next.js SSR/RSC 를 `transpilePackages` 없이 사용 가능, Node 스크립트·tsx·vitest(외부화 모드)에서 직접 import 가능. Vite 목업 플로우는 동작·번들 크기 변화 없음 (실측 245 KB 유지).
-  - icons 생성기(`scripts/generate.cjs`)가 barrels 에 `.js` specifier 를 emit 하도록 갱신. dist 는 per-file 산출 유지 — catalog/brand-completeness/MCPB 패킹 등 dist 레이아웃 의존 툴링 영향 없음.
+  - icons 생성기(`scripts/generate.cjs`)가 barrels 에 `.js` specifier 를 emit 하도록 갱신. dist 는 per-file 산출 유지 — catalog/project-completeness/MCPB 패킹 등 dist 레이아웃 의존 툴링 영향 없음.
 
 - 9cdb78a: 아이콘은 정적 npm 으로만 배포 — S3 런타임 fetch / 버전 surfacing 제거
 
@@ -79,7 +79,7 @@
   - MCP/목업 스탬프: 아이콘 버전(`icon_version` / ICON 세그먼트) surfacing 제거. DS·asset 버전 표기는 그대로입니다.
   - 퍼블리시 스크립트(`publish-assets-s3`)·버전 sync(`sync-mcpb-version`)·MCPB 번들에서 아이콘 S3 경로 제거(에셋 S3 는 유지).
 
-- 1d09bb3: 트로스트 브랜드 아이콘 세트 확장 (Figma 아이콘 가이드 동기화)
+- 1d09bb3: 트로스트 프로젝트 아이콘 세트 확장 (Figma 아이콘 가이드 동기화)
   - Figma Trost Iconography 라이브러리 기준으로 60여 종의 신규 트로스트 아이콘을 추가했습니다 — 내비게이션(chevron 4방향·arrow-back/forward), 액션(close·share·play·pause·skip·more·download·delete·camera·pencil·reply·coupon), 상태(question·info·caution·check·check-circle), 콘텐츠(heart·star·bookmark·eye·medal·book·people·thumb-up/down), 폼/기타(menu·list·memo·calendar·time·place·location·subway·web·call·headphone·message·consult) 등.
   - 기존 트로스트 아이콘(home·my·mentalcare·counsel-active·search·setting·psych-test·alarm·energy-coin)을 최신 Figma 가이드 도형으로 리프레시했습니다.
   - 결과 아이콘 TestresultSafe/Warning/Danger 를 다색(multicolor) 트랙으로 이동했습니다 — 시그니처 컬러를 보존하는 일러스트성 아이콘이라 `--semantic-icon-*` 토큰 오버라이드 대상이 아니기 때문입니다(icon-color 가이드 정합).

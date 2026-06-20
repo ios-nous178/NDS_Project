@@ -184,7 +184,7 @@ export interface StartAgentArgs {
   /** 인테이크에서 받은 사람이 읽는 화면 이름(채팅기록 타이틀 기본값). */
   screenName?: string;
   /** 인테이크 메타(세션 표시/Level 3 검증 기반). */
-  brand?: string;
+  project?: string;
   surface?: Surface;
   intent?: "html" | "admin-cms";
   /** 전송 방식. 기본 pty(raw TUI). `stream-json`(canary) = headless 구조화 — claude 전용. */
@@ -226,12 +226,12 @@ const DS_SYSTEM_MANDATE = [
 
 /**
  * `--append-system-prompt` 값 = DS 사용 의무 + (있으면) 과거 결정 Memory Read.
- * 같은 작업폴더(cwd)의 designDecisions.jsonl 을 읽어 현재 브랜드의 최근 결정을 시스템 프롬프트에 얹는다
+ * 같은 작업폴더(cwd)의 designDecisions.jsonl 을 읽어 현재 프로젝트의 최근 결정을 시스템 프롬프트에 얹는다
  * (Decision Log → Memory Read. save_design_spec write-side 의 read-side 대응). best-effort — 없으면 의무만.
  * cwd 는 claude(=번들 MCP 서버) 의 spawn cwd 와 동일해야 한다(save_design_spec 의 기본 기록 위치).
  */
-function appendSystemPromptValue(cwd: string, brand?: string): string {
-  const memory = buildMemoryRead(cwd, { brand });
+function appendSystemPromptValue(cwd: string, project?: string): string {
+  const memory = buildMemoryRead(cwd, { project });
   return memory ? `${DS_SYSTEM_MANDATE}\n\n${memory}` : DS_SYSTEM_MANDATE;
 }
 
@@ -641,7 +641,7 @@ export function startAgent(
     mockupFile: args.mockupFile,
     title: `${spec.label} · ${args.mockupFile ?? "project"}`,
     screenName: args.screenName,
-    brand: args.brand,
+    project: args.project,
     surface: args.surface,
     intent: args.intent,
     transport,
@@ -724,7 +724,7 @@ export function startAgent(
     ? [
         ...(mcpConfig ? ["--mcp-config", mcpConfig] : []),
         "--append-system-prompt",
-        appendSystemPromptValue(cwd, args.brand),
+        appendSystemPromptValue(cwd, args.project),
       ]
     : [];
   // 신규 세션만 --session-id 로 우리 id 를 claude 네이티브 id 로 못 박는다(resume v1 토대) — 그러면
@@ -785,7 +785,7 @@ export function startAgent(
   let proc: IPty;
   try {
     proc = ptySpawn(spawnFile, spawnArgs, {
-      // 256색 terminfo + COLORTERM=truecolor 로 claude 의 브랜드(주황) 트루컬러를 그대로 받는다.
+      // 256색 terminfo + COLORTERM=truecolor 로 claude 의 프로젝트(주황) 트루컬러를 그대로 받는다.
       // "xterm-color"(8색)면 claude 주황이 가장 가까운 ANSI-16(빨강)으로 떨어져 "클로드가 빨갛게"
       // 보이는 문제가 생긴다 — xterm.js 는 truecolor 를 지원하므로 환경만 알려주면 된다.
       name: "xterm-256color",
@@ -929,7 +929,7 @@ function startStreamAgent(
     "--disallowed-tools",
     "AskUserQuestion,SendUserFile",
     "--append-system-prompt",
-    appendSystemPromptValue(cwd, args.brand),
+    appendSystemPromptValue(cwd, args.project),
   ];
 
   // Windows .cmd/.bat 은 직접 spawn 불가 → cmd.exe /c 경유(PTY 경로와 동일 규칙).
@@ -1031,7 +1031,7 @@ function startStreamAgent(
     emit({ kind: "notice", tone: "info", text: "🤖 LLM 품질 평가 중… (ux·interaction·flow·form)" });
     void scoreMockupQuality({
       html,
-      brand: args.brand,
+      project: args.project,
       surface: args.surface,
       bin: claude.bin,
       env: claude.env,

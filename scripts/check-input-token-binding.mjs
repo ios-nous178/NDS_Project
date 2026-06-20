@@ -5,7 +5,7 @@
  * 모든 텍스트 인풋의 ::placeholder 색은 `cv.input.placeholder`(= --semantic-input-placeholder),
  * helper text(기본 상태) 색은 `cv.input.helpertextDefault`(= --semantic-input-helpertext-default)
  * 단일 토큰을 바라봐야 한다. 과거 여러 컴포넌트가 `cv.textRole.muted`/`cv.textRole.subtle`
- * 로 따로 박아 브랜드별로 색이 달라지는 드리프트가 있었다(Figma TextField 3447-467 정합 작업).
+ * 로 따로 박아 프로젝트별로 색이 달라지는 드리프트가 있었다(Figma TextField 3447-467 정합 작업).
  * 이 스크립트가 그 회귀를 PR 단계에서 막는다.
  *
  * 실행: node scripts/check-input-token-binding.mjs   (pnpm lint 에 포함)
@@ -64,6 +64,6 @@ console.error(
   "[check-input-token-binding] ✗ 인풋 색 토큰 드리프트:\n" +
     violations.map((v) => `  · ${v}`).join("\n") +
     "\n  → placeholder=cv.input.placeholder · helper=cv.input.helpertextDefault 로 통일하세요 " +
-    "(브랜드별 값은 packages/tokens/src/brands/*.semantic.ts 의 input 슬롯이 SSOT).",
+    "(프로젝트별 값은 packages/tokens/src/projects/*.semantic.ts 의 input 슬롯이 SSOT).",
 );
 process.exit(1);

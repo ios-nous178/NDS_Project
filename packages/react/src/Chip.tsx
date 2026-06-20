@@ -14,7 +14,7 @@ const CHIP_ICON_CLASS = `${CHIP_CLASS}__icon`;
 /* ─── Types ─── */
 
 export type ChipVariant = "fill" | "outlined" | "ghost";
-export type ChipColor = "brand" | "neutral" | "success" | "error" | "caution";
+export type ChipColor = "project" | "neutral" | "success" | "error" | "caution";
 export type ChipSize = "sm" | "md";
 
 /* ─── Color tokens ─── */
@@ -68,7 +68,7 @@ export interface ChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "o
 export const Chip: React.FC<ChipProps> = ({
   label,
   variant = "outlined",
-  color = "brand",
+  color = "project",
   size = "md",
   selected = false,
   disabled = false,
@@ -85,8 +85,8 @@ export const Chip: React.FC<ChipProps> = ({
   const hasRemove = !!onRemove && !disabled;
   const paddingRight = hasRemove ? Math.max(sizeTokens.paddingX - 4, 6) : sizeTokens.paddingX;
 
-  // 치수는 --nds-chip-* 슬롯로 합성 — 브랜드(지니어트: h32·padding6/14·Medium 13)가 토큰 맵에서
-  // override. 미설정 브랜드는 size(sm/md) 토큰값 fallback 유지.
+  // 치수는 --nds-chip-* 슬롯로 합성 — 프로젝트(지니어트: h32·padding6/14·Medium 13)가 토큰 맵에서
+  // override. 미설정 프로젝트는 size(sm/md) 토큰값 fallback 유지.
   const chipPadY = `var(--nds-chip-padding-y, ${sizeTokens.paddingY}px)`;
   const chipPadX = `var(--nds-chip-padding-x, ${sizeTokens.paddingX}px)`;
   const chipPadRight = hasRemove ? `${paddingRight}px` : chipPadX;

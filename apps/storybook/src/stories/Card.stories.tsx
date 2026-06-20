@@ -219,7 +219,7 @@ export const TrostContainerPc: Story = {
     },
   },
   render: () => (
-    <div data-brand="trost" style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
+    <div data-project="trost" style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
       <div style={{ width: 440 }}>
         <Card
           platform="pc"
@@ -260,7 +260,7 @@ export const TrostContainerMobile: Story = {
     },
   },
   render: () => (
-    <div data-brand="trost" style={{ width: 328 }}>
+    <div data-project="trost" style={{ width: 328 }}>
       <Card
         platform="mobile"
         elevation="outline"

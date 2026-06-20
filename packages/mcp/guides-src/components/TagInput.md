@@ -12,7 +12,7 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-
 - 해시태그는 `variant="inline" prefix="#"` — value/저장값엔 `#` 넣지 말 것(prefix 가 표시 시 자동 부착, 입력 시 자동 제거). prefix 기본은 ""(없음).
 - 정해진 옵션에서 다중 선택은 SelectionCard mode='multiple' 또는 Chip 토글이 적합. 자동완성은 Autocomplete.
 - 초대 모달 푸터(취소/초대하기) 와 제목은 TagInput 바깥에서 조립 — TagInput 은 입력+칩 영역만 담당.
-- 캐포비(cashwalk-biz) stacked 태그는 SelectedItemRow 와 동일 트리트먼트(Figma 3001:18463): gray/200(#eee) fill · radius 10 라운드 사각 · 삭제 = 원형 serchdelete 아이콘. data-brand cascade 가 자동 적용하니 칩 색/모양을 손으로 덮어쓰지 말 것.
+- 캐포비(cashwalk-biz) stacked 태그는 SelectedItemRow 와 동일 트리트먼트(Figma 3001:18463): gray/200(#eee) fill · radius 10 라운드 사각 · 삭제 = 원형 serchdelete 아이콘. data-project cascade 가 자동 적용하니 칩 색/모양을 손으로 덮어쓰지 말 것.
 
 ## recommended
 

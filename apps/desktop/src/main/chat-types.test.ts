@@ -198,13 +198,13 @@ const specToolResult = (id: string, result: unknown) => ({
   },
 });
 const OK_SPEC = {
-  screen: { brand: "geniet", surface: "app", intent: "리뷰 상세" },
+  screen: { project: "geniet", surface: "app", intent: "리뷰 상세" },
   tree: [{ component: "Card", role: "본문", children: [{ component: "Button", role: "cta" }] }],
   decisions: ["primary CTA 1개만"],
 };
 const OK_RESULT = {
   ok: true,
-  brand: "geniet",
+  project: "geniet",
   violations: [],
   summary: { error: 0, warn: 0, info: 1, hasErrors: false },
   componentsUsed: ["Button", "Card"],
@@ -221,7 +221,7 @@ test("DesignSpecTracker: tool_use→tool_result 를 묶어 design-spec 카드 �
   assert.equal(m.kind, "design-spec");
   if (m.kind !== "design-spec") return;
   assert.equal(m.ok, true);
-  assert.equal(m.brand, "geniet");
+  assert.equal(m.project, "geniet");
   assert.equal(m.spec.screen?.intent, "리뷰 상세");
   assert.equal(m.spec.tree?.[0].component, "Card");
   assert.equal(m.spec.tree?.[0].children?.[0].component, "Button");
@@ -231,13 +231,13 @@ test("DesignSpecTracker: tool_use→tool_result 를 묶어 design-spec 카드 �
 
 test("DesignSpecTracker: ok:false 결과면 violations 가 담긴 카드(ok:false)", () => {
   const t = new DesignSpecTracker();
-  t.observe(specToolUse("toolu_s2", { screen: { brand: "nope" }, tree: [] }));
+  t.observe(specToolUse("toolu_s2", { screen: { project: "nope" }, tree: [] }));
   const out = t.observe(
     specToolResult("toolu_s2", {
       ok: false,
-      brand: null,
+      project: null,
       violations: [
-        { rule: "unknown-brand", severity: "error", path: "screen.brand", message: "x" },
+        { rule: "unknown-project", severity: "error", path: "screen.project", message: "x" },
       ],
       summary: { error: 1, warn: 0, info: 0, hasErrors: true },
       componentsUsed: [],
@@ -250,7 +250,7 @@ test("DesignSpecTracker: ok:false 결과면 violations 가 담긴 카드(ok:fals
   if (m.kind !== "design-spec") return assert.fail("expected design-spec");
   assert.equal(m.ok, false);
   assert.equal(m.summary.error, 1);
-  assert.equal(m.violations[0].rule, "unknown-brand");
+  assert.equal(m.violations[0].rule, "unknown-project");
 });
 
 test("DesignSpecTracker: spec 이 JSON 문자열로 와도 트리를 파싱한다", () => {

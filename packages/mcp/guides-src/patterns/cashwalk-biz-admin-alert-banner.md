@@ -29,4 +29,4 @@ figmaNodeUrl: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3001-
 - NoticeAlert(48px strip)로 제목+설명+CTA 욱여넣기 — 멀티라인 안내 카드는 별물
 - CTA 를 검정/파랑/outlined 로 — 충전 같은 주 행동은 노란 Solid/Primary pill
 - 배너를 페이지에 여러 개 쌓기 / 상시 노출 — 조건 충족 시 1개
-- 그라데이션 배경 — 단색 brand-subtle 토큰만
+- 그라데이션 배경 — 단색 project-subtle 토큰만

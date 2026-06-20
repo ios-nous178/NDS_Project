@@ -1,17 +1,17 @@
 export {
-  BRAND_PROFILES,
-  BRAND_SLUGS,
-  BRAND_ALIAS_MAP,
-  resolveBrandSlug,
-  getBrandProfile,
-} from "./brand-profiles.js";
+  PROJECT_PROFILES,
+  PROJECT_SLUGS,
+  PROJECT_ALIAS_MAP,
+  resolveProjectSlug,
+  getProjectProfile,
+} from "./project-profiles.js";
 export type {
-  BrandSlug,
-  BrandProfile,
-  BrandCtaPolicy,
-  BrandModalPolicy,
-  BrandNotificationPolicy,
-} from "./brand-profiles.js";
+  ProjectSlug,
+  ProjectProfile,
+  ProjectCtaPolicy,
+  ProjectModalPolicy,
+  ProjectNotificationPolicy,
+} from "./project-profiles.js";
 export {
   colors,
   neutral,
@@ -46,21 +46,21 @@ export { elevation, shadow, zIndex, elevationLevel } from "./elevation.js";
 export type { ShadowLevel, ElevationLevelName } from "./elevation.js";
 export { motion, duration, easing, transition } from "./motion.js";
 export {
-  BRAND_ACTIONS_LAYOUT,
+  PROJECT_ACTIONS_LAYOUT,
   DEFAULT_ACTIONS_LAYOUT,
   resolveActionsLayout,
 } from "./actionsLayout.js";
 export type { ActionsLayout } from "./actionsLayout.js";
 
-// Brand themes
+// Project themes
 export type {
-  BrandTheme,
+  ProjectTheme,
   SemanticColors,
   ColorScale,
   TypographyOverrides,
   SpacingOverrides,
   ElevationOverrides,
-} from "./brands/index.js";
+} from "./projects/index.js";
 export {
   nudgeEapTheme,
   nudgeEapSemantic,
@@ -68,14 +68,14 @@ export {
   genietTheme,
   cashwalkBizTheme,
   runmileTheme,
-} from "./brands/index.js";
+} from "./projects/index.js";
 export type {
   NudgeEapSemanticTokens,
   TrostSemanticTokens,
   GenietSemanticTokens,
   CashwalkBizSemanticTokens,
   RunmileSemanticTokens,
-} from "./brands/index.js";
+} from "./projects/index.js";
 export {
   trostYellow,
   trostCobalt,
@@ -85,7 +85,7 @@ export {
   trostBlue,
   trostGreen,
   trostSemantic,
-} from "./brands/index.js";
+} from "./projects/index.js";
 export {
   genietMint,
   genietRed,
@@ -97,7 +97,7 @@ export {
   genietNeutral,
   genietStatus,
   genietSemantic,
-} from "./brands/index.js";
+} from "./projects/index.js";
 export {
   cashwalkBizCommon,
   cashwalkBizNeutral,
@@ -108,7 +108,7 @@ export {
   cashwalkBizBrown,
   cashwalkBizStatus,
   cashwalkBizSemantic,
-} from "./brands/index.js";
+} from "./projects/index.js";
 export {
   runmileOrange,
   runmileBlue,
@@ -117,4 +117,4 @@ export {
   runmileNeutral,
   runmileStatus,
   runmileSemantic,
-} from "./brands/index.js";
+} from "./projects/index.js";

@@ -17,7 +17,7 @@
 
 ## recommended
 
-- 필수 약관은 `required` → "필수" 배지(brand 색), 선택 약관은 자동 "선택" 배지(subtle)
+- 필수 약관은 `required` → "필수" 배지(project 색), 선택 약관은 자동 "선택" 배지(subtle)
 - 제출 버튼 활성 조건은 앱에서 `items.filter(i=>i.required).every(i=>value.includes(i.value))` 로 계산
 
 ## examplesHtml.do

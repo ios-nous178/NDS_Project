@@ -19,7 +19,7 @@ export type ToastPosition = "top" | "bottom";
 /**
  * Toast 는 **인터랙션 없는 단일 다크 일시 메시지** 전용 — 자동으로 사라지므로 액션(되돌리기/다시시도)이나
  * 닫기 버튼을 두지 않는다. 색 변형(success/error…)도 없다 — 심각한 오류·결정 요청은 Modal/Alert,
- * 액션·닫기·브랜드 카드(캐포비 흰 카드)가 필요하면 Snackbar 를 사용한다. 동시에 1개만 노출이 기본이다.
+ * 액션·닫기·프로젝트 카드(캐포비 흰 카드)가 필요하면 Snackbar 를 사용한다. 동시에 1개만 노출이 기본이다.
  */
 export interface ToastData {
   /** 토스트 고유 식별자 */

@@ -6,7 +6,7 @@
  * Chip·FAB·Header·ValidationChip 등)는 variant→색 맵을 react .tsx 와 html nds-*.ts(또는
  * 동반 nds-*.styles.ts) 양쪽 JS 에 **손으로 복제**해 styles 를 우회한다. 기존 미러 게이트
  * (check-mirror-parity)는 prop/attr/enum/slot **집합**만 비교하고 색 값은 안 봐서, 두 면의
- * 색 토큰이 어긋나도 못 잡는다(실제로 Button 의 outlined-neutral/solid 색이 브랜드별로
+ * 색 토큰이 어긋나도 못 잡는다(실제로 Button 의 outlined-neutral/solid 색이 프로젝트별로
  * react↔html 다르게 렌더되는 드리프트가 있었다).
  *
  * 이 게이트는 컴포넌트 쌍마다 react/html 소스에서 **시멘틱 색 토큰 집합**을 추출(cv.* 는

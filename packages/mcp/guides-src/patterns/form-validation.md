@@ -8,7 +8,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1399-
 
 ## rules
 
-- 합성 ① Input + ValidationChip — 형식 규칙이 2개 이상일 때 Input 아래 한 줄에 `<nds-validation-chip>` 를 나열. 입력값이 규칙을 충족할 때마다 해당 chip 을 `state="incomplete" → "complete"`(Brand Blue) 로 전환. 비밀번호/이메일 형식 안내에 사용(component:ValidationChip).
+- 합성 ① Input + ValidationChip — 형식 규칙이 2개 이상일 때 Input 아래 한 줄에 `<nds-validation-chip>` 를 나열. 입력값이 규칙을 충족할 때마다 해당 chip 을 `state="incomplete" → "complete"`(Project Blue) 로 전환. 비밀번호/이메일 형식 안내에 사용(component:ValidationChip).
 - 합성 ② Input + Inline Button — 인증번호 받기·중복 확인 같은 **단일 액션**은 Input 과 같은 행에 작은 outlined 버튼을 둔다. `FormField` > `InputGroup`(align="start") 로 입력+버튼을 한 줄에 합성한다 — 커스텀 flex 행을 새로 만들지 말 것(component:InputGroup).
 - 합성 ③ Input + Eye Icon — 비밀번호 표시/숨김은 `<nds-input type="password">` 의 **내장 password-toggle** 이 자동 제공(우측 눈 버튼, type 토글·포커스 유지까지 처리). 별도 trailing 버튼을 만들지 말 것 — 끄려면 `password-toggle="false"`.
 - Label / Placeholder — Label 은 항상 필드 위(Top Label). 필수 항목은 별표(`*`) + `aria-required`. Placeholder 는 형식 힌트만 — **Label 을 대체하지 않는다**.
@@ -23,11 +23,11 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=1399-
 - Helper 와 Error 동시 노출 — 한 자리에서 교차해야 한다.
 - 검증 실패 메시지를 규칙별로 여러 줄 — Error 는 우선순위 1줄.
 - 인라인 액션 버튼을 커스텀 flex 로 새로 — FormField + InputGroup 합성 재사용.
-- chip·버튼·헬퍼 색을 raw hex 로 — state/semantic 토큰으로 5 브랜드 자동 대응.
+- chip·버튼·헬퍼 색을 raw hex 로 — state/semantic 토큰으로 5 프로젝트 자동 대응.
 
 ## readyMade.note
 
-넛지EAP 회원가입 합성 3종. 색은 모두 semantic 토큰(ValidationChip state · Button color)으로 브랜드 cascade 자동 대응.
+넛지EAP 회원가입 합성 3종. 색은 모두 semantic 토큰(ValidationChip state · Button color)으로 프로젝트 cascade 자동 대응.
 
 ## readyMade.html
 

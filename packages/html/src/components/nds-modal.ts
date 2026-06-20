@@ -13,7 +13,7 @@
  *   · slot="footer" 컨테이너는 자동으로 .nds-modal__footer 클래스를 받고 content 안
  *     body 의 형제로 올라간다 → footer 레이아웃 CSS(본문↔푸터 gap, 버튼 정렬)가 적용됨.
  *   · 버튼이 2개 이상이면 data-has-both-actions="true" 로 가로 분할(dual),
- *     1개면 single — data-brand="cashwalk-biz" 에서는 우측 정렬 + 검정 pill 로 cascade.
+ *     1개면 single — data-project="cashwalk-biz" 에서는 우측 정렬 + 검정 pill 로 cascade.
  *   · 직접 가로 정렬을 제어하려면 footer 컨테이너에 data-layout="custom".
  *
  * 동작:
@@ -28,7 +28,7 @@
  */
 
 import { NdsElement, define } from "../base/nds-element.js";
-import { observeBrand, resolveLayoutFor } from "../base/brand.js";
+import { observeProject, resolveLayoutFor } from "../base/project.js";
 
 const MODAL_CLASS = "nds-modal";
 const ROOT_CLASS = `${MODAL_CLASS}__root`;
@@ -66,7 +66,7 @@ export class NdsModal extends NdsElement {
   private _title = "";
   private _wasOpen = false;
   private _previousFocus: Element | null = null;
-  private _unobserveBrand: (() => void) | null = null;
+  private _unobserveProject: (() => void) | null = null;
   private _onKey = (e: KeyboardEvent) => this._handleKey(e);
   private _onOverlayClick = () => {
     const maskClose = this.getAttribute("is-mask-close") !== "false";
@@ -76,15 +76,15 @@ export class NdsModal extends NdsElement {
 
   override connectedCallback(): void {
     if (!this._root) this._mount();
-    // 브랜드 토글 시 actionsLayout 기본값을 다시 적용(스토리북 brand switch 등).
-    if (!this._unobserveBrand) this._unobserveBrand = observeBrand(() => this.scheduleUpdate());
+    // 프로젝트 토글 시 actionsLayout 기본값을 다시 적용(스토리북 project switch 등).
+    if (!this._unobserveProject) this._unobserveProject = observeProject(() => this.scheduleUpdate());
     super.connectedCallback();
   }
 
   override disconnectedCallback(): void {
     document.removeEventListener("keydown", this._onKey, true);
-    this._unobserveBrand?.();
-    this._unobserveBrand = null;
+    this._unobserveProject?.();
+    this._unobserveProject = null;
   }
 
   private _mount(): void {
@@ -135,7 +135,7 @@ export class NdsModal extends NdsElement {
     // footer 승격: slot="footer" 컨테이너에 nds-modal__footer 클래스를 부여하고
     //   body 의 형제로 content 에 둔다(React 구조 미러 — content gap 이 본문↔푸터 간격을 만든다).
     //   액션 버튼이 2개 이상이면 data-has-both-actions="true" → dual(가로 분할),
-    //   아니면 single — 캐포비는 [data-brand] cascade 로 우측 정렬 + 검정 pill.
+    //   아니면 single — 캐포비는 [data-project] cascade 로 우측 정렬 + 검정 pill.
     if (footerSource) {
       footerSource.classList.add(FOOTER_CLASS);
       footerSource.dataset.slot = "footer";
@@ -186,7 +186,7 @@ export class NdsModal extends NdsElement {
     if (maxWidth) this._content.style.setProperty("--nds-modal-max-width", `${maxWidth}px`);
     else this._content.style.removeProperty("--nds-modal-max-width");
 
-    // 버튼 배치 — actions-layout attr 우선, 없으면 브랜드 기본(SSOT). custom 은 존중.
+    // 버튼 배치 — actions-layout attr 우선, 없으면 프로젝트 기본(SSOT). custom 은 존중.
     if (this._footer && this._footer.dataset.layout !== "custom") {
       this._footer.dataset.layout = resolveLayoutFor(this, this.getAttribute("actions-layout"));
     }

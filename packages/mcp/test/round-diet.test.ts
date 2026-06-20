@@ -11,7 +11,7 @@ import { createClaudeMd } from "../src/tools/guides";
 //  - 구버전 장문 CLAUDE.md 감지 → overwrite 갱신 힌트 1회 노출.
 
 const CLEAN_HTML = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>t</title></head>
-<body data-nds-brand="trost"><main><nds-button data-action="go">확인</nds-button></main>
+<body data-nds-project="trost"><main><nds-button data-action="go">확인</nds-button></main>
 <script>document.querySelector('[data-action="go"]').addEventListener('click',()=>{});</script>
 </body></html>`;
 

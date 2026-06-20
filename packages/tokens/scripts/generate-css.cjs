@@ -4,15 +4,15 @@
  *
  * Outputs:
  *   dist/tokens.css   — NudgeEAP 기본 토큰
- *   dist/trost.css    — Trost 브랜드 오버라이드 토큰
- *   dist/geniet.css   — Geniet 브랜드 오버라이드 토큰
- *   dist/cashwalk-biz.css — CashwalkBiz 브랜드 오버라이드 토큰
+ *   dist/trost.css    — Trost 프로젝트 오버라이드 토큰
+ *   dist/geniet.css   — Geniet 프로젝트 오버라이드 토큰
+ *   dist/cashwalk-biz.css — CashwalkBiz 프로젝트 오버라이드 토큰
  */
 const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
-const { nudgeEapSemantic } = require("../dist/brands/nudge-eap.semantic.js");
+const { nudgeEapSemantic } = require("../dist/projects/nudge-eap.semantic.js");
 const {
   spacing,
   gap,
@@ -90,7 +90,7 @@ function fontFamilyKeyToFigma(key) {
 
 // ─── NudgeEAP tokens.css ────────────────────────────────
 
-const { nudgeEapTheme } = require("../dist/brands/nudge-eap");
+const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 
 function generateBaseTokens() {
   const lines = [":root {"];
@@ -199,8 +199,8 @@ function generateBaseTokens() {
   for (const [key, value] of Object.entries(fontFamily)) {
     lines.push(`  --font-family-${fontFamilyKeyToFigma(key)}: ${value};`);
   }
-  // `--font-web` — 브랜드 셸 컴포넌트(runmile AppBar/Footer/WebHeader 등)가 읽는 alias.
-  // var() 참조라 브랜드 css 가 --font-family-default 를 override 하면 함께 따라온다.
+  // `--font-web` — 프로젝트 셸 컴포넌트(runmile AppBar/Footer/WebHeader 등)가 읽는 alias.
+  // var() 참조라 프로젝트 css 가 --font-family-default 를 override 하면 함께 따라온다.
   lines.push("  --font-web: var(--font-family-default);");
 
   // Font Weight
@@ -225,20 +225,20 @@ function generateBaseTokens() {
   }
 
   // Input Typography 표준 (Figma 4247:1964) — 입력 패밀리(Label·Input Value·Placeholder·
-  // Helper·Error) 타이포를 브랜드 무관하게 통일하는 시멘틱 토큰.
+  // Helper·Error) 타이포를 프로젝트 무관하게 통일하는 시멘틱 토큰.
   //   · size+lineHeight 는 한 토큰(`--semantic-input-typography-{role}` = `{size}px/{lh}px`)으로 묶고,
   //   · weight 는 분리 토큰(`--semantic-input-typography-{role}-weight` → --font-weight-*)으로 적용한다.
   //   · placeholder=value(타이포 동일, 색만 muted) / error=helper(타이포 동일, 색만 status-error)
   //     라 타이포 역할은 label·value·helper 3종만 둔다.
-  //   · 값은 base typeScale 에서 파생하되 **literal** 로 박아 브랜드 typeScale override 의 영향을
-  //     받지 않는다(= 브랜드 무관 보장). 브랜드 css 는 이 토큰을 재-emit 하지 않는다.
+  //   · 값은 base typeScale 에서 파생하되 **literal** 로 박아 프로젝트 typeScale override 의 영향을
+  //     받지 않는다(= 프로젝트 무관 보장). 프로젝트 css 는 이 토큰을 재-emit 하지 않는다.
   const INPUT_TYPOGRAPHY = {
     label: { scale: typeScale.caption1, weight: "medium" }, // 13/18 · Medium
     value: { scale: typeScale.body2, weight: "regular" }, // 15/22 · Regular (placeholder 동일)
     helper: { scale: typeScale.caption1, weight: "regular" }, // 13/18 · Regular (error 동일)
   };
   lines.push("");
-  lines.push("  /* ── Semantic / Input Typography (Figma 4247:1964 · 브랜드 무관) ── */");
+  lines.push("  /* ── Semantic / Input Typography (Figma 4247:1964 · 프로젝트 무관) ── */");
   for (const [role, { scale, weight }] of Object.entries(INPUT_TYPOGRAPHY)) {
     lines.push(`  --semantic-input-typography-${role}: ${scale.fontSize}px/${scale.lineHeight}px;`);
     lines.push(`  --semantic-input-typography-${role}-weight: var(--font-weight-${weight});`);
@@ -258,8 +258,8 @@ function generateBaseTokens() {
     lines.push(`  --z-${key}: ${value};`);
   }
 
-  // Component slots — `--nds-{component}-{prop}` (브랜드 emission 과 동일 규칙).
-  // base 가 :root 로 기본값을 깔아야 컴포넌트 요소-레벨 정의(브랜드 override 마스킹) 없이
+  // Component slots — `--nds-{component}-{prop}` (프로젝트 emission 과 동일 규칙).
+  // base 가 :root 로 기본값을 깔아야 컴포넌트 요소-레벨 정의(프로젝트 override 마스킹) 없이
   // var(--nds-…, fallback) cascade 가 성립한다 (chart/rating 등).
   if (nudgeEapTheme.components) {
     const componentBlocks = [];
@@ -284,15 +284,15 @@ function generateBaseTokens() {
   return lines.join("\n") + "\n";
 }
 
-// ─── Brand override CSS ────────────────────────────────
+// ─── Project override CSS ────────────────────────────────
 
-function generateBrandTokens({ theme, title, cssImport }) {
+function generateProjectTokens({ theme, title, cssImport }) {
   const pascalTitle = title.charAt(0).toUpperCase() + title.slice(1);
 
   const lines = [
     "/**",
-    ` * ${pascalTitle} Brand Tokens`,
-    " * NudgeEAP tokens.css 이후에 import하면 브랜드 토큰이 오버라이드됩니다.",
+    ` * ${pascalTitle} Project Tokens`,
+    " * NudgeEAP tokens.css 이후에 import하면 프로젝트 토큰이 오버라이드됩니다.",
     " *",
     " * Usage:",
     " *   @import '@nudge-design/tokens/css';",
@@ -331,7 +331,7 @@ function generateBrandTokens({ theme, title, cssImport }) {
         const figmaKey = typeScaleKeyToFigma(key);
         lines.push(`  --font-size-${figmaKey}: ${value.fontSize}px;`);
         lines.push(`  --line-height-${figmaKey}: ${value.lineHeight}px;`);
-        // size+lineHeight 묶음 토큰도 함께 override (브랜드가 typeScale 을 덮으면 같이 따라감).
+        // size+lineHeight 묶음 토큰도 함께 override (프로젝트가 typeScale 을 덮으면 같이 따라감).
         lines.push(`  --font-${figmaKey}: ${value.fontSize}px/${value.lineHeight}px;`);
       }
     }
@@ -493,26 +493,26 @@ fs.writeFileSync(tokensPath, generateBaseTokens());
 console.log(`Generated ${tokensPath}`);
 
 const trostPath = path.join(distDir, "trost.css");
-const { trostTheme } = require("../dist/brands/trost");
+const { trostTheme } = require("../dist/projects/trost");
 fs.writeFileSync(
   trostPath,
-  generateBrandTokens({ theme: trostTheme, title: "trost", cssImport: "trost" }),
+  generateProjectTokens({ theme: trostTheme, title: "trost", cssImport: "trost" }),
 );
 console.log(`Generated ${trostPath}`);
 
 const genietPath = path.join(distDir, "geniet.css");
-const { genietTheme } = require("../dist/brands/geniet");
+const { genietTheme } = require("../dist/projects/geniet");
 fs.writeFileSync(
   genietPath,
-  generateBrandTokens({ theme: genietTheme, title: "geniet", cssImport: "geniet" }),
+  generateProjectTokens({ theme: genietTheme, title: "geniet", cssImport: "geniet" }),
 );
 console.log(`Generated ${genietPath}`);
 
 const cashwalkBizPath = path.join(distDir, "cashwalk-biz.css");
-const { cashwalkBizTheme } = require("../dist/brands/cashwalk-biz");
+const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
 fs.writeFileSync(
   cashwalkBizPath,
-  generateBrandTokens({
+  generateProjectTokens({
     theme: cashwalkBizTheme,
     title: "cashwalk-biz",
     cssImport: "cashwalk-biz",
@@ -521,10 +521,10 @@ fs.writeFileSync(
 console.log(`Generated ${cashwalkBizPath}`);
 
 const runmilePath = path.join(distDir, "runmile.css");
-const { runmileTheme } = require("../dist/brands/runmile");
+const { runmileTheme } = require("../dist/projects/runmile");
 fs.writeFileSync(
   runmilePath,
-  generateBrandTokens({ theme: runmileTheme, title: "runmile", cssImport: "runmile" }),
+  generateProjectTokens({ theme: runmileTheme, title: "runmile", cssImport: "runmile" }),
 );
 console.log(`Generated ${runmilePath}`);
 

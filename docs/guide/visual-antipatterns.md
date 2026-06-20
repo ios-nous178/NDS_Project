@@ -20,7 +20,7 @@ title: 시각 안티패턴
 
 - **Tone-on-Tone Filled 금지** — 연한 primary/blue 배경 위에 같은 계열의 연한 filled tag/badge/box 를 반복하지 않는다. 같은 톤 위 같은 톤은 위계를 만들지 못하고 영역만 흐려진다.
 - **Primary 컬러 역할 제한** — Primary 는 CTA · interactive · 핵심 highlight 중 한 가지 역할로만. 배경/CTA/태그/카드/포커스/hover 에 동시에 쓰면 무엇을 클릭해야 할지 신호가 사라진다.
-- **로고 컬러 ≠ UI 액센트** — 브랜드 로고의 gradient/accent 색은 로고 표현 전용. 카드 배경, 배지, 버튼 컬러로 재사용하지 않는다.
+- **로고 컬러 ≠ UI 액센트** — 프로젝트 로고의 gradient/accent 색은 로고 표현 전용. 카드 배경, 배지, 버튼 컬러로 재사용하지 않는다.
 - **Primary tint 반복 금지** — 한 섹션에서 primary tint 가 배경 · 라벨 · 아이콘 · 카드 surface 로 3회 이상 등장하면 neutral surface + 텍스트 위계로 낮춘다.
 - **그라데이션 배경 금지** — linear / radial / conic gradient 배경 모두 사용 금지. 단색 토큰만 사용.
 - **Section 구분, 색상 단독 금지** — 영역 구분은 1차 spacing(--semantic-gap-loose/wide) → 2차 Divider/Border → 마지막에 surface tone 순서로. 색만으로 나누면 색맹·저시력 사용자가 구조를 잃는다.

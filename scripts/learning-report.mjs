@@ -97,10 +97,10 @@ try {
   p("## ② 조회 미스 (환각 / 공백)");
   p(
     table(
-      ["week", "tool", "catalog", "term", "brand", "misses", "원 요청"],
+      ["week", "tool", "catalog", "term", "project", "misses", "원 요청"],
       misses
         .slice(0, 15)
-        .map((r) => [r.week, r.tool ?? "-", r.catalog, r.term, r.brand, r.misses, trunc(r.sample_request)]),
+        .map((r) => [r.week, r.tool ?? "-", r.catalog, r.term, r.project, r.misses, trunc(r.sample_request)]),
     ),
   );
   p();
@@ -121,10 +121,10 @@ try {
   p("## ④ 최근 피드백");
   p(
     table(
-      ["when", "brand", "category", "target", "feedback"],
+      ["when", "project", "category", "target", "feedback"],
       feedback
         .slice(0, 15)
-        .map((r) => [day(r.created_at), r.brand, r.category ?? "-", r.target ?? "-", trunc(r.feedback, 80)]),
+        .map((r) => [day(r.created_at), r.project, r.category ?? "-", r.target ?? "-", trunc(r.feedback, 80)]),
     ),
   );
   p();
@@ -134,14 +134,14 @@ try {
   p("## ⑤ 품질 추세");
   p(
     table(
-      ["week", "brand", "코드점수", "LLM점수", "검증", "품질"],
+      ["week", "project", "코드점수", "LLM점수", "검증", "품질"],
       quality
         .slice(0, 20)
-        .map((r) => [r.week, r.brand, r.avg_code_score ?? "-", r.avg_llm_score ?? "-", r.validations, r.quality_runs]),
+        .map((r) => [r.week, r.project, r.avg_code_score ?? "-", r.avg_llm_score ?? "-", r.validations, r.quality_runs]),
     ),
   );
   p();
-  p("→ **액션**: 점수 하락 주 = 회귀. 직전 주 대비 떨어진 브랜드를 우선 점검.");
+  p("→ **액션**: 점수 하락 주 = 회귀. 직전 주 대비 떨어진 프로젝트를 우선 점검.");
   p();
   p("---");
   p(`_생성: scripts/learning-report.mjs · 뷰: supabase/migrations/0002_learning_views.sql_`);

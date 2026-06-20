@@ -18,15 +18,15 @@ import {
   UX_WRITING_GUIDE,
   detectIntentFromText,
   resolveIntentRouting,
-  isDsAdminBrand,
-  DS_ADMIN_BRANDS,
+  isDsAdminProject,
+  DS_ADMIN_PROJECTS,
 } from "../guides.js";
-import { getBrandProfile } from "@nudge-design/tokens/brand-profiles";
-import { SERVICE_OVERLAYS, listBrandVariants, type BrandSlug } from "../guides/services/index.js";
+import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
+import { SERVICE_OVERLAYS, listProjectVariants, type ProjectSlug } from "../guides/services/index.js";
 import { mergeServiceOverlay } from "../guides/merge.js";
 import { markPrinciplesCalled } from "./session-state.js";
 import {
-  canonicalBrandSlug,
+  canonicalProjectSlug,
   readDesignDecisions,
   promoteDesignDecisions,
   DEFAULT_PROMOTE_THRESHOLD,
@@ -34,19 +34,19 @@ import {
 } from "@nudge-design/mockup-core";
 
 /**
- * 워크스페이스 브랜드 SSOT 마커. get_setup 이 brand 와 함께 호출되면 cwd 에 이 파일을 박아,
- * 빌드(resolveHtmlBrand)가 html 선언 누락 시에도 정식 brand 를 단일 출처에서 읽게 한다.
- * (회고: 브랜드를 chrome 속성에만 선언 → base 블루 폴백. 마커가 있으면 추론조차 불필요.)
+ * 워크스페이스 프로젝트 SSOT 마커. get_setup 이 project 와 함께 호출되면 cwd 에 이 파일을 박아,
+ * 빌드(resolveHtmlProject)가 html 선언 누락 시에도 정식 project 를 단일 출처에서 읽게 한다.
+ * (회고: 프로젝트를 chrome 속성에만 선언 → base 블루 폴백. 마커가 있으면 추론조차 불필요.)
  */
-export const BRAND_MARKER_FILE = "nudge.brand";
+export const PROJECT_MARKER_FILE = "nudge.project";
 
-/** cwd 에 nudge.brand 마커를 canonical slug 로 기록. brand 없으면 no-op. */
-function writeBrandMarker(cwd: string, brand?: string): { brandMarker?: string } {
-  const canonical = canonicalBrandSlug(brand);
+/** cwd 에 nudge.project 마커를 canonical slug 로 기록. project 없으면 no-op. */
+function writeProjectMarker(cwd: string, project?: string): { projectMarker?: string } {
+  const canonical = canonicalProjectSlug(project);
   if (!canonical) return {};
   try {
-    fs.writeFileSync(path.join(cwd, BRAND_MARKER_FILE), `${canonical}\n`, "utf-8");
-    return { brandMarker: canonical };
+    fs.writeFileSync(path.join(cwd, PROJECT_MARKER_FILE), `${canonical}\n`, "utf-8");
+    return { projectMarker: canonical };
   } catch {
     return {}; // 마커 쓰기 실패는 치명적이지 않음 — 빌드의 추론/chrome 폴백이 받쳐 줌
   }
@@ -58,7 +58,7 @@ function writeBrandMarker(cwd: string, brand?: string): { brandMarker?: string }
  */
 export const SURFACE_MARKER_FILE = "nudge.surface";
 
-/** cwd 에 nudge.surface 마커를 기록. surface 없으면 no-op (writeBrandMarker 패턴 미러). */
+/** cwd 에 nudge.surface 마커를 기록. surface 없으면 no-op (writeProjectMarker 패턴 미러). */
 function writeSurfaceMarker(
   cwd: string,
   surface?: "admin" | "service",
@@ -72,11 +72,11 @@ function writeSurfaceMarker(
   }
 }
 
-/** cwd 의 nudge.brand 마커를 읽어 canonical slug 로 돌려준다(없으면 undefined). writeBrandMarker 의 read 짝. */
-function readBrandMarker(cwd: string): string | undefined {
+/** cwd 의 nudge.project 마커를 읽어 canonical slug 로 돌려준다(없으면 undefined). writeProjectMarker 의 read 짝. */
+function readProjectMarker(cwd: string): string | undefined {
   try {
-    const raw = fs.readFileSync(path.join(cwd, BRAND_MARKER_FILE), "utf-8").trim();
-    return canonicalBrandSlug(raw) ?? (raw || undefined);
+    const raw = fs.readFileSync(path.join(cwd, PROJECT_MARKER_FILE), "utf-8").trim();
+    return canonicalProjectSlug(raw) ?? (raw || undefined);
   } catch {
     return undefined;
   }
@@ -91,29 +91,29 @@ function parsePositiveInt(v: string | undefined): number | undefined {
 
 /**
  * principles 응답에 머지할 `_learnedPrinciples` 블록을 만든다(Decision Log → Principles 승격).
- * `<cwd>/designDecisions.jsonl` 에서 같은 브랜드의 서로 다른 화면 N개 이상에서 반복된 결정을 끌어올린다.
- * best-effort — 파일이 없거나(첫 작업) brand 를 모르거나 반복이 임계 미만이면 null(응답 불변).
- *  · brand = 명시 인자 → cwd 의 nudge.brand 마커 순.
+ * `<cwd>/designDecisions.jsonl` 에서 같은 프로젝트의 서로 다른 화면 N개 이상에서 반복된 결정을 끌어올린다.
+ * best-effort — 파일이 없거나(첫 작업) project 를 모르거나 반복이 임계 미만이면 null(응답 불변).
+ *  · project = 명시 인자 → cwd 의 nudge.project 마커 순.
  *  · cwd  = 명시 인자 → MCP 프로세스 cwd(= save_design_spec 의 기본 기록 위치).
  *  · NUDGE_LEARNED_PRINCIPLES=0 으로 끌 수 있고, NUDGE_PROMOTE_THRESHOLD 로 임계를 조정한다.
  */
 function buildLearnedPrinciples(
   cwdArg: string | undefined,
-  brandArg: string | undefined,
-): { _advisory: string; brand: string; threshold: number; principles: PromotedPrinciple[] } | null {
+  projectArg: string | undefined,
+): { _advisory: string; project: string; threshold: number; principles: PromotedPrinciple[] } | null {
   if (process.env.NUDGE_LEARNED_PRINCIPLES === "0") return null;
   const cwd = cwdArg ?? process.cwd();
-  const brand = canonicalBrandSlug(brandArg) ?? readBrandMarker(cwd);
-  if (!brand) return null;
+  const project = canonicalProjectSlug(projectArg) ?? readProjectMarker(cwd);
+  if (!project) return null;
   try {
     const threshold =
       parsePositiveInt(process.env.NUDGE_PROMOTE_THRESHOLD) ?? DEFAULT_PROMOTE_THRESHOLD;
-    const principles = promoteDesignDecisions(readDesignDecisions(cwd), { brand, threshold });
+    const principles = promoteDesignDecisions(readDesignDecisions(cwd), { project, threshold });
     if (principles.length === 0) return null;
     return {
       _advisory:
-        "designDecisions.jsonl 에서 자동 승격된, 이 브랜드 화면에서 반복적으로 내린 결정입니다. 새 화면도 특별한 이유가 없으면 따르고, 벗어나면 save_design_spec 의 decisions/rationale 로 근거를 남기세요.",
-      brand,
+        "designDecisions.jsonl 에서 자동 승격된, 이 프로젝트 화면에서 반복적으로 내린 결정입니다. 새 화면도 특별한 이유가 없으면 따르고, 벗어나면 save_design_spec 의 decisions/rationale 로 근거를 남기세요.",
+      project,
       threshold,
       principles,
     };
@@ -150,7 +150,7 @@ function resolvePatternReferenceImages(
  * 영역(admin/backoffice/service)은 레퍼런스와 동급 — 틀리면 DS vs antd 자체가 어긋난다.
  */
 export const VISUAL_REFERENCE_QUESTION =
-  "두 가지만 먼저 확인할게요. ① 시각 기준 — Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료로 진행해도 될지, 정답/오답 레퍼런스가 있으면 함께(정답 1-2장·피해야 할 오답 1-2장 + 각 1줄 캡션) 알려 주세요. ② 화면 영역 — 이 화면이 (a) 외부 제공 B2B 어드민[Nudge DS], (b) 사내 백오피스·운영툴/CMS[antd v5], (c) 일반 서비스(앱/웹)[Nudge DS] 중 무엇인가요? 캐포비처럼 어드민·서비스가 함께 있는 브랜드면 어느 쪽인지, 어드민이면 페이지패턴 5종(onboarding/dashboard/list/detail/form) 중 어디에 가까운지도 알려 주세요.";
+  "두 가지만 먼저 확인할게요. ① 시각 기준 — Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료로 진행해도 될지, 정답/오답 레퍼런스가 있으면 함께(정답 1-2장·피해야 할 오답 1-2장 + 각 1줄 캡션) 알려 주세요. ② 화면 영역 — 이 화면이 (a) 외부 제공 B2B 어드민[Nudge DS], (b) 사내 백오피스·운영툴/CMS[antd v5], (c) 일반 서비스(앱/웹)[Nudge DS] 중 무엇인가요? 캐포비처럼 어드민·서비스가 함께 있는 프로젝트면 어느 쪽인지, 어드민이면 페이지패턴 5종(onboarding/dashboard/list/detail/form) 중 어디에 가까운지도 알려 주세요.";
 
 export const ENTRY_TOOL_ADVISORY =
   "FIRST RESPONSE GATE: If the user asks to create, generate, revise, or build any mockup/screen/page, ask BOTH (1) visual references AND (2) the screen area together in ONE message, then stop — before any tool lookup or code work. Never ask only references and start building; the area question (admin/backoffice/service) is co-equal because getting it wrong picks the wrong design system entirely (DS vs antd). " +
@@ -165,7 +165,7 @@ export const ENTRY_TOOL_ADVISORY =
   "사용자가 그런 작업을 요청하면 DS 레포에서 직접 작업하라고 안내하세요. " +
   "이 MCP는 사용자 앱(Trost / Geniet / NudgeEAP / CashwalkBiz / Runmile) 컴포넌트만 노출합니다. " +
   "위 게이트 ②(영역) 답에 따라 라우팅(추측 금지): 사내 백오피스/운영툴이면 antd v5 + get_guide({ topic: 'backoffice' }), 외부 제공(b2b) 어드민이면 " +
-  "하드게이트 브랜드(cashwalk-biz/nudge-eap)만 DS 로 지원 — get_setup({ intent: 'admin', brand: '<slug>' }). " +
+  "하드게이트 프로젝트(cashwalk-biz/nudge-eap)만 DS 로 지원 — get_setup({ intent: 'admin', project: '<slug>' }). " +
   "두 디자인시스템을 한 화면에서 섞어쓰지 마세요.";
 
 export function getScopeAdvisory() {
@@ -196,14 +196,14 @@ export type GuideTarget = "react" | "html";
 export type GuideView = "examples" | "rules" | "full";
 
 /**
- * 브랜드 chrome React-only 컴포넌트(WebHeader/AppBar/Footer/BottomNav)는 HTML 1:1 대응
+ * 프로젝트 chrome React-only 컴포넌트(WebHeader/AppBar/Footer/BottomNav)는 HTML 1:1 대응
  * element 가 없다(_htmlStatus='no-html-equivalent'). 하지만 "대응 element 없음" 이라고만
  * 안내하면 회고처럼 base `<nds-header>` 를 손수 조립하는 막다른 길로 샌다.
- * 실제로는 `<nds-brand-header|footer|bottom-nav>` 한 줄이 BRAND_DATA 에서 전부 렌더한다.
- * 컴포넌트 이름(브랜드 prefix + 슬롯 suffix)에서 올바른 brand element + surface 를 유도해
- * 막다른 길 대신 "이걸 쓰라" 는 표지판으로 바꾼다. (브랜드 신규 컴포넌트도 자동 커버)
+ * 실제로는 `<nds-project-header|footer|bottom-nav>` 한 줄이 PROJECT_DATA 에서 전부 렌더한다.
+ * 컴포넌트 이름(프로젝트 prefix + 슬롯 suffix)에서 올바른 project element + surface 를 유도해
+ * 막다른 길 대신 "이걸 쓰라" 는 표지판으로 바꾼다. (프로젝트 신규 컴포넌트도 자동 커버)
  */
-const BRAND_CHROME_BRANDS: Array<[prefix: string, slug: string]> = [
+const PROJECT_CHROME_PROJECTS: Array<[prefix: string, slug: string]> = [
   ["NudgeEAP", "nudge-eap"],
   ["CashwalkBiz", "cashwalk-biz"],
   ["Trost", "trost"],
@@ -211,8 +211,8 @@ const BRAND_CHROME_BRANDS: Array<[prefix: string, slug: string]> = [
   ["Runmile", "runmile"],
 ];
 
-export function brandChromeHtmlRedirect(name: string): string | undefined {
-  const hit = BRAND_CHROME_BRANDS.find(([prefix]) => name.startsWith(prefix));
+export function projectChromeHtmlRedirect(name: string): string | undefined {
+  const hit = PROJECT_CHROME_PROJECTS.find(([prefix]) => name.startsWith(prefix));
   if (!hit) return undefined;
   const [prefix, slug] = hit;
   const slot = name.slice(prefix.length);
@@ -220,30 +220,30 @@ export function brandChromeHtmlRedirect(name: string): string | undefined {
     case "WebHeader":
     case "DesktopHeader":
       return (
-        `<nds-brand-header brand='${slug}' surface='web' active-key='...' asset-base-url='/assets'> ` +
-        `— 상세: get_guide({ topic: 'component:BrandHeader', target: 'html' })`
+        `<nds-project-header project='${slug}' surface='web' active-key='...' asset-base-url='/assets'> ` +
+        `— 상세: get_guide({ topic: 'component:ProjectHeader', target: 'html' })`
       );
     case "AppBar":
     case "MobileHeader":
       return (
-        `<nds-brand-header brand='${slug}' surface='mobile' active-key='...'> ` +
-        `(웹뷰 헤더는 surface='webview') — 상세: get_guide({ topic: 'component:BrandHeader', target: 'html' })`
+        `<nds-project-header project='${slug}' surface='mobile' active-key='...'> ` +
+        `(웹뷰 헤더는 surface='webview') — 상세: get_guide({ topic: 'component:ProjectHeader', target: 'html' })`
       );
     case "Footer":
     case "WebFooter":
       return (
-        `<nds-brand-footer brand='${slug}' surface='web' asset-base-url='/assets'> ` +
-        `(앱 푸터는 surface='app') — 상세: get_guide({ topic: 'component:BrandFooter', target: 'html' })`
+        `<nds-project-footer project='${slug}' surface='web' asset-base-url='/assets'> ` +
+        `(앱 푸터는 surface='app') — 상세: get_guide({ topic: 'component:ProjectFooter', target: 'html' })`
       );
     case "AppFooter":
       return (
-        `<nds-brand-footer brand='${slug}' surface='app'> ` +
-        `— 상세: get_guide({ topic: 'component:BrandFooter', target: 'html' })`
+        `<nds-project-footer project='${slug}' surface='app'> ` +
+        `— 상세: get_guide({ topic: 'component:ProjectFooter', target: 'html' })`
       );
     case "BottomNav":
       return (
-        `<nds-brand-bottom-nav brand='${slug}' active-key='...'> ` +
-        `— 상세: get_guide({ topic: 'component:BrandBottomNav', target: 'html' })`
+        `<nds-project-bottom-nav project='${slug}' active-key='...'> ` +
+        `— 상세: get_guide({ topic: 'component:ProjectBottomNav', target: 'html' })`
       );
     default:
       return undefined;
@@ -261,7 +261,7 @@ const COMPONENT_GUIDE_ADVISORY =
 const PRINCIPLES_DIGEST = [
   "get_guide({ topic: 'principles' }) first for mockup work.",
   "No emoji/text-symbol icons; use find_icon + @nudge-design/icons.",
-  "No raw <header>/<footer>/<main>/<nav> when nds/brand components fit.",
+  "No raw <header>/<footer>/<main>/<nav> when nds/project components fit.",
   "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
   "Use <nds-*> components before custom native controls/CSS lookalikes.",
   "Make every mockup responsive: fluid containers (max-width + padding, flex/grid wrap, min-width:0), no fixed-px-only layout, no horizontal scroll/overlap at ~360/~768.",
@@ -310,14 +310,14 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
         "target=html — examples 필드가 vanilla HTML (<nds-*>) 형태로 교체됐습니다. " +
         "attribute 는 kebab-case, 이벤트는 addEventListener('nds-...', handler) 로 바인딩하세요.";
     } else if (_htmlStatus === "no-html-equivalent") {
-      const redirect = brandChromeHtmlRedirect(guide.name);
+      const redirect = projectChromeHtmlRedirect(guide.name);
       if (redirect) {
-        // 브랜드 chrome — 막다른 길("대응 element 없음") 대신 brand element 표지판.
+        // 프로젝트 chrome — 막다른 길("대응 element 없음") 대신 project element 표지판.
         htmlAdvisory =
-          "★ target=html — 이 컴포넌트는 React 전용 브랜드 chrome 래퍼입니다. " +
+          "★ target=html — 이 컴포넌트는 React 전용 프로젝트 chrome 래퍼입니다. " +
           "HTML 목업에서는 base <nds-header> 를 손수 조립하지 말고(회고: 손수 조립 = 안티패턴) " +
           `다음 한 줄을 쓰세요: ${redirect}. ` +
-          "로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보가 BRAND_DATA 에서 자동 렌더되고, " +
+          "로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보가 PROJECT_DATA 에서 자동 렌더되고, " +
           "surface 값(web / mobile / webview)으로 PC·모바일·웹뷰 헤더가 각각 분기됩니다. " +
           "아래 examples 는 React 용 JSX 라 HTML 에 그대로 붙여넣지 마세요.";
       } else {
@@ -395,23 +395,23 @@ export function listFigmaSyncStatus() {
 
 export function getBackofficeGuide(args: {
   intent?: string;
-  brand?: string;
+  project?: string;
   serviceName?: string;
 }) {
-  // 어드민 하드게이트 브랜드는 antd 가 아니라 DS 로 만든다 — antd 컨벤션 대신 DS 경로로 리다이렉트.
+  // 어드민 하드게이트 프로젝트는 antd 가 아니라 DS 로 만든다 — antd 컨벤션 대신 DS 경로로 리다이렉트.
   // 단, 넛지EAP 는 자체 admin DS 가 없어 '사내 백오피스(NudgeEAPCMS)' 요청일 수 있다 —
   // intent:'admin' 명시일 때만 리다이렉트하고, topic 호출만으로는 antd 백오피스 가이드를 준다.
-  if (isDsAdminBrand(args.brand)) {
-    const canonicalBrand = canonicalBrandSlug(args.brand) ?? args.brand;
-    const ownAdminSystem = !!getBrandProfile(canonicalBrand)?.admin?.pagePatternSystem;
+  if (isDsAdminProject(args.project)) {
+    const canonicalProject = canonicalProjectSlug(args.project) ?? args.project;
+    const ownAdminSystem = !!getProjectProfile(canonicalProject)?.admin?.pagePatternSystem;
     if (ownAdminSystem) {
       return {
         intent: "html" as const,
-        brand: canonicalBrand,
-        requestedBrand: args.brand,
+        project: canonicalProject,
+        requestedProject: args.project,
         note:
-          `${args.brand}(=${canonicalBrand}) 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
-          "이 브랜드는 DS 안에 자체 admin 디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어, " +
+          `${args.project}(=${canonicalProject}) 어드민은 antd 가 아니라 Nudge DS 로 만든다. ` +
+          "이 프로젝트는 DS 안에 자체 admin 디자인 시스템(admin layout/input/Modal admin 토큰)을 갖추고 있어, " +
           "백오피스 antd 컨벤션(240px Sider · INFO/CMS MENU/SETTING 푸터)을 따르지 말 것. " +
           "이 antd 패턴을 캐포비 어드민에 그대로 적용하면 잘못된 화면이 된다.",
         "NDS 쓰기의 의미":
@@ -419,17 +419,17 @@ export function getBackofficeGuide(args: {
           "캐포비 어드민의 실제 화면 패턴(Page Pattern System 5종)과 admin 토큰/사이드바를 따르는 것이다. " +
           "PRD/시안의 화면 맥락이 antd 가이드보다 우선이다.",
         useInstead: [
-          `get_setup({ step: 'full', intent: 'admin', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
+          `get_setup({ step: 'full', intent: 'admin', project: '${args.project}' }) — DS(html) 셋업으로 자동 우회`,
           `get_guide({ topic: 'pattern:cashwalk-biz-page-patterns' }) — 캐포비 어드민 화면 5종(onboarding/dashboard/list/detail/form) 중 PRD 에 맞는 패턴 선언`,
           `get_guide({ topic: 'pattern:cashwalk-biz-admin-sidebar' }) — 캐포비 자체 사이드바(300px·로고 인라인). 백오피스 240px Sider 아님`,
-          `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' }) — admin 토큰이 cascade 된 DS 컴포넌트`,
-          `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
+          `get_guide({ topic: 'component:<Name>', project: '${args.project}', target: 'html' }) — admin 토큰이 cascade 된 DS 컴포넌트`,
+          `get_guide({ topic: 'principles', project: '${args.project}' })`,
         ],
         techStack: {
           required: [
             "@nudge-design/html (<nds-*>)",
             "@nudge-design/tokens/css",
-            `${canonicalBrand} 브랜드 css`,
+            `${canonicalProject} 프로젝트 css`,
           ],
           forbidden: ["antd", "@ant-design/icons"],
         },
@@ -439,23 +439,23 @@ export function getBackofficeGuide(args: {
       // 넛지EAP 어드민(b2b) — 자체 admin 토큰 없이 기존 DS 컴포넌트/토큰으로 목업한다.
       return {
         intent: "html" as const,
-        brand: canonicalBrand,
-        requestedBrand: args.brand,
+        project: canonicalProject,
+        requestedProject: args.project,
         note:
-          `${args.brand}(=${canonicalBrand}) 어드민(외부 제공 b2b)은 antd 가 아니라 Nudge DS 로 만든다. ` +
+          `${args.project}(=${canonicalProject}) 어드민(외부 제공 b2b)은 antd 가 아니라 Nudge DS 로 만든다. ` +
           "캐포비와 달리 전용 admin 토큰/page-pattern 게이트는 없다 — 기존 DS 컴포넌트와 토큰으로 " +
           "어드민 기획서를 목업하면 된다 (design-spec/page-pattern 선언 불필요).",
         useInstead: [
-          `get_setup({ step: 'full', intent: 'admin', brand: '${args.brand}' }) — DS(html) 셋업으로 자동 우회`,
+          `get_setup({ step: 'full', intent: 'admin', project: '${args.project}' }) — DS(html) 셋업으로 자동 우회`,
           "get_guide({ topic: 'pattern:admin-shell' }) — 어드민 사이드바+톱바 셸 패턴",
-          `get_guide({ topic: 'component:<Name>', brand: '${args.brand}', target: 'html' })`,
-          `get_guide({ topic: 'principles', brand: '${args.brand}' })`,
+          `get_guide({ topic: 'component:<Name>', project: '${args.project}', target: 'html' })`,
+          `get_guide({ topic: 'principles', project: '${args.project}' })`,
         ],
         techStack: {
           required: [
             "@nudge-design/html (<nds-*>)",
             "@nudge-design/tokens/css",
-            `${canonicalBrand} 브랜드 css`,
+            `${canonicalProject} 프로젝트 css`,
           ],
           forbidden: ["antd", "@ant-design/icons"],
         },
@@ -463,14 +463,14 @@ export function getBackofficeGuide(args: {
     }
   }
   const guide = buildBackofficeGuide(args.serviceName);
-  const canon = canonicalBrandSlug(args.brand);
-  const outsideGateBrand = !!args.brand?.trim() && !isDsAdminBrand(args.brand);
+  const canon = canonicalProjectSlug(args.project);
+  const outsideGateProject = !!args.project?.trim() && !isDsAdminProject(args.project);
   return {
     intent: "backoffice",
     "⚠ 영역 확인 먼저": guide.dsAdminException,
     note:
       "백오피스(사내 어드민/CMS/운영툴) 화면을 만들 때 따라야 할 시각/구조 컨벤션. " +
-      "NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출한 공통 패턴으로, 브랜드 무관 전 서비스 기본 지원입니다. " +
+      "NudgeEAPCMS(antd 5.5.1) 실제 운영 코드에서 추출한 공통 패턴으로, 프로젝트 무관 전 서비스 기본 지원입니다. " +
       "푸터 카피 등 서비스 고유 표기는 serviceName 파라미터로 주입하세요 — " +
       "예: get_guide({ topic: 'backoffice', serviceName: 'Runmile' }). " +
       "PRD 의 제품 맥락이 이 공통 백오피스 가이드보다 우선입니다.",
@@ -481,11 +481,11 @@ export function getBackofficeGuide(args: {
             "serviceName 미지정 — 푸터 카피가 <서비스명> 플레이스홀더로 나갑니다. " +
             "get_guide({ topic: 'backoffice', serviceName: '<서비스 표기명>' }) 으로 주입하세요.",
         }),
-    ...(outsideGateBrand
+    ...(outsideGateProject
       ? {
           _advisory:
-            `이 브랜드(${canon ?? args.brand})는 어드민(외부 제공 b2b) 미지원입니다 — b2b 어드민 화면이라면 ` +
-            `진행하지 말 것 (지원: ${DS_ADMIN_BRANDS.join(", ")} / 편입은 DS 팀에 요청). ` +
+            `이 프로젝트(${canon ?? args.project})는 어드민(외부 제공 b2b) 미지원입니다 — b2b 어드민 화면이라면 ` +
+            `진행하지 말 것 (지원: ${DS_ADMIN_PROJECTS.join(", ")} / 편입은 DS 팀에 요청). ` +
             "이 가이드는 사내 백오피스 전제입니다.",
         }
       : {}),
@@ -495,7 +495,7 @@ export function getBackofficeGuide(args: {
       ? {
           _operatorKeywordNotice:
             "운영자 화면 발화가 감지됐습니다. 이 가이드는 '사내 백오피스' 전제 — 외부 제공(b2b) 어드민이라면 " +
-            `intent:'admin' + brand(지원: ${DS_ADMIN_BRANDS.join(", ")}) 로 get_setup 을 재호출하세요. ` +
+            `intent:'admin' + project(지원: ${DS_ADMIN_PROJECTS.join(", ")}) 로 get_setup 을 재호출하세요. ` +
             "영역이 불확실하면 사용자에게 확답을 받기 전 진행하지 마세요.",
         }
       : {}),
@@ -593,7 +593,7 @@ function pickSections<T extends Record<string, unknown>>(
  *
  * 화면이 실제로 필요한 측면(예: 'radius' · 'spacing' · 'typography')만 친화적 이름으로 고르면
  * pickSections 가 DESIGN_PRINCIPLES 의 해당 블록만 돌려준다. DESIGN_PRINCIPLES 가 이미
- * aspect 별 top-level 키(brandTone/colors/typography/spacing/elevation/shapes/...)로 쪼개져 있어
+ * aspect 별 top-level 키(projectTone/colors/typography/spacing/elevation/shapes/...)로 쪼개져 있어
  * 데이터 재구조화 없이 동작한다. 'radius'→'shapes', 'color'→'colors' 처럼 직관적 이름을 실제
  * 키로 매핑하고, 한 aspect 가 여러 섹션으로 펼쳐질 수 있다(dos-donts → dos+donts+bannedPatterns).
  *
@@ -601,9 +601,9 @@ function pickSections<T extends Record<string, unknown>>(
  * 동일 규칙으로 적용된다(매칭 키가 없으면 pickSections 가 availableSections 와 함께 error).
  */
 const ASPECT_TO_SECTIONS: Record<string, string[]> = {
-  tone: ["brandTone"],
-  "brand-tone": ["brandTone"],
-  voice: ["brandTone"],
+  tone: ["projectTone"],
+  "project-tone": ["projectTone"],
+  voice: ["projectTone"],
   color: ["colors"],
   colors: ["colors"],
   colour: ["colors"],
@@ -732,53 +732,53 @@ function expandAspects(aspects: string[]): { sections: string[]; unknown: string
 }
 
 /**
- * brand 가 주어지면 SERVICE_OVERLAYS 에서 해당 topic 의 overlay 를 꺼내 머지.
- * brand 미지정 시 _brandVariants 슬림 요약을 첨부 (어느 brand 에 overlay 가 있는지 호출자가 인지하도록).
+ * project 가 주어지면 SERVICE_OVERLAYS 에서 해당 topic 의 overlay 를 꺼내 머지.
+ * project 미지정 시 _projectVariants 슬림 요약을 첨부 (어느 project 에 overlay 가 있는지 호출자가 인지하도록).
  *
- * overlay 가 비어 있는 경우 (Pattern 'Overlay 0'): _brandOverlayEmpty 마커만 추가하고 base 그대로 반환.
+ * overlay 가 비어 있는 경우 (Pattern 'Overlay 0'): _projectOverlayEmpty 마커만 추가하고 base 그대로 반환.
  *
- * 마커 스코프 주의: '_brandOverlayEmpty: true' 는 'SERVICE_OVERLAYS[brand][topic] 슬롯이 없음'
- * 만을 의미한다. brand-aware metadata (matrixOverrides, brandChrome 등) 는 별도 경로로 여전히
- * 적용될 수 있으므로 "이 brand 에 어떤 brand-specific 데이터도 없음" 으로 읽으면 안 된다.
- * (마커 prefix 컨벤션 통일: _brandApplied / _brandVariants / _brandAwareApplied 와 같은 _brand* 계열)
+ * 마커 스코프 주의: '_projectOverlayEmpty: true' 는 'SERVICE_OVERLAYS[project][topic] 슬롯이 없음'
+ * 만을 의미한다. project-aware metadata (matrixOverrides, projectChrome 등) 는 별도 경로로 여전히
+ * 적용될 수 있으므로 "이 project 에 어떤 project-specific 데이터도 없음" 으로 읽으면 안 된다.
+ * (마커 prefix 컨벤션 통일: _projectApplied / _projectVariants / _projectAwareApplied 와 같은 _project* 계열)
  */
-function applyBrandOverlay(
+function applyProjectOverlay(
   topic: string,
   result: Record<string, unknown>,
-  brand: BrandSlug | undefined,
+  project: ProjectSlug | undefined,
 ): Record<string, unknown> {
-  if (brand) {
-    const overlay = SERVICE_OVERLAYS[brand]?.[topic];
+  if (project) {
+    const overlay = SERVICE_OVERLAYS[project]?.[topic];
     if (overlay) {
       const merged = mergeServiceOverlay(result, overlay);
-      merged._brandApplied = brand;
+      merged._projectApplied = project;
       return merged;
     }
-    return { ...result, _brandApplied: brand, _brandOverlayEmpty: true };
+    return { ...result, _projectApplied: project, _projectOverlayEmpty: true };
   }
-  const variants = listBrandVariants(topic);
+  const variants = listProjectVariants(topic);
   if (Object.keys(variants).length > 0) {
-    return { ...result, _brandVariants: variants };
+    return { ...result, _projectVariants: variants };
   }
   return result;
 }
 
 /**
- * base.matrixOverrides 는 service overlay 가 아니라 base 안의 brand-aware metadata
- * (Figma 450:68 v2 결정). brand 가 지정되면 해당 brand 의 sizeMatrix/stateMatrix override 를
+ * base.matrixOverrides 는 service overlay 가 아니라 base 안의 project-aware metadata
+ * (Figma 450:68 v2 결정). project 가 지정되면 해당 project 의 sizeMatrix/stateMatrix override 를
  * base 매트릭스에 deep merge 하고, dimensions 는 그대로 응답에 노출.
  *
- * raw matrixOverrides map (모든 brand) 은 응답에서 제거 — brand 가 지정됐으면 그 brand 의
+ * raw matrixOverrides map (모든 project) 은 응답에서 제거 — project 가 지정됐으면 그 project 의
  * 적용된 값만 보여주는 게 호출자에게 명확.
  */
 function applyMatrixOverrides(
   result: Record<string, unknown>,
-  brand: BrandSlug | undefined,
+  project: ProjectSlug | undefined,
 ): Record<string, unknown> {
   const all = result.matrixOverrides as
     | Partial<
         Record<
-          BrandSlug,
+          ProjectSlug,
           {
             sizeMatrix?: Record<string, string>;
             stateMatrix?: Record<string, string>;
@@ -789,18 +789,18 @@ function applyMatrixOverrides(
     | undefined;
   if (!all) return result;
 
-  if (!brand) {
+  if (!project) {
     const { matrixOverrides: _omit, ...rest } = result;
-    const brandsWithOverride = Object.keys(all);
-    if (brandsWithOverride.length === 0) return rest;
-    return { ...rest, _matrixOverrideBrands: brandsWithOverride };
+    const projectsWithOverride = Object.keys(all);
+    if (projectsWithOverride.length === 0) return rest;
+    return { ...rest, _matrixOverrideProjects: projectsWithOverride };
   }
 
-  const mo = all[brand];
+  const mo = all[project];
   const { matrixOverrides: _omit, ...rest } = result;
   if (!mo) return rest;
 
-  const merged: Record<string, unknown> = { ...rest, _matrixOverrideApplied: brand };
+  const merged: Record<string, unknown> = { ...rest, _matrixOverrideApplied: project };
   if (mo.sizeMatrix) {
     const baseSize = (rest.sizeMatrix as Record<string, string> | undefined) ?? {};
     merged.sizeMatrix = { ...baseSize, ...mo.sizeMatrix };
@@ -816,62 +816,62 @@ function applyMatrixOverrides(
 }
 
 /**
- * Pattern 'Brand-aware Base' metadata (validPropValues / assetManifest / forcedProps) 처리.
- * BrandHeader (validPropValues + assetManifest) / BrandFooter (forcedProps + assetManifest) 같은
- * brand-aware 컴포넌트가 사용.
+ * Pattern 'Project-aware Base' metadata (validPropValues / assetManifest / forcedProps) 처리.
+ * ProjectHeader (validPropValues + assetManifest) / ProjectFooter (forcedProps + assetManifest) 같은
+ * project-aware 컴포넌트가 사용.
  *
- * brand 지정: 해당 brand 의 값만 fold 해서 응답에 노출 (slim).
- * brand 미지정: raw map 그대로 + _brandAwareMetadataBrands 슬림 요약.
+ * project 지정: 해당 project 의 값만 fold 해서 응답에 노출 (slim).
+ * project 미지정: raw map 그대로 + _projectAwareMetadataProjects 슬림 요약.
  *
- * forcedProps 의 '*' 키는 명시 안 된 brand 의 default 값 (예: footerTone trost=dark, '*'=light).
+ * forcedProps 의 '*' 키는 명시 안 된 project 의 default 값 (예: footerTone trost=dark, '*'=light).
  */
-function applyBrandAwareMetadata(
+function applyProjectAwareMetadata(
   result: Record<string, unknown>,
-  brand: BrandSlug | undefined,
+  project: ProjectSlug | undefined,
 ): Record<string, unknown> {
   const vpvMap = result.validPropValues as
-    | Partial<Record<BrandSlug, Record<string, string[]>>>
+    | Partial<Record<ProjectSlug, Record<string, string[]>>>
     | undefined;
-  const amMap = result.assetManifest as Partial<Record<BrandSlug, string[]>> | undefined;
+  const amMap = result.assetManifest as Partial<Record<ProjectSlug, string[]>> | undefined;
   const fpMap = result.forcedProps as
-    | Record<string, Partial<Record<BrandSlug | "*", string>>>
+    | Record<string, Partial<Record<ProjectSlug | "*", string>>>
     | undefined;
   if (!vpvMap && !amMap && !fpMap) return result;
 
-  if (!brand) {
-    const brands = new Set<string>();
-    if (vpvMap) Object.keys(vpvMap).forEach((b) => brands.add(b));
-    if (amMap) Object.keys(amMap).forEach((b) => brands.add(b));
+  if (!project) {
+    const projects = new Set<string>();
+    if (vpvMap) Object.keys(vpvMap).forEach((b) => projects.add(b));
+    if (amMap) Object.keys(amMap).forEach((b) => projects.add(b));
     if (fpMap) {
-      for (const brandMap of Object.values(fpMap)) {
-        Object.keys(brandMap).forEach((b) => {
-          if (b !== "*") brands.add(b);
+      for (const projectMap of Object.values(fpMap)) {
+        Object.keys(projectMap).forEach((b) => {
+          if (b !== "*") projects.add(b);
         });
       }
     }
-    return brands.size > 0
-      ? { ...result, _brandAwareMetadataBrands: Array.from(brands).sort() }
+    return projects.size > 0
+      ? { ...result, _projectAwareMetadataProjects: Array.from(projects).sort() }
       : result;
   }
 
   const { validPropValues: _vpv, assetManifest: _am, forcedProps: _fp, ...rest } = result;
-  const folded: Record<string, unknown> = { ...rest, _brandAwareApplied: brand };
+  const folded: Record<string, unknown> = { ...rest, _projectAwareApplied: project };
 
   if (vpvMap) {
-    const vpv = vpvMap[brand];
+    const vpv = vpvMap[project];
     if (vpv) folded.validPropValues = vpv;
   }
   if (amMap) {
-    const am = amMap[brand];
+    const am = amMap[project];
     if (am) folded.assetManifest = am;
   }
   if (fpMap) {
     const fp: Record<string, string> = {};
-    for (const [propName, brandMap] of Object.entries(fpMap)) {
-      if (brandMap[brand] !== undefined) {
-        fp[propName] = brandMap[brand]!;
-      } else if (brandMap["*"] !== undefined) {
-        fp[propName] = brandMap["*"]!;
+    for (const [propName, projectMap] of Object.entries(fpMap)) {
+      if (projectMap[project] !== undefined) {
+        fp[propName] = projectMap[project]!;
+      } else if (projectMap["*"] !== undefined) {
+        fp[propName] = projectMap["*"]!;
       }
     }
     if (Object.keys(fp).length > 0) folded.forcedProps = fp;
@@ -888,7 +888,7 @@ export function getGuide(args: {
   view?: GuideView;
   sections?: string[];
   aspects?: string[];
-  brand?: BrandSlug;
+  project?: ProjectSlug;
   /** [backoffice] 서비스 표기명 — 푸터 카피 등 서비스 고유 표기에 주입 (예: 'Runmile'). */
   serviceName?: string;
   /** [principles] 워크스페이스 루트 — designDecisions.jsonl 에서 학습된 원칙을 승격해 머지한다. 기본 MCP 프로세스 cwd. */
@@ -920,7 +920,7 @@ export function getGuide(args: {
           view: args.view ?? batchDefaults.view,
           sections: args.sections ?? batchDefaults.sections,
           aspects: aspectList, // principles 자식에서만 실제 적용된다
-          brand: args.brand,
+          project: args.project,
           cwd: args.cwd, // principles 자식에서 학습된 원칙 승격에 사용
         }) as Record<string, unknown>,
       ] as const;
@@ -997,11 +997,11 @@ export function getGuide(args: {
       };
     }
     const base = getComponentGuide(name, target) as Record<string, unknown>;
-    const withMatrix = applyMatrixOverrides(base, args.brand);
-    const withMeta = applyBrandAwareMetadata(withMatrix, args.brand);
+    const withMatrix = applyMatrixOverrides(base, args.project);
+    const withMeta = applyProjectAwareMetadata(withMatrix, args.project);
     return slimOversizedGuide(
       topic,
-      pickSections(applyBrandOverlay(topic, withMeta, args.brand), sections),
+      pickSections(applyProjectOverlay(topic, withMeta, args.project), sections),
       explicitSlice,
     );
   }
@@ -1016,7 +1016,7 @@ export function getGuide(args: {
     const base = getPatternGuide(name) as Record<string, unknown>;
     return slimOversizedGuide(
       topic,
-      pickSections(applyBrandOverlay(topic, base, args.brand), sections),
+      pickSections(applyProjectOverlay(topic, base, args.project), sections),
       explicitSlice,
     );
   }
@@ -1025,15 +1025,15 @@ export function getGuide(args: {
     case "principles": {
       markPrinciplesCalled();
       const picked = pickSections(getDesignPrinciples() as Record<string, unknown>, sections);
-      // 일부 aspect 만 오타라 무시된 경우 조용히 떨구지 않고 비치명 마커로 알린다(unknown-brand 경고 패턴 미러).
+      // 일부 aspect 만 오타라 무시된 경우 조용히 떨구지 않고 비치명 마커로 알린다(unknown-project 경고 패턴 미러).
       if (aspectUnknown.length > 0 && !("error" in picked)) {
         (picked as Record<string, unknown>)._unknownAspects = aspectUnknown;
         (picked as Record<string, unknown>)._validAspects = GUIDE_ASPECT_NAMES;
       }
-      // Decision Log → Principles 승격: 이 브랜드 화면에서 반복된 결정을 학습된 원칙으로 머지.
+      // Decision Log → Principles 승격: 이 프로젝트 화면에서 반복된 결정을 학습된 원칙으로 머지.
       // 마커 키라 pickSections(섹션 슬라이스) 이후에 붙여 aspects/sections 호출에도 항상 보인다. best-effort.
       if (!("error" in picked)) {
-        const learned = buildLearnedPrinciples(args.cwd, args.brand);
+        const learned = buildLearnedPrinciples(args.cwd, args.project);
         if (learned) (picked as Record<string, unknown>)._learnedPrinciples = learned;
       }
       return picked;
@@ -1042,13 +1042,13 @@ export function getGuide(args: {
       return pickSections(getDosAndDonts() as Record<string, unknown>, sections);
     case "ux-writing": {
       const base = getUxWritingGuide() as Record<string, unknown>;
-      return pickSections(applyBrandOverlay("ux-writing", base, args.brand), sections);
+      return pickSections(applyProjectOverlay("ux-writing", base, args.project), sections);
     }
     case "backoffice":
     case "admin-cms": {
       const guide = getBackofficeGuide({
         intent: args.intent,
-        brand: args.brand,
+        project: args.project,
         serviceName: args.serviceName,
       }) as Record<string, unknown>;
       if (topic === "admin-cms") {
@@ -1132,7 +1132,7 @@ function getSlimClaudeMdTemplate(args: {
 - Use antd v5 for backoffice screens.
 - Do not use @nudge-design/react, @nudge-design/html, @nudge-design/tokens, or @nudge-design/icons in backoffice mockups.
 - Check conventions with \`get_guide({ topic: "backoffice"${serviceNameArg} })\`.
-- B2B admin services (외부 제공 어드민) are different: only ${DS_ADMIN_BRANDS.join(" / ")} are supported and they are built with the DS, not antd — re-run \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` in that case.
+- B2B admin services (외부 제공 어드민) are different: only ${DS_ADMIN_PROJECTS.join(" / ")} are supported and they are built with the DS, not antd — re-run \`get_setup({ step: "claude-md", intent: "admin", project: "<slug>" })\` in that case.
 
 ## Workflow
 
@@ -1169,7 +1169,7 @@ function getSlimClaudeMdTemplate(args: {
 2. Before creating/editing mockup files, do a shallow current-workspace collision check only. If an obvious same-PRD/same-screen folder is found, ask "동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?" and stop until the user answers. Do not exhaustive-search and do not modify the existing folder without this answer.
 3. Read \`references.md\` before implementation and write a short visual plan: which good cues to apply, which bad cues to avoid.
 4. Use MCP-bundled references from \`get_guide\` first as the DS baseline: \`figmaNodeUrl\`, \`references[]\`, and \`imageAbsolutePath\`.
-5. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`. **For brand-specific screens (task slug \`<brand>-<screen>\` exposes the brand), pass \`brand: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz"\`** — service overlay, matrixOverrides spec, and brand-aware metadata fold into the response under \`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`. Without \`brand\` you only get \`_brandVariants\` (slim summary of which brands have overlays).
+5. For component examples, call \`get_guide({ topic: "component:<Name>", target: "html" })\`. **For project-specific screens (task slug \`<project>-<screen>\` exposes the project), pass \`project: "trost" | "geniet" | "nudge-eap" | "cashwalk-biz"\`** — service overlay, matrixOverrides spec, and project-aware metadata fold into the response under \`_projectApplied\` / \`_matrixOverrideApplied\` / \`_projectAwareApplied\`. Without \`project\` you only get \`_projectVariants\` (slim summary of which projects have overlays).
 6. Use \`get_guide({ topic: "principles" })\` and relevant \`pattern:<name>\` guides only as needed. Keep calls small: pass \`aspects\` for the principle slices this screen needs (e.g. \`get_guide({ topic: "principles", aspects: ["spacing","radius","typography","color"] })\`), or \`sections\` for arbitrary top-level keys.
 7. Write root \`index.html\` with real \`<nds-*>\` elements.
 8. Run \`validate_html_mockup({ filePath: "index.html" })\`; fix until violation count is 0. A clean pass automatically includes DS adoption stats (\`stats.counts.dsRatio\`) — no separate \`withStats\` call needed.
@@ -1191,7 +1191,7 @@ function getSlimClaudeMdTemplate(args: {
 - Do not use raw \`button\`, \`input\`, \`select\`, or \`textarea\` unless intentionally wrapped/allowed.
 - Do not hand-build sidebar/footer/header with raw landmarks when \`<nds-sidebar>\`, \`<nds-footer-*>\`, or \`<nds-header>\` can represent it.
 - Do not use inline emoji, decorative text symbols, gradients, raw hex/rgb colors, or arbitrary spacing.
-- Do not use text like \`x\` / \`×\` as an icon. Use \`find_icon\` and prefer brand-specific icons first.
+- Do not use text like \`x\` / \`×\` as an icon. Use \`find_icon\` and prefer project-specific icons first.
 - Bind interactions in JS with \`addEventListener\`; avoid inline \`onclick\`.
 - For \`nds-input\`, \`nds-textarea\`, and \`nds-select\`, read change event detail or the inner native control value; do not assume the host attribute is live during typing.
 - Keep detailed rules out of this file. Fetch them on demand with \`get_guide\`.
@@ -1240,7 +1240,7 @@ export function getClaudeMdTemplate(args: {
 
 \`\`\`
 # references.md
-task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-hub
+task: <project>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-hub
 [good] source=<figma-url|image-name> caption=<1줄 reason>
 [good] ...
 [bad] source=... caption=...
@@ -1290,10 +1290,10 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - nudge-ds MCP는 이 도구들로 작업:
   - \`get_guide({ topic: "principles" })\` / \`get_guide({ topic: "dos-donts" })\` — DS 원칙
   - \`get_guide({ topic: "component:<Name>", target: "html" })\` — <nds-*> form 의 do/dont 예시
-  - \`get_guide({ topic: "component:<Name>", target: "html", brand: "trost|geniet|nudge-eap|cashwalk-biz" })\` — brand 별 변형 자동 적용. 응답에 \`_brandApplied\` (service overlay), \`_matrixOverrideApplied\` (spec 차이), \`_brandAwareApplied\` (validPropValues/assetManifest/forcedProps) 메타로 어느 layer 가 적용됐는지 명시. brand 미지정 호출은 \`_brandVariants\` 슬림 요약 첨부 — 어느 brand 에 overlay 가 있는지 확인 후 다시 호출. **task 슬러그가 brand 를 알려주면 (예: \`task: geniet-diary-hub\`) 컴포넌트 가이드 호출 시 \`brand: "geniet"\` 같이 지정.**
+  - \`get_guide({ topic: "component:<Name>", target: "html", project: "trost|geniet|nudge-eap|cashwalk-biz" })\` — project 별 변형 자동 적용. 응답에 \`_projectApplied\` (service overlay), \`_matrixOverrideApplied\` (spec 차이), \`_projectAwareApplied\` (validPropValues/assetManifest/forcedProps) 메타로 어느 layer 가 적용됐는지 명시. project 미지정 호출은 \`_projectVariants\` 슬림 요약 첨부 — 어느 project 에 overlay 가 있는지 확인 후 다시 호출. **task 슬러그가 project 를 알려주면 (예: \`task: geniet-diary-hub\`) 컴포넌트 가이드 호출 시 \`project: "geniet"\` 같이 지정.**
   - \`get_guide({ topic: "pattern:<name>" })\` — 패턴 가이드 (cta-group, dark-patterns 등)
   - \`find_component\` / \`find_icon\` / \`find_token\` — DS 자산 조회
-  - \`find_asset({ query, brand })\` — **브랜드 이미지**(음식·일러스트·프로필·대회 포스터 등) 검색 → \`inlineRef\` 를 \`<img src>\` 에 박으면 base64 inline. 이미지 필요 시 **먼저 호출**. 에셋에 없으면 placeholder + '에셋 없음' 주석, 브랜드 이미지 AI 생성 금지.
+  - \`find_asset({ query, project })\` — **프로젝트 이미지**(음식·일러스트·프로필·대회 포스터 등) 검색 → \`inlineRef\` 를 \`<img src>\` 에 박으면 base64 inline. 이미지 필요 시 **먼저 호출**. 에셋에 없으면 placeholder + '에셋 없음' 주석, 프로젝트 이미지 AI 생성 금지.
   - \`validate_html_mockup({ filePath })\` — HTML 정적 검증 (위반 0 통과 시 채택 비율 \`stats.counts.dsRatio\` 자동 동봉)
   - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
   - \`build_singlefile_html\` — vanilla HTML 워크플로우도 1급 지원. inline 산출물 1개 \`.html\` (JS · CSS · nds-* runtime 전부 inline) 로 디자이너/PM 에게 dnd 전달 가능.
@@ -1358,7 +1358,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ### 기본 도구 사용
 
-- **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴 로드.
+- **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 프로젝트 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴 로드.
 - **모든 mockup 작업은 시각 레퍼런스 수집부터 시작.** \`get_guide({ topic: "pattern:visual-reference" })\` 로 룰 확인.
 - 컴포넌트 사용 전 \`find_component({ query })\` → \`get_guide({ topic: "component:<Name>", target: "html" })\` 호출. \`target: "html"\` 을 반드시 명시 — examples.do / examples.dont 가 \`<nds-*>\` form 으로 교체된다. 빠뜨리면 React JSX 예시가 반환됨 (이 워크플로우에선 무용지물).
 - 아이콘은 \`find_icon({ query })\` 로 검색 후 \`@nudge-design/icons\` 의 인라인 SVG 사용. 이모지·텍스트 기호 금지 (\`validate_html_mockup\` 의 emoji-banned / text-symbol-banned 룰).
@@ -1369,12 +1369,12 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - dev URL 응답하면 브라우저에서 직접 열어 런타임 에러, unknown custom-element 경고, 빈 화면 여부 확인.
 - 완료 전 \`get_guide({ topic: "dos-donts" })\` 로 최종 sanity check.
 - 작업 종료 시 \`dev_server({ action: "stop" })\` 로 종료.
-- **★ 유저가 DS 선택을 교정/지적하면 — 고치기 직전에 \`log_feedback\` 을 먼저 호출한다 (예외 없음).** 트리거 = "이거 틀렸어 / 아니야 / 왜 이래 / 이거 말고 / 저거 맞아? / 시안이랑 달라 / 색·간격·컴포넌트·variant 가 잘못됐다" 류의, **DS 자체에 대한 교정**. 흐름은 항상 _먼저 \`log_feedback({ text, category, target, brand })\` → 그 다음 수정_. 고치고 나서 잊지 말 것 — 수정에 몰입해 로깅을 건너뛰는 게 가장 흔한 누락이다. (일반 작업 지시 "다음 화면 만들어줘" 는 해당 없음 — DS 가 틀렸다는 신호일 때만.)
+- **★ 유저가 DS 선택을 교정/지적하면 — 고치기 직전에 \`log_feedback\` 을 먼저 호출한다 (예외 없음).** 트리거 = "이거 틀렸어 / 아니야 / 왜 이래 / 이거 말고 / 저거 맞아? / 시안이랑 달라 / 색·간격·컴포넌트·variant 가 잘못됐다" 류의, **DS 자체에 대한 교정**. 흐름은 항상 _먼저 \`log_feedback({ text, category, target, project })\` → 그 다음 수정_. 고치고 나서 잊지 말 것 — 수정에 몰입해 로깅을 건너뛰는 게 가장 흔한 누락이다. (일반 작업 지시 "다음 화면 만들어줘" 는 해당 없음 — DS 가 틀렸다는 신호일 때만.)
 
 ## UI 구현 규칙
 
 - 가능한 한 DS 컴포넌트(\`<nds-*>\`) 를 우선 사용한다.
-- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<nds-brand-header brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'>\` + \`<nds-brand-footer brand='...' surface='web|app' asset-base-url='/assets'>\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. nds-header / nds-header-logo / nds-header-menu(-item) / nds-header-actions / nds-header-auth-button 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader", target: "html" })\` 로 브랜드별 필요 로고 파일 (\`public/assets/brand/{brand}/logos/*\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
+- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<nds-project-header project='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' active-key='...' asset-base-url='/assets'>\` + \`<nds-project-footer project='...' surface='web|app' asset-base-url='/assets'>\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 PROJECT_DATA 에서 자동. nds-header / nds-header-logo / nds-header-menu(-item) / nds-header-actions / nds-header-auth-button 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:ProjectHeader", target: "html" })\` 로 프로젝트별 필요 로고 파일 (\`public/assets/project/{project}/logos/*\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-project-chrome\`) find_component 결과만 보고 못 짚는 함정 — ProjectHeader/ProjectFooter 가이드를 먼저 호출하라.**
 - **모든 버튼은 동작한다.** 클릭 후 아무 변화가 없는 버튼은 산출물 결함이다. 필터/탭/모달/선택 피커/초기화/저장/다음/이전/삭제 버튼은 실제 DOM 상태를 바꿔야 하고, 단순 데모 CTA 도 aria-live 피드백이나 모달/상태 텍스트를 갱신해야 한다.
 - **DS 뱃지 숫자는 직접 세지 말 것.** \`build_singlefile_html\` 이 산출된 \`dist/index.html\` 기준으로 \`data-ds-badge\` 텍스트를 최신 \`dsUsageSummary\` 로 자동 치환한다. 원본에 임시 숫자를 넣어도 최종 산출물은 build 응답 값을 SSOT 로 삼는다.
 - **기존 antd/HTML 코드를 받았을 때 className 만 치환하지 말 것**. \`<button class="nds-button">\` 은 nds-button 흉내일 뿐 실제 Web Component 가 아님 — 반드시 \`<nds-button>\` 으로 element 자체를 바꾼다.
@@ -1382,7 +1382,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **이모지·텍스트 기호 절대 금지**. 라벨/제목/empty state 어디에도 이모지(😀 🔥 ⭐ ✅ ⚠️) / 기호(→ ← ✓ ★ •) 박지 말 것. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG.
 - **스타일은 처음부터 클래스/CSS 로 — 인라인 \`style="…"\` 속성을 흩뿌리지 말 것.** 색·간격은 인라인 hex/rgb/px 대신 DS 토큰(\`var(--semantic-* )\` / \`var(--semantic-gap-* )\` / \`var(--semantic-inset-* )\`)을, 반복 스타일은 \`<style>\`/클래스로 한 곳에 모은다. 인라인으로 흩뿌리면 시각 피드백마다 HTML 을 다시 손대 재작성·재검증 라운드가 늘어난다(클래스-퍼스트가 편집 사이클·토큰 소모를 줄인다).
 - 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
-- **아이콘 선택 필수 우선순위**: 브랜드 전용 > NudgeEAP 기본 > MockupLinear/Bold > 자체 SVG.
+- **아이콘 선택 필수 우선순위**: 프로젝트 전용 > NudgeEAP 기본 > MockupLinear/Bold > 자체 SVG.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA 에 붙이지 않는다.
 - primary solid 버튼은 한 화면에 1개만.
@@ -1416,12 +1416,12 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - [ ] \`validate_html_mockup\` 위반 0건 (2회 self-check 통과).
 - [ ] 통과 응답에 자동 동봉된 \`stats.counts.dsRatio\` 가 충분히 높고 native 잔존이 0/최소.
 - [ ] 이모지·텍스트 기호 (→ ✓ ★ • 등) 사용 없음.
-- [ ] **브랜드 헤더/푸터 사용 여부 점검**: 사용자 앱 화면이면 해당 브랜드(trost/geniet/nudge-eap)의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는가? 인라인으로 손수 그리지 않고 브랜드 별 fixtures 사용. 랜딩/스플래시/모달-only 같은 의도적 예외라면 응답에 "헤더/푸터 의도적으로 생략" 명시.
+- [ ] **프로젝트 헤더/푸터 사용 여부 점검**: 사용자 앱 화면이면 해당 프로젝트(trost/geniet/nudge-eap)의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는가? 인라인으로 손수 그리지 않고 프로젝트 별 fixtures 사용. 랜딩/스플래시/모달-only 같은 의도적 예외라면 응답에 "헤더/푸터 의도적으로 생략" 명시.
 - [ ] 목업에 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황이 visible 하게 포함됨. 풋터 뱃지는 \`<span data-ds-badge>DS@x.y.z · DS N (M%)</span>\` 형태를 기본으로 하되, MCP/package 버전까지 함께 보이게 한다. 주석만으로는 부족.
 - [ ] \`build_singlefile_html\` 호출 후 \`validate_html_mockup({ filePath, report: true })\` 까지 실행 완료 (구글시트 적재 + 마지막 위반 검사).
 - [ ] 최종 응답에 Google Sheets POST 상태를 명시함: \`webhook ok\` / \`webhook queued(...)\` / \`webhook skipped\`.
 - [ ] **품질/검증 결과는 분석적으로 제시 — "종합 N점" 한 줄 요약 금지.** \`build_singlefile_html\`/\`validate_html_mockup\` 의 \`scoreGate.scoreCard\` 와 \`score_mockup_quality\` 의 \`card\` 를 **항목별 점수 + 각 항목의 감점 사유("→")까지 그대로** 보여준다(낮은 항목·사유 발췌·생략 금지). **첫 목업 생성과 피드백 후 재생성 모두** 동일 형식으로. 점수만 던지지 말고 "어디서 왜 깎였는지"를 사용자가 보게 할 것.
-- [ ] **만족도(👍/👎)는 객관 점수의 짝 — 결과를 보여준 "다음"에 묻는다.** 흐름: \`build_singlefile_html\` 결과(점수·\`dist/index.html\` 경로)를 사용자에게 **먼저 보여준 뒤**, **깨끗한 빌드(DS 에러 0)** 면 이어서 \`prompt_satisfaction({ screen, scoreOverall, brand })\` 를 호출한다 → 사용자에게 👍/👎 **클릭 다이얼로그**가 뜨고(빌드는 이미 끝나 안 막힘), 클릭하면 객관 점수와 함께 자동 기록된다. **화면당 세션 1회만**(같은 화면 재빌드해도 다시 호출 X), 에러 있는 중간 빌드엔 호출 X. 결과 \`supported:false\`(호스트 미지원)면 \`satisfactionOffer.prompt\` 텍스트로 안내하고, 사용자가 **명시적으로** 👍/👎(또는 '좋다'/'별로') 말하면 \`log_feedback({ category:'satisfaction', sentiment, scoreOverall })\` 로 기록(모호 반응 추측·자동 감정분석 금지). AI 가 텍스트로 "어떠세요?"라고 캐묻지 말 것 — 다이얼로그(또는 satisfactionOffer 안내)가 그 역할.
+- [ ] **만족도(👍/👎)는 객관 점수의 짝 — 결과를 보여준 "다음"에 묻는다.** 흐름: \`build_singlefile_html\` 결과(점수·\`dist/index.html\` 경로)를 사용자에게 **먼저 보여준 뒤**, **깨끗한 빌드(DS 에러 0)** 면 이어서 \`prompt_satisfaction({ screen, scoreOverall, project })\` 를 호출한다 → 사용자에게 👍/👎 **클릭 다이얼로그**가 뜨고(빌드는 이미 끝나 안 막힘), 클릭하면 객관 점수와 함께 자동 기록된다. **화면당 세션 1회만**(같은 화면 재빌드해도 다시 호출 X), 에러 있는 중간 빌드엔 호출 X. 결과 \`supported:false\`(호스트 미지원)면 \`satisfactionOffer.prompt\` 텍스트로 안내하고, 사용자가 **명시적으로** 👍/👎(또는 '좋다'/'별로') 말하면 \`log_feedback({ category:'satisfaction', sentiment, scoreOverall })\` 로 기록(모호 반응 추측·자동 감정분석 금지). AI 가 텍스트로 "어떠세요?"라고 캐묻지 말 것 — 다이얼로그(또는 satisfactionOffer 안내)가 그 역할.
 - [ ] 최종 응답에 간격 점검 결과, 텍스트 기호 아이콘 잔존 여부, 요청 범위 누락 항목을 명시함.
 - [ ] 최종 응답에 산출물 full 절대경로를 포함함 (상대경로 \`dist/index.html\` 만으로 끝내지 않음).
 - [ ] 가이드 호출은 단계별로만 — 시작 시점에 12개씩 병렬 fetch 하지 않음.
@@ -1445,7 +1445,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 - 사용 라이브러리: **antd v5** (NudgeEAPCMS 기준 5.5.1) + @ant-design/icons + dayjs(ko)
 - **금지**: \`@nudge-design/react\`, \`@nudge-design/tokens\`, \`@nudge-design/icons\` 어떤 형태로도 import하지 말 것
-- 외부 제공(b2b) 어드민 *서비스*는 이 템플릿 대상이 아니다 — ${DS_ADMIN_BRANDS.join(" / ")} 만 지원하며 antd 가 아니라 DS 로 만든다. 해당하면 \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` 로 다시 호출.
+- 외부 제공(b2b) 어드민 *서비스*는 이 템플릿 대상이 아니다 — ${DS_ADMIN_PROJECTS.join(" / ")} 만 지원하며 antd 가 아니라 DS 로 만든다. 해당하면 \`get_setup({ step: "claude-md", intent: "admin", project: "<slug>" })\` 로 다시 호출.
 - nudge-ds MCP는 두 가지 도구만 사용:
   - \`get_guide({ topic: "backoffice"${serviceNameArg} })\` — 사이드바/페이지 헤더/검색 폼/테이블/색상 등 전체 시각 컨벤션
   - \`dev_server({ action: "start" })\` / \`dev_server({ action: "stop" })\` — 백오피스에서도 동일하게 dev 서버 미리보기 (URL 을 브라우저에서 직접 확인)
@@ -1480,7 +1480,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ## 시각 컨벤션 (NudgeEAPCMS 기반)
 
-- **사이더**: 240px 라이트, \`border-right: 1px solid #ececec\`, 상단 6px 브랜드 액센트(\`var(--semantic-border-brand-default)\`)
+- **사이더**: 240px 라이트, \`border-right: 1px solid #ececec\`, 상단 6px 프로젝트 액센트(\`var(--semantic-border-brand-default)\`)
 - **사이더 내부**: \`INFO\` 블록(이메일+이름 Tag+권한 Tag) → \`CMS MENU\` 블록(<Menu theme="light" mode="inline">) → \`SETTING\` 블록(로그아웃/정보수정)
 - **메뉴 선택**: \`border-right: 6px solid var(--semantic-border-brand-default)\`
 - **본문**: \`margin-left: 240px\`, \`padding: 40px 60px 200px\`
@@ -1545,7 +1545,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 \`\`\`
 # references.md
-task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-hub
+task: <project>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-hub
 [good] source=<figma-url|image-name> caption=<1줄 reason>
 [good] ...
 [bad] source=... caption=...
@@ -1593,7 +1593,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 - **운영자 키워드(어드민/admin/백오피스/CMS/운영툴/관리자)가 보이면 코드 작성 전 작업 중단 + 첫 응답에서 반드시 질문.** 키워드만으로 admin/backoffice 를 **추측하지 말 것** — "어드민"이라고 적혀 있어도 사내 백오피스인지 외부 제공 b2b 어드민인지 사람만 안다(둘은 워크플로우·DS·antd 사용 여부가 통째로 다름). *"운영자 화면으로 보입니다. ① 사내 백오피스인가요, ② 외부에 제공하는 b2b 어드민 서비스인가요?"* 라고 묻고 **확답 전엔 진행 금지.** 추측해서 만들었다가 영역이 틀리면 처음부터 다시 만들어야 한다(실제 회귀). 확답 후:
 - **운영자 화면(어드민/CMS/운영툴/백오피스)이라면 이 CLAUDE.md를 따르지 말 것.** 영역을 추측하지 말고 사용자에게 확답을 받은 뒤 분기:
   - **사내 백오피스** → \`get_setup({ step: "claude-md", intent: "backoffice" })\` 로 다시 호출. antd v5 를 사용하고 \`get_guide({ topic: "backoffice" })\` 로 컨벤션 확인.
-  - **외부 제공(b2b) 어드민 서비스** → ${DS_ADMIN_BRANDS.join(" / ")} 만 지원(하드게이트). \`get_setup({ step: "claude-md", intent: "admin", brand: "<slug>" })\` 로 다시 호출하면 DS(html) 워크플로우로 우회. 그 외 브랜드는 미지원 — 백오피스로 진행하거나 DS 팀에 편입 요청.
+  - **외부 제공(b2b) 어드민 서비스** → ${DS_ADMIN_PROJECTS.join(" / ")} 만 지원(하드게이트). \`get_setup({ step: "claude-md", intent: "admin", project: "<slug>" })\` 로 다시 호출하면 DS(html) 워크플로우로 우회. 그 외 프로젝트는 미지원 — 백오피스로 진행하거나 DS 팀에 편입 요청.
 - 이 가이드는 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다.
 
 ## 산출물 형식 강제 (MUST — 우회 절대 금지)
@@ -1604,7 +1604,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 **아래는 발견 즉시 작업 중단 + 사용자에게 보고 사유. 어떤 변명으로도 우회 금지:**
 
-1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "브랜드 톤 가이드 보고 알아서 만들게요" 식 우회 X — brandTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
+1. **시각 레퍼런스 확인 전 코드 작성 금지.** 프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 **첫 응답에서 한 번만 사용자에게 질문**: *"시각 기준으로 쓸 Figma 링크나 스크린샷이 있을까요? 이미 첨부하신 자료를 기준으로 진행해도 될지, 추가로 정답/오답 레퍼런스가 있으면 함께 알려 주세요. 가능하면 정답 1-2장, 피해야 할 오답 1-2장에 각각 1줄 캡션을 붙여 주세요."* 같은 목업 작업에서 이미 답변을 받았거나 \`references.md\` / \`.references/\` 가 있으면 다시 묻지 말고 읽어서 적용한다. 받은 응답은 워크스페이스 루트의 \`references.md\` 에 \`[good|bad] source=<figma-url|image-name> caption=<1-line reason>\` 형식으로 저장. 구현 전 \`references.md\` 를 읽고 good 기준은 레이아웃/간격/타이포/컬러 의사결정으로 매핑하고, bad 기준은 명시적 회피 규칙으로 적은 뒤 작업한다. 이 파일이 비어 있거나 없으면 \`build_singlefile_html\` pre-flight audit 가 차단한다 (\`missing-visual-references\`). "프로젝트 톤 가이드 보고 알아서 만들게요" 식 우회 X — projectTone 형용사만 보고 만든 화면이 반복적으로 거절되어 왔다. 자세한 룰: \`get_guide({ topic: "pattern:visual-reference" })\`.
 2. **같은 기획 기존 폴더 발견 시 v2 확인 필수.** 새 목업 요청에서 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 *"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?"* 라고 묻고 답변 전까지 기존 폴더를 수정하지 않는다. 억지로 찾지 말 것(깊은 재귀/전체 디스크/유사도 검색 금지). 하지만 보였는데도 묻지 않는 것은 hard rule 위반.
 3. **\`src/\` 하위에 손으로 작성한 \`.html\` 파일 금지.** "스탠드얼론 HTML 로 빠르게 보여드릴게요" / "그냥 한 파일로 끝내고 싶어요" / "HTML 이 더 단순해요" 식 우회 X. 결과적으로 DS prop API 검증·\`validate_mockup\` AST 검사·\`report_mockup_usage\` 집계가 **전부 무력화**된다. \`dist/index.html\` 은 \`build_singlefile_html\` 산출물이므로 예외.
 4. **\`.css\` 안에 시멘틱 토큰 인라인 재정의 금지.** \`:root { --semantic-*: ...; --nds-*: ...; --color-*: ...; --gap-*: ...; --inset-*: ... }\` 같은 인라인 정의는 \`@nudge-design/tokens/css\` 의 단일 진리원천을 깨는 우회. 토큰은 \`main.tsx\` 에서 \`import "@nudge-design/tokens/css"\` 한 줄로만 가져온다. "인라인이 더 명확해요" / "스탠드얼론이라 어쩔 수 없어요" — 거부 사유.
@@ -1633,11 +1633,11 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 
 ## 도구 사용 규칙
 
-- **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 브랜드 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴을 한 번에 로드. 브랜드를 바꾸면 재호출.
+- **목업 작업을 시작하기 전 반드시 \`get_guide({ topic: "principles" })\` 호출** — 프로젝트 톤·컬러 시멘틱·타이포·스페이싱·금지 패턴을 한 번에 로드. 프로젝트를 바꾸면 재호출.
 - **모든 mockup 작업은 시각 레퍼런스 확인 질문부터 시작.** \`get_guide({ topic: "pattern:visual-reference" })\` 로 룰 확인 후, 프롬프트에 이미지/Figma 링크가 있어도 위 MUST 1번 질문을 사용자에게 그대로 하고 답을 \`references.md\` 에 저장. \`build_singlefile_html\` 의 \`missing-visual-references\` audit 룰로 강제됨.
 - 컴포넌트/아이콘/토큰 사용 전 \`find_component\` / \`find_icon\` / \`find_token\` 호출 (인자 없으면 전체 / \`{ query }\` 면 fuzzy / \`{ name }\` 면 풀 스펙)
-- 처음 쓰는 주요 컴포넌트는 \`get_guide({ topic: "component:Button" })\` 형식으로 호출. **brand 화면이면 \`brand: "trost|geniet|nudge-eap|cashwalk-biz"\` 같이 지정** — service overlay (allowed/disallowed/preferred/forbiddenPatterns, servicePitfalls) + matrixOverrides (spec 차이) + brand-aware metadata (validPropValues/assetManifest/forcedProps) 가 자동 fold 되어 응답. 응답 메타 키 (\`_brandApplied\` / \`_matrixOverrideApplied\` / \`_brandAwareApplied\`) 로 어느 layer 적용됐는지 확인. brand 미지정 호출은 \`_brandVariants\` 슬림 요약만 첨부 — 어느 brand 가 overlay 갖고 있는지 본 후 다시 호출.
-- CTA 그룹, 아이콘 컬러·사용처, 시멘틱 spacing(--semantic-gap-* / --semantic-inset-*), surface 레이어·brand bg 사용, 시각 레퍼런스, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트, 다크패턴(진입 직후 시트·뒤로가기 인터럽트·거절 불가 CTA·중간 광고·라벨 모호성)은 \`get_guide({ topic: "pattern:semantic-spacing" })\` / \`get_guide({ topic: "pattern:surface-layer" })\` / \`get_guide({ topic: "pattern:icon-usage" })\` / \`get_guide({ topic: "pattern:cta-group" })\` / \`get_guide({ topic: "pattern:dark-patterns" })\` 형식으로 호출
+- 처음 쓰는 주요 컴포넌트는 \`get_guide({ topic: "component:Button" })\` 형식으로 호출. **project 화면이면 \`project: "trost|geniet|nudge-eap|cashwalk-biz"\` 같이 지정** — service overlay (allowed/disallowed/preferred/forbiddenPatterns, servicePitfalls) + matrixOverrides (spec 차이) + project-aware metadata (validPropValues/assetManifest/forcedProps) 가 자동 fold 되어 응답. 응답 메타 키 (\`_projectApplied\` / \`_matrixOverrideApplied\` / \`_projectAwareApplied\`) 로 어느 layer 적용됐는지 확인. project 미지정 호출은 \`_projectVariants\` 슬림 요약만 첨부 — 어느 project 가 overlay 갖고 있는지 본 후 다시 호출.
+- CTA 그룹, 아이콘 컬러·사용처, 시멘틱 spacing(--semantic-gap-* / --semantic-inset-*), surface 레이어·project bg 사용, 시각 레퍼런스, 시각 안티패턴, 안내문 강조, 옵션 많은 드롭다운, 정보 과밀 리스트, 다크패턴(진입 직후 시트·뒤로가기 인터럽트·거절 불가 CTA·중간 광고·라벨 모호성)은 \`get_guide({ topic: "pattern:semantic-spacing" })\` / \`get_guide({ topic: "pattern:surface-layer" })\` / \`get_guide({ topic: "pattern:icon-usage" })\` / \`get_guide({ topic: "pattern:cta-group" })\` / \`get_guide({ topic: "pattern:dark-patterns" })\` 형식으로 호출
 - **사용자 노출 텍스트(버튼·라벨·placeholder·empty state·에러·다이얼로그)는 작성 전 \`get_guide({ topic: "ux-writing" })\` 호출** — 해요체·능동형·긍정형·캐주얼 경어·"닫기 vs 취소" 같은 마이크로카피 규칙 + EAP 멘탈케어 도메인 규칙(위기·자해·진단 표현 톤)을 한 번에 로드.
 - 워크스페이스 첫 셋업 시 **\`get_setup({ step: "inspector" })\` 한 번 호출** — MCP 가 src/main.tsx 를 직접 패치해 DsInspector 를 dev-only 로 마운트합니다 (idempotent). 성공 후 dev 서버 재시작하면 우하단 floating 버튼으로 DS / antd / native 비율을 실시간 확인 가능 (Ctrl/Cmd+Shift+D 토글). 별도 코드 수정 불필요.
 - 목업 \`.tsx\` 작성 직후 반드시 \`validate_mockup\` 호출
@@ -1654,7 +1654,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## 완료 게이트 (반복 지시 — 기존 검증/가이드와 중복되어도 생략 금지)
 
 - 목업에는 DS MCP/Package 버전 및 DS 컴포넌트 사용량/적용 현황을 반드시 visible 하게 포함한다. \`report_mockup_usage\` / \`validate_html_mockup(report:true)\` / \`build_singlefile_html\` 응답의 \`humanReadable\` 또는 \`dsUsageSummary\` 를 SSOT 로 사용하고, 직접 카운트하지 않는다. \`build_singlefile_html\` 은 최종 \`dist/index.html\` 의 \`data-ds-badge\` 텍스트를 실제 빌드 산출물 기준으로 자동 치환한다.
-- **브랜드 헤더/푸터 사용 여부 점검** — 사용자 앱 화면이면 해당 브랜드의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는지 마지막에 한 번 더 확인. brand prop 하나로 자동 분기되는 MockupLayout (\`mockup-layout.tsx\`) 또는 동등 헬퍼를 우선 사용 — 인라인 손수 그리기 금지. 랜딩/스플래시/모달-only 같은 의도적 예외라면 최종 응답에 "헤더/푸터 의도적으로 생략" 명시.
+- **프로젝트 헤더/푸터 사용 여부 점검** — 사용자 앱 화면이면 해당 프로젝트의 표준 헤더/푸터 (또는 GNB·BottomNav) 가 적용됐는지 마지막에 한 번 더 확인. project prop 하나로 자동 분기되는 MockupLayout (\`mockup-layout.tsx\`) 또는 동등 헬퍼를 우선 사용 — 인라인 손수 그리기 금지. 랜딩/스플래시/모달-only 같은 의도적 예외라면 최종 응답에 "헤더/푸터 의도적으로 생략" 명시.
 - 최종 응답에는 Google Sheets POST 상태를 반드시 쓴다: \`webhook ok\`, \`webhook queued(...)\`, \`webhook skipped\` 중 하나.
 - 최종 응답에는 간격 점검 결과, 텍스트 기호를 아이콘처럼 사용한 곳의 잔존 여부, 요청 범위에서 빠진 항목을 짧게 보고한다.
 - 최종 응답에는 산출물 full 절대경로를 반드시 포함한다(예: \`/Users/.../dist/index.html\`). 상대경로 \`dist/index.html\` 만 쓰고 끝내지 않는다.
@@ -1663,18 +1663,18 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 ## UI 구현 규칙
 
 - 가능한 한 DS 컴포넌트를 우선 사용한다.
-- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<BrandHeader brand='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' activeKey='...' assetBaseUrl='/assets' />\` + \`<BrandFooter brand='...' surface='web|app' assetBaseUrl='/assets' />\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 BRAND_DATA 에서 자동. Header / HeaderLogo / HeaderMenu(Item) / HeaderActions / HeaderAuthButton 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:BrandHeader" })\` 로 브랜드별 필요 로고 파일 (\`public/assets/brand/{brand}/logos/*\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-brand-chrome\` / \`BrandChrome\`) find_component 결과만 보고 못 짚는 함정 — BrandHeader/BrandFooter 가이드를 먼저 호출하라.**
+- **★ 헤더/푸터 손수 조립 금지 — 사용자 앱 화면이면 무조건 \`<ProjectHeader project='trost|geniet|nudge-eap|cashwalk-biz|runmile' surface='web|mobile|webview' activeKey='...' assetBaseUrl='/assets' />\` + \`<ProjectFooter project='...' surface='web|app' assetBaseUrl='/assets' />\` 부터.** 로고 / 메뉴 라벨·href / auth 버튼 / 사업자 정보 / copyright 전부 PROJECT_DATA 에서 자동. Header / HeaderLogo / HeaderMenu(Item) / HeaderActions / HeaderAuthButton 를 직접 박는 건 안티패턴. \`get_guide({ topic: "component:ProjectHeader" })\` 로 프로젝트별 필요 로고 파일 (\`public/assets/project/{project}/logos/*\`) 확인. **컴포넌트 파일 이름이 generic 해서 (\`nds-project-chrome\` / \`ProjectChrome\`) find_component 결과만 보고 못 짚는 함정 — ProjectHeader/ProjectFooter 가이드를 먼저 호출하라.**
 - **기존 antd/HTML 코드를 받았을 때 변수명만 치환하지 말 것**. 색상값을 \`var(--...)\` 로 바꾸는 것만으론 "DS 적용"이 아니다. antd \`<Table>\` → DS \`<DataTable>\`, antd \`<Form>\` → DS \`Input\`/\`Select\` 조합 식으로 **컴포넌트 구조를 처음부터 재구성**한다. 한 줄이라도 antd import 가 남아 있으면 변환 미완료로 본다 (validate_mockup 의 \`antd-import-in-user-app\` 으로 자동 검출됨).
 - raw \`button\`, \`input\`, \`select\`, \`textarea\`는 특별한 이유가 없으면 사용하지 않는다.
 - **이모지·텍스트 기호 절대 금지**. 라벨/버튼/제목/placeholder/empty state 어디에도 이모지(😀 🔥 ⭐ 💡 ✅ ⚠️ 등) 박지 말 것. → ← ✓ ★ • 같은 기호 텍스트도 금지. 아이콘이 필요하면 \`find_icon\` 으로 \`@nudge-design/icons\` 에서 찾고, 없으면 인라인 SVG. 진행/별점/불릿은 DS 컴포넌트 사용. \`validate_mockup\` 의 \`emoji-banned\` / \`text-symbol-banned\` 룰로 자동 위반 카운트됨.
 - **스타일은 처음부터 클래스/CSS 로 — 인라인 \`style\` 속성을 흩뿌리지 말 것.** 색·간격은 인라인 hex/rgb/px 값보다 DS 토큰을, 반복 스타일은 클래스/styled 로 한 곳에 모은다(인라인으로 흩뿌리면 시각 피드백마다 재작성·재검증 라운드가 늘어난다).
 - 인라인 SVG를 직접 만들기보다 \`@nudge-design/icons\` 아이콘을 사용한다.
-- **아이콘 선택 필수 우선순위**: 브랜드 전용 아이콘(Geniet*/Trost* 등) > NudgeEAP 기본 브랜드 아이콘 > 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) > 자체 생성 SVG. \`find_icon\` 과 \`get_brand({ brand })\` 로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 내려간다.
+- **아이콘 선택 필수 우선순위**: 프로젝트 전용 아이콘(Geniet*/Trost* 등) > NudgeEAP 기본 프로젝트 아이콘 > 목업용 기본 아이콘 패키지(MockupLinear*/MockupBold*) > 자체 생성 SVG. \`find_icon\` 과 \`get_project({ project })\` 로 앞 단계 후보를 먼저 확인하고, 없을 때만 다음 단계로 내려간다.
 - 그라데이션, 과한 장식 배경, 중첩 카드 구조는 피한다.
 - 우측 화살표 아이콘은 대표 전진 CTA 1개에만 사용하고 반복 CTA에는 붙이지 않는다.
 - 단독 아이콘은 기본 currentColor에 기대지 말고 주변 UI에 맞는 토큰 컬러를 명시한다.
-- 브랜드 모드(\`brand='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 브랜드 prefix 아이콘(예: \`GenietRecordIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 brand 아이콘은 \`get_brand({ brand: '<slug>' }).detail.brandIconLookup\` 또는 \`find_icon({ query: '<BrandPrefix>' })\` 로 조회. 공통 컴포넌트(Footer/BottomNav 등)의 *구현* 안에 \`if (brand === ...)\` 분기를 박지 말고, 브랜드 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
-- 브랜드 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(\`HomeIcon\`, \`SearchIcon\` 등)을 먼저 사용하고, 그 다음에만 \`MockupLinear*Icon\` / \`MockupBold*Icon\` 을 fallback 으로 사용한다. 자체 생성 SVG는 마지막 수단이다.
+- 프로젝트 모드(\`project='geniet'\`/\`'trost'\`)에서 작업할 때는 해당 프로젝트 prefix 아이콘(예: \`GenietRecordIcon\`, \`GenietGpointIcon\`)을 공용 아이콘보다 **우선 사용**. 매칭 가능한 project 아이콘은 \`get_project({ project: '<slug>' }).detail.projectIconLookup\` 또는 \`find_icon({ query: '<ProjectPrefix>' })\` 로 조회. 공통 컴포넌트(Footer/BottomNav 등)의 *구현* 안에 \`if (project === ...)\` 분기를 박지 말고, 프로젝트 전용 화면이 명시적으로 import 해서 icon prop 으로 전달.
+- 프로젝트 전용 아이콘이 없으면 NudgeEAP 기본 아이콘(\`HomeIcon\`, \`SearchIcon\` 등)을 먼저 사용하고, 그 다음에만 \`MockupLinear*Icon\` / \`MockupBold*Icon\` 을 fallback 으로 사용한다. 자체 생성 SVG는 마지막 수단이다.
 - primary solid 버튼은 한 화면의 대표 액션 1개만 사용한다.
 - Chip/Badge는 상태, 분류, 짧은 속성 표시용으로만 사용하고 안내문/섹션 장식으로 남발하지 않는다.
 - 안내 영역은 neutral surface를 기본으로 하고 색 배경/아이콘/Chip/Badge/굵은 제목 중 1-2개만 조합한다.
@@ -1686,7 +1686,7 @@ task: <brand>-<screen-slug>    ← ★ 필수 첫 줄. 예: task: geniet-diary-h
 2. 필요한 컴포넌트/아이콘/토큰 검색
 3. 필요한 UX 패턴 확인: \`get_guide({ topic: "pattern:<name>" })\`
 4. 목업 구현
-5. \`validate_mockup\` 실행 — **응답의 \`summary.checklistReport\` (Self-Check 5항목 결과) 를 코드 아래에 그대로 사용자에게 보여줄 것**. 5항목: ① Spacing 토큰 사용 ② 4pt Grid 준수 ③ Brand BG 1개 이하 ④ 헤딩 장식 아이콘 없음 ⑤ Primary Button 단일성 (영역별). 위반이 1건이라도 있으면 수정 후 재실행. **한 라운드에서 잡힌 violation 은 반드시 한 번에 모아서 fix** — 1건 fix → 재실행 → 또 1건 잡힘 패턴 금지 (불필요한 라운드 + 토큰 낭비). 단 validation 호출 자체를 줄여서 라운드 수를 인위적으로 깎지는 말 것 — 최종 clean pass 는 무조건 확인.
+5. \`validate_mockup\` 실행 — **응답의 \`summary.checklistReport\` (Self-Check 5항목 결과) 를 코드 아래에 그대로 사용자에게 보여줄 것**. 5항목: ① Spacing 토큰 사용 ② 4pt Grid 준수 ③ Project BG 1개 이하 ④ 헤딩 장식 아이콘 없음 ⑤ Primary Button 단일성 (영역별). 위반이 1건이라도 있으면 수정 후 재실행. **한 라운드에서 잡힌 violation 은 반드시 한 번에 모아서 fix** — 1건 fix → 재실행 → 또 1건 잡힘 패턴 금지 (불필요한 라운드 + 토큰 낭비). 단 validation 호출 자체를 줄여서 라운드 수를 인위적으로 깎지는 말 것 — 최종 clean pass 는 무조건 확인.
 5-bis. **2회 self-check 강제** — 1회차에서 위반이 없었거나 수정해서 0건이 됐어도, \`validate_mockup\` 을 **반드시 한 번 더** 호출해 2회차 결과까지 0건임을 확인. 1회차 통과만 보고 다음 단계로 넘어가는 것 금지 (수정 과정에서 새 위반이 들어올 수 있음). 위반을 인지하고 그대로 제출하는 것도 금지.
 5.5. **\`npx tsc --noEmit\` 실행** — invalid prop union(예: \`size="md"\` while only x-large|large|medium|small) 등 validate_mockup 이 못 잡는 타입 에러를 여기서 차단. 0 errors 가 되어야 다음 단계.
 6. \`dev_server({ action: "start" })\` 실행
@@ -1713,13 +1713,13 @@ function createInstructionMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
-  brand?: string;
+  project?: string;
   serviceName?: string;
   template?: ClaudeMdTemplateVariant;
   fileName: "CLAUDE.md" | "AGENTS.md";
 }) {
   // 라우팅 먼저 — blocked/ambiguous 는 어떤 파일도 만들지 않고 하드스톱한다 (확답 받고 재호출).
-  const routing = resolveIntentRouting(args.intent, args.brand);
+  const routing = resolveIntentRouting(args.intent, args.project);
   if (routing.kind === "blocked-admin") {
     return {
       ok: false,
@@ -1727,7 +1727,7 @@ function createInstructionMd(args: {
       blocked: true,
       error: routing.error,
       options: routing.options,
-      supportedAdminBrands: routing.supportedAdminBrands,
+      supportedAdminProjects: routing.supportedAdminProjects,
     };
   }
   if (routing.kind === "ambiguous-operator") {
@@ -1773,7 +1773,7 @@ function createInstructionMd(args: {
 
   // 정책 (2026-05-25): backoffice 가 아니면 모두 html 템플릿. 신규 CLAUDE.md 는 slim 이 기본이고,
   // 기존 장문 템플릿은 template: "default" 를 명시했을 때만 생성한다.
-  // 어드민 하드게이트 브랜드(캐포비/넛지EAP)는 routing 이 html(surface=admin) 로 우회시켜 DS 템플릿이 나간다.
+  // 어드민 하드게이트 프로젝트(캐포비/넛지EAP)는 routing 이 html(surface=admin) 로 우회시켜 DS 템플릿이 나간다.
   const intent = routing.kind === "backoffice" ? "backoffice" : "html";
 
   const template = args.template === "default" ? "default" : "slim";
@@ -1785,8 +1785,8 @@ function createInstructionMd(args: {
   });
   fs.writeFileSync(filePath, content, "utf-8");
 
-  // 계층 1 — 브랜드 SSOT 마커. brand 가 오면 nudge.brand 를 박아 빌드가 단일 출처에서 읽게 한다.
-  const { brandMarker } = writeBrandMarker(cwd, args.brand);
+  // 계층 1 — 프로젝트 SSOT 마커. project 가 오면 nudge.project 를 박아 빌드가 단일 출처에서 읽게 한다.
+  const { projectMarker } = writeProjectMarker(cwd, args.project);
   // 표면 SSOT 마커 — 어드민(b2b) 라우팅이면 nudge.surface=admin 을 박아 validator 표면 룰과 맞물린다.
   const { surfaceMarker } = writeSurfaceMarker(
     cwd,
@@ -1800,7 +1800,7 @@ function createInstructionMd(args: {
     bytes: Buffer.byteLength(content, "utf-8"),
     intent,
     template,
-    brandMarker,
+    projectMarker,
     ...(surfaceMarker ? { surfaceMarker } : {}),
     next:
       args.fileName === "AGENTS.md"
@@ -1814,7 +1814,7 @@ export function createClaudeMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
-  brand?: string;
+  project?: string;
   serviceName?: string;
   template?: ClaudeMdTemplateVariant;
 }) {
@@ -1826,7 +1826,7 @@ export function createAgentsMd(args: {
   projectName?: string;
   overwrite?: boolean;
   intent?: string;
-  brand?: string;
+  project?: string;
   serviceName?: string;
   template?: ClaudeMdTemplateVariant;
 }) {

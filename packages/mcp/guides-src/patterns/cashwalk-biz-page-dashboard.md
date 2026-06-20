@@ -31,12 +31,12 @@ references:
     image: references/cashwalk-biz-dashboard-3612-9.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3612-9
     caption: Sidebar + 헤더 Pill + 노란 틴트 Summary Strip + 라인/바 2-up + 통계 테이블. metrics 는 이 노드 실측 기준.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐포비 Dashboard docs (Figma 3626-855)
     image: references/cashwalk-biz-dashboard-docs-3626-855.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-855
     caption: 언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary
@@ -48,7 +48,7 @@ references:
 - **언제 쓰나**: PRD 에 '대시보드 / 메인 / 홈 / 요약 / 현황 / KPI' 키워드가 있고, 여러 데이터를 시각화해 한눈에 보여줘야 하며, 사용자가 가장 먼저 보는 진입 화면일 때.
 - **Main Area**: admin-shell content 영역 padding **48px**, 섹션 간 itemSpacing **32px**. 섹션 순서는 위→아래로 요약→추세→상세: 02 Header → 03 Summary → 04 Charts → 05 Table.
 - **02 Page Header + Actions**: 좌측 제목(Heading1 Bold 32/40) + 부제, 우측 **Pill 액션** — [기간 조회](outline/white pill) + [자료 다운로드](solid yellow #FFD200 pill + download 아이콘). 본문에 액션을 흩뿌리지 않고 헤더 우측에 모은다.
-- **03 Summary Strip (개별 KPI 카드 미사용)**: 핵심 지표를 **한 줄 strip** 으로 — 좌측 상태 라벨(예: '전체 캠페인 성과' + '실시간 집계 · {갱신시각} 기준'), 우측에 지표들을 **세로 구분선으로 나눠 인라인** 배치. 각 지표 = 라벨(Caption 12/16 #666) 위, 값(Bold) 아래. strip 배경은 brand 노란 틴트 `Yellow/100 (#FFFAE5)`. **KPI 마다 별도 카드를 만들지 않는다.**
+- **03 Summary Strip (개별 KPI 카드 미사용)**: 핵심 지표를 **한 줄 strip** 으로 — 좌측 상태 라벨(예: '전체 캠페인 성과' + '실시간 집계 · {갱신시각} 기준'), 우측에 지표들을 **세로 구분선으로 나눠 인라인** 배치. 각 지표 = 라벨(Caption 12/16 #666) 위, 값(Bold) 아래. strip 배경은 project 노란 틴트 `Yellow/100 (#FFFAE5)`. **KPI 마다 별도 카드를 만들지 않는다.**
 - **04 Charts**: 차트 카드 안에 **라인 차트 + 바 차트 2-up**(좌 추이 라인 / 우 항목별 비교 바). gridline + 범례 포함. 차트 카드 높이 **360px**(기본).
 - **05 Stats Table**: 항목별 통계 테이블 — 헤더 행(연회색 bg) + 데이터 행. 우측 정렬 숫자 컬럼(노출수/클릭수/전환율/소진액 등).
 - **카드 규격(차트·테이블 공통)**: radius **12px**, padding **24px**, border **1px `--semantic-border-normal-subtle`(#F5F5F5)**, bg `--semantic-bg-surface-default`(#FFFFFF). 페이지 캔버스는 `--semantic-bg-surface-subtle`(#FAFAFA).

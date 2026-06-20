@@ -1,5 +1,5 @@
 /**
- * Geniet(지니어트) 브랜드 자산 메타데이터.
+ * Geniet(지니어트) 프로젝트 자산 메타데이터.
  *
  * 디자이너 Figma "🥗 지니어트 - Library" 의 native Export(PNG 1x/3x · SVG) 원본.
  * Figma 노드 트리가 아닌 Export zip 에서 편입돼 figmaNodeId 는 보유하지 않는다
@@ -15,7 +15,7 @@
  *   - empty-states     빈 상태 플레이스홀더 (`*-empty`)
  *   - misc             기타 일러스트 (alert/pill/cashlotto)
  *   - profiles         프로필 플레이스홀더 이미지
- *   - logos            워드마크/심볼 (브랜드-크롬 `*.webp` 로고는 별도 시스템이라 제외)
+ *   - logos            워드마크/심볼 (프로젝트-크롬 `*.webp` 로고는 별도 시스템이라 제외)
  */
 
 export type GenietAssetCategory =
@@ -39,12 +39,12 @@ export interface GenietAssetMeta {
 }
 
 const DIR: Record<GenietAssetCategory, string> = {
-  "food-types": "brand/geniet/images/food-types",
-  "category-heroes": "brand/geniet/images/category-heroes",
-  "empty-states": "brand/geniet/images/empty-states",
-  misc: "brand/geniet/images/misc",
-  profiles: "brand/geniet/profiles",
-  logos: "brand/geniet/logos",
+  "food-types": "project/geniet/images/food-types",
+  "category-heroes": "project/geniet/images/category-heroes",
+  "empty-states": "project/geniet/images/empty-states",
+  misc: "project/geniet/images/misc",
+  profiles: "project/geniet/profiles",
+  logos: "project/geniet/logos",
 };
 
 function meta(

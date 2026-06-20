@@ -4,10 +4,10 @@ import { mergeServiceOverlay } from "../src/guides/merge.js";
 
 describe("service overlay merge — Button", () => {
   it("geniet: allowedVariants 가 base 를 좁히고, disallowed/preferred 가 concat-dedupe", () => {
-    const result = getGuide({ topic: "component:Button", brand: "geniet", target: "html" });
+    const result = getGuide({ topic: "component:Button", project: "geniet", target: "html" });
 
     // 머지 시그널
-    expect(result._brandApplied).toBe("geniet");
+    expect(result._projectApplied).toBe("geniet");
 
     // allowedVariants: service 가 전체 교체 (좁히기)
     expect(result.allowedVariants).toEqual(["solid", "outlined"]);
@@ -21,9 +21,9 @@ describe("service overlay merge — Button", () => {
   });
 
   it("cashpobi: servicePitfalls 가 base.pitfalls 와 별개 array 로 노출", () => {
-    const result = getGuide({ topic: "component:Button", brand: "cashwalk-biz", target: "html" });
+    const result = getGuide({ topic: "component:Button", project: "cashwalk-biz", target: "html" });
 
-    expect(result._brandApplied).toBe("cashwalk-biz");
+    expect(result._projectApplied).toBe("cashwalk-biz");
 
     // base.pitfalls 는 그대로 살아 있어야 함
     expect(Array.isArray(result.pitfalls)).toBe(true);
@@ -39,21 +39,21 @@ describe("service overlay merge — Button", () => {
     expect(preferred.some((p) => p.includes("5조합"))).toBe(true);
   });
 
-  it("trost: overlay 가 없으면 _brandOverlayEmpty 마커 + base 그대로", () => {
-    const result = getGuide({ topic: "component:Button", brand: "trost", target: "html" });
+  it("trost: overlay 가 없으면 _projectOverlayEmpty 마커 + base 그대로", () => {
+    const result = getGuide({ topic: "component:Button", project: "trost", target: "html" });
 
-    expect(result._brandApplied).toBe("trost");
-    expect(result._brandOverlayEmpty).toBe(true);
+    expect(result._projectApplied).toBe("trost");
+    expect(result._projectOverlayEmpty).toBe(true);
 
     // base.pitfalls 등은 그대로
     expect(Array.isArray(result.pitfalls)).toBe(true);
   });
 
-  it("brand 미지정: _brandVariants 슬림 요약 첨부 (geniet/cashpobi 양쪽)", () => {
+  it("project 미지정: _projectVariants 슬림 요약 첨부 (geniet/cashpobi 양쪽)", () => {
     const result = getGuide({ topic: "component:Button", target: "html" });
 
-    expect(result._brandApplied).toBeUndefined();
-    const variants = result._brandVariants as Record<string, string[]> | undefined;
+    expect(result._projectApplied).toBeUndefined();
+    const variants = result._projectVariants as Record<string, string[]> | undefined;
     expect(variants).toBeDefined();
     expect(variants!.geniet).toEqual(
       expect.arrayContaining(["allowedVariants", "disallowedVariants", "preferredPatterns"]),
@@ -66,9 +66,9 @@ describe("service overlay merge — Button", () => {
 
 describe("service overlay merge — UX writing (nudge-eap)", () => {
   it("nudge-eap: copyTone 에 voiceToneAddendum + eapDomain 6개", () => {
-    const result = getGuide({ topic: "ux-writing", brand: "nudge-eap" });
+    const result = getGuide({ topic: "ux-writing", project: "nudge-eap" });
 
-    expect(result._brandApplied).toBe("nudge-eap");
+    expect(result._projectApplied).toBe("nudge-eap");
 
     const copyTone = result.copyTone as
       | { voiceToneAddendum?: string; eapDomain?: string[] }
@@ -79,15 +79,15 @@ describe("service overlay merge — UX writing (nudge-eap)", () => {
     expect(copyTone!.eapDomain![0]).toContain("위기");
   });
 
-  it("trost: ux-writing overlay 없음 → _brandOverlayEmpty", () => {
-    const result = getGuide({ topic: "ux-writing", brand: "trost" });
-    expect(result._brandOverlayEmpty).toBe(true);
+  it("trost: ux-writing overlay 없음 → _projectOverlayEmpty", () => {
+    const result = getGuide({ topic: "ux-writing", project: "trost" });
+    expect(result._projectOverlayEmpty).toBe(true);
     expect((result as { copyTone?: unknown }).copyTone).toBeUndefined();
   });
 
-  it("brand 미지정: ux-writing 의 _brandVariants 가 nudge-eap 만 노출", () => {
+  it("project 미지정: ux-writing 의 _projectVariants 가 nudge-eap 만 노출", () => {
     const result = getGuide({ topic: "ux-writing" });
-    const variants = result._brandVariants as Record<string, string[]> | undefined;
+    const variants = result._projectVariants as Record<string, string[]> | undefined;
     expect(variants).toBeDefined();
     expect(variants!["nudge-eap"]).toContain("copyTone");
     expect(variants!.geniet).toBeUndefined();
@@ -96,14 +96,14 @@ describe("service overlay merge — UX writing (nudge-eap)", () => {
 
 describe("service overlay merge — Modal (overlay + matrixOverrides 동시 적용)", () => {
   it("cashwalk-biz: service overlay + matrixOverrides dimensions 둘 다 응답에", () => {
-    const result = getGuide({ topic: "component:Modal", brand: "cashwalk-biz", target: "html" });
+    const result = getGuide({ topic: "component:Modal", project: "cashwalk-biz", target: "html" });
 
     // service overlay (preferredPatterns / servicePitfalls / forbiddenPatterns)
-    expect(result._brandApplied).toBe("cashwalk-biz");
+    expect(result._projectApplied).toBe("cashwalk-biz");
     const preferred = (result.preferredPatterns as string[] | undefined) ?? [];
     expect(preferred.some((p) => p.includes("검정 CTA"))).toBe(true);
     const sp = (result.servicePitfalls as string[] | undefined) ?? [];
-    expect(sp.some((s) => s.includes("data-brand"))).toBe(true);
+    expect(sp.some((s) => s.includes("data-project"))).toBe(true);
     const fp = (result.forbiddenPatterns as string[] | undefined) ?? [];
     expect(fp.some((p) => p.includes("closable") && p.includes("onClose"))).toBe(true);
 
@@ -119,27 +119,27 @@ describe("service overlay merge — Modal (overlay + matrixOverrides 동시 적�
     expect(result.matrixOverrides).toBeUndefined();
   });
 
-  it("trost: Modal overlay/matrixOverrides 둘 다 없음 → _brandOverlayEmpty", () => {
-    const result = getGuide({ topic: "component:Modal", brand: "trost", target: "html" });
-    expect(result._brandOverlayEmpty).toBe(true);
+  it("trost: Modal overlay/matrixOverrides 둘 다 없음 → _projectOverlayEmpty", () => {
+    const result = getGuide({ topic: "component:Modal", project: "trost", target: "html" });
+    expect(result._projectOverlayEmpty).toBe(true);
     expect(result._matrixOverrideApplied).toBeUndefined();
     expect(result.dimensions).toBeUndefined();
     expect(result.matrixOverrides).toBeUndefined();
   });
 
-  it("brand 미지정: raw matrixOverrides 제거 + _matrixOverrideBrands 슬림 요약", () => {
+  it("project 미지정: raw matrixOverrides 제거 + _matrixOverrideProjects 슬림 요약", () => {
     const result = getGuide({ topic: "component:Modal", target: "html" });
     expect(result.matrixOverrides).toBeUndefined();
-    const brands = result._matrixOverrideBrands as string[] | undefined;
-    expect(brands).toEqual(["cashwalk-biz"]);
+    const projects = result._matrixOverrideProjects as string[] | undefined;
+    expect(projects).toEqual(["cashwalk-biz"]);
     // service overlay 슬림 요약은 그대로
-    const variants = result._brandVariants as Record<string, string[]> | undefined;
+    const variants = result._projectVariants as Record<string, string[]> | undefined;
     expect(variants!["cashwalk-biz"]).toContain("forbiddenPatterns");
   });
 
   it("Button cashwalk-biz: matrixOverrides — sizeMatrix sm/xs 부분 override + stateMatrix 깨끗 교체 + dimensions", () => {
-    const result = getGuide({ topic: "component:Button", brand: "cashwalk-biz", target: "html" });
-    expect(result._brandApplied).toBe("cashwalk-biz");
+    const result = getGuide({ topic: "component:Button", project: "cashwalk-biz", target: "html" });
+    expect(result._projectApplied).toBe("cashwalk-biz");
     expect(result._matrixOverrideApplied).toBe("cashwalk-biz");
 
     // sizeMatrix: base xl/lg/md 는 그대로, sm/xs 는 cashwalk-biz override
@@ -166,7 +166,7 @@ describe("service overlay merge — Modal (overlay + matrixOverrides 동시 적�
   });
 
   it("Button trost: matrixOverrides 없음 → sizeMatrix/stateMatrix 는 base 그대로", () => {
-    const result = getGuide({ topic: "component:Button", brand: "trost", target: "html" });
+    const result = getGuide({ topic: "component:Button", project: "trost", target: "html" });
     expect(result._matrixOverrideApplied).toBeUndefined();
     expect(result.dimensions).toBeUndefined();
     const size = result.sizeMatrix as Record<string, string>;
@@ -182,10 +182,10 @@ describe("service overlay merge — Modal (overlay + matrixOverrides 동시 적�
   });
 });
 
-describe("Brand-aware Base metadata — BrandHeader / BrandFooter", () => {
-  it("BrandHeader trost: validPropValues + assetManifest 가 trost 값만 fold", () => {
-    const result = getGuide({ topic: "component:BrandHeader", brand: "trost", target: "html" });
-    expect(result._brandAwareApplied).toBe("trost");
+describe("Project-aware Base metadata — ProjectHeader / ProjectFooter", () => {
+  it("ProjectHeader trost: validPropValues + assetManifest 가 trost 값만 fold", () => {
+    const result = getGuide({ topic: "component:ProjectHeader", project: "trost", target: "html" });
+    expect(result._projectAwareApplied).toBe("trost");
 
     const vpv = result.validPropValues as Record<string, string[]>;
     expect(vpv.activeKey).toEqual(["home", "counsel", "test", "care", "center"]);
@@ -197,48 +197,48 @@ describe("Brand-aware Base metadata — BrandHeader / BrandFooter", () => {
     expect((result.validPropValues as Record<string, string[]>).geniet).toBeUndefined();
   });
 
-  it("BrandHeader geniet: 자기 brand 값만, trost 값은 안 보임", () => {
-    const result = getGuide({ topic: "component:BrandHeader", brand: "geniet", target: "html" });
+  it("ProjectHeader geniet: 자기 project 값만, trost 값은 안 보임", () => {
+    const result = getGuide({ topic: "component:ProjectHeader", project: "geniet", target: "html" });
     const vpv = result.validPropValues as Record<string, string[]>;
     expect(vpv.activeKey).toEqual(["home", "community", "deal", "review"]);
     const am = result.assetManifest as string[];
     expect(am).toEqual(["geniet-logo-pc.webp", "geniet-logo-footer.webp"]);
   });
 
-  it("BrandFooter trost: forcedProps.footerTone = 'dark' (명시 brand)", () => {
-    const result = getGuide({ topic: "component:BrandFooter", brand: "trost", target: "html" });
+  it("ProjectFooter trost: forcedProps.footerTone = 'dark' (명시 project)", () => {
+    const result = getGuide({ topic: "component:ProjectFooter", project: "trost", target: "html" });
     const fp = result.forcedProps as Record<string, string>;
     expect(fp.footerTone).toBe("dark");
   });
 
-  it("BrandFooter geniet: forcedProps.footerTone = 'light' ('*' default fallback)", () => {
-    const result = getGuide({ topic: "component:BrandFooter", brand: "geniet", target: "html" });
+  it("ProjectFooter geniet: forcedProps.footerTone = 'light' ('*' default fallback)", () => {
+    const result = getGuide({ topic: "component:ProjectFooter", project: "geniet", target: "html" });
     const fp = result.forcedProps as Record<string, string>;
     expect(fp.footerTone).toBe("light"); // '*' default 적용
   });
 
   it("Sidebar cashwalk-biz: iconSet.gnb 9종이 응답에 노출", () => {
-    const result = getGuide({ topic: "component:Sidebar", brand: "cashwalk-biz", target: "html" });
-    expect(result._brandApplied).toBe("cashwalk-biz");
+    const result = getGuide({ topic: "component:Sidebar", project: "cashwalk-biz", target: "html" });
+    expect(result._projectApplied).toBe("cashwalk-biz");
     const iconSet = result.iconSet as Record<string, string[]>;
     expect(iconSet.gnb).toHaveLength(9);
     expect(iconSet.gnb).toContain("CashwalkBizGnbBannerIcon");
     expect(iconSet.gnb).toContain("CashwalkBizGnbSettingIcon");
   });
 
-  it("Sidebar trost: overlay 없음 → _brandOverlayEmpty, iconSet 없음", () => {
-    const result = getGuide({ topic: "component:Sidebar", brand: "trost", target: "html" });
-    expect(result._brandOverlayEmpty).toBe(true);
+  it("Sidebar trost: overlay 없음 → _projectOverlayEmpty, iconSet 없음", () => {
+    const result = getGuide({ topic: "component:Sidebar", project: "trost", target: "html" });
+    expect(result._projectOverlayEmpty).toBe(true);
     expect(result.iconSet).toBeUndefined();
   });
 
-  it("BrandHeader brand 미지정: raw map 유지 + _brandAwareMetadataBrands 슬림 요약", () => {
-    const result = getGuide({ topic: "component:BrandHeader", target: "html" });
-    expect(result._brandAwareApplied).toBeUndefined();
-    const brands = result._brandAwareMetadataBrands as string[];
-    expect(brands).toEqual(["cashwalk-biz", "geniet", "nudge-eap", "trost"]);
+  it("ProjectHeader project 미지정: raw map 유지 + _projectAwareMetadataProjects 슬림 요약", () => {
+    const result = getGuide({ topic: "component:ProjectHeader", target: "html" });
+    expect(result._projectAwareApplied).toBeUndefined();
+    const projects = result._projectAwareMetadataProjects as string[];
+    expect(projects).toEqual(["cashwalk-biz", "geniet", "nudge-eap", "trost"]);
 
-    // raw map 그대로 노출 (brand-aware metadata 는 base 의 일부)
+    // raw map 그대로 노출 (project-aware metadata 는 base 의 일부)
     const vpv = result.validPropValues as Record<string, Record<string, string[]>>;
     expect(vpv.trost.activeKey).toEqual(["home", "counsel", "test", "care", "center"]);
   });

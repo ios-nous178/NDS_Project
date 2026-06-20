@@ -26,12 +26,12 @@ references:
     image: references/cashwalk-biz-detail-3614-367.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3614-367
     caption: Breadcrumb + 제목/상태칩/액션 + Underline 탭 + key-value Info Card. metrics 는 이 노드 실측 기준.
-    brand: cashwalk-biz
+    project: cashwalk-biz
   - label: 캐포비 Detail docs (Figma 3626-978)
     image: references/cashwalk-biz-detail-docs-3626-978.png
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3626-978
     caption: 언제 사용 · Section 구조 · Layout Spec · Validate Rule 원문 스펙 문서.
-    brand: cashwalk-biz
+    project: cashwalk-biz
 ---
 
 ## summary
