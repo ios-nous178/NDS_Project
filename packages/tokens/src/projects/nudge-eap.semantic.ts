@@ -3,112 +3,114 @@
  * (171:6675: BG · Text · Button{BG,Text,Border} · Input · Icon · Border · Fill).
  *
  * 9 groups (8 Figma roles + `bg.disabled` DS extension) · ~80 tokens.
- * Atomic palette(colors.ts) 만 참조한다. CSS emit 시
- * `--semantic-{group}-{role}-{variant}` namespace 로 노출.
+ * Atomic palette(colors.ts) 만 참조한다 — **reference-carrying**: `ref("color.{family}.{stop}")`
+ * 로 primitive 를 *가리킨다*(값을 베끼지 않음). emitter 가 ref 를 분기해 기존 CSS 는 hex 로,
+ * dist/next 는 `var(--color-…)`/DTCG/Figma alias 로 emit. (메커니즘: ../ref.ts)
+ * hex/rgba 리터럴·`var(--semantic-…)` self-ref 는 그대로 둔다.
  *
  * JS 측 참조는 `cv` (cssVar.ts) 에서 일원화. 외부 코드는 이 파일을 직접
  * import 하지 않는다 — 빌드 파이프라인(generate-css.js) 전용.
  */
 
-import { neutral, coolGray, blue, yellow, red, green } from "../colors.js";
+import { ref } from "../ref.js";
 
 export const nudgeEapSemantic = {
   bg: {
-    page: { default: coolGray[50] }, // #F8F9FB
+    page: { default: ref("color.coolGray.50") }, // #F8F9FB
     surface: {
-      default: neutral["00"], // #FFFFFF
-      subtle: neutral[50], // #FAFAFA
+      default: ref("color.neutral.00"), // #FFFFFF
+      subtle: ref("color.neutral.50"), // #FAFAFA
     },
-    section: { default: coolGray[100] }, // #F3F4F6
+    section: { default: ref("color.coolGray.100") }, // #F3F4F6
     brand: {
-      default: blue[500], // #2B96ED
-      subtle: blue[50], // #F1F8FD — Figma `--bg-brand-subtle`
+      default: ref("color.blue.500"), // #2B96ED
+      subtle: ref("color.blue.50"), // #F1F8FD — Figma `--bg-brand-subtle`
     },
-    inverse: { default: neutral[900] }, // #111111
+    inverse: { default: ref("color.neutral.900") }, // #111111
     status: {
-      error: red[50], // #FEE9E6
-      success: green[50], // #E5F7F4
-      info: blue[100], // #E3F2FC — Figma `--bg-status-info`
-      caution: yellow[50], // #FFFAE8
+      error: ref("color.red.50"), // #FEE9E6
+      success: ref("color.green.50"), // #E5F7F4
+      info: ref("color.blue.100"), // #E3F2FC — Figma `--bg-status-info`
+      caution: ref("color.yellow.50"), // #FFFAE8
     },
     // Figma `--bg-overlay` (flat, no /default suffix) — emits `--semantic-bg-overlay`
     overlay: "rgba(0,0,0,0.4)",
     // DS extension — Figma has no `bg-disabled` role; used by disabled controls
     // (Audio/Date/Slider/Stepper/Checkbox 등). Value = Neutral · 200.
-    disabled: neutral[200], // #ECECEC
+    disabled: ref("color.neutral.200"), // #ECECEC
   },
   text: {
-    strong: { default: neutral[900] }, // #111111  ← Figma `--text-strong-default`
-    normal: { default: neutral[800] }, // #383838
-    subtle: { default: neutral[700] }, // #666666
-    muted: { default: neutral[500] }, // #999999
-    disabled: { default: neutral[400] }, // #C7C7C7
-    inverse: { default: neutral["00"] }, // #FFFFFF
+    strong: { default: ref("color.neutral.900") }, // #111111  ← Figma `--text-strong-default`
+    normal: { default: ref("color.neutral.800") }, // #383838
+    subtle: { default: ref("color.neutral.700") }, // #666666
+    muted: { default: ref("color.neutral.500") }, // #999999
+    disabled: { default: ref("color.neutral.400") }, // #C7C7C7
+    inverse: { default: ref("color.neutral.00") }, // #FFFFFF
     brand: {
-      default: blue[500], // #2B96ED
-      strong: blue[800], // #1B65BA — Figma `--text-brand-strong`
+      default: ref("color.blue.500"), // #2B96ED
+      strong: ref("color.blue.800"), // #1B65BA — Figma `--text-brand-strong`
     },
     status: {
-      success: green[400], // #00A07C
-      error: red[500], // #F13F00
-      caution: yellow[600], // #FFA100 — Figma `--text-status-caution`
-      info: blue[600], // #017EE4 — Figma `--text-status-info`
+      success: ref("color.green.400"), // #00A07C
+      error: ref("color.red.500"), // #F13F00
+      caution: ref("color.yellow.600"), // #FFA100 — Figma `--text-status-caution`
+      info: ref("color.blue.600"), // #017EE4 — Figma `--text-status-info`
     },
   },
   buttonBg: {
-    default: blue[500], // #2B96ED
-    hover: blue[600], // #017EE4
-    pressed: blue[700], // #0E71CF
+    default: ref("color.blue.500"), // #2B96ED
+    hover: ref("color.blue.600"), // #017EE4
+    pressed: ref("color.blue.700"), // #0E71CF
     // Figma 실 Button 컴포넌트 (171:8410) 가 cool-gray/400 (#9CA2AE) 사용 — 이게 SSOT.
     // Figma SemanticColorGuide(222:2) 의 ButtonBG/Disabled 가 #D8D8D8 로 잘못 그려져 있어
     // 디자이너가 가이드 쪽 값을 #9CA2AE 로 정정해야 함 (코드는 변경 없음).
-    disabled: coolGray[400], // #9CA2AE
+    disabled: ref("color.coolGray.400"), // #9CA2AE
     secondary: {
-      default: blue[50], // #F1F8FD
-      hover: blue[100], // #E3F2FC
-      disabled: coolGray[200], // #E6E7EB
+      default: ref("color.blue.50"), // #F1F8FD
+      hover: ref("color.blue.100"), // #E3F2FC
+      disabled: ref("color.coolGray.200"), // #E6E7EB
     },
     outlined: {
-      default: neutral["00"], // #FFFFFF
-      hover: blue[50], // #F1F8FD
-      disabled: neutral["00"], // #FFFFFF
+      default: ref("color.neutral.00"), // #FFFFFF
+      hover: ref("color.blue.50"), // #F1F8FD
+      disabled: ref("color.neutral.00"), // #FFFFFF
     },
     // Solid/Neutral — DS extension (Figma SSOT 미정의, NudgeEAP base 는 cool-gray fill 유지).
     // Runmile 등 brand 가 light gray filled 톤으로 override.
     neutral: {
-      default: coolGray[400], // #9CA2AE (기존 cv.borderRole.brandDisabled 매핑과 동일 톤 — 시각 보존)
-      hover: "#7E8593", // 한 단계 어두운 cool-gray (기존 인라인 값 유지)
-      disabled: neutral[100], // #F5F5F5 (기존 cv.borderRole.subtle 매핑과 동일)
+      default: ref("color.coolGray.400"), // #9CA2AE (기존 cv.borderRole.brandDisabled 매핑과 동일 톤 — 시각 보존)
+      hover: "#7E8593", // 한 단계 어두운 cool-gray (팔레트 stop 부재 — 리터럴 유지)
+      disabled: ref("color.neutral.100"), // #F5F5F5 (기존 cv.borderRole.subtle 매핑과 동일)
     },
   },
   buttonText: {
-    default: neutral["00"], // #FFFFFF
-    brand: blue[500], // #2B96ED
+    default: ref("color.neutral.00"), // #FFFFFF
+    brand: ref("color.blue.500"), // #2B96ED
     // Solid/Secondary 텍스트 — 옅은 blue 배경 위에 brand blue 텍스트 (가독성 OK).
     secondary: {
-      default: blue[500], // #2B96ED
-      disabled: coolGray[400], // #9CA2AE
+      default: ref("color.blue.500"), // #2B96ED
+      disabled: ref("color.coolGray.400"), // #9CA2AE
     },
     // Outlined/Weak Neutral enabled 텍스트 — 흰/투명 배경 위 → 어두운 톤(가독성).
     // (이전엔 neutral["00"]=#FFFFFF 로 흰배경+흰글자=안 보임 버그. 가이드 SSOT=#383838)
-    neutral: neutral[800], // #383838
+    neutral: ref("color.neutral.800"), // #383838
     // Solid Neutral 텍스트 — cool-gray(#9CA2AE) fill 위 흰.
-    neutralSolid: neutral["00"], // #FFFFFF
+    neutralSolid: ref("color.neutral.00"), // #FFFFFF
     // Outlined Neutral disabled 텍스트 — 기존 cv.textRole.muted (#999) 매핑 유지.
-    neutralDisabled: neutral[500], // #999999
+    neutralDisabled: ref("color.neutral.500"), // #999999
     // Figma 실 Button (171:8480) 이 cool-gray/400 (#9CA2AE) 사용 — 이게 SSOT.
     // SemanticColorGuide 의 "Neutral 400" 라벨과 어긋나지만 실 컴포넌트 우선.
-    disabled: coolGray[400], // #9CA2AE
+    disabled: ref("color.coolGray.400"), // #9CA2AE
   },
   buttonBorder: {
     outlined: {
-      default: blue[500], // #2B96ED
-      hover: blue[500], // #2B96ED
-      disabled: coolGray[400], // #9CA2AE
+      default: ref("color.blue.500"), // #2B96ED
+      hover: ref("color.blue.500"), // #2B96ED
+      disabled: ref("color.coolGray.400"), // #9CA2AE
     },
     neutral: {
-      default: neutral[300], // #D8D8D8
-      disabled: neutral[200], // #ECECEC
+      default: ref("color.neutral.300"), // #D8D8D8
+      disabled: ref("color.neutral.200"), // #ECECEC
     },
   },
   /**
@@ -116,47 +118,47 @@ export const nudgeEapSemantic = {
    * 단독 배치된 아이콘 컬러는 hex 직접 지정 대신 본 토큰(`--semantic-icon-*`)을 사용한다.
    */
   icon: {
-    strong: { default: neutral[800] }, // #383838 ← Neutral · 800
-    normal: { default: neutral[700] }, // #666666 ← Figma Neutral · 600
-    disabled: { default: neutral[400] }, // #C7C7C7 ← Figma Neutral · 200
-    inverse: { default: neutral["00"] }, // #FFFFFF ← Neutral · 00 (white)
-    brand: { default: blue[500] }, // #2B96ED ← Atomic/Bright Blue · 500
+    strong: { default: ref("color.neutral.800") }, // #383838 ← Neutral · 800
+    normal: { default: ref("color.neutral.700") }, // #666666 ← Figma Neutral · 600
+    disabled: { default: ref("color.neutral.400") }, // #C7C7C7 ← Figma Neutral · 200
+    inverse: { default: ref("color.neutral.00") }, // #FFFFFF ← Neutral · 00 (white)
+    brand: { default: ref("color.blue.500") }, // #2B96ED ← Atomic/Bright Blue · 500
     status: {
-      success: green[300], // #13BFA2 ← Atomic/Green · 500
-      error: red[500], // #F13F00 ← Atomic/Orange Red · 500
-      caution: yellow[500], // #FFC303 ← Golden Yellow · 500
+      success: ref("color.green.300"), // #13BFA2 ← Atomic/Green · 500
+      error: ref("color.red.500"), // #F13F00 ← Atomic/Orange Red · 500
+      caution: ref("color.yellow.500"), // #FFC303 ← Golden Yellow · 500
     },
   },
   border: {
-    normal: { default: neutral[200] }, // #ECECEC
-    strong: { default: neutral[500] }, // #999999
-    subtle: { default: neutral[100] }, // #F5F5F5
-    focus: { default: blue[500] }, // #2B96ED
+    normal: { default: ref("color.neutral.200") }, // #ECECEC
+    strong: { default: ref("color.neutral.500") }, // #999999
+    subtle: { default: ref("color.neutral.100") }, // #F5F5F5
+    focus: { default: ref("color.blue.500") }, // #2B96ED
     brand: {
-      default: blue[500], // #2B96ED
-      disabled: coolGray[400], // #9CA2AE
+      default: ref("color.blue.500"), // #2B96ED
+      disabled: ref("color.coolGray.400"), // #9CA2AE
     },
-    disabled: { default: neutral[200] }, // #ECECEC
+    disabled: { default: ref("color.neutral.200") }, // #ECECEC
     status: {
-      error: red[500], // #F13F00
-      caution: yellow[500], // #FFC303
+      error: ref("color.red.500"), // #F13F00
+      caution: ref("color.yellow.500"), // #FFC303
     },
   },
   fill: {
     brand: {
-      default: blue[500], // #2B96ED
-      hover: blue[600], // #017EE4
-      pressed: blue[700], // #0E71CF
-      disabled: neutral[300], // #D8D8D8
+      default: ref("color.blue.500"), // #2B96ED
+      hover: ref("color.blue.600"), // #017EE4
+      pressed: ref("color.blue.700"), // #0E71CF
+      disabled: ref("color.neutral.300"), // #D8D8D8
     },
     neutral: {
-      default: neutral[800], // #383838
-      subtle: neutral[100], // #F5F5F5
+      default: ref("color.neutral.800"), // #383838
+      subtle: ref("color.neutral.100"), // #F5F5F5
     },
-    inverse: { default: neutral["00"] }, // #FFFFFF
+    inverse: { default: ref("color.neutral.00") }, // #FFFFFF
     status: {
-      error: red[500], // #F13F00
-      caution: yellow[500], // #FFC303
+      error: ref("color.red.500"), // #F13F00
+      caution: ref("color.yellow.500"), // #FFC303
     },
   },
   /**
@@ -167,18 +169,18 @@ export const nudgeEapSemantic = {
    * 한 단어로 유지.
    */
   input: {
-    bg: neutral["00"], // #FFFFFF — --semantic-input-bg
-    bgDisabled: neutral[50], // #FAFAFA — --semantic-input-bg-disabled
-    borderDefault: neutral[300], // #D8D8D8
-    borderHover: neutral[400], // #C7C7C7
-    borderFocus: blue[500], // #2B96ED
-    borderError: red[500], // #F13F00
-    borderDisabled: neutral[300], // #D8D8D8
-    placeholder: neutral[500], // #999999
-    helpertextDefault: neutral[500], // #999999 ← Text/Muted/Default
-    helpertextSuccess: blue[500], // #2B96ED ← Text/Brand/Default
-    helpertextError: red[500], // #F13F00 ← Text/Status/Error
-    helpertextDisabled: neutral[400], // #C7C7C7 ← Text/Disabled/Default
+    bg: ref("color.neutral.00"), // #FFFFFF — --semantic-input-bg
+    bgDisabled: ref("color.neutral.50"), // #FAFAFA — --semantic-input-bg-disabled
+    borderDefault: ref("color.neutral.300"), // #D8D8D8
+    borderHover: ref("color.neutral.400"), // #C7C7C7
+    borderFocus: ref("color.blue.500"), // #2B96ED
+    borderError: ref("color.red.500"), // #F13F00
+    borderDisabled: ref("color.neutral.300"), // #D8D8D8
+    placeholder: ref("color.neutral.500"), // #999999
+    helpertextDefault: ref("color.neutral.500"), // #999999 ← Text/Muted/Default
+    helpertextSuccess: ref("color.blue.500"), // #2B96ED ← Text/Brand/Default
+    helpertextError: ref("color.red.500"), // #F13F00 ← Text/Status/Error
+    helpertextDisabled: ref("color.neutral.400"), // #C7C7C7 ← Text/Disabled/Default
   },
 
   /**

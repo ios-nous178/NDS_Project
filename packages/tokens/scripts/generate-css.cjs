@@ -12,7 +12,22 @@ const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
+const { isRef } = require("../dist/ref.js");
 const { nudgeEapSemantic } = require("../dist/projects/nudge-eap.semantic.js");
+
+/**
+ * reference-carrying 토큰(`ref("color.{family}.{stop}")`) → 해석된 primitive 값.
+ * 기존 CSS 출력은 hex 를 그대로 유지(값 동결)하기 위해 ref 를 emit 시점에 hex 로 푼다.
+ */
+function resolveRef(r) {
+  const parts = r.$ref.split(".");
+  if (parts[0] === "color") {
+    const fam = colors[parts[1]];
+    if (!fam || !(parts[2] in fam)) throw new Error(`unknown color ref: ${r.$ref}`);
+    return fam[parts[2]];
+  }
+  throw new Error(`unknown ref tier: ${r.$ref}`);
+}
 const {
   spacing,
   gap,
@@ -47,7 +62,9 @@ function flattenRoleSemanticVars(obj, prefix, lines) {
   for (const [key, value] of Object.entries(obj)) {
     const part = camelToKebab(key);
     const varName = prefix ? `${prefix}-${part}` : part;
-    if (typeof value === "string") {
+    if (isRef(value)) {
+      lines.push(`  --semantic-${varName}: ${resolveRef(value)};`);
+    } else if (typeof value === "string") {
       lines.push(`  --semantic-${varName}: ${value};`);
     } else if (typeof value === "object" && value !== null) {
       flattenRoleSemanticVars(value, varName, lines);
