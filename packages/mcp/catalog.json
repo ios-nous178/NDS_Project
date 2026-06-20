@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-20T16:59:49.333Z",
+  "generatedAt": "2026-06-20T17:32:45.824Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1086,44 +1086,6 @@
         "close-on-overlay-click",
         "close-on-esc"
       ]
-    },
-    {
-      "name": "BrandLogo",
-      "props": [
-        {
-          "name": "brand",
-          "optional": false,
-          "type": "BrandLogoBrand",
-          "allowedValues": [
-            "trost",
-            "geniet",
-            "nudge-eap",
-            "cashwalk-biz",
-            "runmile"
-          ]
-        },
-        {
-          "name": "height",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "width",
-          "optional": true,
-          "type": "number"
-        },
-        {
-          "name": "alt",
-          "optional": true,
-          "type": "string"
-        },
-        {
-          "name": "href",
-          "optional": true,
-          "type": "string"
-        }
-      ],
-      "dtsRelPath": "packages/react/dist/BrandLogo.d.ts"
     },
     {
       "name": "Breadcrumb",
