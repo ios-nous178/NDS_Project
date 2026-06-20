@@ -26,6 +26,9 @@ export default tseslint.config(
       "**/storybook-static/**",
       "**/.turbo/**",
       "**/coverage/**",
+      // 토큰 Figma 플러그인 — figma 전역 + 빌드 시 토큰 JSON 임베드(템플릿 __TOKENS_JSON__)라
+      // 일반 lint 대상 아님. code.js 는 생성물(gitignore).
+      "packages/tokens/figma-plugin/**",
     ],
   },
   js.configs.recommended,
