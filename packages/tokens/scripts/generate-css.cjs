@@ -16,18 +16,31 @@ const { isRef } = require("../dist/ref.js");
 const { nudgeEapSemantic } = require("../dist/projects/nudge-eap.semantic.js");
 
 /**
- * reference-carrying 토큰(`ref("color.{family}.{stop}")`) → 해석된 primitive 값.
- * 기존 CSS 출력은 hex 를 그대로 유지(값 동결)하기 위해 ref 를 emit 시점에 hex 로 푼다.
+ * reference-carrying 토큰(`ref("color.{family}.{stop}")`) 해석용 레지스트리.
+ * family = **emit 되는 var family** = 브랜드 theme.palette 의 key(`mint`, import 명 `genietMint` 아님).
+ * 뒤 인자가 앞을 덮는다(브랜드 팔레트가 base 동명 family 를 override — geniet `blue` 등).
  */
-function resolveRef(r) {
-  const parts = r.$ref.split(".");
-  if (parts[0] === "color") {
-    const fam = colors[parts[1]];
-    if (!fam || !(parts[2] in fam)) throw new Error(`unknown color ref: ${r.$ref}`);
-    return fam[parts[2]];
+function buildColorRegistry(...palettes) {
+  const reg = {};
+  for (const palette of palettes) {
+    for (const [family, scale] of Object.entries(palette)) {
+      if (!scale || typeof scale !== "object") continue;
+      for (const [stop, val] of Object.entries(scale)) {
+        if (typeof val === "string") reg[`color.${family}.${stop}`] = val;
+      }
+    }
   }
-  throw new Error(`unknown ref tier: ${r.$ref}`);
+  return reg;
 }
+/** 기존 CSS 는 값-동결 위해 ref 를 emit 시점에 hex 로 푼다(브랜드는 자기 팔레트로 해석). */
+function makeResolveRef(registry) {
+  return (r) => {
+    const v = registry[r.$ref];
+    if (v == null) throw new Error(`unknown color ref: ${r.$ref}`);
+    return v;
+  };
+}
+const resolveBaseRef = makeResolveRef(buildColorRegistry(colors));
 const {
   spacing,
   gap,
@@ -57,17 +70,20 @@ function flattenPaletteVars(obj, prefix, lines) {
   }
 }
 
-/** role-based 트리(`nudgeEapSemantic` / `trostSemantic` 등) → `--semantic-{group}-{role}-{variant}` (camelCase → kebab-case) */
-function flattenRoleSemanticVars(obj, prefix, lines) {
+/**
+ * role-based 트리(`nudgeEapSemantic` / `trostSemantic` 등) → `--semantic-{group}-{role}-{variant}`
+ * (camelCase → kebab-case). `resolve` = ref → hex 해석기(base 는 base 팔레트, 브랜드는 base+자기팔레트).
+ */
+function flattenRoleSemanticVars(obj, prefix, lines, resolve) {
   for (const [key, value] of Object.entries(obj)) {
     const part = camelToKebab(key);
     const varName = prefix ? `${prefix}-${part}` : part;
     if (isRef(value)) {
-      lines.push(`  --semantic-${varName}: ${resolveRef(value)};`);
+      lines.push(`  --semantic-${varName}: ${resolve(value)};`);
     } else if (typeof value === "string") {
       lines.push(`  --semantic-${varName}: ${value};`);
     } else if (typeof value === "object" && value !== null) {
-      flattenRoleSemanticVars(value, varName, lines);
+      flattenRoleSemanticVars(value, varName, lines, resolve);
     }
   }
 }
@@ -120,7 +136,7 @@ function generateBaseTokens() {
   // DS extension (bg-disabled). emit: `--semantic-{group}-{role}-{variant}` (kebab).
   lines.push("");
   lines.push("  /* ── Semantic (role-based, Figma SemanticColorGuide 171:6675) ── */");
-  flattenRoleSemanticVars(nudgeEapSemantic, "", lines);
+  flattenRoleSemanticVars(nudgeEapSemantic, "", lines, resolveBaseRef);
 
   // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
   lines.push("");
@@ -320,6 +336,9 @@ function generateProjectTokens({ theme, title, cssImport }) {
 
   const { palette, semantic, typography, spacing: spacingOverrides, elevation, components } = theme;
 
+  // 브랜드 ref 해석기 — 자기 팔레트(theme.palette, family=key)가 base 동명 family 를 덮는다.
+  const resolveProjectRef = makeResolveRef(buildColorRegistry(colors, palette));
+
   // Palette colors
   lines.push("  /* ── Palette ── */");
   for (const [family, scale] of Object.entries(palette)) {
@@ -331,7 +350,7 @@ function generateProjectTokens({ theme, title, cssImport }) {
   // Semantic colors — Figma role-based 트리 Partial 만 override
   lines.push("");
   lines.push("  /* ── Semantic (Figma role-based) ── */");
-  flattenRoleSemanticVars(semantic, "", lines);
+  flattenRoleSemanticVars(semantic, "", lines, resolveProjectRef);
 
   // Typography
   if (typography) {
