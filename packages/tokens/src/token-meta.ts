@@ -9,7 +9,7 @@
 
 /** primitive 컬렉션 = 브랜드 스코핑(이름엔 브랜드 안 넣고 컬렉션이 담당). */
 export const collectionNotes: Record<string, string> = {
-  core: "공통 — 모든 프로젝트가 공유하는 기본 램프",
+  "nudge-eap": "NudgeEAP 팔레트 (base — 다른 브랜드는 미정의 패밀리를 여기서 cascade 상속)",
   trost: "Trost 전용 팔레트",
   geniet: "Geniet 전용 팔레트",
   "cashwalk-biz": "CashwalkBiz 전용 팔레트",

@@ -144,10 +144,36 @@ function flattenSemantic(tree, prefix, acc) {
   return acc;
 }
 
-const primitives = { core: {} };
-for (const [family, scale] of Object.entries(colors)) {
-  for (const [stop, value] of Object.entries(scale)) primitives.core[`${family}/${stop}`] = value;
-}
+// Figma 플러그인/변수 표시 순서: common → 그레이계열 → 표준 컬러 → 브랜드 고유색(나머지 abc).
+const FAMILY_ORDER = [
+  "common",
+  "gray",
+  "coolGray",
+  "blue",
+  "teal",
+  "green",
+  "yellow",
+  "orange",
+  "red",
+  "pink",
+  "purple",
+];
+const familyRank = (fam) => {
+  const i = FAMILY_ORDER.indexOf(fam);
+  return i >= 0 ? i : FAMILY_ORDER.length; // 브랜드 고유색(indigo/cornflower/brown 등) → 맨 뒤
+};
+const buildPrims = (palette) => {
+  const out = {};
+  const fams = Object.entries(palette).sort((a, b) => {
+    const r = familyRank(a[0]) - familyRank(b[0]);
+    return r !== 0 ? r : a[0].localeCompare(b[0]);
+  });
+  for (const [family, scale] of fams)
+    for (const [stop, value] of Object.entries(scale)) out[`${family}/${stop}`] = value;
+  return out;
+};
+// primitives: 브랜드별 컬렉션(nudge-eap 포함 — "core" 라는 별칭 없이 자기 이름으로).
+const primitives = {};
 const variables = {};
 const allNames = new Set();
 const perMode = {};
@@ -155,13 +181,7 @@ for (const { mode, theme } of BRANDS) {
   const merged = deepMerge(nudgeEapTheme.semantic, mode === "nudge-eap" ? {} : theme.semantic);
   perMode[mode] = flattenSemantic(merged, "", {});
   Object.keys(perMode[mode]).forEach((n) => allNames.add(n));
-  if (mode !== "nudge-eap") {
-    primitives[mode] = {};
-    for (const [family, scale] of Object.entries(theme.palette)) {
-      for (const [stop, value] of Object.entries(scale))
-        primitives[mode][`${family}/${stop}`] = value;
-    }
-  }
+  primitives[mode] = buildPrims(theme.palette);
 }
 for (const name of [...allNames].sort()) {
   const valuesByMode = {};
@@ -221,8 +241,9 @@ const textStyleKeys = Object.keys(typeScale).map(tsKey);
 const figma = {
   $comment:
     "P2 v1 intermediate. semantic=brand=mode, alias=variable name(컬렉션 미지정). " +
-    "Core+Brand 컬렉션 분할·Figma ID 해석·alias→VARIABLE_ALIAS 변환은 P4 업로드 단계. " +
-    "alias 'family/stop' 는 nudge-eap mode=Primitive/Core, 브랜드 mode=Primitive/{Brand} 로 해석.",
+    "브랜드별 Primitive 컬렉션 분할·Figma ID 해석·alias→VARIABLE_ALIAS 변환은 P4 업로드 단계. " +
+    "alias 'family/stop' 는 각 브랜드 mode=Primitive/{Brand}(nudge-eap 포함) 로 해석. " +
+    "family 순서: common → gray/coolGray → 표준컬러 → 브랜드 고유색.",
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
   dimensions: { modes: BRANDS.map((b) => b.mode), variables: dimVariables, textStyleKeys },

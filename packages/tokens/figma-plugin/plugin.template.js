@@ -3,7 +3,7 @@
  * 빌드 = `node scripts/build-figma-plugin.cjs` (→ figma-plugin/code.js).
  *
  * Nudge Tokens → Figma 플러그인 (코드 SSOT → Figma 변수 + Text Style + 바인딩된 비주얼 가이드).
- *   변수: Primitive/Core+{Brand}(COLOR) · Semantic(COLOR, brand=mode) · Dimension(FLOAT, brand=mode).
+ *   변수: Primitive/{Brand}(COLOR, nudge-eap 포함) · Semantic(COLOR, brand=mode) · Dimension(FLOAT, brand=mode).
  *   Text Style: typeScale 묶음(fontSize/lineHeight/letterSpacing 를 Dimension 변수에 바인딩).
  *   페이지: "🎨 Token Guide — Color"(Atomic+Semantic) · "🎨 Token Guide — Dimension & Type".
  *   손작업 컬러가이드(652/667) 스타일 정합. 이름기준 업서트(재실행 안전).
@@ -33,10 +33,9 @@ function toRGBA(str) {
 
 const BRANDS = TOKENS.semantic.modes;
 const brandLabel = (m) => (META.brandLabels && META.brandLabels[m]) || m;
-const collKeyForMode = (m) => (m === "nudge-eap" ? "core" : m);
+const collKeyForMode = (m) => m;
 const collTitle = (key) =>
-  "Primitive/" +
-  (key === "core" ? "Core" : key.replace(/(^|-)(\w)/g, (_, _d, c) => c.toUpperCase()));
+  "Primitive/" + key.replace(/(^|-)(\w)/g, (_, _d, c) => c.toUpperCase());
 const collKeyHasAlias = (key, alias) => TOKENS.primitives[key] && TOKENS.primitives[key][alias];
 
 const cssToSem = {};
@@ -53,11 +52,8 @@ function resolveCell(name, mode, seen) {
   const mv = def.valuesByMode[mode];
   if (!mv) return null;
   if (mv.alias) {
-    const bk = collKeyForMode(mode);
     const hex = (
-      mode !== "nudge-eap" && collKeyHasAlias(bk, mv.alias)
-        ? TOKENS.primitives[bk]
-        : TOKENS.primitives.core
+      collKeyHasAlias(mode, mv.alias) ? TOKENS.primitives[mode] : TOKENS.primitives["nudge-eap"]
     )[mv.alias];
     return hex ? { hex, ref: mv.alias } : null; // 슬래시 형 통일 (Figma 변수명 = "family/stop")
   }
@@ -78,7 +74,7 @@ async function main() {
     figma.variables.createVariable(name, coll, type);
 
   // Primitive 컬렉션 (COLOR)
-  const primKeys = ["core", ...BRANDS.filter((b) => b !== "nudge-eap").map(collKeyForMode)];
+  const primKeys = BRANDS.map(collKeyForMode); // nudge-eap 포함 — 각 브랜드가 자기 Primitive 컬렉션
   const primVars = {};
   for (const key of primKeys) {
     const coll = ensureColl(collTitle(key));
@@ -104,9 +100,8 @@ async function main() {
   for (const name of Object.keys(TOKENS.semantic.variables))
     semVars[name] = ensureVar(name, semColl, "COLOR");
   const resolvePrim = (alias, mode) => {
-    const bk = collKeyForMode(mode);
-    if (mode !== "nudge-eap" && collKeyHasAlias(bk, alias)) return primVars[bk][alias];
-    return primVars.core[alias] || null;
+    if (collKeyHasAlias(mode, alias)) return primVars[mode][alias];
+    return (primVars["nudge-eap"] && primVars["nudge-eap"][alias]) || null;
   };
   for (const [name, def] of Object.entries(TOKENS.semantic.variables)) {
     for (const [mode, mv] of Object.entries(def.valuesByMode)) {
