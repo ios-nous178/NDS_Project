@@ -516,14 +516,35 @@ async function main() {
           }
           row.appendChild(cell);
         }
-        // 시각 바 — radius 는 곡률, 나머지는 길이로 실제 크기 표현(base 값).
+        // 시각 예시 (base 값) — radius/shape = 둥근 사각, border-width/stroke = 테두리 박스,
+        // 나머지(spacing/gap/inset/size) = 길이 바. (넛지EAP Library 171:7455 스타일)
         if (withBar && typeof baseV === "number" && baseV >= 0) {
-          const isR = /^(radius|shape)/.test(name);
-          const bar = figma.createRectangle();
-          bar.resize(Math.max(2, Math.min(baseV, 280)), 14);
-          bar.cornerRadius = isR ? Math.min(baseV, 7) : 2;
-          bar.fills = [{ type: "SOLID", color: ACCENT }];
-          row.appendChild(bar);
+          const cat = name.split("/")[0];
+          if (cat === "radius" || cat === "shape") {
+            const sq = figma.createRectangle();
+            sq.resize(44, 44);
+            sq.fills = [{ type: "SOLID", color: WHITE }];
+            sq.strokes = [{ type: "SOLID", color: { r: 0.7, g: 0.72, b: 0.78 } }];
+            sq.strokeWeight = 1.5;
+            sq.cornerRadius = Math.min(baseV, 22); // 22=44/2 → full 은 완전 둥근 변
+            row.appendChild(sq);
+          } else if (cat === "border-width" || cat === "stroke") {
+            const sq = figma.createRectangle();
+            sq.resize(44, 44);
+            sq.fills = [{ type: "SOLID", color: WHITE }];
+            sq.cornerRadius = 6;
+            if (baseV > 0) {
+              sq.strokes = [{ type: "SOLID", color: INK }];
+              sq.strokeWeight = Math.min(baseV, 8);
+            }
+            row.appendChild(sq);
+          } else {
+            const bar = figma.createRectangle();
+            bar.resize(Math.max(2, Math.min(baseV, 280)), 14);
+            bar.cornerRadius = 2;
+            bar.fills = [{ type: "SOLID", color: ACCENT }];
+            row.appendChild(bar);
+          }
         }
         group.appendChild(row);
       }
