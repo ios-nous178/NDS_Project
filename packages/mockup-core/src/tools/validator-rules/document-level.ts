@@ -267,14 +267,19 @@ export function collectDocumentLevelViolations(
     });
   }
 
-  const cardTotal = $("nds-card").length;
+  // .nds-grid 안의 카드 셀(카드 그리드 — 홈·갤러리)은 "모든 영역을 카드로 감싸는"
+  // card-everything 안티패턴이 아니라 의도된 단일 그리드 패턴이라 카운트에서 제외한다.
+  // (get_guide({ topic: 'pattern:card-grid' }).)
+  const cardTotal = $("nds-card")
+    .toArray()
+    .filter((c) => $(c).closest(".nds-grid").length === 0).length;
   if (cardTotal >= 5 * screenCount) {
     out.push({
       rule: "card-everything",
       line: 1,
-      detail: `한 mockup 에 nds-card 가 ${cardTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
+      detail: `한 mockup 에 (그리드 셀 제외) nds-card 가 ${cardTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
       suggestion:
-        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--semantic-gap-loose) + heading + Divider 로 위계를 표현하세요.",
+        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--semantic-gap-loose) + heading + Divider 로 위계를 표현하세요. 카드를 다열로 배치하는 화면은 <div class=\"nds-grid\" data-cols=\"3\"> + nds-card 셀(get_guide({ topic: 'pattern:card-grid' })) 로.",
     });
   }
 

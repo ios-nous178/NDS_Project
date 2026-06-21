@@ -326,3 +326,63 @@ export const sectionSurfaceStyles = `
     border-radius: ${radius[16]}px;
   }
 `;
+
+/* ─── Grid — 다열 카드/타일 그리드 (홈·마이페이지·갤러리 등) ───
+   목업 AI 가 그리드형 홈을 만들 때 매번 raw `display:grid` 를 손코딩하던 문제를 흡수.
+   Layout primitive 컨벤션대로 web component 없이 클래스만 — `<div class="nds-grid" data-cols="3">…`.
+   자식은 보통 <nds-card>/Card 셀. 패턴 가이드: get_guide({ topic: 'pattern:card-grid' }).
+
+   API (전부 0-특정성 :where, 토큰 기반):
+   - data-cols="2|3|4"  : 고정 열 수 (기본 2). 자동 반응형 — 태블릿(≤1023) 3·4열→2, 모바일(<768)→1열.
+   - data-cols="auto"   : 미디어쿼리 없이 폭에 맞춰 auto-fill. 셀 최소폭 --nds-grid-min(기본 160px).
+                          (모바일 1열 강제 제외 — 자연 collapse.)
+   - --nds-grid-gap     : 간격 override (기본 --semantic-gap-loose=16). data-gap="wide" 로 24 즉시 적용.
+   - --nds-grid-cols    : 인라인 custom prop 로 직접 박으면(예: style="--nds-grid-cols:2") 미디어쿼리(stylesheet)
+                          를 이겨 열 수를 고정 — 모바일에서도 다열 유지가 필요한 quick-action 류 이스케이프 해치.
+   item 은 minmax(0,1fr) 로 min-width:0 이 적용돼 긴 텍스트가 트랙을 밀어 깨지지 않는다.
+
+   ⚠ 아이콘+라벨 "빠른 액션" 작은 셀 그리드는 모바일에서도 다열 유지가 보통이라 별도 패턴
+   (get_guide({ topic: 'pattern:quick-action-grid' })) 를 쓴다 — 이 .nds-grid 는 콘텐츠 카드용. ─── */
+
+const GRID_CLASS = "nds-grid";
+
+export const gridStyles = `
+  :where(.${GRID_CLASS}) {
+    display: grid;
+    gap: var(--nds-grid-gap, var(--semantic-gap-loose));
+    grid-template-columns: repeat(var(--nds-grid-cols, 2), minmax(0, 1fr));
+  }
+
+  /* 간격 편의 모디파이어 */
+  :where(.${GRID_CLASS}[data-gap="wide"]) {
+    --nds-grid-gap: var(--semantic-gap-wide);
+  }
+  :where(.${GRID_CLASS}[data-gap="tight"]) {
+    --nds-grid-gap: var(--semantic-gap-comfortable);
+  }
+
+  /* 고정 열 수 */
+  :where(.${GRID_CLASS}[data-cols="2"]) { --nds-grid-cols: 2; }
+  :where(.${GRID_CLASS}[data-cols="3"]) { --nds-grid-cols: 3; }
+  :where(.${GRID_CLASS}[data-cols="4"]) { --nds-grid-cols: 4; }
+
+  /* auto-fill — 미디어쿼리 없이 폭에 맞춰 열 수 자동 (반응형 카드 그리드에 가장 견고) */
+  :where(.${GRID_CLASS}[data-cols="auto"]) {
+    grid-template-columns: repeat(auto-fill, minmax(var(--nds-grid-min, 160px), 1fr));
+  }
+
+  /* 반응형 collapse — 태블릿에서 3·4열은 2열로 */
+  @media (max-width: 1023px) {
+    :where(.${GRID_CLASS}[data-cols="3"]),
+    :where(.${GRID_CLASS}[data-cols="4"]) {
+      --nds-grid-cols: 2;
+    }
+  }
+
+  /* 모바일 — auto 모드 제외하고 1열 fallback (카드가 짓눌려 글자가 세로로 쪼개지는 것 방지) */
+  @media (max-width: 767px) {
+    :where(.${GRID_CLASS}:not([data-cols="auto"])) {
+      --nds-grid-cols: 1;
+    }
+  }
+`;

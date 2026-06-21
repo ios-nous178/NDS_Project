@@ -24,7 +24,7 @@ export interface ValidatorCatalogInput {
  * manifest.components 에 없지만 stylesheet 가 제공하는 layout primitive 클래스 prefix.
  * validator 가 unknown-nds-class 로 잘못 잡지 않게 명시 추가. (이 목록이 SSOT — server.ts/catalog.ts 공용)
  */
-const EXTRA_CLASS_PREFIXES = ["nds-shell", "nds-section", "nds-form-row"];
+const EXTRA_CLASS_PREFIXES = ["nds-shell", "nds-section", "nds-form-row", "nds-grid"];
 
 /**
  * manifest.ndsHtmlTags 외에 런타임에서 쓰이지만 카탈로그 누락이 잦은 태그들.
