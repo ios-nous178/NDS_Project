@@ -265,6 +265,7 @@ const PRINCIPLES_DIGEST = [
   "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
   "Use <nds-*> components before custom native controls/CSS lookalikes.",
   "Make every mockup responsive: fluid containers (max-width + padding, flex/grid wrap, min-width:0), no fixed-px-only layout, no horizontal scroll/overlap at ~360/~768.",
+  "Multi-column card layouts (home/gallery/grid screens): use <div class=\"nds-grid\" data-cols=\"2|3|4|auto\"> with nds-card cells — token gap + auto mobile 1-col fallback built in. Don't hand-roll display:grid. See get_guide({ topic: 'pattern:card-grid' }).",
 ];
 
 /**

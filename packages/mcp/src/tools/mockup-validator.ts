@@ -118,6 +118,34 @@ function extractOpenTag(block: string, startOfName: number): string {
   return block;
 }
 
+// .nds-grid 컨테이너 안의 Card 셀 개수. 카드 그리드(홈·갤러리)는 "모든 영역을 카드로 감싸는"
+// card-everything 안티패턴이 아니라 의도된 단일 그리드 패턴이므로 그 카운트에서 빼준다.
+// (get_guide({ topic: 'pattern:card-grid' }) — class="nds-grid" 의 Card 셀.)
+function countCardsInGrids(source: string): number {
+  let total = 0;
+  // 여는 div 의 class/className 에 nds-grid 가 있는 태그. [^>] 는 개행 포함 → multiline 여는 태그도 매칭.
+  const gridOpenRe = /<div\b[^>]*\b(?:class|className)\s*=\s*["'][^"']*\bnds-grid\b[^"']*["'][^>]*>/g;
+  let m: RegExpExecArray | null;
+  while ((m = gridOpenRe.exec(source)) !== null) {
+    // 여는 div 다음부터 균형 맞는 </div> 까지를 그리드 블록으로 슬라이스.
+    const start = gridOpenRe.lastIndex;
+    const divRe = /<(\/?)div\b[^>]*?>/g;
+    divRe.lastIndex = start;
+    let depth = 1;
+    let end = source.length;
+    let d: RegExpExecArray | null;
+    while ((d = divRe.exec(source)) !== null) {
+      depth += d[1] === "/" ? -1 : 1;
+      if (depth === 0) {
+        end = d.index;
+        break;
+      }
+    }
+    total += (source.slice(start, end).match(/<\s*Card\.Root\b/g) || []).length;
+  }
+  return total;
+}
+
 function getIconBlocks(source: string): Array<{ block: string; line: number; index: number }> {
   const blocks: Array<{ block: string; line: number; index: number }> = [];
   const pattern = /<\s*\w+Icon\b[\s\S]*?(?:\/>|>\s*<\/\s*\w+Icon\s*>)/g;
@@ -621,15 +649,17 @@ export function validateMockupSource(
   }
 
   // ─── Card Everything Syndrome ────────────────────────────
-  // 한 mockup 에 Card.Root 5개 초과 → 모든 영역을 카드로 감싸는 패턴
+  // 한 mockup 에 Card.Root 5개 초과 → 모든 영역을 카드로 감싸는 패턴.
+  // 단, .nds-grid 안의 Card 셀(카드 그리드)은 의도된 단일 패턴이라 카운트에서 제외한다.
   const cardRootTotal = (source.match(/<\s*Card\.Root\b/g) || []).length;
-  if (cardRootTotal >= 5) {
+  const cardEverythingCount = cardRootTotal - countCardsInGrids(source);
+  if (cardEverythingCount >= 5) {
     violations.push({
       rule: "card-everything",
       line: 1,
-      detail: `한 mockup 에 Card.Root 가 ${cardRootTotal}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
+      detail: `한 mockup 에 (그리드 셀 제외) Card.Root 가 ${cardEverythingCount}개 — 모든 정보 단위를 카드로 감싸는 패턴.`,
       suggestion:
-        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--semantic-gap-loose) + heading + Divider 로 위계를 표현하세요. bannedPatterns: card-everything 참조.",
+        "Card 는 '독립된 정보 단위' 에만. 단순 group/section 은 spacing(--semantic-gap-loose) + heading + Divider 로 위계를 표현하세요. 카드를 다열로 배치하는 화면은 class=\"nds-grid\" + Card 셀(get_guide({ topic: 'pattern:card-grid' })) 로. bannedPatterns: card-everything 참조.",
     });
   }
 
