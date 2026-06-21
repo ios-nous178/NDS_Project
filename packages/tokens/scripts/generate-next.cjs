@@ -163,7 +163,30 @@ for (const { mode, theme } of BRANDS) {
     }
   }
 }
-for (const name of [...allNames].sort()) {
+// ── Figma 변수 패널 순서 = 변수 생성 순서. 알파벳(.sort) 대신 논리 순서로 정렬해
+//    패널이 뒤죽박죽 아닌 가이드 순서로 보이게 한다. ──
+//   Semantic: SemanticColorGuide 카테고리 순서(bg→text→icon→border→fill→button*→input→cta),
+//             카테고리 내부는 base 시멘틱 트리 순서.
+//   Dimension: dimMap 정의 순서(spacing→gap→inset→radius→border-width→stroke→size→grid→typo).
+const SEM_CAT_ORDER = [
+  "bg", "text", "icon", "border", "fill",
+  "button-bg", "button-text", "button-border", "input", "confirm-cta",
+];
+const orderByBase = (names, baseKeys, catOrder) => {
+  const sub = new Map(baseKeys.map((n, i) => [n, i]));
+  const catRank = (n) => {
+    if (!catOrder) return 0;
+    const i = catOrder.indexOf(n.split("/")[0]);
+    return i < 0 ? catOrder.length : i;
+  };
+  return [...names].sort(
+    (a, b) =>
+      catRank(a) - catRank(b) ||
+      (sub.has(a) ? sub.get(a) : 1e9) - (sub.has(b) ? sub.get(b) : 1e9) ||
+      a.localeCompare(b),
+  );
+};
+for (const name of orderByBase(allNames, Object.keys(perMode["nudge-eap"]), SEM_CAT_ORDER)) {
   const valuesByMode = {};
   for (const { mode } of BRANDS) {
     const leaf = perMode[mode][name];
@@ -209,7 +232,7 @@ for (const { mode, theme } of BRANDS) dimByMode[mode] = dimMap(mode === "nudge-e
 const dimNames = new Set();
 for (const m of Object.values(dimByMode)) for (const n of Object.keys(m)) dimNames.add(n);
 const dimVariables = {};
-for (const name of [...dimNames].sort()) {
+for (const name of orderByBase(dimNames, Object.keys(dimByMode["nudge-eap"]))) {
   const vbm = {};
   for (const { mode } of BRANDS)
     if (dimByMode[mode][name] != null) vbm[mode] = { value: dimByMode[mode][name] };
