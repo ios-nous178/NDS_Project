@@ -22,7 +22,8 @@ import {
   orange,
   red,
   green,
-  amber,
+  purple,
+  teal,
 } from "../colors.js";
 import { fontFamily, typeScale } from "../typography.js";
 import { radius } from "../spacing.js";
@@ -45,7 +46,8 @@ export const nudgeEapTheme: ProjectTheme = {
     orange,
     red,
     green,
-    amber,
+    purple,
+    teal,
   },
   semantic: nudgeEapSemantic,
   typography: {

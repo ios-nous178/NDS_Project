@@ -56,8 +56,8 @@ primitives:
     200: "#F8B8CF"
     100: "#FCE3EC"
     50: "#FDF1F5"
-  # Orange — Figma 아토믹 "Orange Red" (#F13F00, EAP 에러색). 공통 Family Orange.
-  orange:
+  # Red — Figma 아토믹 "Orange Red" (#F13F00, EAP 에러색). 공통 Family Red.
+  red:
     900: "#A01C00"
     800: "#CB2700"
     700: "#E33800"
@@ -68,18 +68,18 @@ primitives:
     200: "#FF875D"
     100: "#FFA98C"
     50: "#FEE9E6"
-  # Red — Figma 아토믹 "Coral Red" (#FF4141). 공통 Family Red (cashwalk/biz 에러).
-  red:
-    900: "#7A0A0A"
-    800: "#A01414"
-    700: "#C42020"
-    600: "#E83030"
-    500: "#FF4141"
-    400: "#FF7070"
-    300: "#FF9A9A"
-    200: "#FFCDCD"
-    100: "#FFECEC"
-    50: "#FFF5F5"
+  # Orange — Figma 아토믹 "Peach" (#FB8A3E, EAP 일기·행복/Journal). 공통 Family Orange.
+  orange:
+    900: "#7A3411"
+    800: "#9D4214"
+    700: "#C75416"
+    600: "#ED6B1F"
+    500: "#FB8A3E"
+    400: "#FFA15F"
+    300: "#FFBE8C"
+    200: "#FFD9B8"
+    100: "#FFEEDC"
+    50: "#FFF8F3"
   green:
     900: "#002B1E"
     800: "#003F2E"
@@ -91,18 +91,6 @@ primitives:
     200: "#6FD2BD"
     100: "#AAE3D7"
     50: "#E5F7F4"
-  # Amber — Figma 아토믹 신규 팔레트 (2026-05). Yellow 보다 따뜻한 황금톤.
-  amber:
-    900: "#FC8703"
-    800: "#FD9B02"
-    700: "#FEAF01"
-    600: "#FFC400"
-    500: "#FFD200"
-    400: "#FFDC39"
-    300: "#FFE673"
-    200: "#FFF0AC"
-    100: "#FFFAE5"
-    50: "#FFFEF5"
   # Golden Yellow — Figma 아토믹 명칭 (현 코드에서는 `yellow` 로 유지)
   yellow:
     900: "#9B5000"
@@ -115,6 +103,30 @@ primitives:
     200: "#FFE282"
     100: "#FFEDB3"
     50: "#FFFAE8"
+  # Lavender — Figma 아토믹 신규 (EAP 명상·수면/Meditation). 공통 Family Purple.
+  purple:
+    900: "#4C1D95"
+    800: "#5B21B6"
+    700: "#6D28D9"
+    600: "#7C3AED"
+    500: "#8B5CF6"
+    400: "#A78BFA"
+    300: "#C4B5FD"
+    200: "#DDD6FE"
+    100: "#EDE9FE"
+    50: "#F5F3FF"
+  # Teal — Figma 아토믹 신규 (EAP 안정·휴식/Wellness). 공통 Family Teal.
+  teal:
+    900: "#134E4A"
+    800: "#115E59"
+    700: "#0F766E"
+    600: "#0D9488"
+    500: "#14B8A6"
+    400: "#2DD4BF"
+    300: "#5EEAD4"
+    200: "#99F6E4"
+    100: "#CCFBF1"
+    50: "#F0FDFA"
 
 # ── Semantic Colors ─────────────────────────────────────────
 # 시멘틱 컬러 토큰의 SSOT 는 `packages/tokens/src/semantic.ts` (Figma SemanticColorGuide

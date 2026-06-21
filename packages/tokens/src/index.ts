@@ -23,7 +23,8 @@ export {
   orange,
   red,
   green,
-  amber,
+  purple,
+  teal,
 } from "./colors.js";
 export { cv } from "./cssVar.js";
 export type { CssVarRef } from "./cssVar.js";

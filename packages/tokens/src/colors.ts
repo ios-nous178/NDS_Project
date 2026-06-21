@@ -60,7 +60,7 @@ export const pink = {
   900: "#910041",
 } as const;
 
-export const orange = {
+export const red = {
   50: "#FEE9E6",
   100: "#FFA98C",
   200: "#FF875D",
@@ -73,17 +73,17 @@ export const orange = {
   900: "#A01C00",
 } as const;
 
-export const red = {
-  50: "#FFF5F5",
-  100: "#FFECEC",
-  200: "#FFCDCD",
-  300: "#FF9A9A",
-  400: "#FF7070",
-  500: "#FF4141",
-  600: "#E83030",
-  700: "#C42020",
-  800: "#A01414",
-  900: "#7A0A0A",
+export const orange = {
+  50: "#FFF8F3",
+  100: "#FFEEDC",
+  200: "#FFD9B8",
+  300: "#FFBE8C",
+  400: "#FFA15F",
+  500: "#FB8A3E",
+  600: "#ED6B1F",
+  700: "#C75416",
+  800: "#9D4214",
+  900: "#7A3411",
 } as const;
 
 export const green = {
@@ -99,19 +99,6 @@ export const green = {
   900: "#002B1E",
 } as const;
 
-export const amber = {
-  50: "#FFFEF5",
-  100: "#FFFAE5",
-  200: "#FFF0AC",
-  300: "#FFE673",
-  400: "#FFDC39",
-  500: "#FFD200",
-  600: "#FFC400",
-  700: "#FEAF01",
-  800: "#FD9B02",
-  900: "#FC8703",
-} as const;
-
 export const yellow = {
   50: "#FFFAE8",
   100: "#FFEDB3",
@@ -125,15 +112,42 @@ export const yellow = {
   900: "#9B5000",
 } as const;
 
+export const purple = {
+  50: "#F5F3FF",
+  100: "#EDE9FE",
+  200: "#DDD6FE",
+  300: "#C4B5FD",
+  400: "#A78BFA",
+  500: "#8B5CF6",
+  600: "#7C3AED",
+  700: "#6D28D9",
+  800: "#5B21B6",
+  900: "#4C1D95",
+} as const;
+
+export const teal = {
+  50: "#F0FDFA",
+  100: "#CCFBF1",
+  200: "#99F6E4",
+  300: "#5EEAD4",
+  400: "#2DD4BF",
+  500: "#14B8A6",
+  600: "#0D9488",
+  700: "#0F766E",
+  800: "#115E59",
+  900: "#134E4A",
+} as const;
+
 export const colors = {
   gray,
   common,
   coolGray,
   blue,
   pink,
-  orange,
   red,
+  orange,
   green,
-  amber,
   yellow,
+  purple,
+  teal,
 } as const;

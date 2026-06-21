@@ -28,7 +28,7 @@ export const nudgeEapSemantic = {
     },
     inverse: { default: ref("color.gray.900") }, // #111111
     status: {
-      error: ref("color.orange.50"), // #FEE9E6
+      error: ref("color.red.50"), // #FEE9E6
       success: ref("color.green.50"), // #E5F7F4
       info: ref("color.blue.100"), // #E3F2FC — Figma `--bg-status-info`
       caution: ref("color.yellow.50"), // #FFFAE8
@@ -52,7 +52,7 @@ export const nudgeEapSemantic = {
     },
     status: {
       success: ref("color.green.400"), // #00A07C
-      error: ref("color.orange.500"), // #F13F00
+      error: ref("color.red.500"), // #F13F00
       caution: ref("color.yellow.600"), // #FFA100 — Figma `--text-status-caution`
       info: ref("color.blue.600"), // #017EE4 — Figma `--text-status-info`
     },
@@ -125,7 +125,7 @@ export const nudgeEapSemantic = {
     brand: { default: ref("color.blue.500") }, // #2B96ED ← Atomic/Bright Blue · 500
     status: {
       success: ref("color.green.300"), // #13BFA2 ← Atomic/Green · 500
-      error: ref("color.orange.500"), // #F13F00 ← Atomic/Orange Red · 500
+      error: ref("color.red.500"), // #F13F00 ← Atomic/Orange Red · 500
       caution: ref("color.yellow.500"), // #FFC303 ← Golden Yellow · 500
     },
   },
@@ -140,7 +140,7 @@ export const nudgeEapSemantic = {
     },
     disabled: { default: ref("color.gray.200") }, // #ECECEC
     status: {
-      error: ref("color.orange.500"), // #F13F00
+      error: ref("color.red.500"), // #F13F00
       caution: ref("color.yellow.500"), // #FFC303
     },
   },
@@ -157,7 +157,7 @@ export const nudgeEapSemantic = {
     },
     inverse: { default: ref("color.common.00") }, // #FFFFFF
     status: {
-      error: ref("color.orange.500"), // #F13F00
+      error: ref("color.red.500"), // #F13F00
       caution: ref("color.yellow.500"), // #FFC303
     },
     // 선택 컨트롤(checkbox·radio) on 채움 — base 는 fill-brand 를 추종(프로젝트별 자기 brand 색).
@@ -176,12 +176,12 @@ export const nudgeEapSemantic = {
     borderDefault: ref("color.gray.300"), // #D8D8D8
     borderHover: ref("color.gray.400"), // #C7C7C7
     borderFocus: ref("color.blue.500"), // #2B96ED
-    borderError: ref("color.orange.500"), // #F13F00
+    borderError: ref("color.red.500"), // #F13F00
     borderDisabled: ref("color.gray.300"), // #D8D8D8
     placeholder: ref("color.gray.500"), // #999999
     helpertextDefault: ref("color.gray.500"), // #999999 ← Text/Muted/Default
     helpertextSuccess: ref("color.blue.500"), // #2B96ED ← Text/Brand/Default
-    helpertextError: ref("color.orange.500"), // #F13F00 ← Text/Status/Error
+    helpertextError: ref("color.red.500"), // #F13F00 ← Text/Status/Error
     helpertextDisabled: ref("color.gray.400"), // #C7C7C7 ← Text/Disabled/Default
   },
 
