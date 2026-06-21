@@ -1,7 +1,6 @@
 {
   "$comment": "check-guide-figma-links.mjs waiver — 게이트 도입(2026-06-12) 이전부터 figmaNodeUrl 이 없던 가이드. Figma 가이드 노드를 확보해 frontmatter 에 figmaNodeUrl 을 추가하면 게이트가 '해소됨' 경고를 주니 그때 항목을 지울 것. 신규 가이드는 여기 추가하지 말고 figmaNodeUrl 을 채우는 게 기본 (DS 편입 기준 2번).",
   "missing": [
-    "Accordion",
     "AddressPicker",
     "Agreement",
     "AmountInput",
@@ -28,10 +27,8 @@
     "DSHighlight",
     "DataTable",
     "DateRangePicker",
-    "Divider",
     "Drawer",
     "DropdownMenu",
-    "ResultState",
     "FAB",
     "FileUpload",
     "FilterBar",
