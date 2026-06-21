@@ -19,4 +19,5 @@ export const teamworkTheme: ProjectTheme = {
   actionsLayout: "end",
   palette: cashwalkTheme.palette, // cashwalk 와 동일 팔레트(cornflower=accent 포함)
   semantic: teamworkSemantic,
+  elevation: cashwalkTheme.elevation, // cashwalk elevation(4단계) 상속
 };

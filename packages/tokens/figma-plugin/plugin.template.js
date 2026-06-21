@@ -199,6 +199,53 @@ async function main() {
     createdStyles.push({ kk, nm, st });
   }
 
+  // Effect Style (Elevation — box-shadow → DropShadow). 변수 타입에 그림자가 없어 Effect Style 로.
+  //   효과엔 brand=mode 가 안 되므로 브랜드별 "Elevation/{브랜드}/E{n}" 스타일 생성.
+  //   none/빈 값·base 와 동일한 레벨(브랜드 미override)은 스킵 → base 스타일만 둠.
+  const parseShadows = (str) => {
+    if (!str || str === "none") return [];
+    return str
+      .split(/,(?![^(]*\))/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((p) => {
+        const cm = p.match(/(rgba?\([^)]+\)|#[0-9a-fA-F]+)/);
+        const col = cm ? cm[1] : "rgba(0,0,0,0.12)";
+        const nums = ((cm ? p.replace(cm[1], "") : p).match(/-?\d*\.?\d+/g) || []).map(Number);
+        const c = toRGBA(col);
+        return {
+          type: "DROP_SHADOW",
+          color: { r: c.r, g: c.g, b: c.b, a: c.a },
+          offset: { x: nums[0] || 0, y: nums[1] || 0 },
+          radius: nums[2] || 0,
+          spread: nums[3] || 0,
+          visible: true,
+          blendMode: "NORMAL",
+        };
+      });
+  };
+  const ELEV = TOKENS.elevation || { modes: [], variables: {} };
+  const elevLevels = Object.keys(ELEV.variables);
+  const elevVal = (lvl, mode) => ((ELEV.variables[lvl].valuesByMode[mode] || {}).value) || "";
+  const existingEffectStyles = await figma.getLocalEffectStylesAsync();
+  const ensureEffect = (name) => {
+    let s = existingEffectStyles.find((x) => x.name === name);
+    if (!s) {
+      s = figma.createEffectStyle();
+      s.name = name;
+    }
+    return s;
+  };
+  for (const mode of ELEV.modes) {
+    for (const lvl of elevLevels) {
+      const val = elevVal(lvl, mode);
+      const eff = parseShadows(val);
+      if (!eff.length) continue;
+      if (mode !== "nudge-eap" && val === elevVal(lvl, "nudge-eap")) continue; // base 와 동일 → 스킵
+      ensureEffect("Elevation/" + brandLabel(mode) + "/E" + lvl).effects = eff;
+    }
+  }
+
   // ════ 비주얼 ════
   const INK = { r: 0.1, g: 0.1, b: 0.12 },
     SUB = { r: 0.45, g: 0.46, b: 0.5 },
@@ -570,11 +617,72 @@ async function main() {
   dimTable(typoRoot, TYPO_CATS, false); // font-size/line-height/letter-spacing 변수 표
   typoPage.appendChild(typoRoot);
 
+  // ── 페이지 4: Elevation ──
+  const elevPage = await getPage("🎨 Token Guide — Elevation");
+  const elevRoot = auto("Elevation", "VERTICAL", 28, { pad: 56, fill: WHITE });
+  const eh = auto("hd", "VERTICAL", 4);
+  eh.appendChild(rect(40, 4, ACCENT));
+  eh.appendChild(txt("Elevation", 28, "Bold", INK));
+  eh.appendChild(
+    txt(
+      "그림자 단계 — box-shadow → Effect Style(Elevation/{브랜드}/E{n}). 열 = 브랜드 모드 · 카드에 실제 그림자 적용.",
+      12,
+      "Regular",
+      SUB,
+    ),
+  );
+  elevRoot.appendChild(eh);
+  const ehead = auto("colhead", "HORIZONTAL", 0, {
+    align: "CENTER",
+    fill: BAR,
+    radius: 6,
+    padV: 9,
+    padH: 14,
+  });
+  ehead.appendChild(txt("Level", 11, "Bold", INK, NAMEW - 14));
+  for (const b of BRANDS) ehead.appendChild(txt(brandLabel(b), 11, "Bold", INK, COLW, "LEFT"));
+  elevRoot.appendChild(ehead);
+  for (const lvl of elevLevels) {
+    const row = auto("E" + lvl, "HORIZONTAL", 0, { align: "CENTER", padV: 12 });
+    row.appendChild(txt("Elevation/" + lvl, 12, "Bold", INK, NAMEW));
+    for (const b of BRANDS) {
+      const cellWrap = auto(b, "VERTICAL", 5, {
+        align: "MIN",
+        primary: "FIXED",
+        counter: "FIXED",
+      });
+      cellWrap.resize(COLW, 64);
+      const val = elevVal(lvl, b);
+      const eff = parseShadows(val);
+      const card = figma.createRectangle();
+      card.resize(72, 36);
+      card.cornerRadius = 8;
+      card.fills = [{ type: "SOLID", color: WHITE }];
+      card.strokes = [{ type: "SOLID", color: LINE }];
+      card.strokeWeight = 1;
+      if (eff.length) card.effects = eff;
+      cellWrap.appendChild(card);
+      let label = "—";
+      if (eff.length) {
+        const e0 = eff[0];
+        label =
+          `y${e0.offset.y}·b${e0.radius}·${Math.round(e0.color.a * 100)}%` +
+          (eff.length > 1 ? " +" : "");
+      }
+      cellWrap.appendChild(txt(label, 8, "Regular", FAINT, COLW));
+      row.appendChild(cellWrap);
+    }
+    elevRoot.appendChild(row);
+  }
+  elevPage.appendChild(elevRoot);
+
   await figma.setCurrentPageAsync(colorPage);
 }
 
 main()
   .then(() =>
-    figma.closePlugin("✓ 변수 + Text Style + 가이드 3페이지(Color·Dimension·Typography) 완료"),
+    figma.closePlugin(
+      "✓ 변수 + Text/Effect Style + 가이드 4페이지(Color·Dimension·Typography·Elevation) 완료",
+    ),
   )
   .catch((e) => figma.closePlugin("✗ 오류: " + (e && e.message ? e.message : e)));

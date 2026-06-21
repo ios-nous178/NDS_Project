@@ -241,6 +241,27 @@ for (const name of orderByBase(dimNames, Object.keys(dimByMode["nudge-eap"]))) {
 // typeScale 키 목록(Text Style 생성용) — 본문 weight/family 는 보류, size/lh/ls 만 변수 바인딩.
 const textStyleKeys = Object.keys(typeScale).map(tsKey);
 
+// ─── elevation (box-shadow per brand=mode) — Figma Effect Style 소스. 문자열 그대로 두고
+//     플러그인이 파싱해 DropShadow 효과 + Effect Style 로 만든다(변수 타입에 그림자가 없으므로). ───
+const { shadow: baseShadow } = require("../dist/elevation");
+const elevByMode = {};
+for (const { mode, theme } of BRANDS)
+  elevByMode[mode] = {
+    ...baseShadow,
+    ...((mode !== "nudge-eap" && theme.elevation && theme.elevation.shadow) || {}),
+  };
+const elevNames = new Set();
+for (const m of Object.values(elevByMode)) for (const n of Object.keys(m)) elevNames.add(n);
+const elevVariables = {};
+for (const name of [...elevNames].sort((a, b) =>
+  String(a).localeCompare(String(b), undefined, { numeric: true }),
+)) {
+  const vbm = {};
+  for (const { mode } of BRANDS)
+    if (elevByMode[mode][name] != null) vbm[mode] = { value: elevByMode[mode][name] };
+  elevVariables[name] = { valuesByMode: vbm };
+}
+
 const figma = {
   $comment:
     "P2 v1 intermediate. semantic=brand=mode, alias=variable name(컬렉션 미지정). " +
@@ -249,6 +270,7 @@ const figma = {
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
   dimensions: { modes: BRANDS.map((b) => b.mode), variables: dimVariables, textStyleKeys },
+  elevation: { modes: BRANDS.map((b) => b.mode), variables: elevVariables },
   meta: tokenMeta,
 };
 fs.writeFileSync(path.join(nextDir, "figma-variables.json"), JSON.stringify(figma, null, 2) + "\n");
