@@ -26,7 +26,7 @@ export const trostYellow = {
   text: "#FF9D00",
 } as const;
 
-// Point(액센트) 컬러 — Figma 가이드 Key Pair 의 인디고(구 코발트). focus / point 역할.
+// Point(액센트) 컬러 — Figma 가이드 Key Pair 의 인디고. focus / point 역할.
 export const trostIndigo = {
   50: "#F6F7FF",
   100: "#EDF0FF",

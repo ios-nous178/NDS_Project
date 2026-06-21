@@ -27,13 +27,13 @@ export const trostSemantic = {
     status: {
       error: ref("color.red.50"), // #FFF1EC
       success: ref("color.green.50"), // #E5F9F1
-      info: ref("color.blue.50"), // #ECF5FF — info 는 blue (point 코발트와 분리)
+      info: ref("color.blue.50"), // #ECF5FF — info 는 blue (point 인디고와 분리)
       caution: "#FFF8E6", // 가이드 미수록 — 기존 유지
     },
     // Bible 카드 등 실측 overlay 는 60% (`bg-black/60`). NudgeEAP base 는 40%.
     overlay: "rgba(0, 0, 0, 0.6)",
     disabled: ref("color.gray.200"),
-    // Point(액센트) 서피스 — 코발트. brand(노랑)와 별개의 2차 강조.
+    // Point(액센트) 서피스 — 인디고. brand(노랑)와 별개의 2차 강조.
     point: {
       default: ref("color.indigo.500"), // #4968FF
       subtle: ref("color.indigo.100"), // #EDF0FF
@@ -58,7 +58,7 @@ export const trostSemantic = {
       caution: ref("color.yellow.text"), // orange — 가이드 미수록, 기존 유지
       info: ref("color.blue.600"), // #1A78E5
     },
-    // Point(액센트) 텍스트 — 코발트.
+    // Point(액센트) 텍스트 — 인디고.
     point: { default: ref("color.indigo.500"), strong: ref("color.indigo.600") }, // #4968FF / #3050E5
   },
   buttonBg: {
@@ -124,7 +124,7 @@ export const trostSemantic = {
       error: ref("color.red.500"), // #FF4111
       caution: ref("color.yellow.text"), // orange — 가이드 미수록, 기존 유지
     },
-    // Point(액센트) 아이콘 — 코발트.
+    // Point(액센트) 아이콘 — 인디고.
     point: { default: ref("color.indigo.500") }, // #4968FF
   },
   border: {
@@ -139,7 +139,7 @@ export const trostSemantic = {
       success: ref("color.green.500"), // #00BC78 (가이드 Border/Status/Success)
       caution: ref("color.yellow.text"),
     },
-    // Point(액센트) 보더 — 코발트.
+    // Point(액센트) 보더 — 인디고.
     point: { default: ref("color.indigo.500") }, // #4968FF
   },
   fill: {
@@ -162,7 +162,7 @@ export const trostSemantic = {
     },
     // 선택 컨트롤(checkbox·radio) on 채움 — trost 만 dark(노랑 brand 가 대비 부족).
     controlOn: ref("color.gray.800"),
-    // Point(액센트) 채움 — 코발트.
+    // Point(액센트) 채움 — 인디고.
     point: {
       default: ref("color.indigo.500"), // #4968FF
       hover: ref("color.indigo.600"), // #3050E5

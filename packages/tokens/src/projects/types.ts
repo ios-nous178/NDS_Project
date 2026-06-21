@@ -31,7 +31,7 @@ export interface SemanticColors {
     /** DS extension — disabled bg */
     disabled?: string;
     /**
-     * Point(액센트) 서피스 — 프로젝트 가이드의 코발트(트로스트) 등 보조 강조 컬러.
+     * Point(액센트) 서피스 — 프로젝트 가이드의 인디고(트로스트) 등 보조 강조 컬러.
      * `BG/Point/{Default,Subtle,Surface}`. brand(주 컬러)와 별개의 2차 액센트.
      * NudgeEAP base 는 미정의 — point 패밀리를 둔 brand 만 emit.
      */
@@ -310,7 +310,7 @@ export interface ComponentOverrides {
     fontWeight?: ComponentValue;
   };
   /**
-   * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
+   * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=teal600 + bold,
    * label Pretendard 10/12. 다른 프로젝트는 fallback (active=textRole.normal #333, label 11/14).
    */
   footer?: {
@@ -493,7 +493,7 @@ export interface ComponentOverrides {
     chipDefaultWeight?: ComponentValue;
     /**
      * tone="color"(활성/선택 강조)의 색 — brand 가 아닌 별도 액센트를 쓰는 프로젝트용 슬롯.
-     * 트로스트: brand=노랑(면적 채움)이라 탭 액센트는 Point 코발트(#4968FF)로 분리(가독성).
+     * 트로스트: brand=노랑(면적 채움)이라 탭 액센트는 Point 인디고(#4968FF)로 분리(가독성).
      *   · accentFill = line indicator + chip/segment 활성 채움 (default cv.surface.brand)
      *   · accentText = line 활성 텍스트 (default cv.textRole.brand)
      *   · accentOn   = chip/segment 채움 위 텍스트 (default cv.button.textDefault)

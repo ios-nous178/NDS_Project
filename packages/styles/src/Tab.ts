@@ -114,7 +114,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    /* tone=color 활성 텍스트 — project(기본) 또는 프로젝트 액센트(트로스트=Point 코발트) */
+    /* tone=color 활성 텍스트 — project(기본) 또는 프로젝트 액센트(트로스트=Point 인디고) */
     color: var(--nds-tab-accent-text, ${cv.textRole.brand});
   }
 
@@ -185,7 +185,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    /* 채움=accent(트로스트 Point 코발트), 텍스트=accentOn(코발트 위 흰). 비-Trost 는 project fallback. */
+    /* 채움=accent(트로스트 Point 인디고), 텍스트=accentOn(인디고 위 흰). 비-Trost 는 project fallback. */
     background: var(--nds-tab-accent-fill, ${cv.surface.brand});
     color: var(--nds-tab-accent-on, ${cv.button.textDefault});
     font-weight: ${fontWeight.bold};

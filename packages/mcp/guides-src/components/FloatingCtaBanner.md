@@ -52,7 +52,7 @@ usagePolicy:
 ## pitfalls
 
 - Chevron 은 텍스트 '>' 로 그리지 말 것 — 내부에서 `<ChevronRightIcon>` 아이콘으로 자동 렌더. showArrow=false 로 숨김만 가능.
-- Border / CTA / Arrow 색은 모두 시멘틱(`cv.borderRole.brand`, `cv.textRole.brand`) 참조 — raw hex override 금지. 프로젝트별 실제 매핑(예: Geniet mint, NudgeEAP blue)은 `packages/tokens/src/projects/*.semantic.ts` 에 정의.
+- Border / CTA / Arrow 색은 모두 시멘틱(`cv.borderRole.brand`, `cv.textRole.brand`) 참조 — raw hex override 금지. 프로젝트별 실제 매핑(예: Geniet teal, NudgeEAP blue)은 `packages/tokens/src/projects/*.semantic.ts` 에 정의.
 - CTA 텍스트 색은 `cv.textRole.brand` 고정 — underline / weight 변경 / 다른 강조색 적용 금지.
 - radius 는 항상 pill (`radius.pill`) — 직사각형 radius 8/12 변형 금지 (Figma DO/Don't 룰).
 - floating=true 시 부모에 `position: relative` 가 있어도 화면 fixed — 컨테이너 내부 sticky 가 필요하면 floating=false + 부모에서 직접 position:sticky 처리.

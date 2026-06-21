@@ -507,12 +507,12 @@ export const Segmented: Story = {
 };
 
 /* ════════════════════════════════════════════
- * Trost · tone="color" 강조 = Point 코발트(#4968FF)
+ * Trost · tone="color" 강조 = Point 인디고(#4968FF)
  * ────────────────────────────────────────────
  * 트로스트 project 는 노랑(면적 채움 전용)이라 탭 tone="color" 활성 강조색은
- * --nds-tab-accent-* 슬롯을 거쳐 Point 코발트로 분리된다. data-project="trost"
- * 래퍼 안에서 Line(코발트 텍스트·인디케이터) / Chip(코발트 채움, 흰 텍스트) /
- * Segment(코발트 채움)가 노랑이 아니라 코발트로 보여야 한다(노랑/오렌지면 회귀).
+ * --nds-tab-accent-* 슬롯을 거쳐 Point 인디고로 분리된다. data-project="trost"
+ * 래퍼 안에서 Line(인디고 텍스트·인디케이터) / Chip(인디고 채움, 흰 텍스트) /
+ * Segment(인디고 채움)가 노랑이 아니라 인디고로 보여야 한다(노랑/오렌지면 회귀).
  * 다른 프로젝트는 슬롯 미설정 → project 색 폴백이라 무변.
  * ════════════════════════════════════════════ */
 
@@ -538,10 +538,10 @@ function TrostColorDemo() {
   const [chipKey, setChipKey] = useState("all");
   const [segmentKey, setSegmentKey] = useState("all");
   return (
-    // data-project="trost" → 프로젝트 토큰이 --nds-tab-accent-* 를 코발트로 emit (데모용 래퍼)
+    // data-project="trost" → 프로젝트 토큰이 --nds-tab-accent-* 를 인디고로 emit (데모용 래퍼)
     <div data-project="trost" style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
-        <PlatformLabel text="Line · color (활성 텍스트·인디케이터 = 코발트)" />
+        <PlatformLabel text="Line · color (활성 텍스트·인디케이터 = 인디고)" />
         <div style={pcFrame}>
           <Tab
             items={lineItems}
@@ -554,7 +554,7 @@ function TrostColorDemo() {
         </div>
       </div>
       <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
-        <PlatformLabel text="Chip · color (활성 채움 = 코발트, 텍스트 = 흰색)" />
+        <PlatformLabel text="Chip · color (활성 채움 = 인디고, 텍스트 = 흰색)" />
         <div style={pcFrame}>
           <Tab
             items={chipItems}
@@ -568,7 +568,7 @@ function TrostColorDemo() {
         </div>
       </div>
       <div style={{ display: "flex", gap: 6, flexDirection: "column" }}>
-        <PlatformLabel text="Segment · color (PC, 활성 채움 = 코발트)" />
+        <PlatformLabel text="Segment · color (PC, 활성 채움 = 인디고)" />
         <div style={{ width: 520 }}>
           <Tab
             items={segmentItems}
@@ -585,12 +585,12 @@ function TrostColorDemo() {
 }
 
 export const TrostColorAccent: Story = {
-  name: "Project/Trost · Color (Point 코발트)",
+  name: "Project/Trost · Color (Point 인디고)",
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
-      title="Trost · tone=&quot;color&quot; = Point 코발트(#4968FF)"
-      description="트로스트 project 는 노랑(면적 채움 전용)이라 탭 활성 강조색은 --nds-tab-accent-* 슬롯을 거쳐 Point 코발트로 분리됩니다. Line=코발트 텍스트·인디케이터, Chip/Segment=코발트 채움(채움 위 텍스트는 흰색). 다른 프로젝트는 project 색으로 폴백합니다."
+      title="Trost · tone=&quot;color&quot; = Point 인디고(#4968FF)"
+      description="트로스트 project 는 노랑(면적 채움 전용)이라 탭 활성 강조색은 --nds-tab-accent-* 슬롯을 거쳐 Point 인디고로 분리됩니다. Line=인디고 텍스트·인디케이터, Chip/Segment=인디고 채움(채움 위 텍스트는 흰색). 다른 프로젝트는 project 색으로 폴백합니다."
     >
       <TrostColorDemo />
     </ShowcaseSection>

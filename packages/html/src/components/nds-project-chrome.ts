@@ -460,7 +460,7 @@ const PROJECT_DATA: Record<ProjectKey, ProjectChrome> = {
       mobilePointHref: "#",
     },
     /* React GenietBottomNav (홈/기록/혜택/리뷰/커뮤니티) — 단일 그래픽 + color cascade.
-     * active = mint600, inactive = gray500. icon == activeIcon. */
+     * active = teal600, inactive = gray500. icon == activeIcon. */
     bottomNav: {
       iconPolicy: "single",
       activeColor: "var(--semantic-text-brand-default, #00A8AC)",

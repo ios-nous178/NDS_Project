@@ -3,7 +3,7 @@ figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9
 references:
   - label: Trost Modal & Popup Guide — 4 variants (Compact/Default × Destructive/Positive)
     url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=171-9899
-    caption: 트로스트 모달 가이드. Positive=프로젝트 노랑 #FFF42E + 검은 텍스트(저장·구독·확인), Destructive=검정 #000 + 흰 텍스트(삭제·차단·해지). radius 16 · 상단 패딩 24 · 버튼 2개 가로(우측 primary, h44 r8) · backdrop 0.4. mint(서플 색) 금지 — 노랑 유지.
+    caption: 트로스트 모달 가이드. Positive=프로젝트 노랑 #FFF42E + 검은 텍스트(저장·구독·확인), Destructive=검정 #000 + 흰 텍스트(삭제·차단·해지). radius 16 · 상단 패딩 24 · 버튼 2개 가로(우측 primary, h44 r8) · backdrop 0.4. teal(서플 색) 금지 — 노랑 유지.
     project: trost
   - label: CashwalkBiz Admin Modal Guide — 4 patterns
     url: https://www.figma.com/design/7dCJU5lNPfgcAjFPwbbLIu/?node-id=3418-471
@@ -38,7 +38,7 @@ matrixOverrides:
       radius: 16px (가이드 171:9899 Radius/2xl · base 8 → 트로스트 토큰 modal.radius)
       padding: 24px(top) / 16 좌우·하단 (base 28/16/16 → 트로스트 토큰 modal.padTop=24)
       buttons: 2개 가로(우측 primary) · width 130 · height 44 · radius 8 · backdrop rgba(0,0,0,0.4)
-      confirmCta: 'Positive(저장·구독·확인) = 프로젝트 노랑 #FFF42E + 검은 텍스트(confirmCta 토큰이 프로젝트별 자기 값 — 트로스트=검정 자동, 별도 설정 불필요). 비가역(삭제·차단·해지) = confirmTone="destructive"(react) / 검정 nds-button color="neutral"(html) → 검정 #1A1A1A + 흰 텍스트. ⚠️ mint(서플 primary) 색 쓰지 말 것 — 트로스트는 노랑 유지.'
+      confirmCta: 'Positive(저장·구독·확인) = 프로젝트 노랑 #FFF42E + 검은 텍스트(confirmCta 토큰이 프로젝트별 자기 값 — 트로스트=검정 자동, 별도 설정 불필요). 비가역(삭제·차단·해지) = confirmTone="destructive"(react) / 검정 nds-button color="neutral"(html) → 검정 #1A1A1A + 흰 텍스트. ⚠️ teal(서플 primary) 색 쓰지 말 것 — 트로스트는 노랑 유지.'
       activationCondition: '<html data-project="trost"> — base 토큰 cascade 로 자동 (radius/padTop 은 트로스트 컴포넌트 토큰)'
 usagePolicy:
   useFor:

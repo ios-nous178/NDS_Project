@@ -132,12 +132,12 @@ export const trostTheme: ProjectTheme = {
       selectedText: trostYellow.text, // #FF9D00 (Text/Brand)
       selectedBorder: trostYellow[500], // #FFF42E (Border/Brand)
     },
-    // Tab tone="color" 액센트 — 가이드 Tabs(5301:108) Line/Chip/Segment 활성색 = Point 코발트.
+    // Tab tone="color" 액센트 — 가이드 Tabs(5301:108) Line/Chip/Segment 활성색 = Point 인디고.
     // brand=노랑은 면적 채움 전용(텍스트·인디케이터 가독성↓)이라 탭 강조는 Point 로 분리.
     tab: {
       accentFill: trostIndigo[500], // #4968FF — line indicator + chip/segment 활성 채움
       accentText: trostIndigo[500], // #4968FF — line 활성 텍스트
-      accentOn: trostCommon.white, // #FFFFFF — 코발트 채움 위 텍스트
+      accentOn: trostCommon.white, // #FFFFFF — 인디고 채움 위 텍스트
     },
     // Controls 가이드(5158:108) — Checkbox·Radio 컨트롤 24×24, on 상태는 brand 노랑이 아닌
     // 다크(#333) + 흰 체크/점(노랑 위 가독성). 칩 선택색과 동일 톤.
