@@ -423,7 +423,7 @@ export function validateMockupSource(
   }
 
   const primaryTokenRefs = [
-    ...source.matchAll(/var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)[\w-]*\)/g),
+    ...source.matchAll(/var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)[\w-]*\)/g),
   ];
   const primaryRoleSignals = [
     {
@@ -444,21 +444,21 @@ export function validateMockupSource(
     {
       name: "background",
       matched:
-        /background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+        /background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)/.test(
           source,
         ),
     },
     {
       name: "border",
       matched:
-        /border(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+        /border(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)/.test(
           source,
         ),
     },
     {
       name: "icon",
       matched:
-        /<\s*\w+Icon\b[\s\S]*?color\s*=\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+        /<\s*\w+Icon\b[\s\S]*?color\s*=\s*["']var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)/.test(
           source,
         ),
     },
@@ -475,10 +475,10 @@ export function validateMockupSource(
   }
 
   if (
-    /background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100))/g.test(
+    /background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|indigo-(?:50|100))/g.test(
       source,
     ) &&
-    /<\s*(?:Chip|Badge)\b[\s\S]*?(?:variant\s*=\s*["'](?:filled|soft)["']|background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100)))/.test(
+    /<\s*(?:Chip|Badge)\b[\s\S]*?(?:variant\s*=\s*["'](?:filled|soft)["']|background(?:Color)?\s*:\s*["']var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|indigo-(?:50|100)))/.test(
       source,
     )
   ) {

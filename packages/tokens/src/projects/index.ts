@@ -13,7 +13,7 @@ export type { NudgeEapSemanticTokens } from "./nudge-eap.js";
 export {
   trostTheme,
   trostYellow,
-  trostCobalt,
+  trostIndigo,
   trostPink,
   trostNeutral,
   trostRed,

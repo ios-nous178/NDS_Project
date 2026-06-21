@@ -5,7 +5,7 @@
  * colors_and_type.css 실측값 기반.
  *
  * 구성:
- *   - trost.palette.ts   : atomic 컬러 스케일 (trostYellow / trostCobalt / ...)
+ *   - trost.palette.ts   : atomic 컬러 스케일 (trostYellow / trostIndigo / ...)
  *   - trost.semantic.ts  : Figma role-based 시멘틱 트리 (NudgeEAP base override)
  *   - trost.ts (이 파일) : palette + semantic 을 묶어 ProjectTheme 로 export
  */
@@ -13,7 +13,7 @@
 import type { ProjectTheme } from "./types.js";
 import {
   trostBlue,
-  trostCobalt,
+  trostIndigo,
   trostGreen,
   trostNeutral,
   trostPink,
@@ -23,7 +23,7 @@ import {
 import { trostSemantic } from "./trost.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export — API 호환 유지
-export { trostYellow, trostCobalt, trostPink, trostNeutral, trostRed, trostBlue, trostGreen };
+export { trostYellow, trostIndigo, trostPink, trostNeutral, trostRed, trostBlue, trostGreen };
 export { trostSemantic };
 export type { TrostSemanticTokens } from "./trost.semantic.js";
 
@@ -34,7 +34,7 @@ export const trostTheme: ProjectTheme = {
   actionsLayout: "split",
   palette: {
     yellow: trostYellow,
-    cobalt: trostCobalt,
+    indigo: trostIndigo,
     pink: trostPink,
     neutral: trostNeutral,
     red: trostRed,
@@ -133,8 +133,8 @@ export const trostTheme: ProjectTheme = {
     // Tab tone="color" 액센트 — 가이드 Tabs(5301:108) Line/Chip/Segment 활성색 = Point 코발트.
     // brand=노랑은 면적 채움 전용(텍스트·인디케이터 가독성↓)이라 탭 강조는 Point 로 분리.
     tab: {
-      accentFill: trostCobalt[500], // #4968FF — line indicator + chip/segment 활성 채움
-      accentText: trostCobalt[500], // #4968FF — line 활성 텍스트
+      accentFill: trostIndigo[500], // #4968FF — line indicator + chip/segment 활성 채움
+      accentText: trostIndigo[500], // #4968FF — line 활성 텍스트
       accentOn: trostNeutral["00"], // #FFFFFF — 코발트 채움 위 텍스트
     },
     // Controls 가이드(5158:108) — Checkbox·Radio 컨트롤 24×24, on 상태는 brand 노랑이 아닌

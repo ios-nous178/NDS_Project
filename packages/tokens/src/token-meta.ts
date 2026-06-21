@@ -31,7 +31,7 @@ export const familyNotes: Record<string, { desc: string; tags?: string[] }> = {
   amber: { desc: "앰버" },
   yellow: { desc: "옐로우" },
   mint: { desc: "민트" },
-  cobalt: { desc: "코발트 (포인트/포커스)" },
+  indigo: { desc: "인디고 (포인트/포커스)" },
   pink: { desc: "핑크" },
   purple: { desc: "퍼플" },
   gray: { desc: "그레이" },

@@ -112,14 +112,14 @@ export const TrostAll: Story = {
 };
 
 export const TrostProjectTint: Story = {
-  name: "Trost/Project 색 (cobalt)",
+  name: "Trost/Project 색 (indigo)",
   globals: { project: "trost" },
   args: { ...TROST_ARGS, iconColor: "var(--semantic-border-focus-default, #4968FF)" },
   parameters: {
     docs: {
       description: {
         story:
-          "Trost focus·info 컬러(`--semantic-border-focus-default`, #4968FF) 로 렌더링. Trost primary 는 노랑이지만 노란 배경 위 가독성 때문에 cobalt 를 project tint 로 사용.",
+          "Trost focus·info 컬러(`--semantic-border-focus-default`, #4968FF) 로 렌더링. Trost primary 는 노랑이지만 노란 배경 위 가독성 때문에 indigo 를 project tint 로 사용.",
       },
     },
   },

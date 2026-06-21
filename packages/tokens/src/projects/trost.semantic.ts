@@ -4,7 +4,7 @@
  * Figma 시멘틱 컬러 가이드(5021:318) 1:1 미러. Key Pair 3색:
  *   · Brand = Yellow(#FFF42E) — 면적 큰 채움(button/banner bg). 텍스트로는 가독성상 안 씀.
  *   · Action = Black(neutral 900/800) — 다크 액션/inverse 표면.
- *   · Point  = Cobalt(#4968FF) — brand 와 별개의 2차 액센트(focus·강조).
+ *   · Point  = Indigo(#4968FF) — brand 와 별개의 2차 액센트(focus·강조).
  *
  * Trost 가 NudgeEAP base(projects/nudge-eap.semantic.ts) 와 다른 부분만 명시.
  * generate-css.js 가 이 트리를 `dist/trost.css` 의 `--semantic-*` 변수로 emit.
@@ -35,9 +35,9 @@ export const trostSemantic = {
     disabled: ref("color.neutral.200"),
     // Point(액센트) 서피스 — 코발트. brand(노랑)와 별개의 2차 강조.
     point: {
-      default: ref("color.cobalt.500"), // #4968FF
-      subtle: ref("color.cobalt.100"), // #EDF0FF
-      surface: ref("color.cobalt.50"), // #F6F7FF
+      default: ref("color.indigo.500"), // #4968FF
+      subtle: ref("color.indigo.100"), // #EDF0FF
+      surface: ref("color.indigo.50"), // #F6F7FF
     },
   },
   text: {
@@ -59,18 +59,18 @@ export const trostSemantic = {
       info: ref("color.blue.600"), // #1A78E5
     },
     // Point(액센트) 텍스트 — 코발트.
-    point: { default: ref("color.cobalt.500"), strong: ref("color.cobalt.600") }, // #4968FF / #3050E5
+    point: { default: ref("color.indigo.500"), strong: ref("color.indigo.600") }, // #4968FF / #3050E5
   },
   buttonBg: {
     default: ref("color.yellow.500"), // #FFF42E
     hover: ref("color.yellow.600"), // #E5D820 (가이드 Fill/Brand/Hover)
     pressed: ref("color.yellow.700"), // #B8AC15 (가이드 Fill/Brand/Pressed)
     disabled: ref("color.neutral.300"), // #D8D8D8 — 가이드 Fill/Action/Primary/Disabled (구 #E5E5E5)
-    // Solid/Secondary — 가이드 "옅은 블루" = BG/Point/Subtle(cobalt-100 #EDF0FF) + cobalt 텍스트.
-    // (구: default=cobalt-50 #F6F7FF 로 가이드보다 한 stop 옅었음 — #EDF0FF 는 hover 에 있었다.)
+    // Solid/Secondary — 가이드 "옅은 블루" = BG/Point/Subtle(indigo-100 #EDF0FF) + indigo 텍스트.
+    // (구: default=indigo-50 #F6F7FF 로 가이드보다 한 stop 옅었음 — #EDF0FF 는 hover 에 있었다.)
     secondary: {
-      default: ref("color.cobalt.100"), // #EDF0FF (가이드 BG/Point/Subtle)
-      hover: ref("color.cobalt.200"), // #C9D3FF (한 stop 진한 틴트)
+      default: ref("color.indigo.100"), // #EDF0FF (가이드 BG/Point/Subtle)
+      hover: ref("color.indigo.200"), // #C9D3FF (한 stop 진한 틴트)
       disabled: ref("color.neutral.200"),
     },
     // Solid/Neutral — 가이드 "Primary(검정 Solid)" 메인 CTA. 트로스트 primary=노랑(brand)이라
@@ -91,9 +91,9 @@ export const trostSemantic = {
     default: ref("color.neutral.800"), // #333333
     // text.brand / icon.brand 와 동일한 brand-as-text 의미 — orange.
     brand: ref("color.yellow.text"),
-    // Solid/Secondary 텍스트 — cobalt 틴트 배경 위에 cobalt 텍스트.
+    // Solid/Secondary 텍스트 — indigo 틴트 배경 위에 indigo 텍스트.
     secondary: {
-      default: ref("color.cobalt.500"),
+      default: ref("color.indigo.500"),
       disabled: ref("color.neutral.500"),
     },
     // Neutral — Solid/Neutral(검정 CTA) 텍스트=흰(neutralSolid), Outlined/Neutral enabled=#333(neutral).
@@ -125,13 +125,13 @@ export const trostSemantic = {
       caution: ref("color.yellow.text"), // orange — 가이드 미수록, 기존 유지
     },
     // Point(액센트) 아이콘 — 코발트.
-    point: { default: ref("color.cobalt.500") }, // #4968FF
+    point: { default: ref("color.indigo.500") }, // #4968FF
   },
   border: {
     normal: { default: ref("color.neutral.200") }, // #E5E5E5
     strong: { default: ref("color.neutral.400") }, // #C7C7C7 (가이드 Border/Strong)
     subtle: { default: ref("color.neutral.150") }, // #F2F2F2
-    focus: { default: ref("color.cobalt.500") }, // Trost focus = cobalt (= Point)
+    focus: { default: ref("color.indigo.500") }, // Trost focus = indigo (= Point)
     brand: { default: ref("color.yellow.500"), disabled: ref("color.neutral.300") }, // #FFF42E (Border/Brand)
     disabled: { default: ref("color.neutral.150") }, // #F2F2F2 (가이드 Border/Disabled)
     status: {
@@ -140,7 +140,7 @@ export const trostSemantic = {
       caution: ref("color.yellow.text"),
     },
     // Point(액센트) 보더 — 코발트.
-    point: { default: ref("color.cobalt.500") }, // #4968FF
+    point: { default: ref("color.indigo.500") }, // #4968FF
   },
   fill: {
     brand: {
@@ -164,10 +164,10 @@ export const trostSemantic = {
     controlOn: ref("color.neutral.800"),
     // Point(액센트) 채움 — 코발트.
     point: {
-      default: ref("color.cobalt.500"), // #4968FF
-      hover: ref("color.cobalt.600"), // #3050E5
-      pressed: ref("color.cobalt.700"), // #2138B8
-      subtle: ref("color.cobalt.100"), // #EDF0FF
+      default: ref("color.indigo.500"), // #4968FF
+      hover: ref("color.indigo.600"), // #3050E5
+      pressed: ref("color.indigo.700"), // #2138B8
+      subtle: ref("color.indigo.100"), // #EDF0FF
     },
   },
   input: {
@@ -175,12 +175,12 @@ export const trostSemantic = {
     bgDisabled: ref("color.neutral.100"),
     borderDefault: ref("color.neutral.200"),
     borderHover: ref("color.neutral.400"),
-    borderFocus: ref("color.cobalt.500"),
+    borderFocus: ref("color.indigo.500"),
     borderError: ref("color.red.500"),
     borderDisabled: ref("color.neutral.200"),
     placeholder: ref("color.neutral.500"),
     helpertextDefault: ref("color.neutral.500"),
-    helpertextSuccess: ref("color.cobalt.500"),
+    helpertextSuccess: ref("color.indigo.500"),
     helpertextError: ref("color.red.500"),
     helpertextDisabled: ref("color.neutral.400"),
   },

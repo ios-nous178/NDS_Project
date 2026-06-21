@@ -183,7 +183,7 @@ export const TrostAppDownload: Story = {
       imageHeight={130}
       style={
         {
-          "--nds-banner-background": "var(--color-cobalt-100, #EDF0FF)",
+          "--nds-banner-background": "var(--color-indigo-100, #EDF0FF)",
           "--nds-banner-padding": "0 40px 0 32px",
           "--nds-banner-radius": "12px",
           "--nds-banner-title-font-size": "22px",

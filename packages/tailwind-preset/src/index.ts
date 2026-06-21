@@ -13,7 +13,7 @@ import {
   radius,
   sizing,
   trostYellow,
-  trostCobalt,
+  trostIndigo,
   trostPink,
   trostNeutral,
   trostRed,
@@ -205,7 +205,7 @@ export const trostPreset = {
         "trost-red": objectToPx(trostRed),
         "trost-blue": objectToPx(trostBlue),
         "trost-green": objectToPx(trostGreen),
-        cobalt: objectToPx(trostCobalt),
+        indigo: objectToPx(trostIndigo),
         pink: objectToPx(trostPink),
 
         // 시멘틱 키는 nudgeEapPreset 와 동일한 CSS var 사용

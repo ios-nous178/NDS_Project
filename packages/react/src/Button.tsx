@@ -135,7 +135,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
     // Primary Soft — "project-tinted soft" 버튼.
     // bg = surface.brandSubtle (프로젝트별 옅은 project 톤) + text = textRole.brand (project 색).
-    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
+    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Indigo subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
     // (이전 statusInfo bg + project text 조합은 CashwalkBiz 처럼 project/info hue 가 다른 프로젝트에서
     //  파랑 bg + 노랑 text 같은 부조화가 발생.)
     soft: {
@@ -181,7 +181,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
   secondary: {
     // Figma: Solid/Secondary — 프로젝트별 의도가 다른 슬롯.
     //   · NudgeEAP : `--semantic-bg-brand-subtle` + project blue 텍스트
-    //   · Trost    : 옅은 cobalt bg (#EFF1FA) + cobalt 텍스트
+    //   · Trost    : 옅은 indigo bg (#EFF1FA) + indigo 텍스트
     //   · Geniet   : 검정 bg (#333333) + 흰 텍스트  ← dark inverse 패턴
     // 슬롯 자체가 프로젝트별 override 를 받으므로 컴포넌트는 슬롯만 박는다.
     solid: {

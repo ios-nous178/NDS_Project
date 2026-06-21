@@ -78,7 +78,7 @@ export interface SemanticColors {
   /**
    * `secondary` — Solid/Secondary 텍스트 색. 프로젝트별로 의도가 달라 분리:
    *   · NudgeEAP: brand blue (light blue bg 위)
-   *   · Trost: cobalt brand (cobalt-50 bg 위)
+   *   · Trost: indigo brand (indigo-50 bg 위)
    *   · Geniet: white (dark inverse bg 위) — Geniet 고유 패턴
    * `neutral` — Geniet 의 neutral/outlined-neutral 버튼 텍스트 색
    * (보통 gray/strong). 다른 프로젝트는 미사용.

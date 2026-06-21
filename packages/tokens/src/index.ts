@@ -83,7 +83,7 @@ export type {
 } from "./projects/index.js";
 export {
   trostYellow,
-  trostCobalt,
+  trostIndigo,
   trostPink,
   trostNeutral,
   trostRed,
