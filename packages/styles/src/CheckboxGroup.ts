@@ -97,7 +97,7 @@ export const checkboxGroupStyles = `
     margin: ${spacing[4]}px 0 ${spacing[8]}px 32px;
     padding: var(--semantic-inset-input);
     background: ${cv.surface.page};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     color: ${cv.textRole.strong};

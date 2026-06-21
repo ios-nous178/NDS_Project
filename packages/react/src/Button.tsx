@@ -6,7 +6,7 @@ export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "mini" | "field";
 export type ButtonColor = "primary" | "secondary" | "neutral";
 /**
  * Button shape.
- * - `default` : radius.md (8px) — 일반 admin 폼/CTA · 페이지 내 액션
+ * - `default` : radius[8] (8px) — 일반 admin 폼/CTA · 페이지 내 액션
  * - `pill`    : radius full (9999px) — 모달 확인/취소, BottomCTA, 격식 컨텍스트
  *
  * Figma ButtonGuide(캐포비 3098:1032) 의 "When to use · Shape" 가이드와 정합.
@@ -15,7 +15,7 @@ export type ButtonColor = "primary" | "secondary" | "neutral";
 export type ButtonShape = "default" | "pill";
 
 const SHAPE_RADIUS: Record<ButtonShape, string> = {
-  default: `${radius.md}px`,
+  default: `${radius[8]}px`,
   pill: "9999px",
 };
 
@@ -135,7 +135,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
     // Primary Soft — "project-tinted soft" 버튼.
     // bg = surface.brandSubtle (프로젝트별 옅은 project 톤) + text = textRole.brand (project 색).
-    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Cobalt subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
+    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Indigo subtle, Geniet=Teal subtle, CashwalkBiz=Yellow/100.
     // (이전 statusInfo bg + project text 조합은 CashwalkBiz 처럼 project/info hue 가 다른 프로젝트에서
     //  파랑 bg + 노랑 text 같은 부조화가 발생.)
     soft: {
@@ -181,7 +181,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
   secondary: {
     // Figma: Solid/Secondary — 프로젝트별 의도가 다른 슬롯.
     //   · NudgeEAP : `--semantic-bg-brand-subtle` + project blue 텍스트
-    //   · Trost    : 옅은 cobalt bg (#EFF1FA) + cobalt 텍스트
+    //   · Trost    : 옅은 indigo bg (#EFF1FA) + indigo 텍스트
     //   · Geniet   : 검정 bg (#333333) + 흰 텍스트  ← dark inverse 패턴
     // 슬롯 자체가 프로젝트별 override 를 받으므로 컴포넌트는 슬롯만 박는다.
     solid: {
@@ -328,7 +328,11 @@ const PROJECT_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
 };
 
 const warnedKeys = new Set<string>();
-function warnIfProjectRestricted(project: string | null, variant: ButtonVariant, color: ButtonColor) {
+function warnIfProjectRestricted(
+  project: string | null,
+  variant: ButtonVariant,
+  color: ButtonColor,
+) {
   if (!project) return;
   const allow = PROJECT_VARIANT_WHITELIST[project];
   if (allow && !allow.includes(variant)) {
@@ -379,7 +383,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   color?: ButtonColor;
   /**
    * 버튼 모양 (border-radius).
-   * - `default` (기본) — radius.md (8px), 일반 admin 액션
+   * - `default` (기본) — radius[8] (8px), 일반 admin 액션
    * - `pill` — radius full (9999px), 모달 액션 / BottomCTA / 격식 컨텍스트
    */
   shape?: ButtonShape;

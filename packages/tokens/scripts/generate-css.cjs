@@ -47,7 +47,6 @@ const {
   gapTitle,
   inset,
   radius,
-  shape,
   borderWidth,
   stroke,
   sizing,
@@ -146,42 +145,27 @@ function generateBaseTokens() {
   }
 
   // Gap — Semantic (Figma · SpacingGuide / Gap). emit: --semantic-gap-{key}
-  // 옛 이름(--gap-{key})은 deprecated alias 로 함께 emit (외부 consumer 호환용).
+  // (옛 deprecated alias --gap-{key} 는 P3 에서 제거 — 소비처 0. 신규 코드는 --semantic-gap-*)
   lines.push("");
   lines.push("  /* ── Semantic / Gap (Figma · SpacingGuide / Gap) ── */");
   for (const [key, value] of Object.entries(gap)) {
     lines.push(`  --semantic-gap-${key}: ${value}px;`);
   }
-  for (const key of Object.keys(gap)) {
-    lines.push(
-      `  --gap-${key}: var(--semantic-gap-${key}); /* @deprecated → --semantic-gap-${key} */`,
-    );
-  }
 
   // Gap/Title — 헤딩 ↔ 서브타이틀 간격 (Figma TitleGapGuide 859:5614).
-  // emit: --semantic-gap-title-{key}. 옛 --gap-title-{key} 는 alias.
+  // emit: --semantic-gap-title-{key}. (옛 deprecated alias --gap-title-{key} 는 P3 에서 제거 — 소비처 0)
   lines.push("");
   lines.push("  /* ── Semantic / Gap-Title (Figma · TitleGapGuide 859:5614) ── */");
   for (const [key, value] of Object.entries(gapTitle)) {
     lines.push(`  --semantic-gap-title-${key}: ${value}px;`);
   }
-  for (const key of Object.keys(gapTitle)) {
-    lines.push(
-      `  --gap-title-${key}: var(--semantic-gap-title-${key}); /* @deprecated → --semantic-gap-title-${key} */`,
-    );
-  }
 
   // Inset — Semantic (Figma · SpacingGuide / Inset). 컨테이너 내부 여백.
-  // emit: --semantic-inset-{key}. 옛 --inset-{key} 는 alias.
+  // emit: --semantic-inset-{key}. (옛 deprecated alias --inset-{key} 는 P3 에서 제거 — 소비처 0)
   lines.push("");
   lines.push("  /* ── Semantic / Inset (Figma · SpacingGuide / Inset) ── */");
   for (const [key, value] of Object.entries(inset)) {
     lines.push(`  --semantic-inset-${key}: ${value}px;`);
-  }
-  for (const key of Object.keys(inset)) {
-    lines.push(
-      `  --inset-${key}: var(--semantic-inset-${key}); /* @deprecated → --semantic-inset-${key} */`,
-    );
   }
 
   // Grid — 거터·마진 (Figma · SpacingGuide / Grid)
@@ -200,13 +184,6 @@ function generateBaseTokens() {
   lines.push("  /* ── Radius (Policy Scale) ── */");
   for (const [key, value] of Object.entries(radius)) {
     lines.push(`  --radius-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
-  }
-
-  // Shape — Semantic policy alias
-  lines.push("");
-  lines.push("  /* ── Shape (Semantic Policy Alias) ── */");
-  for (const [key, value] of Object.entries(shape)) {
-    lines.push(`  --shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }
 
   // Border Width — Primitive (Figma · BorderGuide)
@@ -418,15 +395,6 @@ function generateProjectTokens({ theme, title, cssImport }) {
     }
   }
 
-  // Shape — `--shape-{key}`
-  if (spacingOverrides && spacingOverrides.shape) {
-    lines.push("");
-    lines.push("  /* ── Shape ── */");
-    for (const [key, value] of Object.entries(spacingOverrides.shape)) {
-      lines.push(`  --shape-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
-    }
-  }
-
   // Border Width — `--border-{key}`
   if (spacingOverrides && spacingOverrides.borderWidth) {
     lines.push("");
@@ -563,6 +531,35 @@ fs.writeFileSync(
   generateProjectTokens({ theme: runmileTheme, title: "runmile", cssImport: "runmile" }),
 );
 console.log(`Generated ${runmilePath}`);
+
+const cashwalkPath = path.join(distDir, "cashwalk.css");
+const { cashwalkTheme } = require("../dist/projects/cashwalk");
+fs.writeFileSync(
+  cashwalkPath,
+  generateProjectTokens({ theme: cashwalkTheme, title: "cashwalk", cssImport: "cashwalk" }),
+);
+console.log(`Generated ${cashwalkPath}`);
+
+// cashwalk accent 형제 — 팔레트는 cashwalk 와 공유, brand 색만 cornflower/indigo 로 스왑.
+const teamworkPath = path.join(distDir, "teamwork.css");
+const { teamworkTheme } = require("../dist/projects/teamwork");
+fs.writeFileSync(
+  teamworkPath,
+  generateProjectTokens({ theme: teamworkTheme, title: "teamwork", cssImport: "teamwork" }),
+);
+console.log(`Generated ${teamworkPath}`);
+
+const dongneSanchaekPath = path.join(distDir, "dongne-sanchaek.css");
+const { dongneSanchaekTheme } = require("../dist/projects/dongne-sanchaek");
+fs.writeFileSync(
+  dongneSanchaekPath,
+  generateProjectTokens({
+    theme: dongneSanchaekTheme,
+    title: "dongne-sanchaek",
+    cssImport: "dongne-sanchaek",
+  }),
+);
+console.log(`Generated ${dongneSanchaekPath}`);
 
 // 확장자 없는 "./css*" 서브패스의 types 조건이 가리키는 스텁.
 // 없으면 TS 6(새 Vite 템플릿 기본)에서 `import "@nudge-design/tokens/css"` 가

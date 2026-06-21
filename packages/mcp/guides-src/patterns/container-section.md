@@ -60,13 +60,13 @@ base `.nds-container` 는 전 프로젝트 공용 디폴트 — **PC(≥1024) ma
 </section>
 ```
 
-`.nds-section-surface` 는 가산 헬퍼 — `background: var(--semantic-bg-surface-default)` + `border-radius: 16px`(radius.xl). bg/radius 를 `.nds-container` 에 굽지 않으므로 흰 컨텐츠 카드가 필요할 때만 붙인다.
+`.nds-section-surface` 는 가산 헬퍼 — `background: var(--semantic-bg-surface-default)` + `border-radius: 16px`(radius[16]). bg/radius 를 `.nds-container` 에 굽지 않으므로 흰 컨텐츠 카드가 필요할 때만 붙인다.
 
 ## rules
 
 - 컨텐츠는 항상 `nds-container`(+Trost 면 모디파이어) 안에 둔다 — Container 가 좌우 padding·max-width 를 viewport 별로 표준화한다. 같은 화면에서 Container 너비를 혼용하지 않는다.
 - **Trost device-variant** — Mobile content 360 / h-padding 16 · **PC content 1080 / inner 24**(`--pc`) · **PC-Wide content 1200 / inner 24**(`--wide`). 임의 폭은 모디파이어로만 정한다.
-- **Container BG vs Content BG** — Section(Container 가 사는 세로 블록)의 BG 는 **BG/Section/Default**(`--semantic-bg-section-default`), 그 위 흰 컨텐츠 카드는 **BG/Surface/Default**(`--semantic-bg-surface-default`) + content radius **Mobile 0 / PC 16**(`.nds-section-surface`, radius.xl). content 카드만 surface 흰색을 쓰고 바깥 Section 은 section 회색.
+- **Container BG vs Content BG** — Section(Container 가 사는 세로 블록)의 BG 는 **BG/Section/Default**(`--semantic-bg-section-default`), 그 위 흰 컨텐츠 카드는 **BG/Surface/Default**(`--semantic-bg-surface-default`) + content radius **Mobile 0 / PC 16**(`.nds-section-surface`, radius[16]). content 카드만 surface 흰색을 쓰고 바깥 Section 은 section 회색.
 - **Section 세로(상하) padding** — **Mobile 20 / PC 40**(app-content 기준). `--semantic-inset-*`/spacing 스케일에서 선택. 좌우 여백은 Section 이 아니라 내부 Container 가 책임진다.
 - **Section 안 item 간격(세로 stack)** — **Mobile 16 (Gap/Loose, `--semantic-gap-loose`) / PC 24 (Gap/Wide, `--semantic-gap-wide`)**.
 - **Sub-section(섹션 안 하위 그룹) 간격** — **12 (Gap/Comfortable, `--semantic-gap-comfortable`)**. item 간격(16/24)보다 한 단계 좁혀 위계를 만든다.

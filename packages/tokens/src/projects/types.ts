@@ -35,7 +35,7 @@ export interface SemanticColors {
     /** DS extension — disabled bg */
     disabled?: string;
     /**
-     * Point(액센트) 서피스 — 프로젝트 가이드의 코발트(트로스트) 등 보조 강조 컬러.
+     * Point(액센트) 서피스 — 프로젝트 가이드의 인디고(트로스트) 등 보조 강조 컬러.
      * `BG/Point/{Default,Subtle,Surface}`. brand(주 컬러)와 별개의 2차 액센트.
      * NudgeEAP base 는 미정의 — point 패밀리를 둔 brand 만 emit.
      */
@@ -82,7 +82,7 @@ export interface SemanticColors {
   /**
    * `secondary` — Solid/Secondary 텍스트 색. 프로젝트별로 의도가 달라 분리:
    *   · NudgeEAP: brand blue (light blue bg 위)
-   *   · Trost: cobalt brand (cobalt-50 bg 위)
+   *   · Trost: indigo brand (indigo-50 bg 위)
    *   · Geniet: white (dark inverse bg 위) — Geniet 고유 패턴
    * `neutral` — Geniet 의 neutral/outlined-neutral 버튼 텍스트 색
    * (보통 gray/strong). 다른 프로젝트는 미사용.
@@ -138,12 +138,20 @@ export interface SemanticColors {
     point?: { default?: string };
   };
   fill?: {
-    brand?: { default?: string; hover?: string; pressed?: string; disabled?: string; subtle?: string };
+    brand?: {
+      default?: string;
+      hover?: string;
+      pressed?: string;
+      disabled?: string;
+      subtle?: string;
+    };
     neutral?: { default?: string; subtle?: string };
     inverse?: { default?: string };
     status?: { error?: string; success?: string; info?: string; caution?: string };
     /** Point(액센트) 채움. Figma `Fill/Point/{Default,Hover,Pressed,Subtle}`. */
     point?: { default?: string; hover?: string; pressed?: string; subtle?: string };
+    /** 선택 컨트롤(checkbox·radio) on 채움. base=fill-brand 추종, trost=dark. */
+    controlOn?: string;
   };
   input?: {
     bg?: string;
@@ -171,16 +179,8 @@ export interface SemanticColors {
     active?: string;
     text?: string;
   };
-  /**
-   * 캐시워크 로고 등 brand identity asset 전용 색상 슬롯.
-   * CashwalkBiz 가이드의 `Brand/Logo/{Default,Subtle,Strong}` (Brown 톤).
-   * NudgeEAP base / Trost / Geniet 는 사용하지 않음 — 로고 raw hex 또는 별도 자산 사용.
-   */
-  brandLogo?: {
-    default?: string;
-    subtle?: string;
-    strong?: string;
-  };
+  // (brandLogo 슬롯 제거 — P3 slice 2. brand→project 리네임으로 로고 자산이
+  //  @nudge-design/assets 로 이전되며 고아화, 소비처 0.)
 }
 
 /** 타이포그래피 오버라이드 */
@@ -203,7 +203,6 @@ export interface SpacingOverrides {
   /** 컨테이너 내부 padding — `--semantic-inset-{key}` (chip/input/card/modal/section/page 등) */
   inset?: Record<string, number>;
   radius?: Record<string, number>;
-  shape?: Record<string, number>;
   borderWidth?: Record<string, number>;
   stroke?: Record<string, number>;
   /** Grid system — gutter / margin / contentWidth 등 */
@@ -241,7 +240,7 @@ export interface ElevationOverrides {
 }
 
 /**
- * 컴포넌트 단위 오버라이드 — primitive 토큰(`radius.md` 등)을 손대지 않고
+ * 컴포넌트 단위 오버라이드 — primitive 토큰(`radius[8]` 등)을 손대지 않고
  * 특정 컴포넌트만 프로젝트 가이드에 맞게 보정할 때 사용.
  * emit: `--nds-{component}-{prop}` CSS var. 컴포넌트는 이 var 를 fallback 패턴으로 읽어 cascade.
  * (오버라이드를 안 정의한 프로젝트는 컴포넌트의 fallback 값이 그대로 적용 — 기존 동작 유지)
@@ -292,7 +291,7 @@ export interface ComponentOverrides {
   };
   /** TextField/FormField 라벨 — 캐포비는 Strong(#111). 다른 프로젝트는 Normal(#333) fallback. */
   "form-field"?: { labelColor?: ComponentValue };
-  /** ActionChip — 캐포비 radius 6 / bg #ECECEC. 다른 프로젝트는 radius.sm(4) / fill.neutralSubtle fallback. */
+  /** ActionChip — 캐포비 radius 6 / bg #ECECEC. 다른 프로젝트는 radius[4](4) / fill.neutralSubtle fallback. */
   "action-chip"?: { radius?: ComponentValue; bg?: ComponentValue };
   /**
    * Chip(SelectChip) selected 상태의 채움 위 텍스트/보더/배경 override.
@@ -315,7 +314,7 @@ export interface ComponentOverrides {
     fontWeight?: ComponentValue;
   };
   /**
-   * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=mint600 + bold,
+   * Footer.TabBar 의 nav 시각 변형. Geniet BottomNav 가이드는 active=teal600 + bold,
    * label Pretendard 10/12. 다른 프로젝트는 fallback (active=textRole.normal #333, label 11/14).
    */
   footer?: {
@@ -330,11 +329,11 @@ export interface ComponentOverrides {
     mutedColor?: ComponentValue;
     extraColor?: ComponentValue;
   };
-  /** Card 셸 — radius / 테두리. 미설정 시 radius.lg / borderRole.normal fallback. */
+  /** Card 셸 — radius / 테두리. 미설정 시 radius[12] / borderRole.normal fallback. */
   card?: { radius?: ComponentValue; borderColor?: ComponentValue };
   /**
    * Modal 컨테이너 radius(`--nds-modal-radius`) + 상단 패딩(`--nds-modal-pad-top`).
-   * 미설정 시 radius.md / spacing.28 fallback. 트로스트 가이드(171:9899)는 radius 16 · top 24.
+   * 미설정 시 radius[8] / spacing.28 fallback. 트로스트 가이드(171:9899)는 radius 16 · top 24.
    * shadow/titleColor/bodyColor/bodyFontSize/bodyLineHeight 는 정적 import 였던 값의 슬롯화 —
    * 런마일(5085:27): radius 24·Elevation/3·Title=Strong·Body=Text/Normal(subtle) 13/18.
    */
@@ -349,7 +348,7 @@ export interface ComponentOverrides {
   };
   /**
    * Popup(가운데 confirm 다이얼로그) 컨테이너 radius(`--nds-popup-radius`)·그림자(`--nds-popup-shadow`)·폭.
-   * 미설정 시 radius.md / shadow.3 / 400px fallback. 캐포비는 [data-project] 로 16 을 박았으나
+   * 미설정 시 radius[8] / shadow.3 / 400px fallback. 캐포비는 [data-project] 로 16 을 박았으나
    * 슬롯으로 일원화 — 런마일 = radius 20 · Elevation/3.
    */
   popup?: { radius?: ComponentValue; shadow?: ComponentValue; maxWidth?: ComponentValue };
@@ -433,7 +432,7 @@ export interface ComponentOverrides {
   };
   /**
    * NoticeAlert(인라인 Alert) 컨테이너.
-   * - radius(`--nds-notice-alert-radius`): 지니어트·트로스트 = Shape/MD 8. 미설정 프로젝트는 radius.lg(12) fallback.
+   * - radius(`--nds-notice-alert-radius`): 지니어트·트로스트 = Shape/MD 8. 미설정 프로젝트는 radius[12](12) fallback.
    * - noticeBg / noticeIcon(`--nds-notice-alert-notice-{bg,icon}`): Notice variant 색.
    *   패턴 기본은 블루(BG/Status/Info). 트로스트는 중립 톤(BG/Surface/Subtle + Icon/Normal)으로 override.
    * - text(`--nds-notice-alert-text`): 본문 텍스트색. 미설정 시 variant 기본(strong / error=status-error).
@@ -498,7 +497,7 @@ export interface ComponentOverrides {
     chipDefaultWeight?: ComponentValue;
     /**
      * tone="color"(활성/선택 강조)의 색 — brand 가 아닌 별도 액센트를 쓰는 프로젝트용 슬롯.
-     * 트로스트: brand=노랑(면적 채움)이라 탭 액센트는 Point 코발트(#4968FF)로 분리(가독성).
+     * 트로스트: brand=노랑(면적 채움)이라 탭 액센트는 Point 인디고(#4968FF)로 분리(가독성).
      *   · accentFill = line indicator + chip/segment 활성 채움 (default cv.surface.brand)
      *   · accentText = line 활성 텍스트 (default cv.textRole.brand)
      *   · accentOn   = chip/segment 채움 위 텍스트 (default cv.button.textDefault)
@@ -556,7 +555,7 @@ export interface ComponentOverrides {
     bg?: ComponentValue;
     /** 메시지/본문 텍스트색 (`--nds-snackbar-fg`). 미설정 시 text.normal fallback. 다크 서피스 프로젝트는 onBrand(흰). */
     fg?: ComponentValue;
-    /** 컨테이너 radius (`--nds-snackbar-radius`). 미설정 시 radius.md(8) fallback. 런마일 = Radius/LG 12. */
+    /** 컨테이너 radius (`--nds-snackbar-radius`). 미설정 시 radius[8](8) fallback. 런마일 = Radius/LG 12. */
     radius?: ComponentValue;
     border?: ComponentValue;
     shadow?: ComponentValue;

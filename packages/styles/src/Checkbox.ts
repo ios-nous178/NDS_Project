@@ -52,15 +52,15 @@ export const checkboxStyles = `
     height: var(--nds-checkbox-size, 18px);
     margin-top: 2px;
     border: var(--nds-checkbox-border-width, 1.5px) solid var(--nds-checkbox-border-color, ${cv.borderRole.normal});
-    border-radius: var(--nds-checkbox-radius, ${radius.sm}px);
+    border-radius: var(--nds-checkbox-radius, ${radius[4]}px);
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
   :where(.${CB_INDICATOR_CLASS}[data-state="checked"]),
   :where(.${CB_INDICATOR_CLASS}[data-state="indeterminate"]) {
-    border-color: var(--nds-checkbox-checked-border, ${cv.fill.brand});
-    background: var(--nds-checkbox-checked-bg, ${cv.fill.brand});
+    border-color: var(--nds-checkbox-checked-border, ${cv.fill.controlOn});
+    background: var(--nds-checkbox-checked-bg, ${cv.fill.controlOn});
   }
 
   :where(.${CB_ROOT_CLASS}[data-disabled="true"]) {

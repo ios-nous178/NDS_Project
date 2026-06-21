@@ -1,10 +1,11 @@
 import {
-  neutral,
+  gray,
+  common,
   coolGray,
   blue,
-  magenta,
+  pink,
   yellow,
-  red,
+  orange,
   green,
   fontFamily,
   fontWeight,
@@ -13,40 +14,46 @@ import {
   radius,
   sizing,
   trostYellow,
-  trostCobalt,
+  trostIndigo,
   trostPink,
-  trostNeutral,
+  trostGray,
   trostRed,
   trostBlue,
   trostGreen,
   trostSemantic,
   trostTheme,
   cashwalkBizCommon,
-  cashwalkBizNeutral,
+  cashwalkBizGray,
   cashwalkBizYellow,
-  cashwalkBizCoralRed,
+  cashwalkBizRed,
   cashwalkBizBlue,
   cashwalkBizGreen,
   cashwalkBizBrown,
-  cashwalkBizStatus,
   cashwalkBizSemantic,
   cashwalkBizTheme,
-  genietMint,
+  cashwalkCommon,
+  cashwalkGray,
+  cashwalkYellow,
+  cashwalkRed,
+  cashwalkBlue,
+  cashwalkCornflower,
+  cashwalkIndigo,
+  cashwalkGreen,
+  cashwalkBrown,
+  genietTeal,
   genietRed,
   genietYellow,
   genietBlue,
   genietPurple,
   genietGreen,
   genietGray,
-  genietNeutral,
-  genietStatus,
+  genietCommon,
   genietTheme,
   runmileOrange,
   runmileBlue,
   runmileRed,
-  runmileGray,
-  runmileNeutral,
-  runmileStatus,
+  runmileCoolGray,
+  runmileCommon,
   runmileTheme,
 } from "@nudge-design/tokens";
 
@@ -72,17 +79,27 @@ import {
  * tailwind 클래스도 자동 반영된다. project override(예: Trost theme) 가 같은
  * var 를 redefine 하면 동일 클래스가 프로젝트 색상으로 렌더된다.
  */
+/** 숫자 단일 radius 스케일 → tailwind `rounded-{2,4,8,…,full}` (none·기본 8 포함). 전 프리셋 공용. */
+const borderRadiusScale = {
+  none: "0px",
+  DEFAULT: `${radius[8]}px`,
+  ...Object.fromEntries(
+    Object.entries(radius).map(([k, v]) => [k, v === 9999 ? "9999px" : `${v}px`]),
+  ),
+};
+
 export const nudgeEapPreset = {
   theme: {
     extend: {
       colors: {
         // ── Atomic palette ──
-        neutral: objectToPx(neutral),
+        gray: objectToPx(gray),
+        common: objectToPx(common),
         "cool-gray": objectToPx(coolGray),
         blue: objectToPx(blue),
-        magenta: objectToPx(magenta),
+        pink: objectToPx(pink),
         yellow: objectToPx(yellow),
-        red: objectToPx(red),
+        orange: objectToPx(orange),
         green: objectToPx(green),
 
         // ── Semantic (Figma role-based) — CSS var references ──
@@ -156,14 +173,7 @@ export const nudgeEapPreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: {
-        none: "0px",
-        sm: `${radius.sm}px`,
-        DEFAULT: `${radius.md}px`,
-        md: `${radius.md}px`,
-        lg: `${radius.lg}px`,
-        pill: `${radius.pill}px`,
-      },
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,
@@ -192,15 +202,15 @@ export const trostPreset = {
     extend: {
       colors: {
         // Trost 고유 atomic palette (Figma 컬러 가이드 5011:108 풀 스케일).
-        // base 와 충돌하는 hue(neutral/yellow/red/blue/green)는 `trost-` prefix —
+        // base 와 충돌하는 hue(neutral/yellow/red/blue/green/pink)는 `trost-` prefix —
         // 안 그러면 아래 `...nudgeEapPreset` spread 가 base 값으로 덮어버린다.
-        "trost-neutral": objectToPx(trostNeutral),
+        "trost-gray": objectToPx(trostGray),
         "trost-yellow": objectToPx(trostYellow),
         "trost-red": objectToPx(trostRed),
         "trost-blue": objectToPx(trostBlue),
         "trost-green": objectToPx(trostGreen),
-        cobalt: objectToPx(trostCobalt),
-        pink: objectToPx(trostPink),
+        "trost-pink": objectToPx(trostPink),
+        indigo: objectToPx(trostIndigo),
 
         // 시멘틱 키는 nudgeEapPreset 와 동일한 CSS var 사용
         ...nudgeEapPreset.theme.extend.colors,
@@ -220,17 +230,7 @@ export const trostPreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: {
-        none: "0px",
-        sm: `${trostTheme.spacing!.radius!.sm}px`,
-        md: `${trostTheme.spacing!.radius!.md}px`,
-        DEFAULT: `${trostTheme.spacing!.radius!.lg}px`, // 기본 = Radius/Lg(8)
-        lg: `${trostTheme.spacing!.radius!.lg}px`,
-        xl: `${trostTheme.spacing!.radius!.xl}px`,
-        "2xl": `${trostTheme.spacing!.radius!["2xl"]}px`,
-        "3xl": `${trostTheme.spacing!.radius!["3xl"]}px`,
-        pill: "9999px",
-      },
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,
@@ -252,7 +252,7 @@ export const trostPreset = {
 // trostSemantic / cashwalkBizSemantic 등은 prop 미사용 import 회피 위해 명시적 참조
 void trostSemantic;
 void cashwalkBizSemantic;
-void magenta;
+void pink;
 
 /** Pass-through: tokens are already string hex values */
 function objectToPx(obj: Record<string, string | number>): Record<string, string> {
@@ -274,14 +274,13 @@ export const cashwalkBizPreset = {
     extend: {
       colors: {
         // 캐포비 고유 atomic palette
-        "cashwalk-biz-neutral": objectToPx(cashwalkBizNeutral),
+        "cashwalk-biz-gray": objectToPx(cashwalkBizGray),
         "cashwalk-biz-yellow": objectToPx(cashwalkBizYellow),
         "cashwalk-biz-blue": objectToPx(cashwalkBizBlue),
         "cashwalk-biz-green": objectToPx(cashwalkBizGreen),
-        "cashwalk-biz-coral-red": objectToPx(cashwalkBizCoralRed),
+        "cashwalk-biz-red": objectToPx(cashwalkBizRed),
         brown: objectToPx(cashwalkBizBrown),
-        common: objectToPx(cashwalkBizCommon),
-        status: objectToPx(cashwalkBizStatus),
+        // common(흑백)은 base preset spread 로 제공(동일 값)
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk-biz.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
@@ -306,14 +305,7 @@ export const cashwalkBizPreset = {
             Object.entries(cashwalkBizTheme.spacing.spacing).map(([k, v]) => [k, `${v}px`]),
           )
         : undefined,
-      borderRadius: cashwalkBizTheme.spacing?.radius
-        ? Object.fromEntries(
-            Object.entries(cashwalkBizTheme.spacing.radius).map(([k, v]) => [
-              k,
-              v === 9999 ? "9999px" : `${v}px`,
-            ]),
-          )
-        : undefined,
+      borderRadius: borderRadiusScale,
       borderWidth: cashwalkBizTheme.spacing?.borderWidth
         ? Object.fromEntries(
             Object.entries(cashwalkBizTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
@@ -324,11 +316,50 @@ export const cashwalkBizPreset = {
 };
 
 /**
+ * Cashwalk (캐시워크 · 소비자앱) Tailwind preset.
+ *
+ * cashwalk.css 가 시멘틱 var 를 노란 톤으로 redefine → 시멘틱 클래스 자동 캐시워크.
+ * 별도 atomic alias 만 추가(cornflower=팀워크 · indigo=동네산책 accent 포함).
+ * theme(palette+semantic) 만 가진 minimal 프로젝트 → typography/spacing 은 base extend 상속.
+ */
+export const cashwalkPreset = {
+  theme: {
+    extend: {
+      ...nudgeEapPreset.theme.extend,
+      colors: {
+        "cashwalk-gray": objectToPx(cashwalkGray),
+        "cashwalk-yellow": objectToPx(cashwalkYellow),
+        "cashwalk-blue": objectToPx(cashwalkBlue),
+        "cashwalk-green": objectToPx(cashwalkGreen),
+        "cashwalk-red": objectToPx(cashwalkRed),
+        cornflower: objectToPx(cashwalkCornflower),
+        indigo: objectToPx(cashwalkIndigo),
+        brown: objectToPx(cashwalkBrown),
+        // common(흑백)은 base preset spread 로 제공(동일 값)
+        // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk.css 가 자동 redefine
+        ...nudgeEapPreset.theme.extend.colors,
+      },
+    },
+  },
+};
+
+/**
+ * Teamwork(팀워크) · 동네산책 Tailwind preset — cashwalk accent 형제.
+ *
+ * 팔레트(cornflower·indigo 포함)와 시멘틱 키가 cashwalk 와 동일하다. 시멘틱 클래스는 var 참조라
+ * brand 색 차이는 **import 하는 CSS 파일**(`@nudge-design/tokens/css/teamwork` ·
+ * `.../dongne-sanchaek`)이 var 를 accent 톤으로 redefine 해서 난다 → preset 자체는 cashwalk 와
+ * 같다. 소비처가 의도(브랜드)대로 import 를 고를 수 있게 별도 이름으로 노출한다.
+ */
+export const teamworkPreset = cashwalkPreset;
+export const dongneSanchaekPreset = cashwalkPreset;
+
+/**
  * Geniet Tailwind preset.
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 geniet.css 가 var 를 민트 톤으로
  * redefine 하므로 자동 지니어트 색상. 별도 색상 alias 만 추가:
- *   - `bg-geniet-neutral-*` · `bg-mint-*` 같은 프로젝트 atomic
+ *   - `bg-geniet-neutral-*` · `bg-teal-*` 같은 프로젝트 atomic
  * Typography / radius(곡률 xl=18 · 2xl=23 포함) / shadow 는 지니어트 가이드 매핑.
  */
 export const genietPreset = {
@@ -336,15 +367,14 @@ export const genietPreset = {
     extend: {
       colors: {
         // 지니어트 고유 atomic palette
-        "geniet-neutral": objectToPx(genietNeutral),
+        "geniet-common": objectToPx(genietCommon),
         "geniet-gray": objectToPx(genietGray),
         "geniet-red": objectToPx(genietRed),
         "geniet-yellow": objectToPx(genietYellow),
         "geniet-blue": objectToPx(genietBlue),
         "geniet-green": objectToPx(genietGreen),
-        mint: objectToPx(genietMint),
+        teal: objectToPx(genietTeal),
         purple: objectToPx(genietPurple),
-        status: objectToPx(genietStatus),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — geniet.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
@@ -364,17 +394,7 @@ export const genietPreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: genietTheme.spacing?.radius
-        ? {
-            ...Object.fromEntries(
-              Object.entries(genietTheme.spacing.radius).map(([k, v]) => [
-                k,
-                v === 9999 ? "9999px" : `${v}px`,
-              ]),
-            ),
-            DEFAULT: `${genietTheme.spacing.radius.md}px`,
-          }
-        : undefined,
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,
@@ -398,7 +418,7 @@ export const genietPreset = {
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 runmile.css 가 var 를 오렌지 톤으로
  * redefine 하므로 자동 런마일 색상. 별도 색상 alias 만 추가:
- *   - `bg-runmile-neutral-*` · `bg-orange-*` 같은 프로젝트 atomic
+ *   - `bg-runmile-neutral-*` · `bg-runmile-orange-*` 같은 프로젝트 atomic
  * Typography / radius(Toss 스타일 4/6/8/12/16/pill) / shadow 는 런마일 가이드 매핑.
  */
 export const runmilePreset = {
@@ -406,12 +426,11 @@ export const runmilePreset = {
     extend: {
       colors: {
         // 런마일 고유 atomic palette
-        "runmile-neutral": objectToPx(runmileNeutral),
-        "runmile-gray": objectToPx(runmileGray),
+        "runmile-common": objectToPx(runmileCommon),
+        "runmile-cool-gray": objectToPx(runmileCoolGray),
         "runmile-red": objectToPx(runmileRed),
         "runmile-blue": objectToPx(runmileBlue),
-        orange: objectToPx(runmileOrange),
-        status: objectToPx(runmileStatus),
+        "runmile-orange": objectToPx(runmileOrange),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — runmile.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
@@ -431,17 +450,7 @@ export const runmilePreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: runmileTheme.spacing?.radius
-        ? {
-            ...Object.fromEntries(
-              Object.entries(runmileTheme.spacing.radius).map(([k, v]) => [
-                k,
-                v === 9999 ? "9999px" : `${v}px`,
-              ]),
-            ),
-            DEFAULT: `${runmileTheme.spacing.radius.md}px`,
-          }
-        : undefined,
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,

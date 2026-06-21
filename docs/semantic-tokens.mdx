@@ -16,12 +16,12 @@ import { SectionNav, TokenGrid, TokenCard } from "@site/src/components/SemanticT
 > 자동 생성 — 값 수정은 `packages/tokens/` 에서, 페이지 재생성은 `node scripts/generate-semantic-tokens-doc.mjs`.
 
 <SectionNav items={[
-  { label: "Role · Surface (배경)", count: 15, href: "#role-surface-배경" },
+  { label: "Role · Surface (배경)", count: 13, href: "#role-surface-배경" },
   { label: "Role · Text", count: 12, href: "#role-text" },
   { label: "Role · Icon", count: 8, href: "#role-icon" },
   { label: "Role · Border", count: 9, href: "#role-border" },
   { label: "Role · Button", count: 26, href: "#role-button" },
-  { label: "Role · Fill", count: 9, href: "#role-fill" },
+  { label: "Role · Fill", count: 10, href: "#role-fill" },
   { label: "Role · Input", count: 12, href: "#role-input" },
   { label: "cv 매핑 없음", count: 16, href: "#cv-매핑-없음" },
 ]} />
@@ -43,8 +43,6 @@ import { SectionNav, TokenGrid, TokenCard } from "@site/src/components/SemanticT
   <TokenCard name="surface.statusInfo" cssVar="--semantic-bg-status-info" base="#E3F2FC" trost="#ECF5FF" geniet="#F0F9FF" guide="core" figmaNode="258:2" />
   <TokenCard name="surface.statusCaution" cssVar="--semantic-bg-status-caution" base="#FFFAE8" trost="#FFF8E6" geniet="#FFFBE6" guide="core" figmaNode="258:2" />
   <TokenCard name="surface.overlay" cssVar="--semantic-bg-overlay" base="rgba(0,0,0,0.4)" trost="rgba(0, 0, 0, 0.6)" geniet="rgba(0, 0, 0, 0.4)" guide="core" figmaNode="258:2" />
-  <TokenCard name="surface.overlaySubtle" cssVar="--semantic-bg-overlay-subtle" base="rgba(0,0,0,0.2)" />
-  <TokenCard name="surface.overlayStrong" cssVar="--semantic-bg-overlay-strong" base="rgba(0,0,0,0.7)" />
   <TokenCard name="surface.disabled" cssVar="--semantic-bg-disabled" base="#ECECEC" trost="#E5E5E5" geniet="#ECECEC" />
 </TokenGrid>
 
@@ -145,6 +143,7 @@ Chip · Badge · Tag 등 fill 형태 컴포넌트 색상.
   <TokenCard name="fill.inverse" cssVar="--semantic-fill-inverse-default" base="#FFFFFF" trost="#FFFFFF" geniet="#FFFFFF" guide="core" figmaNode="227:160" />
   <TokenCard name="fill.statusError" cssVar="--semantic-fill-status-error" base="#F13F00" trost="#FF4111" geniet="#FF3258" guide="core" figmaNode="227:160" />
   <TokenCard name="fill.statusCaution" cssVar="--semantic-fill-status-caution" base="#FFC303" trost="#FF9D00" geniet="#FFB700" guide="core" figmaNode="227:160" />
+  <TokenCard name="fill.controlOn" cssVar="--semantic-fill-control-on" base="var(--semantic-fill-brand-default)" trost="#333333" />
 </TokenGrid>
 
 ## Role · Input
@@ -191,4 +190,4 @@ Input · Field 입력 영역 색상.
 
 ---
 
-총 107 개 시멘틱 토큰.
+총 106 개 시멘틱 토큰.

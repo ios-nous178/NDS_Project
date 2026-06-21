@@ -7,16 +7,16 @@
  * 각 family 는 50~900 풀 10-step 램프 (Figma Atomic 가이드와 1:1).
  * Naming convention `geniet/{category}/{color}/{level}` 에서 category 는
  * brand wiring 시 의미를 가지므로 코드에서는 평탄한 family 키
- * (`mint` / `red` / `yellow` / `blue` / `purple` / `green` / `gray` / `neutral`)
+ * (`teal` / `red` / `yellow` / `blue` / `purple` / `green` / `gray` / `neutral`)
  * 로만 노출 — generate-css.cjs 가 `--color-{family}-{stop}` 으로 emit.
  *
  * geniet.semantic.ts 가 이 palette 를 참조해 시멘틱 트리를 만들고,
  * geniet.ts(theme) 가 둘을 묶어 ProjectTheme 로 export.
  */
 
-// ─── Primary (Mint) ─────────────────────────────────────
-// 프로젝트 액션 색 = mint/600 (#00A8AC). hover=700 / pressed=800.
-export const genietMint = {
+// ─── Primary (Teal) ─────────────────────────────────────
+// 프로젝트 액션 색 = teal/600 (#00A8AC). hover=700 / pressed=800.
+export const genietTeal = {
   50: "#F2FAFA",
   100: "#ECF5F9",
   200: "#CAF2F5",
@@ -110,16 +110,8 @@ export const genietGray = {
   900: "#111111",
 } as const;
 
-// ─── Black & White ──────────────────────────────────────
-export const genietNeutral = {
-  black: "#111111",
+// ─── Common (흑·백) ──────────────────────────────────────
+export const genietCommon = {
   white: "#FFFFFF",
-} as const;
-
-// ─── Status alias (semantic 빠른 참조용) ────────────────
-export const genietStatus = {
-  error: genietRed[600], // #FF3258
-  success: genietGreen[600], // #18B264
-  info: genietBlue[600], // #1488D3
-  caution: genietYellow[500], // #FFB700
+  black: "#111111",
 } as const;

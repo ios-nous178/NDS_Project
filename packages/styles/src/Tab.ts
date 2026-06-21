@@ -114,7 +114,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="line"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    /* tone=color 활성 텍스트 — project(기본) 또는 프로젝트 액센트(트로스트=Point 코발트) */
+    /* tone=color 활성 텍스트 — project(기본) 또는 프로젝트 액센트(트로스트=Point 인디고) */
     color: var(--nds-tab-accent-text, ${cv.textRole.brand});
   }
 
@@ -162,7 +162,7 @@ export const tabsStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--nds-tab-chip-radius, ${radius.pill}px);
+    border-radius: var(--nds-tab-chip-radius, ${radius.full}px);
     background: var(--nds-tab-chip-default-bg, ${cv.surface.subtle});
     color: var(--nds-tab-chip-default-color, ${cv.textRole.subtle});
     white-space: nowrap;
@@ -185,7 +185,7 @@ export const tabsStyles = `
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="chip"][data-tone="color"] .${TAB_TRIGGER_CLASS}[data-active="true"]) {
-    /* 채움=accent(트로스트 Point 코발트), 텍스트=accentOn(코발트 위 흰). 비-Trost 는 project fallback. */
+    /* 채움=accent(트로스트 Point 인디고), 텍스트=accentOn(인디고 위 흰). 비-Trost 는 project fallback. */
     background: var(--nds-tab-accent-fill, ${cv.surface.brand});
     color: var(--nds-tab-accent-on, ${cv.button.textDefault});
     font-weight: ${fontWeight.bold};
@@ -212,7 +212,7 @@ export const tabsStyles = `
     align-items: stretch;
     width: 100%;
     background: ${cv.surface.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     padding: ${spacing[4]}px;
     gap: var(--semantic-gap-tight);
     box-sizing: border-box;
@@ -227,7 +227,7 @@ export const tabsStyles = `
     height: 36px;
     padding: 0 var(--semantic-inset-input);
     background: transparent;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;

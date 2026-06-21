@@ -1,5 +1,14 @@
 /* CSS SSOT for Toast — shared by @nudge-design/react <Toast> and @nudge-design/html <nds-toast>. */
-import { cv, fontFamily, fontWeight, radius, spacing, transition, typeScale, zIndex } from "@nudge-design/tokens";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  transition,
+  typeScale,
+  zIndex,
+} from "@nudge-design/tokens";
 
 const TOAST_CLASS = "nds-toast";
 const TOAST_VIEWPORT_CLASS = `${TOAST_CLASS}__viewport`;
@@ -60,7 +69,7 @@ export const toastStyles = `
 
   /* PC(top) 는 pill + 더 큰 패딩/타이포 (Figma Position=Top: pill · 16/32 · body2). */
   :where(.${TOAST_VIEWPORT_CLASS}[data-position="top"] .${TOAST_ITEM_CLASS}) {
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     padding: var(--semantic-inset-card) ${spacing[32]}px;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;

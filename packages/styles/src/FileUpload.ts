@@ -43,7 +43,7 @@ export const fileUploadStyles = `
     padding: var(--semantic-inset-modal) var(--semantic-inset-card-large);
     background: ${cv.surface.page};
     border: 1.5px dashed ${cv.borderRole.normal};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     cursor: pointer;
     transition: background-color ${transition.default}, border-color ${transition.default};
     text-align: center;
@@ -112,7 +112,7 @@ export const fileUploadStyles = `
     padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
   }
 
   :where(.${FU_ITEM_NAME_CLASS}) {
@@ -142,7 +142,7 @@ export const fileUploadStyles = `
     justify-content: center;
     width: 24px;
     height: 24px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     color: ${cv.iconRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default};

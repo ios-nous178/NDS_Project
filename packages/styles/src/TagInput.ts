@@ -56,7 +56,7 @@ export const tiStyles = `
     box-sizing: border-box;
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     /* Input Value — Input Typography 표준 value(15/22 · Regular). */
     font: ${cv.inputTypography.value.font};
@@ -87,7 +87,7 @@ export const tiStyles = `
     align-items: center;
     justify-content: center;
     border: none;
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     /* 기본 primary 채움(추가 어포던스). 캐포비는 primary(yellow)를 CTA 로 안 써 neutral(#111)로 프로젝트 슬롯 override. */
     background: var(--nds-tag-input-add-bg, ${cv.button.bgDefault});
     color: var(--nds-tag-input-add-color, ${cv.button.textDefault});
@@ -160,7 +160,7 @@ export const tiStyles = `
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: var(--semantic-inset-chip) var(--nds-input-padding-x, var(--semantic-inset-input));
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     transition: border-color ${transition.default};
     cursor: text;

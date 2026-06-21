@@ -24,7 +24,7 @@ Card 의 List/Thumb/Cover 3 base variant 위에 얹는 도메인 Composition 슬
 - **Slot 4 — nutrition tag chip row**: 0-3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.
 - **Slot 5 — like overlay**: top-right absolute, Media 슬롯 위 (이미지 over). 'heart 아이콘 + 999+' 형태. Cover variant 의 Media 위에만, Thumb/List 사용 X.
 - **Slot 6 — author meta**: avatar(xs 20-24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.
-- **Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale project (CashwalkBiz 빨강 / Geniet mint600). 1줄에 1개.
+- **Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale project (CashwalkBiz 빨강 / Geniet teal600). 1줄에 1개.
 - **Slot 8 — strikethrough price + sale price**: 정가(취소선 + mute) + 할인가(Bold + Strong). discount badge 와 같은 라인에 정렬. 가격 표시는 카드당 1쌍.
 - **Slot 9 — shipping chip**: '무료배송' 같은 정책 라벨. ghost/line variant · neutral color. Metadata 라인 우측 또는 가격 라인 하단.
 - **Slot 10 — certification chip**: '식약처 인증 제품' 같은 신뢰성 라벨. success/info color · ghost variant · check icon prefix. Status 슬롯 또는 Metadata 라인 하단.

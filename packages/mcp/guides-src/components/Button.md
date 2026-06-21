@@ -106,11 +106,11 @@ matrixOverrides:
 - color='neutral' + variant='solid' 은 **project 별로 다름** — base/NudgeEAP·Trost·Geniet 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)·런마일(runmile)은 neutral solid = 검정 CTA(Figma Neutral tone)로 정당** — 두 프로젝트는 `cta.blackCta="neutral"` 선언으로 면제(글자는 fill 명도 대비 자동: 검정 fill→흰글자, 캐포비 #111 / 런마일 #221E1F).
 - **캐포비(cashwalk-biz)·런마일(runmile)은 Secondary tone 이 없음** — Figma ButtonGuide tone = Primary + Neutral 둘뿐(캐포비 3098:1032 · 런마일 5124:390). 검정/회색 CTA 는 반드시 `color="neutral"` (solid=검정 / soft=회색 / outlined=라인). `color="secondary"` 사용 시 dev console 경고 + validator `project-denied-button-color` 가 잡음. (secondary 는 다른 프로젝트 전용 tone)
 - Geniet 프로젝트에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.
-- Geniet Solid/Secondary 는 옅은 mint subtle(#F2FAFA) 배경 + project mint(#00A8AC) 텍스트 — 다른 프로젝트 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)
+- Geniet Solid/Secondary 는 옅은 teal subtle(#F2FAFA) 배경 + project teal(#00A8AC) 텍스트 — 다른 프로젝트 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)
 - primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.
 - 다른 페이지로 이동하는 CTA라고 해서 모든 Button에 화살표 아이콘을 붙이지 말 것. ArrowNext/ChevronRight 류 아이콘은 대표 전진 액션 1개에만 사용.
 - 카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.
-- Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.
+- Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'pink'를 기대하면 안 됨.
 - Outlined/Neutral 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=neutral variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.
 - **아이콘 색 하드코딩 금지** — `<LockIcon color="var(--semantic-icon-inverse-default)" />` 처럼 inverse/project 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐시워크 포 비즈니스(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color="currentColor"` 로 두어 Button 텍스트 색을 상속하게 한다.
 - **shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일. project 별 shape 사용 패턴은 get_guide({ topic:'component:Button', project:'<slug>' }).preferredPatterns 참조.

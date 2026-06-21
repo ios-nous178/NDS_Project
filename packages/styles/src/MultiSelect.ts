@@ -48,7 +48,7 @@ export const multiSelectStyles = `
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-select-radius, ${radius.md}px);
+    border-radius: var(--nds-select-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     cursor: pointer;
     font-family: inherit;
@@ -100,7 +100,7 @@ export const multiSelectStyles = `
     max-width: 392px;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     box-sizing: border-box;

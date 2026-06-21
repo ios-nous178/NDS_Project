@@ -1,0 +1,35 @@
+import React from "react";
+
+export interface CashwalkTimerIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkTimerIcon = React.forwardRef<SVGSVGElement, CashwalkTimerIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <mask id="mask0_30_668" maskUnits="userSpaceOnUse" x="2" y="3" width="20" height="19">
+<path fillRule="evenodd" clipRule="evenodd" d="M2.40002 3.59998H21.4836V21.8371H2.40002V3.59998Z" fill="white"/>
+</mask>
+<g mask="url(#mask0_30_668)">
+<path fillRule="evenodd" clipRule="evenodd" d="M20.3249 9.5478C21.7666 8.14957 21.8786 5.92552 20.5743 4.5808C19.2699 3.23607 17.0439 3.27948 15.6022 4.67772L15.683 4.76151C14.5361 4.22746 13.2611 3.92156 11.9123 3.92156C10.607 3.92156 9.37126 4.20625 8.25267 4.708L8.28195 4.67772C6.84031 3.27948 4.61323 3.23607 3.3099 4.5808C2.00555 5.92552 2.11661 8.14957 3.55926 9.5478L3.6269 9.47713C3.19582 10.5271 2.95454 11.6739 2.95454 12.8793C2.95454 17.8261 6.96549 21.8371 11.9123 21.8371C16.8601 21.8371 20.8701 17.8261 20.8701 12.8793C20.8701 11.6366 20.6167 10.4524 20.1593 9.37719L20.3249 9.5478Z" fill="#FF7272"/>
+</g>
+<path fillRule="evenodd" clipRule="evenodd" d="M18.6344 12.8791C18.6344 16.5892 15.6259 19.5977 11.9158 19.5977C8.20567 19.5977 5.1972 16.5892 5.1972 12.8791C5.1972 9.16899 8.20567 6.16052 11.9158 6.16052C15.6259 6.16052 18.6344 9.16899 18.6344 12.8791Z" fill="white"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M11.9091 8.46901C11.6415 8.46901 11.4255 8.25296 11.4255 7.98543V7.46652C11.4255 7.19899 11.6415 6.98193 11.9091 6.98193C12.1766 6.98193 12.3926 7.19899 12.3926 7.46652V7.98543C12.3926 8.25296 12.1766 8.46901 11.9091 8.46901Z" fill="#EFC2C2"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M11.9124 18.8635C11.6448 18.8635 11.4288 18.6475 11.4288 18.38V17.8611C11.4288 17.5935 11.6448 17.3765 11.9124 17.3765C12.1799 17.3765 12.3959 17.5935 12.3959 17.8611V18.38C12.3959 18.6475 12.1799 18.8635 11.9124 18.8635Z" fill="#EFC2C2"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M17.7897 12.8792C17.7897 13.1467 17.5736 13.3627 17.3061 13.3627H16.7872C16.5197 13.3627 16.3026 13.1467 16.3026 12.8792C16.3026 12.6116 16.5197 12.3956 16.7872 12.3956H17.3061C17.5736 12.3956 17.7897 12.6116 17.7897 12.8792Z" fill="#EFC2C2"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M7.42579 12.8792C7.42579 13.1467 7.20975 13.3627 6.94222 13.3627H6.42331C6.15577 13.3627 5.93872 13.1467 5.93872 12.8792C5.93872 12.6116 6.15577 12.3956 6.42331 12.3956H6.94222C7.20975 12.3956 7.42579 12.6116 7.42579 12.8792Z" fill="#EFC2C2"/>
+<path d="M11.907 10.4886V13.2639L14.1573 15.3385" stroke="#997979" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+);
+
+CashwalkTimerIcon.displayName = "CashwalkTimerIcon";

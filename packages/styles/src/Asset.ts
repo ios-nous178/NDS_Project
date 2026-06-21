@@ -34,11 +34,11 @@ export const assetStyles = `
   }
 
   :where(.${AS_CLASS}[data-shape="rounded"] .${AS_FRAME_CLASS}) {
-    border-radius: var(--nds-asset-radius, ${radius.md}px);
+    border-radius: var(--nds-asset-radius, ${radius[8]}px);
   }
 
   :where(.${AS_CLASS}[data-shape="circle"] .${AS_FRAME_CLASS}) {
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
   }
 
   :where(.${AS_CONTENT_CLASS}) {

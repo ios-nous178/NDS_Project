@@ -50,7 +50,7 @@ usagePolicy:
 - Project color 는 '현재 선택 / 핵심 강조' 에만 사용. 일반 카테고리·상태 표시에는 neutral 우선.
 - 상태 색(success/error/caution/info) 은 의미 전달 목적에만 사용 — 단순 강조용 컬러로 쓰지 말 것.
 - **대기/검수/검토 같은 '중립 워크플로 상태'는 neutral 로** — caution(앰버)은 *주의/경고/선착순* 의미라 '검수 대기'·'대기중'·'검토중' 같은 진행 단계에 쓰면 불필요한 경고처럼 보인다(회귀: 캐포비 '검수 대기' 를 앰버 caution 으로 표기 → '이 색 어디서 나왔나' 혼동). 진행 단계 라벨은 `color="neutral"`, 경고/위험만 caution.
-- Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 중첩 금지.
+- Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Teal Surface 위 Teal Badge 같은 동일 계열 중첩 금지.
 - Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.
 - Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.
 - **shape 로 동적/정적 의미 구분 (캐포비 admin · Figma 3782-20558)**: `shape="default"`(라운드 사각)=거래/처리 상태·카테고리 같은 **동적 상태값**(충전·사용·적립·만료·취소), `shape="pill"`(완전 둥근)=계정 유형·식별성 같은 **정적 속성 태그**(일반 계정·프리미엄·신규). 둘을 혼용하지 말 것 — 동적 상태값에 pill, 정적 식별에 사각을 쓰면 의미 신호가 깨진다. 데이터 테이블 셀에는 default 사각이 기본.

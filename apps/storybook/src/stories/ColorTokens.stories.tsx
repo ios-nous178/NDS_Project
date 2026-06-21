@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import {
-  neutral,
+  gray,
   coolGray,
   blue,
-  magenta,
+  pink,
   yellow,
+  orange,
   red,
   green,
   nudgeEapSemantic,
@@ -153,12 +154,13 @@ function ColorTokensPage() {
       >
         Primitive Scales
       </h2>
-      <PaletteGroup title="Neutral" palette={neutral} />
+      <PaletteGroup title="Gray" palette={gray} />
       <PaletteGroup title="Cool Gray" palette={coolGray} />
       <PaletteGroup title="Blue (Primary)" palette={blue} />
-      <PaletteGroup title="Magenta (Secondary)" palette={magenta} />
+      <PaletteGroup title="Pink (Accent)" palette={pink} />
       <PaletteGroup title="Yellow (Caution)" palette={yellow} />
-      <PaletteGroup title="Red (Error)" palette={red} />
+      <PaletteGroup title="Orange (Error)" palette={orange} />
+      <PaletteGroup title="Red" palette={red} />
       <PaletteGroup title="Green (Success)" palette={green} />
     </div>
   );

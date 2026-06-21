@@ -23,7 +23,8 @@ export const accordionStyles = `
   /* Card — 배경+라운드+보더 (기본). 심리검사 카드·상품 리스트. */
   :where(.${ACC_CLASS}[data-type="card"] .${ACC_ITEM_CLASS}) {
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
+    overflow: hidden;
     background: ${cv.surface.default};
   }
 

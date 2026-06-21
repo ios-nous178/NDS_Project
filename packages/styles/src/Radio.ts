@@ -49,13 +49,13 @@ export const radioStyles = `
     height: var(--nds-radio-size, 20px);
     margin-top: 1px;
     border: 2px solid ${cv.borderRole.normal};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
   }
 
   :where(.${RADIO_INDICATOR_CLASS}[data-checked="true"]) {
-    border-color: var(--nds-radio-checked-color, ${cv.fill.brand});
+    border-color: var(--nds-radio-checked-color, ${cv.fill.controlOn});
   }
 
   :where(.${RADIO_ROOT_CLASS}[data-disabled="true"] .${RADIO_INDICATOR_CLASS}) {
@@ -71,8 +71,8 @@ export const radioStyles = `
     display: block;
     width: 10px;
     height: 10px;
-    border-radius: ${radius.pill}px;
-    background: var(--nds-radio-checked-color, ${cv.fill.brand});
+    border-radius: ${radius.full}px;
+    background: var(--nds-radio-checked-color, ${cv.fill.controlOn});
     opacity: 0;
     transform: scale(0);
     transition: opacity ${transition.default}, transform ${transition.default},

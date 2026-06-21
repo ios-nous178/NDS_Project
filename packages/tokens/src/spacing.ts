@@ -3,11 +3,9 @@
 
 export const spacing = {
   "0": 0,
-  1: 1,
   2: 2,
   4: 4,
   6: 6,
-  7: 7,
   8: 8,
   10: 10,
   11: 11,
@@ -21,11 +19,9 @@ export const spacing = {
   28: 28,
   30: 30,
   32: 32,
-  33: 33,
   36: 36,
   40: 40,
   48: 48,
-  64: 64,
   80: 80,
 } as const;
 
@@ -55,19 +51,15 @@ export const inset = {
 } as const;
 
 export const radius = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  pill: 9999,
-} as const;
-
-export const shape = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  pill: 9999,
+  2: 2,
+  4: 4,
+  8: 8,
+  10: 10,
+  12: 12,
+  16: 16,
+  20: 20,
+  24: 24,
+  full: 9999,
 } as const;
 
 export const borderWidth = {

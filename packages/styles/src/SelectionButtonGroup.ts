@@ -44,7 +44,7 @@ export const selectionButtonGroupStyles = `
     padding: ${spacing[14]}px var(--nds-selection-button-padding-x, ${spacing[24]}px);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;

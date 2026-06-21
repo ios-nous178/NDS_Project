@@ -13,7 +13,7 @@ const skeletonBar = (width: string, height: number): React.CSSProperties => ({
   width,
   height,
   borderRadius: 6,
-  background: colors.neutral[100],
+  background: colors.gray[100],
 });
 
 export function SheetPreview({

@@ -23,7 +23,7 @@ metrics:
   fabSize: 56×56 채널톡
   footerHeight: "1920×198 bg #F5F5F5"
   projectPrimary: var(--semantic-bg-brand-default)
-  magentaAccent: "#ED2E77 (이벤트 한정)"
+  pinkAccent: "#ED2E77 (이벤트 한정)"
   maxPrimarySolidPerScreen: 1
   whitelabel: true (고객사 로고/명 + CMS 스트립 인사말)
   relatedPatterns: nudge-eap-form-layout, nudge-eap-landing-layout, cta-group
@@ -53,14 +53,14 @@ NudgeEAP 고객사용(B2B EAP customer) 홈 페이지 레이아웃 — 'WebHeade
 - **보조 배너 띠**: 1200×110-120 풀폭. brown `#67544D` + white pill (생활상담), `var(--semantic-bg-brand-default)` + white pill (앱 다운로드).
 - **채널톡 FAB**: 우측 하단 56×56 원형. desktop 이므로 BottomNav 없음.
 - **Footer**: 1920×198 bg `#F5F5F5`. 주소/사업자번호/연락처 14/20 Regular #383838 + ISO 27001 로고 우측.
-- **컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card `var(--semantic-bg-brand-subtle)`, featured #FFF7E6, thumb #EBEBEB, project `var(--semantic-bg-brand-default)`, magenta #ED2E77 (이벤트 한정).
+- **컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card `var(--semantic-bg-brand-subtle)`, featured #FFF7E6, thumb #EBEBEB, project `var(--semantic-bg-brand-default)`, pink #ED2E77 (이벤트 한정).
 - **B2B 화이트라벨**: 좌측 상단 로고가 고객사 (e.g. 아모레퍼시픽). NudgeEAP 자체 브랜딩은 footer 에만.
 
 ## avoid
 
 - 모바일 BottomNav 추가 — 데스크탑 홈은 채널톡 FAB 만.
 - Greeting/Notification icon 을 헤더 우측에 — NudgeEAP B2B 헤더는 [로그인][앱 다운로드] 페어.
-- Magenta `#ED2E77` 을 일반 강조에 — 이벤트 배지 한정.
+- Pink `#ED2E77` 을 일반 강조에 — 이벤트 배지 한정.
 - Hero 배경을 project blue 로 — cream/warm 톤 (`#FFEDD0`) 이 멘탈케어 시그니처.
 - 3-카드 빠른 액션을 4개 이상으로 — 3개가 위계 한계.
 - 심리검사 캐러셀 카드 색 다양화 — 표준 #FAFAFA + featured #FFF7E6 두 톤만.

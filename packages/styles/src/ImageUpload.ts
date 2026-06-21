@@ -33,7 +33,7 @@ export const imageUploadStyles = `
     width: 150px;
     height: 150px;
     box-sizing: border-box;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -125,7 +125,7 @@ export const imageUploadStyles = `
     border: 0;
     width: 135px;
     height: 44px;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     background: ${cv.fill.neutralSubtle};
     color: ${cv.textRole.normal};
     font-family: inherit;

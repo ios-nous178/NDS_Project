@@ -5,8 +5,7 @@ description: "EAP(Employee Assistance Program) 멘탈케어 플랫폼 디자인 
 
 # ── Primitive Color Scales ──────────────────────────────────
 primitives:
-  neutral:
-    1000: "#000000"
+  gray:
     900: "#111111"
     800: "#383838"
     700: "#666666"
@@ -17,7 +16,10 @@ primitives:
     200: "#ECECEC"
     100: "#F5F5F5"
     50: "#FAFAFA"
-    00: "#FFFFFF"
+  # Common 흑·백 — white/black + 레거시 "00"/1000 키 (전 브랜드 ref 호환)
+  common:
+    white: "#FFFFFF"
+    black: "#000000"
   coolGray:
     900: "#111827"
     800: "#1F2937"
@@ -41,7 +43,7 @@ primitives:
     200: "#91CAF6"
     100: "#E3F2FC"
     50: "#F1F8FD"
-  magenta:
+  pink:
     900: "#910041"
     800: "#C30058"
     700: "#CE005A"
@@ -52,7 +54,7 @@ primitives:
     200: "#F8B8CF"
     100: "#FCE3EC"
     50: "#FDF1F5"
-  # Orange Red — Figma 아토믹 명칭 (현 코드에서는 `red` 로 유지)
+  # Red — Figma 아토믹 "Orange Red" (#F13F00, EAP 에러색). 공통 Family Red.
   red:
     900: "#A01C00"
     800: "#CB2700"
@@ -64,18 +66,18 @@ primitives:
     200: "#FF875D"
     100: "#FFA98C"
     50: "#FEE9E6"
-  # Coral Red — Figma 아토믹 신규 팔레트 (2026-05)
-  coralRed:
-    900: "#7A0A0A"
-    800: "#A01414"
-    700: "#C42020"
-    600: "#E83030"
-    500: "#FF4141"
-    400: "#FF7070"
-    300: "#FF9A9A"
-    200: "#FFCDCD"
-    100: "#FFECEC"
-    50: "#FFF5F5"
+  # Orange — Figma 아토믹 "Peach" (#FB8A3E, EAP 일기·행복/Journal). 공통 Family Orange.
+  orange:
+    900: "#7A3411"
+    800: "#9D4214"
+    700: "#C75416"
+    600: "#ED6B1F"
+    500: "#FB8A3E"
+    400: "#FFA15F"
+    300: "#FFBE8C"
+    200: "#FFD9B8"
+    100: "#FFEEDC"
+    50: "#FFF8F3"
   green:
     900: "#002B1E"
     800: "#003F2E"
@@ -87,18 +89,6 @@ primitives:
     200: "#6FD2BD"
     100: "#AAE3D7"
     50: "#E5F7F4"
-  # Amber — Figma 아토믹 신규 팔레트 (2026-05). Yellow 보다 따뜻한 황금톤.
-  amber:
-    900: "#FC8703"
-    800: "#FD9B02"
-    700: "#FEAF01"
-    600: "#FFC400"
-    500: "#FFD200"
-    400: "#FFDC39"
-    300: "#FFE673"
-    200: "#FFF0AC"
-    100: "#FFFAE5"
-    50: "#FFFEF5"
   # Golden Yellow — Figma 아토믹 명칭 (현 코드에서는 `yellow` 로 유지)
   yellow:
     900: "#9B5000"
@@ -111,6 +101,30 @@ primitives:
     200: "#FFE282"
     100: "#FFEDB3"
     50: "#FFFAE8"
+  # Lavender — Figma 아토믹 신규 (EAP 명상·수면/Meditation). 공통 Family Purple.
+  purple:
+    900: "#4C1D95"
+    800: "#5B21B6"
+    700: "#6D28D9"
+    600: "#7C3AED"
+    500: "#8B5CF6"
+    400: "#A78BFA"
+    300: "#C4B5FD"
+    200: "#DDD6FE"
+    100: "#EDE9FE"
+    50: "#F5F3FF"
+  # Teal — Figma 아토믹 신규 (EAP 안정·휴식/Wellness). 공통 Family Teal.
+  teal:
+    900: "#134E4A"
+    800: "#115E59"
+    700: "#0F766E"
+    600: "#0D9488"
+    500: "#14B8A6"
+    400: "#2DD4BF"
+    300: "#5EEAD4"
+    200: "#99F6E4"
+    100: "#CCFBF1"
+    50: "#F0FDFA"
 
 # ── Semantic Colors ─────────────────────────────────────────
 # 시멘틱 컬러 토큰의 SSOT 는 `packages/tokens/src/semantic.ts` (Figma SemanticColorGuide
@@ -210,11 +224,9 @@ typography:
 # 31 Variables · 4pt Grid Base · Primitive / Gap / Padding / Grid
 spacing:
   0: 0px # 간격 없음 (밀착)
-  1: 1px # legacy
   2: 2px # 아이콘-텍스트 최소 간격
   4: 4px # 인라인 요소 간격
   6: 6px # 뱃지·칩 내부 여백
-  7: 7px # legacy
   8: 8px # 카드 내부 수직 간격
   10: 10px # 리스트 아이템 내부 패딩
   11: 11px # legacy
@@ -228,11 +240,9 @@ spacing:
   28: 28px # 큰 컴포넌트 내부 여백
   30: 30px # legacy
   32: 32px # 페이지 섹션 분리
-  33: 33px # legacy
   36: 36px # 대형 섹션 상하 여백
   40: 40px # PC 최소 페이지 마진
   48: 48px # legacy / 추가 여백
-  64: 64px # legacy / 큰 여백
   80: 80px # legacy / 페이지 단위 여백
 
 # ── Gap (Semantic — 요소 간 거리, 의도 기반) ──────────────
@@ -265,23 +275,19 @@ inset:
   card-large: 20px # 큰 카드
   modal: 24px # Modal · 통계 박스
 
-# ── Rounded / Radius (Policy Scale) ────────────────────────
-# 공개 export는 승인된 UI radius 세트로 제한한다.
-# 예외가 필요하면 ad-hoc radius 토큰을 추가하지 말고 컴포넌트 prop/CSS var로 처리한다.
+# ── Rounded / Radius (Policy Scale · 숫자 체계) ─────────────
+# 캐시워크 가이드 Border Radius 세트로 통일 (t셔츠 sm/md/lg/xl 폐기 → 숫자 px).
+# 프로젝트별 radius 차이는 radius 토큰이 아니라 컴포넌트 슬롯(--nds-{c}-radius)으로 처리한다.
 rounded:
-  sm: 4px # 소형 버튼·칩 모서리
-  md: 8px # 기본 카드·컨테이너 (가장 많이 사용)
-  lg: 12px # 중형 카드·패널
-  xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Figma Radius/2xl · 트로스트 Card PC·Section Container)
-  pill: 9999px # 칩·토글·원형 요소
-
-# ── Shape (Semantic — radius 정책 별칭) ────────────────────
-shape:
-  sm: 4px # 버튼·칩
-  md: 8px # 기본 카드 (표준값)
-  lg: 12px # 중형 패널·리스트
-  xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Radius/2xl)
-  pill: 9999px # 아바타·뱃지·토글
+  2: 2px # 미세 모서리 (Badge·Tag)
+  4: 4px # 소형 버튼·칩 (구 sm)
+  8: 8px # 기본 카드·컨테이너 — 가장 많이 사용 (구 md)
+  10: 10px # 입력·드롭다운
+  12: 12px # 중형 카드·패널 (구 lg)
+  16: 16px # 대형 카드(PC)·콘텐츠 패널 (구 xl)
+  20: 20px # 강조 카드·시트
+  24: 24px # 큰 모달·바텀시트
+  full: 9999px # 칩·토글·원형 요소 (구 pill)
 
 # ── Border Width (Primitive Scale) ─────────────────────────
 # Figma · BorderGuide · 6 Variables · Primitive / Semantic Stroke

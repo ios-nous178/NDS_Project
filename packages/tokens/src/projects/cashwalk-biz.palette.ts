@@ -19,12 +19,12 @@
 
 // ─── Common ─────────────────────────────────────────────
 export const cashwalkBizCommon = {
-  "00": "#FFFFFF",
-  1000: "#000000",
+  white: "#FFFFFF",
+  black: "#000000",
 } as const;
 
 // ─── Neutral ────────────────────────────────────────────
-export const cashwalkBizNeutral = {
+export const cashwalkBizGray = {
   50: "#FAFAFA",
   100: "#F5F5F5",
   200: "#EEEEEE",
@@ -52,7 +52,7 @@ export const cashwalkBizYellow = {
 } as const;
 
 // ─── Coral Red ──────────────────────────────────────────
-export const cashwalkBizCoralRed = {
+export const cashwalkBizRed = {
   50: "#FFF5F5",
   100: "#FFECEC",
   200: "#FFCDCD",
@@ -106,12 +106,4 @@ export const cashwalkBizBrown = {
   700: "#403535",
   800: "#312828",
   900: "#221B1B",
-} as const;
-
-// ─── Status alias (semantic 빠른 참조용) ────────────────
-export const cashwalkBizStatus = {
-  error: cashwalkBizCoralRed[500], // #FC3500
-  success: cashwalkBizGreen[500], // #00CC5B
-  info: cashwalkBizBlue[500], // #007AFF
-  caution: cashwalkBizYellow[700], // #FEAF01 — 노랑은 텍스트 가독성 떨어져 700 사용
 } as const;

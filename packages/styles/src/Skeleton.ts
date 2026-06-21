@@ -14,17 +14,17 @@ export const skeletonStyles = `
     display: block;
     background: var(--nds-skeleton-bg, ${cv.surface.disabled});
     animation: nds-skeleton-pulse 1.5s ease-in-out infinite;
-    border-radius: var(--nds-skeleton-radius, ${radius.md}px);
+    border-radius: var(--nds-skeleton-radius, ${radius[8]}px);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
 
   :where(.${SK_CLASS}[data-variant="circular"]) {
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
   }
 
   :where(.${SK_CLASS}[data-variant="text"]) {
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     height: 1em;
     transform: scale(1, 0.6);
     transform-origin: 0 60%;

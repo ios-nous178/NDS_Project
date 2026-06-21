@@ -37,7 +37,7 @@ export interface TokenDef {
   group: string;
   /**
    * 이 토큰을 정의하는 프로젝트 슬러그 목록. base(tokens.css = nudge-eap) 에만 있는
-   * 공통 토큰은 이 필드가 없음(= 전 프로젝트 적용). geniet 의 `--color-mint-*` 처럼
+   * 공통 토큰은 이 필드가 없음(= 전 프로젝트 적용). geniet 의 `--color-teal-*` 처럼
    * 특정 프로젝트 고유 토큰일 때만 채워짐.
    */
   projects?: string[];

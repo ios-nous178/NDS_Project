@@ -45,7 +45,7 @@ export const stepperStyles = `
     justify-content: center;
     width: 28px;
     height: 28px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.disabled};
     color: ${cv.textRole.muted};
     font-size: ${typeScale.body3.fontSize}px;
@@ -108,7 +108,7 @@ export const stepperStyles = `
     right: calc(-50% + 18px);
     height: 2px;
     background: ${cv.borderRole.subtle};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     transition: background-color ${transition.default};
   }
 

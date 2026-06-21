@@ -43,7 +43,7 @@ export const bottomSheetStyles = `
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: var(--nds-bottom-sheet-radius, 24px) var(--nds-bottom-sheet-radius, 24px) 0 0;
+    border-radius: var(--nds-bottom-sheet-radius, ${radius[24]}px) var(--nds-bottom-sheet-radius, ${radius[24]}px) 0 0;
     background-color: ${cv.surface.default};
     /* upward shadow — DS shadow 토큰은 모두 아래 방향이라 의도적으로 raw default 사용.
        슬롯으로 노출해 프로젝트가 덮을 수 있게 (Trost 등), default 는 불변. */
@@ -70,7 +70,7 @@ export const bottomSheetStyles = `
     content: "";
     width: var(--nds-bottom-sheet-handle-width, 36px);
     height: var(--nds-bottom-sheet-handle-height, 4px);
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: var(--nds-bottom-sheet-handle-color, ${cv.borderRole.normal});
   }
 

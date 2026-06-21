@@ -5,7 +5,7 @@
  * SSOT: Figma 지니어트-Dev / Colors (207:1484)
  *
  * 구성:
- *   - geniet.palette.ts   : atomic 컬러 스케일 (genietMint / genietGray / ...)
+ *   - geniet.palette.ts   : atomic 컬러 스케일 (genietTeal / genietGray / ...)
  *   - geniet.semantic.ts  : Figma role-based 시멘틱 트리 (NudgeEAP base override)
  *   - geniet.ts (이 파일) : palette + semantic + typography/spacing/elevation 묶음
  */
@@ -15,26 +15,24 @@ import {
   genietBlue,
   genietGray,
   genietGreen,
-  genietMint,
-  genietNeutral,
+  genietTeal,
+  genietCommon,
   genietPurple,
   genietRed,
-  genietStatus,
   genietYellow,
 } from "./geniet.palette.js";
 import { genietSemantic } from "./geniet.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export
 export {
-  genietMint,
+  genietTeal,
   genietRed,
   genietYellow,
   genietBlue,
   genietPurple,
   genietGreen,
   genietGray,
-  genietNeutral,
-  genietStatus,
+  genietCommon,
 };
 export { genietSemantic };
 export type { GenietSemanticTokens } from "./geniet.semantic.js";
@@ -45,15 +43,14 @@ export const genietTheme: ProjectTheme = {
   name: "geniet",
   actionsLayout: "split",
   palette: {
-    mint: genietMint,
+    teal: genietTeal,
     red: genietRed,
     yellow: genietYellow,
     blue: genietBlue,
     purple: genietPurple,
     green: genietGreen,
     gray: genietGray,
-    neutral: genietNeutral,
-    status: genietStatus,
+    common: genietCommon,
   },
   semantic: genietSemantic,
   typography: {
@@ -105,19 +102,7 @@ export const genietTheme: ProjectTheme = {
       modal: 24, // Modal·Bottom Sheet·Drawer
       section: 32, // 페이지 Section·큰 영역 padding (신규)
     },
-    // Radius/Shape — SSOT: Figma 지니어트 Library / Radius (3134:2).
-    // Shape 시멘틱 스케일(none~full)로 표준화 — 구 Geniet 고유 곡률(xs:4·sm:6·xl:18·2xl:23) 폐기.
-    // (DS 컨벤션상 full 키는 pill 로 노출.)
-    radius: {
-      none: 0, // Shape/None — 0px
-      xs: 2, // Shape/XS — Pill·Toggle
-      sm: 4, // Shape/SM — Tag·Chip·Thumbnail
-      md: 8, // Shape/MD — Button·Input·Toast
-      lg: 12, // Shape/LG — Card·Section
-      xl: 16, // Shape/XL — Modal·Sheet
-      "2xl": 24, // Shape/2XL — Hero·Banner
-      pill: 9999, // Shape/Full — Avatar·FAB·Pill
-    },
+    // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
     // Section/Container 가이드(1385:13): PC max-width 1280 · side padding 40, Mobile 16.
     // (side padding 40 = base desktop.minMargin, mobile margin 16 = base — contentWidth만 1200→1280.)
     grid: {
@@ -142,7 +127,7 @@ export const genietTheme: ProjectTheme = {
     },
   },
   // Component overrides
-  //   footer nav — Figma 지니어트 BottomNav 가이드 (90:2): active = mint600 #00A8AC + bold,
+  //   footer nav — Figma 지니어트 BottomNav 가이드 (90:2): active = teal600 #00A8AC + bold,
   //   inactive = gray500 #999, label = Pretendard 10/12 (base 11/14 보다 컴팩트).
   //   나머지는 GenietHomepage 운영 코드/DESIGN.md 실측값
   //   (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용).
@@ -164,12 +149,12 @@ export const genietTheme: ProjectTheme = {
     card: { radius: 12, borderColor: genietGray[200] },
     // Radius 가이드: Modal = Shape/XL = 16px. (그림자는 elevation.shadow[3] = E3 Overlay)
     modal: { radius: 16 },
-    // Badge&Chip 가이드(3058:84): Chip Selected = Mint/50 bg + Mint/600 text (옅은 필터 칩).
-    // (Pill 형태는 컴포넌트 기본 radius.pill. 구 mint/600 solid+흰 텍스트는 과교정이라 환원.)
+    // Badge&Chip 가이드(3058:84): Chip Selected = Teal/50 bg + Teal/600 text (옅은 필터 칩).
+    // (Pill 형태는 컴포넌트 기본 radius.full. 구 teal/600 solid+흰 텍스트는 과교정이라 환원.)
     chip: {
-      selectedBackground: genietMint[50], // #F2FAFA
-      selectedText: genietMint[600], // #00A8AC
-      selectedBorder: genietMint[50], // bg 와 동일 — borderless 라이트 칩
+      selectedBackground: genietTeal[50], // #F2FAFA
+      selectedText: genietTeal[600], // #00A8AC
+      selectedBorder: genietTeal[50], // bg 와 동일 — borderless 라이트 칩
       // 치수 — 가이드(3058:84): h32 고정(다른 크기는 padding 조절) · padding 6/14 · Medium 13.
       height: 32,
       paddingY: 6,
@@ -178,21 +163,21 @@ export const genietTheme: ProjectTheme = {
       lineHeight: 18,
       fontWeight: "500",
     },
-    // Control 가이드(171:9904): toggle 51×31, on=brand mint, off=gray/200.
+    // Control 가이드(171:9904): toggle 51×31, on=brand teal, off=gray/200.
     // 썸 27 + 상하 여백 2 → 트랙(31)에 꽉 차고, travel = 51-27-2*2 = 20.
     toggle: {
       trackW: 51,
       trackH: 31,
       trackBg: genietGray[200],
-      trackActiveBg: genietMint[600],
+      trackActiveBg: genietTeal[600],
       thumbSize: 27,
       thumbOffset: 2,
       thumbTravel: 20,
     },
-    // Control 가이드(171:9904): checkcircle/radio = 24×24, on=brand mint.
+    // Control 가이드(171:9904): checkcircle/radio = 24×24, on=brand teal.
     checkbox: { size: 24 },
     radio: { size: 24 },
-    // Tab 가이드(3132:94585): Chip 스타일 active = 흑백(#111). Underline 은 tone=color 로 mint(시멘틱 자동).
+    // Tab 가이드(3132:94585): Chip 스타일 active = 흑백(#111). Underline 은 tone=color 로 teal(시멘틱 자동).
     tab: {
       chipSelectedBg: "var(--semantic-bg-inverse-default)", // #111
     },

@@ -10,28 +10,15 @@ import type { ComponentGuide, PatternGuide } from "./guide-types.js";
 export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   "Accordion": {
     "name": "Accordion",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1728-36",
-    "sizeMatrix": {
-      "type=line": "하단 1px Border/Subtle 만 (배경·라운드 없음) — FAQ·약관·정책 연속 리스트",
-      "type=card": "배경(BG/Surface) + 1px Border/Subtle + Radius/12 — 심리검사 카드·상품 리스트",
-      "title": "Body1(16) Bold · Text/Strong (Figma MO; PC 는 Headline5(18) — device prop 도입 시)",
-      "chevron": "우측 정렬 · Collapsed=down / Expanded=up (icon-eap-chevron 동형)",
-      "content": "Body3 본문 · 펼침 상태에서만 노출"
-    },
-    "summary": "수직 펼침/접힘 그룹. FAQ·약관·정책·다단 설정처럼 정보 밀도가 높지만 한 번에 다 보여줄 필요 없는 \"목록+상세\" 패턴에 사용. 시각 타입 `type`(line=구분선 / card=배경+라운드) × 펼침 모드 `expandMode`(single/multiple) 두 축으로 조립한다. 제목은 Bold·Text/Strong, chevron 으로 상태 표현(Collapsed=↓ / Expanded=↑).",
+    "summary": "수직 펼침/접힘 그룹. FAQ, 약관, 다단 설정처럼 정보 밀도가 높지만 한 번에 다 보여줄 필요 없는 곳에 사용.",
     "pitfalls": [
-      "**⚠ BREAKING(2026-06) — `type` 의미가 바뀌었다.** 기존 `type=\"single|multiple\"`(펼침 모드)는 **`expandMode`** 로 이름이 바뀌었고, `type` 은 이제 **시각 타입 `line|card`** 이다. 외부 코드가 `<Accordion type=\"single\">` 처럼 쓰고 있으면 `expandMode=\"single\"` 로 고쳐야 한다(html `<nds-accordion expand-mode=\"single\">`).",
-      "**type 선택 — line vs card.** 연속 텍스트 리스트(FAQ·약관·정책·설정 메뉴)는 `type=\"line\"`(구분선만). 시각 분리가 필요한 항목(심리검사 카드·상품)은 `type=\"card\"`(배경+라운드+보더). **한 화면에서 line 과 card 를 섞지 말 것** — 시각 일관성 저해.",
-      "**expandMode 기본은 `single`** (한 번에 하나). FAQ 처럼 여러 답을 동시에 펼쳐 비교해야 하면 `expandMode=\"multiple\"`. `single` 모드에 `value`/`defaultValue` 를 배열로 넘기지 말 것(단일=string, multiple=배열).",
-      "**chevron 외 다른 화살표(arrow/caret) 쓰지 말 것.** 상태는 chevron 방향(Collapsed=↓ / Expanded=↑)으로만 표현. 첫 진입은 모두 Collapsed 가 기본(FAQ 1번째만 Expanded 패턴은 가능).",
-      "**헤더 전체가 클릭 영역.** chevron 아이콘만 클릭되게 막지 말 것 — trigger(헤더) 전체가 button 이다.",
-      "trigger 안에 nds-button / a / 클릭 가능한 자식을 또 두면 nested interactive — 키보드/포커스가 깨진다. trigger 자체가 button.",
-      "Accordion 안에 입력 폼을 깊게 두지 말 것 — 접힘 상태에서 validation 실패가 안 보여 혼란.",
-      "모든 항목을 펼친 채 기본 노출하지 말 것(아코디언의 목적 상실)."
+      "type='single' 인데 value 를 배열로 넘기지 말 것. 단일 모드는 string, multiple 모드만 배열.",
+      "trigger 안에 nds-button / a / 클릭 가능한 자식 element 를 또 두면 nested interactive — 키보드/포커스 동작이 깨짐. trigger 자체가 button 임.",
+      "Accordion 안에 form / 입력 폼을 깊게 두지 말 것. 접힘 상태에서 validation 실패가 보이지 않아 사용자가 혼란."
     ],
     "examplesHtml": {
-      "do": "<!-- FAQ — line 타입 · 여러 개 동시 펼침 -->\n<nds-accordion type=\"line\" expand-mode=\"multiple\" value=\"q1\">\n  <nds-accordion-item value=\"q1\">\n    <nds-accordion-trigger>배송은 얼마나 걸리나요?</nds-accordion-trigger>\n    <nds-accordion-content>영업일 기준 2~3일 소요됩니다.</nds-accordion-content>\n  </nds-accordion-item>\n  <nds-accordion-item value=\"q2\">\n    <nds-accordion-trigger>교환·환불이 가능한가요?</nds-accordion-trigger>\n    <nds-accordion-content>수령 후 7일 이내 가능합니다.</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n\n<!-- 약관 — card 타입 · 한 번에 하나 -->\n<nds-accordion type=\"card\" expand-mode=\"single\" value=\"terms\">\n  <nds-accordion-item value=\"terms\">\n    <nds-accordion-trigger>이용약관</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n<script>el.addEventListener(\"accordion-change\", e => console.log(e.detail.value));</script>",
-      "dont": "<!-- ① 옛 API — type 으로 펼침 모드 지정 (이제 expand-mode) -->\n<nds-accordion type=\"single\">…</nds-accordion>\n\n<!-- ② 한 화면에 line + card 혼용 -->\n<nds-accordion type=\"line\">…</nds-accordion>\n<nds-accordion type=\"card\">…</nds-accordion>\n\n<!-- ③ trigger 안에 또 다른 클릭 가능한 element — nested interactive -->\n<nds-accordion-item value=\"x\">\n  <nds-accordion-trigger><nds-button>열기</nds-button></nds-accordion-trigger>\n  <nds-accordion-content>본문</nds-accordion-content>\n</nds-accordion-item>"
+      "do": "<nds-accordion type=\"single\" value=\"terms\">\n  <nds-accordion-item value=\"terms\">\n    <nds-accordion-trigger>이용약관</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n  <nds-accordion-item value=\"privacy\">\n    <nds-accordion-trigger>개인정보 처리방침</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n<script>el.addEventListener(\"accordion-change\", e => console.log(e.detail.value));</script>",
+      "dont": "<!-- accordion-trigger 안에 또 다른 클릭 가능한 element — nested interactive -->\n<nds-accordion-item value=\"x\">\n  <nds-accordion-trigger><nds-button>열기</nds-button></nds-accordion-trigger>\n  <nds-accordion-content>본문</nds-accordion-content>\n</nds-accordion-item>"
     }
   },
   "ActionChip": {
@@ -357,7 +344,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Project color 는 '현재 선택 / 핵심 강조' 에만 사용. 일반 카테고리·상태 표시에는 neutral 우선.",
       "상태 색(success/error/caution/info) 은 의미 전달 목적에만 사용 — 단순 강조용 컬러로 쓰지 말 것.",
       "**대기/검수/검토 같은 '중립 워크플로 상태'는 neutral 로** — caution(앰버)은 *주의/경고/선착순* 의미라 '검수 대기'·'대기중'·'검토중' 같은 진행 단계에 쓰면 불필요한 경고처럼 보인다(회귀: 캐포비 '검수 대기' 를 앰버 caution 으로 표기 → '이 색 어디서 나왔나' 혼동). 진행 단계 라벨은 `color=\"neutral\"`, 경고/위험만 caution.",
-      "Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Mint Surface 위 Mint Badge 같은 동일 계열 중첩 금지.",
+      "Tone-on-Tone 금지: 연한 Blue 배경 위에 Blue Fill Badge, 연한 Teal Surface 위 Teal Badge 같은 동일 계열 중첩 금지.",
       "Badge 안에 긴 문장/CTA 보조 문구 금지 — 8자 안팎 짧은 라벨만.",
       "Chip 과 혼용 금지 — Chip 은 '선택/필터/분류 액션', Badge 는 '상태/속성 표시(비액션)'.",
       "**shape 로 동적/정적 의미 구분 (캐포비 admin · Figma 3782-20558)**: `shape=\"default\"`(라운드 사각)=거래/처리 상태·카테고리 같은 **동적 상태값**(충전·사용·적립·만료·취소), `shape=\"pill\"`(완전 둥근)=계정 유형·식별성 같은 **정적 속성 태그**(일반 계정·프리미엄·신규). 둘을 혼용하지 말 것 — 동적 상태값에 pill, 정적 식별에 사각을 쓰면 의미 신호가 깨진다. 데이터 테이블 셀에는 default 사각이 기본.",
@@ -407,27 +394,17 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "BottomSheet": {
     "name": "BottomSheet",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1746-800",
-    "references": [
-      {
-        "label": "Trost BottomSheet 가이드 — radius 20 · handle 40",
-        "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128",
-        "project": "trost",
-        "caption": "트로스트 시트(프로젝트 토큰 emit). base/EAP 와 radius·handle 만 다름."
-      }
-    ],
+    "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128",
     "sizeMatrix": {
-      "state": "Default(핸들 36×4 Border/Normal · showHandle) / Upclose(우상단 닫기 24×24 Icon/Strong · closable)",
-      "buttons": "One(full) / Two(50:50) / Text — footer 컴포지션(footer 자식 flex:1 균등). 별도 enum prop 아님.",
-      "radius (base/EAP)": "var(--nds-bottom-sheet-radius, 24px) — 상단 좌우만 (Figma 1746:800)",
-      "radius (project)": "Trost/cashwalk 20 · geniet/runmile 16 — 프로젝트 토큰이 --nds-bottom-sheet-radius emit",
-      "handleWidth (base 36 / Trost 40)": "var(--nds-bottom-sheet-handle-width)",
-      "title": "Headline5(18; Figma 라벨 \"Headline4\") Bold · Text/Strong · 가운데 정렬 · divider 없음",
-      "description/body": "Body2 · Text/Subtle",
-      "open/close": "진입 280ms standard easing(cubic-bezier .4 0 .2 1) · 닫기 200ms ease-out",
-      "backdrop": "var(--nds-bottom-sheet-backdrop, rgba(0,0,0,.5)) — BG/Overlay 0.5",
-      "shadow": "var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0,0,0,.1)) — 위 방향",
-      "maxWidth/maxHeight": "var(--nds-bottom-sheet-max-width, 664) / 85vh",
+      "radius (base)": "var(--nds-bottom-sheet-radius, radius[12] = 12) — 상단 좌우만",
+      "radius (Trost)": "20 (프로젝트 토큰이 --nds-bottom-sheet-radius:20px emit)",
+      "handleWidth (base)": "var(--nds-bottom-sheet-handle-width, 36) × 4 height",
+      "handleWidth (Trost)": "40 (프로젝트 토큰이 --nds-bottom-sheet-handle-width:40px emit)",
+      "handleColor": "cv.borderRole.normal (프로젝트 불변)",
+      "shadow": "var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0,0,0,.1)) — 위 방향, default 불변",
+      "backdrop": "var(--nds-bottom-sheet-backdrop, rgba(0,0,0,.5)) — default 불변",
+      "maxWidth": "var(--nds-bottom-sheet-max-width, 664)",
+      "maxHeight": "var(--nds-bottom-sheet-max-height, 85vh)",
       "safeArea": "footer/마지막 body 에 env(safe-area-inset-bottom) 가산 (iOS 홈 인디케이터)"
     },
     "summary": "모바일에서 화면 하단에서 올라오는 시트. 옵션 선택 / 짧은 작업에 적합. 데스크탑에선 Drawer 가 자연스러움. 공유 시트는 이 컴포넌트로 4칸 그리드 + 링크 복사 레시피로 조립한다. 시각 토큰은 --nds-bottom-sheet-* 슬롯(radius·handle-width·shadow·backdrop)으로 노출돼 프로젝트 토큰이 값만 덮는다 — Trost 는 radius 20·handle 40 을 emit(컴포넌트는 프로젝트를 모름, base 는 12/36 불변). Share/Info/List 는 별도 prop·variant 가 아니라 BottomSheet 본체 + DS 토큰으로 조립하는 컴포지션 레시피다.",
@@ -557,11 +534,11 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "color='neutral' + variant='solid' 은 **project 별로 다름** — base/NudgeEAP·Trost·Geniet 은 cool-gray/light-gray fill 이라 disabled 처럼 보여 비권장(validator neutral-solid-cta 경고). **단 캐포비(cashwalk-biz)·런마일(runmile)은 neutral solid = 검정 CTA(Figma Neutral tone)로 정당** — 두 프로젝트는 `cta.blackCta=\"neutral\"` 선언으로 면제(글자는 fill 명도 대비 자동: 검정 fill→흰글자, 캐포비 #111 / 런마일 #221E1F).",
       "**캐포비(cashwalk-biz)·런마일(runmile)은 Secondary tone 이 없음** — Figma ButtonGuide tone = Primary + Neutral 둘뿐(캐포비 3098:1032 · 런마일 5124:390). 검정/회색 CTA 는 반드시 `color=\"neutral\"` (solid=검정 / soft=회색 / outlined=라인). `color=\"secondary\"` 사용 시 dev console 경고 + validator `project-denied-button-color` 가 잡음. (secondary 는 다른 프로젝트 전용 tone)",
       "Geniet 프로젝트에서 variant='soft' 는 Figma 가이드(207:1853)에 없는 변형. 사용 시 dev console 에 경고가 나오며 디자인 인텐트가 어긋남 — Geniet 은 solid / outlined 만 사용.",
-      "Geniet Solid/Secondary 는 옅은 mint subtle(#F2FAFA) 배경 + project mint(#00A8AC) 텍스트 — 다른 프로젝트 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)",
+      "Geniet Solid/Secondary 는 옅은 teal subtle(#F2FAFA) 배경 + project teal(#00A8AC) 텍스트 — 다른 프로젝트 soft secondary 와 동일 패턴. (구버전의 #333 dark-inverse 패턴은 폐기됨.)",
       "primary 색은 화면당 가장 중요한 1개 액션에만 사용. 한 화면에 두 개 이상 primary 솔리드 = 위계 붕괴.",
       "다른 페이지로 이동하는 CTA라고 해서 모든 Button에 화살표 아이콘을 붙이지 말 것. ArrowNext/ChevronRight 류 아이콘은 대표 전진 액션 1개에만 사용.",
       "카드 리스트/섹션 리스트에서 반복되는 '자세히 보기 →' 버튼은 시각 소음이 큼. 반복 CTA는 아이콘 없이 텍스트만 쓰거나 카드 전체 클릭 패턴을 검토.",
-      "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'magenta'를 기대하면 안 됨.",
+      "Solid/Secondary 는 옅은 파랑 배경(#F1F8FD) + primary 텍스트로 그려진다. 'pink'를 기대하면 안 됨.",
       "Outlined/Neutral 는 medium weight + 회색 보더. Outlined/Primary 와 weight·border 모두 다르므로 'color=neutral variant=outlined' 와 'color=primary variant=outlined' 를 임의로 바꿔치기하지 말 것.",
       "**아이콘 색 하드코딩 금지** — `<LockIcon color=\"var(--semantic-icon-inverse-default)\" />` 처럼 inverse/project 토큰을 박지 말 것. NudgeEAP/Trost(primary=흰 텍스트) 에서는 맞아 보이지만, 캐시워크 포 비즈니스(primary=검정 텍스트 on 노랑) 에서는 흰 아이콘이 노란 배경 위에 떠 보임. 항상 `color=\"currentColor\"` 로 두어 Button 텍스트 색을 상속하게 한다.",
       "**shape='pill' 은 radius 만 바꿈** — color/variant/size 매트릭스와 직교. shape 만 다른 두 버튼을 한 화면에 섞으면 위계 혼란 — 컨텍스트별로 통일. project 별 shape 사용 패턴은 get_guide({ topic:'component:Button', project:'<slug>' }).preferredPatterns 참조.",
@@ -624,7 +601,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       {
         "label": "Trost Card Guide — Container card (platform · elevation · header)",
         "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5123-136",
-        "caption": "트로스트 Container card. platform(pc=padding28·r16·title20·subtitle14 / mobile=padding20·r14·title17·subtitle13) + elevation(outline=보더 / elevated=shadow E2 + 보더 제거) + 헤더 행(리딩 아이콘 24px + 10px gap + title/subtitle 정보 컬럼, gap 2px) + 헤더↔본문 divider. point(코발트) 액센트 아이콘. 컴포넌트는 opt-in(platform/elevation/icon/showDivider) — 미지정 시 현행 렌더 그대로.",
+        "caption": "트로스트 Container card. platform(pc=padding28·r16·title20·subtitle14 / mobile=padding20·r14·title17·subtitle13) + elevation(outline=보더 / elevated=shadow E2 + 보더 제거) + 헤더 행(리딩 아이콘 24px + 10px gap + title/subtitle 정보 컬럼, gap 2px) + 헤더↔본문 divider. point(인디고) 액센트 아이콘. 컴포넌트는 opt-in(platform/elevation/icon/showDivider) — 미지정 시 현행 렌더 그대로.",
         "project": "trost"
       },
       {
@@ -688,10 +665,10 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "geniLayoutGrid": "지니어트 배치형 — 160×210 · radius 8 · padding 0/4 · 작은 그리드 카드. 카테고리 2·3열(Mobile). ≈ 작은 Cover.",
       "geniLayoutContainer": "지니어트 배치형 — 440×auto · radius 16 · padding 24 · shadow(E2) · PC 큰 카드(메인 콘텐츠·모달·Hero). Mobile=border / PC Container=shadow.",
       "geniLayoutNote": "위 4 Layout 은 '배치·크기·radius' 축으로 콘텐츠 축(List/Thumb/Cover)과 직교 — 함께 읽는다(Horizontal≈Thumb · Vertical/Grid≈Cover · Container=PC 큰 카드). radius 8/12/8/16 은 지니어트 Library 단순화본이라 base sizeMatrix(mobile 8/10/12 · pc 10/12/14)와 다름 — 한 스케일로 통일할지는 결정 필요.",
-      "trostPlatformPc": "트로스트 Container card (platform='pc') — padding 28 · radius 16(radius.xl) · title 20(Headline 4) · subtitle 14(Body 3). PC 메인/모달 큰 카드.",
+      "trostPlatformPc": "트로스트 Container card (platform='pc') — padding 28 · radius 16(radius[16]) · title 20(Headline 4) · subtitle 14(Body 3). PC 메인/모달 큰 카드.",
       "trostPlatformMobile": "트로스트 Container card (platform='mobile') — padding 20 · radius 14 · title 17 · subtitle 13(Caption 1). 모바일 화면.",
       "trostElevation": "트로스트 elevation — outline=현행(보더 1px, shadow 없음, 기본값) / elevated=box-shadow E2(shadow.e2) + 보더 제거. 한 화면 한 elevation 유지.",
-      "trostHeaderRow": "트로스트 헤더 행 — 리딩 아이콘(24px, point/코발트 액센트) + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px). icon prop 지정 시 활성. showHeader 로 아이콘 없이 컬럼만 묶기도 가능.",
+      "trostHeaderRow": "트로스트 헤더 행 — 리딩 아이콘(24px, point/인디고 액센트) + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px). icon prop 지정 시 활성. showHeader 로 아이콘 없이 컬럼만 묶기도 가능.",
       "trostBodyDivider": "트로스트 헤더/텍스트 ↔ 본문(children) 사이 hairline — showDivider prop. cta/footerText 위 divider(divider prop) 와 별개. 둘 다 1px cv.borderRole.subtle.",
       "runmileEventCard": "런마일 이벤트 카드 (Figma 5117:130) — 앱 레벨 composition, DS 새 variant 아님. 세로형 Card: PC 280×432 / MO 159×343. 썸네일 bg gray200 · radius 12(LG) · 1:1 정사각(PC 280×280 / MO 159×159). 슬롯: 썸네일 → 메타칩(Badge) → 타이틀 → 날짜·주최 → 태그칩(Chip). DS 매핑 = Card(Container) + Badge(메타칩) + Chip(태그).",
       "runmileEventTypo": "런마일 이벤트 카드 타이포 — 타이틀 PC 18 / MO 15 Bold(#221E1F · 최대 2줄) · 날짜 PC 14 / MO 12 Medium gray800(+ calendar icon) · 주최 Medium gray600 · 메타칩 12/11 Bold · 태그칩 13 Medium gray900. 색·radius 세부는 Badge/Chip 가이드 SSOT 참조.",
@@ -710,7 +687,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "pressed": "transition 100ms — bg tint 또는 scale(0.99). shadow 깜빡임 금지.",
       "note": "[Figma 권위 룰] 같은 화면 안에서 카드마다 elevation 종류가 다르면 안 됨. 한 리스트 = 한 elevation."
     },
-    "summary": "**프로젝트 분기 (먼저 확인)**: 아래 \"[Figma 권위 룰]\" 다수는 Geniet 도메인 카드(식품·영양, figma 131:1769) 기준이다. **넛지EAP 서비스 카드는 규칙이 다르다 — `pattern:nudge-eap-card`(Figma 713:2) 를 따른다**: ① 내부 CTA 허용(카드 최하단 Primary CTA 1개 — 상담 예약·전문가·프로그램 카드. Geniet 의 'CTA 금지'·`maxCtaButtonsInsideCard:0` 은 NudgeEAP 에 적용 안 됨), ② shadow 전면 금지·border-only(Geniet 의 'Elevation 0 또는 1 택1' 과 달리 NudgeEAP 는 elevation 미사용), ③ border-radius 12px 고정. 컴포넌트는 양쪽을 모두 지원(Card.Cta/Card.Footer 슬롯 존재) — 차이는 프로젝트별 사용 규칙이다.\n\n동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1-2종만 함께 사용. List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). 도메인 출처: 지니어트(Geniet) 칼로리계산기 허브 페이지의 식품 리스트·영양 토픽·커뮤니티 카드. Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. Anatomy 슬롯 (Figma SSOT, 한 카드 안에서 동일 위치 = 항상 같은 의미): Media(썸네일/커버, Thumb=정사각·Cover=4:3·단색 폴백 허용) · Title(필수, 카드 식별 핵심 라벨, 최대 2줄 + ellipsis, Body 2~H4 Bold) · Meta(보조 정보, 1줄, ' · ' 구분자, Caption Regular) · Status(상태 Badge, Success/Caution/Error 중 1개만) · Action(탭/이동 트리거 — 카드 전체 클릭이 기본, 내부 CTA 버튼 X) · Composition(optional, 도메인 카드가 Base 위에 얹는 슬롯). 도메인 카드(헬시딜·식품 검색·커뮤니티·랭킹·리뷰·식단 추천 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯을 얹어 표현 — 슬롯 카탈로그 16종(kcal chip · star rating · promotion badge · nutrition tag row · like overlay · author meta · discount badge · strikethrough price · shipping chip · certification chip · ranking leading · macro nutrition bar · category banner header · friend social proof · trending count · forum meta row)은 `get_guide({ topic: 'pattern:card-composition' })` 에서 슬롯별 사용 룰·위치·한도·금지 조합을 확인. Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.\n\n**Trost Container card (Figma 5123:136) — platform · elevation · 헤더 행 (모두 opt-in, 미지정 시 현행 렌더 그대로).** 트로스트 컨테이너 카드는 다음 3 축을 추가한다(전부 additive — 기존 카드 사용에는 영향 없음): ① **platform** (`platform=\"pc\"` = padding 28 · radius 16 · title 20 · subtitle 14 / `platform=\"mobile\"` = padding 20 · radius 14 · title 17 · subtitle 13). 슬롯을 root 에 set 해 프로젝트 상속값을 이긴다. ② **elevation** (`elevation=\"outline\"` 기본 = 보더, shadow 없음 / `elevation=\"elevated\"` = box-shadow E2 + 보더 제거 — Geniet 와 마찬가지로 한 화면 한 elevation). ③ **헤더 행** — `icon` prop(24px 리딩 아이콘, point/코발트 액센트) 지정 시 `title`/`subtitle` 좌측에 아이콘 + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px) 행으로 렌더. `showHeader` 로 아이콘 없이 컬럼만 묶기, `showIcon=false` 로 아이콘 숨김 가능. ④ **헤더↔본문 divider** — `showDivider` prop 으로 헤더/텍스트와 본문(children) 사이 1px hairline(cv.borderRole.subtle). cta/footerText 위 divider(`divider` prop) 와 별개. point 색은 `cv.iconRole.point`/`cv.textRole.point`/`cv.borderRole.point` — 비-point 프로젝트는 project 토큰으로 자동 폴백. HTML 미러: `<nds-card platform elevation>` + `<nds-card-header-row>` / `<nds-card-header-icon>` / `<nds-card-header-info>` / `<nds-card-divider>` 서브 엘리먼트.",
+    "summary": "**프로젝트 분기 (먼저 확인)**: 아래 \"[Figma 권위 룰]\" 다수는 Geniet 도메인 카드(식품·영양, figma 131:1769) 기준이다. **넛지EAP 서비스 카드는 규칙이 다르다 — `pattern:nudge-eap-card`(Figma 713:2) 를 따른다**: ① 내부 CTA 허용(카드 최하단 Primary CTA 1개 — 상담 예약·전문가·프로그램 카드. Geniet 의 'CTA 금지'·`maxCtaButtonsInsideCard:0` 은 NudgeEAP 에 적용 안 됨), ② shadow 전면 금지·border-only(Geniet 의 'Elevation 0 또는 1 택1' 과 달리 NudgeEAP 는 elevation 미사용), ③ border-radius 12px 고정. 컴포넌트는 양쪽을 모두 지원(Card.Cta/Card.Footer 슬롯 존재) — 차이는 프로젝트별 사용 규칙이다.\n\n동일 형식이 반복되는 콘텐츠 묶음을 시각적으로 그룹화하는 컨테이너. 1회성 메시지/프로모션은 Card 가 아니라 Banner. Figma 헤더 제약 4종: 3 Variants · PC & Mobile (반응형) · Image Optional (이미지 없는 변형 허용) · Semantic Token (raw hex / 임의 색 금지). Variant 3종 (List / Thumb / Cover) — 시각 우선순위·정보 밀도가 다르며 한 화면에서 1-2종만 함께 사용. List = 이미지 없이 텍스트+메타데이터로 나열 (트리거: 한 페이지 10개 이상 / 분류별 식품 리스트), Thumb = 썸네일 + 보조 정보 가로형 (트리거: 콘텐츠 식별이 텍스트만으로 부족 / 식품 카드·영양 코칭), Cover = 큰 이미지가 콘텐츠의 핵심 (트리거: 그리드로 시각적 임팩트 필요 / 4-up·2-up 그리드·커뮤니티). 도메인 출처: 지니어트(Geniet) 칼로리계산기 허브 페이지의 식품 리스트·영양 토픽·커뮤니티 카드. Compound 슬롯(순서 고정, 모두 Optional): Card.Root / Thumbnail / Avatar / Chips / Title / Description / Metadata / Divider / Cta / FooterText. (legacy: Header / Body / Footer 도 유지). Flat API props: thumbnail, avatar, chips, title, description, metadata, divider, cta, footerText, children. Anatomy 슬롯 (Figma SSOT, 한 카드 안에서 동일 위치 = 항상 같은 의미): Media(썸네일/커버, Thumb=정사각·Cover=4:3·단색 폴백 허용) · Title(필수, 카드 식별 핵심 라벨, 최대 2줄 + ellipsis, Body 2~H4 Bold) · Meta(보조 정보, 1줄, ' · ' 구분자, Caption Regular) · Status(상태 Badge, Success/Caution/Error 중 1개만) · Action(탭/이동 트리거 — 카드 전체 클릭이 기본, 내부 CTA 버튼 X) · Composition(optional, 도메인 카드가 Base 위에 얹는 슬롯). 도메인 카드(헬시딜·식품 검색·커뮤니티·랭킹·리뷰·식단 추천 등)는 새 variant 를 만들지 말고 Base variant 위에 Composition 슬롯을 얹어 표현 — 슬롯 카탈로그 16종(kcal chip · star rating · promotion badge · nutrition tag row · like overlay · author meta · discount badge · strikethrough price · shipping chip · certification chip · ranking leading · macro nutrition bar · category banner header · friend social proof · trending count · forum meta row)은 `get_guide({ topic: 'pattern:card-composition' })` 에서 슬롯별 사용 룰·위치·한도·금지 조합을 확인. Section/Group Card(카드 안에 list rows 를 담는 컨테이너 — '루테인 포함 영양제 · 총 84개 제품' 같은 묶음)는 단일 Card 가 아닌 별도 패턴 — `get_guide({ topic: 'pattern:card-section' })` 참고.\n\n**Trost Container card (Figma 5123:136) — platform · elevation · 헤더 행 (모두 opt-in, 미지정 시 현행 렌더 그대로).** 트로스트 컨테이너 카드는 다음 3 축을 추가한다(전부 additive — 기존 카드 사용에는 영향 없음): ① **platform** (`platform=\"pc\"` = padding 28 · radius 16 · title 20 · subtitle 14 / `platform=\"mobile\"` = padding 20 · radius 14 · title 17 · subtitle 13). 슬롯을 root 에 set 해 프로젝트 상속값을 이긴다. ② **elevation** (`elevation=\"outline\"` 기본 = 보더, shadow 없음 / `elevation=\"elevated\"` = box-shadow E2 + 보더 제거 — Geniet 와 마찬가지로 한 화면 한 elevation). ③ **헤더 행** — `icon` prop(24px 리딩 아이콘, point/인디고 액센트) 지정 시 `title`/`subtitle` 좌측에 아이콘 + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px) 행으로 렌더. `showHeader` 로 아이콘 없이 컬럼만 묶기, `showIcon=false` 로 아이콘 숨김 가능. ④ **헤더↔본문 divider** — `showDivider` prop 으로 헤더/텍스트와 본문(children) 사이 1px hairline(cv.borderRole.subtle). cta/footerText 위 divider(`divider` prop) 와 별개. point 색은 `cv.iconRole.point`/`cv.textRole.point`/`cv.borderRole.point` — 비-point 프로젝트는 project 토큰으로 자동 폴백. HTML 미러: `<nds-card platform elevation>` + `<nds-card-header-row>` / `<nds-card-header-icon>` / `<nds-card-header-info>` / `<nds-card-divider>` 서브 엘리먼트.",
     "pitfalls": [
       "[Figma 권위 룰] Variant 혼용 금지 — 한 그리드 안에서 List/Thumb/Cover 를 섞으면 위계가 충돌. 한 화면에 1-2종만, 그리드 내부는 1종만.",
       "[Figma 권위 룰] Card 위에 별도 CTA 버튼 추가 금지 — Action 은 카드 전체 클릭이 기본. 카드 내부에 Solid/Outlined 버튼을 두면 카드 전체 클릭 영역과 충돌. 섹션 하단 '더보기' 같은 CTA 는 Card 가 아니라 Section 의 것.",
@@ -745,7 +722,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Action 패턴 — 카드 전체가 클릭 영역. <Card.Root clickable onClick={…}>. 내부에 Solid/Outlined CTA 버튼 두지 않음. 섹션 하단 '더보기' 는 Card 가 아니라 Section 의 CTA.",
       "Thumb 폴백 — 이미지가 없을 때 Project Soft 토큰 단색 배경(예: var(--semantic-brand-bg)) + 옵션 아이콘.",
       "지니어트 배치 매핑 (Geniet CardGuide 3056-125) — 음식 검색·식단 리스트(Mobile) → Horizontal(328·r8) / 홈 인기·추천 가로스크롤 → Vertical(240×280·r12) / 카테고리 그리드 2·3열 → Grid(160×210·r8) / PC 메인·모달 → Container(440·r16) / Hero 강조 → Container + shadow(E2). Mobile 은 border, PC Container 만 shadow — 한 화면 한 elevation 유지(위 Figma 권위 룰).",
-      "Trost Container card (Figma 5123:136) — 트로스트 PC/모바일 큰 카드는 `platform` + `elevation` + `icon`/`showDivider` 로 표현. PC: `<Card platform='pc' elevation='outline' icon={<Icon/>} title=… subtitle=… showDivider>본문</Card>` (padding 28·r16·title 20·subtitle 14). Hero/모달 강조는 `elevation='elevated'`(shadow E2 + 보더 제거). Mobile: `<Card platform='mobile' elevation='outline' …>` (padding 20·r14·title 17·subtitle 13, border 권장). 리딩 아이콘은 point/코발트(cv.iconRole.point) 액센트. HTML: `<nds-card platform='pc' elevation='elevated'><nds-card-header-row><nds-card-header-icon>…</nds-card-header-icon><nds-card-header-info><h3 class='nds-card__title'>…</h3><p class='nds-card__description'>…</p></nds-card-header-info></nds-card-header-row><nds-card-divider></nds-card-divider><nds-card-body>본문</nds-card-body></nds-card>`.",
+      "Trost Container card (Figma 5123:136) — 트로스트 PC/모바일 큰 카드는 `platform` + `elevation` + `icon`/`showDivider` 로 표현. PC: `<Card platform='pc' elevation='outline' icon={<Icon/>} title=… subtitle=… showDivider>본문</Card>` (padding 28·r16·title 20·subtitle 14). Hero/모달 강조는 `elevation='elevated'`(shadow E2 + 보더 제거). Mobile: `<Card platform='mobile' elevation='outline' …>` (padding 20·r14·title 17·subtitle 13, border 권장). 리딩 아이콘은 point/인디고(cv.iconRole.point) 액센트. HTML: `<nds-card platform='pc' elevation='elevated'><nds-card-header-row><nds-card-header-icon>…</nds-card-header-icon><nds-card-header-info><h3 class='nds-card__title'>…</h3><p class='nds-card__description'>…</p></nds-card-header-info></nds-card-header-row><nds-card-divider></nds-card-divider><nds-card-body>본문</nds-card-body></nds-card>`.",
       "런마일 이벤트 카드 (Figma 5117:130) — 표준 Card 위에 도메인 정보를 얹는 **앱 레벨 composition**(새 variant 아님). 세로형 PC 280×432 / MO 159×343, 썸네일 1:1 정사각(radius 12). 구성: 썸네일 → 메타 칩(Badge, 거리·D-day) → 타이틀(18/15 Bold, 2줄) → 날짜(calendar icon + gray800)·주최(gray600) → 태그 칩(Chip, 최대 3). 예: `<Card variant='cover' clickable><Card.Thumbnail aspect='1:1'><img src='…' alt='' /></Card.Thumbnail><Card.Chips><Badge color='project' variant='soft'>5km 외 2개</Badge><Badge variant='outlined'>접수마감 D-60</Badge></Card.Chips><Card.Title>2026 댕댕이레이스</Card.Title><Card.Metadata>📅 25.12.30~25.12.31 · (주)러닝포인트</Card.Metadata><Card.Chips><Chip>#강아지</Chip><Chip>#댕댕런</Chip></Card.Chips></Card>`. 색·radius 세부(태그칩 등)는 Badge/Chip 가이드 SSOT. 대회 정보는 표준 Card 가 아니라 competition card(가로형) 사용."
     ],
     "accessibility": [
@@ -1055,54 +1032,20 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "dont": "<!-- to < from — 의미 없는 범위. min-date / max-date 로 가드 권장 -->\n<nds-date-range-picker from=\"2026-05-31\" to=\"2026-05-01\"></nds-date-range-picker>"
     }
   },
-  "Dim": {
-    "name": "Dim",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1751-20",
-    "summary": "Dim — Modal·BottomSheet·BottomPopup 등 오버레이의 백드롭(배경 차단 레이어). 화면 전체를 검정 alpha 로 덮어 뒤쪽 콘텐츠와의 위계를 만들고 포커스를 오버레이로 모은다. 강도 3단계 — `type=\"subtle\"`(α0.2·가벼운 분리) · `type=\"default\"`(α0.4·BG/Overlay 토큰·표준) · `type=\"strong\"`(α0.7·완전 차단). **표현(배경 차단)만 책임지는 primitive** — 스크롤 잠금·포커스 트랩·ESC·z-index 스택은 오버레이 컨테이너가 담당한다.",
-    "pitfalls": [
-      "**강도는 오버레이 무게에 맞춘다.** Modal·표준 BottomSheet = `default`. Light BottomSheet(이벤트·리워드) = `subtle`. 풀스크린 미디어 뷰어·중요 결정·보안 입력 = `strong`. Snackbar/Toast 는 인라인 알림이라 백드롭 자체가 불필요 — Dim 을 쓰지 말 것.",
-      "**Default 만 프로젝트별 테마.** `default` 는 `--semantic-bg-overlay` 시멘틱 토큰(트로스트 α0.6·런마일 α0.5 등 프로젝트별·다크모드 자동). `subtle`/`strong` 은 범용 검정(α0.2/0.7) — 프로젝트 무관.",
-      "**백드롭 색은 검정 alpha 만.** 채도 있는 색(브랜드 컬러)을 백드롭에 쓰지 말 것. 항상 풀스크린(`position: fixed; inset: 0`) — 부분 영역에만 Dim 을 적용하면 시각적 혼란.",
-      "**클릭 닫기는 탈출구.** `onClose`(react) / `nds-dim-close` 이벤트(html)로 백드롭 클릭 닫기를 제공한다. 단 **강제 결정 화면**(Modal=필수 결정·BottomSheet Upclose)에선 `onClose` 를 넘기지 않아 닫기를 막는다. 백드롭 클릭이 닫기·무동작 외 다른 액션을 트리거하지 않게 한다.",
-      "**다중 스택 시 Dim 한 장만.** 오버레이가 여러 겹 쌓이면 가장 위 레이어의 Dim 만 표시(색 중첩으로 0.8↑ 진해짐 방지). 오버레이가 닫혔는데 Dim 만 남기지 말 것.",
-      "**혼동 주의 — Modal/BottomSheet/Popup 은 자체 백드롭을 이미 포함**한다. 그 위에 Dim 을 또 깔지 말 것. Dim 은 백드롭이 없는 커스텀 풀스크린 오버레이를 직접 조립할 때 쓰는 primitive 다."
-    ],
-    "examplesHtml": {
-      "do": "<!-- 커스텀 풀스크린 오버레이의 표준 백드롭 (클릭 시 nds-dim-close 디스패치) -->\n<nds-dim type=\"default\"></nds-dim>\n\n<!-- 풀스크린 이미지/영상 뷰어 — 뒤쪽 완전 차단 -->\n<nds-dim type=\"strong\"></nds-dim>",
-      "dont": "<!-- ① 채도 있는 브랜드 색 백드롭 금지 — 검정 alpha 만 -->\n<div style=\"position:fixed; inset:0; background:rgba(43,150,237,0.4)\"></div>\n\n<!-- ② Modal 은 이미 백드롭 포함 — Dim 중복 금지 -->\n<nds-dim type=\"default\"></nds-dim>\n<nds-modal open>...</nds-modal>\n\n<!-- ③ 부분 영역 Dim 금지 — 항상 풀스크린 -->\n<nds-dim type=\"default\" style=\"position:absolute; width:200px; height:100px\"></nds-dim>"
-    },
-    "accessibility": [
-      "백드롭은 장식 레이어 — 이너 요소에 `aria-hidden=\"true\"` 가 기본 적용돼 스크린리더가 백드롭을 읽지 않는다. 의미 전달은 위에 얹히는 오버레이 콘텐츠(`role=\"dialog\"` 등)가 담당.",
-      "키보드 닫기(ESC)·포커스 트랩은 Dim 이 아니라 오버레이 컨테이너의 책임. Dim 의 클릭 닫기는 마우스 보조 수단이다."
-    ]
-  },
   "Divider": {
     "name": "Divider",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1722-20",
-    "sizeMatrix": {
-      "type=line": "1px (Border 라인) — orientation horizontal/vertical, tone subtle/normal/strong",
-      "type=block": "8px (BG/Section 청크) — 가로 전용, 섹션 사이",
-      "tone=subtle": "borderRole.subtle (카드/모달 내부)",
-      "tone=normal": "borderRole.normal (기본·default)",
-      "tone=strong": "borderRole.strong (강조)"
-    },
-    "summary": "콘텐츠 분리 보조요소. line(1px Border)=리스트/카드 내부, block(8px BG/Section)=섹션 사이. type 기본 line, tone 기본 normal — 임의 두께·브랜드/Status 색 금지.",
+    "summary": "섹션 사이의 시각적 분리선. 카드 안 내부 분할에 남발하지 말고, 한 화면당 의미 있는 분리에만 사용.",
     "pitfalls": [
-      "**type 선택 기준 — line vs block.** 같은 그룹 안(리스트 항목·카드 내부·input 밑)은 `type=\"line\"`(1px Border). 의미 단위가 다른 **섹션 사이**는 `type=\"block\"`(8px BG/Section). 섹션 경계를 얇은 line 으로만 그으면 위계가 약하고, 그룹 내부에 두꺼운 block 을 넣으면 과하다.",
-      "**tone 매핑 — subtle/normal/strong.** subtle=카드/모달 내부 등 약한 분할, normal=기본, strong=강조. 톤은 borderRole 토큰(subtle/normal/strong)에 1:1 매핑된다. tone 으로 표현되는 것이 색 SSOT 이므로 `color`/`thickness` 로 톤을 흉내내지 말 것.",
-      "**위치별 권장(usage).** 리스트 아이템 사이=line·H·normal · 카드 내부=line·H·subtle · 섹션 사이=block·H · 인라인 그룹(약관·메뉴)=line·V·normal · input bottom=line·H·normal · Modal/BottomSheet 내부=line·H·subtle.",
-      "**1px·8px 두 표준 외 임의 두께(2/3px) 금지.** line=1px, block=8px 두 값만 정상. `thickness` 는 escape hatch — 표준 두 값으로 부족할 때만 쓰고, 2/3px 같은 어중간한 두께로 새 위계를 만들지 말 것.",
-      "**브랜드/Status 색 divider 금지.** divider 색은 항상 borderRole(또는 block 의 surface.section). brand·error·success 등 의미색을 divider 에 칠하지 말 것 — 분리선은 중립이어야 한다.",
-      "**카드 외곽선 + 내부 divider 동시 금지.** 카드가 이미 외곽 border 로 경계를 갖는데 내부까지 divider 를 촘촘히 넣으면 선이 중복돼 지저분하다. 카드 내부 분할은 `tone=\"subtle\"` 한 줄로 최소화.",
-      "**Line + Block + Vertical 한 화면 혼용 금지.** 한 화면에서 세 형태를 다 쓰면 분리 규칙이 읽히지 않는다. 화면당 분리 어휘를 일관되게(예: 섹션은 block, 그 안은 line) 제한할 것.",
-      "**여백으로 충분하면 divider 를 쓰지 말 것.** 간격(spacing)·Heading 만으로 그룹이 구분되면 divider 는 군더더기. 선은 정말 경계가 필요할 때만.",
-      "상하 간격은 `spacing` 속성으로 — 대칭이 자동. 간격을 형제의 한쪽 margin/gap 으로만 주면 divider 가 위/아래 비대칭으로 어색해진다.",
-      "List 의 항목 사이에 Divider 를 직접 박지 말 것 — nds-list variant='divided' 가 책임짐.",
-      "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임. block 은 가로 전용이라 vertical 과 함께 쓰지 않는다."
+      "**상하 간격은 `spacing` 속성으로 — 대칭이 자동.** `spacing=\"16\"` 이면 divider 위·아래 margin 이 **동일**하게 잡힌다(`margin: spacing 0`). 간격을 형제의 한쪽 margin/gap 으로만 주면 divider 가 다음 항목에 붙어 **위/아래 비대칭**(예: 위 12·아래 0)으로 어색해진다 — 폼/스텝 리스트에서 자주 나오는 footgun.",
+      "**flex-gap 컨테이너 + divider `spacing` 은 간격이 중복**된다. 둘 중 하나만: ① 컨테이너 `gap` 만 쓰고 divider 는 `spacing` 없이(자체 margin 0) 형제로, 또는 ② 컨테이너 gap 0 + divider `spacing` 으로 간격.",
+      "스텝/섹션 마크업 **안쪽에 divider 를 끼우지** 말고(라벨에 달라붙어 비대칭) 섹션 **사이 형제**로 둘 것.",
+      "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — Heading + spacing 토큰이 우선.",
+      "List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.",
+      "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임."
     ],
     "examplesHtml": {
-      "do": "<!-- 섹션 사이 — 8px BG/Section 청크 -->\n<section>섹션 A</section>\n<nds-divider type=\"block\"></nds-divider>\n<section>섹션 B</section>\n\n<!-- 카드 내부 — 약한 1px 라인 -->\n<div class=\"card\">\n  <div>요약</div>\n  <nds-divider tone=\"subtle\"></nds-divider>\n  <div>상세</div>\n</div>",
-      "dont": "<!-- ① 임의 두께(2px) 로 어중간한 위계 — line=1px / block=8px 두 표준만 -->\n<nds-divider thickness=\"2\"></nds-divider>\n\n<!-- ② 브랜드/Status 색을 divider 에 칠함 — 분리선은 중립(borderRole) 이어야 -->\n<nds-divider color=\"#2563eb\"></nds-divider>"
+      "do": "<section>섹션 A</section>\n<nds-divider orientation=\"horizontal\" spacing=\"24\"></nds-divider>\n<section>섹션 B</section>",
+      "dont": "<!-- ① list 항목 사이마다 divider 직접 — list variant 가 책임 -->\n<nds-list-item>항목 1</nds-list-item>\n<nds-divider></nds-divider>\n<nds-list-item>항목 2</nds-list-item>\n\n<!-- ② 스텝 안에 divider 를 끼워 다음 라벨에 달라붙음 → 위/아래 비대칭.\n     spacing 없이 컨테이너 gap 만 있으면 위쪽만 간격이 생긴다.\n     → divider 를 섹션 사이 형제로 옮기고 spacing 으로 대칭 확보 -->\n<div style=\"display:flex; flex-direction:column; gap:12px\">\n  <div>1단계 본문<nds-divider></nds-divider></div>\n  <label>2단계 라벨</label>\n</div>"
     }
   },
   "Drawer": {
@@ -1223,7 +1166,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "mobileArrow": "16 × 16 · ChevronRightIcon",
       "mobileBottomOffset": "16px (기본)",
       "mobileGap": "8px",
-      "radius": "pill (radius.pill = 9999) — 완전 캡슐형",
+      "radius": "pill (radius.full = 9999) — 완전 캡슐형",
       "border": "1px solid cv.borderRole.brand",
       "background": "cv.surface.default (#FFFFFF 고정)",
       "shadow": "shadow[2] = 0 4px 12px rgba(0,0,0,0.10) (가이드의 0.08 와 가장 가까운 토큰)"
@@ -1256,9 +1199,9 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
     "summary": "페이지 하단 sticky CTA 배너. pill (radius 100) + project border 1px + shadow. 좌측 일러스트(leadingIcon) + 캡션(보조) + 강조 CTA 텍스트 + 우측 chevron 아이콘. 기본 `floating=true` 시 position:fixed 로 화면 하단 중앙 자동 고정.",
     "pitfalls": [
       "Chevron 은 텍스트 '>' 로 그리지 말 것 — 내부에서 `<ChevronRightIcon>` 아이콘으로 자동 렌더. showArrow=false 로 숨김만 가능.",
-      "Border / CTA / Arrow 색은 모두 시멘틱(`cv.borderRole.brand`, `cv.textRole.brand`) 참조 — raw hex override 금지. 프로젝트별 실제 매핑(예: Geniet mint, NudgeEAP blue)은 `packages/tokens/src/projects/*.semantic.ts` 에 정의.",
+      "Border / CTA / Arrow 색은 모두 시멘틱(`cv.borderRole.brand`, `cv.textRole.brand`) 참조 — raw hex override 금지. 프로젝트별 실제 매핑(예: Geniet teal, NudgeEAP blue)은 `packages/tokens/src/projects/*.semantic.ts` 에 정의.",
       "CTA 텍스트 색은 `cv.textRole.brand` 고정 — underline / weight 변경 / 다른 강조색 적용 금지.",
-      "radius 는 항상 pill (`radius.pill`) — 직사각형 radius 8/12 변형 금지 (Figma DO/Don't 룰).",
+      "radius 는 항상 pill (`radius.full`) — 직사각형 radius 8/12 변형 금지 (Figma DO/Don't 룰).",
       "floating=true 시 부모에 `position: relative` 가 있어도 화면 fixed — 컨테이너 내부 sticky 가 필요하면 floating=false + 부모에서 직접 position:sticky 처리.",
       "캡션은 1줄 ellipsis 고정 — 두 줄 wrap 금지. 메시지 길면 ctaText 로 옮기거나 캡션 자체를 줄일 것 (단일 메시지 + 단일 액션 원칙).",
       "다중 CTA(버튼 2개 이상) 사용 금지 — 이 컴포넌트는 단일 액션 floating 진입 배너 전용.",
@@ -1823,7 +1766,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
           "radius": "16px (가이드 171:9899 Radius/2xl · base 8 → 트로스트 토큰 modal.radius)",
           "padding": "24px(top) / 16 좌우·하단 (base 28/16/16 → 트로스트 토큰 modal.padTop=24)",
           "buttons": "2개 가로(우측 primary) · width 130 · height 44 · radius 8 · backdrop rgba(0,0,0,0.4)",
-          "confirmCta": "Positive(저장·구독·확인) = 프로젝트 노랑 #FFF42E + 검은 텍스트(confirmCta 토큰이 프로젝트별 자기 값 — 트로스트=검정 자동, 별도 설정 불필요). 비가역(삭제·차단·해지) = confirmTone=\"destructive\"(react) / 검정 nds-button color=\"neutral\"(html) → 검정 #1A1A1A + 흰 텍스트. ⚠️ mint(서플 primary) 색 쓰지 말 것 — 트로스트는 노랑 유지.",
+          "confirmCta": "Positive(저장·구독·확인) = 프로젝트 노랑 #FFF42E + 검은 텍스트(confirmCta 토큰이 프로젝트별 자기 값 — 트로스트=검정 자동, 별도 설정 불필요). 비가역(삭제·차단·해지) = confirmTone=\"destructive\"(react) / 검정 nds-button color=\"neutral\"(html) → 검정 #1A1A1A + 흰 텍스트. ⚠️ teal(서플 primary) 색 쓰지 말 것 — 트로스트는 노랑 유지.",
           "activationCondition": "<html data-project=\"trost\"> — base 토큰 cascade 로 자동 (radius/padTop 은 트로스트 컴포넌트 토큰)"
         }
       }
@@ -2003,7 +1946,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "gapBetweenSections": "16px (header ↔ tabs ↔ list) — gap-loose",
       "tabHeight": "32px (pill)",
       "tabPadding": "6px 12px",
-      "tabRadius": "pill (height/2 = 16px) — radius.pill 토큰",
+      "tabRadius": "pill (height/2 = 16px) — radius.full 토큰",
       "tabGap": "8px",
       "tabFontActive": "Body3 14/20 Bold",
       "tabFontInactive": "Body3 14/20 Medium",
@@ -2482,37 +2425,21 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
   },
   "ResultState": {
     "name": "ResultState",
-    "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1736-581",
-    "sizeMatrix": {
-      "image (PC/MO)": "80 / 64 — 현재 코드 base=64 (PC 80 은 device prop 도입 시 · planned). 임의 리사이즈 금지.",
-      "title (PC/MO)": "Headline5(18) / body1(16) — 둘 다 Bold·Text/Strong. (Figma \"Headline5(16)\" 라벨=코드 body1 16, off-by-one)",
-      "subtitle (PC/MO)": "Body1(16) / Body2(15) — Regular·Text/Subtle",
-      "gap": "image→title 16 · title→subtitle 8(PC)/6(MO) · text→button 12"
-    },
-    "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. anatomy = **이미지(`icon`) / 타이틀(`title`) / 서브타이틀(`description`) / 버튼(`action`)**. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다. 타이틀은 Bold·Text/Strong, 서브타이틀은 Body2·subtle 한 단계 약하게(Figma 1736:581).",
+    "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다.",
     "pitfalls": [
-      "**Figma `show*` ↔ 코드 conditional render.** 코드는 별도 show prop 을 두지 않는다 — 해당 슬롯(`icon`/`description`/`action`)을 생략하면 그 행이 숨겨진다. Figma `Image`↔`icon`, `Subtitle`↔`description`, `Button`↔`action` (html 은 `hide-icon` 으로 이미지 끔).",
-      "**Figma use-case → `status`.** EMPTY→`empty` · ERROR→`error` · SEARCH(검색 결과 없음)→`empty`(보통 action 없이) · PERMISSION→`info` · COMPLETE→`success` · NO-SUBTITLE→`description` 생략. PC/MO 사이징은 frontmatter `sizeMatrix` 참조 — 현재 코드 base=MO, PC variant 는 device prop 으로 추후(YAGNI 보류).",
-      "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음(단, 검색 결과 없음처럼 후속 액션이 없으면 `action` 생략이 맞다).",
-      "**타이틀 = 서브타이틀 중복 금지** — 핵심 메시지는 타이틀 한 줄, 서브타이틀은 부연. 같은 말을 두 번 쓰지 않는다.",
-      "**서브타이틀이 3줄 이상**으로 길어지면 ResultState 가 아니라 모달 / 별도 페이지로 — ResultState 는 짧은 상태 안내용.",
-      "**ResultState 안에 다른 카드 / 리스트를 배치하지 말 것** — 결과 화면은 단일 메시지 + 단일 액션. 콘텐츠 컨테이너가 아니다.",
+      "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음.",
       "인라인 placeholder ↔ 풀페이지 결과 화면의 차이는 `status` 가 아니라 `minHeight` 로 조절한다. 빈 리스트는 작게(예: 200), 결제 성공·404 결과 화면은 `minHeight=\"60vh\"` 처럼 크게. **같은 컴포넌트, altitude 만 다름.**",
       "에러/성공 결과에는 반드시 `status=\"error|success\"` — 색·기본 글리프가 시멘틱하게 바뀐다. status 없이 중립 빈상태로 에러를 표현하면 시그널이 약함.",
       "인라인 placeholder 를 footer/nav 위로 풀스크린 채우지 말 것 — 영역 안 placeholder 면 `minHeight` 를 작게 둔다(풀페이지는 결과 화면 전용).",
-      "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 프로젝트 일러스트가 있으면 `icon` 으로 주입.",
-      "**이미지 임의 리사이즈 금지** — PC 80 / MO 64 로 통일된 design intent(현재 코드 base=64). 인라인 px 로 키우거나 줄이지 않는다."
+      "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 프로젝트 일러스트가 있으면 `icon` 으로 주입."
     ],
     "recommended": [
-      "버튼은 **다음 행동이 있을 때만** + 의미 있는 라벨(\"다시 시도\" / \"홈으로\" / \"추가하기\" — \"확인\" 같은 무의미 라벨 금지).",
-      "오류 / 완료 결과에는 액션(재시도 / 다음 단계)을 **필수**로 — 사용자가 막다른 길에 갇히지 않도록.",
-      "대기 / 로딩 상태에는 **액션을 끈다**(아직 다음 행동이 정해지지 않은 상태에 버튼을 노출하지 않는다).",
       "status: 빈 리스트/검색결과 `empty`(기본·중립), 결제·제출 성공 `success`, 404·실패 `error`, 안내·점검중 `info`",
       "결과 화면(풀페이지)은 `minHeight=\"60vh\"` + `action` 에 1차 CTA(홈으로/다시 시도)"
     ],
     "examplesHtml": {
-      "do": "<!-- 인라인 빈 상태 (action 슬롯) -->\n<nds-result-state status=\"empty\" title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\">\n  <button is=\"nds-button\">작성하기</button>\n</nds-result-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-result-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\">\n  <button is=\"nds-button\">홈으로</button>\n</nds-result-state>\n<!-- 검색 결과 없음 (action 없이) -->\n<nds-result-state status=\"empty\" title=\"검색 결과가 없어요\" description=\"다른 검색어로 다시 시도해 보세요\"></nds-result-state>",
-      "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-result-state status=\"empty\" title=\"페이지를 찾을 수 없어요\"></nds-result-state>\n<!-- 타이틀과 서브타이틀이 같은 말 — 중복 -->\n<nds-result-state status=\"error\" title=\"오류가 발생했어요\" description=\"오류가 발생했어요\"></nds-result-state>"
+      "do": "<!-- 인라인 빈 상태 -->\n<nds-result-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-result-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-result-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\" action=\"홈으로\"></nds-result-state>",
+      "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-result-state title=\"페이지를 찾을 수 없어요\"></nds-result-state>"
     }
   },
   "ReviewCard": {
@@ -2931,7 +2858,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       {
         "label": "Trost Tabs — Line/Chip/Segment 가이드 (TrostLibrary)",
         "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/Trost-Library?node-id=5301-108",
-        "caption": "트로스트 탭 가이드. tone=\"color\" 활성 강조색은 Point 코발트(#4968FF) — project=노랑은 면적 채움 전용이라 탭 강조는 Point 로 분리. Line=mobile50/pc56, Chip=mobile36/pc44, Segment=PC.",
+        "caption": "트로스트 탭 가이드. tone=\"color\" 활성 강조색은 Point 인디고(#4968FF) — project=노랑은 면적 채움 전용이라 탭 강조는 Point 로 분리. Line=mobile50/pc56, Chip=mobile36/pc44, Segment=PC.",
         "project": "trost"
       },
       {
@@ -2969,7 +2896,7 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "Tab 라벨에 Badge/Count 를 과하게 붙이면 위계가 무너짐 — 필요 시 count 만, Badge 는 카드 본문에서.",
       "캐포비(cashwalk-biz)는 chip 치수만 프로젝트 토큰으로 override(radius 10·height 52·padding 20). 비활성 chip 컬러는 NudgeEAP 와 동일(subtle bg + subtle text, hover 시 surface.section + strong) — 흰 텍스트 저대비로 만들지 말 것.",
       "**런마일(runmile) active = 검정(#221E1F) — 포인트색(주황) 아님 (Figma RunmileLibrary 5111:138)**: Underline(line) active 텍스트·인디케이터는 `cv.textRole.strong`(검정)으로 이미 정합. Chip(tone=\"neutral\") active 채움은 기본 `fill.neutral`(#333D4B)이 아니라 `--nds-tab-chip-selected-bg`=text/strong(#221E1F)로 내려 검정으로 맞춘다. 활성 탭에 project 주황을 쓰면 회귀. inactive=subtle. (런마일 chip 은 tone=\"color\" 가 아니라 기본 neutral 을 쓴다.)",
-      "**트로스트(trost) tone=\"color\" 강조색 = Point 코발트(#4968FF) — project 색 아님**: 트로스트 project 는 노랑이라 면적 채움 전용(텍스트·인디케이터로 쓰면 가독성↓)이다. 그래서 탭 활성 강조색만 `--nds-tab-accent-*` 슬롯을 거쳐 Point 코발트로 분리된다. Line=neutral(다크 #333/#1A1A1A 텍스트·인디케이터)/color(코발트 텍스트·인디케이터), Chip=neutral(다크 채움)/color(코발트 채움, 채움 위 텍스트는 흰색), Segment(PC)도 color 면 코발트 채움. **다른 프로젝트는 project 색으로 폴백**(슬롯 미설정 → `cv.surface.brand`/`cv.textRole.brand`)이라 무변. 트로스트 `<Tab tone=\"color\">` 가 노랑/오렌지로 보이면 회귀(구 버그).",
+      "**트로스트(trost) tone=\"color\" 강조색 = Point 인디고(#4968FF) — project 색 아님**: 트로스트 project 는 노랑이라 면적 채움 전용(텍스트·인디케이터로 쓰면 가독성↓)이다. 그래서 탭 활성 강조색만 `--nds-tab-accent-*` 슬롯을 거쳐 Point 인디고로 분리된다. Line=neutral(다크 #333/#1A1A1A 텍스트·인디케이터)/color(인디고 텍스트·인디케이터), Chip=neutral(다크 채움)/color(인디고 채움, 채움 위 텍스트는 흰색), Segment(PC)도 color 면 인디고 채움. **다른 프로젝트는 project 색으로 폴백**(슬롯 미설정 → `cv.surface.brand`/`cv.textRole.brand`)이라 무변. 트로스트 `<Tab tone=\"color\">` 가 노랑/오렌지로 보이면 회귀(구 버그).",
       "**Underline(line) vs Box(chip) 용도 구분 (Figma DesignGuide/Tab 3544-206)**: Underline=페이지 메인 카테고리·목록 필터·단계 전환, Box=상태/좁은 영역 필터(진행중·진행예정·종료). **한 화면에 Tab 종류는 1개로 통일 — Underline 과 Box 를 같은 화면에서 혼용하지 말 것.** Tab 항목 수는 2–5개 권장(6개+는 메뉴/Select 검토).",
       "**Tab vs Filter 결정 트리 (혼동 금지)**: Q1. view 자체가 바뀌나(목록 전체 교체)? → YES = **Tab**(URL 경로 변경). Q2. 조건을 누적해 좁히나(다중 필터)? → YES = **Filter(FilterBar)**(쿼리 파라미터 누적). Q3. 옵션 2–7개 단일 선택? → YES = **Radio / SelectionButtonGroup**. 큰 분류(상호 배타)를 Filter 로, 조건 좁히기를 Tab 으로 만들지 말 것.",
       "**화면 배치 순서**: 페이지 타이틀 → **Tab** → **FilterBar** → 데이터 영역(위→아래). Tab 으로 큰 분류를 고른 뒤 Filter 로 좁히는 흐름. Tab 안에 또 Tab 중첩 금지(Sub-section 은 Accordion/Anchor). 캐포비 admin 풀 스펙·치수는 `pattern:cashwalk-biz-tab`."
@@ -3342,7 +3269,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**Slot 4 — nutrition tag chip row**: 0-3개 chip (고단백/저탄수/저지방/고나트륨/고식이섬유/저당 등). chip/nutrition/* 토큰 (success/info/warning/critical 톤). 위치는 Title 위 또는 Description 직후. 4개 이상 노출 금지.",
       "**Slot 5 — like overlay**: top-right absolute, Media 슬롯 위 (이미지 over). 'heart 아이콘 + 999+' 형태. Cover variant 의 Media 위에만, Thumb/List 사용 X.",
       "**Slot 6 — author meta**: avatar(xs 20-24) + 작성자 이름 + 작성일. Metadata 라인 또는 Description 하단. 한 카드 최대 1개.",
-      "**Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale project (CashwalkBiz 빨강 / Geniet mint600). 1줄에 1개.",
+      "**Slot 7 — discount badge**: 큰 색 강조 칩(30% / 100% / 22%). promotion badge 와 다름 — 가격 정보와 묶여 Metadata 라인에 위치. 색은 sale project (CashwalkBiz 빨강 / Geniet teal600). 1줄에 1개.",
       "**Slot 8 — strikethrough price + sale price**: 정가(취소선 + mute) + 할인가(Bold + Strong). discount badge 와 같은 라인에 정렬. 가격 표시는 카드당 1쌍.",
       "**Slot 9 — shipping chip**: '무료배송' 같은 정책 라벨. ghost/line variant · neutral color. Metadata 라인 우측 또는 가격 라인 하단.",
       "**Slot 10 — certification chip**: '식약처 인증 제품' 같은 신뢰성 라벨. success/info color · ghost variant · check icon prefix. Status 슬롯 또는 Metadata 라인 하단.",
@@ -4403,11 +4330,11 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
   "container-section": {
     "name": "container-section",
     "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5303-111",
-    "summary": "페이지를 구성하는 두 레이아웃 단위 — **Container = 가로(너비)**, **Section = 세로(블록)**. **Container** 는 컨텐츠를 viewport 너비 안에 가두고 좌우 padding 을 표준화하는 반응형 래퍼로, Layout primitive 컨벤션대로 web component 없이 **`nds-container` 클래스**로 제공한다(`<div class=\"nds-container\">…</div>`). **Section** 은 페이지를 의미 단위 세로 블록으로 나누는 규칙으로, **컴포넌트화하지 않고 페이지 디자인 시 frame/`<section>` 으로 직접 그린다** — 아래 rules 를 따른다.\n\n### \"section\" 세 가지 — 헷갈리지 말 것\n\n이 가이드의 **Section = 페이지 레벨 세로 블록**(여기 rules 대상). DS 에는 같은 이름의 다른 두 개념이 있으니 구분한다.\n\n| 이름                         | 정체                                       | 어디                                                            |\n| ---------------------------- | ------------------------------------------ | -------------------------------------------------------------- |\n| **Section (이 가이드)**      | 페이지 세로 블록 — 클래스/컴포넌트 아님    | `<section>` frame 직접 작성                                     |\n| **`.nds-section` (어드민 카드)** | 본문 안 흰 카드 (head/body/title)          | `Layout.ts` `sectionStyles` — `<section class=\"nds-section\">`   |\n| **`FormSection`**            | 어드민 폼 그룹 카드 (React/HTML 컴포넌트)   | `get_guide({ topic: 'component:FormSection' })`                |\n\n### Container 반응형 — base(전 프로젝트 공용) + Trost device-variant\n\nbase `.nds-container` 는 전 프로젝트 공용 디폴트 — **PC(≥1024) max 1200·좌우 40 / Tablet(768~1023) max 768·좌우 24 / Mobile(<768) 100%·좌우 16**, `margin-inline:auto` 가운데 정렬. Trost 앱 컨텐츠는 아래 **opt-in 모디파이어**로 device-variant 폭을 잡는다(base 는 그대로, 클래스 추가로만 적용 — 다른 프로젝트 영향 0).\n\n| device-variant | 클래스                  | content max | inner h-padding |\n| -------------- | ----------------------- | ----------- | --------------- |\n| Mobile (<768)  | (모디파이어 자동 collapse) | 360 (≈100%) | 16              |\n| PC (≥768)      | `.nds-container--pc`    | 1080        | 24              |\n| PC-Wide        | `.nds-container--wide`  | 1200        | 24              |\n| 런마일 PC      | `.nds-container--runmile` | 1280      | 80              |\n\n- **PC-Wide(`--wide`)** 는 테이블·대시보드 등 가로 정보량이 많은 화면용. 일반 컨텐츠는 **PC(`--pc`, 1080)** 가 기본.\n- h-padding 은 viewport 와 content 폭의 차를 양분한 값 — **h-padding = (viewport − content) / 2**. 모디파이어는 모바일(<768)에서 base 와 동일하게 100% / 좌우 16 으로 자동 collapse 한다.\n\n#### 런마일 Section/Container (Figma 5070:2)\n\n런마일 앱 컨텐츠는 **`.nds-container--runmile`** — 콘텐츠 max **1280** · 좌우 패딩 **PC 80 / Mobile 16**(자동 collapse). 세부 레이아웃 규칙:\n\n- **2열 그리드** = **Main 888 + Side 332 + 컬럼 갭 60**(모바일은 1열 fallback 필수). 888/332/60 은 토큰이 아니라 페이지에서 직접 그린다.\n- **카드 그리드 갭** = PC **24**(3열, Gap/Wide) / **16**(2열, Gap/2XL). 모바일 1열.\n- **Section 타이틀 ↔ 콘텐츠** = **20**(PC, Gap/3XL) / **12**(Mobile, Gap/XL). **Section 간 구분** = **8**(Divider/여백, Gap/MD).\n- **Section 타이틀 비주얼** = **4×22 프로젝트 액센트 바(BG/Brand `#FF5B37`) + 22 Bold 타이틀(Text/Strong `#221E1F`)**. (런마일 headline1 은 24 — 22 타이틀은 섹션 헤딩 한정.)\n- **간격 라벨 매핑**(Figma → DS): Spacing/MD=8 · XL=12 · 2XL=16 · 3XL=20 · 4XL=24 — 전부 DS gap/spacing 스케일과 1:1. 임의 간격(13·17·25) 금지.\n\n```html\n<!-- Trost 앱: Section(세로 블록, BG 교차) 안에 Container(가로 폭 가둠) 1개 -->\n<!-- Container BG = BG/Section/Default · Content BG = BG/Surface/Default(흰 카드, PC radius 16) -->\n<section style=\"padding: 40px 0; background: var(--semantic-bg-section-default)\">\n  <div class=\"nds-container nds-container--pc\">\n    <div class=\"nds-section-surface\" style=\"padding: 24px\">…컨텐츠…</div>\n  </div>\n</section>\n<section style=\"padding: 40px 0; background: var(--semantic-bg-section-default)\">\n  <div class=\"nds-container nds-container--wide\">…테이블/대시보드…</div>\n</section>\n```\n\n```html\n<!-- 마케팅/홍보 페이지: 모디파이어 없이 base(1200) + 큰 Section padding(120/80/40) -->\n<section style=\"padding: 120px 0; background: var(--semantic-bg-surface-default)\">\n  <div class=\"nds-container\">…히어로…</div>\n</section>\n```\n\n`.nds-section-surface` 는 가산 헬퍼 — `background: var(--semantic-bg-surface-default)` + `border-radius: 16px`(radius.xl). bg/radius 를 `.nds-container` 에 굽지 않으므로 흰 컨텐츠 카드가 필요할 때만 붙인다.",
+    "summary": "페이지를 구성하는 두 레이아웃 단위 — **Container = 가로(너비)**, **Section = 세로(블록)**. **Container** 는 컨텐츠를 viewport 너비 안에 가두고 좌우 padding 을 표준화하는 반응형 래퍼로, Layout primitive 컨벤션대로 web component 없이 **`nds-container` 클래스**로 제공한다(`<div class=\"nds-container\">…</div>`). **Section** 은 페이지를 의미 단위 세로 블록으로 나누는 규칙으로, **컴포넌트화하지 않고 페이지 디자인 시 frame/`<section>` 으로 직접 그린다** — 아래 rules 를 따른다.\n\n### \"section\" 세 가지 — 헷갈리지 말 것\n\n이 가이드의 **Section = 페이지 레벨 세로 블록**(여기 rules 대상). DS 에는 같은 이름의 다른 두 개념이 있으니 구분한다.\n\n| 이름                         | 정체                                       | 어디                                                            |\n| ---------------------------- | ------------------------------------------ | -------------------------------------------------------------- |\n| **Section (이 가이드)**      | 페이지 세로 블록 — 클래스/컴포넌트 아님    | `<section>` frame 직접 작성                                     |\n| **`.nds-section` (어드민 카드)** | 본문 안 흰 카드 (head/body/title)          | `Layout.ts` `sectionStyles` — `<section class=\"nds-section\">`   |\n| **`FormSection`**            | 어드민 폼 그룹 카드 (React/HTML 컴포넌트)   | `get_guide({ topic: 'component:FormSection' })`                |\n\n### Container 반응형 — base(전 프로젝트 공용) + Trost device-variant\n\nbase `.nds-container` 는 전 프로젝트 공용 디폴트 — **PC(≥1024) max 1200·좌우 40 / Tablet(768~1023) max 768·좌우 24 / Mobile(<768) 100%·좌우 16**, `margin-inline:auto` 가운데 정렬. Trost 앱 컨텐츠는 아래 **opt-in 모디파이어**로 device-variant 폭을 잡는다(base 는 그대로, 클래스 추가로만 적용 — 다른 프로젝트 영향 0).\n\n| device-variant | 클래스                  | content max | inner h-padding |\n| -------------- | ----------------------- | ----------- | --------------- |\n| Mobile (<768)  | (모디파이어 자동 collapse) | 360 (≈100%) | 16              |\n| PC (≥768)      | `.nds-container--pc`    | 1080        | 24              |\n| PC-Wide        | `.nds-container--wide`  | 1200        | 24              |\n| 런마일 PC      | `.nds-container--runmile` | 1280      | 80              |\n\n- **PC-Wide(`--wide`)** 는 테이블·대시보드 등 가로 정보량이 많은 화면용. 일반 컨텐츠는 **PC(`--pc`, 1080)** 가 기본.\n- h-padding 은 viewport 와 content 폭의 차를 양분한 값 — **h-padding = (viewport − content) / 2**. 모디파이어는 모바일(<768)에서 base 와 동일하게 100% / 좌우 16 으로 자동 collapse 한다.\n\n#### 런마일 Section/Container (Figma 5070:2)\n\n런마일 앱 컨텐츠는 **`.nds-container--runmile`** — 콘텐츠 max **1280** · 좌우 패딩 **PC 80 / Mobile 16**(자동 collapse). 세부 레이아웃 규칙:\n\n- **2열 그리드** = **Main 888 + Side 332 + 컬럼 갭 60**(모바일은 1열 fallback 필수). 888/332/60 은 토큰이 아니라 페이지에서 직접 그린다.\n- **카드 그리드 갭** = PC **24**(3열, Gap/Wide) / **16**(2열, Gap/2XL). 모바일 1열.\n- **Section 타이틀 ↔ 콘텐츠** = **20**(PC, Gap/3XL) / **12**(Mobile, Gap/XL). **Section 간 구분** = **8**(Divider/여백, Gap/MD).\n- **Section 타이틀 비주얼** = **4×22 프로젝트 액센트 바(BG/Brand `#FF5B37`) + 22 Bold 타이틀(Text/Strong `#221E1F`)**. (런마일 headline1 은 24 — 22 타이틀은 섹션 헤딩 한정.)\n- **간격 라벨 매핑**(Figma → DS): Spacing/MD=8 · XL=12 · 2XL=16 · 3XL=20 · 4XL=24 — 전부 DS gap/spacing 스케일과 1:1. 임의 간격(13·17·25) 금지.\n\n```html\n<!-- Trost 앱: Section(세로 블록, BG 교차) 안에 Container(가로 폭 가둠) 1개 -->\n<!-- Container BG = BG/Section/Default · Content BG = BG/Surface/Default(흰 카드, PC radius 16) -->\n<section style=\"padding: 40px 0; background: var(--semantic-bg-section-default)\">\n  <div class=\"nds-container nds-container--pc\">\n    <div class=\"nds-section-surface\" style=\"padding: 24px\">…컨텐츠…</div>\n  </div>\n</section>\n<section style=\"padding: 40px 0; background: var(--semantic-bg-section-default)\">\n  <div class=\"nds-container nds-container--wide\">…테이블/대시보드…</div>\n</section>\n```\n\n```html\n<!-- 마케팅/홍보 페이지: 모디파이어 없이 base(1200) + 큰 Section padding(120/80/40) -->\n<section style=\"padding: 120px 0; background: var(--semantic-bg-surface-default)\">\n  <div class=\"nds-container\">…히어로…</div>\n</section>\n```\n\n`.nds-section-surface` 는 가산 헬퍼 — `background: var(--semantic-bg-surface-default)` + `border-radius: 16px`(radius[16]). bg/radius 를 `.nds-container` 에 굽지 않으므로 흰 컨텐츠 카드가 필요할 때만 붙인다.",
     "rules": [
       "컨텐츠는 항상 `nds-container`(+Trost 면 모디파이어) 안에 둔다 — Container 가 좌우 padding·max-width 를 viewport 별로 표준화한다. 같은 화면에서 Container 너비를 혼용하지 않는다.",
       "**Trost device-variant** — Mobile content 360 / h-padding 16 · **PC content 1080 / inner 24**(`--pc`) · **PC-Wide content 1200 / inner 24**(`--wide`). 임의 폭은 모디파이어로만 정한다.",
-      "**Container BG vs Content BG** — Section(Container 가 사는 세로 블록)의 BG 는 **BG/Section/Default**(`--semantic-bg-section-default`), 그 위 흰 컨텐츠 카드는 **BG/Surface/Default**(`--semantic-bg-surface-default`) + content radius **Mobile 0 / PC 16**(`.nds-section-surface`, radius.xl). content 카드만 surface 흰색을 쓰고 바깥 Section 은 section 회색.",
+      "**Container BG vs Content BG** — Section(Container 가 사는 세로 블록)의 BG 는 **BG/Section/Default**(`--semantic-bg-section-default`), 그 위 흰 컨텐츠 카드는 **BG/Surface/Default**(`--semantic-bg-surface-default`) + content radius **Mobile 0 / PC 16**(`.nds-section-surface`, radius[16]). content 카드만 surface 흰색을 쓰고 바깥 Section 은 section 회색.",
       "**Section 세로(상하) padding** — **Mobile 20 / PC 40**(app-content 기준). `--semantic-inset-*`/spacing 스케일에서 선택. 좌우 여백은 Section 이 아니라 내부 Container 가 책임진다.",
       "**Section 안 item 간격(세로 stack)** — **Mobile 16 (Gap/Loose, `--semantic-gap-loose`) / PC 24 (Gap/Wide, `--semantic-gap-wide`)**.",
       "**Sub-section(섹션 안 하위 그룹) 간격** — **12 (Gap/Comfortable, `--semantic-gap-comfortable`)**. item 간격(16/24)보다 한 단계 좁혀 위계를 만든다.",
@@ -4527,7 +4454,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "examples": [
       {
         "verdict": "good",
-        "source": "{ \"screen\": { \"project\": \"geniet\", \"surface\": \"app\", \"intent\": \"리뷰 상세 — 평점·본문·도움돼요\" }, \"tree\": [ { \"component\": \"Card\", \"role\": \"리뷰 본문\", \"tokens\": [\"--semantic-bg-default\",\"--semantic-text-default\"], \"children\": [ { \"component\": \"Button\", \"role\": \"primary CTA\", \"props\": { \"color\": \"primary\" }, \"rationale\": \"Geniet primary CTA = project mint/600 (#00A8AC)\" } ] } ], \"decisions\": [\"primary CTA 1개만\", \"raw hex 없음 — 전부 --semantic-*\"] }",
+        "source": "{ \"screen\": { \"project\": \"geniet\", \"surface\": \"app\", \"intent\": \"리뷰 상세 — 평점·본문·도움돼요\" }, \"tree\": [ { \"component\": \"Card\", \"role\": \"리뷰 본문\", \"tokens\": [\"--semantic-bg-default\",\"--semantic-text-default\"], \"children\": [ { \"component\": \"Button\", \"role\": \"primary CTA\", \"props\": { \"color\": \"primary\" }, \"rationale\": \"Geniet primary CTA = project teal/600 (#00A8AC)\" } ] } ], \"decisions\": [\"primary CTA 1개만\", \"raw hex 없음 — 전부 --semantic-*\"] }",
         "caption": "의도·컴포넌트·시멘틱 토큰 이름·근거만. 좌표/색값/px 없음. component 는 DS 이름 또는 nds-tag."
       },
       {
@@ -4943,7 +4870,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
     "summary": "넛지EAP 서비스 카드(App·Web·PC) 생성 규칙 SSOT(Figma 713:2 CardRulesGuide). Card 컴포넌트(component:Card)의 Compound 슬롯을 쓰되, **넛지EAP 도메인 한정**으로 Geniet 도메인 카드와 다른 두 규칙을 적용한다 — ① **내부 CTA 허용**(상담 예약·전문가·프로그램 카드는 카드 최하단 CTA 1개를 가짐), ② **shadow 전면 금지**(카드 구분은 border 1px 로만, box-shadow/elevation 금지). Title 이 유일한 Required, 나머지 슬롯(Thumbnail·Avatar·Badge/Chip·Description·Metadata·CTA·Footer)은 모두 Optional 이며 화면 목적에 따라 조합한다. 색은 semantic 토큰만 — White/Surface bg, Border/Default, Project Color 는 CTA·인디케이터에만.",
     "rules": [
       "Anatomy — Title(필수·Primary, 생략 불가) + Optional: Thumbnail(max 1, Avatar와 배타) · Avatar(max 1, Thumbnail과 배타) · Badge/Chip(max 2) · Description(max 3줄, line-clamp) · Metadata(max 2항목, Muted 12–13px) · CTA(max 1) · Footer(min-h 40, border-top + padding-top 16).",
-      "Surface — Background: White 또는 Surface/Neutral 토큰만. Border: 1px `--semantic-border-default`(#E2E6EA). **Border-radius: 12px 고정**(radius.lg). **Shadow 사용 금지** — border 로만 카드 구분(넛지EAP 서비스 카드는 elevation 미사용).",
+      "Surface — Background: White 또는 Surface/Neutral 토큰만. Border: 1px `--semantic-border-default`(#E2E6EA). **Border-radius: 12px 고정**(radius[12]). **Shadow 사용 금지** — border 로만 카드 구분(넛지EAP 서비스 카드는 elevation 미사용).",
       "Spacing — Padding 16(min)~24(max) 전 방향 동일. 카드 간 gap 8(min)~16(max). 요소 간: Title↔Description 4px · Description↔Metadata 8px · Metadata↔CTA 16px. Footer separator: border-top 1px + padding-top 16px.",
       "Hierarchy(폰트 Pretendard) — Title=Headline5 Bold 18/26(`--font-size-headline-5`) 항상 최강조 · Description=Body3 Regular 14/20(`--font-size-body-3`) · Metadata=Caption1 Regular 13/18(`--font-size-caption-1`) Muted 필수 · CTA=Body3 Medium 14/20. Title 외 Primary 강조 1개 초과 금지.",
       "CTA 유형 4종(카드 컨텍스트별, 임의 크기 변형 금지) — ① Full-width: Btn Large 48px, 카드 너비 100%, radius 8, Solid/Primary(Project bg·white), Mobile/App 콘텐츠·프로그램 카드. ② Compact: Btn Small 40px, auto(min 80), radius 6, Outlined 또는 Solid/Primary, 요약·수치·공간 제약 카드. ③ Icon+Text: Btn Medium 44px, icon 16 + text(간격 6), radius 8, PC 상담 예약·전문가·퀵 액션 카드. ④ Ghost/Link: Text Button, \"더 보기\"·\"자세히\" 보조 액션, Project Color 텍스트 + underline/chevron.",
@@ -5062,7 +4989,7 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "fabSize": "56×56 채널톡",
       "footerHeight": "1920×198 bg #F5F5F5",
       "projectPrimary": "var(--semantic-bg-brand-default)",
-      "magentaAccent": "#ED2E77 (이벤트 한정)",
+      "pinkAccent": "#ED2E77 (이벤트 한정)",
       "maxPrimarySolidPerScreen": 1,
       "whitelabel": "true (고객사 로고/명 + CMS 스트립 인사말)",
       "relatedPatterns": "nudge-eap-form-layout, nudge-eap-landing-layout, cta-group"
@@ -5090,13 +5017,13 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "**보조 배너 띠**: 1200×110-120 풀폭. brown `#67544D` + white pill (생활상담), `var(--semantic-bg-brand-default)` + white pill (앱 다운로드).",
       "**채널톡 FAB**: 우측 하단 56×56 원형. desktop 이므로 BottomNav 없음.",
       "**Footer**: 1920×198 bg `#F5F5F5`. 주소/사업자번호/연락처 14/20 Regular #383838 + ISO 27001 로고 우측.",
-      "**컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card `var(--semantic-bg-brand-subtle)`, featured #FFF7E6, thumb #EBEBEB, project `var(--semantic-bg-brand-default)`, magenta #ED2E77 (이벤트 한정).",
+      "**컬러 토큰**: page bg #fff, section bg #FAFAFA, primary card `var(--semantic-bg-brand-subtle)`, featured #FFF7E6, thumb #EBEBEB, project `var(--semantic-bg-brand-default)`, pink #ED2E77 (이벤트 한정).",
       "**B2B 화이트라벨**: 좌측 상단 로고가 고객사 (e.g. 아모레퍼시픽). NudgeEAP 자체 브랜딩은 footer 에만."
     ],
     "avoid": [
       "모바일 BottomNav 추가 — 데스크탑 홈은 채널톡 FAB 만.",
       "Greeting/Notification icon 을 헤더 우측에 — NudgeEAP B2B 헤더는 [로그인][앱 다운로드] 페어.",
-      "Magenta `#ED2E77` 을 일반 강조에 — 이벤트 배지 한정.",
+      "Pink `#ED2E77` 을 일반 강조에 — 이벤트 배지 한정.",
       "Hero 배경을 project blue 로 — cream/warm 톤 (`#FFEDD0`) 이 멘탈케어 시그니처.",
       "3-카드 빠른 액션을 4개 이상으로 — 3개가 위계 한계.",
       "심리검사 캐러셀 카드 색 다양화 — 표준 #FAFAFA + featured #FFF7E6 두 톤만.",

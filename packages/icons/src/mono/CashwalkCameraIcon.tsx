@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface CashwalkCameraIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkCameraIcon = React.forwardRef<SVGSVGElement, CashwalkCameraIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path fillRule="evenodd" clipRule="evenodd" d="M12 15.8893C13.6937 15.8893 15.0667 14.5164 15.0667 12.8226C15.0667 11.1289 13.6937 9.75598 12 9.75598C10.3063 9.75598 8.93335 11.1289 8.93335 12.8226C8.93335 14.5164 10.3063 15.8893 12 15.8893Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M2.80005 16.5844V8.81556C2.80005 7.67056 2.80005 7.09806 3.02288 6.66073C3.21888 6.27604 3.53164 5.96328 3.91634 5.76728C4.35366 5.54444 4.92617 5.54444 6.07116 5.54444H7.14924C7.27491 5.54444 7.33774 5.54444 7.39571 5.5378C7.69819 5.50316 7.96948 5.33549 8.13573 5.08045C8.16759 5.03156 8.19571 4.97535 8.2519 4.86296C8.3643 4.63816 8.4205 4.52576 8.48424 4.42799C8.81675 3.9179 9.35932 3.58258 9.96429 3.51328C10.0802 3.5 10.2058 3.5 10.4572 3.5H13.5429C13.7943 3.5 13.9199 3.5 14.0358 3.51328C14.6408 3.58258 15.1834 3.9179 15.5159 4.42799C15.5796 4.52575 15.6358 4.63819 15.7482 4.86296C15.8044 4.97536 15.8325 5.03156 15.8644 5.08045C16.0307 5.33549 16.3019 5.50316 16.6043 5.5378C16.6624 5.54444 16.7252 5.54444 16.8509 5.54444H17.9289C19.0739 5.54444 19.6465 5.54444 20.0838 5.76728C20.4684 5.96328 20.7812 6.27604 20.9772 6.66073C21.2 7.09806 21.2 7.67056 21.2 8.81556V16.5844C21.2 17.7294 21.2 18.302 20.9772 18.7393C20.7812 19.124 20.4684 19.4368 20.0838 19.6327C19.6465 19.8556 19.0739 19.8556 17.9289 19.8556H6.07116C4.92617 19.8556 4.35366 19.8556 3.91634 19.6327C3.53164 19.4368 3.21888 19.124 3.02288 18.7393C2.80005 18.302 2.80005 17.7294 2.80005 16.5844Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M15.6801 8.10001H18.4401" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+);
+
+CashwalkCameraIcon.displayName = "CashwalkCameraIcon";

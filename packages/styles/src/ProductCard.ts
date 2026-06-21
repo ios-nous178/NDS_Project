@@ -69,7 +69,7 @@ export const pcStyles = `
     box-sizing: border-box;
     background: ${cv.surface.section};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     overflow: hidden;
   }
 
@@ -90,7 +90,7 @@ export const pcStyles = `
     top: ${spacing[8]}px;
     left: ${spacing[8]}px;
     padding: 2px 6px;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     background: ${cv.fill.statusError};
     color: ${cv.textRole.inverse};
     font-size: ${typeScale.label.fontSize}px;
@@ -105,7 +105,7 @@ export const pcStyles = `
     left: ${spacing[8]}px;
     width: 36px;
     height: 36px;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     background: var(--nds-product-discount-bg, #f16d4d);
     color: ${cv.textRole.inverse};
     display: flex;
@@ -219,7 +219,7 @@ export const pcStyles = `
     gap: ${spacing[2]}px;
     height: 20px;
     padding: 2px 5px;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     font-family: ${fontFamily.web};
     font-size: ${typeScale.label.fontSize}px;
     line-height: ${typeScale.label.lineHeight}px;

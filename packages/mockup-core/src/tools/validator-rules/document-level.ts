@@ -365,9 +365,9 @@ export function collectDocumentLevelViolations(
 
   // tone-on-tone-filled — 연한 primary bg + 같은 톤 filled/soft chip/badge
   const lightPrimaryBgRe =
-    /background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100))/;
+    /background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|indigo-(?:50|100))/;
   const filledChipOrBadgeRe =
-    /<\s*nds-(?:chip|badge)\b[^>]*?(?:variant\s*=\s*["'](?:filled|soft)["']|style\s*=\s*["'][^"']*background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|cobalt-(?:50|100)))/i;
+    /<\s*nds-(?:chip|badge)\b[^>]*?(?:variant\s*=\s*["'](?:filled|soft)["']|style\s*=\s*["'][^"']*background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary-bg|semantic-primary-bgLighter|blue-(?:10|25|50|100)|indigo-(?:50|100)))/i;
   if (lightPrimaryBgRe.test(source) && filledChipOrBadgeRe.test(source)) {
     out.push({
       rule: "tone-on-tone-filled",
@@ -401,7 +401,7 @@ export function collectDocumentLevelViolations(
 
   // primary-color-role-overload — primary 계열 색이 여러 역할로 과다 사용
   const primaryTokenRefs =
-    source.match(/var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)[\w-]*\)/g) ?? [];
+    source.match(/var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)[\w-]*\)/g) ?? [];
   const primaryRoleSignals = [
     {
       name: "button",
@@ -426,21 +426,21 @@ export function collectDocumentLevelViolations(
     {
       name: "background",
       matched:
-        /background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+        /background(?:-color)?\s*:\s*var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)/.test(
           source,
         ),
     },
     {
       name: "border",
       matched:
-        /border(?:-color)?\s*:\s*[^;]*var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+        /border(?:-color)?\s*:\s*[^;]*var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)/.test(
           source,
         ),
     },
     {
       name: "icon",
       matched:
-        /<\s*svg\b[^>]*?color\s*=\s*["']var\(--color-(?:semantic-primary|blue|cobalt|yellow-primary)/.test(
+        /<\s*svg\b[^>]*?color\s*=\s*["']var\(--color-(?:semantic-primary|blue|indigo|yellow-primary)/.test(
           source,
         ),
     },

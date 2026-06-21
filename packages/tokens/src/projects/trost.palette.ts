@@ -1,7 +1,7 @@
 /**
  * Trost Brand Palette — atomic 색상 스케일.
  *
- * Figma 컬러 가이드(5011:108) 1:1 미러 — Yellow / Cobalt / Pink / Gray(neutral)
+ * Figma 컬러 가이드(5011:108) 1:1 미러 — Yellow / Indigo / Pink / Gray(neutral)
  * + 상태 스케일 Red / Blue / Green. 풀 numeric stop(50~900).
  *
  * trost.semantic.ts 가 이 palette 를 참조해 시멘틱 트리를 만들고,
@@ -26,8 +26,8 @@ export const trostYellow = {
   text: "#FF9D00",
 } as const;
 
-// Point(액센트) 컬러 — Figma 가이드 Key Pair 의 코발트. focus / point 역할.
-export const trostCobalt = {
+// Point(액센트) 컬러 — Figma 가이드 Key Pair 의 인디고. focus / point 역할.
+export const trostIndigo = {
   50: "#F6F7FF",
   100: "#EDF0FF",
   200: "#C9D3FF",
@@ -53,8 +53,8 @@ export const trostPink = {
   900: "#4D0A1E",
 } as const;
 
-// Gray. `00` = Common/White, `1000` = Common/Black (가이드 Common 세트).
-export const trostNeutral = {
+// Gray (warm). `cool-100` 은 stray cool 틴트 키.
+export const trostGray = {
   50: "#FAFAFA",
   100: "#F6F6F6",
   150: "#F2F2F2",
@@ -67,8 +67,12 @@ export const trostNeutral = {
   800: "#333333",
   900: "#1A1A1A",
   "cool-100": "#F4F5F7",
-  "00": "#FFFFFF",
-  1000: "#000000",
+} as const;
+
+// Common 흑·백 (가이드 Common 세트) — white/black + 레거시 "00"/1000.
+export const trostCommon = {
+  white: "#FFFFFF",
+  black: "#000000",
 } as const;
 
 // ─── 상태 스케일 (Figma 가이드 Red / Blue / Green) ───────────────────

@@ -28,13 +28,15 @@ export const PROJECTS = [
   { id: "geniet", label: "Geniet" },
   { id: "trost", label: "Trost" },
   { id: "cashwalk-biz", label: "CashwalkBiz" },
+  { id: "cashwalk", label: "Cashwalk" }, // 소비자앱 — teamwork/동네산책 공유 베이스
   { id: "runmile", label: "Runmile" },
   { id: "mockup", label: "Mockup" },
 ];
 
 /** export 이름 prefix → 프로젝트. (storybook projectOf 를 SSOT 로 흡수 + Runmile 누락 버그 교정) */
 export function projectOf(name) {
-  if (name.startsWith("CashwalkBiz")) return "cashwalk-biz";
+  if (name.startsWith("CashwalkBiz")) return "cashwalk-biz"; // cashwalk-biz 를 cashwalk 보다 먼저
+  if (name.startsWith("Cashwalk")) return "cashwalk"; // 소비자앱(CashwalkBiz 제외)
   if (name.startsWith("Geniet")) return "geniet";
   if (name.startsWith("Trost")) return "trost";
   if (name.startsWith("Runmile")) return "runmile";

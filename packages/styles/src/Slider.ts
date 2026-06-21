@@ -47,7 +47,7 @@ export const sliderStyles = `
     left: 0;
     right: 0;
     height: 4px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.disabled};
   }
 
@@ -55,7 +55,7 @@ export const sliderStyles = `
     position: absolute;
     left: 0;
     height: 4px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.brand};
     pointer-events: none;
     transition: width ${transition.default};
@@ -78,7 +78,7 @@ export const sliderStyles = `
     -webkit-appearance: none;
     width: 24px;
     height: 24px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     border: 2px solid ${cv.borderRole.brand};
     box-shadow: ${shadow["1"]};
@@ -89,7 +89,7 @@ export const sliderStyles = `
   :where(.${SL_INPUT_CLASS})::-moz-range-thumb {
     width: 24px;
     height: 24px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     border: 2px solid ${cv.borderRole.brand};
     box-shadow: ${shadow["1"]};

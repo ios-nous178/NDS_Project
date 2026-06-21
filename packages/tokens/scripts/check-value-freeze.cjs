@@ -13,6 +13,9 @@ const { colors } = require("../dist/colors");
 const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
 const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
+const { cashwalkTheme } = require("../dist/projects/cashwalk");
+const { teamworkTheme } = require("../dist/projects/teamwork");
+const { dongneSanchaekTheme } = require("../dist/projects/dongne-sanchaek");
 const { runmileTheme } = require("../dist/projects/runmile");
 
 const dist = path.join(__dirname, "..", "dist");
@@ -45,6 +48,9 @@ const TARGETS = [
   { file: "trost", cvar: colorVarMap(colors, trostTheme.palette) },
   { file: "geniet", cvar: colorVarMap(colors, genietTheme.palette) },
   { file: "cashwalk-biz", cvar: colorVarMap(colors, cashwalkBizTheme.palette) },
+  { file: "cashwalk", cvar: colorVarMap(colors, cashwalkTheme.palette) },
+  { file: "teamwork", cvar: colorVarMap(colors, teamworkTheme.palette) },
+  { file: "dongne-sanchaek", cvar: colorVarMap(colors, dongneSanchaekTheme.palette) },
   { file: "runmile", cvar: colorVarMap(colors, runmileTheme.palette) },
 ];
 
@@ -77,5 +83,5 @@ if (totalFail > 0) {
   process.exit(1);
 }
 console.log(
-  `\n✓ value-freeze OK — ${totalChecked} semantic tokens (base+4 brands) resolve to identical hex`,
+  `\n✓ value-freeze OK — ${totalChecked} semantic tokens (전 브랜드) resolve to identical hex`,
 );

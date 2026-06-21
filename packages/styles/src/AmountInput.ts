@@ -40,7 +40,7 @@ export const aiStyles = `
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-card);
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     transition: border-color ${transition.default};
   }
@@ -86,7 +86,7 @@ export const aiStyles = `
     height: 36px;
     padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     color: ${cv.textRole.normal};
     font-family: inherit;

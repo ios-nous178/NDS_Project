@@ -52,7 +52,7 @@ export const selectStyles = `
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
     border: 1px solid var(--nds-select-border-color, ${cv.input.borderDefault});
-    border-radius: var(--nds-select-radius, ${radius.md}px);
+    border-radius: var(--nds-select-radius, ${radius[8]}px);
     background: var(--nds-select-background, ${cv.input.bg});
     cursor: pointer;
     font-family: inherit;
@@ -120,7 +120,7 @@ export const selectStyles = `
     padding: var(--nds-select-dropdown-padding, 0);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     box-sizing: border-box;

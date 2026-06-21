@@ -91,13 +91,13 @@ export const articleStyles = `
     border-left: 3px solid ${cv.borderRole.brand};
     background: ${cv.surface.brandSubtle};
     color: ${cv.textRole.strong};
-    border-radius: 0 ${radius.sm}px ${radius.sm}px 0;
+    border-radius: 0 ${radius[4]}px ${radius[4]}px 0;
   }
 
   :where(.${AR_BODY_CLASS}) code {
     padding: 2px 6px;
     background: ${cv.surface.page};
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.9em;
   }
@@ -106,7 +106,7 @@ export const articleStyles = `
     margin: ${spacing[12]}px 0;
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
     background: ${cv.surface.page};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     overflow-x: auto;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: ${typeScale.body3.fontSize}px;
@@ -120,7 +120,7 @@ export const articleStyles = `
   :where(.${AR_BODY_CLASS}) img {
     max-width: 100%;
     height: auto;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     margin: ${spacing[8]}px 0;
     display: block;
   }

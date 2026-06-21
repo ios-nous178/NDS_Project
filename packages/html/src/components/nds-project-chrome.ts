@@ -460,7 +460,7 @@ const PROJECT_DATA: Record<ProjectKey, ProjectChrome> = {
       mobilePointHref: "#",
     },
     /* React GenietBottomNav (홈/기록/혜택/리뷰/커뮤니티) — 단일 그래픽 + color cascade.
-     * active = mint600, inactive = gray500. icon == activeIcon. */
+     * active = teal600, inactive = gray500. icon == activeIcon. */
     bottomNav: {
       iconPolicy: "single",
       activeColor: "var(--semantic-text-brand-default, #00A8AC)",
@@ -947,7 +947,7 @@ function renderNudgeEAPHeader(
       font-size: ${typeScale.body1.fontSize}px;
       line-height: ${typeScale.body1.lineHeight}px;
       font-weight: ${fontWeight.bold};
-      border-radius: ${radius.md}px;
+      border-radius: ${radius[8]}px;
       text-decoration: none;
       border: 0;
       cursor: pointer;
@@ -965,7 +965,7 @@ function renderNudgeEAPHeader(
       line-height: ${typeScale.body1.lineHeight}px;
       font-weight: ${fontWeight.bold};
       border: 1px solid ${cv.borderRole.brand};
-      border-radius: ${radius.md}px;
+      border-radius: ${radius[8]}px;
       text-decoration: none;
       cursor: pointer;
       font-family: inherit;
@@ -1252,7 +1252,7 @@ function renderGenietHeader(
       font-family: inherit;
       transition: background-color ${transition.default};
     }
-    /* 캐시리뷰 — 흰 배경 + 연한 파란 보더 + 토스 블루 텍스트/아이콘. project mint 와
+    /* 캐시리뷰 — 흰 배경 + 연한 파란 보더 + 토스 블루 텍스트/아이콘. project teal 와
      * 구분되는 accent 컬러라 시멘틱 토큰 대신 hex 로 못박는다 (React AppBar 와 동일). */
     .nds-project-geniet__cta-pill[data-tone="outline"] {
       background: ${cv.surface.default};
@@ -1341,7 +1341,7 @@ function renderGenietHeader(
       align-items: center;
       flex: 1;
       height: 38px;
-      border-radius: ${radius.md}px;
+      border-radius: ${radius[8]}px;
       background: ${cv.surface.subtle};
       padding: 0 ${spacing[40]}px 0 ${spacing[12]}px;
       box-sizing: border-box;
@@ -1967,7 +1967,7 @@ function renderCashwalkBizHeader(
       font-weight: ${fontWeight.medium};
       color: ${cv.textRole.normal};
       text-decoration: none;
-      border-radius: ${radius.sm}px;
+      border-radius: ${radius[4]}px;
     }
     .nds-project-cashwalk-biz__menu-item[data-active="true"] {
       color: ${cv.textRole.strong};

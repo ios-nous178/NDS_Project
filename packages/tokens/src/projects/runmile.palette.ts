@@ -69,7 +69,7 @@ export const runmileYellow = {
 } as const;
 
 // ─── Grayscale (Toss-style cool gray · Figma `color-black`) ──
-export const runmileGray = {
+export const runmileCoolGray = {
   100: "#F9FAFB",
   200: "#F2F4F6",
   300: "#E5E8EB",
@@ -81,16 +81,8 @@ export const runmileGray = {
   900: "#333D4B",
 } as const;
 
-// ─── Black & White (Figma `color-base`) ─────────────────
-export const runmileNeutral = {
-  black: "#221E1F",
+// ─── Common (흑·백, Figma `color-base`) ─────────────────
+export const runmileCommon = {
   white: "#FFFFFF",
-} as const;
-
-// ─── Status alias (semantic 빠른 참조용) ────────────────
-export const runmileStatus = {
-  error: runmileRed[500], // #FF2428
-  info: runmileBlue[500], // #007AFF
-  success: runmileGreen[500], // #00C255
-  caution: runmileYellow[500], // #FFC400
+  black: "#221E1F",
 } as const;
