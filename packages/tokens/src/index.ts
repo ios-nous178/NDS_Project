@@ -92,7 +92,7 @@ export {
   trostSemantic,
 } from "./projects/index.js";
 export {
-  genietMint,
+  genietTeal,
   genietRed,
   genietYellow,
   genietBlue,

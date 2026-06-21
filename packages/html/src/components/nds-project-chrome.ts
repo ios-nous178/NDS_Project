@@ -1252,7 +1252,7 @@ function renderGenietHeader(
       font-family: inherit;
       transition: background-color ${transition.default};
     }
-    /* 캐시리뷰 — 흰 배경 + 연한 파란 보더 + 토스 블루 텍스트/아이콘. project mint 와
+    /* 캐시리뷰 — 흰 배경 + 연한 파란 보더 + 토스 블루 텍스트/아이콘. project teal 와
      * 구분되는 accent 컬러라 시멘틱 토큰 대신 hex 로 못박는다 (React AppBar 와 동일). */
     .nds-project-geniet__cta-pill[data-tone="outline"] {
       background: ${cv.surface.default};

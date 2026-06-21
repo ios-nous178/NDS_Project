@@ -39,7 +39,7 @@ import {
   cashwalkIndigo,
   cashwalkGreen,
   cashwalkBrown,
-  genietMint,
+  genietTeal,
   genietRed,
   genietYellow,
   genietBlue,
@@ -372,7 +372,7 @@ export const dongneSanchaekPreset = cashwalkPreset;
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 geniet.css 가 var 를 민트 톤으로
  * redefine 하므로 자동 지니어트 색상. 별도 색상 alias 만 추가:
- *   - `bg-geniet-neutral-*` · `bg-mint-*` 같은 프로젝트 atomic
+ *   - `bg-geniet-neutral-*` · `bg-teal-*` 같은 프로젝트 atomic
  * Typography / radius(곡률 xl=18 · 2xl=23 포함) / shadow 는 지니어트 가이드 매핑.
  */
 export const genietPreset = {
@@ -386,7 +386,7 @@ export const genietPreset = {
         "geniet-yellow": objectToPx(genietYellow),
         "geniet-blue": objectToPx(genietBlue),
         "geniet-green": objectToPx(genietGreen),
-        mint: objectToPx(genietMint),
+        teal: objectToPx(genietTeal),
         purple: objectToPx(genietPurple),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — geniet.css 가 자동 redefine

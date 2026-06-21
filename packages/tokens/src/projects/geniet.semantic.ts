@@ -10,8 +10,8 @@
  * SSOT: Figma 지니어트 Library / Semantic Color (3009:2)
  *   https://www.figma.com/design/0LLw2nSq9AUhXww7pWFRlm/?node-id=3009-2
  *
- * 핵심: 프로젝트 액션 색 = mint/600 (#00A8AC), hover mint/700, pressed mint/800.
- *       (구버전의 mint/500 #48C2C5 primary 에서 한 단계 깊어짐)
+ * 핵심: 프로젝트 액션 색 = teal/600 (#00A8AC), hover teal/700, pressed teal/800.
+ *       (구버전의 teal/500 #48C2C5 primary 에서 한 단계 깊어짐)
  */
 
 import { ref } from "../ref.js";
@@ -25,8 +25,8 @@ export const genietSemantic = {
     },
     section: { default: ref("color.gray.100") }, // #F5F5F5
     brand: {
-      default: ref("color.mint.600"), // #00A8AC
-      subtle: ref("color.mint.50"), // #F2FAFA
+      default: ref("color.teal.600"), // #00A8AC
+      subtle: ref("color.teal.50"), // #F2FAFA
     },
     inverse: { default: ref("color.neutral.black") }, // #111111
     status: {
@@ -46,8 +46,8 @@ export const genietSemantic = {
     disabled: { default: ref("color.gray.400") }, // #CCCCCC
     inverse: { default: ref("color.neutral.white") }, // #FFFFFF
     brand: {
-      default: ref("color.mint.600"), // #00A8AC
-      strong: ref("color.mint.700"), // #008286
+      default: ref("color.teal.600"), // #00A8AC
+      strong: ref("color.teal.700"), // #008286
     },
     status: {
       success: ref("color.green.600"), // #18B264
@@ -57,22 +57,22 @@ export const genietSemantic = {
     },
   },
   // Button — SSOT: Figma 지니어트 Library / Semantic Color (3009:2).
-  // Secondary 는 옅은 mint subtle (다른 프로젝트 soft secondary 와 동일 패턴).
+  // Secondary 는 옅은 teal subtle (다른 프로젝트 soft secondary 와 동일 패턴).
   // 구버전의 dark-inverse(gray/900) 패턴은 폐기됨.
   buttonBg: {
-    default: ref("color.mint.600"), // #00A8AC — Solid/Primary Default
-    hover: ref("color.mint.700"), // #008286 — Solid/Primary Hover
-    pressed: ref("color.mint.800"), // #005A5C — Solid/Primary Pressed
+    default: ref("color.teal.600"), // #00A8AC — Solid/Primary Default
+    hover: ref("color.teal.700"), // #008286 — Solid/Primary Hover
+    pressed: ref("color.teal.800"), // #005A5C — Solid/Primary Pressed
     disabled: ref("color.gray.300"), // #DDDDDD — 모든 Solid Disabled
     secondary: {
-      // Solid/Secondary — 옅은 mint subtle
-      default: ref("color.mint.50"), // #F2FAFA
-      hover: ref("color.mint.100"), // #ECF5F9
+      // Solid/Secondary — 옅은 teal subtle
+      default: ref("color.teal.50"), // #F2FAFA
+      hover: ref("color.teal.100"), // #ECF5F9
       disabled: ref("color.gray.200"), // #ECECEC
     },
     outlined: {
       default: ref("color.neutral.white"), // #FFFFFF
-      hover: ref("color.mint.50"), // #F2FAFA — outlined hover bg
+      hover: ref("color.teal.50"), // #F2FAFA — outlined hover bg
       disabled: ref("color.neutral.white"), // #FFFFFF
     },
     neutral: {
@@ -84,10 +84,10 @@ export const genietSemantic = {
   },
   buttonText: {
     default: ref("color.neutral.white"), // #FFFFFF — Solid/Primary 텍스트
-    brand: ref("color.mint.600"), // #00A8AC — Outlined/Primary 텍스트
-    // Solid/Secondary 텍스트 — 옅은 mint 배경 위 brand mint 텍스트.
+    brand: ref("color.teal.600"), // #00A8AC — Outlined/Primary 텍스트
+    // Solid/Secondary 텍스트 — 옅은 teal 배경 위 brand teal 텍스트.
     secondary: {
-      default: ref("color.mint.600"), // #00A8AC
+      default: ref("color.teal.600"), // #00A8AC
       disabled: ref("color.gray.500"), // #999999
     },
     neutral: ref("color.gray.700"), // #555555 — Outlined/Weak Neutral text
@@ -97,8 +97,8 @@ export const genietSemantic = {
   },
   buttonBorder: {
     outlined: {
-      default: ref("color.mint.600"), // #00A8AC — Outlined/Primary border
-      hover: ref("color.mint.700"), // #008286
+      default: ref("color.teal.600"), // #00A8AC — Outlined/Primary border
+      hover: ref("color.teal.700"), // #008286
       disabled: ref("color.gray.300"), // #DDDDDD
     },
     neutral: {
@@ -111,7 +111,7 @@ export const genietSemantic = {
     normal: { default: ref("color.gray.700") }, // #555555
     disabled: { default: ref("color.gray.400") }, // #CCCCCC
     inverse: { default: ref("color.neutral.white") }, // #FFFFFF
-    brand: { default: ref("color.mint.600") }, // #00A8AC
+    brand: { default: ref("color.teal.600") }, // #00A8AC
     status: {
       success: ref("color.green.600"), // #18B264
       error: ref("color.red.600"), // #FF3258
@@ -122,9 +122,9 @@ export const genietSemantic = {
     normal: { default: ref("color.gray.200") }, // #ECECEC
     strong: { default: ref("color.gray.500") }, // #999999
     subtle: { default: ref("color.gray.100") }, // #F5F5F5
-    focus: { default: ref("color.mint.600") }, // #00A8AC
+    focus: { default: ref("color.teal.600") }, // #00A8AC
     brand: {
-      default: ref("color.mint.600"), // #00A8AC
+      default: ref("color.teal.600"), // #00A8AC
       disabled: ref("color.gray.300"), // #DDDDDD
     },
     disabled: { default: ref("color.gray.200") }, // #ECECEC
@@ -135,9 +135,9 @@ export const genietSemantic = {
   },
   fill: {
     brand: {
-      default: ref("color.mint.600"), // #00A8AC
-      hover: ref("color.mint.700"), // #008286
-      pressed: ref("color.mint.800"), // #005A5C
+      default: ref("color.teal.600"), // #00A8AC
+      hover: ref("color.teal.700"), // #008286
+      pressed: ref("color.teal.800"), // #005A5C
       disabled: ref("color.gray.300"), // #DDDDDD
     },
     neutral: {
@@ -156,12 +156,12 @@ export const genietSemantic = {
     bgDisabled: ref("color.gray.50"), // #FAFAFA
     borderDefault: ref("color.gray.300"), // #DDDDDD
     borderHover: ref("color.gray.400"), // #CCCCCC
-    borderFocus: ref("color.mint.600"), // #00A8AC — typing state border
+    borderFocus: ref("color.teal.600"), // #00A8AC — typing state border
     borderError: ref("color.red.600"), // #FF3258
     borderDisabled: ref("color.gray.300"), // #DDDDDD
     placeholder: ref("color.gray.500"), // #999999
     helpertextDefault: ref("color.gray.500"), // #999999
-    helpertextSuccess: ref("color.mint.600"), // #00A8AC
+    helpertextSuccess: ref("color.teal.600"), // #00A8AC
     helpertextError: ref("color.red.600"), // #FF3258
     helpertextDisabled: ref("color.gray.400"), // #CCCCCC
   },

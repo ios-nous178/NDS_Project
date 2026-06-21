@@ -135,7 +135,7 @@ const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet>> = {
     },
     // Primary Soft — "project-tinted soft" 버튼.
     // bg = surface.brandSubtle (프로젝트별 옅은 project 톤) + text = textRole.brand (project 색).
-    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Indigo subtle, Geniet=Mint subtle, CashwalkBiz=Yellow/100.
+    // 모든 프로젝트에서 일관: NudgeEAP=Blue/50, Trost=Indigo subtle, Geniet=Teal subtle, CashwalkBiz=Yellow/100.
     // (이전 statusInfo bg + project text 조합은 CashwalkBiz 처럼 project/info hue 가 다른 프로젝트에서
     //  파랑 bg + 노랑 text 같은 부조화가 발생.)
     soft: {

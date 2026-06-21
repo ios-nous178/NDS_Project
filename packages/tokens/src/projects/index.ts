@@ -25,7 +25,7 @@ export type { TrostSemanticTokens } from "./trost.js";
 
 export {
   genietTheme,
-  genietMint,
+  genietTeal,
   genietRed,
   genietYellow,
   genietBlue,

@@ -724,7 +724,7 @@ export function findToken(args: { group?: string; query?: string; project?: stri
   const project = requestedProject ? (canonicalProjectSlug(requestedProject) ?? requestedProject) : undefined;
   // project 필터:
   //  - 미지정 → base(shared, projects 필드 없음)만. 프로젝트 고유 토큰이 크로스프로젝트로
-  //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: mint 안 보임).
+  //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: teal 안 보임).
   //  - 지정 → shared + 그 프로젝트 고유 토큰.
   const inProject = (t: Manifest["tokens"][number]) =>
     project ? !t.projects || t.projects.includes(project) : !t.projects;
@@ -958,7 +958,7 @@ function isPolicyRadiusOrShapeToken(token: Manifest["tokens"][number]) {
 }
 
 function isRawPaletteToken(token: Manifest["tokens"][number]) {
-  // base(nudge) 팔레트는 기존 동작 유지. 추가로 프로젝트 고유 팔레트(--color-mint-500 등,
+  // base(nudge) 팔레트는 기존 동작 유지. 추가로 프로젝트 고유 팔레트(--color-teal-500 등,
   // projects 필드가 붙은 color 스케일 토큰)도 deprioritize 해 시멘틱 우선 규칙을 지킨다.
   return (
     /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/.test(token.name) ||
