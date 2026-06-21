@@ -102,19 +102,7 @@ export const genietTheme: ProjectTheme = {
       modal: 24, // Modal·Bottom Sheet·Drawer
       section: 32, // 페이지 Section·큰 영역 padding (신규)
     },
-    // Radius/Shape — SSOT: Figma 지니어트 Library / Radius (3134:2).
-    // Shape 시멘틱 스케일(none~full)로 표준화 — 구 Geniet 고유 곡률(xs:4·sm:6·xl:18·2xl:23) 폐기.
-    // (DS 컨벤션상 full 키는 pill 로 노출.)
-    radius: {
-      none: 0, // Shape/None — 0px
-      xs: 2, // Shape/XS — Pill·Toggle
-      sm: 4, // Shape/SM — Tag·Chip·Thumbnail
-      md: 8, // Shape/MD — Button·Input·Toast
-      lg: 12, // Shape/LG — Card·Section
-      xl: 16, // Shape/XL — Modal·Sheet
-      "2xl": 24, // Shape/2XL — Hero·Banner
-      pill: 9999, // Shape/Full — Avatar·FAB·Pill
-    },
+    // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
     // Section/Container 가이드(1385:13): PC max-width 1280 · side padding 40, Mobile 16.
     // (side padding 40 = base desktop.minMargin, mobile margin 16 = base — contentWidth만 1200→1280.)
     grid: {
@@ -162,7 +150,7 @@ export const genietTheme: ProjectTheme = {
     // Radius 가이드: Modal = Shape/XL = 16px. (그림자는 elevation.shadow[3] = E3 Overlay)
     modal: { radius: 16 },
     // Badge&Chip 가이드(3058:84): Chip Selected = Teal/50 bg + Teal/600 text (옅은 필터 칩).
-    // (Pill 형태는 컴포넌트 기본 radius.pill. 구 teal/600 solid+흰 텍스트는 과교정이라 환원.)
+    // (Pill 형태는 컴포넌트 기본 radius.full. 구 teal/600 solid+흰 텍스트는 과교정이라 환원.)
     chip: {
       selectedBackground: genietTeal[50], // #F2FAFA
       selectedText: genietTeal[600], // #00A8AC

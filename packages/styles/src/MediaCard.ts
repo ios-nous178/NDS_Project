@@ -27,7 +27,7 @@ export const mediaCardStyles = `
     flex-direction: column;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     overflow: hidden;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
@@ -73,7 +73,7 @@ export const mediaCardStyles = `
     padding: ${spacing[2]}px ${spacing[6]}px;
     background: rgba(0, 0, 0, 0.6);
     color: #fff;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.semibold};

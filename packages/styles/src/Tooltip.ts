@@ -1,5 +1,13 @@
 /* Auto-generated from packages/react/src/Tooltip.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, fontWeight, radius, spacing, typeScale, zIndex } from "@nudge-design/tokens";
+import {
+  cv,
+  fontFamily,
+  fontWeight,
+  radius,
+  spacing,
+  typeScale,
+  zIndex,
+} from "@nudge-design/tokens";
 
 const TT_CLASS = "nds-tooltip";
 const TT_TRIGGER_CLASS = `${TT_CLASS}__trigger`;
@@ -29,7 +37,7 @@ export const tooltipStyles = `
     font-size: var(--nds-tooltip-font-size, ${typeScale.caption1.fontSize}px);
     font-weight: ${fontWeight.medium};
     line-height: var(--nds-tooltip-line-height, ${typeScale.caption1.lineHeight}px);
-    border-radius: var(--nds-tooltip-radius, ${radius.md}px);
+    border-radius: var(--nds-tooltip-radius, ${radius[8]}px);
     pointer-events: none;
     max-width: 240px;
     white-space: normal;

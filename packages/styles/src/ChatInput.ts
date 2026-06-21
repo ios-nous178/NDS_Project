@@ -63,7 +63,7 @@ export const chatInputStyles = `
     align-items: flex-end;
     gap: var(--semantic-gap-default);
     background: ${cv.surface.section};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     padding: var(--semantic-inset-chip);
   }
 

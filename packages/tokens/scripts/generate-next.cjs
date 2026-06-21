@@ -183,7 +183,30 @@ for (const { mode, theme } of BRANDS) {
   Object.keys(perMode[mode]).forEach((n) => allNames.add(n));
   primitives[mode] = buildPrims(theme.palette);
 }
-for (const name of [...allNames].sort()) {
+// ── Figma 변수 패널 순서 = 변수 생성 순서. 알파벳(.sort) 대신 논리 순서로 정렬해
+//    패널이 뒤죽박죽 아닌 가이드 순서로 보이게 한다. ──
+//   Semantic: SemanticColorGuide 카테고리 순서(bg→text→icon→border→fill→button*→input→cta),
+//             카테고리 내부는 base 시멘틱 트리 순서.
+//   Dimension: dimMap 정의 순서(spacing→gap→inset→radius→border-width→stroke→size→grid→typo).
+const SEM_CAT_ORDER = [
+  "bg", "text", "icon", "border", "fill",
+  "button-bg", "button-text", "button-border", "input", "confirm-cta",
+];
+const orderByBase = (names, baseKeys, catOrder) => {
+  const sub = new Map(baseKeys.map((n, i) => [n, i]));
+  const catRank = (n) => {
+    if (!catOrder) return 0;
+    const i = catOrder.indexOf(n.split("/")[0]);
+    return i < 0 ? catOrder.length : i;
+  };
+  return [...names].sort(
+    (a, b) =>
+      catRank(a) - catRank(b) ||
+      (sub.has(a) ? sub.get(a) : 1e9) - (sub.has(b) ? sub.get(b) : 1e9) ||
+      a.localeCompare(b),
+  );
+};
+for (const name of orderByBase(allNames, Object.keys(perMode["nudge-eap"]), SEM_CAT_ORDER)) {
   const valuesByMode = {};
   for (const { mode } of BRANDS) {
     const leaf = perMode[mode][name];
@@ -229,7 +252,7 @@ for (const { mode, theme } of BRANDS) dimByMode[mode] = dimMap(mode === "nudge-e
 const dimNames = new Set();
 for (const m of Object.values(dimByMode)) for (const n of Object.keys(m)) dimNames.add(n);
 const dimVariables = {};
-for (const name of [...dimNames].sort()) {
+for (const name of orderByBase(dimNames, Object.keys(dimByMode["nudge-eap"]))) {
   const vbm = {};
   for (const { mode } of BRANDS)
     if (dimByMode[mode][name] != null) vbm[mode] = { value: dimByMode[mode][name] };
@@ -237,6 +260,27 @@ for (const name of [...dimNames].sort()) {
 }
 // typeScale 키 목록(Text Style 생성용) — 본문 weight/family 는 보류, size/lh/ls 만 변수 바인딩.
 const textStyleKeys = Object.keys(typeScale).map(tsKey);
+
+// ─── elevation (box-shadow per brand=mode) — Figma Effect Style 소스. 문자열 그대로 두고
+//     플러그인이 파싱해 DropShadow 효과 + Effect Style 로 만든다(변수 타입에 그림자가 없으므로). ───
+const { shadow: baseShadow } = require("../dist/elevation");
+const elevByMode = {};
+for (const { mode, theme } of BRANDS)
+  elevByMode[mode] = {
+    ...baseShadow,
+    ...((mode !== "nudge-eap" && theme.elevation && theme.elevation.shadow) || {}),
+  };
+const elevNames = new Set();
+for (const m of Object.values(elevByMode)) for (const n of Object.keys(m)) elevNames.add(n);
+const elevVariables = {};
+for (const name of [...elevNames].sort((a, b) =>
+  String(a).localeCompare(String(b), undefined, { numeric: true }),
+)) {
+  const vbm = {};
+  for (const { mode } of BRANDS)
+    if (elevByMode[mode][name] != null) vbm[mode] = { value: elevByMode[mode][name] };
+  elevVariables[name] = { valuesByMode: vbm };
+}
 
 const figma = {
   $comment:
@@ -247,6 +291,7 @@ const figma = {
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
   dimensions: { modes: BRANDS.map((b) => b.mode), variables: dimVariables, textStyleKeys },
+  elevation: { modes: BRANDS.map((b) => b.mode), variables: elevVariables },
   meta: tokenMeta,
 };
 fs.writeFileSync(path.join(nextDir, "figma-variables.json"), JSON.stringify(figma, null, 2) + "\n");

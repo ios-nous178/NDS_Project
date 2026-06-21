@@ -21,7 +21,7 @@ export const noticeAlertStyles = `
     min-height: 52px;
     padding: var(--semantic-inset-card);
     /* radius 슬롯 — 프로젝트(지니어트·트로스트 = Shape/MD 8)가 override. 기본 lg(12). */
-    border-radius: var(--nds-notice-alert-radius, ${radius.lg}px);
+    border-radius: var(--nds-notice-alert-radius, ${radius[12]}px);
     box-sizing: border-box;
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;

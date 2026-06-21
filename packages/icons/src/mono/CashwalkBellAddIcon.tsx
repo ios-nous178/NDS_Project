@@ -1,0 +1,38 @@
+import React from "react";
+
+export interface CashwalkBellAddIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkBellAddIcon = React.forwardRef<SVGSVGElement, CashwalkBellAddIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <g clipPath="url(#clip0_30_377)">
+<g clipPath="url(#clip1_30_377)">
+<path d="M14.975 17V18C14.975 19.6569 13.6319 21 11.975 21C10.3181 21 8.97498 19.6569 8.97498 18V17M18.975 11.4998V13.722C18.975 13.8998 19.0455 14.0708 19.1715 14.196L19.5607 14.586C19.68 14.7045 19.74 14.7653 19.7872 14.8313C19.8772 14.9565 19.9365 15.1005 19.9612 15.2528C19.9747 15.333 19.9747 15.417 19.9747 15.5858C19.9747 15.9713 19.9747 16.164 19.9222 16.32C19.8225 16.6155 19.5907 16.848 19.2952 16.9478C19.14 17.0003 18.948 17.0003 18.5655 17.0003L14.975 17H8.97498L5.38423 17.0003C5.00173 17.0003 4.81048 17.0003 4.65523 16.9478C4.35973 16.848 4.12723 16.6155 4.02748 16.32C3.97498 16.164 3.97498 15.9713 3.97498 15.5858C3.97498 15.417 3.97498 15.333 3.98773 15.2528C4.01323 15.1005 4.07248 14.9565 4.16248 14.8313C4.20973 14.7653 4.26973 14.7053 4.38898 14.586L4.77823 14.196C4.90423 14.0708 4.97473 13.9005 4.97473 13.722V9.99975C4.97473 6.13425 8.10898 3 11.9752 3C12.7545 3 13.5022 3.13275 14.2027 3.36825" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M17.475 3.375V9.375" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+<path d="M20.475 6.375H14.475" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_30_377">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+<clipPath id="clip1_30_377">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+    </svg>
+  )
+);
+
+CashwalkBellAddIcon.displayName = "CashwalkBellAddIcon";

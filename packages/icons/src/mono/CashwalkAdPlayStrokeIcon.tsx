@@ -1,0 +1,25 @@
+import React from "react";
+
+export interface CashwalkAdPlayStrokeIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkAdPlayStrokeIcon = React.forwardRef<SVGSVGElement, CashwalkAdPlayStrokeIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M18.0364 10.7998C18.8364 11.3998 18.8364 12.5998 18.0364 13.1998L8.94544 20.018C7.95659 20.7596 6.54544 20.0541 6.54544 18.818L6.54544 5.18164C6.54544 3.94557 7.95659 3.24 8.94544 3.98164L18.0364 10.7998Z" stroke="white" strokeWidth="1.5"/>
+<path d="M7 19V5C7 4.17595 7.94076 3.70557 8.6 4.2L17.9333 11.2C18.4667 11.6 18.4667 12.4 17.9333 12.8L8.6 19.8C7.94076 20.2944 7 19.824 7 19Z" fill="white" fill-opacity="0.4"/>
+    </svg>
+  )
+);
+
+CashwalkAdPlayStrokeIcon.displayName = "CashwalkAdPlayStrokeIcon";

@@ -26,7 +26,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const svgRoot = path.join(root, "packages/icons/svg");
 const categories = ["mono", "multicolor"];
 
-const PROJECTS = ["cashwalk-biz", "nudge-eap", "geniet", "trost", "runmile"];
+const PROJECTS = ["cashwalk-biz", "cashwalk", "nudge-eap", "geniet", "trost", "runmile"];
 // segment 단위(하이픈으로 분리된 토막) 철자 denylist → 권장어
 const DENY_SEGMENTS = { alram: "alarm", img: "image" };
 

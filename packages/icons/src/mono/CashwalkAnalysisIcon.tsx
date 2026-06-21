@@ -1,0 +1,31 @@
+import React from "react";
+
+export interface CashwalkAnalysisIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkAnalysisIcon = React.forwardRef<SVGSVGElement, CashwalkAnalysisIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M6.30005 9.12495L10.1 5.32495" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="round"/>
+<path d="M13.9 4.84998L17.7 6.74998" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M4.4 8.65003C4.9244 8.65003 5.3994 8.86283 5.7433 9.20673C6.0872 9.55063 6.3 10.0256 6.3 10.55C6.3 11.0744 6.0872 11.5494 5.7433 11.8933C5.56709 12.07 5.35772 12.2102 5.1272 12.3057C4.89667 12.4012 4.64954 12.4503 4.4 12.45C4.15046 12.4503 3.90333 12.4012 3.6728 12.3057C3.44229 12.2102 3.23291 12.07 3.0567 11.8933C2.88 11.7171 2.73987 11.5077 2.64432 11.2773C2.54879 11.0467 2.49974 10.7996 2.5 10.55C2.5 10.0256 2.7128 9.55063 3.0567 9.20673C3.23291 9.03003 3.44229 8.88989 3.6728 8.79435C3.90333 8.69882 4.15046 8.64977 4.4 8.65003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M6.96092 15.3V21H3.24353V15.3H6.96092Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M13.8484 10.55V21H10.131V10.55H13.8484Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M20.7359 13.4V21H17.0186V13.4H20.7359Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M12 2C12.5244 2 12.9994 2.2128 13.3433 2.5567C13.6872 2.9006 13.9 3.3756 13.9 3.9C13.9 4.4244 13.6872 4.8994 13.3433 5.2433C13.1671 5.42 12.9577 5.56014 12.7272 5.65568C12.4966 5.75121 12.2495 5.80026 12 5.8C11.7504 5.80026 11.5033 5.75121 11.2728 5.65568C11.0423 5.56014 10.8329 5.42 10.6567 5.2433C10.48 5.06709 10.3399 4.85772 10.2443 4.6272C10.1488 4.39667 10.0997 4.14954 10.1 3.9C10.1 3.3756 10.3128 2.9006 10.6567 2.5567C10.8329 2.38 11.0423 2.23987 11.2728 2.14432C11.5033 2.04879 11.7504 1.99974 12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M19.6 5.80005C20.1244 5.80005 20.5994 6.01285 20.9433 6.35675C21.2872 6.70065 21.5 7.17565 21.5 7.70005C21.5 8.22445 21.2872 8.69945 20.9433 9.04335C20.767 9.22005 20.5576 9.36018 20.3272 9.45573C20.0966 9.55126 19.8495 9.60033 19.6 9.60005C19.3504 9.60033 19.1033 9.55126 18.8727 9.45573C18.6423 9.36018 18.4329 9.22005 18.2567 9.04335C18.08 8.86714 17.9398 8.65777 17.8443 8.42725C17.7488 8.19672 17.6997 7.94959 17.7 7.70005C17.7 7.17565 17.9128 6.70065 18.2567 6.35675C18.4329 6.18005 18.6423 6.03992 18.8727 5.94437C19.1033 5.84884 19.3504 5.79979 19.6 5.80005Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+);
+
+CashwalkAnalysisIcon.displayName = "CashwalkAnalysisIcon";

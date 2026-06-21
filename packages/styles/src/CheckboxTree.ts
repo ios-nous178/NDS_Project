@@ -43,7 +43,7 @@ export const checkboxTreeStyles = `
     min-height: ${sizing.input.default}px;
     padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     background: ${cv.surface.default};
     box-sizing: border-box;
   }
@@ -125,7 +125,7 @@ export const checkboxTreeStyles = `
     width: var(--nds-checkbox-size, 18px);
     height: var(--nds-checkbox-size, 18px);
     border: 1.5px solid ${cv.borderRole.normal};
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     background: ${cv.surface.default};
     color: ${cv.button.textDefault};
     transition: background-color ${transition.default}, border-color ${transition.default};

@@ -42,7 +42,7 @@ export const cardStyles = `
     padding: var(--nds-card-padding, var(--semantic-inset-card, 16px));
     font-family: ${fontFamily.web};
     box-sizing: border-box;
-    border-radius: var(--nds-card-radius, ${radius.lg}px);
+    border-radius: var(--nds-card-radius, ${radius[12]}px);
     background: var(--nds-card-background, ${cv.surface.default});
     overflow: hidden;
     transition: background-color ${transition.default}, box-shadow ${transition.default};
@@ -63,7 +63,7 @@ export const cardStyles = `
      data-platform 미지정이면 어떤 룰도 매칭 안 되므로 현행 렌더 유지. */
   :where(.${CARD_ROOT_CLASS}[data-platform="pc"]) {
     --nds-card-padding: ${spacing[28]}px;
-    --nds-card-radius: ${radius.xl}px;
+    --nds-card-radius: ${radius[16]}px;
     --nds-card-title-size: ${typeScale.headline4.fontSize}px;
     --nds-card-title-line: ${typeScale.headline4.lineHeight}px;
     --nds-card-subtitle-size: ${typeScale.body3.fontSize}px;

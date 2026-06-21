@@ -25,7 +25,7 @@ export const addButtonStyles = `
     padding: 0 ${spacing[16]}px;
     background: ${cv.surface.subtle};
     border: 1px dashed ${cv.borderRole.strong};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     color: ${cv.textRole.strong};
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body2.fontSize}px;

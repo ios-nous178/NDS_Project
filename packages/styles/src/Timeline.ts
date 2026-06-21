@@ -73,7 +73,7 @@ export const timelineStyles = `
   :where(.${TL_ITEM_CLASS}[data-mode="activity"] .${TL_DOT_CLASS}) {
     width: 16px;
     height: 16px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.section};
     color: ${cv.textRole.inverse};
     margin-top: ${spacing[2]}px;
@@ -196,7 +196,7 @@ export const timelineStyles = `
     display: inline-flex;
     align-items: center;
     padding: ${spacing[2]}px var(--semantic-inset-chip);
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     font-size: ${typeScale.caption2.fontSize}px;
     line-height: ${typeScale.caption2.lineHeight}px;
     font-weight: ${fontWeight.medium};

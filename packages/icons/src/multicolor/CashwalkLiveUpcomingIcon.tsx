@@ -1,0 +1,26 @@
+import React from "react";
+
+export interface CashwalkLiveUpcomingIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkLiveUpcomingIcon = React.forwardRef<SVGSVGElement, CashwalkLiveUpcomingIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M13.8794 5.37937L14.8713 4.17339C15.1249 3.86907 15.0798 3.4126 14.7755 3.16464C14.4711 2.91104 14.0147 2.95613 13.7667 3.26044L12.0197 5.37937H11.8788L10.2107 3.35061C9.95714 3.0463 9.5063 3.00121 9.20199 3.25481C8.89768 3.5084 8.85259 3.95924 9.10619 4.26355L10.0248 5.37937H6.02359C4.02301 5.37937 2.39999 7.00239 2.39999 9.00297V16.284C2.39999 18.2846 4.02301 19.9076 6.02359 19.9076H17.9764C19.977 19.9076 21.6 18.2846 21.6 16.284V9.00297C21.6 7.00239 19.977 5.37937 17.9764 5.37937H13.8794Z" fill="#FF9364"/>
+<path d="M6.73937 7.10046C5.33427 7.10046 4.20023 8.27323 4.20023 9.71706V15.5864C4.20023 17.0303 5.3398 18.203 6.73937 18.203H17.2611C18.6662 18.203 19.8002 17.0303 19.8002 15.5864V9.71706C19.8002 8.27323 18.6607 7.10046 17.2611 7.10046H6.73937Z" fill="#FF5910"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M14.8868 12.0632C15.3291 12.2843 15.3291 12.9154 14.8868 13.1365L10.8285 15.1657C10.4295 15.3652 9.96014 15.0751 9.96014 14.629V10.5707C9.96014 10.1246 10.4295 9.83455 10.8285 10.034L14.8868 12.0632Z" fill="white"/>
+    </svg>
+  )
+);
+
+CashwalkLiveUpcomingIcon.displayName = "CashwalkLiveUpcomingIcon";

@@ -8,7 +8,7 @@ sizeMatrix:
   gapBetweenSections: 16px (header ↔ tabs ↔ list) — gap-loose
   tabHeight: 32px (pill)
   tabPadding: 6px 12px
-  tabRadius: pill (height/2 = 16px) — radius.pill 토큰
+  tabRadius: pill (height/2 = 16px) — radius.full 토큰
   tabGap: 8px
   tabFontActive: Body3 14/20 Bold
   tabFontInactive: Body3 14/20 Medium

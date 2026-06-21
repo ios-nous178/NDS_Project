@@ -78,17 +78,7 @@ export const trostTheme: ProjectTheme = {
       button: 14, // 신규 — Inset/Button (S/M 버튼 좌우)
       section: 32, // 신규 — Inset/Section (페이지 섹션 외곽)
     },
-    // Semantic Radius (Figma 보더&레디우스 가이드 5179:108).
-    radius: {
-      none: 0,
-      sm: 4, // Badge·Tag
-      md: 6, // Input·Chip·Dropdown
-      lg: 8, // 기본 — Button·Card·ListItem
-      xl: 12, // 강조 카드·콘텐츠 박스
-      "2xl": 16, // Modal·Sheet
-      "3xl": 24, // BottomSheet·큰 모달
-      pill: 9999,
-    },
+    // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
     // Stroke Width (가이드 5179:108) — Hairline/Default 1 · Strong(focus) 1.5 · Bold(error/강조) 2.
     stroke: { hairline: 1, default: 1, strong: 1.5, bold: 2 },
     borderWidth: { hairline: 1, default: 1, strong: 1.5, bold: 2 },

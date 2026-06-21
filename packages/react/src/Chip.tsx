@@ -97,7 +97,7 @@ export const Chip: React.FC<ChipProps> = ({
     gap: "var(--semantic-gap-tight)",
     height: `var(--nds-chip-height, ${sizeTokens.height}px)`,
     padding: `${chipPadY} ${chipPadRight} ${chipPadY} ${chipPadX}`,
-    borderRadius: radius.pill,
+    borderRadius: radius.full,
     // 색(background/color/border)은 styles/src/Chip.ts 의 [data-variant][data-color] /
     // [data-selected] CSS 룰이 슬롯에 주입 — 여기서 인라인으로 박지 않는다.
     fontFamily: fontFamily.web,

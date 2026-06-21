@@ -54,7 +54,7 @@ export const dateRangeStyles = `
     min-height: var(--nds-datepicker-height, ${sizing.input.default}px);
     padding: 0 var(--nds-datepicker-padding-x, var(--semantic-inset-card));
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-datepicker-radius, ${radius.md}px);
+    border-radius: var(--nds-datepicker-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     cursor: pointer;
     /* Input Value — Input Typography 표준 value(15/22 · Regular). 트리거 텍스트 = 입력 값.
@@ -146,7 +146,7 @@ export const dateRangeStyles = `
     width: min(624px, calc(100vw - 32px));
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     padding: var(--semantic-inset-input);
@@ -169,7 +169,7 @@ export const dateRangeStyles = `
     width: 32px;
     height: 32px;
     border: none;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     background: transparent;
     cursor: pointer;
     color: ${cv.iconRole.strong};
@@ -283,7 +283,7 @@ export const dateRangeStyles = `
     height: 36px;
     border: none;
     background: transparent;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;

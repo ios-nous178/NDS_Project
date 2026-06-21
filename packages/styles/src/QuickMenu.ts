@@ -31,7 +31,7 @@ export const quickMenuStyles = `
     align-items: center;
     width: var(--nds-quickmenu-width, 120px);
     padding-top: ${spacing[20]}px;
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     background: ${cv.surface.default};
     box-shadow: var(--nds-quickmenu-shadow, ${shadow[2]});
     overflow: hidden;
@@ -100,7 +100,7 @@ export const quickMenuStyles = `
   :where(.${QM_ITEM_CLASS}:focus-visible) {
     outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
   }
 
   :where(.${QM_CIRCLE_CLASS}) {
@@ -109,7 +109,7 @@ export const quickMenuStyles = `
     justify-content: center;
     width: 60px;
     height: 60px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.fill.neutralSubtle};
     color: ${cv.iconRole.normal};
     flex-shrink: 0;

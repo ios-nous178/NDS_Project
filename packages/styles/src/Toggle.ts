@@ -42,7 +42,7 @@ export const toggleStyles = `
     position: relative;
     width: var(--nds-toggle-track-w, 44px);
     height: var(--nds-toggle-track-h, 24px);
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: var(--nds-toggle-track-bg, ${cv.borderRole.normal});
     transition: background-color 0.2s ease;
     flex-shrink: 0;
@@ -66,7 +66,7 @@ export const toggleStyles = `
     left: var(--nds-toggle-thumb-offset, 3px);
     width: var(--nds-toggle-thumb-size, 18px);
     height: var(--nds-toggle-thumb-size, 18px);
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     box-shadow: var(--nds-toggle-thumb-shadow, 0 1px 3px rgba(0, 0, 0, 0.15));
     transition: transform 0.2s ease;

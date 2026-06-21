@@ -947,7 +947,7 @@ function renderNudgeEAPHeader(
       font-size: ${typeScale.body1.fontSize}px;
       line-height: ${typeScale.body1.lineHeight}px;
       font-weight: ${fontWeight.bold};
-      border-radius: ${radius.md}px;
+      border-radius: ${radius[8]}px;
       text-decoration: none;
       border: 0;
       cursor: pointer;
@@ -965,7 +965,7 @@ function renderNudgeEAPHeader(
       line-height: ${typeScale.body1.lineHeight}px;
       font-weight: ${fontWeight.bold};
       border: 1px solid ${cv.borderRole.brand};
-      border-radius: ${radius.md}px;
+      border-radius: ${radius[8]}px;
       text-decoration: none;
       cursor: pointer;
       font-family: inherit;
@@ -1341,7 +1341,7 @@ function renderGenietHeader(
       align-items: center;
       flex: 1;
       height: 38px;
-      border-radius: ${radius.md}px;
+      border-radius: ${radius[8]}px;
       background: ${cv.surface.subtle};
       padding: 0 ${spacing[40]}px 0 ${spacing[12]}px;
       box-sizing: border-box;
@@ -1967,7 +1967,7 @@ function renderCashwalkBizHeader(
       font-weight: ${fontWeight.medium};
       color: ${cv.textRole.normal};
       text-decoration: none;
-      border-radius: ${radius.sm}px;
+      border-radius: ${radius[4]}px;
     }
     .nds-project-cashwalk-biz__menu-item[data-active="true"] {
       color: ${cv.textRole.strong};

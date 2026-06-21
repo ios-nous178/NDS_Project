@@ -126,25 +126,7 @@ export const cashwalkBizTheme: ProjectTheme = {
       h5: 8, // 16px Subtitle1 다음
       h6: 6, // 14px Subtitle2 다음 (캐포비 신규 슬롯)
     },
-    // Radius — Figma GridBorderRadiusGuide. 가이드는 raw px 키(0/2/4/...)만 사용하지만
-    // 명명 키(sm/md/lg/pill)도 base 와 동일하게 유지 → 컴포넌트가 어느 쪽 이름을 쓰든 작동.
-    radius: {
-      none: 0,
-      "0": 0,
-      "2": 2,
-      "4": 4,
-      "6": 6,
-      "8": 8,
-      "10": 10,
-      "12": 12,
-      "16": 16,
-      "24": 24,
-      "28": 28,
-      sm: 4,
-      md: 8,
-      lg: 12,
-      pill: 9999,
-    },
+    // radius 토큰 override 없음 — 숫자 단일 스케일(base: 2/4/8/10/12/16/20/24/full) 사용.
     // Border / Stroke — Figma GridBorderRadiusGuide. Thin(1.5px) 캐포비 추가.
     borderWidth: {
       none: 0,

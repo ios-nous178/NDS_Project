@@ -26,7 +26,7 @@ export const floatingCtaBannerStyles = `
     box-sizing: border-box;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.brand};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     box-shadow: ${shadow["2"]};
     cursor: pointer;
     font-family: ${fontFamily.web};

@@ -33,7 +33,7 @@ export const paginationStyles = `
     height: var(--nds-pagination-item-height, 32px);
     padding: 0 ${spacing[6]}px;
     border: var(--nds-pagination-item-border, none);
-    border-radius: var(--nds-pagination-item-radius, ${radius.md}px);
+    border-radius: var(--nds-pagination-item-radius, ${radius[8]}px);
     background: var(--nds-pagination-item-bg, transparent);
     color: var(--nds-pagination-item-color, ${cv.textRole.subtle});
     font-size: ${typeScale.body3.fontSize}px;

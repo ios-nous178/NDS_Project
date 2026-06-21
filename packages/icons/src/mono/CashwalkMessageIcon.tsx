@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface CashwalkMessageIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkMessageIcon = React.forwardRef<SVGSVGElement, CashwalkMessageIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path fillRule="evenodd" clipRule="evenodd" d="M7.5 3.5H16.5C18.984 3.5 21 5.508 21 7.98424V14.2694C21 16.7456 18.984 18.7536 16.5 18.7536H15.15C14.871 18.7536 14.601 18.8887 14.43 19.1138L13.08 20.9057C12.486 21.6981 11.514 21.6981 10.92 20.9057L9.57 19.1138C9.417 18.9157 9.093 18.7536 8.85 18.7536H7.5C5.016 18.7536 3 16.7456 3 14.2694V13.3689V7.98424C3 5.508 5.016 3.5 7.5 3.5ZM10.8631 11.1174C10.8631 11.743 11.3634 12.2548 12 12.2548C12.6366 12.2548 13.1368 11.743 13.1368 11.1174C13.1368 10.4919 12.6253 9.98003 12 9.98003C11.3747 9.98003 10.8631 10.4919 10.8631 11.1174ZM8.02103 12.2548C7.3844 12.2548 6.88419 11.743 6.88419 11.1174C6.88419 10.4919 7.39577 9.98003 8.02103 9.98003C8.64629 9.98003 9.15787 10.4919 9.15787 11.1174C9.15787 11.743 8.65766 12.2548 8.02103 12.2548ZM14.8421 11.1174C14.8421 11.743 15.3423 12.2548 15.9789 12.2548C16.6156 12.2548 17.1158 11.743 17.1158 11.1174C17.1158 10.4919 16.6042 9.98003 15.9789 9.98003C15.3537 9.98003 14.8421 10.4919 14.8421 11.1174Z" fill="currentColor"/>
+    </svg>
+  )
+);
+
+CashwalkMessageIcon.displayName = "CashwalkMessageIcon";

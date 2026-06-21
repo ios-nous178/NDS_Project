@@ -60,4 +60,15 @@ export const cashwalkTheme: ProjectTheme = {
     brown: cashwalkBrown,
   },
   semantic: cashwalkSemantic,
+  // Elevation — Figma 캐시워크 Library / Elevation (67:56). 4단계 Effect Style.
+  //   E1 Card y1·blur3·8% / E2 Dropdown y2·blur8·10% / E3 Popover y6·blur16·12% / E4 Modal y12·blur32·16%.
+  elevation: {
+    shadow: {
+      "0": "none", // E0 None — 기본 본문·플랫 카드
+      "1": "0px 1px 3px rgba(0, 0, 0, 0.08)", // E1 — Card·기본 카드
+      "2": "0px 2px 8px rgba(0, 0, 0, 0.1)", // E2 — Dropdown
+      "3": "0px 6px 16px rgba(0, 0, 0, 0.12)", // E3 — Popover
+      "4": "0px 12px 32px rgba(0, 0, 0, 0.16)", // E4 — Modal·Dialog
+    },
+  },
 };

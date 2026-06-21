@@ -32,7 +32,7 @@ export const calendarStyles = `
     color: ${cv.textRole.normal};
     background: var(--nds-calendar-bg, ${cv.surface.default});
     padding: var(--nds-calendar-padding, var(--semantic-inset-card));
-    border-radius: var(--nds-calendar-radius, ${radius.lg}px);
+    border-radius: var(--nds-calendar-radius, ${radius[12]}px);
     box-sizing: border-box;
   }
 
@@ -58,7 +58,7 @@ export const calendarStyles = `
   :where(.${CL_NAV_BTN_CLASS}) {
     width: 32px;
     height: 32px;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     border: none;
     background: transparent;
     color: ${cv.textRole.normal};
@@ -111,7 +111,7 @@ export const calendarStyles = `
     min-height: 36px;
     border: none;
     background: transparent;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     color: ${cv.textRole.normal};
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;

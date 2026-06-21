@@ -275,15 +275,19 @@ inset:
   card-large: 20px # 큰 카드
   modal: 24px # Modal · 통계 박스
 
-# ── Rounded / Radius (Policy Scale) ────────────────────────
-# 공개 export는 승인된 UI radius 세트로 제한한다.
-# 예외가 필요하면 ad-hoc radius 토큰을 추가하지 말고 컴포넌트 prop/CSS var로 처리한다.
+# ── Rounded / Radius (Policy Scale · 숫자 체계) ─────────────
+# 캐시워크 가이드 Border Radius 세트로 통일 (t셔츠 sm/md/lg/xl 폐기 → 숫자 px).
+# 프로젝트별 radius 차이는 radius 토큰이 아니라 컴포넌트 슬롯(--nds-{c}-radius)으로 처리한다.
 rounded:
-  sm: 4px # 소형 버튼·칩 모서리
-  md: 8px # 기본 카드·컨테이너 (가장 많이 사용)
-  lg: 12px # 중형 카드·패널
-  xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Figma Radius/2xl · 트로스트 Card PC·Section Container)
-  pill: 9999px # 칩·토글·원형 요소
+  2: 2px # 미세 모서리 (Badge·Tag)
+  4: 4px # 소형 버튼·칩 (구 sm)
+  8: 8px # 기본 카드·컨테이너 — 가장 많이 사용 (구 md)
+  10: 10px # 입력·드롭다운
+  12: 12px # 중형 카드·패널 (구 lg)
+  16: 16px # 대형 카드(PC)·콘텐츠 패널 (구 xl)
+  20: 20px # 강조 카드·시트
+  24: 24px # 큰 모달·바텀시트
+  full: 9999px # 칩·토글·원형 요소 (구 pill)
 
 # ── Border Width (Primitive Scale) ─────────────────────────
 # Figma · BorderGuide · 6 Variables · Primitive / Semantic Stroke

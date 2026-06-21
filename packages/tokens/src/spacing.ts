@@ -51,11 +51,15 @@ export const inset = {
 } as const;
 
 export const radius = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  pill: 9999,
+  2: 2,
+  4: 4,
+  8: 8,
+  10: 10,
+  12: 12,
+  16: 16,
+  20: 20,
+  24: 24,
+  full: 9999,
 } as const;
 
 export const borderWidth = {

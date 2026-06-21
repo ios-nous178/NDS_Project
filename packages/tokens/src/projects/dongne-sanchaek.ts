@@ -19,4 +19,5 @@ export const dongneSanchaekTheme: ProjectTheme = {
   actionsLayout: "end",
   palette: cashwalkTheme.palette, // cashwalk 와 동일 팔레트(indigo=accent 포함)
   semantic: dongneSanchaekSemantic,
+  elevation: cashwalkTheme.elevation, // cashwalk elevation(4단계) 상속
 };

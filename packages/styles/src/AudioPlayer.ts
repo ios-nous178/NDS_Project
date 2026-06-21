@@ -31,7 +31,7 @@ export const audioPlayerStyles = `
     padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -70,7 +70,7 @@ export const audioPlayerStyles = `
     left: 0;
     right: 0;
     height: 4px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.disabled};
   }
 
@@ -78,7 +78,7 @@ export const audioPlayerStyles = `
     position: absolute;
     left: 0;
     height: 4px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.brand};
     pointer-events: none;
     transition: width ${transition.default};
@@ -100,7 +100,7 @@ export const audioPlayerStyles = `
     -webkit-appearance: none;
     width: 14px;
     height: 14px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.brand};
     border: none;
     cursor: pointer;
@@ -109,7 +109,7 @@ export const audioPlayerStyles = `
   :where(.${AP_INPUT_CLASS})::-moz-range-thumb {
     width: 14px;
     height: 14px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.brand};
     border: none;
     cursor: pointer;
@@ -143,7 +143,7 @@ export const audioPlayerStyles = `
     justify-content: center;
     width: 40px;
     height: 40px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     /* skip 버튼은 보조 컨트롤 — play(프로젝트)보다 디엠퍼사이즈. iconRole.strong(거의 검정)은 외곽선이 과해 normal 로. */
     color: ${cv.iconRole.normal};
     cursor: pointer;
@@ -161,7 +161,7 @@ export const audioPlayerStyles = `
     justify-content: center;
     width: 56px;
     height: 56px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.brand};
     color: ${cv.button.textDefault};
     cursor: pointer;

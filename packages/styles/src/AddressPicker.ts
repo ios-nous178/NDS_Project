@@ -45,7 +45,7 @@ export const apStyles = `
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
     /* Input Value — Input Typography 표준 value(15/22 · Regular). */
@@ -68,7 +68,7 @@ export const apStyles = `
     margin: 0;
     padding: 0;
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     overflow: hidden;
     max-height: 240px;
     overflow-y: auto;
@@ -101,7 +101,7 @@ export const apStyles = `
     color: ${cv.textRole.subtle};
     text-align: center;
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     font-size: ${typeScale.body3.fontSize}px;
   }
 
@@ -111,7 +111,7 @@ export const apStyles = `
     gap: var(--semantic-gap-tight);
     padding: var(--semantic-inset-input);
     background: ${cv.surface.section};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
   }
 
   :where(.${AS_DETAIL_CLASS}) > strong {
@@ -123,7 +123,7 @@ export const apStyles = `
     height: 40px;
     padding: 0 var(--semantic-inset-input);
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     background: ${cv.surface.default};
     /* Input Value — Input Typography 표준 value(15/22 · Regular). */
     font: ${cv.inputTypography.value.font};

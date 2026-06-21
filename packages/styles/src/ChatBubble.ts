@@ -29,7 +29,7 @@ export const chatBubbleStyles = `
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.section};
     overflow: hidden;
     display: inline-flex;
@@ -77,7 +77,7 @@ export const chatBubbleStyles = `
     line-height: ${typeScale.body3.lineHeight}px;
     word-break: break-word;
     white-space: pre-wrap;
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
   }
 
   :where(.${CB_ROW_CLASS}[data-role="me"]) .${CB_BUBBLE_CLASS} {
@@ -87,26 +87,26 @@ export const chatBubbleStyles = `
 
   /* group corners — them */
   :where(.${CB_ROW_CLASS}[data-role="them"][data-group="first"]) .${CB_BUBBLE_CLASS} {
-    border-bottom-left-radius: ${radius.sm}px;
+    border-bottom-left-radius: ${radius[4]}px;
   }
   :where(.${CB_ROW_CLASS}[data-role="them"][data-group="middle"]) .${CB_BUBBLE_CLASS} {
-    border-top-left-radius: ${radius.sm}px;
-    border-bottom-left-radius: ${radius.sm}px;
+    border-top-left-radius: ${radius[4]}px;
+    border-bottom-left-radius: ${radius[4]}px;
   }
   :where(.${CB_ROW_CLASS}[data-role="them"][data-group="last"]) .${CB_BUBBLE_CLASS} {
-    border-top-left-radius: ${radius.sm}px;
+    border-top-left-radius: ${radius[4]}px;
   }
 
   /* group corners — me */
   :where(.${CB_ROW_CLASS}[data-role="me"][data-group="first"]) .${CB_BUBBLE_CLASS} {
-    border-bottom-right-radius: ${radius.sm}px;
+    border-bottom-right-radius: ${radius[4]}px;
   }
   :where(.${CB_ROW_CLASS}[data-role="me"][data-group="middle"]) .${CB_BUBBLE_CLASS} {
-    border-top-right-radius: ${radius.sm}px;
-    border-bottom-right-radius: ${radius.sm}px;
+    border-top-right-radius: ${radius[4]}px;
+    border-bottom-right-radius: ${radius[4]}px;
   }
   :where(.${CB_ROW_CLASS}[data-role="me"][data-group="last"]) .${CB_BUBBLE_CLASS} {
-    border-top-right-radius: ${radius.sm}px;
+    border-top-right-radius: ${radius[4]}px;
   }
 
   :where(.${CB_META_CLASS}) {
