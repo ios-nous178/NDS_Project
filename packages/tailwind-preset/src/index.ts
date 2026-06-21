@@ -357,6 +357,17 @@ export const cashwalkPreset = {
 };
 
 /**
+ * Teamwork(팀워크) · 동네산책 Tailwind preset — cashwalk accent 형제.
+ *
+ * 팔레트(cornflower·indigo 포함)와 시멘틱 키가 cashwalk 와 동일하다. 시멘틱 클래스는 var 참조라
+ * brand 색 차이는 **import 하는 CSS 파일**(`@nudge-design/tokens/css/teamwork` ·
+ * `.../dongne-sanchaek`)이 var 를 accent 톤으로 redefine 해서 난다 → preset 자체는 cashwalk 와
+ * 같다. 소비처가 의도(브랜드)대로 import 를 고를 수 있게 별도 이름으로 노출한다.
+ */
+export const teamworkPreset = cashwalkPreset;
+export const dongneSanchaekPreset = cashwalkPreset;
+
+/**
  * Geniet Tailwind preset.
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 geniet.css 가 var 를 민트 톤으로

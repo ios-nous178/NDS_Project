@@ -13,6 +13,9 @@ export const collectionNotes: Record<string, string> = {
   trost: "Trost 전용 팔레트",
   geniet: "Geniet 전용 팔레트",
   "cashwalk-biz": "CashwalkBiz 전용 팔레트",
+  cashwalk: "Cashwalk 전용 팔레트 (캐시워크 소비자앱)",
+  teamwork: "Teamwork 팔레트 (캐시워크 형제 — cornflower accent)",
+  "dongne-sanchaek": "동네산책 팔레트 (캐시워크 형제 — indigo accent)",
   runmile: "Runmile 전용 팔레트",
 };
 
@@ -57,6 +60,8 @@ export const brandLabels: Record<string, string> = {
   "nudge-eap": "넛지EAP",
   "cashwalk-biz": "캐포비",
   cashwalk: "캐시워크",
+  teamwork: "팀워크",
+  "dongne-sanchaek": "동네산책",
   geniet: "geniet",
   runmile: "runmile",
   trost: "trost",

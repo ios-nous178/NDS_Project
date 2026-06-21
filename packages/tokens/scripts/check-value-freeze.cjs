@@ -14,6 +14,8 @@ const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
 const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
 const { cashwalkTheme } = require("../dist/projects/cashwalk");
+const { teamworkTheme } = require("../dist/projects/teamwork");
+const { dongneSanchaekTheme } = require("../dist/projects/dongne-sanchaek");
 const { runmileTheme } = require("../dist/projects/runmile");
 
 const dist = path.join(__dirname, "..", "dist");
@@ -47,6 +49,8 @@ const TARGETS = [
   { file: "geniet", cvar: colorVarMap(colors, genietTheme.palette) },
   { file: "cashwalk-biz", cvar: colorVarMap(colors, cashwalkBizTheme.palette) },
   { file: "cashwalk", cvar: colorVarMap(colors, cashwalkTheme.palette) },
+  { file: "teamwork", cvar: colorVarMap(colors, teamworkTheme.palette) },
+  { file: "dongne-sanchaek", cvar: colorVarMap(colors, dongneSanchaekTheme.palette) },
   { file: "runmile", cvar: colorVarMap(colors, runmileTheme.palette) },
 ];
 

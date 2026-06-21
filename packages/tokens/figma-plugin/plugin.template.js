@@ -520,26 +520,50 @@ async function main() {
   );
   typoRoot.appendChild(th);
 
-  // Text Style 샘플 — 스타일 적용(setTextStyleIdAsync) → 바인딩된 변수값으로 실제 렌더.
+  // Text Style 샘플 — 모드별 렌더. 각 브랜드의 Dimension 모드를 샘플 프레임에 명시 적용해
+  // (setExplicitVariableModeForCollection) 바인딩된 fontSize/lineHeight 가 그 브랜드 값으로
+  // 풀리게 한다 → 타이포가 브랜드별로 갈리면 자동으로 크기 차이가 보인다(현재 전 브랜드 동일).
   const tsSec = auto("Text Styles", "VERTICAL", 0);
-  accentTitle(tsSec, "Text Styles", `${createdStyles.length} · 변수 바인딩`);
+  accentTitle(tsSec, "Text Styles", `${createdStyles.length} · 변수 바인딩 · 모드별 샘플`);
   tsSec.appendChild(spacer1(8));
   for (const cs of createdStyles) {
-    const row = auto(cs.kk, "HORIZONTAL", 20, { align: "CENTER", padV: 6 });
-    row.appendChild(txt(cs.nm, 11, "Regular", SUB, 150));
+    const block = auto(cs.kk, "VERTICAL", 6, { padV: 8 });
+    // 헤더 — 스타일명 + base(nudge-eap) 기준 크기
+    const hdr = auto("h", "HORIZONTAL", 12, { align: "CENTER" });
+    hdr.appendChild(txt(cs.nm, 12, "Bold", INK, 150));
     const fsd = TOKENS.dimensions.variables["font-size/" + cs.kk];
     const lhd = TOKENS.dimensions.variables["line-height/" + cs.kk];
     const fsv = fsd ? (fsd.valuesByMode["nudge-eap"] || {}).value : null;
     const lhv = lhd ? (lhd.valuesByMode["nudge-eap"] || {}).value : null;
-    row.appendChild(
-      txt(`${fsv == null ? "—" : fsv}/${lhv == null ? "—" : lhv}`, 10, "Regular", FAINT, 56),
+    hdr.appendChild(
+      txt(`${fsv == null ? "—" : fsv}/${lhv == null ? "—" : lhv}`, 10, "Regular", FAINT, 70),
     );
-    const sample = txt("다람쥐 Aa 0123 한글 Sample", 16, "Regular", INK);
-    try {
-      await sample.setTextStyleIdAsync(cs.st.id);
-    } catch (e) {} // eslint-disable-line no-empty
-    row.appendChild(sample);
-    tsSec.appendChild(row);
+    block.appendChild(hdr);
+    // 모드별 샘플 — 브랜드마다 그 모드의 바인딩 값으로 렌더(짧은 글리프로 폭 절약).
+    const samples = auto("samples", "HORIZONTAL", 20, { align: "MIN" });
+    for (const b of BRANDS) {
+      const col = auto(b, "VERTICAL", 3, { align: "MIN" });
+      col.appendChild(txt(brandLabel(b), 9, "Regular", FAINT));
+      const sf = figma.createFrame();
+      sf.name = b;
+      sf.layoutMode = "HORIZONTAL";
+      sf.primaryAxisSizingMode = "AUTO";
+      sf.counterAxisSizingMode = "AUTO";
+      sf.fills = [];
+      sf.clipsContent = false;
+      try {
+        sf.setExplicitVariableModeForCollection(dimColl, dModeIds[b]);
+      } catch (e) {} // eslint-disable-line no-empty
+      const sample = txt("Aa 가", 16, "Regular", INK);
+      try {
+        await sample.setTextStyleIdAsync(cs.st.id);
+      } catch (e) {} // eslint-disable-line no-empty
+      sf.appendChild(sample);
+      col.appendChild(sf);
+      samples.appendChild(col);
+    }
+    block.appendChild(samples);
+    tsSec.appendChild(block);
   }
   typoRoot.appendChild(tsSec);
   typoRoot.appendChild(spacer1(20));

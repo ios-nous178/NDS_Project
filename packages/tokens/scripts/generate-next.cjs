@@ -22,6 +22,8 @@ const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
 const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
 const { cashwalkTheme } = require("../dist/projects/cashwalk");
+const { teamworkTheme } = require("../dist/projects/teamwork");
+const { dongneSanchaekTheme } = require("../dist/projects/dongne-sanchaek");
 const { runmileTheme } = require("../dist/projects/runmile");
 
 const BRANDS = [
@@ -30,6 +32,8 @@ const BRANDS = [
   { mode: "geniet", theme: genietTheme },
   { mode: "cashwalk-biz", theme: cashwalkBizTheme },
   { mode: "cashwalk", theme: cashwalkTheme },
+  { mode: "teamwork", theme: teamworkTheme }, // cashwalk 형제 — cornflower accent
+  { mode: "dongne-sanchaek", theme: dongneSanchaekTheme }, // cashwalk 형제 — indigo accent
   { mode: "runmile", theme: runmileTheme },
 ];
 

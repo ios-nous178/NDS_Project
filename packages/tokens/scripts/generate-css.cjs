@@ -557,6 +557,27 @@ fs.writeFileSync(
 );
 console.log(`Generated ${cashwalkPath}`);
 
+// cashwalk accent 형제 — 팔레트는 cashwalk 와 공유, brand 색만 cornflower/indigo 로 스왑.
+const teamworkPath = path.join(distDir, "teamwork.css");
+const { teamworkTheme } = require("../dist/projects/teamwork");
+fs.writeFileSync(
+  teamworkPath,
+  generateProjectTokens({ theme: teamworkTheme, title: "teamwork", cssImport: "teamwork" }),
+);
+console.log(`Generated ${teamworkPath}`);
+
+const dongneSanchaekPath = path.join(distDir, "dongne-sanchaek.css");
+const { dongneSanchaekTheme } = require("../dist/projects/dongne-sanchaek");
+fs.writeFileSync(
+  dongneSanchaekPath,
+  generateProjectTokens({
+    theme: dongneSanchaekTheme,
+    title: "dongne-sanchaek",
+    cssImport: "dongne-sanchaek",
+  }),
+);
+console.log(`Generated ${dongneSanchaekPath}`);
+
 // 확장자 없는 "./css*" 서브패스의 types 조건이 가리키는 스텁.
 // 없으면 TS 6(새 Vite 템플릿 기본)에서 `import "@nudge-design/tokens/css"` 가
 // TS2882(side-effect import 타입 미발견)로 깨진다.

@@ -43,6 +43,14 @@
     "./css/cashwalk": {
       "types": "./dist/css-stub.d.ts",
       "default": "./dist/cashwalk.css"
+    },
+    "./css/teamwork": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/teamwork.css"
+    },
+    "./css/dongne-sanchaek": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/dongne-sanchaek.css"
     }
   },
   "files": [
