@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T16:24:27.827Z",
+  "generatedAt": "2026-06-21T16:42:42.497Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -9191,16 +9191,6 @@
         "dongne-sanchaek",
         "teamwork"
       ]
-    },
-    {
-      "name": "--color-common-00",
-      "value": "#FFFFFF",
-      "group": "color"
-    },
-    {
-      "name": "--color-common-1000",
-      "value": "#000000",
-      "group": "color"
     },
     {
       "name": "--color-common-black",
