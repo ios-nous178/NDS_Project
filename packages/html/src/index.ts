@@ -106,6 +106,9 @@ export type { ListItemSize, ListVariant } from "./components/nds-list.js";
 export { NdsDivider } from "./components/nds-divider.js";
 export type { DividerOrientation } from "./components/nds-divider.js";
 
+export { NdsDim } from "./components/nds-dim.js";
+export type { DimType } from "./components/nds-dim.js";
+
 export { NdsSpinner } from "./components/nds-spinner.js";
 export type { SpinnerSize } from "./components/nds-spinner.js";
 

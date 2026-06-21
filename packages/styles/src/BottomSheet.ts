@@ -1,5 +1,5 @@
 /* Auto-generated from packages/react/src/BottomSheet.tsx during the @nudge-design/styles split. */
-import { cv, fontFamily, radius, spacing, typeScale } from "@nudge-design/tokens";
+import { cv, duration, easing, fontFamily, radius, spacing, typeScale } from "@nudge-design/tokens";
 
 const BS_CLASS = "nds-bottom-sheet";
 const BS_ROOT_CLASS = `${BS_CLASS}__root`;
@@ -43,12 +43,13 @@ export const bottomSheetStyles = `
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: var(--nds-bottom-sheet-radius, ${radius.lg}px) var(--nds-bottom-sheet-radius, ${radius.lg}px) 0 0;
+    border-radius: var(--nds-bottom-sheet-radius, 24px) var(--nds-bottom-sheet-radius, 24px) 0 0;
     background-color: ${cv.surface.default};
     /* upward shadow — DS shadow 토큰은 모두 아래 방향이라 의도적으로 raw default 사용.
        슬롯으로 노출해 프로젝트가 덮을 수 있게 (Trost 등), default 는 불변. */
     box-shadow: var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0, 0, 0, 0.1));
-    animation: nds-bs-slide-up 0.2s ease-out;
+    /* Figma 가이드(1746:800): 진입 280ms standard easing. 닫기는 200ms ease-out 유지. */
+    animation: nds-bs-slide-up ${duration.emphasized}ms ${easing.standard};
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -73,16 +74,13 @@ export const bottomSheetStyles = `
     background: var(--nds-bottom-sheet-handle-color, ${cv.borderRole.normal});
   }
 
+  /* Figma 가이드(1746:800): 제목 가운데 정렬 · divider 없음 · Text/Strong. */
   :where(.${BS_HEADER_CLASS}) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
-  }
-
-  :where(.${BS_HEADER_CLASS}[data-has-title="true"]) {
-    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${BS_HEADER_TITLE_CLASS}) {
@@ -90,17 +88,33 @@ export const bottomSheetStyles = `
     font-size: ${typeScale.headline5.fontSize}px;
     font-weight: 700;
     line-height: ${typeScale.headline5.lineHeight}px;
-    color: ${cv.textRole.normal};
+    color: ${cv.textRole.strong};
+    text-align: center;
   }
 
+  /* Upclose 닫기 — Figma: 우상단 24×24 Icon/Strong. topbar 영역에 absolute 배치(가운데 제목과 무관). */
   :where(.${BS_CLOSE_CLASS}) {
+    position: absolute;
+    top: var(--semantic-inset-card);
+    right: var(--semantic-inset-card-large);
+    z-index: 1;
     border: none;
     background: none;
     cursor: pointer;
-    padding: 4px;
-    font-size: 20px;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
     line-height: 1;
-    color: ${cv.textRole.muted};
+    color: ${cv.iconRole.strong};
+  }
+
+  :where(.${BS_CLOSE_CLASS} svg) {
+    width: 24px;
+    height: 24px;
   }
 
   :where(.${BS_BODY_CLASS}) {

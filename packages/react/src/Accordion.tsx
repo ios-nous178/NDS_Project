@@ -28,7 +28,8 @@ const ChevronIcon = () => (
 
 /* ─── Context ─── */
 
-type AccordionType = "single" | "multiple";
+export type AccordionExpandMode = "single" | "multiple";
+export type AccordionType = "line" | "card";
 
 interface AccordionContextValue {
   openItems: Set<string>;
@@ -46,8 +47,10 @@ const useAccordionContext = () => {
 /* ─── Accordion Root ─── */
 
 export interface AccordionProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** 단일 / 다중 열기 */
+  /** 시각 타입. `line`=구분선 기반(FAQ·약관·정책) · `card`=배경+라운드+보더(심리검사·상품 리스트). @default "card" */
   type?: AccordionType;
+  /** 펼침 모드. `single`=한 번에 하나만 · `multiple`=독립 다중 펼침. @default "single" */
+  expandMode?: AccordionExpandMode;
   /** 열린 아이템 값 (제어 모드) */
   value?: string | string[];
   /** 기본 열린 아이템 */
@@ -62,7 +65,8 @@ export const Accordion = Object.assign(
   React.forwardRef<HTMLDivElement, AccordionProps>(
     (
       {
-        type = "single",
+        type = "card",
+        expandMode = "single",
         value: valueProp,
         defaultValue,
         onValueChange,
@@ -88,21 +92,27 @@ export const Accordion = Object.assign(
           if (next.has(itemValue)) {
             next.delete(itemValue);
           } else {
-            if (type === "single") {
+            if (expandMode === "single") {
               next.clear();
             }
             next.add(itemValue);
           }
           if (!isControlled) setInternalOpen(next);
           const arr = Array.from(next);
-          onValueChange?.(type === "single" ? (arr[0] ?? "") : arr);
+          onValueChange?.(expandMode === "single" ? (arr[0] ?? "") : arr);
         },
-        [openItems, type, isControlled, onValueChange],
+        [openItems, expandMode, isControlled, onValueChange],
       );
 
       return (
         <AccordionContext.Provider value={{ openItems, toggle }}>
-          <div ref={ref} data-slot="root" className={cx(ACC_CLASS, className)} {...rest}>
+          <div
+            ref={ref}
+            data-slot="root"
+            data-type={type}
+            className={cx(ACC_CLASS, className)}
+            {...rest}
+          >
             {children}
           </div>
         </AccordionContext.Provider>

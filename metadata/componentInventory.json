@@ -791,6 +791,17 @@
     "usageSummary": "섹션 구분선, 리스트 항목 사이, 입력 그룹 사이"
   },
   {
+    "name": "Dim",
+    "category": "오버레이",
+    "status": "implemented",
+    "description": "오버레이(Modal·BottomSheet·BottomPopup) 백드롭. 강도 3단계(Subtle 0.2 / Default 0.4·BG/Overlay / Strong 0.7)",
+    "storybookTitle": "Components/Overlay/Dim",
+    "docsPath": "/components/dim",
+    "figmaUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1751-20",
+    "figmaNodeId": "1751:20",
+    "usageSummary": "오버레이 백드롭, 풀스크린 뷰어 차단 레이어, 커스텀 오버레이 조립"
+  },
+  {
     "name": "IconButton",
     "category": "일반",
     "status": "implemented",

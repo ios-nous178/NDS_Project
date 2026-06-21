@@ -7,7 +7,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "..
 
 function SingleAccordion(props: Partial<React.ComponentProps<typeof Accordion>> = {}) {
   return (
-    <Accordion type="single" {...props}>
+    <Accordion expandMode="single" {...props}>
       <AccordionItem value="a">
         <AccordionTrigger>이용 약관</AccordionTrigger>
         <AccordionContent>약관 본문 A</AccordionContent>
@@ -26,7 +26,7 @@ function SingleAccordion(props: Partial<React.ComponentProps<typeof Accordion>> 
 
 function MultiAccordion(props: Partial<React.ComponentProps<typeof Accordion>> = {}) {
   return (
-    <Accordion type="multiple" {...props}>
+    <Accordion expandMode="multiple" {...props}>
       <AccordionItem value="a">
         <AccordionTrigger>질문 1</AccordionTrigger>
         <AccordionContent>답변 1</AccordionContent>
@@ -278,7 +278,7 @@ describe("Accordion 엣지/변형", () => {
   it("Accordion.Item / .Trigger / .Content 점 표기 합성 API로도 동일하게 동작한다", async () => {
     const user = userEvent.setup();
     render(
-      <Accordion type="single">
+      <Accordion expandMode="single">
         <Accordion.Item value="x">
           <Accordion.Trigger>점표기 헤더</Accordion.Trigger>
           <Accordion.Content>점표기 본문</Accordion.Content>

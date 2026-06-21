@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Divider } from "@nudge-design/react";
 
@@ -8,10 +9,12 @@ const meta: Meta<typeof Divider> = {
   parameters: { layout: "centered" },
   argTypes: {
     orientation: { control: "select", options: ["horizontal", "vertical"] },
+    type: { control: "select", options: ["line", "block"] },
+    tone: { control: "select", options: ["subtle", "normal", "strong"] },
     thickness: { control: "number" },
     spacing: { control: "number" },
   },
-  args: { orientation: "horizontal" },
+  args: { orientation: "horizontal", type: "line", tone: "normal" },
 };
 
 export default meta;
@@ -82,4 +85,42 @@ export const ThickSection: Story = {
       <p>섹션 B</p>
     </div>
   ),
+};
+
+export const Gallery: Story = {
+  tags: ["gallery"],
+  name: "Type × Tone",
+  render: () => {
+    const label: CSSProperties = { fontSize: 12, color: "#888", margin: "0 0 4px" };
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 28, width: 320 }}>
+        <div>
+          <p style={label}>Line · Horizontal (subtle / normal / strong)</p>
+          <Divider type="line" tone="subtle" />
+          <div style={{ height: 16 }} />
+          <Divider type="line" tone="normal" />
+          <div style={{ height: 16 }} />
+          <Divider type="line" tone="strong" />
+        </div>
+
+        <div>
+          <p style={label}>Block · Horizontal (8px 섹션 분할)</p>
+          <p style={{ margin: 0 }}>섹션 A</p>
+          <Divider type="block" />
+          <p style={{ margin: 0 }}>섹션 B</p>
+        </div>
+
+        <div>
+          <p style={label}>Line · Vertical (인라인 그룹)</p>
+          <div style={{ display: "flex", alignItems: "center", color: "#666" }}>
+            <span>약관</span>
+            <Divider orientation="vertical" />
+            <span>개인정보</span>
+            <Divider orientation="vertical" />
+            <span>고객센터</span>
+          </div>
+        </div>
+      </div>
+    );
+  },
 };

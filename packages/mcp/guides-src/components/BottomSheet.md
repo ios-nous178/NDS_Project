@@ -1,15 +1,22 @@
 ---
-figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128
+figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1746-800
+references:
+  - label: Trost BottomSheet 가이드 — radius 20 · handle 40
+    url: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128
+    project: trost
+    caption: 트로스트 시트(프로젝트 토큰 emit). base/EAP 와 radius·handle 만 다름.
 sizeMatrix:
-  radius (base): var(--nds-bottom-sheet-radius, radius.lg = 12) — 상단 좌우만
-  radius (Trost): 20 (프로젝트 토큰이 --nds-bottom-sheet-radius:20px emit)
-  handleWidth (base): var(--nds-bottom-sheet-handle-width, 36) × 4 height
-  handleWidth (Trost): 40 (프로젝트 토큰이 --nds-bottom-sheet-handle-width:40px emit)
-  handleColor: cv.borderRole.normal (프로젝트 불변)
-  shadow: var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0,0,0,.1)) — 위 방향, default 불변
-  backdrop: var(--nds-bottom-sheet-backdrop, rgba(0,0,0,.5)) — default 불변
-  maxWidth: var(--nds-bottom-sheet-max-width, 664)
-  maxHeight: var(--nds-bottom-sheet-max-height, 85vh)
+  state: Default(핸들 36×4 Border/Normal · showHandle) / Upclose(우상단 닫기 24×24 Icon/Strong · closable)
+  buttons: One(full) / Two(50:50) / Text — footer 컴포지션(footer 자식 flex:1 균등). 별도 enum prop 아님.
+  radius (base/EAP): var(--nds-bottom-sheet-radius, 24px) — 상단 좌우만 (Figma 1746:800)
+  radius (project): Trost/cashwalk 20 · geniet/runmile 16 — 프로젝트 토큰이 --nds-bottom-sheet-radius emit
+  handleWidth (base 36 / Trost 40): var(--nds-bottom-sheet-handle-width)
+  title: Headline5(18; Figma 라벨 "Headline4") Bold · Text/Strong · 가운데 정렬 · divider 없음
+  description/body: Body2 · Text/Subtle
+  open/close: 진입 280ms standard easing(cubic-bezier .4 0 .2 1) · 닫기 200ms ease-out
+  backdrop: var(--nds-bottom-sheet-backdrop, rgba(0,0,0,.5)) — BG/Overlay 0.5
+  shadow: var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0,0,0,.1)) — 위 방향
+  maxWidth/maxHeight: var(--nds-bottom-sheet-max-width, 664) / 85vh
   safeArea: footer/마지막 body 에 env(safe-area-inset-bottom) 가산 (iOS 홈 인디케이터)
 ---
 

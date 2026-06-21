@@ -2,7 +2,7 @@
  * <nds-accordion> + sub-elements — DS Accordion 의 vanilla Web Component 버전.
  *
  * 사용 예:
- *   <nds-accordion type="single" value="item-1">
+ *   <nds-accordion expand-mode="single" type="card" value="item-1">
  *     <nds-accordion-item value="item-1">
  *       <nds-accordion-trigger>제목 1</nds-accordion-trigger>
  *       <nds-accordion-content>내용 1</nds-accordion-content>
@@ -77,7 +77,12 @@ export class NdsAccordion extends NdsElement {
     if (!this._root) return;
     if (this.style.display !== "contents") this.style.display = "contents";
 
+    this._root.dataset.type = this._normalizedType();
     this._notifyChildren();
+  }
+
+  private _normalizedType(): "line" | "card" {
+    return this.attr("type", "card") === "line" ? "line" : "card";
   }
 
   private _notifyChildren(): void {
@@ -94,14 +99,14 @@ export class NdsAccordion extends NdsElement {
   }
 
   toggle(itemValue: string): void {
-    const type = this.attr("type", "single");
+    const expandMode = this.attr("expand-mode", "single");
     const currentValue = this.getAttribute("value") ?? "";
     const openValues = new Set(currentValue.split(",").filter(Boolean));
 
     if (openValues.has(itemValue)) {
       openValues.delete(itemValue);
     } else {
-      if (type === "single") {
+      if (expandMode === "single") {
         openValues.clear();
       }
       openValues.add(itemValue);
@@ -111,7 +116,7 @@ export class NdsAccordion extends NdsElement {
     this.setAttribute("value", nextValue);
     this.dispatchEvent(
       new CustomEvent("accordion-change", {
-        detail: { value: type === "single" ? nextValue || "" : Array.from(openValues) },
+        detail: { value: expandMode === "single" ? nextValue || "" : Array.from(openValues) },
         bubbles: true,
         composed: true,
       }),

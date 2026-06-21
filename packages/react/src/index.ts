@@ -11,6 +11,7 @@ export { badgeGuide, badgeVariantGuide, badgeColorGuide } from "./Badge.guide.js
 export type { BadgeVariantKey, BadgeColorKey } from "./Badge.guide.js";
 export * from "./ValidationChip.js";
 export * from "./Modal.js";
+export * from "./Dim.js";
 export * from "./Input.js";
 export * from "./Popup.js";
 export * from "./SearchInput.js";

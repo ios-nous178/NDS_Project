@@ -37,8 +37,10 @@ import { Divider } from "@nudge-design/react";
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
 | `orientation` | `DividerOrientation` | `"horizontal"` | 방향 |
-| `thickness` | `number` | — | 두께 (px) |
+| `type` | `DividerType` | `"line"` | 분리 강도. - `line` (기본): 1px 라인 — 리스트/카드 내부 분할. - `block`: 8px 청크 — 섹션 사이 BG/Section 분할(가로 전용). |
+| `tone` | `DividerTone` | `"normal"` | Border 강도 — subtle(약)/normal(기본)/strong(강). |
+| `thickness` | `number` | — | 두께 (px) — escape hatch |
 | `spacing` | `number` | — | 양쪽 간격 (px) |
-| `color` | `string` | — | 색상 오버라이드 |
+| `color` | `string` | — | 색상 오버라이드 — escape hatch |
 
 <!-- AUTO-GEN:props:END -->

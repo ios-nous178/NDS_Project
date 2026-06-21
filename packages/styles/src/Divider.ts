@@ -8,8 +8,13 @@ export const dividerStyles = `
     border: none;
     margin: 0;
     flex-shrink: 0;
-    background: var(--nds-divider-color, ${cv.borderRole.subtle});
+    background: var(--nds-divider-color, var(--nds-divider-tone, ${cv.borderRole.normal}));
   }
+
+  /* tone — Border 강도 매핑 (특정성 0). color escape hatch 가 항상 이김. */
+  :where(.${DIV_CLASS}[data-tone="subtle"]) { --nds-divider-tone: ${cv.borderRole.subtle}; }
+  :where(.${DIV_CLASS}[data-tone="normal"]) { --nds-divider-tone: ${cv.borderRole.normal}; }
+  :where(.${DIV_CLASS}[data-tone="strong"]) { --nds-divider-tone: ${cv.borderRole.strong}; }
 
   :where(.${DIV_CLASS}[data-orientation="horizontal"]) {
     width: 100%;
@@ -22,5 +27,11 @@ export const dividerStyles = `
     height: var(--nds-divider-height, 10px);
     margin: 0 var(--nds-divider-spacing, ${spacing[8]}px);
     align-self: center;
+  }
+
+  /* block — 섹션 사이 8px 청크(가로 전용). tone 규칙 뒤에 둬 source-order 로 이김. */
+  :where(.${DIV_CLASS}[data-type="block"][data-orientation="horizontal"]) {
+    height: var(--nds-divider-thickness, ${spacing[8]}px);
+    --nds-divider-tone: ${cv.surface.section};
   }
 `;

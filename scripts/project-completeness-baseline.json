@@ -90,6 +90,46 @@
       "project": "trost",
       "key": "buttonText.neutralDisabled",
       "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
+    },
+    {
+      "project": "cashwalk-biz",
+      "key": "bg.overlaySubtle",
+      "reason": "Dim 백드롭 Subtle(α0.2)=범용 검정 — default(overlay)만 프로젝트 테마. 의도적 base-fallback (Figma Dim Guide 1751:20)"
+    },
+    {
+      "project": "cashwalk-biz",
+      "key": "bg.overlayStrong",
+      "reason": "Dim 백드롭 Strong(α0.7)=범용 검정 — 의도적 base-fallback"
+    },
+    {
+      "project": "trost",
+      "key": "bg.overlaySubtle",
+      "reason": "Dim 백드롭 Subtle(α0.2)=범용 검정 — default(overlay=α0.6)만 프로젝트 테마. 의도적 base-fallback"
+    },
+    {
+      "project": "trost",
+      "key": "bg.overlayStrong",
+      "reason": "Dim 백드롭 Strong(α0.7)=범용 검정 — 의도적 base-fallback"
+    },
+    {
+      "project": "runmile",
+      "key": "bg.overlaySubtle",
+      "reason": "Dim 백드롭 Subtle(α0.2)=범용 검정 — default(overlay=α0.5)만 프로젝트 테마. 의도적 base-fallback"
+    },
+    {
+      "project": "runmile",
+      "key": "bg.overlayStrong",
+      "reason": "Dim 백드롭 Strong(α0.7)=범용 검정 — 의도적 base-fallback"
+    },
+    {
+      "project": "geniet",
+      "key": "bg.overlaySubtle",
+      "reason": "Dim 백드롭 Subtle(α0.2)=범용 검정 — default(overlay)만 프로젝트 테마. 의도적 base-fallback"
+    },
+    {
+      "project": "geniet",
+      "key": "bg.overlayStrong",
+      "reason": "Dim 백드롭 Strong(α0.7)=범용 검정 — 의도적 base-fallback"
     }
   ]
 }

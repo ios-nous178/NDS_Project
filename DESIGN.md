@@ -387,10 +387,13 @@ motion:
   duration:
     fast: 150ms
     default: 200ms
+    moderate: 240ms # Accordion 펼침/접힘 등 중간 길이 전환 (Figma 가이드)
+    emphasized: 280ms # 강조 진입 (BottomSheet slide-up 등)
     slow: 300ms
   easing:
     default: ease
     easeOut: ease-out
+    standard: "cubic-bezier(0.4, 0, 0.2, 1)" # Material standard — 강조 진입 모션 (BottomSheet open · Accordion expand)
   transition:
     default: "200ms ease"
     slow: "300ms ease"

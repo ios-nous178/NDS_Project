@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-20T17:32:45.824Z",
+  "generatedAt": "2026-06-20T20:59:24.589Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -84,6 +84,15 @@
           "optional": true,
           "type": "AccordionType",
           "allowedValues": [
+            "line",
+            "card"
+          ]
+        },
+        {
+          "name": "expandMode",
+          "optional": true,
+          "type": "AccordionExpandMode",
+          "allowedValues": [
             "single",
             "multiple"
           ]
@@ -112,6 +121,7 @@
       "dtsRelPath": "packages/react/dist/Accordion.d.ts",
       "htmlTag": "nds-accordion",
       "htmlObservedAttrs": [
+        "expand-mode",
         "type",
         "value",
         "base-id"
@@ -2507,6 +2517,37 @@
       ]
     },
     {
+      "name": "Dim",
+      "props": [
+        {
+          "name": "type",
+          "optional": true,
+          "type": "DimType",
+          "allowedValues": [
+            "subtle",
+            "default",
+            "strong"
+          ]
+        },
+        {
+          "name": "animated",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "onClose",
+          "optional": true,
+          "type": "() => void"
+        }
+      ],
+      "dtsRelPath": "packages/react/dist/Dim.d.ts",
+      "htmlTag": "nds-dim",
+      "htmlObservedAttrs": [
+        "animated",
+        "type"
+      ]
+    },
+    {
       "name": "Divider",
       "props": [
         {
@@ -2516,6 +2557,25 @@
           "allowedValues": [
             "horizontal",
             "vertical"
+          ]
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": "DividerType",
+          "allowedValues": [
+            "line",
+            "block"
+          ]
+        },
+        {
+          "name": "tone",
+          "optional": true,
+          "type": "DividerTone",
+          "allowedValues": [
+            "subtle",
+            "normal",
+            "strong"
           ]
         },
         {
@@ -2537,6 +2597,11 @@
       "dtsRelPath": "packages/react/dist/Divider.d.ts",
       "htmlTag": "nds-divider",
       "htmlAttrs": {
+        "tone": [
+          "subtle",
+          "normal",
+          "strong"
+        ],
         "orientation": [
           "horizontal",
           "vertical"
@@ -2546,7 +2611,9 @@
         "color",
         "orientation",
         "spacing",
-        "thickness"
+        "thickness",
+        "tone",
+        "type"
       ]
     },
     {
@@ -12640,6 +12707,16 @@
       }
     },
     {
+      "name": "--semantic-bg-overlay-strong",
+      "value": "rgba(0,0,0,0.7)",
+      "group": "semantic"
+    },
+    {
+      "name": "--semantic-bg-overlay-subtle",
+      "value": "rgba(0,0,0,0.2)",
+      "group": "semantic"
+    },
+    {
       "name": "--semantic-bg-page-default",
       "value": "#F8F9FB",
       "group": "semantic",
@@ -14619,6 +14696,7 @@
     "nds-data-table",
     "nds-date-picker",
     "nds-date-range-picker",
+    "nds-dim",
     "nds-divider",
     "nds-drawer",
     "nds-dropdown-menu",
@@ -14722,6 +14800,7 @@
       "tag": "nds-accordion",
       "attrs": {},
       "observedAttrs": [
+        "expand-mode",
         "type",
         "value",
         "base-id"
@@ -15209,8 +15288,21 @@
       ]
     },
     {
+      "tag": "nds-dim",
+      "attrs": {},
+      "observedAttrs": [
+        "animated",
+        "type"
+      ]
+    },
+    {
       "tag": "nds-divider",
       "attrs": {
+        "tone": [
+          "subtle",
+          "normal",
+          "strong"
+        ],
         "orientation": [
           "horizontal",
           "vertical"
@@ -15220,7 +15312,9 @@
         "color",
         "orientation",
         "spacing",
-        "thickness"
+        "thickness",
+        "tone",
+        "type"
       ]
     },
     {

@@ -17,10 +17,22 @@ export const accordionStyles = `
   }
 
   :where(.${ACC_ITEM_CLASS}) {
+    overflow: hidden;
+  }
+
+  /* Card — 배경+라운드+보더 (기본). 심리검사 카드·상품 리스트. */
+  :where(.${ACC_CLASS}[data-type="card"] .${ACC_ITEM_CLASS}) {
     border: 1px solid ${cv.borderRole.subtle};
     border-radius: ${radius.lg}px;
-    overflow: hidden;
     background: ${cv.surface.default};
+  }
+
+  /* Line — 구분선 기반(하단 1px). FAQ·약관·정책 리스트. */
+  :where(.${ACC_CLASS}[data-type="line"]) {
+    gap: 0;
+  }
+  :where(.${ACC_CLASS}[data-type="line"] .${ACC_ITEM_CLASS}) {
+    border-bottom: 1px solid ${cv.borderRole.subtle};
   }
 
   :where(.${ACC_TRIGGER_CLASS}) {
@@ -34,10 +46,10 @@ export const accordionStyles = `
     cursor: pointer;
     text-align: left;
     font-family: inherit;
-    font-size: ${typeScale.body2.fontSize}px;
-    font-weight: ${fontWeight.semibold};
-    line-height: ${typeScale.body2.lineHeight}px;
-    color: ${cv.textRole.normal};
+    font-size: ${typeScale.body1.fontSize}px;
+    font-weight: ${fontWeight.bold};
+    line-height: ${typeScale.body1.lineHeight}px;
+    color: ${cv.textRole.strong};
     transition: background ${transition.default};
   }
 

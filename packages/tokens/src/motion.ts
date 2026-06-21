@@ -4,12 +4,15 @@
 export const duration = {
   fast: 150,
   default: 200,
+  moderate: 240,
+  emphasized: 280,
   slow: 300,
 } as const;
 
 export const easing = {
   default: "ease",
   easeOut: "ease-out",
+  standard: "cubic-bezier(0.4, 0, 0.2, 1)",
 } as const;
 
 export const transition = {

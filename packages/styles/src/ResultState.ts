@@ -54,9 +54,9 @@ export const resultStateStyles = `
   :where(.${RESULT_TITLE_CLASS}) {
     margin: 0;
     font-size: ${typeScale.body1.fontSize}px;
-    font-weight: ${fontWeight.medium};
+    font-weight: ${fontWeight.bold};
     line-height: ${typeScale.body1.lineHeight}px;
-    color: ${cv.textRole.normal};
+    color: ${cv.textRole.strong};
   }
 
   :where(.${RESULT_DESC_CLASS}) {
@@ -70,6 +70,6 @@ export const resultStateStyles = `
   }
 
   :where(.${RESULT_ACTION_CLASS}) {
-    margin-top: ${spacing[20]}px;
+    margin-top: ${spacing[12]}px;
   }
 `;

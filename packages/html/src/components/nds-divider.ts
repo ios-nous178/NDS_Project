@@ -2,8 +2,9 @@
  * <nds-divider> — DS Divider 의 vanilla Web Component 버전.
  *
  * DOM 구조 (React Divider.tsx 와 동일):
- *   <nds-divider orientation="vertical" thickness="2" spacing="12"></nds-divider>
+ *   <nds-divider orientation="vertical" type="line" tone="normal" thickness="2" spacing="12"></nds-divider>
  *     └─ <hr class="nds-divider" data-slot="root" data-orientation="vertical"
+ *            data-type="line" data-tone="normal"
  *            role="separator" aria-orientation="vertical" style="--nds-divider-*: ...">
  */
 
@@ -13,8 +14,12 @@ import { COMPONENT_ATTRS } from "../generated/component-attrs.js";
 const DIV_CLASS = "nds-divider";
 
 export type DividerOrientation = "horizontal" | "vertical";
+export type DividerType = "line" | "block";
+export type DividerTone = "subtle" | "normal" | "strong";
 
 const ORIENTATIONS: readonly DividerOrientation[] = ["horizontal", "vertical"];
+const TYPES: readonly DividerType[] = ["line", "block"];
+const TONES: readonly DividerTone[] = ["subtle", "normal", "strong"];
 
 const FORWARDED_ATTRS = ["aria-label", "aria-labelledby", "title"] as const;
 
@@ -52,6 +57,9 @@ export class NdsDivider extends NdsElement {
     this._inner.dataset.orientation = orientation;
     this._inner.setAttribute("aria-orientation", orientation);
 
+    this._inner.dataset.type = this._normalizedType();
+    this._inner.dataset.tone = this._normalizedTone();
+
     this._setPxVar("thickness", "--nds-divider-thickness");
     this._setPxVar("spacing", "--nds-divider-spacing");
     this._setStringVar("color", "--nds-divider-color");
@@ -68,6 +76,16 @@ export class NdsDivider extends NdsElement {
     return (ORIENTATIONS as readonly string[]).includes(value)
       ? (value as DividerOrientation)
       : "horizontal";
+  }
+
+  private _normalizedType(): DividerType {
+    const value = this.attr("type", "line");
+    return (TYPES as readonly string[]).includes(value) ? (value as DividerType) : "line";
+  }
+
+  private _normalizedTone(): DividerTone {
+    const value = this.attr("tone", "normal");
+    return (TONES as readonly string[]).includes(value) ? (value as DividerTone) : "normal";
   }
 
   private _setPxVar(attrName: string, varName: string): void {

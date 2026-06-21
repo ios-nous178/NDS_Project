@@ -27,6 +27,9 @@ export const cv = {
     statusInfo: v("--semantic-bg-status-info"),
     statusCaution: v("--semantic-bg-status-caution"),
     overlay: v("--semantic-bg-overlay"),
+    // Dim 백드롭 강도 스케일 (Subtle α0.2 / Strong α0.7). Default = overlay.
+    overlaySubtle: v("--semantic-bg-overlay-subtle"),
+    overlayStrong: v("--semantic-bg-overlay-strong"),
     // DS extension — Figma has no `bg-disabled` role; needed for disabled controls.
     disabled: v("--semantic-bg-disabled"),
     // Point(액센트) 서피스 — 트로스트 코발트 등 2차 강조(BottomSheet CTA·강조 박스).

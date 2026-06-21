@@ -4,15 +4,28 @@
   "components": {
     "Accordion": {
       "name": "Accordion",
-      "summary": "수직 펼침/접힘 그룹. FAQ, 약관, 다단 설정처럼 정보 밀도가 높지만 한 번에 다 보여줄 필요 없는 곳에 사용.",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1728-36",
+      "sizeMatrix": {
+        "type=line": "하단 1px Border/Subtle 만 (배경·라운드 없음) — FAQ·약관·정책 연속 리스트",
+        "type=card": "배경(BG/Surface) + 1px Border/Subtle + Radius/12 — 심리검사 카드·상품 리스트",
+        "title": "Body1(16) Bold · Text/Strong (Figma MO; PC 는 Headline5(18) — device prop 도입 시)",
+        "chevron": "우측 정렬 · Collapsed=down / Expanded=up (icon-eap-chevron 동형)",
+        "content": "Body3 본문 · 펼침 상태에서만 노출"
+      },
+      "summary": "수직 펼침/접힘 그룹. FAQ·약관·정책·다단 설정처럼 정보 밀도가 높지만 한 번에 다 보여줄 필요 없는 \"목록+상세\" 패턴에 사용. 시각 타입 `type`(line=구분선 / card=배경+라운드) × 펼침 모드 `expandMode`(single/multiple) 두 축으로 조립한다. 제목은 Bold·Text/Strong, chevron 으로 상태 표현(Collapsed=↓ / Expanded=↑).",
       "pitfalls": [
-        "type='single' 인데 value 를 배열로 넘기지 말 것. 단일 모드는 string, multiple 모드만 배열.",
-        "trigger 안에 nds-button / a / 클릭 가능한 자식 element 를 또 두면 nested interactive — 키보드/포커스 동작이 깨짐. trigger 자체가 button 임.",
-        "Accordion 안에 form / 입력 폼을 깊게 두지 말 것. 접힘 상태에서 validation 실패가 보이지 않아 사용자가 혼란."
+        "**⚠ BREAKING(2026-06) — `type` 의미가 바뀌었다.** 기존 `type=\"single|multiple\"`(펼침 모드)는 **`expandMode`** 로 이름이 바뀌었고, `type` 은 이제 **시각 타입 `line|card`** 이다. 외부 코드가 `<Accordion type=\"single\">` 처럼 쓰고 있으면 `expandMode=\"single\"` 로 고쳐야 한다(html `<nds-accordion expand-mode=\"single\">`).",
+        "**type 선택 — line vs card.** 연속 텍스트 리스트(FAQ·약관·정책·설정 메뉴)는 `type=\"line\"`(구분선만). 시각 분리가 필요한 항목(심리검사 카드·상품)은 `type=\"card\"`(배경+라운드+보더). **한 화면에서 line 과 card 를 섞지 말 것** — 시각 일관성 저해.",
+        "**expandMode 기본은 `single`** (한 번에 하나). FAQ 처럼 여러 답을 동시에 펼쳐 비교해야 하면 `expandMode=\"multiple\"`. `single` 모드에 `value`/`defaultValue` 를 배열로 넘기지 말 것(단일=string, multiple=배열).",
+        "**chevron 외 다른 화살표(arrow/caret) 쓰지 말 것.** 상태는 chevron 방향(Collapsed=↓ / Expanded=↑)으로만 표현. 첫 진입은 모두 Collapsed 가 기본(FAQ 1번째만 Expanded 패턴은 가능).",
+        "**헤더 전체가 클릭 영역.** chevron 아이콘만 클릭되게 막지 말 것 — trigger(헤더) 전체가 button 이다.",
+        "trigger 안에 nds-button / a / 클릭 가능한 자식을 또 두면 nested interactive — 키보드/포커스가 깨진다. trigger 자체가 button.",
+        "Accordion 안에 입력 폼을 깊게 두지 말 것 — 접힘 상태에서 validation 실패가 안 보여 혼란.",
+        "모든 항목을 펼친 채 기본 노출하지 말 것(아코디언의 목적 상실)."
       ],
       "examplesHtml": {
-        "do": "<nds-accordion type=\"single\" value=\"terms\">\n  <nds-accordion-item value=\"terms\">\n    <nds-accordion-trigger>이용약관</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n  <nds-accordion-item value=\"privacy\">\n    <nds-accordion-trigger>개인정보 처리방침</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n<script>el.addEventListener(\"accordion-change\", e => console.log(e.detail.value));</script>",
-        "dont": "<!-- accordion-trigger 안에 또 다른 클릭 가능한 element — nested interactive -->\n<nds-accordion-item value=\"x\">\n  <nds-accordion-trigger><nds-button>열기</nds-button></nds-accordion-trigger>\n  <nds-accordion-content>본문</nds-accordion-content>\n</nds-accordion-item>"
+        "do": "<!-- FAQ — line 타입 · 여러 개 동시 펼침 -->\n<nds-accordion type=\"line\" expand-mode=\"multiple\" value=\"q1\">\n  <nds-accordion-item value=\"q1\">\n    <nds-accordion-trigger>배송은 얼마나 걸리나요?</nds-accordion-trigger>\n    <nds-accordion-content>영업일 기준 2~3일 소요됩니다.</nds-accordion-content>\n  </nds-accordion-item>\n  <nds-accordion-item value=\"q2\">\n    <nds-accordion-trigger>교환·환불이 가능한가요?</nds-accordion-trigger>\n    <nds-accordion-content>수령 후 7일 이내 가능합니다.</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n\n<!-- 약관 — card 타입 · 한 번에 하나 -->\n<nds-accordion type=\"card\" expand-mode=\"single\" value=\"terms\">\n  <nds-accordion-item value=\"terms\">\n    <nds-accordion-trigger>이용약관</nds-accordion-trigger>\n    <nds-accordion-content>본문…</nds-accordion-content>\n  </nds-accordion-item>\n</nds-accordion>\n<script>el.addEventListener(\"accordion-change\", e => console.log(e.detail.value));</script>",
+        "dont": "<!-- ① 옛 API — type 으로 펼침 모드 지정 (이제 expand-mode) -->\n<nds-accordion type=\"single\">…</nds-accordion>\n\n<!-- ② 한 화면에 line + card 혼용 -->\n<nds-accordion type=\"line\">…</nds-accordion>\n<nds-accordion type=\"card\">…</nds-accordion>\n\n<!-- ③ trigger 안에 또 다른 클릭 가능한 element — nested interactive -->\n<nds-accordion-item value=\"x\">\n  <nds-accordion-trigger><nds-button>열기</nds-button></nds-accordion-trigger>\n  <nds-accordion-content>본문</nds-accordion-content>\n</nds-accordion-item>"
       }
     },
     "ActionChip": {
@@ -388,17 +401,27 @@
     },
     "BottomSheet": {
       "name": "BottomSheet",
-      "figmaNodeUrl": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1746-800",
+      "references": [
+        {
+          "label": "Trost BottomSheet 가이드 — radius 20 · handle 40",
+          "url": "https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128",
+          "project": "trost",
+          "caption": "트로스트 시트(프로젝트 토큰 emit). base/EAP 와 radius·handle 만 다름."
+        }
+      ],
       "sizeMatrix": {
-        "radius (base)": "var(--nds-bottom-sheet-radius, radius.lg = 12) — 상단 좌우만",
-        "radius (Trost)": "20 (프로젝트 토큰이 --nds-bottom-sheet-radius:20px emit)",
-        "handleWidth (base)": "var(--nds-bottom-sheet-handle-width, 36) × 4 height",
-        "handleWidth (Trost)": "40 (프로젝트 토큰이 --nds-bottom-sheet-handle-width:40px emit)",
-        "handleColor": "cv.borderRole.normal (프로젝트 불변)",
-        "shadow": "var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0,0,0,.1)) — 위 방향, default 불변",
-        "backdrop": "var(--nds-bottom-sheet-backdrop, rgba(0,0,0,.5)) — default 불변",
-        "maxWidth": "var(--nds-bottom-sheet-max-width, 664)",
-        "maxHeight": "var(--nds-bottom-sheet-max-height, 85vh)",
+        "state": "Default(핸들 36×4 Border/Normal · showHandle) / Upclose(우상단 닫기 24×24 Icon/Strong · closable)",
+        "buttons": "One(full) / Two(50:50) / Text — footer 컴포지션(footer 자식 flex:1 균등). 별도 enum prop 아님.",
+        "radius (base/EAP)": "var(--nds-bottom-sheet-radius, 24px) — 상단 좌우만 (Figma 1746:800)",
+        "radius (project)": "Trost/cashwalk 20 · geniet/runmile 16 — 프로젝트 토큰이 --nds-bottom-sheet-radius emit",
+        "handleWidth (base 36 / Trost 40)": "var(--nds-bottom-sheet-handle-width)",
+        "title": "Headline5(18; Figma 라벨 \"Headline4\") Bold · Text/Strong · 가운데 정렬 · divider 없음",
+        "description/body": "Body2 · Text/Subtle",
+        "open/close": "진입 280ms standard easing(cubic-bezier .4 0 .2 1) · 닫기 200ms ease-out",
+        "backdrop": "var(--nds-bottom-sheet-backdrop, rgba(0,0,0,.5)) — BG/Overlay 0.5",
+        "shadow": "var(--nds-bottom-sheet-shadow, 0 -4px 12px rgba(0,0,0,.1)) — 위 방향",
+        "maxWidth/maxHeight": "var(--nds-bottom-sheet-max-width, 664) / 85vh",
         "safeArea": "footer/마지막 body 에 env(safe-area-inset-bottom) 가산 (iOS 홈 인디케이터)"
       },
       "summary": "모바일에서 화면 하단에서 올라오는 시트. 옵션 선택 / 짧은 작업에 적합. 데스크탑에선 Drawer 가 자연스러움. 공유 시트는 이 컴포넌트로 4칸 그리드 + 링크 복사 레시피로 조립한다. 시각 토큰은 --nds-bottom-sheet-* 슬롯(radius·handle-width·shadow·backdrop)으로 노출돼 프로젝트 토큰이 값만 덮는다 — Trost 는 radius 20·handle 40 을 emit(컴포넌트는 프로젝트를 모름, base 는 12/36 불변). Share/Info/List 는 별도 prop·variant 가 아니라 BottomSheet 본체 + DS 토큰으로 조립하는 컴포지션 레시피다.",
@@ -1026,20 +1049,54 @@
         "dont": "<!-- to < from — 의미 없는 범위. min-date / max-date 로 가드 권장 -->\n<nds-date-range-picker from=\"2026-05-31\" to=\"2026-05-01\"></nds-date-range-picker>"
       }
     },
-    "Divider": {
-      "name": "Divider",
-      "summary": "섹션 사이의 시각적 분리선. 카드 안 내부 분할에 남발하지 말고, 한 화면당 의미 있는 분리에만 사용.",
+    "Dim": {
+      "name": "Dim",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1751-20",
+      "summary": "Dim — Modal·BottomSheet·BottomPopup 등 오버레이의 백드롭(배경 차단 레이어). 화면 전체를 검정 alpha 로 덮어 뒤쪽 콘텐츠와의 위계를 만들고 포커스를 오버레이로 모은다. 강도 3단계 — `type=\"subtle\"`(α0.2·가벼운 분리) · `type=\"default\"`(α0.4·BG/Overlay 토큰·표준) · `type=\"strong\"`(α0.7·완전 차단). **표현(배경 차단)만 책임지는 primitive** — 스크롤 잠금·포커스 트랩·ESC·z-index 스택은 오버레이 컨테이너가 담당한다.",
       "pitfalls": [
-        "**상하 간격은 `spacing` 속성으로 — 대칭이 자동.** `spacing=\"16\"` 이면 divider 위·아래 margin 이 **동일**하게 잡힌다(`margin: spacing 0`). 간격을 형제의 한쪽 margin/gap 으로만 주면 divider 가 다음 항목에 붙어 **위/아래 비대칭**(예: 위 12·아래 0)으로 어색해진다 — 폼/스텝 리스트에서 자주 나오는 footgun.",
-        "**flex-gap 컨테이너 + divider `spacing` 은 간격이 중복**된다. 둘 중 하나만: ① 컨테이너 `gap` 만 쓰고 divider 는 `spacing` 없이(자체 margin 0) 형제로, 또는 ② 컨테이너 gap 0 + divider `spacing` 으로 간격.",
-        "스텝/섹션 마크업 **안쪽에 divider 를 끼우지** 말고(라벨에 달라붙어 비대칭) 섹션 **사이 형제**로 둘 것.",
-        "Divider 를 두꺼운 색상 line 으로 시각 위계 강조용으로 쓰지 말 것 — Heading + spacing 토큰이 우선.",
-        "List 의 항목 사이에 Divider 를 직접 박지 말 것. nds-list variant='divided' 가 책임짐.",
-        "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임."
+        "**강도는 오버레이 무게에 맞춘다.** Modal·표준 BottomSheet = `default`. Light BottomSheet(이벤트·리워드) = `subtle`. 풀스크린 미디어 뷰어·중요 결정·보안 입력 = `strong`. Snackbar/Toast 는 인라인 알림이라 백드롭 자체가 불필요 — Dim 을 쓰지 말 것.",
+        "**Default 만 프로젝트별 테마.** `default` 는 `--semantic-bg-overlay` 시멘틱 토큰(트로스트 α0.6·런마일 α0.5 등 프로젝트별·다크모드 자동). `subtle`/`strong` 은 범용 검정(α0.2/0.7) — 프로젝트 무관.",
+        "**백드롭 색은 검정 alpha 만.** 채도 있는 색(브랜드 컬러)을 백드롭에 쓰지 말 것. 항상 풀스크린(`position: fixed; inset: 0`) — 부분 영역에만 Dim 을 적용하면 시각적 혼란.",
+        "**클릭 닫기는 탈출구.** `onClose`(react) / `nds-dim-close` 이벤트(html)로 백드롭 클릭 닫기를 제공한다. 단 **강제 결정 화면**(Modal=필수 결정·BottomSheet Upclose)에선 `onClose` 를 넘기지 않아 닫기를 막는다. 백드롭 클릭이 닫기·무동작 외 다른 액션을 트리거하지 않게 한다.",
+        "**다중 스택 시 Dim 한 장만.** 오버레이가 여러 겹 쌓이면 가장 위 레이어의 Dim 만 표시(색 중첩으로 0.8↑ 진해짐 방지). 오버레이가 닫혔는데 Dim 만 남기지 말 것.",
+        "**혼동 주의 — Modal/BottomSheet/Popup 은 자체 백드롭을 이미 포함**한다. 그 위에 Dim 을 또 깔지 말 것. Dim 은 백드롭이 없는 커스텀 풀스크린 오버레이를 직접 조립할 때 쓰는 primitive 다."
       ],
       "examplesHtml": {
-        "do": "<section>섹션 A</section>\n<nds-divider orientation=\"horizontal\" spacing=\"24\"></nds-divider>\n<section>섹션 B</section>",
-        "dont": "<!-- ① list 항목 사이마다 divider 직접 — list variant 가 책임 -->\n<nds-list-item>항목 1</nds-list-item>\n<nds-divider></nds-divider>\n<nds-list-item>항목 2</nds-list-item>\n\n<!-- ② 스텝 안에 divider 를 끼워 다음 라벨에 달라붙음 → 위/아래 비대칭.\n     spacing 없이 컨테이너 gap 만 있으면 위쪽만 간격이 생긴다.\n     → divider 를 섹션 사이 형제로 옮기고 spacing 으로 대칭 확보 -->\n<div style=\"display:flex; flex-direction:column; gap:12px\">\n  <div>1단계 본문<nds-divider></nds-divider></div>\n  <label>2단계 라벨</label>\n</div>"
+        "do": "<!-- 커스텀 풀스크린 오버레이의 표준 백드롭 (클릭 시 nds-dim-close 디스패치) -->\n<nds-dim type=\"default\"></nds-dim>\n\n<!-- 풀스크린 이미지/영상 뷰어 — 뒤쪽 완전 차단 -->\n<nds-dim type=\"strong\"></nds-dim>",
+        "dont": "<!-- ① 채도 있는 브랜드 색 백드롭 금지 — 검정 alpha 만 -->\n<div style=\"position:fixed; inset:0; background:rgba(43,150,237,0.4)\"></div>\n\n<!-- ② Modal 은 이미 백드롭 포함 — Dim 중복 금지 -->\n<nds-dim type=\"default\"></nds-dim>\n<nds-modal open>...</nds-modal>\n\n<!-- ③ 부분 영역 Dim 금지 — 항상 풀스크린 -->\n<nds-dim type=\"default\" style=\"position:absolute; width:200px; height:100px\"></nds-dim>"
+      },
+      "accessibility": [
+        "백드롭은 장식 레이어 — 이너 요소에 `aria-hidden=\"true\"` 가 기본 적용돼 스크린리더가 백드롭을 읽지 않는다. 의미 전달은 위에 얹히는 오버레이 콘텐츠(`role=\"dialog\"` 등)가 담당.",
+        "키보드 닫기(ESC)·포커스 트랩은 Dim 이 아니라 오버레이 컨테이너의 책임. Dim 의 클릭 닫기는 마우스 보조 수단이다."
+      ]
+    },
+    "Divider": {
+      "name": "Divider",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1722-20",
+      "sizeMatrix": {
+        "type=line": "1px (Border 라인) — orientation horizontal/vertical, tone subtle/normal/strong",
+        "type=block": "8px (BG/Section 청크) — 가로 전용, 섹션 사이",
+        "tone=subtle": "borderRole.subtle (카드/모달 내부)",
+        "tone=normal": "borderRole.normal (기본·default)",
+        "tone=strong": "borderRole.strong (강조)"
+      },
+      "summary": "콘텐츠 분리 보조요소. line(1px Border)=리스트/카드 내부, block(8px BG/Section)=섹션 사이. type 기본 line, tone 기본 normal — 임의 두께·브랜드/Status 색 금지.",
+      "pitfalls": [
+        "**type 선택 기준 — line vs block.** 같은 그룹 안(리스트 항목·카드 내부·input 밑)은 `type=\"line\"`(1px Border). 의미 단위가 다른 **섹션 사이**는 `type=\"block\"`(8px BG/Section). 섹션 경계를 얇은 line 으로만 그으면 위계가 약하고, 그룹 내부에 두꺼운 block 을 넣으면 과하다.",
+        "**tone 매핑 — subtle/normal/strong.** subtle=카드/모달 내부 등 약한 분할, normal=기본, strong=강조. 톤은 borderRole 토큰(subtle/normal/strong)에 1:1 매핑된다. tone 으로 표현되는 것이 색 SSOT 이므로 `color`/`thickness` 로 톤을 흉내내지 말 것.",
+        "**위치별 권장(usage).** 리스트 아이템 사이=line·H·normal · 카드 내부=line·H·subtle · 섹션 사이=block·H · 인라인 그룹(약관·메뉴)=line·V·normal · input bottom=line·H·normal · Modal/BottomSheet 내부=line·H·subtle.",
+        "**1px·8px 두 표준 외 임의 두께(2/3px) 금지.** line=1px, block=8px 두 값만 정상. `thickness` 는 escape hatch — 표준 두 값으로 부족할 때만 쓰고, 2/3px 같은 어중간한 두께로 새 위계를 만들지 말 것.",
+        "**브랜드/Status 색 divider 금지.** divider 색은 항상 borderRole(또는 block 의 surface.section). brand·error·success 등 의미색을 divider 에 칠하지 말 것 — 분리선은 중립이어야 한다.",
+        "**카드 외곽선 + 내부 divider 동시 금지.** 카드가 이미 외곽 border 로 경계를 갖는데 내부까지 divider 를 촘촘히 넣으면 선이 중복돼 지저분하다. 카드 내부 분할은 `tone=\"subtle\"` 한 줄로 최소화.",
+        "**Line + Block + Vertical 한 화면 혼용 금지.** 한 화면에서 세 형태를 다 쓰면 분리 규칙이 읽히지 않는다. 화면당 분리 어휘를 일관되게(예: 섹션은 block, 그 안은 line) 제한할 것.",
+        "**여백으로 충분하면 divider 를 쓰지 말 것.** 간격(spacing)·Heading 만으로 그룹이 구분되면 divider 는 군더더기. 선은 정말 경계가 필요할 때만.",
+        "상하 간격은 `spacing` 속성으로 — 대칭이 자동. 간격을 형제의 한쪽 margin/gap 으로만 주면 divider 가 위/아래 비대칭으로 어색해진다.",
+        "List 의 항목 사이에 Divider 를 직접 박지 말 것 — nds-list variant='divided' 가 책임짐.",
+        "orientation='vertical' 은 부모가 flex 컨테이너이고 명시적 높이가 있어야 보임. block 은 가로 전용이라 vertical 과 함께 쓰지 않는다."
+      ],
+      "examplesHtml": {
+        "do": "<!-- 섹션 사이 — 8px BG/Section 청크 -->\n<section>섹션 A</section>\n<nds-divider type=\"block\"></nds-divider>\n<section>섹션 B</section>\n\n<!-- 카드 내부 — 약한 1px 라인 -->\n<div class=\"card\">\n  <div>요약</div>\n  <nds-divider tone=\"subtle\"></nds-divider>\n  <div>상세</div>\n</div>",
+        "dont": "<!-- ① 임의 두께(2px) 로 어중간한 위계 — line=1px / block=8px 두 표준만 -->\n<nds-divider thickness=\"2\"></nds-divider>\n\n<!-- ② 브랜드/Status 색을 divider 에 칠함 — 분리선은 중립(borderRole) 이어야 -->\n<nds-divider color=\"#2563eb\"></nds-divider>"
       }
     },
     "Drawer": {
@@ -2419,21 +2476,37 @@
     },
     "ResultState": {
       "name": "ResultState",
-      "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다.",
+      "figmaNodeUrl": "https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/%F0%9F%93%9A-%EB%84%9B%EC%A7%80EAP---Library?node-id=1736-581",
+      "sizeMatrix": {
+        "image (PC/MO)": "80 / 64 — 현재 코드 base=64 (PC 80 은 device prop 도입 시 · planned). 임의 리사이즈 금지.",
+        "title (PC/MO)": "Headline5(18) / body1(16) — 둘 다 Bold·Text/Strong. (Figma \"Headline5(16)\" 라벨=코드 body1 16, off-by-one)",
+        "subtitle (PC/MO)": "Body1(16) / Body2(15) — Regular·Text/Subtle",
+        "gap": "image→title 16 · title→subtitle 8(PC)/6(MO) · text→button 12"
+      },
+      "summary": "데이터/검색 결과/기록 없음(`status=\"empty\"`) + 결과 화면(`status=\"success|error|info\"` — 결제 성공·404·권한 없음 등)을 한 anatomy 로 표시. anatomy = **이미지(`icon`) / 타이틀(`title`) / 서브타이틀(`description`) / 버튼(`action`)**. 단순 '없음' 메시지 대신 다음 액션(추가하기 / 다시 검색 / 홈으로)을 제안한다. 타이틀은 Bold·Text/Strong, 서브타이틀은 Body2·subtle 한 단계 약하게(Figma 1736:581).",
       "pitfalls": [
-        "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음.",
+        "**Figma `show*` ↔ 코드 conditional render.** 코드는 별도 show prop 을 두지 않는다 — 해당 슬롯(`icon`/`description`/`action`)을 생략하면 그 행이 숨겨진다. Figma `Image`↔`icon`, `Subtitle`↔`description`, `Button`↔`action` (html 은 `hide-icon` 으로 이미지 끔).",
+        "**Figma use-case → `status`.** EMPTY→`empty` · ERROR→`error` · SEARCH(검색 결과 없음)→`empty`(보통 action 없이) · PERMISSION→`info` · COMPLETE→`success` · NO-SUBTITLE→`description` 생략. PC/MO 사이징은 frontmatter `sizeMatrix` 참조 — 현재 코드 base=MO, PC variant 는 device prop 으로 추후(YAGNI 보류).",
+        "title 만 있고 description / action 누락 — 사용자에게 다음 행동을 안내하지 않음(단, 검색 결과 없음처럼 후속 액션이 없으면 `action` 생략이 맞다).",
+        "**타이틀 = 서브타이틀 중복 금지** — 핵심 메시지는 타이틀 한 줄, 서브타이틀은 부연. 같은 말을 두 번 쓰지 않는다.",
+        "**서브타이틀이 3줄 이상**으로 길어지면 ResultState 가 아니라 모달 / 별도 페이지로 — ResultState 는 짧은 상태 안내용.",
+        "**ResultState 안에 다른 카드 / 리스트를 배치하지 말 것** — 결과 화면은 단일 메시지 + 단일 액션. 콘텐츠 컨테이너가 아니다.",
         "인라인 placeholder ↔ 풀페이지 결과 화면의 차이는 `status` 가 아니라 `minHeight` 로 조절한다. 빈 리스트는 작게(예: 200), 결제 성공·404 결과 화면은 `minHeight=\"60vh\"` 처럼 크게. **같은 컴포넌트, altitude 만 다름.**",
         "에러/성공 결과에는 반드시 `status=\"error|success\"` — 색·기본 글리프가 시멘틱하게 바뀐다. status 없이 중립 빈상태로 에러를 표현하면 시그널이 약함.",
         "인라인 placeholder 를 footer/nav 위로 풀스크린 채우지 말 것 — 영역 안 placeholder 면 `minHeight` 를 작게 둔다(풀페이지는 결과 화면 전용).",
-        "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 프로젝트 일러스트가 있으면 `icon` 으로 주입."
+        "`icon` 을 직접 주면 `status` 기본 글리프를 덮어쓴다(색은 `status` 가 계속 구동). 프로젝트 일러스트가 있으면 `icon` 으로 주입.",
+        "**이미지 임의 리사이즈 금지** — PC 80 / MO 64 로 통일된 design intent(현재 코드 base=64). 인라인 px 로 키우거나 줄이지 않는다."
       ],
       "recommended": [
+        "버튼은 **다음 행동이 있을 때만** + 의미 있는 라벨(\"다시 시도\" / \"홈으로\" / \"추가하기\" — \"확인\" 같은 무의미 라벨 금지).",
+        "오류 / 완료 결과에는 액션(재시도 / 다음 단계)을 **필수**로 — 사용자가 막다른 길에 갇히지 않도록.",
+        "대기 / 로딩 상태에는 **액션을 끈다**(아직 다음 행동이 정해지지 않은 상태에 버튼을 노출하지 않는다).",
         "status: 빈 리스트/검색결과 `empty`(기본·중립), 결제·제출 성공 `success`, 404·실패 `error`, 안내·점검중 `info`",
         "결과 화면(풀페이지)은 `minHeight=\"60vh\"` + `action` 에 1차 CTA(홈으로/다시 시도)"
       ],
       "examplesHtml": {
-        "do": "<!-- 인라인 빈 상태 -->\n<nds-result-state title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\" action=\"작성하기\"></nds-result-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-result-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\" action=\"홈으로\"></nds-result-state>",
-        "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-result-state title=\"페이지를 찾을 수 없어요\"></nds-result-state>"
+        "do": "<!-- 인라인 빈 상태 (action 슬롯) -->\n<nds-result-state status=\"empty\" title=\"아직 작성한 일기가 없어요\" description=\"오늘의 감정을 기록해 보세요\">\n  <button is=\"nds-button\">작성하기</button>\n</nds-result-state>\n<!-- 풀페이지 결과(성공) -->\n<nds-result-state status=\"success\" min-height=\"60vh\" title=\"결제가 완료됐어요\" description=\"이용 내역은 마이페이지에서 확인할 수 있어요\">\n  <button is=\"nds-button\">홈으로</button>\n</nds-result-state>\n<!-- 검색 결과 없음 (action 없이) -->\n<nds-result-state status=\"empty\" title=\"검색 결과가 없어요\" description=\"다른 검색어로 다시 시도해 보세요\"></nds-result-state>",
+        "dont": "<!-- 에러인데 status 없이 중립 빈상태 — 시그널 약함 -->\n<nds-result-state status=\"empty\" title=\"페이지를 찾을 수 없어요\"></nds-result-state>\n<!-- 타이틀과 서브타이틀이 같은 말 — 중복 -->\n<nds-result-state status=\"error\" title=\"오류가 발생했어요\" description=\"오류가 발생했어요\"></nds-result-state>"
       }
     },
     "ReviewCard": {

@@ -35,6 +35,11 @@ export const nudgeEapSemantic = {
     },
     // Figma `--bg-overlay` (flat, no /default suffix) — emits `--semantic-bg-overlay`
     overlay: "rgba(0,0,0,0.4)",
+    // Dim 백드롭 강도 스케일 — emits `--semantic-bg-overlay-{subtle,strong}` (Figma Dim Guide 1751:20).
+    // Subtle α0.2 / Strong α0.7. default(overlay)만 프로젝트별 테마, subtle·strong 은 범용 검정
+    // ("검정 위 alpha만 다르게") — 타 프로젝트는 base-fallback waiver (project-completeness-baseline).
+    overlaySubtle: "rgba(0,0,0,0.2)",
+    overlayStrong: "rgba(0,0,0,0.7)",
     // DS extension — Figma has no `bg-disabled` role; used by disabled controls
     // (Audio/Date/Slider/Stepper/Checkbox 등). Value = Neutral · 200.
     disabled: ref("color.neutral.200"), // #ECECEC

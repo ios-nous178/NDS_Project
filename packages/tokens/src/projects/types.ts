@@ -26,8 +26,12 @@ export interface SemanticColors {
       info?: string;
       caution?: string;
     };
-    /** Figma `--bg-overlay` */
+    /** Figma `--bg-overlay` (Dim Default · α0.4) — 백드롭 강도 중 유일하게 프로젝트별로 테마된다 */
     overlay?: string;
+    /** Dim 백드롭 Subtle(α0.2). 범용 검정 — 프로젝트 무관(default=overlay 만 테마). */
+    overlaySubtle?: string;
+    /** Dim 백드롭 Strong(α0.7). 범용 검정 — 프로젝트 무관. */
+    overlayStrong?: string;
     /** DS extension — disabled bg */
     disabled?: string;
     /**

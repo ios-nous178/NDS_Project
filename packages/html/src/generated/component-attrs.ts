@@ -5,11 +5,16 @@
 export const COMPONENT_ATTRS = {
   "nds-accordion": {
     "observedAttributes": [
+      "expand-mode",
       "type",
       "value"
     ],
     "enums": {
       "type": [
+        "line",
+        "card"
+      ],
+      "expand-mode": [
         "single",
         "multiple"
       ]
@@ -545,17 +550,41 @@ export const COMPONENT_ATTRS = {
       ]
     }
   },
+  "nds-dim": {
+    "observedAttributes": [
+      "animated",
+      "type"
+    ],
+    "enums": {
+      "type": [
+        "subtle",
+        "default",
+        "strong"
+      ]
+    }
+  },
   "nds-divider": {
     "observedAttributes": [
       "color",
       "orientation",
       "spacing",
-      "thickness"
+      "thickness",
+      "tone",
+      "type"
     ],
     "enums": {
       "orientation": [
         "horizontal",
         "vertical"
+      ],
+      "type": [
+        "line",
+        "block"
+      ],
+      "tone": [
+        "subtle",
+        "normal",
+        "strong"
       ]
     }
   },

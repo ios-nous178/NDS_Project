@@ -27,6 +27,7 @@ import "./components/nds-footer.js";
 import "./components/nds-project-chrome.js";
 import "./components/nds-list.js";
 import "./components/nds-divider.js";
+import "./components/nds-dim.js";
 import "./components/nds-spinner.js";
 import "./components/nds-textarea.js";
 import "./components/nds-input.js";
