@@ -3,7 +3,7 @@ import {
   neutral,
   coolGray,
   blue,
-  magenta,
+  pink,
   yellow,
   red,
   green,
@@ -156,7 +156,7 @@ function ColorTokensPage() {
       <PaletteGroup title="Neutral" palette={neutral} />
       <PaletteGroup title="Cool Gray" palette={coolGray} />
       <PaletteGroup title="Blue (Primary)" palette={blue} />
-      <PaletteGroup title="Magenta (Secondary)" palette={magenta} />
+      <PaletteGroup title="Pink (Accent)" palette={pink} />
       <PaletteGroup title="Yellow (Caution)" palette={yellow} />
       <PaletteGroup title="Red (Error)" palette={red} />
       <PaletteGroup title="Green (Success)" palette={green} />

@@ -42,7 +42,7 @@ export const blue = {
   900: "#0F52A0",
 } as const;
 
-export const magenta = {
+export const pink = {
   50: "#FDF1F5",
   100: "#FCE3EC",
   200: "#F8B8CF",
@@ -124,7 +124,7 @@ export const colors = {
   neutral,
   coolGray,
   blue,
-  magenta,
+  pink,
   red,
   coralRed,
   green,

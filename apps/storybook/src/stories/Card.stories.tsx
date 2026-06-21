@@ -191,7 +191,7 @@ export const CompoundCounselorCard: Story = {
                 margin: "0 0 4px",
                 fontSize: 14,
                 fontWeight: 700,
-                color: colors.magenta[500],
+                color: colors.pink[500],
               }}
             >
               내담자 후기

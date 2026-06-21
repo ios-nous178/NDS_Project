@@ -24,7 +24,6 @@ export const familyNotes: Record<string, { desc: string; tags?: string[] }> = {
   neutral: { desc: "중립 그레이 (텍스트·보더·배경 기본)" },
   coolGray: { desc: "차가운 그레이" },
   blue: { desc: "블루" },
-  magenta: { desc: "마젠타" },
   red: { desc: "레드 (오렌지레드)" },
   coralRed: { desc: "코랄 레드" },
   green: { desc: "그린" },

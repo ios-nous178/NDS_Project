@@ -165,7 +165,7 @@ const LAYOUT_PRIMITIVES = new Set([
 const HEX_RE = /#[0-9a-fA-F]{3,8}\b/;
 const RGB_RE = /\brgba?\s*\(/i;
 // server.ts isRawPaletteToken 과 동일 규칙(의도적 미러 — 결합 회피).
-const RAW_PALETTE_RE = /^--color-(?:neutral|coolGray|blue|magenta|yellow|red|green)-/;
+const RAW_PALETTE_RE = /^--color-(?:neutral|coolGray|blue|pink|yellow|red|green)-/;
 
 function stripVar(token: string): string {
   const m = /^var\(\s*(--[^),\s]+)/.exec(token.trim());

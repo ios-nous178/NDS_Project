@@ -17,7 +17,7 @@ export {
   neutral,
   coolGray,
   blue,
-  magenta,
+  pink,
   yellow,
   red,
   coralRed,
