@@ -117,7 +117,7 @@ export const trendingKeywordsStyles = `
     width: 280px;
     padding: var(--semantic-inset-modal);
     background: ${cv.surface.default};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     box-shadow: ${shadow["1"]};
     z-index: 100;
     opacity: 0;
@@ -180,7 +180,7 @@ export const trendingKeywordsStyles = `
     text-decoration: none;
     cursor: pointer;
     padding: ${spacing[2]}px 0;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     transition: background-color ${transition.default};
   }
   :where(.${TK_DROPDOWN_CLASS_ITEM_CLASS}:hover) {

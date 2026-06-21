@@ -63,7 +63,7 @@ export const phoneInputStyles = `
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
     font-family: inherit;
@@ -117,7 +117,7 @@ export const phoneInputStyles = `
     padding: ${spacing[4]}px;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     list-style: none;
     margin: 0;
@@ -132,7 +132,7 @@ export const phoneInputStyles = `
     border: none;
     background: transparent;
     cursor: pointer;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     font-family: inherit;
     font-size: ${typeScale.body2.fontSize}px;
     color: ${cv.textRole.normal};
@@ -175,7 +175,7 @@ export const phoneInputStyles = `
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: var(--nds-input-background, ${cv.input.bg});
     outline: none;
     /* Input Value — Input Typography 표준 value(15/22 · Regular). */

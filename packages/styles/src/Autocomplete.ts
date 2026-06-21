@@ -46,7 +46,7 @@ export const autocompleteStyles = `
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
     border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: var(--nds-input-background, ${cv.input.bg});
     color: ${cv.textRole.normal};
     /* Input Value — Input Typography 표준 value(15/22 · Regular). */
@@ -82,7 +82,7 @@ export const autocompleteStyles = `
     margin-top: ${spacing[4]}px;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     max-height: 280px;
     overflow-y: auto;

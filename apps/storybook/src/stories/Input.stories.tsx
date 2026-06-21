@@ -99,7 +99,7 @@ const INPUT_SPEC_ROWS: Array<{ key: string; value: string }> = [
   { key: "사이즈 (default / field)", value: "높이 48 / 48px (field 는 라벨갭만 타이트)" },
   { key: "Wrapper padding-X", value: "16px" },
   { key: "Wrapper 텍스트 ↔ 아이콘 gap", value: "10px" },
-  { key: "Wrapper radius", value: "8px (radius.md)" },
+  { key: "Wrapper radius", value: "8px (radius[8])" },
   { key: "Label ↔ Wrapper gap", value: "12px (default) / 8px (field)" },
   { key: "Wrapper ↔ Helper gap", value: "8px (disabled 12px)" },
   { key: "Helper 그룹 column gap", value: "12px" },

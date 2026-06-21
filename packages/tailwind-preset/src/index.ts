@@ -78,6 +78,15 @@ import {
  * tailwind 클래스도 자동 반영된다. project override(예: Trost theme) 가 같은
  * var 를 redefine 하면 동일 클래스가 프로젝트 색상으로 렌더된다.
  */
+/** 숫자 단일 radius 스케일 → tailwind `rounded-{2,4,8,…,full}` (none·기본 8 포함). 전 프리셋 공용. */
+const borderRadiusScale = {
+  none: "0px",
+  DEFAULT: `${radius[8]}px`,
+  ...Object.fromEntries(
+    Object.entries(radius).map(([k, v]) => [k, v === 9999 ? "9999px" : `${v}px`]),
+  ),
+};
+
 export const nudgeEapPreset = {
   theme: {
     extend: {
@@ -162,14 +171,7 @@ export const nudgeEapPreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: {
-        none: "0px",
-        sm: `${radius.sm}px`,
-        DEFAULT: `${radius.md}px`,
-        md: `${radius.md}px`,
-        lg: `${radius.lg}px`,
-        pill: `${radius.pill}px`,
-      },
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,
@@ -226,17 +228,7 @@ export const trostPreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: {
-        none: "0px",
-        sm: `${trostTheme.spacing!.radius!.sm}px`,
-        md: `${trostTheme.spacing!.radius!.md}px`,
-        DEFAULT: `${trostTheme.spacing!.radius!.lg}px`, // 기본 = Radius/Lg(8)
-        lg: `${trostTheme.spacing!.radius!.lg}px`,
-        xl: `${trostTheme.spacing!.radius!.xl}px`,
-        "2xl": `${trostTheme.spacing!.radius!["2xl"]}px`,
-        "3xl": `${trostTheme.spacing!.radius!["3xl"]}px`,
-        pill: "9999px",
-      },
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,
@@ -311,14 +303,7 @@ export const cashwalkBizPreset = {
             Object.entries(cashwalkBizTheme.spacing.spacing).map(([k, v]) => [k, `${v}px`]),
           )
         : undefined,
-      borderRadius: cashwalkBizTheme.spacing?.radius
-        ? Object.fromEntries(
-            Object.entries(cashwalkBizTheme.spacing.radius).map(([k, v]) => [
-              k,
-              v === 9999 ? "9999px" : `${v}px`,
-            ]),
-          )
-        : undefined,
+      borderRadius: borderRadiusScale,
       borderWidth: cashwalkBizTheme.spacing?.borderWidth
         ? Object.fromEntries(
             Object.entries(cashwalkBizTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
@@ -407,17 +392,7 @@ export const genietPreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: genietTheme.spacing?.radius
-        ? {
-            ...Object.fromEntries(
-              Object.entries(genietTheme.spacing.radius).map(([k, v]) => [
-                k,
-                v === 9999 ? "9999px" : `${v}px`,
-              ]),
-            ),
-            DEFAULT: `${genietTheme.spacing.radius.md}px`,
-          }
-        : undefined,
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,
@@ -473,17 +448,7 @@ export const runmilePreset = {
         ]),
       ),
       spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
-      borderRadius: runmileTheme.spacing?.radius
-        ? {
-            ...Object.fromEntries(
-              Object.entries(runmileTheme.spacing.radius).map(([k, v]) => [
-                k,
-                v === 9999 ? "9999px" : `${v}px`,
-              ]),
-            ),
-            DEFAULT: `${runmileTheme.spacing.radius.md}px`,
-          }
-        : undefined,
+      borderRadius: borderRadiusScale,
       height: {
         "btn-lg": `${sizing.button.lg}px`,
         "btn-md": `${sizing.button.md}px`,

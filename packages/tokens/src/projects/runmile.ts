@@ -80,19 +80,8 @@ export const runmileTheme: ProjectTheme = {
     },
   },
   spacing: {
-    // Radius — Figma Border&Radius 가이드 (5024:16). None~3XL + Full(pill).
-    // 스페이싱 스케일(2pt) 값은 base --spacing-* 와 동일해 override 불필요.
-    radius: {
-      none: 0,
-      xs: 4,
-      sm: 6,
-      md: 8,
-      lg: 12,
-      xl: 15,
-      "2xl": 20,
-      "3xl": 24,
-      pill: 9999,
-    },
+    // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
+    // 스페이싱 스케일(2pt) 값도 base --spacing-* 와 동일해 override 불필요.
     // Border Width — Figma Border&Radius 가이드 (5024:16). W-Default/Icon/Strong.
     borderWidth: {
       none: 0,

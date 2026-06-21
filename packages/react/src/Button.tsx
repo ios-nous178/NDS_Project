@@ -6,7 +6,7 @@ export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "mini" | "field";
 export type ButtonColor = "primary" | "secondary" | "neutral";
 /**
  * Button shape.
- * - `default` : radius.md (8px) — 일반 admin 폼/CTA · 페이지 내 액션
+ * - `default` : radius[8] (8px) — 일반 admin 폼/CTA · 페이지 내 액션
  * - `pill`    : radius full (9999px) — 모달 확인/취소, BottomCTA, 격식 컨텍스트
  *
  * Figma ButtonGuide(캐포비 3098:1032) 의 "When to use · Shape" 가이드와 정합.
@@ -15,7 +15,7 @@ export type ButtonColor = "primary" | "secondary" | "neutral";
 export type ButtonShape = "default" | "pill";
 
 const SHAPE_RADIUS: Record<ButtonShape, string> = {
-  default: `${radius.md}px`,
+  default: `${radius[8]}px`,
   pill: "9999px",
 };
 
@@ -328,7 +328,11 @@ const PROJECT_TONE_DENYLIST: Record<string, ReadonlyArray<ButtonColor>> = {
 };
 
 const warnedKeys = new Set<string>();
-function warnIfProjectRestricted(project: string | null, variant: ButtonVariant, color: ButtonColor) {
+function warnIfProjectRestricted(
+  project: string | null,
+  variant: ButtonVariant,
+  color: ButtonColor,
+) {
   if (!project) return;
   const allow = PROJECT_VARIANT_WHITELIST[project];
   if (allow && !allow.includes(variant)) {
@@ -379,7 +383,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   color?: ButtonColor;
   /**
    * 버튼 모양 (border-radius).
-   * - `default` (기본) — radius.md (8px), 일반 admin 액션
+   * - `default` (기본) — radius[8] (8px), 일반 admin 액션
    * - `pill` — radius full (9999px), 모달 액션 / BottomCTA / 격식 컨텍스트
    */
   shape?: ButtonShape;

@@ -63,7 +63,7 @@ sizeMatrix:
   geniLayoutGrid: "지니어트 배치형 — 160×210 · radius 8 · padding 0/4 · 작은 그리드 카드. 카테고리 2·3열(Mobile). ≈ 작은 Cover."
   geniLayoutContainer: "지니어트 배치형 — 440×auto · radius 16 · padding 24 · shadow(E2) · PC 큰 카드(메인 콘텐츠·모달·Hero). Mobile=border / PC Container=shadow."
   geniLayoutNote: "위 4 Layout 은 '배치·크기·radius' 축으로 콘텐츠 축(List/Thumb/Cover)과 직교 — 함께 읽는다(Horizontal≈Thumb · Vertical/Grid≈Cover · Container=PC 큰 카드). radius 8/12/8/16 은 지니어트 Library 단순화본이라 base sizeMatrix(mobile 8/10/12 · pc 10/12/14)와 다름 — 한 스케일로 통일할지는 결정 필요."
-  trostPlatformPc: "트로스트 Container card (platform='pc') — padding 28 · radius 16(radius.xl) · title 20(Headline 4) · subtitle 14(Body 3). PC 메인/모달 큰 카드."
+  trostPlatformPc: "트로스트 Container card (platform='pc') — padding 28 · radius 16(radius[16]) · title 20(Headline 4) · subtitle 14(Body 3). PC 메인/모달 큰 카드."
   trostPlatformMobile: "트로스트 Container card (platform='mobile') — padding 20 · radius 14 · title 17 · subtitle 13(Caption 1). 모바일 화면."
   trostElevation: "트로스트 elevation — outline=현행(보더 1px, shadow 없음, 기본값) / elevated=box-shadow E2(shadow.e2) + 보더 제거. 한 화면 한 elevation 유지."
   trostHeaderRow: "트로스트 헤더 행 — 리딩 아이콘(24px, point/코발트 액센트) + 10px gap + 정보 컬럼(title 위 subtitle, gap 2px). icon prop 지정 시 활성. showHeader 로 아이콘 없이 컬럼만 묶기도 가능."

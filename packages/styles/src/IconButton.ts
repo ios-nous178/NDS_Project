@@ -12,7 +12,7 @@ export const iconButtonStyles = `
     height: var(--nds-icon-button-size, 32px);
     padding: 0;
     border: none;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     background: transparent;
     color: var(--nds-icon-button-color, ${cv.iconRole.strong});
     cursor: pointer;

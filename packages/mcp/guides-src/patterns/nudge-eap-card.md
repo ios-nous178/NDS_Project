@@ -9,7 +9,7 @@ figmaNodeUrl: https://www.figma.com/design/MqR7O3uvBvH5tVngwzbqGH/?node-id=713-2
 ## rules
 
 - Anatomy — Title(필수·Primary, 생략 불가) + Optional: Thumbnail(max 1, Avatar와 배타) · Avatar(max 1, Thumbnail과 배타) · Badge/Chip(max 2) · Description(max 3줄, line-clamp) · Metadata(max 2항목, Muted 12–13px) · CTA(max 1) · Footer(min-h 40, border-top + padding-top 16).
-- Surface — Background: White 또는 Surface/Neutral 토큰만. Border: 1px `--semantic-border-default`(#E2E6EA). **Border-radius: 12px 고정**(radius.lg). **Shadow 사용 금지** — border 로만 카드 구분(넛지EAP 서비스 카드는 elevation 미사용).
+- Surface — Background: White 또는 Surface/Neutral 토큰만. Border: 1px `--semantic-border-default`(#E2E6EA). **Border-radius: 12px 고정**(radius[12]). **Shadow 사용 금지** — border 로만 카드 구분(넛지EAP 서비스 카드는 elevation 미사용).
 - Spacing — Padding 16(min)~24(max) 전 방향 동일. 카드 간 gap 8(min)~16(max). 요소 간: Title↔Description 4px · Description↔Metadata 8px · Metadata↔CTA 16px. Footer separator: border-top 1px + padding-top 16px.
 - Hierarchy(폰트 Pretendard) — Title=Headline5 Bold 18/26(`--font-size-headline-5`) 항상 최강조 · Description=Body3 Regular 14/20(`--font-size-body-3`) · Metadata=Caption1 Regular 13/18(`--font-size-caption-1`) Muted 필수 · CTA=Body3 Medium 14/20. Title 외 Primary 강조 1개 초과 금지.
 - CTA 유형 4종(카드 컨텍스트별, 임의 크기 변형 금지) — ① Full-width: Btn Large 48px, 카드 너비 100%, radius 8, Solid/Primary(Project bg·white), Mobile/App 콘텐츠·프로그램 카드. ② Compact: Btn Small 40px, auto(min 80), radius 6, Outlined 또는 Solid/Primary, 요약·수치·공간 제약 카드. ③ Icon+Text: Btn Medium 44px, icon 16 + text(간격 6), radius 8, PC 상담 예약·전문가·퀵 액션 카드. ④ Ghost/Link: Text Button, "더 보기"·"자세히" 보조 액션, Project Color 텍스트 + underline/chevron.

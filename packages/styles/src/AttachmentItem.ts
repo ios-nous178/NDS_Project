@@ -29,7 +29,7 @@ export const attachmentItemStyles = `
     padding: ${spacing[10]}px var(--semantic-inset-input);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;
     width: 100%;
@@ -45,7 +45,7 @@ export const attachmentItemStyles = `
     flex-shrink: 0;
     width: 36px;
     height: 36px;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     background: ${cv.surface.page};
     color: ${cv.iconRole.normal};
     display: inline-flex;
@@ -110,7 +110,7 @@ export const attachmentItemStyles = `
     height: 3px;
     margin-top: ${spacing[4]}px;
     background: ${cv.surface.disabled};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     overflow: hidden;
   }
   :where(.${AT_PROGRESS_FILL_CLASS}) {
@@ -134,7 +134,7 @@ export const attachmentItemStyles = `
     justify-content: center;
     width: 28px;
     height: 28px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     color: ${cv.iconRole.normal};
     cursor: pointer;
     transition: background-color ${transition.default}, color ${transition.default};

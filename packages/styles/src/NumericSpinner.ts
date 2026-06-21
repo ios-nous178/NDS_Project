@@ -12,7 +12,7 @@ export const numericSpinnerStyles = `
     box-sizing: border-box;
     height: var(--nds-numeric-spinner-height, ${sizing.input.default}px);
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     font-family: ${fontFamily.web};
     overflow: hidden;

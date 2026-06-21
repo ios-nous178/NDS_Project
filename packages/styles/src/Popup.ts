@@ -39,7 +39,7 @@ export const popupStyles = `
     flex-direction: column;
     gap: var(--semantic-gap-wide);
     padding: ${spacing[28]}px var(--semantic-inset-card) var(--semantic-inset-card);
-    border-radius: var(--nds-popup-radius, ${radius.md}px);
+    border-radius: var(--nds-popup-radius, ${radius[8]}px);
     background: ${cv.surface.default};
     box-shadow: var(--nds-popup-shadow, ${shadow["3"]});
     animation: nds-popup-scale-in 0.2s ease-out;
@@ -89,7 +89,7 @@ export const popupStyles = `
     min-height: 44px;
     padding: ${spacing[10]}px var(--semantic-inset-card);
     border: none;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body2.fontSize}px;
     font-weight: 700;

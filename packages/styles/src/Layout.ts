@@ -159,7 +159,7 @@ export const sectionStyles = `
   :where(.${SECTION_CLASS}) {
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.normal};
-    border-radius: var(--nds-section-radius, ${radius.lg}px);
+    border-radius: var(--nds-section-radius, ${radius[12]}px);
     overflow: hidden;
     font-family: ${fontFamily.web};
   }
@@ -323,6 +323,6 @@ export const containerStyles = `
 export const sectionSurfaceStyles = `
   :where(.${SECTION_SURFACE_CLASS}) {
     background: var(--semantic-bg-surface-default);
-    border-radius: ${radius.xl}px;
+    border-radius: ${radius[16]}px;
   }
 `;

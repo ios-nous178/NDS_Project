@@ -51,7 +51,7 @@ export const modalStyles = `
     gap: var(--semantic-gap-default);
     padding: var(--nds-modal-pad-top, ${spacing[28]}px) var(--semantic-inset-card) var(--semantic-inset-card);
     overflow: hidden;
-    border-radius: var(--nds-modal-radius, ${radius.md}px);
+    border-radius: var(--nds-modal-radius, ${radius[8]}px);
     background-color: ${cv.surface.default};
     box-shadow: var(--nds-modal-shadow, ${shadow["3"]});
     animation: nds-modal-slide-up 0.2s ease-out;
@@ -169,7 +169,7 @@ export const modalStyles = `
     align-items: center;
     justify-content: center;
     padding: ${spacing[11]}px var(--semantic-inset-modal);
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     border: 1px solid transparent;
     cursor: pointer;
     font-size: ${typeScale.body2.fontSize}px;

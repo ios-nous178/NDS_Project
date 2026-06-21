@@ -1,7 +1,7 @@
 ---
 figmaNodeUrl: https://www.figma.com/design/gC7CyAVloVvU896avolddQ/?node-id=5258-128
 sizeMatrix:
-  radius (base): var(--nds-bottom-sheet-radius, radius.lg = 12) — 상단 좌우만
+  radius (base): var(--nds-bottom-sheet-radius, radius[12] = 12) — 상단 좌우만
   radius (Trost): 20 (프로젝트 토큰이 --nds-bottom-sheet-radius:20px emit)
   handleWidth (base): var(--nds-bottom-sheet-handle-width, 36) × 4 height
   handleWidth (Trost): 40 (프로젝트 토큰이 --nds-bottom-sheet-handle-width:40px emit)

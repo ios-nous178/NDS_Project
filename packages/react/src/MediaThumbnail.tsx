@@ -14,10 +14,10 @@ export type MediaFit = "cover" | "contain";
 
 const ROUND_PX: Record<MediaRounded, number | string> = {
   none: 0,
-  sm: radius.sm,
-  md: radius.md,
-  lg: radius.lg,
-  pill: radius.pill,
+  sm: radius[4],
+  md: radius[8],
+  lg: radius[12],
+  pill: radius.full,
 };
 /* ─── Utils ─── */
 

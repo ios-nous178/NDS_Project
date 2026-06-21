@@ -54,7 +54,7 @@ export const tpStyles = `
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 ${spacing[8]}px 0 var(--semantic-inset-card);
     border: 1px solid ${cv.input.borderDefault};
-    border-radius: var(--nds-input-radius, ${radius.md}px);
+    border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     transition: border-color ${transition.default};
     box-sizing: border-box;
@@ -126,7 +126,7 @@ export const tpStyles = `
     height: 32px;
     padding: 0 ${spacing[10]}px;
     border: none;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     background: ${cv.surface.section};
     color: ${cv.textRole.normal};
     font-family: inherit;
@@ -146,7 +146,7 @@ export const tpStyles = `
     position: fixed;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     padding: var(--semantic-inset-input);
@@ -207,7 +207,7 @@ export const tpStyles = `
     scroll-snap-align: center;
     border: none;
     background: transparent;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;

@@ -109,7 +109,7 @@ export const bottomNavStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: var(--nds-bottomnav-badge-bg, ${cv.surface.statusError});
     color: var(--nds-bottomnav-badge-color, ${cv.textRole.inverse});
     font-size: ${typeScale.label.fontSize}px;

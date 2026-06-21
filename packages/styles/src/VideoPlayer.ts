@@ -18,7 +18,7 @@ export const videoPlayerStyles = `
   :where(.${VP_CLASS}) {
     position: relative;
     width: 100%;
-    border-radius: var(--nds-video-player-radius, ${radius.lg}px);
+    border-radius: var(--nds-video-player-radius, ${radius[12]}px);
     overflow: hidden;
     background: #000;
     font-family: ${fontFamily.web};
@@ -74,7 +74,7 @@ export const videoPlayerStyles = `
     line-height: 16px;
     background: rgba(0,0,0,0.55);
     padding: 4px var(--semantic-inset-chip);
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     font-weight: ${fontWeight.medium};
   }
 

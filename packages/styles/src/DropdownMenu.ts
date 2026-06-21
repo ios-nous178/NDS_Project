@@ -29,7 +29,7 @@ export const dropdownMenuStyles = `
     overflow-y: auto;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
     padding: ${spacing[4]}px;
@@ -71,7 +71,7 @@ export const dropdownMenuStyles = `
     padding: ${spacing[10]}px var(--semantic-inset-input);
     border: none;
     background: transparent;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     cursor: pointer;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;

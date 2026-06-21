@@ -16,12 +16,20 @@ export type ButtonColor = "primary" | "secondary" | "neutral";
 export type ButtonShape = "default" | "pill";
 
 export const BUTTON_VARIANTS: readonly ButtonVariant[] = ["solid", "soft", "outlined"] as const;
-export const BUTTON_SIZES: readonly ButtonSize[] = ["xl", "lg", "md", "sm", "xs", "mini", "field"] as const;
+export const BUTTON_SIZES: readonly ButtonSize[] = [
+  "xl",
+  "lg",
+  "md",
+  "sm",
+  "xs",
+  "mini",
+  "field",
+] as const;
 export const BUTTON_COLORS: readonly ButtonColor[] = ["primary", "secondary", "neutral"] as const;
 export const BUTTON_SHAPES: readonly ButtonShape[] = ["default", "pill"] as const;
 
 export const SHAPE_RADIUS: Record<ButtonShape, string> = {
-  default: `${radius.md}px`,
+  default: `${radius[8]}px`,
   pill: "9999px",
 };
 

@@ -33,7 +33,7 @@ export const selectionCardStyles = `
     padding: var(--semantic-inset-card);
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.normal};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     cursor: pointer;
     transition: border-color ${transition.default}, background-color ${transition.default};
     box-sizing: border-box;
@@ -90,7 +90,7 @@ export const selectionCardStyles = `
   }
 
   :where(.${SC_ITEM_CLASS}[data-mode="multiple"]) .${SC_INDICATOR_CLASS} {
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
   }
 
   :where(.${SC_ITEM_CLASS}[data-checked="true"]) .${SC_INDICATOR_CLASS} {

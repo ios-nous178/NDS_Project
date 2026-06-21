@@ -14,7 +14,7 @@ export const progressBarStyles = `
   :where(.${PB_TRACK_CLASS}) {
     width: 100%;
     height: var(--nds-progress-height, 8px);
-    border-radius: var(--nds-progress-radius, ${radius.pill}px);
+    border-radius: var(--nds-progress-radius, ${radius.full}px);
     background: var(--nds-progress-track-bg, ${cv.surface.disabled});
     overflow: hidden;
   }

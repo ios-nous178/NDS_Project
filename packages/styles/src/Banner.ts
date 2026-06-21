@@ -25,7 +25,7 @@ export const bannerStyles = `
     width: 100%;
     padding: var(--nds-banner-padding, var(--semantic-inset-card-large) var(--semantic-inset-modal));
     background: var(--nds-banner-background, ${cv.surface.section});
-    border-radius: var(--nds-banner-radius, ${radius.lg}px);
+    border-radius: var(--nds-banner-radius, ${radius[12]}px);
     font-family: ${fontFamily.web};
     box-sizing: border-box;
     overflow: hidden;
@@ -116,7 +116,7 @@ export const bannerStyles = `
     height: 24px;
     cursor: pointer;
     color: ${cv.iconRole.normal};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     transition: background-color ${transition.default};
   }
 

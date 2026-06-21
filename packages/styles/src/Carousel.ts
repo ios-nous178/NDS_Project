@@ -19,7 +19,7 @@ export const carouselStyles = `
 
   :where(.${CR_VIEWPORT_CLASS}) {
     overflow: hidden;
-    border-radius: var(--nds-carousel-radius, ${radius.lg}px);
+    border-radius: var(--nds-carousel-radius, ${radius[12]}px);
     width: 100%;
   }
 

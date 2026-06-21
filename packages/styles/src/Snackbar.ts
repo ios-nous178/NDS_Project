@@ -27,7 +27,7 @@ export const snackbarStyles = `
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
-    border-radius: var(--nds-snackbar-radius, ${radius.md}px);
+    border-radius: var(--nds-snackbar-radius, ${radius[8]}px);
     background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, var(--semantic-bg-section-default)));
     color: var(--nds-snackbar-fg, var(--semantic-text-normal-default));
     border: 1px solid var(--nds-snackbar-border, transparent);
@@ -110,7 +110,7 @@ export const snackbarStyles = `
     font-weight: ${fontWeight.bold};
     cursor: pointer;
     flex-shrink: 0;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     transition: background-color ${transition.default};
   }
 

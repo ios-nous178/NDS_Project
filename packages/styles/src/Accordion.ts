@@ -18,7 +18,7 @@ export const accordionStyles = `
 
   :where(.${ACC_ITEM_CLASS}) {
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.lg}px;
+    border-radius: ${radius[12]}px;
     overflow: hidden;
     background: ${cv.surface.default};
   }

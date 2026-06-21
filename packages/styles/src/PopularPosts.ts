@@ -32,7 +32,7 @@ export const popularPostsStyles = `
     padding: ${spacing[20]}px;
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     font-family: ${fontFamily.web};
   }
 
@@ -109,7 +109,7 @@ export const popularPostsStyles = `
     height: 32px;
     padding: ${spacing[6]}px ${spacing[12]}px;
     border: none;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};
     font-family: inherit;

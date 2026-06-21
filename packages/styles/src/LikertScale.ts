@@ -46,7 +46,7 @@ export const likertStyles = `
     right: 12px;
     height: 2px;
     background: ${cv.borderRole.subtle};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     pointer-events: none;
   }
 
@@ -85,7 +85,7 @@ export const likertStyles = `
     width: 24px;
     height: 24px;
     border: 1.5px solid ${cv.borderRole.normal};
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};
     box-sizing: border-box;
@@ -104,7 +104,7 @@ export const likertStyles = `
     display: block;
     width: 8px;
     height: 8px;
-    border-radius: ${radius.pill}px;
+    border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     opacity: 0;
     transform: scale(0.5);

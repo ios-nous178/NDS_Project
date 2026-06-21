@@ -38,7 +38,7 @@ export const dataTableStyles = `
     width: 100%;
     overflow-x: auto;
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     background: ${cv.surface.default};
   }
 
@@ -157,7 +157,7 @@ export const dataTableStyles = `
   :where(.${DT_CARD_CLASS}) > article {
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
     display: flex;
     flex-direction: column;
@@ -210,7 +210,7 @@ export const dataTableStyles = `
     border: none;
     background: transparent;
     color: ${cv.textRole.subtle};
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
     cursor: pointer;
     transition: background-color ${transition.default}, color ${transition.default};
   }

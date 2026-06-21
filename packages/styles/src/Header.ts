@@ -344,7 +344,7 @@ export const headerStyles = `
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
     border: 0;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
@@ -369,7 +369,7 @@ export const headerStyles = `
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
     border: 1px solid ${cv.borderRole.brand};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;

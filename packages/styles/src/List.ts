@@ -38,7 +38,7 @@ export const listStyles = `
   :where(.${LIST_ROOT_CLASS}[data-variant="card"]) {
     background: ${cv.surface.default};
     border: 1px solid ${cv.borderRole.subtle};
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     overflow: hidden;
   }
 
@@ -327,6 +327,6 @@ export const listStyles = `
   :where(.${LIST_ITEM_ACTION_LINK_CLASS}:focus-visible) {
     outline: 2px solid ${cv.borderRole.brand};
     outline-offset: 2px;
-    border-radius: ${radius.sm}px;
+    border-radius: ${radius[4]}px;
   }
 `;

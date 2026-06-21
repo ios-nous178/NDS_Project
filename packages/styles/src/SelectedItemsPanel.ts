@@ -89,7 +89,7 @@ export const selectedItemsPanelStyles = `
     gap: ${spacing[4]}px;
     padding: 7px ${spacing[16]}px 7px ${spacing[10]}px;
     border: 0;
-    border-radius: ${radius.md}px;
+    border-radius: ${radius[8]}px;
     font-family: inherit;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;
@@ -149,7 +149,7 @@ export const selectedItemsPanelStyles = `
     box-sizing: border-box;
     padding: ${spacing[8]}px ${spacing[12]}px ${spacing[8]}px ${spacing[16]}px;
     background: var(--nds-selected-item-row-bg, ${cv.surface.section});
-    border-radius: var(--nds-selected-item-row-radius, ${radius.lg}px);
+    border-radius: var(--nds-selected-item-row-radius, ${radius[12]}px);
     font-family: ${fontFamily.web};
   }
 
