@@ -35,7 +35,7 @@ export const bannerStyles = `
 
   :where(.${BN_CLASS}[data-variant="outlined"]) {
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 
   :where(.${BN_CLASS}[data-variant="image"]) {

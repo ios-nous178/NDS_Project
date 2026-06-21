@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T17:00:13.276Z",
+  "generatedAt": "2026-06-21T18:06:08.876Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -9023,65 +9023,6 @@
   ],
   "tokens": [
     {
-      "name": "--border-bold",
-      "value": "2px",
-      "group": "border",
-      "projects": [
-        "trost"
-      ]
-    },
-    {
-      "name": "--border-default",
-      "value": "1px",
-      "group": "border"
-    },
-    {
-      "name": "--border-focus",
-      "value": "2px",
-      "group": "border"
-    },
-    {
-      "name": "--border-hairline",
-      "value": "1px",
-      "group": "border",
-      "projects": [
-        "trost"
-      ]
-    },
-    {
-      "name": "--border-icon",
-      "value": "1.5px",
-      "group": "border",
-      "projects": [
-        "runmile"
-      ]
-    },
-    {
-      "name": "--border-none",
-      "value": "0px",
-      "group": "border"
-    },
-    {
-      "name": "--border-strong",
-      "value": "2px",
-      "group": "border",
-      "projects": [
-        "runmile",
-        "trost"
-      ],
-      "projectValues": {
-        "trost": "1.5px"
-      }
-    },
-    {
-      "name": "--border-thin",
-      "value": "1.5px",
-      "group": "border",
-      "projects": [
-        "cashwalk-biz"
-      ]
-    },
-    {
       "name": "--color-blue-100",
       "value": "#E3F2FC",
       "group": "color",
@@ -14339,18 +14280,8 @@
       "group": "spacing"
     },
     {
-      "name": "--spacing-11",
-      "value": "11px",
-      "group": "spacing"
-    },
-    {
       "name": "--spacing-12",
       "value": "12px",
-      "group": "spacing"
-    },
-    {
-      "name": "--spacing-13",
-      "value": "13px",
       "group": "spacing"
     },
     {
@@ -14419,25 +14350,9 @@
       "group": "spacing"
     },
     {
-      "name": "--spacing-56",
-      "value": "56px",
-      "group": "spacing",
-      "projects": [
-        "cashwalk-biz"
-      ]
-    },
-    {
       "name": "--spacing-6",
       "value": "6px",
       "group": "spacing"
-    },
-    {
-      "name": "--spacing-64",
-      "value": "64px",
-      "group": "spacing",
-      "projects": [
-        "cashwalk-biz"
-      ]
     },
     {
       "name": "--spacing-8",
@@ -14452,28 +14367,12 @@
     {
       "name": "--stroke-bold",
       "value": "2px",
-      "group": "stroke",
-      "projects": [
-        "trost"
-      ]
-    },
-    {
-      "name": "--stroke-default",
-      "value": "1px",
       "group": "stroke"
     },
     {
-      "name": "--stroke-focus",
-      "value": "2px",
+      "name": "--stroke-medium",
+      "value": "1.5px",
       "group": "stroke"
-    },
-    {
-      "name": "--stroke-hairline",
-      "value": "1px",
-      "group": "stroke",
-      "projects": [
-        "trost"
-      ]
     },
     {
       "name": "--stroke-none",
@@ -14481,20 +14380,9 @@
       "group": "stroke"
     },
     {
-      "name": "--stroke-strong",
-      "value": "1.5px",
-      "group": "stroke",
-      "projects": [
-        "trost"
-      ]
-    },
-    {
       "name": "--stroke-thin",
-      "value": "1.5px",
-      "group": "stroke",
-      "projects": [
-        "cashwalk-biz"
-      ]
+      "value": "1px",
+      "group": "stroke"
     },
     {
       "name": "--z-appBar",

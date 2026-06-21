@@ -34,8 +34,7 @@ function toRGBA(str) {
 const BRANDS = TOKENS.semantic.modes;
 const brandLabel = (m) => (META.brandLabels && META.brandLabels[m]) || m;
 const collKeyForMode = (m) => m;
-const collTitle = (key) =>
-  "Primitive/" + key.replace(/(^|-)(\w)/g, (_, _d, c) => c.toUpperCase());
+const collTitle = (key) => "Primitive/" + key.replace(/(^|-)(\w)/g, (_, _d, c) => c.toUpperCase());
 const collKeyHasAlias = (key, alias) => TOKENS.primitives[key] && TOKENS.primitives[key][alias];
 
 const cssToSem = {};
@@ -154,6 +153,33 @@ async function main() {
     dimVars[name] = v;
   }
 
+  // Semantic Dimension 컬렉션 (FLOAT, brand=mode) — gap·gap-title·inset 을 Dimension 의
+  // spacing primitive 변수에 alias 바인딩. primitive 램프(Dimension)와 레이어 분리.
+  const semDimVars = {};
+  if (TOKENS.semanticDimensions) {
+    const semDimColl = ensureColl("Semantic Dimension");
+    const sdModeIds = {};
+    semDimColl.renameMode(semDimColl.modes[0].modeId, BRANDS[0]);
+    sdModeIds[BRANDS[0]] = semDimColl.modes[0].modeId;
+    for (const m of BRANDS.slice(1)) {
+      const ex = semDimColl.modes.find((x) => x.name === m);
+      sdModeIds[m] = ex ? ex.modeId : semDimColl.addMode(m);
+    }
+    for (const [name, def] of Object.entries(TOKENS.semanticDimensions.variables)) {
+      const v = ensureVar(name, semDimColl, "FLOAT");
+      for (const [mode, mv] of Object.entries(def.valuesByMode)) {
+        const mid = sdModeIds[mode];
+        if (mv.alias && dimVars[mv.alias])
+          v.setValueForMode(mid, { type: "VARIABLE_ALIAS", id: dimVars[mv.alias].id });
+        else if (mv.value != null) v.setValueForMode(mid, mv.value);
+      }
+      try {
+        v.scopes = dimScope(name);
+      } catch (e) {} // eslint-disable-line no-empty
+      semDimVars[name] = v;
+    }
+  }
+
   // Text Style (typeScale 묶음 → size/lh/ls 를 Dimension 변수에 바인딩)
   await figma.loadFontAsync({ family: "Inter", style: "Regular" });
   await figma.loadFontAsync({ family: "Inter", style: "Medium" });
@@ -221,7 +247,7 @@ async function main() {
   };
   const ELEV = TOKENS.elevation || { modes: [], variables: {} };
   const elevLevels = Object.keys(ELEV.variables);
-  const elevVal = (lvl, mode) => ((ELEV.variables[lvl].valuesByMode[mode] || {}).value) || "";
+  const elevVal = (lvl, mode) => (ELEV.variables[lvl].valuesByMode[mode] || {}).value || "";
   const existingEffectStyles = await figma.getLocalEffectStylesAsync();
   const ensureEffect = (name) => {
     let s = existingEffectStyles.find((x) => x.name === name);
@@ -547,6 +573,58 @@ async function main() {
     }
   }
 
+  // Semantic Dimension 시각 섹션 — gap·gap-title·inset 이 spacing primitive 를 가리키는 것을
+  // "name → spacing/N (Npx)" + 길이 바로 보여준다. 프로젝트 override 는 끝에 별도 표기.
+  function semDimSection(parent) {
+    if (!TOKENS.semanticDimensions) return;
+    const sd = TOKENS.semanticDimensions.variables;
+    const sdgroups = {};
+    for (const name of Object.keys(sd))
+      (sdgroups[name.split("/")[0]] = sdgroups[name.split("/")[0]] || []).push(name);
+    const aliasVal = (alias) => {
+      const dv = TOKENS.dimensions.variables[alias];
+      return dv ? (dv.valuesByMode["nudge-eap"] || {}).value : null;
+    };
+    const mvVal = (mv) => (mv ? (mv.alias ? aliasVal(mv.alias) : mv.value) : null);
+    for (const g of Object.keys(sdgroups)) {
+      const group = auto(g, "VERTICAL", 0);
+      group.appendChild(spacer1(18));
+      accentTitle(group, catName(g), `${sdgroups[g].length} tokens → spacing`);
+      group.appendChild(spacer1(6));
+      for (const name of sdgroups[g]) {
+        const vbm = sd[name].valuesByMode;
+        const base = vbm["nudge-eap"] || {};
+        const baseV = mvVal(base);
+        const row = auto(name, "HORIZONTAL", 12, { align: "CENTER", padV: 7 });
+        row.appendChild(txt(name, 11, "Regular", INK, NAMEW));
+        row.appendChild(
+          txt(base.alias ? `→ ${base.alias}  (${baseV}px)` : `${baseV}px`, 11, "Medium", SUB, 180),
+        );
+        if (typeof baseV === "number" && baseV >= 0) {
+          const bar = figma.createRectangle();
+          bar.resize(Math.max(2, Math.min(baseV, 240)), 14);
+          bar.cornerRadius = 2;
+          bar.fills = [{ type: "SOLID", color: ACCENT }];
+          row.appendChild(bar);
+        }
+        const diffs = [];
+        for (const b of BRANDS) {
+          if (b === "nudge-eap") continue;
+          const mv = vbm[b];
+          if (
+            mv &&
+            (mv.alias || mv.value != null) &&
+            (mv.alias !== base.alias || mv.value !== base.value)
+          )
+            diffs.push(`${brandLabel(b)}: ${mv.alias || mv.value}`);
+        }
+        if (diffs.length) row.appendChild(txt(diffs.join(" · "), 10, "Regular", ACCENT, 240));
+        group.appendChild(row);
+      }
+      parent.appendChild(group);
+    }
+  }
+
   // ── 페이지 2: Dimension (지오메트리) ──
   const TYPO_CATS = ["font-size", "line-height", "letter-spacing"];
   const GEO_CATS = Object.keys(dgroups).filter((g) => !TYPO_CATS.includes(g));
@@ -557,7 +635,7 @@ async function main() {
   dh.appendChild(txt("Dimension", 28, "Bold", INK));
   dh.appendChild(
     txt(
-      "FLOAT 변수(spacing·gap·inset·radius·stroke·size) — auto-layout gap/padding·corner·stroke 에 바인딩. brand=mode.",
+      "Primitive Dimension(spacing·radius·stroke·size·grid) — FLOAT 변수, auto-layout corner/stroke/width 에 바인딩. brand=mode. (gap·inset 은 아래 Semantic Dimension 으로 분리.)",
       12,
       "Regular",
       SUB,
@@ -565,6 +643,22 @@ async function main() {
   );
   dimRoot.appendChild(dh);
   dimTable(dimRoot, GEO_CATS, true);
+  // ── Semantic Dimension 섹션 (gap·inset·gap-title → spacing alias) — primitive 와 레이어 분리 ──
+  dimRoot.appendChild(spacer1(36));
+  const sdh = auto("sdh", "VERTICAL", 4);
+  sdh.appendChild(rect(40, 4, ACCENT));
+  sdh.appendChild(txt("Semantic Dimension", 22, "Bold", INK));
+  sdh.appendChild(
+    txt(
+      "의도 기반 여백(gap·inset·gap-title) — spacing primitive 를 alias 로 가리킨다. spacing 만 고치면 따라온다. brand=mode(프로젝트 override 별도 표기).",
+      12,
+      "Regular",
+      SUB,
+    ),
+  );
+  dimRoot.appendChild(sdh);
+  dimRoot.appendChild(spacer1(6));
+  semDimSection(dimRoot);
   dimPage.appendChild(dimRoot);
 
   // ── 페이지 3: Typography ──

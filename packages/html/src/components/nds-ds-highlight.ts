@@ -203,7 +203,7 @@ export class NdsDsHighlight extends NdsElement {
       const wrap = document.createElement("div");
 
       const border = document.createElement("div");
-      border.style.cssText = `position:absolute;top:${rect.top - 3}px;left:${rect.left - 3}px;width:${rect.width + 6}px;height:${rect.height + 6}px;border:2px dashed ${rect.color};border-radius:8px;pointer-events:none;`;
+      border.style.cssText = `position:absolute;top:${rect.top - 3}px;left:${rect.left - 3}px;width:${rect.width + 6}px;height:${rect.height + 6}px;border:var(--stroke-bold) dashed ${rect.color};border-radius:8px;pointer-events:none;`;
 
       const tag = document.createElement("span");
       tag.style.cssText = `position:absolute;top:${rect.top - 14}px;left:${rect.left + 4}px;background:${rect.color};color:var(--semantic-text-inverse-default);font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap;line-height:16px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;`;

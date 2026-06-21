@@ -51,7 +51,7 @@ export const checkboxStyles = `
     width: var(--nds-checkbox-size, 18px);
     height: var(--nds-checkbox-size, 18px);
     margin-top: 2px;
-    border: var(--nds-checkbox-border-width, 1.5px) solid var(--nds-checkbox-border-color, ${cv.borderRole.normal});
+    border: var(--nds-checkbox-border-width, var(--stroke-medium)) solid var(--nds-checkbox-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-checkbox-radius, ${radius[4]}px);
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};

@@ -191,7 +191,7 @@ export class NdsInspector extends NdsElement {
     const panel = document.createElement("div");
     panel.style.cssText = [
       "background: var(--semantic-bg-surface-default)",
-      "border: 1px solid var(--semantic-border-normal-default)",
+      "border: var(--stroke-thin) solid var(--semantic-border-normal-default)",
       "border-radius: 12px",
       "box-shadow: 0 8px 24px rgba(0,0,0,0.16)",
       "padding: 12px",
@@ -232,7 +232,7 @@ export class NdsInspector extends NdsElement {
     footer.style.cssText = [
       "margin-top: 8px",
       "padding-top: 8px",
-      "border-top: 1px solid var(--semantic-border-subtle-default)",
+      "border-top: var(--stroke-thin) solid var(--semantic-border-subtle-default)",
       "display: flex",
       "justify-content: space-between",
       "color: var(--semantic-text-muted-default)",

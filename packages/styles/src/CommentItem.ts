@@ -86,7 +86,7 @@ export const ciStyles = `
 
   :where(.${CI_REPLIES_CLASS}) {
     margin-top: ${spacing[8]}px;
-    border-left: 2px solid ${cv.borderRole.subtle};
+    border-left: var(--stroke-bold) solid ${cv.borderRole.subtle};
     padding-left: var(--semantic-inset-input);
   }
 `;

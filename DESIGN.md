@@ -229,9 +229,7 @@ spacing:
   6: 6px # 뱃지·칩 내부 여백
   8: 8px # 카드 내부 수직 간격
   10: 10px # 리스트 아이템 내부 패딩
-  11: 11px # legacy
   12: 12px # 섹션 내부 간격
-  13: 13px # legacy
   14: 14px # 중첩 요소 여백
   16: 16px # 기본 레이아웃 여백
   18: 18px # 중대형 컴포넌트 패딩
@@ -289,18 +287,14 @@ rounded:
   24: 24px # 큰 모달·바텀시트
   full: 9999px # 칩·토글·원형 요소 (구 pill)
 
-# ── Border Width (Primitive Scale) ─────────────────────────
-# Figma · BorderGuide · 6 Variables · Primitive / Semantic Stroke
-borderWidth:
-  none: 0px # 보더 없음
-  default: 1px # 기본 보더 (라인·구분선·카드 테두리)
-  focus: 2px # 강조 보더 (포커스 링용 원시값)
-
-# ── Stroke (Semantic — 외곽선 의미체계) ────────────────────
+# ── Stroke (시각적으로 표현되는 모든 선의 두께) ────────────
+# Figma · BorderGuide. Border Width 전용 Primitive 는 별도 운영하지 않고
+# 모든 Border 는 Stroke 토큰을 참조한다. 브랜드 공통 토큰.
 stroke:
-  none: 0px # 외곽선 없는 컴포넌트 (flat)
-  default: 1px # 카드·인풋·리스트 구분선 (표준)
-  focus: 2px # 접근성 포커스 링 (키보드 탐색)
+  none: 0px # 외곽선 없음 / Filled Icon
+  thin: 1px # 기본 Border · Divider · Card Outline · Input
+  medium: 1.5px # 강조 Border · Focus Ring · Outline Icon
+  bold: 2px # 가장 두꺼운 강조선
 
 # ── Grid ───────────────────────────────────────────────────
 # Mobile: 360px(Android) 기준 4컬럼, 좌우 마진 16px, 컬럼 거터 8px.
@@ -569,23 +563,20 @@ Z-index 레이어: base(0) → dropdown(100) → sticky(200) → appBar(300) →
 | `shape.lg`   | 12px   | 중형 패널·리스트 |
 | `shape.pill` | 9999px | 아바타·뱃지·토글 |
 
-## Border / Stroke (Figma · BorderGuide)
+## Stroke (Figma · BorderGuide)
 
-### Primitive Border Width
+시각적으로 표현되는 모든 선(Border · Divider · Outline · SVG)의 두께를 정의한다.
+**Border Width 전용 Primitive 는 별도로 운영하지 않으며, 모든 Border 는 Stroke 토큰을 참조한다.**
+Stroke 는 브랜드 공통 토큰이다.
 
-| 토큰                  | 값  | 용도                                |
-| --------------------- | --- | ----------------------------------- |
-| `borderWidth.none`    | 0px | 보더 없음                           |
-| `borderWidth.default` | 1px | 기본 보더 (라인·구분선·카드 테두리) |
-| `borderWidth.focus`   | 2px | 강조 보더 (포커스 링용 원시값)      |
+| 토큰            | 값    | 용도                                         |
+| --------------- | ----- | -------------------------------------------- |
+| `stroke.none`   | 0px   | 외곽선 없음 / Filled Icon                    |
+| `stroke.thin`   | 1px   | 기본 Border · Divider · Card Outline · Input |
+| `stroke.medium` | 1.5px | 강조 Border · Focus Ring · Outline Icon      |
+| `stroke.bold`   | 2px   | 가장 두꺼운 강조선                           |
 
-### Semantic Stroke
-
-| 토큰             | 값  | 용도                           |
-| ---------------- | --- | ------------------------------ |
-| `stroke.none`    | 0px | 외곽선 없는 컴포넌트 (flat)    |
-| `stroke.default` | 1px | 카드·인풋·리스트 구분선 (표준) |
-| `stroke.focus`   | 2px | 접근성 포커스 링 (키보드 탐색) |
+컴포넌트 CSS 는 `var(--stroke-thin|medium|bold)` 으로 참조한다.
 
 ## Components
 

@@ -24,7 +24,16 @@ import {
 import { trostSemantic } from "./trost.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export — API 호환 유지
-export { trostYellow, trostIndigo, trostPink, trostGray, trostCommon, trostRed, trostBlue, trostGreen };
+export {
+  trostYellow,
+  trostIndigo,
+  trostPink,
+  trostGray,
+  trostCommon,
+  trostRed,
+  trostBlue,
+  trostGreen,
+};
 export { trostSemantic };
 export type { TrostSemanticTokens } from "./trost.semantic.js";
 
@@ -79,9 +88,7 @@ export const trostTheme: ProjectTheme = {
       section: 32, // 신규 — Inset/Section (페이지 섹션 외곽)
     },
     // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
-    // Stroke Width (가이드 5179:108) — Hairline/Default 1 · Strong(focus) 1.5 · Bold(error/강조) 2.
-    stroke: { hairline: 1, default: 1, strong: 1.5, bold: 2 },
-    borderWidth: { hairline: 1, default: 1, strong: 1.5, bold: 2 },
+    // Stroke override 없음 — stroke{none/thin/medium/bold} 브랜드 공통(base). borderWidth primitive 폐지.
   },
   elevation: {
     // Figma 엘리베이션 가이드(5036:108) — 6 Levels (E0~E5), 2겹 drop-shadow.

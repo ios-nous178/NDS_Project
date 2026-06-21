@@ -91,7 +91,7 @@ export const confirmTooltipStyles = `
     gap: ${spacing[6]}px;
     min-height: 40px;
     padding: ${spacing[10]}px ${spacing[14]}px;
-    border: 1px solid transparent;
+    border: var(--stroke-thin) solid transparent;
     border-radius: 6px;
     font-family: ${fontFamily.web};
     font-size: ${typeScale.body3.fontSize}px;

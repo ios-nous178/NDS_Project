@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { borderWidth, radius } from "@nudge-design/tokens";
+import { radius, stroke } from "@nudge-design/tokens";
 import React from "react";
 
 function RadiusItem({ token, value }: { token: string; value: number }) {
@@ -29,7 +29,7 @@ function RadiusItem({ token, value }: { token: string; value: number }) {
   );
 }
 
-function BorderWidthItem({ token, value }: { token: string; value: number }) {
+function StrokeItem({ token, value }: { token: string; value: number }) {
   return (
     <div
       style={{
@@ -41,7 +41,7 @@ function BorderWidthItem({ token, value }: { token: string; value: number }) {
         borderBottom: "1px solid #ECECEC",
       }}
     >
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>borderWidth.{token}</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>stroke.{token}</div>
       <div style={{ fontSize: 13, color: "#666666" }}>{value}px</div>
       <div
         style={{
@@ -80,8 +80,8 @@ function RadiusTokensPage() {
       </div>
 
       <div>
-        {Object.entries(borderWidth).map(([token, value]) => (
-          <BorderWidthItem key={token} token={token} value={value} />
+        {Object.entries(stroke).map(([token, value]) => (
+          <StrokeItem key={token} token={token} value={value} />
         ))}
       </div>
     </div>

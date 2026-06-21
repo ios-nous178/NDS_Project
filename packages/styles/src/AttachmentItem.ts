@@ -28,7 +28,7 @@ export const attachmentItemStyles = `
     gap: var(--semantic-gap-comfortable);
     padding: ${spacing[10]}px var(--semantic-inset-input);
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

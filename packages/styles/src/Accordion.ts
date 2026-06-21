@@ -22,7 +22,7 @@ export const accordionStyles = `
 
   /* Card — 배경+라운드+보더 (기본). 심리검사 카드·상품 리스트. */
   :where(.${ACC_CLASS}[data-type="card"] .${ACC_ITEM_CLASS}) {
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[12]}px;
     overflow: hidden;
     background: ${cv.surface.default};
@@ -33,7 +33,7 @@ export const accordionStyles = `
     gap: 0;
   }
   :where(.${ACC_CLASS}[data-type="line"] .${ACC_ITEM_CLASS}) {
-    border-bottom: 1px solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 
   :where(.${ACC_TRIGGER_CLASS}) {

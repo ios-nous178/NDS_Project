@@ -168,9 +168,9 @@ export const modalStyles = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: ${spacing[11]}px var(--semantic-inset-modal);
+    padding: ${spacing[12]}px var(--semantic-inset-modal);
     border-radius: ${radius[8]}px;
-    border: 1px solid transparent;
+    border: var(--stroke-thin) solid transparent;
     cursor: pointer;
     font-size: ${typeScale.body2.fontSize}px;
     line-height: ${typeScale.body2.lineHeight}px;

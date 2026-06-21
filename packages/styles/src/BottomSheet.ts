@@ -138,7 +138,7 @@ export const bottomSheetStyles = `
     padding: var(--semantic-inset-input) var(--semantic-inset-card-large);
     /* iOS 홈 인디케이터 safe-area — 푸터가 시트 최하단이면 인셋만큼 추가 (없으면 0). */
     padding-bottom: calc(var(--semantic-inset-input) + env(safe-area-inset-bottom, 0px));
-    border-top: 1px solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 
   :where(.${BS_FOOTER_CLASS} > *) {

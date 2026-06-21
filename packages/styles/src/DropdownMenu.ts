@@ -28,7 +28,7 @@ export const dropdownMenuStyles = `
     max-height: 320px;
     overflow-y: auto;
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -44,7 +44,7 @@ export const dropdownMenuStyles = `
   }
 
   :where(.${DM_GROUP_CLASS} + .${DM_GROUP_CLASS}) {
-    border-top: 1px solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
     margin-top: ${spacing[4]}px;
     padding-top: ${spacing[4]}px;
   }

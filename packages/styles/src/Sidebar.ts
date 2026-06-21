@@ -57,7 +57,7 @@ export const sidebarStyles = `
     flex-shrink: 0;
     width: var(--nds-sidebar-width);
     background: var(--nds-sidebar-bg);
-    border-right: 1px solid var(--nds-sidebar-border-color);
+    border-right: var(--stroke-thin) solid var(--nds-sidebar-border-color);
     font-family: ${fontFamily.web};
     color: var(--nds-sidebar-text);
     box-sizing: border-box;
@@ -165,7 +165,7 @@ export const sidebarStyles = `
   }
 
   :where(.${SB_SECTION_CLASS} + .${SB_SECTION_CLASS}) {
-    border-top: 1px solid var(--nds-sidebar-border-color);
+    border-top: var(--stroke-thin) solid var(--nds-sidebar-border-color);
   }
 
   :where(.${SB_SECTION_LABEL_CLASS}) {
@@ -479,7 +479,7 @@ export const sidebarStyles = `
     height: 40px;
     padding: 0 ${spacing[16]}px;
     border-radius: 10px;
-    border: 1px solid transparent;
+    border: var(--stroke-thin) solid transparent;
     box-sizing: border-box;
     font-family: inherit;
     font-size: 14px;

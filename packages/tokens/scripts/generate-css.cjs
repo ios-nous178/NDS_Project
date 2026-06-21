@@ -55,6 +55,14 @@ const {
 const { fontFamily, fontWeight, typeScale } = require("../dist/typography");
 const { shadow, zIndex } = require("../dist/elevation");
 
+// 시멘틱 dimension(gap/inset/gap-title) leaf 는 ref("spacing.N") 일 수 있다. CSS 는 값 동결 —
+// ref → 해석된 px 숫자(generate-next 만 Figma alias 로 emit). 프로젝트 override 의 raw 숫자는 그대로.
+function resolveDim(value) {
+  if (!isRef(value)) return value;
+  const [tier, key] = value.$ref.split(".");
+  return tier === "spacing" ? spacing[key] : value;
+}
+
 // ─── Helper ─────────────────────────────────────────────
 
 /** atomic palette → `--color-{group}-{stop}` */
@@ -149,7 +157,7 @@ function generateBaseTokens() {
   lines.push("");
   lines.push("  /* ── Semantic / Gap (Figma · SpacingGuide / Gap) ── */");
   for (const [key, value] of Object.entries(gap)) {
-    lines.push(`  --semantic-gap-${key}: ${value}px;`);
+    lines.push(`  --semantic-gap-${key}: ${resolveDim(value)}px;`);
   }
 
   // Gap/Title — 헤딩 ↔ 서브타이틀 간격 (Figma TitleGapGuide 859:5614).
@@ -157,7 +165,7 @@ function generateBaseTokens() {
   lines.push("");
   lines.push("  /* ── Semantic / Gap-Title (Figma · TitleGapGuide 859:5614) ── */");
   for (const [key, value] of Object.entries(gapTitle)) {
-    lines.push(`  --semantic-gap-title-${key}: ${value}px;`);
+    lines.push(`  --semantic-gap-title-${key}: ${resolveDim(value)}px;`);
   }
 
   // Inset — Semantic (Figma · SpacingGuide / Inset). 컨테이너 내부 여백.
@@ -165,7 +173,7 @@ function generateBaseTokens() {
   lines.push("");
   lines.push("  /* ── Semantic / Inset (Figma · SpacingGuide / Inset) ── */");
   for (const [key, value] of Object.entries(inset)) {
-    lines.push(`  --semantic-inset-${key}: ${value}px;`);
+    lines.push(`  --semantic-inset-${key}: ${resolveDim(value)}px;`);
   }
 
   // Grid — 거터·마진 (Figma · SpacingGuide / Grid)
@@ -186,11 +194,14 @@ function generateBaseTokens() {
     lines.push(`  --radius-${key}: ${value === 9999 ? "9999px" : value + "px"};`);
   }
 
-  // Border Width — Primitive (Figma · BorderGuide)
-  lines.push("");
-  lines.push("  /* ── Border Width (Primitive, Figma · BorderGuide) ── */");
-  for (const [key, value] of Object.entries(borderWidth)) {
-    lines.push(`  --border-${key}: ${value}px;`);
+  // Border Width — deprecated primitive (Stroke 토큰으로 통일). DESIGN.md 에 borderWidth
+  // 키가 남아있을 때만 emit.
+  if (borderWidth) {
+    lines.push("");
+    lines.push("  /* ── Border Width (deprecated — use Stroke) ── */");
+    for (const [key, value] of Object.entries(borderWidth)) {
+      lines.push(`  --border-${key}: ${value}px;`);
+    }
   }
 
   // Stroke — Semantic (Figma · BorderGuide / Semantic)

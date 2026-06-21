@@ -1,6 +1,8 @@
 // Auto-generated from DESIGN.md — do not edit manually
 // Run `pnpm generate:tokens` to regenerate
 
+import { ref } from "./ref.js";
+
 export const spacing = {
   "0": 0,
   2: 2,
@@ -8,9 +10,7 @@ export const spacing = {
   6: 6,
   8: 8,
   10: 10,
-  11: 11,
   12: 12,
-  13: 13,
   14: 14,
   16: 16,
   18: 18,
@@ -26,28 +26,28 @@ export const spacing = {
 } as const;
 
 export const gap = {
-  tight: 4,
-  default: 10,
-  comfortable: 12,
-  loose: 16,
-  wide: 24,
-  label: 8,
+  tight: ref("spacing.4"),
+  default: ref("spacing.10"),
+  comfortable: ref("spacing.12"),
+  loose: ref("spacing.16"),
+  wide: ref("spacing.24"),
+  label: ref("spacing.8"),
 } as const;
 
 export const gapTitle = {
-  h1: 12,
-  h2: 12,
-  h3: 12,
-  h4: 6,
-  h5: 8,
+  h1: ref("spacing.12"),
+  h2: ref("spacing.12"),
+  h3: ref("spacing.12"),
+  h4: ref("spacing.6"),
+  h5: ref("spacing.8"),
 } as const;
 
 export const inset = {
-  chip: 8,
-  input: 12,
-  card: 16,
-  "card-large": 20,
-  modal: 24,
+  chip: ref("spacing.8"),
+  input: ref("spacing.12"),
+  card: ref("spacing.16"),
+  "card-large": ref("spacing.20"),
+  modal: ref("spacing.24"),
 } as const;
 
 export const radius = {
@@ -62,16 +62,11 @@ export const radius = {
   full: 9999,
 } as const;
 
-export const borderWidth = {
-  none: 0,
-  default: 1,
-  focus: 2,
-} as const;
-
 export const stroke = {
   none: 0,
-  default: 1,
-  focus: 2,
+  thin: 1,
+  medium: 1.5,
+  bold: 2,
 } as const;
 
 export const sizing = {

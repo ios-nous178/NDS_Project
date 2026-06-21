@@ -26,7 +26,7 @@ export const chatInputStyles = `
     gap: var(--semantic-gap-default);
     padding: var(--semantic-inset-input);
     background: ${cv.surface.default};
-    border-top: 1px solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
     box-sizing: border-box;
   }
@@ -45,7 +45,7 @@ export const chatInputStyles = `
     height: 32px;
     padding: 0 var(--semantic-inset-input);
     border-radius: 9999px;
-    border: 1px solid ${cv.borderRole.normal};
+    border: var(--stroke-thin) solid ${cv.borderRole.normal};
     background: ${cv.surface.default};
     color: ${cv.textRole.normal};
     cursor: pointer;

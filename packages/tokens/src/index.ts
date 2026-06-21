@@ -32,17 +32,7 @@ export { semanticGuide, getSemanticGuide } from "./guide.js";
 export type { GuideStatus, GuideMeta } from "./guide.js";
 export { typography, fontFamily, fontWeight, typeScale } from "./typography.js";
 export type { TypeStyle } from "./typography.js";
-export {
-  spacing,
-  gap,
-  gapTitle,
-  inset,
-  radius,
-  borderWidth,
-  stroke,
-  sizing,
-  grid,
-} from "./spacing.js";
+export { spacing, gap, gapTitle, inset, radius, stroke, sizing, grid } from "./spacing.js";
 export { elevation, shadow, zIndex, elevationLevel } from "./elevation.js";
 export type { ShadowLevel, ElevationLevelName } from "./elevation.js";
 export { motion, duration, easing, transition } from "./motion.js";

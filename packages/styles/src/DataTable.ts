@@ -37,7 +37,7 @@ export const dataTableStyles = `
   :where(.${DT_SCROLL_CLASS}) {
     width: 100%;
     overflow-x: auto;
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     background: ${cv.surface.default};
   }
@@ -61,7 +61,7 @@ export const dataTableStyles = `
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    border-bottom: 1px solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
     white-space: nowrap;
     user-select: none;
   }
@@ -107,7 +107,7 @@ export const dataTableStyles = `
     background: ${cv.surface.page};
   }
   :where(.${DT_TR_CLASS}:not(:last-child)) > .${DT_TD_CLASS} {
-    border-bottom: 1px solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 
   :where(.${DT_TD_CLASS}) {
@@ -156,7 +156,7 @@ export const dataTableStyles = `
   }
   :where(.${DT_CARD_CLASS}) > article {
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     padding: var(--semantic-inset-input) var(--semantic-inset-card);
     display: flex;

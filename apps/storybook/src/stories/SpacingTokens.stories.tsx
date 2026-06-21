@@ -1,6 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { spacing, gap, inset } from "@nudge-design/tokens";
 
+// gap/inset 은 spacing primitive 를 가리키는 ref 객체({$ref:"spacing.N"}, typed-lie=string).
+// 시각화용으로 숫자 값과 alias 라벨로 풀어준다.
+function isDimRef(v: unknown): v is { $ref: string } {
+  return typeof v === "object" && v !== null && "$ref" in v;
+}
+function resolveDim(v: unknown): number {
+  if (isDimRef(v)) return (spacing as Record<string, number>)[v.$ref.split(".")[1]];
+  return v as number;
+}
+function dimAlias(v: unknown): string | undefined {
+  return isDimRef(v) ? v.$ref.replace(".", "/") : undefined;
+}
+
 const GAP_INTENT: Record<string, { intent: string; use: string }> = {
   tight: { intent: "tight", use: "Chip · Badge 그룹" },
   default: { intent: "default ★", use: "표준 컴포넌트 gap" },
@@ -61,16 +74,21 @@ function GapItem({
   value,
   intent,
   use,
+  alias,
 }: {
   name: string;
   value: number;
   intent: string;
   use: string;
+  alias?: string;
 }) {
   return (
     <Row>
       <div style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>--gap-{name}</div>
-      <div style={{ fontSize: 13, color: "#666666" }}>{value}px</div>
+      <div style={{ fontSize: 13, color: "#666666" }}>
+        {value}px
+        {alias ? <div style={{ fontSize: 11, color: "#999999" }}>→ {alias}</div> : null}
+      </div>
       <div style={{ display: "flex", alignItems: "center", gap: `var(--semantic-gap-${name})` }}>
         <span
           style={{
@@ -110,11 +128,13 @@ function InsetItem({
   value,
   use,
   star,
+  alias,
 }: {
   name: string;
   value: number;
   use: string;
   star?: boolean;
+  alias?: string;
 }) {
   return (
     <Row>
@@ -122,7 +142,10 @@ function InsetItem({
         --inset-{name}
         {star ? " ★" : ""}
       </div>
-      <div style={{ fontSize: 13, color: "#666666" }}>{value}px</div>
+      <div style={{ fontSize: 13, color: "#666666" }}>
+        {value}px
+        {alias ? <div style={{ fontSize: 11, color: "#999999" }}>→ {alias}</div> : null}
+      </div>
       <div>
         <div
           style={{
@@ -211,7 +234,8 @@ function SpacingTokensPage() {
           <GapItem
             key={name}
             name={name}
-            value={value as number}
+            value={resolveDim(value)}
+            alias={dimAlias(value)}
             intent={GAP_INTENT[name]?.intent ?? name}
             use={GAP_INTENT[name]?.use ?? ""}
           />
@@ -226,7 +250,8 @@ function SpacingTokensPage() {
           <InsetItem
             key={name}
             name={name}
-            value={value as number}
+            value={resolveDim(value)}
+            alias={dimAlias(value)}
             use={INSET_USAGE[name]?.use ?? ""}
             star={INSET_USAGE[name]?.star}
           />

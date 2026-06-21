@@ -26,7 +26,7 @@ export const mediaCardStyles = `
     display: flex;
     flex-direction: column;
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[12]}px;
     overflow: hidden;
     font-family: ${fontFamily.web};

@@ -43,7 +43,7 @@ export const selectionButtonGroupStyles = `
        뿐(아래 __label), 패딩을 침범하지 않도록 최소 패딩을 보장한다. */
     padding: ${spacing[14]}px var(--nds-selection-button-padding-x, ${spacing[24]}px);
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     cursor: pointer;
     font-family: inherit;

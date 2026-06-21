@@ -83,30 +83,8 @@ export const cashwalkBizTheme: ProjectTheme = {
     },
   },
   spacing: {
-    // SSOT: Figma SpacingGuide (3054:458) — Atomic 20 tokens. base 의 1/7/11/13/33/80 은 미사용,
-    // 캐포비는 56 추가. emit 시 base 값을 캐포비 set 으로 redefine (cascade).
-    spacing: {
-      "0": 0,
-      "2": 2,
-      "4": 4,
-      "6": 6,
-      "8": 8,
-      "10": 10,
-      "12": 12,
-      "14": 14,
-      "16": 16,
-      "18": 18,
-      "20": 20,
-      "24": 24,
-      "28": 28,
-      "30": 30,
-      "32": 32,
-      "36": 36,
-      "40": 40,
-      "48": 48,
-      "56": 56,
-      "64": 64,
-    },
+    // 숫자 spacing 스케일은 base 단일 스케일(공통) 사용 — radius 와 동일하게 프로젝트 override 없음.
+    // (값이 base 와 동일했고, 캐포비 전용으로 얹던 56/64 는 소비 0 이라 제거. runmile/geniet/trost 와 동일 정책.)
     // Inset 7 tokens — Figma SpacingGuide. input inset 은 12px (base 와 동일).
     inset: {
       chip: 8,
@@ -127,19 +105,7 @@ export const cashwalkBizTheme: ProjectTheme = {
       h6: 6, // 14px Subtitle2 다음 (캐포비 신규 슬롯)
     },
     // radius 토큰 override 없음 — 숫자 단일 스케일(base: 2/4/8/10/12/16/20/24/full) 사용.
-    // Border / Stroke — Figma GridBorderRadiusGuide. Thin(1.5px) 캐포비 추가.
-    borderWidth: {
-      none: 0,
-      default: 1,
-      thin: 1.5,
-      focus: 2,
-    },
-    stroke: {
-      none: 0,
-      default: 1,
-      thin: 1.5,
-      focus: 2,
-    },
+    // Stroke override 없음 — stroke{none/thin/medium/bold} 브랜드 공통(base). borderWidth primitive 폐지.
     // Grid — Figma SpacingGuide. Mobile gutter/margin 은 base 와 동일, desktop margin 만 다름.
     grid: {
       mobile: { gutter: 8, margin: 16 },

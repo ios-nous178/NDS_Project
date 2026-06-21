@@ -20,7 +20,7 @@ export const rcStyles = `
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[12]}px;
     font-family: ${fontFamily.web};
     box-sizing: border-box;

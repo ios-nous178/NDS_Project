@@ -14,7 +14,7 @@ export const agStyles = `
 
   :where(.${AG_ITEM_CLASS}) {
     margin-left: calc(-1 * var(--nds-avatar-group-overlap, 12px));
-    border: 2px solid ${cv.surface.default};
+    border: var(--stroke-bold) solid ${cv.surface.default};
     border-radius: 9999px;
     box-sizing: content-box;
   }
@@ -28,7 +28,7 @@ export const agStyles = `
     border-radius: 9999px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};
-    border: 2px solid ${cv.surface.default};
+    border: var(--stroke-bold) solid ${cv.surface.default};
     display: inline-flex;
     align-items: center;
     justify-content: center;

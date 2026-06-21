@@ -11,7 +11,7 @@ export const numericSpinnerStyles = `
     align-items: stretch;
     box-sizing: border-box;
     height: var(--nds-numeric-spinner-height, ${sizing.input.default}px);
-    border: 1px solid ${cv.input.borderDefault};
+    border: var(--stroke-thin) solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     font-family: ${fontFamily.web};
@@ -52,8 +52,8 @@ export const numericSpinnerStyles = `
     width: var(--nds-numeric-spinner-input-width, ${spacing[48]}px);
     min-width: 0;
     border: none;
-    border-left: 1px solid ${cv.input.borderDefault};
-    border-right: 1px solid ${cv.input.borderDefault};
+    border-left: var(--stroke-thin) solid ${cv.input.borderDefault};
+    border-right: var(--stroke-thin) solid ${cv.input.borderDefault};
     background: transparent;
     outline: none;
     text-align: center;

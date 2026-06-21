@@ -24,7 +24,7 @@ export const verificationCodeStyles = `
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: 1px solid var(--nds-input-border-color, ${cv.input.borderDefault});
+    border: var(--stroke-thin) solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: var(--nds-input-background, ${cv.input.bg});
     box-sizing: border-box;

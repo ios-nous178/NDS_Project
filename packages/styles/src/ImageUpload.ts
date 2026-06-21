@@ -43,19 +43,19 @@ export const imageUploadStyles = `
   /* Empty: dashed border, neutral subtle bg */
   :where(.${IU_PREVIEW_BOX_CLASS}[data-state="empty"]) {
     background: ${cv.surface.subtle};
-    border: 1px dashed ${cv.borderRole.normal};
+    border: var(--stroke-thin) dashed ${cv.borderRole.normal};
   }
 
   /* Uploaded: solid border, image fills */
   :where(.${IU_PREVIEW_BOX_CLASS}[data-state="uploaded"]) {
     background: ${cv.surface.subtle};
-    border: 1px solid ${cv.borderRole.normal};
+    border: var(--stroke-thin) solid ${cv.borderRole.normal};
   }
 
   /* Error: dashed red border + soft red bg */
   :where(.${IU_PREVIEW_BOX_CLASS}[data-state="error"]) {
     background: ${cv.surface.statusError};
-    border: 1px dashed ${cv.fill.statusError};
+    border: var(--stroke-thin) dashed ${cv.fill.statusError};
   }
 
   :where(.${IU_PREVIEW_IMG_CLASS}) {

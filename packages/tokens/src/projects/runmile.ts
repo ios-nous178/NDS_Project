@@ -82,13 +82,7 @@ export const runmileTheme: ProjectTheme = {
   spacing: {
     // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
     // 스페이싱 스케일(2pt) 값도 base --spacing-* 와 동일해 override 불필요.
-    // Border Width — Figma Border&Radius 가이드 (5024:16). W-Default/Icon/Strong.
-    borderWidth: {
-      none: 0,
-      default: 1,
-      icon: 1.5,
-      strong: 2,
-    },
+    // Stroke override 없음 — stroke{none/thin/medium/bold} 브랜드 공통(base). borderWidth primitive 폐지.
   },
   elevation: {
     // Drop shadow — Figma Elevation 가이드 (5020:6). E0~E3.

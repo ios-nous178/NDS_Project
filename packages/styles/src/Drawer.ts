@@ -82,7 +82,7 @@ export const drawerStyles = `
     justify-content: space-between;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-card-large) var(--semantic-inset-card-large) var(--semantic-inset-card);
-    border-bottom: 1px solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 
   :where(.${DR_HEADER_CLASS}[data-empty="true"]) {
@@ -141,7 +141,7 @@ export const drawerStyles = `
     display: flex;
     gap: var(--semantic-gap-default);
     padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
-    border-top: 1px solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 
   @keyframes nds-drawer-fade-in {

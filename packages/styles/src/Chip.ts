@@ -12,7 +12,7 @@ export const chipStyles = `
        색은 여기서만(JS 색맵 우회 금지). 슬롯 폴백은 outlined·project(컴포넌트 기본값)와 동일. */
     background: var(--nds-chip-bg, ${cv.surface.default});
     color: var(--nds-chip-fg, ${cv.textRole.brand});
-    border: 1px solid var(--nds-chip-border, ${cv.borderRole.brand});
+    border: var(--stroke-thin) solid var(--nds-chip-border, ${cv.borderRole.brand});
     transition:
       background-color ${transition.default},
       border-color ${transition.default},

@@ -46,7 +46,7 @@ export const formSectionStyles = `
     display: flex;
     flex-direction: column;
     padding: 0 ${spacing[24]}px;
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: var(--nds-form-section-radius, ${radius[12]}px);
     background: ${cv.surface.default};
     box-sizing: border-box;

@@ -53,7 +53,7 @@ export const dateRangeStyles = `
     width: 100%;
     min-height: var(--nds-datepicker-height, ${sizing.input.default}px);
     padding: 0 var(--nds-datepicker-padding-x, var(--semantic-inset-card));
-    border: 1px solid ${cv.input.borderDefault};
+    border: var(--stroke-thin) solid ${cv.input.borderDefault};
     border-radius: var(--nds-datepicker-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     cursor: pointer;
@@ -145,7 +145,7 @@ export const dateRangeStyles = `
     position: fixed;
     width: min(624px, calc(100vw - 32px));
     background: ${cv.surface.default};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -338,7 +338,7 @@ export const dateRangeStyles = `
   :where(.${DR_HINT_CLASS}) {
     margin-top: ${spacing[8]}px;
     padding-top: var(--semantic-inset-chip);
-    border-top: 1px solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
     color: ${cv.textRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;

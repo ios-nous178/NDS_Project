@@ -36,7 +36,7 @@ export const selectedItemsPanelStyles = `
     box-sizing: border-box;
     padding: var(--semantic-inset-modal);
     background: ${cv.surface.subtle};
-    border: 1px solid ${cv.borderRole.normal};
+    border: var(--stroke-thin) solid ${cv.borderRole.normal};
     border-radius: var(--nds-selected-items-panel-radius, 16px);
     font-family: ${fontFamily.web};
   }
@@ -106,7 +106,7 @@ export const selectedItemsPanelStyles = `
 
   :where(.${SIP_ACTION_CLASS}[data-variant="ghost"]) {
     background: transparent;
-    border: 1px solid ${cv.borderRole.strong};
+    border: var(--stroke-thin) solid ${cv.borderRole.strong};
     color: ${cv.textRole.subtle};
   }
 

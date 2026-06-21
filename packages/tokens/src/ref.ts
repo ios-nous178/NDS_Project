@@ -17,8 +17,11 @@ export interface TokenRef {
   readonly $ref: string;
 }
 
-/** primitive 참조 경로. 현재는 color 티어만 — spacing/radius 등은 후속 Phase. */
-export type RefPath = `color.${string}`;
+/**
+ * primitive 참조 경로. color 티어 + dimension(spacing) 티어.
+ * 시멘틱 dimension(gap/inset/gap-title)이 spacing primitive 를 가리킨다 — 예: `spacing.10`.
+ */
+export type RefPath = `color.${string}` | `spacing.${string}`;
 
 /**
  * 토큰 참조를 만든다. 런타임 객체이지만 타입은 `string`(typed-lie, 상단 주석 참조).

@@ -55,7 +55,7 @@ export const tiStyles = `
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     box-sizing: border-box;
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: 1px solid ${cv.input.borderDefault};
+    border: var(--stroke-thin) solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     /* Input Value — Input Typography 표준 value(15/22 · Regular). */
@@ -159,7 +159,7 @@ export const tiStyles = `
     gap: ${spacing[6]}px;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: var(--semantic-inset-chip) var(--nds-input-padding-x, var(--semantic-inset-input));
-    border: 1px solid ${cv.input.borderDefault};
+    border: var(--stroke-thin) solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     transition: border-color ${transition.default};

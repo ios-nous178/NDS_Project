@@ -27,6 +27,7 @@ function loadTokenModule(filename) {
   src = src
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/^\/\/.*$/gm, "")
+    .replace(/^import\s+.*$/gm, "") // new Function 은 모듈 아님 — import 제거(ref 는 아래 스텁)
     .replace(/export\s+type\s+\w+\s*=\s*\{[^}]*\};?/gs, "")
     .replace(/export\s+type\s+.*$/gm, "")
     .replace(/export\s+/g, "")
@@ -62,11 +63,14 @@ const tokensSrc = [
 ].join("\n");
 
 const tokenEval = new Function(`
+  // ref() 스텁 — gap/inset/gapTitle 은 spacing primitive 를 가리키는 ref 객체지만 styles 추출엔
+  // 안 쓰인다(아래 return 에 미포함). eval 시 ReferenceError 만 막으면 됨.
+  const ref = (p) => ({ $ref: p });
   ${tokensSrc}
   return {
     colors, gray, common, coolGray, blue, pink, orange, yellow, red, green,
     fontFamily, fontWeight, typeScale,
-    spacing, radius, borderWidth, sizing, grid,
+    spacing, radius, sizing, grid,
     shadow, zIndex,
     transition, duration, easing,
   };

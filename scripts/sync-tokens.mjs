@@ -98,6 +98,8 @@ function generateColors() {
 
 function generateSpacing() {
   const lines = [HEADER];
+  // 시멘틱 dimension(gap/gap-title/inset)은 spacing primitive 를 가리키는 ref 로 emit.
+  lines.push('import { ref } from "./ref.js";\n');
 
   // spacing (Figma · SpacingGuide · Primitive)
   lines.push("export const spacing = {");
@@ -106,11 +108,19 @@ function generateSpacing() {
   }
   lines.push("} as const;\n");
 
+  // 시멘틱 dimension leaf: 값이 spacing 스케일 키면 ref("spacing.N") 로(alias 그래프 보존),
+  // 아니면 raw 숫자(폴백). spacing 키=값(spacing[10]=10)이라 값→키 매핑이 곧 ref.
+  const spacingKeys = new Set(Object.keys(tokens.spacing).map((k) => String(k)));
+  const dimLeaf = (v) => {
+    const n = stripUnit(v);
+    return spacingKeys.has(String(n)) ? `ref("spacing.${n}")` : `${n}`;
+  };
+
   // gap (Figma · SpacingGuide · Semantic Gap)
   if (tokens.gap) {
     lines.push("export const gap = {");
     for (const [k, v] of Object.entries(tokens.gap)) {
-      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+      lines.push(`  ${fmtKey(k)}: ${dimLeaf(v)},`);
     }
     lines.push("} as const;\n");
   }
@@ -120,7 +130,7 @@ function generateSpacing() {
   if (tokens["gap-title"]) {
     lines.push("export const gapTitle = {");
     for (const [k, v] of Object.entries(tokens["gap-title"])) {
-      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+      lines.push(`  ${fmtKey(k)}: ${dimLeaf(v)},`);
     }
     lines.push("} as const;\n");
   }
@@ -138,7 +148,7 @@ function generateSpacing() {
   if (tokens.inset) {
     lines.push("export const inset = {");
     for (const [k, v] of Object.entries(tokens.inset)) {
-      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+      lines.push(`  ${fmtKey(k)}: ${dimLeaf(v)},`);
     }
     lines.push("} as const;\n");
   }
@@ -159,12 +169,15 @@ function generateSpacing() {
     lines.push("} as const;\n");
   }
 
-  // borderWidth (Figma · BorderGuide · Primitive)
-  lines.push("export const borderWidth = {");
-  for (const [k, v] of Object.entries(tokens.borderWidth)) {
-    lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+  // borderWidth — deprecated primitive. Stroke 토큰으로 통일(스펙: Border Width 전용
+  // primitive 미운영). DESIGN.md 에 borderWidth 키가 남아있을 때만 emit (조건부).
+  if (tokens.borderWidth) {
+    lines.push("export const borderWidth = {");
+    for (const [k, v] of Object.entries(tokens.borderWidth)) {
+      lines.push(`  ${fmtKey(k)}: ${stripUnit(v)},`);
+    }
+    lines.push("} as const;\n");
   }
-  lines.push("} as const;\n");
 
   // stroke (Figma · BorderGuide · Semantic Stroke)
   if (tokens.stroke) {

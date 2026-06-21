@@ -84,7 +84,7 @@ export const likertStyles = `
     justify-content: center;
     width: 24px;
     height: 24px;
-    border: 1.5px solid ${cv.borderRole.normal};
+    border: var(--stroke-medium) solid ${cv.borderRole.normal};
     border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};

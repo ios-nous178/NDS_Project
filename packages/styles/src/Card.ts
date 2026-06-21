@@ -49,7 +49,7 @@ export const cardStyles = `
   }
 
   :where(.${CARD_ROOT_CLASS}[data-variant="outlined"]) {
-    border: 1px solid var(--nds-card-border-color, ${cv.borderRole.subtle});
+    border: var(--stroke-thin) solid var(--nds-card-border-color, ${cv.borderRole.subtle});
   }
 
   /* Elevation (Trost container card) — outline=현행(보더, shadow 없음) / elevated=shadow + 보더 제거.
@@ -278,6 +278,6 @@ export const cardStyles = `
 
   :where(.${CARD_FOOTER_CLASS}[data-divider="true"]) {
     padding-top: var(--semantic-inset-card, 16px);
-    border-top: 1px solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
   }
 `;

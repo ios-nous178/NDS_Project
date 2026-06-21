@@ -22,7 +22,6 @@ import {
   trostGreen,
   trostSemantic,
   trostTheme,
-  cashwalkBizCommon,
   cashwalkBizGray,
   cashwalkBizYellow,
   cashwalkBizRed,
@@ -31,7 +30,6 @@ import {
   cashwalkBizBrown,
   cashwalkBizSemantic,
   cashwalkBizTheme,
-  cashwalkCommon,
   cashwalkGray,
   cashwalkYellow,
   cashwalkRed,
@@ -300,17 +298,11 @@ export const cashwalkBizPreset = {
           [`${val.fontSize}px`, { lineHeight: `${val.lineHeight}px` }],
         ]),
       ),
-      spacing: cashwalkBizTheme.spacing?.spacing
-        ? Object.fromEntries(
-            Object.entries(cashwalkBizTheme.spacing.spacing).map(([k, v]) => [k, `${v}px`]),
-          )
-        : undefined,
+      // spacing 은 브랜드 공통(base 단일 스케일) — 다른 프리셋과 동일하게 공통 `spacing` import 사용.
+      spacing: Object.fromEntries(Object.entries(spacing).map(([key, val]) => [key, `${val}px`])),
       borderRadius: borderRadiusScale,
-      borderWidth: cashwalkBizTheme.spacing?.borderWidth
-        ? Object.fromEntries(
-            Object.entries(cashwalkBizTheme.spacing.borderWidth).map(([k, v]) => [k, `${v}px`]),
-          )
-        : undefined,
+      // borderWidth 전용 스케일 폐지 — Border 두께는 공통 stroke 토큰(`var(--stroke-*)`)을
+      // 컴포넌트가 직접 참조한다. Tailwind 기본 border 유틸(border/border-2…)은 유지.
     },
   },
 };

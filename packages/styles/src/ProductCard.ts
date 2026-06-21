@@ -68,7 +68,7 @@ export const pcStyles = `
     flex-shrink: 0;
     box-sizing: border-box;
     background: ${cv.surface.section};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     overflow: hidden;
   }
@@ -245,7 +245,7 @@ export const pcStyles = `
   :where(.${PC_POINT_CHIP_CLASS}) {
     background: ${cv.surface.default};
     color: ${cv.textRole.strong};
-    border: 1px solid ${cv.borderRole.subtle};
+    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
     padding: 3px 3px;
     font-weight: ${fontWeight.bold};
   }

@@ -16,7 +16,7 @@ export const badgeStyles = `
     font-weight: var(--nds-badge-font-weight, ${fontWeight.bold});
     background: var(--nds-badge-bg);
     color: var(--nds-badge-fg);
-    border: 1px solid var(--nds-badge-border, transparent);
+    border: var(--stroke-thin) solid var(--nds-badge-border, transparent);
   }
 
   /* size → 치수 슬롯(폴백 포함). react/html 은 data-size 만 set. */

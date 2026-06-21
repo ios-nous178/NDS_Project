@@ -51,7 +51,11 @@ function refToDtcg(r) {
 }
 /** ref("color.coolGray.50") → "coolGray/50" (Figma variable name, 컬렉션은 mode 가 결정) */
 function refToFigmaAlias(r) {
-  const [, family, stop] = r.$ref.split(".");
+  const parts = r.$ref.split(".");
+  // dimension ref: spacing.10 → "spacing/10" (Dimension 컬렉션의 spacing primitive 변수)
+  if (parts[0] === "spacing") return `spacing/${parts[1]}`;
+  // color ref: color.coolGray.50 → "coolGray/50"
+  const [, family, stop] = parts;
   return `${family}/${stop}`;
 }
 
@@ -189,8 +193,16 @@ for (const { mode, theme } of BRANDS) {
 //             카테고리 내부는 base 시멘틱 트리 순서.
 //   Dimension: dimMap 정의 순서(spacing→gap→inset→radius→border-width→stroke→size→grid→typo).
 const SEM_CAT_ORDER = [
-  "bg", "text", "icon", "border", "fill",
-  "button-bg", "button-text", "button-border", "input", "confirm-cta",
+  "bg",
+  "text",
+  "icon",
+  "border",
+  "fill",
+  "button-bg",
+  "button-text",
+  "button-border",
+  "input",
+  "confirm-cta",
 ];
 const orderByBase = (names, baseKeys, catOrder) => {
   const sub = new Map(baseKeys.map((n, i) => [n, i]));
@@ -225,16 +237,14 @@ function flatNum(obj, prefix, out) {
   return out;
 }
 const tsKey = (s) => s.replace(/([a-z])(\d)/g, "$1-$2"); // body2 → body-2
+// Primitive Dimension (FLOAT, 리터럴 값): spacing 램프·radius·stroke·size·grid·typo.
+// (gap/gap-title/inset 은 Semantic Dimension 으로 분리 — 아래 semDimMap.)
 function dimMap(theme) {
   const ov = (theme && theme.spacing) || {};
   const tsOv = (theme && theme.typography && theme.typography.typeScale) || {};
   const out = {};
   flatNum({ ...dim.spacing, ...(ov.spacing || {}) }, "spacing", out);
-  flatNum({ ...dim.gap, ...(ov.gap || {}) }, "gap", out);
-  flatNum({ ...dim.gapTitle, ...(ov.gapTitle || {}) }, "gap-title", out);
-  flatNum({ ...dim.inset, ...(ov.inset || {}) }, "inset", out);
   flatNum({ ...dim.radius, ...(ov.radius || {}) }, "radius", out);
-  flatNum({ ...dim.borderWidth, ...(ov.borderWidth || {}) }, "border-width", out);
   flatNum({ ...dim.stroke, ...(ov.stroke || {}) }, "stroke", out);
   flatNum(dim.sizing, "size", out);
   flatNum({ ...dim.grid, ...(ov.grid || {}) }, "grid", out);
@@ -257,6 +267,39 @@ for (const name of orderByBase(dimNames, Object.keys(dimByMode["nudge-eap"]))) {
   for (const { mode } of BRANDS)
     if (dimByMode[mode][name] != null) vbm[mode] = { value: dimByMode[mode][name] };
   dimVariables[name] = { type: "FLOAT", valuesByMode: vbm };
+}
+
+// Semantic Dimension (FLOAT, spacing primitive 를 가리키는 alias): gap·gap-title·inset.
+// leaf=ref → alias 경로. 프로젝트 override 의 raw 숫자 → 값이 spacing 키면 alias, 아니면 literal.
+const spacingKeys = new Set(Object.keys(dim.spacing).map((k) => String(k)));
+function semDimMap(theme) {
+  const ov = (theme && theme.spacing) || {};
+  const out = {};
+  const add = (obj, prefix) => {
+    for (const [k, v] of Object.entries(obj)) out[`${prefix}/${camelToKebab(k)}`] = v;
+  };
+  add({ ...dim.gap, ...(ov.gap || {}) }, "gap");
+  add({ ...dim.gapTitle, ...(ov.gapTitle || {}) }, "gap-title");
+  add({ ...dim.inset, ...(ov.inset || {}) }, "inset");
+  return out;
+}
+const semDimByMode = {};
+for (const { mode, theme } of BRANDS)
+  semDimByMode[mode] = semDimMap(mode === "nudge-eap" ? null : theme);
+const semDimNames = new Set();
+for (const m of Object.values(semDimByMode)) for (const n of Object.keys(m)) semDimNames.add(n);
+const semDimVariables = {};
+for (const name of orderByBase(semDimNames, Object.keys(semDimByMode["nudge-eap"]))) {
+  const vbm = {};
+  for (const { mode } of BRANDS) {
+    const leaf = semDimByMode[mode][name];
+    if (leaf == null) continue;
+    if (isRef(leaf)) vbm[mode] = { alias: refToFigmaAlias(leaf) };
+    else if (typeof leaf === "number" && spacingKeys.has(String(leaf)))
+      vbm[mode] = { alias: `spacing/${leaf}` };
+    else vbm[mode] = { value: leaf };
+  }
+  semDimVariables[name] = { type: "FLOAT", valuesByMode: vbm };
 }
 // typeScale 키 목록(Text Style 생성용) — 본문 weight/family 는 보류, size/lh/ls 만 변수 바인딩.
 const textStyleKeys = Object.keys(typeScale).map(tsKey);
@@ -291,6 +334,7 @@ const figma = {
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
   dimensions: { modes: BRANDS.map((b) => b.mode), variables: dimVariables, textStyleKeys },
+  semanticDimensions: { modes: BRANDS.map((b) => b.mode), variables: semDimVariables },
   elevation: { modes: BRANDS.map((b) => b.mode), variables: elevVariables },
   meta: tokenMeta,
 };
