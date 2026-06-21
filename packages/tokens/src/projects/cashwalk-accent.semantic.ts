@@ -61,7 +61,7 @@ export function cashwalkAccentSemantic(accent: AccentFamily): SemanticColors {
       pressed: a("700"),
       outlined: { hover: a("50") },
     },
-    buttonText: { default: ref("color.common.00") }, // accent fill 위 흰 텍스트(노랑 위 검정에서 전환)
+    buttonText: { default: ref("color.common.white") }, // accent fill 위 흰 텍스트(노랑 위 검정에서 전환)
     fill: { brand: { default: a("500"), hover: a("600"), pressed: a("700") } },
   };
   return mergeDeep(cashwalkSemantic, override) as SemanticColors;

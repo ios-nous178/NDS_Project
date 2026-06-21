@@ -18,8 +18,6 @@ primitives:
     50: "#FAFAFA"
   # Common 흑·백 — white/black + 레거시 "00"/1000 키 (전 브랜드 ref 호환)
   common:
-    00: "#FFFFFF"
-    1000: "#000000"
     white: "#FFFFFF"
     black: "#000000"
   coolGray:

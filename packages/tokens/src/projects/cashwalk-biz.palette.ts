@@ -19,8 +19,8 @@
 
 // ─── Common ─────────────────────────────────────────────
 export const cashwalkBizCommon = {
-  "00": "#FFFFFF",
-  1000: "#000000",
+  white: "#FFFFFF",
+  black: "#000000",
 } as const;
 
 // ─── Neutral ────────────────────────────────────────────

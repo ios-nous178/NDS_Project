@@ -34,7 +34,7 @@ export const cashwalkSemantic = {
   bg: {
     page: { default: ref("color.gray.50") }, // #FAFAFA — BG/Page/Default
     surface: {
-      default: ref("color.common.00"), // #FFFFFF — BG/Surface/Default
+      default: ref("color.common.white"), // #FFFFFF — BG/Surface/Default
       subtle: ref("color.gray.50"), // #FAFAFA — BG/Surface/Subtle
     },
     section: { default: ref("color.gray.100") }, // #F5F5F5 — BG/Section/Default
@@ -60,7 +60,7 @@ export const cashwalkSemantic = {
     subtle: { default: ref("color.gray.700") }, // #666666 — Text/Subtle
     muted: { default: ref("color.gray.500") }, // #BBBBBB — Text/Muted
     disabled: { default: ref("color.gray.500") }, // #BBBBBB — Text/Disabled (muted 와 동일)
-    inverse: { default: ref("color.common.00") }, // #FFFFFF — Text/Inverse
+    inverse: { default: ref("color.common.white") }, // #FFFFFF — Text/Inverse
     brand: {
       default: ref("color.yellow.800"), // #FD9B02 — Text/Brand (가독성 위해 800)
       strong: ref("color.yellow.800"), // #FD9B02 — Text/Brand/Strong (base alias)
@@ -102,7 +102,7 @@ export const cashwalkSemantic = {
     strong: { default: ref("color.gray.800") }, // #333333 — Icon/Strong
     normal: { default: ref("color.gray.700") }, // #666666 — Icon/Normal
     disabled: { default: ref("color.gray.400") }, // #DDDDDD — Icon/Disabled
-    inverse: { default: ref("color.common.00") }, // #FFFFFF — Icon/Inverse
+    inverse: { default: ref("color.common.white") }, // #FFFFFF — Icon/Inverse
     brand: { default: ref("color.yellow.700") }, // #FEAF01 — Icon/Brand (가이드 yellow/700)
     status: {
       success: ref("color.green.500"), // #00CC5B
@@ -137,26 +137,26 @@ export const cashwalkSemantic = {
       disabled: ref("color.gray.400"), // #DDD
     },
     outlined: {
-      default: ref("color.common.00"), // #FFFFFF
+      default: ref("color.common.white"), // #FFFFFF
       hover: ref("color.yellow.50"), // #FFFEF5
-      disabled: ref("color.common.00"), // #FFFFFF
+      disabled: ref("color.common.white"), // #FFFFFF
     },
   },
   buttonText: {
-    default: ref("color.common.1000"), // #000000 — ButtonText/Default (노랑 위 검정)
+    default: ref("color.common.black"), // #000000 — ButtonText/Default (노랑 위 검정)
     brand: ref("color.gray.900"), // #111 — ButtonText/Outlined (Outlined/Primary 텍스트 = neutral/900 검정, 노랑 아님)
     // Solid/Secondary disabled = 흰 텍스트 (#FFFFFF) — Solid/Primary 와 같은 페어.
     secondary: {
-      default: ref("color.common.00"), // #FFFFFF — 검정 bg 위 흰 텍스트
-      disabled: ref("color.common.00"), // #FFFFFF — Solid/Secondary Disabled (#DDDDDD bg 위 흰)
+      default: ref("color.common.white"), // #FFFFFF — 검정 bg 위 흰 텍스트
+      disabled: ref("color.common.white"), // #FFFFFF — Solid/Secondary Disabled (#DDDDDD bg 위 흰)
     },
     // Neutral tone — Solid 은 흰 텍스트(styleMap surface.default). Weak/Outlined enabled 는 #111.
     neutral: ref("color.gray.900"), // #111 — Weak/Outlined Neutral enabled 텍스트
-    neutralSolid: ref("color.common.00"), // #FFFFFF — Solid Neutral 텍스트 (#111 검정 fill 위 흰)
+    neutralSolid: ref("color.common.white"), // #FFFFFF — Solid Neutral 텍스트 (#111 검정 fill 위 흰)
     neutralDisabled: ref("color.gray.500"), // #BBB — Neutral disabled 텍스트
     // SemanticColorGuide 의 ButtonText/Disabled = #FFFFFF (Solid disabled, 회색 bg 위 흰 텍스트).
     // ※ Outlined disabled 텍스트는 컴포넌트가 cv.textRole.muted 로 직접 처리하므로 이 슬롯과 무관.
-    disabled: ref("color.common.00"), // #FFFFFF — ButtonText/Disabled
+    disabled: ref("color.common.white"), // #FFFFFF — ButtonText/Disabled
   },
   buttonBorder: {
     outlined: {
@@ -182,7 +182,7 @@ export const cashwalkSemantic = {
       default: ref("color.gray.800"), // #333333
       subtle: ref("color.gray.100"), // #F5F5F5
     },
-    inverse: { default: ref("color.common.00") },
+    inverse: { default: ref("color.common.white") },
     status: {
       error: ref("color.red.500"),
       caution: ref("color.yellow.800"), // text.status.caution 과 정합
@@ -191,7 +191,7 @@ export const cashwalkSemantic = {
 
   // ─── Input (7 tokens, focus = 검정 ★) ────────────────
   input: {
-    bg: ref("color.common.00"), // #FFFFFF — Input/BG
+    bg: ref("color.common.white"), // #FFFFFF — Input/BG
     bgDisabled: ref("color.gray.50"), // #FAFAFA — Input/BG/Disabled
     borderDefault: ref("color.gray.200"), // #EEEEEE — Input/Border/Default
     borderHover: ref("color.gray.300"), // #E7E7E7 — Input/Border/Hover
@@ -213,7 +213,7 @@ export const cashwalkSemantic = {
     bg: ref("color.gray.900"), // #111111 — Solid/Neutral
     hover: ref("color.gray.800"), // #333333
     active: ref("color.gray.800"), // #333333 — press
-    text: ref("color.common.00"), // #FFFFFF — 검정 fill 위 흰 텍스트
+    text: ref("color.common.white"), // #FFFFFF — 검정 fill 위 흰 텍스트
   },
 } as const;
 

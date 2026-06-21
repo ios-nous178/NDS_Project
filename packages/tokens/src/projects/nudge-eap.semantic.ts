@@ -18,7 +18,7 @@ export const nudgeEapSemantic = {
   bg: {
     page: { default: ref("color.coolGray.50") }, // #F8F9FB
     surface: {
-      default: ref("color.common.00"), // #FFFFFF
+      default: ref("color.common.white"), // #FFFFFF
       subtle: ref("color.gray.50"), // #FAFAFA
     },
     section: { default: ref("color.coolGray.100") }, // #F3F4F6
@@ -45,7 +45,7 @@ export const nudgeEapSemantic = {
     subtle: { default: ref("color.gray.700") }, // #666666
     muted: { default: ref("color.gray.500") }, // #999999
     disabled: { default: ref("color.gray.400") }, // #C7C7C7
-    inverse: { default: ref("color.common.00") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     brand: {
       default: ref("color.blue.500"), // #2B96ED
       strong: ref("color.blue.800"), // #1B65BA — Figma `--text-brand-strong`
@@ -71,9 +71,9 @@ export const nudgeEapSemantic = {
       disabled: ref("color.coolGray.200"), // #E6E7EB
     },
     outlined: {
-      default: ref("color.common.00"), // #FFFFFF
+      default: ref("color.common.white"), // #FFFFFF
       hover: ref("color.blue.50"), // #F1F8FD
-      disabled: ref("color.common.00"), // #FFFFFF
+      disabled: ref("color.common.white"), // #FFFFFF
     },
     // Solid/Neutral — DS extension (Figma SSOT 미정의, NudgeEAP base 는 cool-gray fill 유지).
     // Runmile 등 brand 가 light gray filled 톤으로 override.
@@ -84,7 +84,7 @@ export const nudgeEapSemantic = {
     },
   },
   buttonText: {
-    default: ref("color.common.00"), // #FFFFFF
+    default: ref("color.common.white"), // #FFFFFF
     brand: ref("color.blue.500"), // #2B96ED
     // Solid/Secondary 텍스트 — 옅은 blue 배경 위에 brand blue 텍스트 (가독성 OK).
     secondary: {
@@ -95,7 +95,7 @@ export const nudgeEapSemantic = {
     // (이전엔 neutral["00"]=#FFFFFF 로 흰배경+흰글자=안 보임 버그. 가이드 SSOT=#383838)
     neutral: ref("color.gray.800"), // #383838
     // Solid Neutral 텍스트 — cool-gray(#9CA2AE) fill 위 흰.
-    neutralSolid: ref("color.common.00"), // #FFFFFF
+    neutralSolid: ref("color.common.white"), // #FFFFFF
     // Outlined Neutral disabled 텍스트 — 기존 cv.textRole.muted (#999) 매핑 유지.
     neutralDisabled: ref("color.gray.500"), // #999999
     // Figma 실 Button (171:8480) 이 cool-gray/400 (#9CA2AE) 사용 — 이게 SSOT.
@@ -121,7 +121,7 @@ export const nudgeEapSemantic = {
     strong: { default: ref("color.gray.800") }, // #383838 ← Neutral · 800
     normal: { default: ref("color.gray.700") }, // #666666 ← Figma Neutral · 600
     disabled: { default: ref("color.gray.400") }, // #C7C7C7 ← Figma Neutral · 200
-    inverse: { default: ref("color.common.00") }, // #FFFFFF ← Neutral · 00 (white)
+    inverse: { default: ref("color.common.white") }, // #FFFFFF ← Neutral · 00 (white)
     brand: { default: ref("color.blue.500") }, // #2B96ED ← Atomic/Bright Blue · 500
     status: {
       success: ref("color.green.300"), // #13BFA2 ← Atomic/Green · 500
@@ -155,7 +155,7 @@ export const nudgeEapSemantic = {
       default: ref("color.gray.800"), // #383838
       subtle: ref("color.gray.100"), // #F5F5F5
     },
-    inverse: { default: ref("color.common.00") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     status: {
       error: ref("color.red.500"), // #F13F00
       caution: ref("color.yellow.500"), // #FFC303
@@ -171,7 +171,7 @@ export const nudgeEapSemantic = {
    * 한 단어로 유지.
    */
   input: {
-    bg: ref("color.common.00"), // #FFFFFF — --semantic-input-bg
+    bg: ref("color.common.white"), // #FFFFFF — --semantic-input-bg
     bgDisabled: ref("color.gray.50"), // #FAFAFA — --semantic-input-bg-disabled
     borderDefault: ref("color.gray.300"), // #D8D8D8
     borderHover: ref("color.gray.400"), // #C7C7C7

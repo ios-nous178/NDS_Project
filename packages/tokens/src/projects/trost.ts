@@ -137,14 +137,14 @@ export const trostTheme: ProjectTheme = {
     tab: {
       accentFill: trostIndigo[500], // #4968FF — line indicator + chip/segment 활성 채움
       accentText: trostIndigo[500], // #4968FF — line 활성 텍스트
-      accentOn: trostCommon["00"], // #FFFFFF — 코발트 채움 위 텍스트
+      accentOn: trostCommon.white, // #FFFFFF — 코발트 채움 위 텍스트
     },
     // Controls 가이드(5158:108) — Checkbox·Radio 컨트롤 24×24, on 상태는 brand 노랑이 아닌
     // 다크(#333) + 흰 체크/점(노랑 위 가독성). 칩 선택색과 동일 톤.
     checkbox: {
       size: 24,
       // checkedBg/checkedBorder → semantic fill.controlOn(dark) 로 승격(P3). checkColor 유지.
-      checkColor: trostCommon["00"],
+      checkColor: trostCommon.white,
     },
     radio: { size: 24 }, // checkedColor → semantic fill.controlOn(dark) 로 승격(P3)
     // Toggle 50×30 (Controls 가이드 5158:108) — unchecked #EEE(스케일 밖 실측), checked 다크,

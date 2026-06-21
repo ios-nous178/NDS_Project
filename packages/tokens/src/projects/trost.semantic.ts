@@ -19,8 +19,8 @@ import { ref } from "../ref.js";
 export const trostSemantic = {
   bg: {
     // 페이지/서피스 bg 는 흰색 (가이드 BG/Page·Surface = #fff).
-    page: { default: ref("color.common.00") },
-    surface: { default: ref("color.common.00"), subtle: ref("color.gray.50") }, // subtle #FAFAFA
+    page: { default: ref("color.common.white") },
+    surface: { default: ref("color.common.white"), subtle: ref("color.gray.50") }, // subtle #FAFAFA
     section: { default: ref("color.gray.cool-100") }, // #F4F5F7
     brand: { default: ref("color.yellow.500"), subtle: ref("color.yellow.100") }, // subtle Yellow/100 #FFFDD9
     inverse: { default: ref("color.gray.900") }, // #1A1A1A (가이드 BG/Inverse)
@@ -46,7 +46,7 @@ export const trostSemantic = {
     subtle: { default: ref("color.gray.500") }, // #979797
     muted: { default: ref("color.gray.400") }, // #C7C7C7
     disabled: { default: ref("color.gray.400") }, // #C7C7C7
-    inverse: { default: ref("color.common.00") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     onBrand: { default: ref("color.gray.800") }, // #333333 — 노랑 채움 위 텍스트
     // 트로스트의 brand-as-text(활성 카테고리·인용/댓글 멘션·활성 sub-tab·EAP 강조 등)는
     // 모두 orange(#FF9D00) — 가이드 Text/Brand/Default 가 이를 확정. 노랑 primary 는
@@ -81,9 +81,9 @@ export const trostSemantic = {
       disabled: ref("color.gray.300"), // #D8D8D8
     },
     outlined: {
-      default: ref("color.common.00"),
+      default: ref("color.common.white"),
       hover: ref("color.yellow.100"), // 옅은 노랑 틴트 (Fill/Brand/Subtle)
-      disabled: ref("color.common.00"),
+      disabled: ref("color.common.white"),
     },
   },
   buttonText: {
@@ -98,7 +98,7 @@ export const trostSemantic = {
     },
     // Neutral — Solid/Neutral(검정 CTA) 텍스트=흰(neutralSolid), Outlined/Neutral enabled=#333(neutral).
     neutral: ref("color.gray.800"), // #333333 — Outlined/Neutral enabled (가이드 Outlined 텍스트 Text/Strong)
-    neutralSolid: ref("color.common.00"), // #FFFFFF — Solid/Neutral (검정 #1A1A1A fill 위 흰 텍스트)
+    neutralSolid: ref("color.common.white"), // #FFFFFF — Solid/Neutral (검정 #1A1A1A fill 위 흰 텍스트)
     neutralDisabled: ref("color.gray.500"), // #979797 — Outlined/Neutral disabled
     disabled: ref("color.gray.500"),
   },
@@ -115,7 +115,7 @@ export const trostSemantic = {
     normal: { default: ref("color.gray.700") }, // #606060
     subtle: { default: ref("color.gray.500") }, // #979797 (가이드 Icon/Subtle)
     disabled: { default: ref("color.gray.400") }, // #C7C7C7
-    inverse: { default: ref("color.common.00") },
+    inverse: { default: ref("color.common.white") },
     onBrand: { default: ref("color.gray.800") }, // #333333 — 노랑 채움 위 아이콘
     // text.brand 와 동일하게 brand-as-icon 도 orange (가이드엔 Icon/Brand 없음 — 트로스트 정체성 유지).
     brand: { default: ref("color.yellow.text") },
@@ -153,7 +153,7 @@ export const trostSemantic = {
     neutral: { default: ref("color.gray.800"), subtle: ref("color.gray.100") },
     // 예외 — DS 의 `fill.inverse` = "역상(어두운) 표면 **위에 얹는** 채움 = 흰색"으로 base 와 정합.
     // 가이드의 Fill/Inverse(#1A1A1A, 어두운 inverting 채움)는 DS 에서 bg.inverse / fill.neutral 이 담당.
-    inverse: { default: ref("color.common.00") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     status: {
       error: ref("color.red.500"), // #FF4111
       success: ref("color.green.500"), // #00BC78
@@ -171,7 +171,7 @@ export const trostSemantic = {
     },
   },
   input: {
-    bg: ref("color.common.00"),
+    bg: ref("color.common.white"),
     bgDisabled: ref("color.gray.100"),
     borderDefault: ref("color.gray.200"),
     borderHover: ref("color.gray.400"),

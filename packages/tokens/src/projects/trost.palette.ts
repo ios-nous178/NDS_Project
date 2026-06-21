@@ -71,8 +71,6 @@ export const trostGray = {
 
 // Common 흑·백 (가이드 Common 세트) — white/black + 레거시 "00"/1000.
 export const trostCommon = {
-  "00": "#FFFFFF",
-  1000: "#000000",
   white: "#FFFFFF",
   black: "#000000",
 } as const;

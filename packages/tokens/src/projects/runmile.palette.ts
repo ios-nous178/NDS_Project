@@ -83,8 +83,6 @@ export const runmileCoolGray = {
 
 // ─── Common (흑·백, Figma `color-base`) ─────────────────
 export const runmileCommon = {
-  "00": "#FFFFFF",
-  1000: "#000000",
   white: "#FFFFFF",
   black: "#221E1F",
 } as const;

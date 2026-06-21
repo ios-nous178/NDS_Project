@@ -15,8 +15,6 @@ export const gray = {
 } as const;
 
 export const common = {
-  1000: "#000000",
-  "00": "#FFFFFF",
   white: "#FFFFFF",
   black: "#000000",
 } as const;
