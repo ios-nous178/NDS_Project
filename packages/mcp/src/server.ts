@@ -961,7 +961,7 @@ function isRawPaletteToken(token: Manifest["tokens"][number]) {
   // base(nudge) 팔레트는 기존 동작 유지. 추가로 프로젝트 고유 팔레트(--color-teal-500 등,
   // projects 필드가 붙은 color 스케일 토큰)도 deprioritize 해 시멘틱 우선 규칙을 지킨다.
   return (
-    /^--color-(?:neutral|coolGray|blue|pink|yellow|red|green)-/.test(token.name) ||
+    /^--color-(?:neutral|coolGray|blue|pink|orange|yellow|red|green)-/.test(token.name) ||
     (token.group === "color" &&
       Array.isArray(token.projects) &&
       /^--color-[a-zA-Z]+-\d/.test(token.name))
@@ -969,7 +969,7 @@ function isRawPaletteToken(token: Manifest["tokens"][number]) {
 }
 
 function isRawPaletteQuery(query: string) {
-  return /\b(?:neutral|coolgray|cool-gray|blue|pink|yellow|red|green)\b/.test(query);
+  return /\b(?:neutral|coolgray|cool-gray|blue|pink|orange|yellow|red|green)\b/.test(query);
 }
 
 /* ───────────── suggest_replacement ───────────── */

@@ -5,6 +5,7 @@ import {
   blue,
   pink,
   yellow,
+  orange,
   red,
   green,
   nudgeEapSemantic,
@@ -158,7 +159,8 @@ function ColorTokensPage() {
       <PaletteGroup title="Blue (Primary)" palette={blue} />
       <PaletteGroup title="Pink (Accent)" palette={pink} />
       <PaletteGroup title="Yellow (Caution)" palette={yellow} />
-      <PaletteGroup title="Red (Error)" palette={red} />
+      <PaletteGroup title="Orange (Error)" palette={orange} />
+      <PaletteGroup title="Red" palette={red} />
       <PaletteGroup title="Green (Success)" palette={green} />
     </div>
   );

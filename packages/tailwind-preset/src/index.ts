@@ -4,7 +4,7 @@ import {
   blue,
   pink,
   yellow,
-  red,
+  orange,
   green,
   fontFamily,
   fontWeight,
@@ -24,7 +24,7 @@ import {
   cashwalkBizCommon,
   cashwalkBizNeutral,
   cashwalkBizYellow,
-  cashwalkBizCoralRed,
+  cashwalkBizRed,
   cashwalkBizBlue,
   cashwalkBizGreen,
   cashwalkBizBrown,
@@ -33,7 +33,7 @@ import {
   cashwalkCommon,
   cashwalkNeutral,
   cashwalkYellow,
-  cashwalkCoralRed,
+  cashwalkRed,
   cashwalkBlue,
   cashwalkCornflower,
   cashwalkIndigo,
@@ -88,7 +88,7 @@ export const nudgeEapPreset = {
         blue: objectToPx(blue),
         pink: objectToPx(pink),
         yellow: objectToPx(yellow),
-        red: objectToPx(red),
+        orange: objectToPx(orange),
         green: objectToPx(green),
 
         // ── Semantic (Figma role-based) — CSS var references ──
@@ -284,7 +284,7 @@ export const cashwalkBizPreset = {
         "cashwalk-biz-yellow": objectToPx(cashwalkBizYellow),
         "cashwalk-biz-blue": objectToPx(cashwalkBizBlue),
         "cashwalk-biz-green": objectToPx(cashwalkBizGreen),
-        "cashwalk-biz-coral-red": objectToPx(cashwalkBizCoralRed),
+        "cashwalk-biz-red": objectToPx(cashwalkBizRed),
         brown: objectToPx(cashwalkBizBrown),
         common: objectToPx(cashwalkBizCommon),
 
@@ -344,7 +344,7 @@ export const cashwalkPreset = {
         "cashwalk-yellow": objectToPx(cashwalkYellow),
         "cashwalk-blue": objectToPx(cashwalkBlue),
         "cashwalk-green": objectToPx(cashwalkGreen),
-        "cashwalk-coral-red": objectToPx(cashwalkCoralRed),
+        "cashwalk-red": objectToPx(cashwalkRed),
         cornflower: objectToPx(cashwalkCornflower),
         indigo: objectToPx(cashwalkIndigo),
         brown: objectToPx(cashwalkBrown),
@@ -441,7 +441,7 @@ export const genietPreset = {
  *
  * 시멘틱 클래스(`bg-brand`, `text-brand-default` 등) 는 runmile.css 가 var 를 오렌지 톤으로
  * redefine 하므로 자동 런마일 색상. 별도 색상 alias 만 추가:
- *   - `bg-runmile-neutral-*` · `bg-orange-*` 같은 프로젝트 atomic
+ *   - `bg-runmile-neutral-*` · `bg-runmile-orange-*` 같은 프로젝트 atomic
  * Typography / radius(Toss 스타일 4/6/8/12/16/pill) / shadow 는 런마일 가이드 매핑.
  */
 export const runmilePreset = {
@@ -453,7 +453,7 @@ export const runmilePreset = {
         "runmile-gray": objectToPx(runmileGray),
         "runmile-red": objectToPx(runmileRed),
         "runmile-blue": objectToPx(runmileBlue),
-        orange: objectToPx(runmileOrange),
+        "runmile-orange": objectToPx(runmileOrange),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — runmile.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,

@@ -52,7 +52,7 @@ export const cashwalkBizYellow = {
 } as const;
 
 // ─── Coral Red ──────────────────────────────────────────
-export const cashwalkBizCoralRed = {
+export const cashwalkBizRed = {
   50: "#FFF5F5",
   100: "#FFECEC",
   200: "#FFCDCD",

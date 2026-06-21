@@ -45,7 +45,7 @@ export const cashwalkBizSemantic = {
     inverse: { default: ref("color.neutral.900") }, // #111111 — BG/Inverse/Default
     status: {
       success: ref("color.green.50"), // #E5F8EE — BG/Status/Success
-      error: ref("color.coralRed.50"), // #FFF5F5 — BG/Status/Error
+      error: ref("color.red.50"), // #FFF5F5 — BG/Status/Error
       caution: ref("color.yellow.100"), // #FFFAE5 — BG/Status/Caution
       info: ref("color.yellow.100"), // #FFFAE5 — BG/Status/Info (brand-subtle 와 동일 톤)
     },
@@ -68,7 +68,7 @@ export const cashwalkBizSemantic = {
     link: { default: ref("color.blue.500") }, // #007AFF — Text/Link/Default (캐포비 신규)
     status: {
       success: ref("color.green.600"), // #00B350 — Text/Status/Success
-      error: ref("color.coralRed.500"), // #FC3500 — Text/Status/Error
+      error: ref("color.red.500"), // #FC3500 — Text/Status/Error
       caution: ref("color.yellow.800"), // #FD9B02 — Text/Status/Caution
       info: ref("color.blue.600"), // #006FE6 — Text/Status/Info (Figma 3222:458)
     },
@@ -92,7 +92,7 @@ export const cashwalkBizSemantic = {
     },
     disabled: { default: ref("color.neutral.200") }, // #EEEEEE — Border/Disabled
     status: {
-      error: ref("color.coralRed.500"), // #FC3500 — base alias
+      error: ref("color.red.500"), // #FC3500 — base alias
       caution: ref("color.yellow.800"), // #FD9B02 — text.status.caution 과 정합
     },
   },
@@ -106,7 +106,7 @@ export const cashwalkBizSemantic = {
     brand: { default: ref("color.yellow.700") }, // #FEAF01 — Icon/Brand (가이드 yellow/700)
     status: {
       success: ref("color.green.500"), // #00CC5B
-      error: ref("color.coralRed.500"), // #FC3500
+      error: ref("color.red.500"), // #FC3500
       caution: ref("color.yellow.700"), // #FEAF01 — 아이콘 가독성 위해 700
     },
   },
@@ -184,7 +184,7 @@ export const cashwalkBizSemantic = {
     },
     inverse: { default: ref("color.common.00") },
     status: {
-      error: ref("color.coralRed.500"),
+      error: ref("color.red.500"),
       caution: ref("color.yellow.800"), // text.status.caution 과 정합
     },
   },
@@ -196,13 +196,13 @@ export const cashwalkBizSemantic = {
     borderDefault: ref("color.neutral.200"), // #EEEEEE — Input/Border/Default
     borderHover: ref("color.neutral.300"), // #E7E7E7 — Input/Border/Hover
     borderFocus: ref("color.neutral.900"), // #111111 — Input/Border/Focus (★ 검정)
-    borderError: ref("color.coralRed.500"), // #FC3500 — Input/Border/Error
+    borderError: ref("color.red.500"), // #FC3500 — Input/Border/Error
     borderDisabled: ref("color.neutral.200"), // #EEEEEE — base alias
     placeholder: ref("color.neutral.500"), // #BBBBBB — Input/Placeholder (Figma TextField 3447-467 정합 · 구 Neutral400 #DDD 는 너무 옅음)
     // helpertext* — Figma TextField 3447-467 정합: default = text.subtle(#666). (success/error/disabled 는 상태색 유지.)
     helpertextDefault: ref("color.neutral.700"), // #666666 — = text.subtle.default (구 Neutral500 #BBB 는 추정값이었음)
     helpertextSuccess: ref("color.green.600"), // #00B350
-    helpertextError: ref("color.coralRed.500"), // #FC3500
+    helpertextError: ref("color.red.500"), // #FC3500
     helpertextDisabled: ref("color.neutral.400"), // #DDDDDD
   },
 

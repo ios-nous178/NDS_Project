@@ -55,7 +55,7 @@ export const pink = {
   900: "#910041",
 } as const;
 
-export const red = {
+export const orange = {
   50: "#FEE9E6",
   100: "#FFA98C",
   200: "#FF875D",
@@ -68,7 +68,7 @@ export const red = {
   900: "#A01C00",
 } as const;
 
-export const coralRed = {
+export const red = {
   50: "#FFF5F5",
   100: "#FFECEC",
   200: "#FFCDCD",
@@ -125,8 +125,8 @@ export const colors = {
   coolGray,
   blue,
   pink,
+  orange,
   red,
-  coralRed,
   green,
   amber,
   yellow,
