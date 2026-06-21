@@ -115,11 +115,3 @@ export const genietNeutral = {
   black: "#111111",
   white: "#FFFFFF",
 } as const;
-
-// ─── Status alias (semantic 빠른 참조용) ────────────────
-export const genietStatus = {
-  error: genietRed[600], // #FF3258
-  success: genietGreen[600], // #18B264
-  info: genietBlue[600], // #1488D3
-  caution: genietYellow[500], // #FFB700
-} as const;

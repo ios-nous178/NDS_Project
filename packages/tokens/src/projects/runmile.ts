@@ -24,7 +24,6 @@ import {
   runmileNeutral,
   runmileOrange,
   runmileRed,
-  runmileStatus,
   runmileYellow,
 } from "./runmile.palette.js";
 import { runmileSemantic } from "./runmile.semantic.js";
@@ -38,7 +37,6 @@ export {
   runmileYellow,
   runmileGray,
   runmileNeutral,
-  runmileStatus,
 };
 export { runmileSemantic };
 export type { RunmileSemanticTokens } from "./runmile.semantic.js";
@@ -56,7 +54,6 @@ export const runmileTheme: ProjectTheme = {
     yellow: runmileYellow,
     gray: runmileGray,
     neutral: runmileNeutral,
-    status: runmileStatus,
   },
   semantic: runmileSemantic,
   typography: {

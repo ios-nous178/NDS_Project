@@ -28,7 +28,6 @@ import {
   cashwalkBizBlue,
   cashwalkBizGreen,
   cashwalkBizBrown,
-  cashwalkBizStatus,
   cashwalkBizSemantic,
   cashwalkBizTheme,
   cashwalkCommon,
@@ -40,7 +39,6 @@ import {
   cashwalkIndigo,
   cashwalkGreen,
   cashwalkBrown,
-  cashwalkStatus,
   genietMint,
   genietRed,
   genietYellow,
@@ -49,14 +47,12 @@ import {
   genietGreen,
   genietGray,
   genietNeutral,
-  genietStatus,
   genietTheme,
   runmileOrange,
   runmileBlue,
   runmileRed,
   runmileGray,
   runmileNeutral,
-  runmileStatus,
   runmileTheme,
 } from "@nudge-design/tokens";
 
@@ -291,7 +287,6 @@ export const cashwalkBizPreset = {
         "cashwalk-biz-coral-red": objectToPx(cashwalkBizCoralRed),
         brown: objectToPx(cashwalkBizBrown),
         common: objectToPx(cashwalkBizCommon),
-        status: objectToPx(cashwalkBizStatus),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk-biz.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
@@ -354,7 +349,6 @@ export const cashwalkPreset = {
         indigo: objectToPx(cashwalkIndigo),
         brown: objectToPx(cashwalkBrown),
         common: objectToPx(cashwalkCommon),
-        status: objectToPx(cashwalkStatus),
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
       },
@@ -383,7 +377,6 @@ export const genietPreset = {
         "geniet-green": objectToPx(genietGreen),
         mint: objectToPx(genietMint),
         purple: objectToPx(genietPurple),
-        status: objectToPx(genietStatus),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — geniet.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
@@ -450,7 +443,6 @@ export const runmilePreset = {
         "runmile-red": objectToPx(runmileRed),
         "runmile-blue": objectToPx(runmileBlue),
         orange: objectToPx(runmileOrange),
-        status: objectToPx(runmileStatus),
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — runmile.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,

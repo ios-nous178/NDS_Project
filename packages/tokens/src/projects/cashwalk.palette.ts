@@ -136,11 +136,3 @@ export const cashwalkBrown = {
   800: "#312828",
   900: "#221B1B",
 } as const;
-
-// ─── Status alias (semantic 빠른 참조용) ────────────────
-export const cashwalkStatus = {
-  error: cashwalkCoralRed[500], // #FF4141
-  success: cashwalkGreen[500], // #00CC5B
-  info: cashwalkBlue[500], // #007AFF
-  caution: cashwalkYellow[700], // #FEAF01 — 노랑은 텍스트 가독성 떨어져 700 사용
-} as const;

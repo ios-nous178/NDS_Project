@@ -86,11 +86,3 @@ export const runmileNeutral = {
   black: "#221E1F",
   white: "#FFFFFF",
 } as const;
-
-// ─── Status alias (semantic 빠른 참조용) ────────────────
-export const runmileStatus = {
-  error: runmileRed[500], // #FF2428
-  info: runmileBlue[500], // #007AFF
-  success: runmileGreen[500], // #00C255
-  caution: runmileYellow[500], // #FFC400
-} as const;

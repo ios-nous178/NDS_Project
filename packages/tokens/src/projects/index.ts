@@ -33,7 +33,6 @@ export {
   genietGreen,
   genietGray,
   genietNeutral,
-  genietStatus,
   genietSemantic,
 } from "./geniet.js";
 export type { GenietSemanticTokens } from "./geniet.js";
@@ -47,7 +46,6 @@ export {
   cashwalkBizBlue,
   cashwalkBizGreen,
   cashwalkBizBrown,
-  cashwalkBizStatus,
   cashwalkBizSemantic,
 } from "./cashwalk-biz.js";
 export type { CashwalkBizSemanticTokens } from "./cashwalk-biz.js";
@@ -63,7 +61,6 @@ export {
   cashwalkIndigo,
   cashwalkGreen,
   cashwalkBrown,
-  cashwalkStatus,
   cashwalkSemantic,
 } from "./cashwalk.js";
 export type { CashwalkSemanticTokens } from "./cashwalk.js";
@@ -75,7 +72,10 @@ export {
   runmileRed,
   runmileGray,
   runmileNeutral,
-  runmileStatus,
   runmileSemantic,
 } from "./runmile.js";
 export type { RunmileSemanticTokens } from "./runmile.js";
+
+// cashwalk accent 형제 — 팔레트는 cashwalk 와 공유, brand 색만 accent 스왑.
+export { teamworkTheme, teamworkSemantic } from "./teamwork.js";
+export { dongneSanchaekTheme, dongneSanchaekSemantic } from "./dongne-sanchaek.js";

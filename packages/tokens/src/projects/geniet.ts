@@ -19,7 +19,6 @@ import {
   genietNeutral,
   genietPurple,
   genietRed,
-  genietStatus,
   genietYellow,
 } from "./geniet.palette.js";
 import { genietSemantic } from "./geniet.semantic.js";
@@ -34,7 +33,6 @@ export {
   genietGreen,
   genietGray,
   genietNeutral,
-  genietStatus,
 };
 export { genietSemantic };
 export type { GenietSemanticTokens } from "./geniet.semantic.js";
@@ -53,7 +51,6 @@ export const genietTheme: ProjectTheme = {
     green: genietGreen,
     gray: genietGray,
     neutral: genietNeutral,
-    status: genietStatus,
   },
   semantic: genietSemantic,
   typography: {

@@ -24,7 +24,6 @@ import {
   cashwalkGreen,
   cashwalkIndigo,
   cashwalkNeutral,
-  cashwalkStatus,
   cashwalkYellow,
 } from "./cashwalk.palette.js";
 import { cashwalkSemantic } from "./cashwalk.semantic.js";
@@ -40,7 +39,6 @@ export {
   cashwalkIndigo,
   cashwalkGreen,
   cashwalkBrown,
-  cashwalkStatus,
 };
 export { cashwalkSemantic };
 export type { CashwalkSemanticTokens } from "./cashwalk.semantic.js";
@@ -60,7 +58,6 @@ export const cashwalkTheme: ProjectTheme = {
     indigo: cashwalkIndigo,
     green: cashwalkGreen,
     brown: cashwalkBrown,
-    status: cashwalkStatus,
   },
   semantic: cashwalkSemantic,
 };
