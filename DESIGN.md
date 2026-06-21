@@ -5,8 +5,7 @@ description: "EAP(Employee Assistance Program) 멘탈케어 플랫폼 디자인 
 
 # ── Primitive Color Scales ──────────────────────────────────
 primitives:
-  neutral:
-    1000: "#000000"
+  gray:
     900: "#111111"
     800: "#383838"
     700: "#666666"
@@ -17,7 +16,12 @@ primitives:
     200: "#ECECEC"
     100: "#F5F5F5"
     50: "#FAFAFA"
+  # Common 흑·백 — white/black + 레거시 "00"/1000 키 (전 브랜드 ref 호환)
+  common:
     00: "#FFFFFF"
+    1000: "#000000"
+    white: "#FFFFFF"
+    black: "#000000"
   coolGray:
     900: "#111827"
     800: "#1F2937"
@@ -41,7 +45,7 @@ primitives:
     200: "#91CAF6"
     100: "#E3F2FC"
     50: "#F1F8FD"
-  magenta:
+  pink:
     900: "#910041"
     800: "#C30058"
     700: "#CE005A"
@@ -52,8 +56,8 @@ primitives:
     200: "#F8B8CF"
     100: "#FCE3EC"
     50: "#FDF1F5"
-  # Orange Red — Figma 아토믹 명칭 (현 코드에서는 `red` 로 유지)
-  red:
+  # Orange — Figma 아토믹 "Orange Red" (#F13F00, EAP 에러색). 공통 Family Orange.
+  orange:
     900: "#A01C00"
     800: "#CB2700"
     700: "#E33800"
@@ -64,8 +68,8 @@ primitives:
     200: "#FF875D"
     100: "#FFA98C"
     50: "#FEE9E6"
-  # Coral Red — Figma 아토믹 신규 팔레트 (2026-05)
-  coralRed:
+  # Red — Figma 아토믹 "Coral Red" (#FF4141). 공통 Family Red (cashwalk/biz 에러).
+  red:
     900: "#7A0A0A"
     800: "#A01414"
     700: "#C42020"

@@ -14,10 +14,9 @@ export const gray = {
   900: "#111111",
 } as const;
 
-// Common 흑·백 — white/black 과 레거시 "00"/1000 키를 모두 보유(전 브랜드 ref 호환).
 export const common = {
-  "00": "#FFFFFF",
   1000: "#000000",
+  "00": "#FFFFFF",
   white: "#FFFFFF",
   black: "#000000",
 } as const;
