@@ -11,7 +11,7 @@
  *   Border & Radius     (5024:16) — Radius None~3XL/Full · Border W-Default/Icon/Strong
  *
  * 구성:
- *   - runmile.palette.ts   : atomic 컬러 스케일 (runmileOrange / runmileGray / ...)
+ *   - runmile.palette.ts   : atomic 컬러 스케일 (runmileOrange / runmileCoolGray / ...)
  *   - runmile.semantic.ts  : Figma role-based 시멘틱 트리 (NudgeEAP base override)
  *   - runmile.ts (이 파일) : palette + semantic + typography/spacing/elevation 묶음
  */
@@ -19,9 +19,9 @@
 import type { ProjectTheme } from "./types.js";
 import {
   runmileBlue,
-  runmileGray,
+  runmileCoolGray,
   runmileGreen,
-  runmileNeutral,
+  runmileCommon,
   runmileOrange,
   runmileRed,
   runmileYellow,
@@ -35,8 +35,8 @@ export {
   runmileRed,
   runmileGreen,
   runmileYellow,
-  runmileGray,
-  runmileNeutral,
+  runmileCoolGray,
+  runmileCommon,
 };
 export { runmileSemantic };
 export type { RunmileSemanticTokens } from "./runmile.semantic.js";
@@ -52,8 +52,8 @@ export const runmileTheme: ProjectTheme = {
     red: runmileRed,
     green: runmileGreen,
     yellow: runmileYellow,
-    gray: runmileGray,
-    neutral: runmileNeutral,
+    coolGray: runmileCoolGray,
+    common: runmileCommon,
   },
   semantic: runmileSemantic,
   typography: {
@@ -141,14 +141,14 @@ export const runmileTheme: ProjectTheme = {
       navActiveLabelWeight: "500",
     },
     // gray400 border (Figma 144:609)
-    input: { borderColor: runmileGray[400] },
+    input: { borderColor: runmileCoolGray[400] },
     // Toss 스타일 radius
     card: { radius: 12 },
-    "bottom-sheet": { radius: 16, handleColor: runmileGray[300] },
+    "bottom-sheet": { radius: 16, handleColor: runmileCoolGray[300] },
     // Chip selected — orange500 채움 (Figma 172:566)
     chip: {
       selectedBackground: runmileOrange[500],
-      selectedText: runmileNeutral.white,
+      selectedText: runmileCommon.white,
       selectedBorder: runmileOrange[500],
     },
     // Tab — Figma 런마일 TabsGuide (5111:138): active = 검정(#221E1F) · 포인트색(주황) 아님.
@@ -165,10 +165,10 @@ export const runmileTheme: ProjectTheme = {
       itemMinWidth: 24,
       itemRadius: 6,
       itemWeight: "500",
-      activeBg: runmileGray[800],
-      activeBgHover: runmileGray[900],
-      activeText: runmileNeutral.white,
-      arrowColor: runmileGray[600], // #8B95A1
+      activeBg: runmileCoolGray[800],
+      activeBgHover: runmileCoolGray[900],
+      activeText: runmileCommon.white,
+      arrowColor: runmileCoolGray[600], // #8B95A1
       arrowSize: 20,
     },
     // ─ Controls 가이드 (5111:345) ─

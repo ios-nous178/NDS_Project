@@ -1,5 +1,6 @@
 import {
-  neutral,
+  gray,
+  common,
   coolGray,
   blue,
   pink,
@@ -15,14 +16,14 @@ import {
   trostYellow,
   trostIndigo,
   trostPink,
-  trostNeutral,
+  trostGray,
   trostRed,
   trostBlue,
   trostGreen,
   trostSemantic,
   trostTheme,
   cashwalkBizCommon,
-  cashwalkBizNeutral,
+  cashwalkBizGray,
   cashwalkBizYellow,
   cashwalkBizRed,
   cashwalkBizBlue,
@@ -31,7 +32,7 @@ import {
   cashwalkBizSemantic,
   cashwalkBizTheme,
   cashwalkCommon,
-  cashwalkNeutral,
+  cashwalkGray,
   cashwalkYellow,
   cashwalkRed,
   cashwalkBlue,
@@ -46,13 +47,13 @@ import {
   genietPurple,
   genietGreen,
   genietGray,
-  genietNeutral,
+  genietCommon,
   genietTheme,
   runmileOrange,
   runmileBlue,
   runmileRed,
-  runmileGray,
-  runmileNeutral,
+  runmileCoolGray,
+  runmileCommon,
   runmileTheme,
 } from "@nudge-design/tokens";
 
@@ -83,7 +84,8 @@ export const nudgeEapPreset = {
     extend: {
       colors: {
         // ── Atomic palette ──
-        neutral: objectToPx(neutral),
+        gray: objectToPx(gray),
+        common: objectToPx(common),
         "cool-gray": objectToPx(coolGray),
         blue: objectToPx(blue),
         pink: objectToPx(pink),
@@ -200,7 +202,7 @@ export const trostPreset = {
         // Trost 고유 atomic palette (Figma 컬러 가이드 5011:108 풀 스케일).
         // base 와 충돌하는 hue(neutral/yellow/red/blue/green/pink)는 `trost-` prefix —
         // 안 그러면 아래 `...nudgeEapPreset` spread 가 base 값으로 덮어버린다.
-        "trost-neutral": objectToPx(trostNeutral),
+        "trost-gray": objectToPx(trostGray),
         "trost-yellow": objectToPx(trostYellow),
         "trost-red": objectToPx(trostRed),
         "trost-blue": objectToPx(trostBlue),
@@ -280,13 +282,13 @@ export const cashwalkBizPreset = {
     extend: {
       colors: {
         // 캐포비 고유 atomic palette
-        "cashwalk-biz-neutral": objectToPx(cashwalkBizNeutral),
+        "cashwalk-biz-gray": objectToPx(cashwalkBizGray),
         "cashwalk-biz-yellow": objectToPx(cashwalkBizYellow),
         "cashwalk-biz-blue": objectToPx(cashwalkBizBlue),
         "cashwalk-biz-green": objectToPx(cashwalkBizGreen),
         "cashwalk-biz-red": objectToPx(cashwalkBizRed),
         brown: objectToPx(cashwalkBizBrown),
-        common: objectToPx(cashwalkBizCommon),
+        // common(흑백)은 base preset spread 로 제공(동일 값)
 
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk-biz.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
@@ -340,7 +342,7 @@ export const cashwalkPreset = {
     extend: {
       ...nudgeEapPreset.theme.extend,
       colors: {
-        "cashwalk-neutral": objectToPx(cashwalkNeutral),
+        "cashwalk-gray": objectToPx(cashwalkGray),
         "cashwalk-yellow": objectToPx(cashwalkYellow),
         "cashwalk-blue": objectToPx(cashwalkBlue),
         "cashwalk-green": objectToPx(cashwalkGreen),
@@ -348,7 +350,7 @@ export const cashwalkPreset = {
         cornflower: objectToPx(cashwalkCornflower),
         indigo: objectToPx(cashwalkIndigo),
         brown: objectToPx(cashwalkBrown),
-        common: objectToPx(cashwalkCommon),
+        // common(흑백)은 base preset spread 로 제공(동일 값)
         // 시멘틱 키는 nudgeEapPreset 의 CSS var 그대로 — cashwalk.css 가 자동 redefine
         ...nudgeEapPreset.theme.extend.colors,
       },
@@ -380,7 +382,7 @@ export const genietPreset = {
     extend: {
       colors: {
         // 지니어트 고유 atomic palette
-        "geniet-neutral": objectToPx(genietNeutral),
+        "geniet-common": objectToPx(genietCommon),
         "geniet-gray": objectToPx(genietGray),
         "geniet-red": objectToPx(genietRed),
         "geniet-yellow": objectToPx(genietYellow),
@@ -449,8 +451,8 @@ export const runmilePreset = {
     extend: {
       colors: {
         // 런마일 고유 atomic palette
-        "runmile-neutral": objectToPx(runmileNeutral),
-        "runmile-gray": objectToPx(runmileGray),
+        "runmile-common": objectToPx(runmileCommon),
+        "runmile-cool-gray": objectToPx(runmileCoolGray),
         "runmile-red": objectToPx(runmileRed),
         "runmile-blue": objectToPx(runmileBlue),
         "runmile-orange": objectToPx(runmileOrange),

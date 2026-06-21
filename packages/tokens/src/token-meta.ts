@@ -21,7 +21,6 @@ export const collectionNotes: Record<string, string> = {
 
 /** atomic 패밀리 색 정체성(브랜드 무관 이름). 사용처 문구는 designer 보강. */
 export const familyNotes: Record<string, { desc: string; tags?: string[] }> = {
-  neutral: { desc: "중립 그레이 (텍스트·보더·배경 기본)" },
   coolGray: { desc: "차가운 그레이" },
   blue: { desc: "블루" },
   red: { desc: "레드" },

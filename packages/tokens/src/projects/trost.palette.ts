@@ -53,8 +53,8 @@ export const trostPink = {
   900: "#4D0A1E",
 } as const;
 
-// Gray. `00` = Common/White, `1000` = Common/Black (가이드 Common 세트).
-export const trostNeutral = {
+// Gray (warm). `cool-100` 은 stray cool 틴트 키.
+export const trostGray = {
   50: "#FAFAFA",
   100: "#F6F6F6",
   150: "#F2F2F2",
@@ -67,8 +67,14 @@ export const trostNeutral = {
   800: "#333333",
   900: "#1A1A1A",
   "cool-100": "#F4F5F7",
+} as const;
+
+// Common 흑·백 (가이드 Common 세트) — white/black + 레거시 "00"/1000.
+export const trostCommon = {
   "00": "#FFFFFF",
   1000: "#000000",
+  white: "#FFFFFF",
+  black: "#000000",
 } as const;
 
 // ─── 상태 스케일 (Figma 가이드 Red / Blue / Green) ───────────────────

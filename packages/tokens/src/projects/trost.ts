@@ -15,7 +15,8 @@ import {
   trostBlue,
   trostIndigo,
   trostGreen,
-  trostNeutral,
+  trostGray,
+  trostCommon,
   trostPink,
   trostRed,
   trostYellow,
@@ -23,7 +24,7 @@ import {
 import { trostSemantic } from "./trost.semantic.js";
 
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export — API 호환 유지
-export { trostYellow, trostIndigo, trostPink, trostNeutral, trostRed, trostBlue, trostGreen };
+export { trostYellow, trostIndigo, trostPink, trostGray, trostCommon, trostRed, trostBlue, trostGreen };
 export { trostSemantic };
 export type { TrostSemanticTokens } from "./trost.semantic.js";
 
@@ -36,7 +37,8 @@ export const trostTheme: ProjectTheme = {
     yellow: trostYellow,
     indigo: trostIndigo,
     pink: trostPink,
-    neutral: trostNeutral,
+    gray: trostGray,
+    common: trostCommon,
     red: trostRed,
     blue: trostBlue,
     green: trostGreen,
@@ -114,7 +116,7 @@ export const trostTheme: ProjectTheme = {
   // Component overrides — 트로스트 운영 코드 실측값.
   // (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용)
   components: {
-    input: { borderColor: trostNeutral[200], radius: 6 }, // 가이드 Input = Radius/Md 6
+    input: { borderColor: trostGray[200], radius: 6 }, // 가이드 Input = Radius/Md 6
     // Button — 가이드 Button(5043:108): Small 40 (base sm 42). Large 48·Medium 44 는 base 동일.
     // 검정 Primary=color="neutral"(buttonBg.neutral), 노랑=color="primary", 블루=color="secondary".
     button: { heightSm: 40 },
@@ -135,14 +137,14 @@ export const trostTheme: ProjectTheme = {
     tab: {
       accentFill: trostIndigo[500], // #4968FF — line indicator + chip/segment 활성 채움
       accentText: trostIndigo[500], // #4968FF — line 활성 텍스트
-      accentOn: trostNeutral["00"], // #FFFFFF — 코발트 채움 위 텍스트
+      accentOn: trostCommon["00"], // #FFFFFF — 코발트 채움 위 텍스트
     },
     // Controls 가이드(5158:108) — Checkbox·Radio 컨트롤 24×24, on 상태는 brand 노랑이 아닌
     // 다크(#333) + 흰 체크/점(노랑 위 가독성). 칩 선택색과 동일 톤.
     checkbox: {
       size: 24,
       // checkedBg/checkedBorder → semantic fill.controlOn(dark) 로 승격(P3). checkColor 유지.
-      checkColor: trostNeutral["00"],
+      checkColor: trostCommon["00"],
     },
     radio: { size: 24 }, // checkedColor → semantic fill.controlOn(dark) 로 승격(P3)
     // Toggle 50×30 (Controls 가이드 5158:108) — unchecked #EEE(스케일 밖 실측), checked 다크,
@@ -151,7 +153,7 @@ export const trostTheme: ProjectTheme = {
       trackW: 50,
       trackH: 30,
       trackBg: "#EEEEEE",
-      trackActiveBg: trostNeutral[800],
+      trackActiveBg: trostGray[800],
       thumbSize: 24,
       thumbOffset: 3,
       thumbTravel: 20,
@@ -165,7 +167,7 @@ export const trostTheme: ProjectTheme = {
       radius: 20,
       handleWidth: 40,
       handleHeight: 4,
-      handleColor: trostNeutral[200],
+      handleColor: trostGray[200],
     },
     // NoticeAlert 가이드(5283:206): radius 8 · Notice=중립 surface+neutral icon · 본문 Text/Normal 통일.
     // (base 는 Notice=블루·본문 strong/error-red 유지 — 슬롯으로만 트로스트가 덮음)

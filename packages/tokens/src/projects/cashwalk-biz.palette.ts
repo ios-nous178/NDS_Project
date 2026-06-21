@@ -24,7 +24,7 @@ export const cashwalkBizCommon = {
 } as const;
 
 // ─── Neutral ────────────────────────────────────────────
-export const cashwalkBizNeutral = {
+export const cashwalkBizGray = {
   50: "#FAFAFA",
   100: "#F5F5F5",
   200: "#EEEEEE",

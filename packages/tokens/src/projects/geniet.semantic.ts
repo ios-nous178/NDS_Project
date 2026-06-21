@@ -20,7 +20,7 @@ export const genietSemantic = {
   bg: {
     page: { default: ref("color.gray.50") }, // #FAFAFA
     surface: {
-      default: ref("color.neutral.white"), // #FFFFFF
+      default: ref("color.common.white"), // #FFFFFF
       subtle: ref("color.gray.50"), // #FAFAFA
     },
     section: { default: ref("color.gray.100") }, // #F5F5F5
@@ -28,7 +28,7 @@ export const genietSemantic = {
       default: ref("color.teal.600"), // #00A8AC
       subtle: ref("color.teal.50"), // #F2FAFA
     },
-    inverse: { default: ref("color.neutral.black") }, // #111111
+    inverse: { default: ref("color.common.black") }, // #111111
     status: {
       error: ref("color.red.50"), // #FFF0F2
       success: ref("color.green.50"), // #F1FBF6
@@ -39,12 +39,12 @@ export const genietSemantic = {
     disabled: ref("color.gray.200"), // #ECECEC
   },
   text: {
-    strong: { default: ref("color.neutral.black") }, // #111111
+    strong: { default: ref("color.common.black") }, // #111111
     normal: { default: ref("color.gray.800") }, // #333333
     subtle: { default: ref("color.gray.700") }, // #555555 — input label / 본문 보조
     muted: { default: ref("color.gray.500") }, // #999999 — placeholder
     disabled: { default: ref("color.gray.400") }, // #CCCCCC
-    inverse: { default: ref("color.neutral.white") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     brand: {
       default: ref("color.teal.600"), // #00A8AC
       strong: ref("color.teal.700"), // #008286
@@ -71,9 +71,9 @@ export const genietSemantic = {
       disabled: ref("color.gray.200"), // #ECECEC
     },
     outlined: {
-      default: ref("color.neutral.white"), // #FFFFFF
+      default: ref("color.common.white"), // #FFFFFF
       hover: ref("color.teal.50"), // #F2FAFA — outlined hover bg
-      disabled: ref("color.neutral.white"), // #FFFFFF
+      disabled: ref("color.common.white"), // #FFFFFF
     },
     neutral: {
       // Solid/Neutral — neutral gray filled (DS extension, Figma 시멘틱 가이드 미정의)
@@ -83,7 +83,7 @@ export const genietSemantic = {
     },
   },
   buttonText: {
-    default: ref("color.neutral.white"), // #FFFFFF — Solid/Primary 텍스트
+    default: ref("color.common.white"), // #FFFFFF — Solid/Primary 텍스트
     brand: ref("color.teal.600"), // #00A8AC — Outlined/Primary 텍스트
     // Solid/Secondary 텍스트 — 옅은 teal 배경 위 brand teal 텍스트.
     secondary: {
@@ -107,10 +107,10 @@ export const genietSemantic = {
     },
   },
   icon: {
-    strong: { default: ref("color.neutral.black") }, // #111111
+    strong: { default: ref("color.common.black") }, // #111111
     normal: { default: ref("color.gray.700") }, // #555555
     disabled: { default: ref("color.gray.400") }, // #CCCCCC
-    inverse: { default: ref("color.neutral.white") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     brand: { default: ref("color.teal.600") }, // #00A8AC
     status: {
       success: ref("color.green.600"), // #18B264
@@ -144,7 +144,7 @@ export const genietSemantic = {
       default: ref("color.gray.800"), // #333333
       subtle: ref("color.gray.100"), // #F5F5F5
     },
-    inverse: { default: ref("color.neutral.white") }, // #FFFFFF
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
     status: {
       error: ref("color.red.600"), // #FF3258
       caution: ref("color.yellow.500"), // #FFB700
@@ -152,7 +152,7 @@ export const genietSemantic = {
   },
   // Input — SSOT: Figma 지니어트 Library / Semantic Color (3009:2).
   input: {
-    bg: ref("color.neutral.white"), // #FFFFFF
+    bg: ref("color.common.white"), // #FFFFFF
     bgDisabled: ref("color.gray.50"), // #FAFAFA
     borderDefault: ref("color.gray.300"), // #DDDDDD
     borderHover: ref("color.gray.400"), // #CCCCCC

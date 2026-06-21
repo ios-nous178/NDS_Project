@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import {
-  neutral,
+  gray,
   coolGray,
   blue,
   pink,
@@ -154,7 +154,7 @@ function ColorTokensPage() {
       >
         Primitive Scales
       </h2>
-      <PaletteGroup title="Neutral" palette={neutral} />
+      <PaletteGroup title="Gray" palette={gray} />
       <PaletteGroup title="Cool Gray" palette={coolGray} />
       <PaletteGroup title="Blue (Primary)" palette={blue} />
       <PaletteGroup title="Pink (Accent)" palette={pink} />

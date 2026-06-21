@@ -19,18 +19,18 @@ import { ref } from "../ref.js";
 
 export const runmileSemantic = {
   bg: {
-    page: { default: ref("color.neutral.white") }, // #FFFFFF — 본문 페이지
+    page: { default: ref("color.common.white") }, // #FFFFFF — 본문 페이지
     surface: {
-      default: ref("color.neutral.white"), // #FFFFFF — BG/Surface/Default
+      default: ref("color.common.white"), // #FFFFFF — BG/Surface/Default
       // BG/Surface/Subtle = gray100 (구 gray200 에서 갱신).
-      subtle: ref("color.gray.100"), // #F9FAFB
+      subtle: ref("color.coolGray.100"), // #F9FAFB
     },
-    section: { default: ref("color.gray.200") }, // #F2F4F6 — BG/Surface/Section
+    section: { default: ref("color.coolGray.200") }, // #F2F4F6 — BG/Surface/Section
     brand: {
       default: ref("color.orange.500"), // #FF5B37 — BG/Brand/Default
       subtle: ref("color.orange.100"), // #FFF0ED — BG/Brand/Subtle
     },
-    inverse: { default: ref("color.neutral.black") }, // #221E1F
+    inverse: { default: ref("color.common.black") }, // #221E1F
     status: {
       error: ref("color.red.100"), // #FFE4E4 — BG/Error
       info: ref("color.blue.100"), // #8DD0FF — BG/Info (구 brand-orange tint 에서 blue 로 갱신)
@@ -39,16 +39,16 @@ export const runmileSemantic = {
     },
     overlay: "rgba(0, 0, 0, 0.5)",
     // BG/Disabled = gray200 (구 gray300 에서 갱신).
-    disabled: ref("color.gray.200"), // #F2F4F6
+    disabled: ref("color.coolGray.200"), // #F2F4F6
   },
   text: {
-    strong: { default: ref("color.neutral.black") }, // #221E1F — Text/Strong
-    normal: { default: ref("color.gray.900") }, // #333D4B — Text/Title (primary body)
-    subtle: { default: ref("color.gray.800") }, // #4E5968 — Text/Normal
-    muted: { default: ref("color.gray.700") }, // #6B7684 — Text/Subtle
-    disabled: { default: ref("color.gray.500") }, // #B0B8C1 — Text/Disabled
-    inverse: { default: ref("color.neutral.white") }, // #FFFFFF
-    onBrand: { default: ref("color.neutral.white") }, // #FFFFFF — Text/OnBrand
+    strong: { default: ref("color.common.black") }, // #221E1F — Text/Strong
+    normal: { default: ref("color.coolGray.900") }, // #333D4B — Text/Title (primary body)
+    subtle: { default: ref("color.coolGray.800") }, // #4E5968 — Text/Normal
+    muted: { default: ref("color.coolGray.700") }, // #6B7684 — Text/Subtle
+    disabled: { default: ref("color.coolGray.500") }, // #B0B8C1 — Text/Disabled
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
+    onBrand: { default: ref("color.common.white") }, // #FFFFFF — Text/OnBrand
     link: { default: ref("color.blue.500") }, // #007AFF — Text/Link
     brand: {
       default: ref("color.orange.500"), // #FF5B37 — Text/Brand
@@ -73,52 +73,52 @@ export const runmileSemantic = {
     default: ref("color.orange.500"), // #FF5B37 — Solid/Primary
     hover: ref("color.orange.400"), // #FF805C — Solid/Primary Hover
     pressed: "#D33E20",
-    disabled: ref("color.gray.300"), // #E5E8EB
+    disabled: ref("color.coolGray.300"), // #E5E8EB
     // @deprecated tone — 신규 가이드엔 Secondary 없음. 검정 CTA 는 color="neutral" 사용.
     // 하위호환용 검정값만 유지 (캐포비와 동일 운용 · Button PROJECT_TONE_DENYLIST 가 경고).
     secondary: {
-      default: ref("color.neutral.black"), // #221E1F
-      hover: ref("color.gray.900"), // #333D4B
-      disabled: ref("color.gray.300"), // #E5E8EB
+      default: ref("color.common.black"), // #221E1F
+      hover: ref("color.coolGray.900"), // #333D4B
+      disabled: ref("color.coolGray.300"), // #E5E8EB
     },
     outlined: {
-      default: ref("color.neutral.white"), // #FFFFFF
+      default: ref("color.common.white"), // #FFFFFF
       hover: ref("color.orange.100"), // #FFF0ED
-      disabled: ref("color.neutral.white"),
+      disabled: ref("color.common.white"),
     },
     // Solid/Neutral — 검정 솔리드 CTA (Figma "Solid Neutral = 검정 솔리드"). 흰 텍스트 페어.
     //   default=black / hover=gray900 / disabled=gray300 (Solid/Primary disabled 와 동일 회색).
     neutral: {
-      default: ref("color.neutral.black"), // #221E1F — Solid/Neutral Default (검정)
-      hover: ref("color.gray.900"), // #333D4B — Solid/Neutral Hover
-      disabled: ref("color.gray.300"), // #E5E8EB — Solid/Neutral Disabled
+      default: ref("color.common.black"), // #221E1F — Solid/Neutral Default (검정)
+      hover: ref("color.coolGray.900"), // #333D4B — Solid/Neutral Hover
+      disabled: ref("color.coolGray.300"), // #E5E8EB — Solid/Neutral Disabled
     },
   },
   buttonText: {
-    default: ref("color.neutral.white"), // #FFFFFF
+    default: ref("color.common.white"), // #FFFFFF
     brand: ref("color.orange.500"), // #FF5B37 — Outlined/Primary 텍스트
     secondary: {
-      default: ref("color.neutral.white"), // #FFFFFF — dark bg 위
-      disabled: ref("color.gray.500"), // #B0B8C1
+      default: ref("color.common.white"), // #FFFFFF — dark bg 위
+      disabled: ref("color.coolGray.500"), // #B0B8C1
     },
     // Outlined/Weak Neutral enabled 텍스트 — Figma SSOT gray800.
-    neutral: ref("color.gray.800"), // #4E5968
+    neutral: ref("color.coolGray.800"), // #4E5968
     // Solid Neutral 텍스트 — 검정(#221E1F) fill 위 흰 글자 (Solid Neutral = 검정 솔리드).
-    neutralSolid: ref("color.neutral.white"), // #FFFFFF
+    neutralSolid: ref("color.common.white"), // #FFFFFF
     // Outlined Neutral disabled 텍스트 — Figma SSOT gray600.
-    neutralDisabled: ref("color.gray.600"), // #8B95A1
-    disabled: ref("color.gray.500"), // #B0B8C1
+    neutralDisabled: ref("color.coolGray.600"), // #8B95A1
+    disabled: ref("color.coolGray.500"), // #B0B8C1
   },
   buttonBorder: {
     outlined: {
       default: ref("color.orange.500"), // #FF5B37
       // Outlined/Primary Hover — border 만 orange400 으로 톤다운 (bg 변경 없음).
       hover: ref("color.orange.400"), // #FF805C
-      disabled: ref("color.gray.300"), // #E5E8EB
+      disabled: ref("color.coolGray.300"), // #E5E8EB
     },
     neutral: {
-      default: ref("color.gray.400"), // #D1D6DB — Figma Outlined/Neutral border
-      disabled: ref("color.gray.400"), // #D1D6DB
+      default: ref("color.coolGray.400"), // #D1D6DB — Figma Outlined/Neutral border
+      disabled: ref("color.coolGray.400"), // #D1D6DB
     },
   },
   // Icon — Figma 런마일 Library SemanticColorGuide (5009:2) 의 아이콘 슬롯 미러.
@@ -130,13 +130,13 @@ export const runmileSemantic = {
   //   Icon/OnBrand  → inverse / onBrand (#FFFFFF)
   //   Icon/Brand    → brand    (#FF5B37)
   icon: {
-    strong: { default: ref("color.neutral.black") }, // #221E1F
-    normal: { default: ref("color.gray.800") }, // #4E5968
-    subtle: { default: ref("color.gray.700") }, // #6B7684 — Icon/Subtle
-    muted: { default: ref("color.gray.600") }, // #8B95A1 — BottomNav inactive
-    disabled: { default: ref("color.gray.500") }, // #B0B8C1 — Icon/Disabled
-    inverse: { default: ref("color.neutral.white") }, // #FFFFFF
-    onBrand: { default: ref("color.neutral.white") }, // #FFFFFF — Icon/OnBrand
+    strong: { default: ref("color.common.black") }, // #221E1F
+    normal: { default: ref("color.coolGray.800") }, // #4E5968
+    subtle: { default: ref("color.coolGray.700") }, // #6B7684 — Icon/Subtle
+    muted: { default: ref("color.coolGray.600") }, // #8B95A1 — BottomNav inactive
+    disabled: { default: ref("color.coolGray.500") }, // #B0B8C1 — Icon/Disabled
+    inverse: { default: ref("color.common.white") }, // #FFFFFF
+    onBrand: { default: ref("color.common.white") }, // #FFFFFF — Icon/OnBrand
     brand: { default: ref("color.orange.500") }, // #FF5B37
     status: {
       error: ref("color.red.500"), // #FF2428 — Icon/Error
@@ -145,15 +145,15 @@ export const runmileSemantic = {
     },
   },
   border: {
-    normal: { default: ref("color.gray.300") }, // #E5E8EB — Border/Default
-    strong: { default: ref("color.gray.800") }, // #4E5968 — Border/Strong
-    subtle: { default: ref("color.gray.200") }, // #F2F4F6 — Border/Subtle
+    normal: { default: ref("color.coolGray.300") }, // #E5E8EB — Border/Default
+    strong: { default: ref("color.coolGray.800") }, // #4E5968 — Border/Strong
+    subtle: { default: ref("color.coolGray.200") }, // #F2F4F6 — Border/Subtle
     focus: { default: ref("color.blue.500") }, // #007AFF — Border/Focus (구 orange 에서 blue 로 갱신)
     brand: {
       default: ref("color.orange.500"), // #FF5B37 — Border/Brand
-      disabled: ref("color.gray.300"),
+      disabled: ref("color.coolGray.300"),
     },
-    disabled: { default: ref("color.gray.300") }, // #E5E8EB
+    disabled: { default: ref("color.coolGray.300") }, // #E5E8EB
     status: {
       error: ref("color.red.500"), // #FF2428 — Border/Error
       success: ref("color.green.500"), // #00C255 — Border/Success
@@ -166,35 +166,35 @@ export const runmileSemantic = {
       hover: "#E84A28",
       pressed: "#D33E20",
       subtle: ref("color.orange.100"), // #FFF0ED — Fill/Brand-Subtle
-      disabled: ref("color.gray.300"),
+      disabled: ref("color.coolGray.300"),
     },
     neutral: {
       // Figma chip type=secondary fill 이 gray900 (#333D4B).
-      default: ref("color.gray.900"), // #333D4B
-      subtle: ref("color.gray.200"), // #F2F4F6
+      default: ref("color.coolGray.900"), // #333D4B
+      subtle: ref("color.coolGray.200"), // #F2F4F6
     },
-    inverse: { default: ref("color.neutral.white") },
+    inverse: { default: ref("color.common.white") },
     status: {
       error: ref("color.red.500"), // #FF2428
       caution: ref("color.yellow.500"), // #FFC400
     },
   },
   input: {
-    bg: ref("color.neutral.white"), // #FFFFFF
-    bgDisabled: ref("color.gray.100"), // #F9FAFB
+    bg: ref("color.common.white"), // #FFFFFF
+    bgDisabled: ref("color.coolGray.100"), // #F9FAFB
     // Figma text-input default border-b 가 gray400. typing 시 black.
-    borderDefault: ref("color.gray.400"), // #D1D6DB
-    borderHover: ref("color.gray.500"), // #B0B8C1
+    borderDefault: ref("color.coolGray.400"), // #D1D6DB
+    borderHover: ref("color.coolGray.500"), // #B0B8C1
     // Figma 런마일 Text Input (5095:200): typing(포커스) 하단 라인 = 검정(#221E1F).
     // 일반 Border/Focus(=blue #007AFF, border.focus)와 분리된 input 전용 토큰 — 캐포비와 동일 패턴.
-    borderFocus: ref("color.neutral.black"), // #221E1F
+    borderFocus: ref("color.common.black"), // #221E1F
     borderError: ref("color.red.500"), // #FF2428
-    borderDisabled: ref("color.gray.300"), // #E5E8EB
-    placeholder: ref("color.gray.600"), // #8B95A1 — Text/Placeholder
-    helpertextDefault: ref("color.gray.700"), // #6B7684
+    borderDisabled: ref("color.coolGray.300"), // #E5E8EB
+    placeholder: ref("color.coolGray.600"), // #8B95A1 — Text/Placeholder
+    helpertextDefault: ref("color.coolGray.700"), // #6B7684
     helpertextSuccess: ref("color.green.500"), // #00C255 — Text/Success
     helpertextError: ref("color.red.500"), // #FF2428
-    helpertextDisabled: ref("color.gray.400"), // #D1D6DB
+    helpertextDisabled: ref("color.coolGray.400"), // #D1D6DB
   },
 } as const;
 

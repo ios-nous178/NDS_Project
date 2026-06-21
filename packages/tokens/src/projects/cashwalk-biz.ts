@@ -25,7 +25,7 @@ import {
   cashwalkBizCommon,
   cashwalkBizRed,
   cashwalkBizGreen,
-  cashwalkBizNeutral,
+  cashwalkBizGray,
   cashwalkBizYellow,
 } from "./cashwalk-biz.palette.js";
 import { cashwalkBizSemantic } from "./cashwalk-biz.semantic.js";
@@ -33,7 +33,7 @@ import { cashwalkBizSemantic } from "./cashwalk-biz.semantic.js";
 // palette / semantic 모두 외부에서 직접 import 가능하도록 re-export
 export {
   cashwalkBizCommon,
-  cashwalkBizNeutral,
+  cashwalkBizGray,
   cashwalkBizYellow,
   cashwalkBizRed,
   cashwalkBizBlue,
@@ -50,7 +50,7 @@ export const cashwalkBizTheme: ProjectTheme = {
   actionsLayout: "end",
   palette: {
     common: cashwalkBizCommon,
-    neutral: cashwalkBizNeutral,
+    gray: cashwalkBizGray,
     yellow: cashwalkBizYellow,
     red: cashwalkBizRed,
     blue: cashwalkBizBlue,

@@ -15,7 +15,8 @@ export {
   trostYellow,
   trostIndigo,
   trostPink,
-  trostNeutral,
+  trostGray,
+  trostCommon,
   trostRed,
   trostBlue,
   trostGreen,
@@ -32,7 +33,7 @@ export {
   genietPurple,
   genietGreen,
   genietGray,
-  genietNeutral,
+  genietCommon,
   genietSemantic,
 } from "./geniet.js";
 export type { GenietSemanticTokens } from "./geniet.js";
@@ -40,7 +41,7 @@ export type { GenietSemanticTokens } from "./geniet.js";
 export {
   cashwalkBizTheme,
   cashwalkBizCommon,
-  cashwalkBizNeutral,
+  cashwalkBizGray,
   cashwalkBizYellow,
   cashwalkBizRed,
   cashwalkBizBlue,
@@ -53,7 +54,7 @@ export type { CashwalkBizSemanticTokens } from "./cashwalk-biz.js";
 export {
   cashwalkTheme,
   cashwalkCommon,
-  cashwalkNeutral,
+  cashwalkGray,
   cashwalkYellow,
   cashwalkRed,
   cashwalkBlue,
@@ -70,8 +71,8 @@ export {
   runmileOrange,
   runmileBlue,
   runmileRed,
-  runmileGray,
-  runmileNeutral,
+  runmileCoolGray,
+  runmileCommon,
   runmileSemantic,
 } from "./runmile.js";
 export type { RunmileSemanticTokens } from "./runmile.js";

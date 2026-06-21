@@ -110,8 +110,10 @@ export const genietGray = {
   900: "#111111",
 } as const;
 
-// ─── Black & White ──────────────────────────────────────
-export const genietNeutral = {
-  black: "#111111",
+// ─── Common (흑·백) ──────────────────────────────────────
+export const genietCommon = {
+  "00": "#FFFFFF",
+  1000: "#000000",
   white: "#FFFFFF",
+  black: "#111111",
 } as const;

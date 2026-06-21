@@ -69,7 +69,7 @@ export const runmileYellow = {
 } as const;
 
 // ─── Grayscale (Toss-style cool gray · Figma `color-black`) ──
-export const runmileGray = {
+export const runmileCoolGray = {
   100: "#F9FAFB",
   200: "#F2F4F6",
   300: "#E5E8EB",
@@ -81,8 +81,10 @@ export const runmileGray = {
   900: "#333D4B",
 } as const;
 
-// ─── Black & White (Figma `color-base`) ─────────────────
-export const runmileNeutral = {
-  black: "#221E1F",
+// ─── Common (흑·백, Figma `color-base`) ─────────────────
+export const runmileCommon = {
+  "00": "#FFFFFF",
+  1000: "#000000",
   white: "#FFFFFF",
+  black: "#221E1F",
 } as const;

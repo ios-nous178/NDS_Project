@@ -86,7 +86,8 @@ export {
   trostYellow,
   trostIndigo,
   trostPink,
-  trostNeutral,
+  trostGray,
+  trostCommon,
   trostRed,
   trostBlue,
   trostGreen,
@@ -100,12 +101,12 @@ export {
   genietPurple,
   genietGreen,
   genietGray,
-  genietNeutral,
+  genietCommon,
   genietSemantic,
 } from "./projects/index.js";
 export {
   cashwalkBizCommon,
-  cashwalkBizNeutral,
+  cashwalkBizGray,
   cashwalkBizYellow,
   cashwalkBizRed,
   cashwalkBizBlue,
@@ -115,7 +116,7 @@ export {
 } from "./projects/index.js";
 export {
   cashwalkCommon,
-  cashwalkNeutral,
+  cashwalkGray,
   cashwalkYellow,
   cashwalkRed,
   cashwalkBlue,
@@ -129,7 +130,7 @@ export {
   runmileOrange,
   runmileBlue,
   runmileRed,
-  runmileGray,
-  runmileNeutral,
+  runmileCoolGray,
+  runmileCommon,
   runmileSemantic,
 } from "./projects/index.js";
