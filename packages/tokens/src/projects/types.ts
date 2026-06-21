@@ -199,7 +199,6 @@ export interface SpacingOverrides {
   /** 컨테이너 내부 padding — `--semantic-inset-{key}` (chip/input/card/modal/section/page 등) */
   inset?: Record<string, number>;
   radius?: Record<string, number>;
-  shape?: Record<string, number>;
   borderWidth?: Record<string, number>;
   stroke?: Record<string, number>;
   /** Grid system — gutter / margin / contentWidth 등 */

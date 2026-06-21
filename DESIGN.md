@@ -210,11 +210,9 @@ typography:
 # 31 Variables · 4pt Grid Base · Primitive / Gap / Padding / Grid
 spacing:
   0: 0px # 간격 없음 (밀착)
-  1: 1px # legacy
   2: 2px # 아이콘-텍스트 최소 간격
   4: 4px # 인라인 요소 간격
   6: 6px # 뱃지·칩 내부 여백
-  7: 7px # legacy
   8: 8px # 카드 내부 수직 간격
   10: 10px # 리스트 아이템 내부 패딩
   11: 11px # legacy
@@ -228,11 +226,9 @@ spacing:
   28: 28px # 큰 컴포넌트 내부 여백
   30: 30px # legacy
   32: 32px # 페이지 섹션 분리
-  33: 33px # legacy
   36: 36px # 대형 섹션 상하 여백
   40: 40px # PC 최소 페이지 마진
   48: 48px # legacy / 추가 여백
-  64: 64px # legacy / 큰 여백
   80: 80px # legacy / 페이지 단위 여백
 
 # ── Gap (Semantic — 요소 간 거리, 의도 기반) ──────────────
@@ -274,14 +270,6 @@ rounded:
   lg: 12px # 중형 카드·패널
   xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Figma Radius/2xl · 트로스트 Card PC·Section Container)
   pill: 9999px # 칩·토글·원형 요소
-
-# ── Shape (Semantic — radius 정책 별칭) ────────────────────
-shape:
-  sm: 4px # 버튼·칩
-  md: 8px # 기본 카드 (표준값)
-  lg: 12px # 중형 패널·리스트
-  xl: 16px # 대형 카드(PC)·페이지 콘텐츠 패널 (Radius/2xl)
-  pill: 9999px # 아바타·뱃지·토글
 
 # ── Border Width (Primitive Scale) ─────────────────────────
 # Figma · BorderGuide · 6 Variables · Primitive / Semantic Stroke

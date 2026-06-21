@@ -93,18 +93,6 @@ export const runmileTheme: ProjectTheme = {
       "3xl": 24,
       pill: 9999,
     },
-    // shape = radius 동기 alias (정책 스케일 일치).
-    shape: {
-      none: 0,
-      xs: 4,
-      sm: 6,
-      md: 8,
-      lg: 12,
-      xl: 15,
-      "2xl": 20,
-      "3xl": 24,
-      pill: 9999,
-    },
     // Border Width — Figma Border&Radius 가이드 (5024:16). W-Default/Icon/Strong.
     borderWidth: {
       none: 0,

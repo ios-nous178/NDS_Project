@@ -36,7 +36,6 @@ export {
   gapTitle,
   inset,
   radius,
-  shape,
   borderWidth,
   stroke,
   sizing,

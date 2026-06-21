@@ -15,7 +15,7 @@ const path = require("path");
 const { colors } = require("../dist/colors");
 const { isRef } = require("../dist/ref.js");
 const { tokenMeta } = require("../dist/token-meta.js");
-const dim = require("../dist/spacing"); // spacing/gap/gapTitle/inset/radius/shape/borderWidth/stroke/sizing/grid
+const dim = require("../dist/spacing"); // spacing/gap/gapTitle/inset/radius/borderWidth/stroke/sizing/grid
 const { typeScale } = require("../dist/typography");
 const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 const { trostTheme } = require("../dist/projects/trost");
@@ -191,7 +191,6 @@ function dimMap(theme) {
   flatNum({ ...dim.gapTitle, ...(ov.gapTitle || {}) }, "gap-title", out);
   flatNum({ ...dim.inset, ...(ov.inset || {}) }, "inset", out);
   flatNum({ ...dim.radius, ...(ov.radius || {}) }, "radius", out);
-  flatNum({ ...dim.shape, ...(ov.shape || {}) }, "shape", out);
   flatNum({ ...dim.borderWidth, ...(ov.borderWidth || {}) }, "border-width", out);
   flatNum({ ...dim.stroke, ...(ov.stroke || {}) }, "stroke", out);
   flatNum(dim.sizing, "size", out);
