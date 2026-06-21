@@ -14,7 +14,8 @@ export type {
 } from "./project-profiles.js";
 export {
   colors,
-  neutral,
+  gray,
+  common,
   coolGray,
   blue,
   pink,

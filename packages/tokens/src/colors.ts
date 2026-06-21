@@ -1,7 +1,7 @@
 // Auto-generated from DESIGN.md — do not edit manually
 // Run `pnpm generate:tokens` to regenerate
 
-export const neutral = {
+export const gray = {
   50: "#FAFAFA",
   100: "#F5F5F5",
   200: "#ECECEC",
@@ -12,8 +12,14 @@ export const neutral = {
   700: "#666666",
   800: "#383838",
   900: "#111111",
-  1000: "#000000",
+} as const;
+
+// Common 흑·백 — white/black 과 레거시 "00"/1000 키를 모두 보유(전 브랜드 ref 호환).
+export const common = {
   "00": "#FFFFFF",
+  1000: "#000000",
+  white: "#FFFFFF",
+  black: "#000000",
 } as const;
 
 export const coolGray = {
@@ -121,7 +127,8 @@ export const yellow = {
 } as const;
 
 export const colors = {
-  neutral,
+  gray,
+  common,
   coolGray,
   blue,
   pink,
