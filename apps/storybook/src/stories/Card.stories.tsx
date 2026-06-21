@@ -50,7 +50,7 @@ export const GalleryFlat: Story = {
       style={{
         width: 220,
         padding: 12,
-        background: colors.neutral[100],
+        background: colors.gray[100],
         borderRadius: 12,
       }}
     >
@@ -79,11 +79,11 @@ export const Outlined: Story = {
             style={{
               width: "100%",
               height: "100%",
-              background: colors.neutral[100],
+              background: colors.gray[100],
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: colors.neutral[400],
+              color: colors.gray[400],
             }}
           >
             282 x 180
@@ -165,13 +165,13 @@ export const CompoundCounselorCard: Story = {
             style={{
               width: "100%",
               height: "100%",
-              background: colors.neutral[100],
+              background: colors.gray[100],
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <span style={{ color: colors.neutral[400], fontSize: 14 }}>프로필 사진</span>
+            <span style={{ color: colors.gray[400], fontSize: 14 }}>프로필 사진</span>
           </div>
         </Card.Thumbnail>
         <Card.Header>
@@ -185,7 +185,7 @@ export const CompoundCounselorCard: Story = {
           </Card.Meta>
         </Card.Header>
         <Card.Body>
-          <div style={{ borderTop: `1px solid ${colors.neutral[200]}`, paddingTop: 12 }}>
+          <div style={{ borderTop: `1px solid ${colors.gray[200]}`, paddingTop: 12 }}>
             <p
               style={{
                 margin: "0 0 4px",
@@ -196,7 +196,7 @@ export const CompoundCounselorCard: Story = {
             >
               내담자 후기
             </p>
-            <p style={{ margin: 0, fontSize: 14, color: colors.neutral[800] }}>
+            <p style={{ margin: 0, fontSize: 14, color: colors.gray[800] }}>
               처음 상담받았을 때 너무 긴장했는데 편안하게 이야기할 수 있었어요.
             </p>
           </div>

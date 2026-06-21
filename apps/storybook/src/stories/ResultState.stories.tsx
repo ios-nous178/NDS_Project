@@ -201,8 +201,8 @@ export const FlatVsCompoundParity: Story = {
       }}
     >
       <div style={{ width: 360 }}>
-        <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>Flat API</p>
-        <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
+        <p style={{ marginTop: 0, color: colors.gray[700], fontSize: 14 }}>Flat API</p>
+        <p style={{ marginTop: 4, color: colors.gray[500], fontSize: 12 }}>
           기본 아이콘이 자동으로 렌더링됩니다.
         </p>
         <ResultState
@@ -212,8 +212,8 @@ export const FlatVsCompoundParity: Story = {
         />
       </div>
       <div style={{ width: 360 }}>
-        <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>Compound API</p>
-        <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
+        <p style={{ marginTop: 0, color: colors.gray[700], fontSize: 14 }}>Compound API</p>
+        <p style={{ marginTop: 4, color: colors.gray[500], fontSize: 12 }}>
           비교를 위해 동일한 기본 아이콘을 명시적으로 넣었습니다.
         </p>
         <ResultState.Root minHeight={200}>
@@ -243,10 +243,10 @@ export const MultilineDescriptionReview: Story = {
   render: () => (
     <div style={{ width: 360, display: "flex", flexDirection: "column", gap: 20 }}>
       <div>
-        <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>
+        <p style={{ marginTop: 0, color: colors.gray[700], fontSize: 14 }}>
           Flat API string description
         </p>
-        <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
+        <p style={{ marginTop: 4, color: colors.gray[500], fontSize: 12 }}>
           문자열의 줄바꿈이 자동으로 렌더링됩니다.
         </p>
         <ResultState
@@ -255,10 +255,10 @@ export const MultilineDescriptionReview: Story = {
         />
       </div>
       <div>
-        <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>
+        <p style={{ marginTop: 0, color: colors.gray[700], fontSize: 14 }}>
           Compound API children with newline
         </p>
-        <p style={{ marginTop: 4, color: colors.neutral[500], fontSize: 12 }}>
+        <p style={{ marginTop: 4, color: colors.gray[500], fontSize: 12 }}>
           비교를 위해 동일한 기본 아이콘과 줄바꿈 표현을 맞췄습니다.
         </p>
         <ResultState.Root>
@@ -292,7 +292,7 @@ export const AccessibilityStructureReview: Story = {
       }}
     >
       <div style={{ width: 360 }}>
-        <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>Flat API</p>
+        <p style={{ marginTop: 0, color: colors.gray[700], fontSize: 14 }}>Flat API</p>
         <ResultState
           title="상담 내역이 없습니다"
           description={"첫 상담을 예약해보세요.\n전문 상담사가 도와드립니다."}
@@ -300,7 +300,7 @@ export const AccessibilityStructureReview: Story = {
         />
       </div>
       <div style={{ width: 360 }}>
-        <p style={{ marginTop: 0, color: colors.neutral[700], fontSize: 14 }}>Compound API</p>
+        <p style={{ marginTop: 0, color: colors.gray[700], fontSize: 14 }}>Compound API</p>
         <ResultState.Root>
           <ResultState.Icon>
             <DefaultEmptyIcon />

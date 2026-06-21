@@ -62,13 +62,13 @@ function ShowcaseSection({
         flexDirection: "column",
         gap: "var(--semantic-gap-loose)",
         padding: "var(--semantic-inset-modal) 0",
-        borderTop: `1px solid ${colors.neutral[100]}`,
+        borderTop: `1px solid ${colors.gray[100]}`,
       }}
     >
       <header>
         <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>{title}</h3>
         {description && (
-          <p style={{ fontSize: 14, color: colors.neutral[700], margin: "4px 0 0" }}>
+          <p style={{ fontSize: 14, color: colors.gray[700], margin: "4px 0 0" }}>
             {description}
           </p>
         )}
@@ -87,7 +87,7 @@ function PlatformLabel({ text }: { text: string }) {
         gap: 6,
         fontSize: 12,
         fontWeight: 600,
-        color: colors.neutral[700],
+        color: colors.gray[700],
       }}
     >
       <span
@@ -96,7 +96,7 @@ function PlatformLabel({ text }: { text: string }) {
           width: 7,
           height: 7,
           borderRadius: "50%",
-          background: colors.neutral[900],
+          background: colors.gray[900],
         }}
       />
       {text}
@@ -245,7 +245,7 @@ function OverviewCard({
       style={{
         flex: 1,
         padding: "var(--semantic-inset-card-large)",
-        background: colors.neutral[50],
+        background: colors.gray[50],
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
@@ -256,18 +256,18 @@ function OverviewCard({
         style={{
           alignSelf: "flex-start",
           padding: "3px var(--semantic-inset-chip)",
-          background: colors.neutral["00"],
-          border: `1px solid ${colors.neutral[200]}`,
+          background: colors.common["00"],
+          border: `1px solid ${colors.gray[200]}`,
           borderRadius: 999,
           fontSize: 12,
           fontWeight: 600,
-          color: colors.neutral[700],
+          color: colors.gray[700],
         }}
       >
         {badge}
       </span>
       <h4 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{title}</h4>
-      <p style={{ fontSize: 13, color: colors.neutral[700], margin: 0, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 13, color: colors.gray[700], margin: 0, lineHeight: 1.6 }}>
         {description}
       </p>
     </div>
@@ -331,7 +331,7 @@ function LineDemo({ size, tone }: { size: "mobile" | "pc"; tone: "neutral" | "co
         size={size}
         tone={tone}
       />
-      <p style={{ marginTop: 8, fontSize: 12, color: colors.neutral[500] }}>
+      <p style={{ marginTop: 8, fontSize: 12, color: colors.gray[500] }}>
         높이 {size === "mobile" ? "50px · Padding 14·16px" : "56px · Padding 16·20px"} · Body3
       </p>
     </div>
@@ -412,7 +412,7 @@ function ChipDemo({ size, tone }: { size: "mobile" | "pc"; tone: "neutral" | "co
         tone={tone}
         fullWidth={false}
       />
-      <p style={{ marginTop: 8, fontSize: 12, color: colors.neutral[500] }}>
+      <p style={{ marginTop: 8, fontSize: 12, color: colors.gray[500] }}>
         {size === "mobile"
           ? "높이 36px · Padding 7·12px · Caption1 · Radius/Full"
           : "높이 44px · Padding 10·16px · Body3 · Radius/Full"}
@@ -616,8 +616,8 @@ function StateDemoFrame({
         flex: 1,
         minWidth: 0,
         padding: "var(--semantic-inset-card)",
-        background: colors.neutral["00"],
-        border: `1px solid ${colors.neutral[100]}`,
+        background: colors.common["00"],
+        border: `1px solid ${colors.gray[100]}`,
         borderRadius: 12,
         display: "flex",
         flexDirection: "column",
@@ -627,7 +627,7 @@ function StateDemoFrame({
       <div style={{ minHeight: 48 }}>{children}</div>
       <div>
         <strong style={{ fontSize: 14 }}>{title}</strong>
-        <p style={{ margin: "4px 0 0", fontSize: 12, color: colors.neutral[700] }}>{description}</p>
+        <p style={{ margin: "4px 0 0", fontSize: 12, color: colors.gray[700] }}>{description}</p>
       </div>
     </div>
   );
@@ -705,14 +705,14 @@ function SpecTable({
         width: "100%",
         borderCollapse: "collapse",
         fontSize: 13,
-        background: colors.neutral["00"],
-        border: `1px solid ${colors.neutral[100]}`,
+        background: colors.common["00"],
+        border: `1px solid ${colors.gray[100]}`,
         borderRadius: 8,
         overflow: "hidden",
       }}
     >
       <thead>
-        <tr style={{ background: colors.neutral[50] }}>
+        <tr style={{ background: colors.gray[50] }}>
           {["유형", "높이", "Padding H·V", "Radius", "Font"].map((h) => (
             <th
               key={h}
@@ -721,7 +721,7 @@ function SpecTable({
                 textAlign: "left",
                 fontWeight: 600,
                 fontSize: 12,
-                color: colors.neutral[700],
+                color: colors.gray[700],
               }}
             >
               {h}
@@ -731,7 +731,7 @@ function SpecTable({
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.type} style={{ borderTop: `1px solid ${colors.neutral[100]}` }}>
+          <tr key={row.type} style={{ borderTop: `1px solid ${colors.gray[100]}` }}>
             <td style={{ padding: "10px 12px" }}>{row.type}</td>
             <td style={{ padding: "10px 12px" }}>{row.height}</td>
             <td style={{ padding: "10px 12px" }}>{row.padding}</td>
@@ -869,7 +869,7 @@ function GuideCard({
       </div>
       <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6 }}>
         {items.map((item) => (
-          <li key={item} style={{ fontSize: 13, color: colors.neutral[800], lineHeight: 1.6 }}>
+          <li key={item} style={{ fontSize: 13, color: colors.gray[800], lineHeight: 1.6 }}>
             {item}
           </li>
         ))}
@@ -930,12 +930,12 @@ function CompoundAPIDemo() {
           <Tab.Trigger tabKey="center">센터 검색</Tab.Trigger>
         </Tab.List>
         <Tab.Panel tabKey="address">
-          <div style={{ ...panelStyle, color: colors.neutral[700] }}>
+          <div style={{ ...panelStyle, color: colors.gray[700] }}>
             주소로 가까운 상담 센터를 찾아보세요.
           </div>
         </Tab.Panel>
         <Tab.Panel tabKey="center">
-          <div style={{ ...panelStyle, color: colors.neutral[700] }}>
+          <div style={{ ...panelStyle, color: colors.gray[700] }}>
             센터 이름으로 검색할 수 있습니다.
           </div>
         </Tab.Panel>
@@ -1062,7 +1062,7 @@ function KeyboardNavigationReviewDemo() {
         gap: "var(--semantic-gap-comfortable)",
       }}
     >
-      <p style={{ margin: 0, color: colors.neutral[700], fontSize: 14, lineHeight: "20px" }}>
+      <p style={{ margin: 0, color: colors.gray[700], fontSize: 14, lineHeight: "20px" }}>
         Tab으로 활성 탭에 포커스한 뒤 Enter 또는 Space로 전환을 확인합니다. 좌우 화살표 이동과 aria
         연결은 컴포넌트 테스트로 보강이 필요한 항목입니다.
       </p>

@@ -74,10 +74,10 @@ function FlatExample() {
               style={{
                 padding: "var(--semantic-inset-input) var(--semantic-inset-card)",
                 borderRadius: 8,
-                border: `1px solid ${colors.neutral[200]}`,
+                border: `1px solid ${colors.gray[200]}`,
                 cursor: "pointer",
                 fontSize: 15,
-                color: colors.neutral[800],
+                color: colors.gray[800],
               }}
             >
               {item}
@@ -170,7 +170,7 @@ function ListSelectionExample() {
       >
         <Button onClick={() => setOpen(true)}>상담 방식 선택</Button>
         {selected && (
-          <span style={{ fontSize: 14, color: colors.neutral[600] }}>선택: {selected}</span>
+          <span style={{ fontSize: 14, color: colors.gray[600] }}>선택: {selected}</span>
         )}
       </div>
       <BottomSheet open={open} onClose={() => setOpen(false)} title="상담 방식" closable>
@@ -188,11 +188,11 @@ function ListSelectionExample() {
                 alignItems: "center",
                 padding: "14px 4px",
                 border: "none",
-                borderBottom: `1px solid ${colors.neutral[100]}`,
+                borderBottom: `1px solid ${colors.gray[100]}`,
                 background: "none",
                 cursor: "pointer",
                 fontSize: 15,
-                color: selected === option ? colors.blue[500] : colors.neutral[800],
+                color: selected === option ? colors.blue[500] : colors.gray[800],
                 fontWeight: selected === option ? 600 : 400,
               }}
             >
@@ -229,7 +229,7 @@ function LongContentExample() {
           {Array.from({ length: 10 }, (_, i) => (
             <p
               key={i}
-              style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.neutral[700] }}
+              style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.gray[700] }}
             >
               제{i + 1}조. 본 서비스는 이용자의 개인정보를 수집·이용하며, 관련 법령에 따라 안전하게
               관리합니다. 수집된 정보는 서비스 제공, 상담 예약, 프로그램 운영 등의 목적으로만
@@ -269,7 +269,7 @@ function NoHandleNoMaskCloseExample() {
           </Button>
         }
       >
-        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.neutral[700] }}>
+        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.gray[700] }}>
           이 바텀시트는 오버레이 클릭으로 닫을 수 없습니다.
           <br />
           반드시 확인 버튼이나 닫기(✕)를 눌러야 합니다.
@@ -346,7 +346,7 @@ function TwoButtonFooterExample() {
           </>
         }
       >
-        <div style={{ fontSize: 14, lineHeight: 1.6, color: colors.neutral[700] }}>
+        <div style={{ fontSize: 14, lineHeight: 1.6, color: colors.gray[700] }}>
           <p style={{ margin: "0 0 8px" }}>
             <strong>일시:</strong> 2026년 4월 15일 (수) 14:00
           </p>
@@ -428,14 +428,14 @@ function ShareSheetExample() {
     {
       key: "copy",
       label: "링크 복사",
-      icon: <LinkIcon size={22} color={colors.neutral[700]} />,
-      bg: colors.neutral[200],
+      icon: <LinkIcon size={22} color={colors.gray[700]} />,
+      bg: colors.gray[200],
     },
     {
       key: "save",
       label: "이미지 저장",
-      icon: <DownloadIcon size={22} color={colors.neutral[700]} />,
-      bg: colors.neutral[200],
+      icon: <DownloadIcon size={22} color={colors.gray[700]} />,
+      bg: colors.gray[200],
     },
   ];
 
@@ -562,14 +562,14 @@ function TrostShareRecipeExample() {
     {
       key: "copy",
       label: "링크 복사",
-      icon: <LinkIcon size={20} color={colors.neutral[700]} />,
-      bg: colors.neutral[200],
+      icon: <LinkIcon size={20} color={colors.gray[700]} />,
+      bg: colors.gray[200],
     },
     {
       key: "save",
       label: "이미지 저장",
-      icon: <DownloadIcon size={20} color={colors.neutral[700]} />,
-      bg: colors.neutral[200],
+      icon: <DownloadIcon size={20} color={colors.gray[700]} />,
+      bg: colors.gray[200],
     },
   ];
 
@@ -645,7 +645,7 @@ function TrostInfoRecipeExample() {
               상담 24시간 전까지 무료로 변경·취소할 수 있습니다.
             </p>
           </div>
-          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.neutral[700] }}>
+          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: colors.gray[700] }}>
             상담사 배정 후 알림톡으로 일정을 안내드립니다.
           </p>
         </div>
@@ -706,7 +706,7 @@ function TrostListRecipeExample() {
                   background: "none",
                   cursor: "pointer",
                   fontSize: 15,
-                  color: active ? cv.textRole.point : colors.neutral[800],
+                  color: active ? cv.textRole.point : colors.gray[800],
                   fontWeight: active ? 600 : 400,
                 }}
               >

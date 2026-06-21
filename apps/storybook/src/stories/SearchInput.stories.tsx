@@ -118,7 +118,7 @@ function WithSearchCallbackExample() {
         placeholder="검색어를 입력해주세요"
         helperText="검색 버튼 또는 Enter 키로 실행됩니다"
       />
-      {result && <p style={{ margin: 0, fontSize: 14, color: colors.neutral[600] }}>{result}</p>}
+      {result && <p style={{ margin: 0, fontSize: 14, color: colors.gray[600] }}>{result}</p>}
     </div>
   );
 }
