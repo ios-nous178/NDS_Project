@@ -1,0 +1,33 @@
+import React from "react";
+
+export interface CashwalkCdpointIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkCdpointIcon = React.forwardRef<SVGSVGElement, CashwalkCdpointIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10.5" fill="#F24015"/>
+<path fillRule="evenodd" clipRule="evenodd" d="M10.9493 16.8801H8.91042V7.37244H12.4169C14.7919 7.37244 16.181 8.68542 16.181 10.6883C16.181 12.7134 14.7919 14.0264 12.4169 14.0264H10.9493V16.8801ZM10.9493 9.16388V12.2349H12.3273C13.4587 12.2349 14.1421 11.7008 14.1421 10.6883C14.1421 9.68684 13.4587 9.16388 12.3273 9.16388H10.9493Z" fill="white"/>
+<path d="M12 1.5C17.799 1.5 22.5 6.20101 22.5 12C22.5 17.799 17.799 22.5 12 22.5C6.20101 22.5 1.5 17.799 1.5 12C1.5 6.20101 6.20101 1.5 12 1.5ZM12 4.2998C7.74741 4.2998 4.2998 7.74741 4.2998 12C4.2998 16.2526 7.74741 19.7002 12 19.7002C16.2526 19.7002 19.7002 16.2526 19.7002 12C19.7002 7.74741 16.2526 4.2998 12 4.2998Z" fill="url(#paint0_linear_30_584)"/>
+<ellipse opacity="0.5" cx="5.99828" cy="5.1579" rx="1.41135" ry="2.4199" transform="rotate(47 5.99828 5.1579)" fill="white"/>
+<defs>
+<linearGradient id="paint0_linear_30_584" x1="-4.45111" y1="9.72223" x2="9.36037" y2="26.3633" gradientUnits="userSpaceOnUse">
+<stop stopColor="#FF7F60"/>
+<stop offset="1" stopColor="#E53000"/>
+</linearGradient>
+</defs>
+    </svg>
+  )
+);
+
+CashwalkCdpointIcon.displayName = "CashwalkCdpointIcon";

@@ -1,0 +1,25 @@
+import React from "react";
+
+export interface CashwalkCalendarCheckIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+export const CashwalkCalendarCheckIcon = React.forwardRef<SVGSVGElement, CashwalkCalendarCheckIconProps>(
+  ({ size = 24, color = "currentColor", ...props }, ref) => (
+    <svg
+      ref={ref}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      color={color}
+      {...props}
+    >
+      <path d="M21 14.0179V12.3036C21 11.7614 21 11.4209 20.995 11.0418C20.9922 10.8241 20.8142 10.6499 20.5965 10.6499H3.40355C3.18581 10.6499 3.00783 10.8241 3.00498 11.0418C3 11.4209 3 11.7614 3 12.3036V14.0179C3 17.2503 3 18.8667 4.05441 19.8708C5.10884 20.875 6.80588 20.875 10.2 20.875H13.8C17.1941 20.875 18.8912 20.875 19.9456 19.8708C21 18.8667 21 17.2503 21 14.0179Z" fill="currentColor"/>
+<path d="M8.14445 3.56731C8.14445 3.18496 7.83983 2.875 7.46406 2.875C7.08829 2.875 6.78366 3.18496 6.78366 3.56731V5.02509C5.47791 5.13147 4.62071 5.39257 3.99094 6.03337C3.43194 6.60215 3.16695 7.35325 3.04133 8.444C3.01464 8.67575 3.19943 8.875 3.43271 8.875H20.5673C20.8006 8.875 20.9854 8.67576 20.9587 8.44401C20.8331 7.35326 20.5681 6.60215 20.0091 6.03337C19.3793 5.39257 18.5221 5.13147 17.2164 5.02509V3.56731C17.2164 3.18496 16.9117 2.875 16.536 2.875C16.1602 2.875 15.8556 3.18496 15.8556 3.56731V4.96383C15.252 4.95192 14.5755 4.95192 13.8144 4.95192H10.1856C9.42447 4.95192 8.74798 4.95192 8.14445 4.96383V3.56731Z" fill="currentColor"/>
+    </svg>
+  )
+);
+
+CashwalkCalendarCheckIcon.displayName = "CashwalkCalendarCheckIcon";

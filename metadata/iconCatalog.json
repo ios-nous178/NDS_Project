@@ -17,6 +17,10 @@
       "label": "CashwalkBiz"
     },
     {
+      "id": "cashwalk",
+      "label": "Cashwalk"
+    },
+    {
       "id": "runmile",
       "label": "Runmile"
     },
@@ -65,6 +69,81 @@
       "name": "CashdealPointIcon",
       "kebab": "cashdeal-point",
       "project": "nudge-eap"
+    },
+    {
+      "name": "CashwalkActivityIcon",
+      "kebab": "cashwalk-activity",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkAdPlayStrokeIcon",
+      "kebab": "cashwalk-ad-play-stroke",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkAdSoundMaxStrokeIcon",
+      "kebab": "cashwalk-ad-sound-max-stroke",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkAdSoundMuteIcon",
+      "kebab": "cashwalk-ad-sound-mute",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkAdSoundMuteStrokeIcon",
+      "kebab": "cashwalk-ad-sound-mute-stroke",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkAnalysisIcon",
+      "kebab": "cashwalk-analysis",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkArrowDownIcon",
+      "kebab": "cashwalk-arrow-down",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkArrowLeftIcon",
+      "kebab": "cashwalk-arrow-left",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkArrowRightIcon",
+      "kebab": "cashwalk-arrow-right",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkArrowUpIcon",
+      "kebab": "cashwalk-arrow-up",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkBellAddIcon",
+      "kebab": "cashwalk-bell-add",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkBellIcon",
+      "kebab": "cashwalk-bell",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkBellOffIcon",
+      "kebab": "cashwalk-bell-off",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkBenefitActiveIcon",
+      "kebab": "cashwalk-benefit-active",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkBenefitIcon",
+      "kebab": "cashwalk-benefit",
+      "project": "cashwalk"
     },
     {
       "name": "CashwalkBizArrowDownIcon",
@@ -225,6 +304,311 @@
       "name": "CashwalkBizSearchDeleteIcon",
       "kebab": "cashwalk-biz-search-delete",
       "project": "cashwalk-biz"
+    },
+    {
+      "name": "CashwalkCalendarCheckIcon",
+      "kebab": "cashwalk-calendar-check",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCameraIcon",
+      "kebab": "cashwalk-camera",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCashIcon",
+      "kebab": "cashwalk-cash",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCashtalkActiveIcon",
+      "kebab": "cashwalk-cashtalk-active",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCashtalkIcon",
+      "kebab": "cashwalk-cashtalk",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCashwatchIcon",
+      "kebab": "cashwalk-cashwatch",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCdpointIcon",
+      "kebab": "cashwalk-cdpoint",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkChannelIcon",
+      "kebab": "cashwalk-channel",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCheckCircleIcon",
+      "kebab": "cashwalk-check-circle",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCheckIcon",
+      "kebab": "cashwalk-check",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkChevronDownIcon",
+      "kebab": "cashwalk-chevron-down",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkChevronLeftIcon",
+      "kebab": "cashwalk-chevron-left",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkChevronRightIcon",
+      "kebab": "cashwalk-chevron-right",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkChevronUpIcon",
+      "kebab": "cashwalk-chevron-up",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCloseIcon",
+      "kebab": "cashwalk-close",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCopyIcon",
+      "kebab": "cashwalk-copy",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCouponIcon",
+      "kebab": "cashwalk-coupon",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkCouponLineIcon",
+      "kebab": "cashwalk-coupon-line",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkEyeIcon",
+      "kebab": "cashwalk-eye",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkFightingIcon",
+      "kebab": "cashwalk-fighting",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkFirecrackerIcon",
+      "kebab": "cashwalk-firecracker",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkFireIcon",
+      "kebab": "cashwalk-fire",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkHomeActiveIcon",
+      "kebab": "cashwalk-home-active",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkImageErrorIcon",
+      "kebab": "cashwalk-image-error",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkInfoDimIcon",
+      "kebab": "cashwalk-info-dim",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkInfoLineIcon",
+      "kebab": "cashwalk-info-line",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkInfoSolidIcon",
+      "kebab": "cashwalk-info-solid",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkLiveUpcomingIcon",
+      "kebab": "cashwalk-live-upcoming",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkMapPinIcon",
+      "kebab": "cashwalk-map-pin",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkMegaphoneIcon",
+      "kebab": "cashwalk-megaphone",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkMessageIcon",
+      "kebab": "cashwalk-message",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkMochallIcon",
+      "kebab": "cashwalk-mochall",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkNewsActiveIcon",
+      "kebab": "cashwalk-news-active",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkNewsIcon",
+      "kebab": "cashwalk-news",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkPenIcon",
+      "kebab": "cashwalk-pen",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkPeopleIcon",
+      "kebab": "cashwalk-people",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkPhotoIcon",
+      "kebab": "cashwalk-photo",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkPinLineIcon",
+      "kebab": "cashwalk-pin-line",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkPinSolidIcon",
+      "kebab": "cashwalk-pin-solid",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkQrcodeIcon",
+      "kebab": "cashwalk-qrcode",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkQuestionCircleSolidIcon",
+      "kebab": "cashwalk-question-circle-solid",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkRankingIcon",
+      "kebab": "cashwalk-ranking",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkRewardIcon",
+      "kebab": "cashwalk-reward",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkRouteIcon",
+      "kebab": "cashwalk-route",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkSearchClearIcon",
+      "kebab": "cashwalk-search-clear",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkSearchIcon",
+      "kebab": "cashwalk-search",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkSettingIcon",
+      "kebab": "cashwalk-setting",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkShareIcon",
+      "kebab": "cashwalk-share",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkShoesIcon",
+      "kebab": "cashwalk-shoes",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkShoppingIcon",
+      "kebab": "cashwalk-shopping",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkStarIcon",
+      "kebab": "cashwalk-star",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkTelephoneIcon",
+      "kebab": "cashwalk-telephone",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkTimerIcon",
+      "kebab": "cashwalk-timer",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkToggleOffIcon",
+      "kebab": "cashwalk-toggle-off",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkToggleOnIcon",
+      "kebab": "cashwalk-toggle-on",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkTreasureIcon",
+      "kebab": "cashwalk-treasure",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkVoucherActiveIcon",
+      "kebab": "cashwalk-voucher-active",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkVoucherIcon",
+      "kebab": "cashwalk-voucher",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkWarningCircleLineIcon",
+      "kebab": "cashwalk-warning-circle-line",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkWarningCircleSolidIcon",
+      "kebab": "cashwalk-warning-circle-solid",
+      "project": "cashwalk"
+    },
+    {
+      "name": "CashwalkWatchIcon",
+      "kebab": "cashwalk-watch",
+      "project": "cashwalk"
     },
     {
       "name": "CenterIcon",
