@@ -24,6 +24,10 @@
       "types": "./dist/css-stub.d.ts",
       "default": "./dist/tokens.css"
     },
+    "./css/nudge-eap": {
+      "types": "./dist/css-stub.d.ts",
+      "default": "./dist/nudge-eap.css"
+    },
     "./css/trost": {
       "types": "./dist/css-stub.d.ts",
       "default": "./dist/trost.css"
@@ -42,7 +46,7 @@
     },
     "./css/cashwalk": {
       "types": "./dist/css-stub.d.ts",
-      "default": "./dist/cashwalk.css"
+      "default": "./dist/tokens.css"
     },
     "./css/teamwork": {
       "types": "./dist/css-stub.d.ts",

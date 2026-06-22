@@ -3,9 +3,9 @@
  *
  * SSOT: Figma 캐시워크 SemanticColorGuide (676:3643)
  *
- * Cashwalk(캐시워크 · 소비자앱) 가 NudgeEAP base 와 다른 부분만 명시.
- * generate-css.js 가 이 트리를 `dist/cashwalk.css` 의 `--semantic-*` 변수로 emit.
- * CSS cascade 에 의해 NudgeEAP base 의 같은 변수를 덮어쓴다. 누락 키는 base 유지.
+ * ★ Cashwalk(캐시워크 · 소비자앱)가 곧 DS 의 **base** 다 — generate-css.js 가 이 트리를
+ * `dist/tokens.css`(:root, 프로젝트 미설정 기본)의 `--semantic-*` 변수로 emit. 별도 cashwalk.css 없음.
+ * 다른 프로젝트(NudgeEAP/Trost/…)는 이 base 위에 partial override 를 cascade 로 얹는다.
  *
  * 캐시워크 가이드 특이점 (다른 프로젝트 대비):
  *   1. **Input focus = Neutral/900 (검정)** — 다른 프로젝트는 brand 색을 focus 에 쓰지만
@@ -50,6 +50,10 @@ export const cashwalkSemantic = {
       info: ref("color.yellow.100"), // #FFFAE5 — BG/Status/Info (brand-subtle 와 동일 톤)
     },
     overlay: "rgba(0, 0, 0, 0.4)", // base NudgeEAP 와 동일
+    // Dim 백드롭 강도 스케일 — Subtle α0.2 / Strong α0.7. 범용 검정("검정 위 alpha만 다르게")이라
+    // 프로젝트 무관 동일값. cashwalk 가 base 가 되므로 base 완전성을 위해 명시 (Figma Dim Guide 1751:20).
+    overlaySubtle: "rgba(0, 0, 0, 0.2)",
+    overlayStrong: "rgba(0, 0, 0, 0.7)",
     disabled: ref("color.gray.200"), // #EEEEEE — DS extension
   },
 
@@ -187,6 +191,9 @@ export const cashwalkSemantic = {
       error: ref("color.red.500"),
       caution: ref("color.yellow.800"), // text.status.caution 과 정합
     },
+    // 선택 컨트롤(checkbox·radio) on 채움 — fill-brand 추종(프로젝트별 자기 brand 색).
+    // cashwalk 가 base 가 되므로 base 완전성을 위해 명시 (late-bind).
+    controlOn: "var(--semantic-fill-brand-default)",
   },
 
   // ─── Input (7 tokens, focus = 검정 ★) ────────────────

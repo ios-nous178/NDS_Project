@@ -19,8 +19,10 @@
  */
 
 // dist/{project}.css 의 :root 블록을 ?raw 로 가져와서 토큰 자동 sync.
-// NudgeEAP 는 base 토큰(dist/tokens.css)이 곧 프로젝트 색이라 별도 project css 가 없다.
+// Cashwalk 는 base 토큰(dist/tokens.css)이 곧 프로젝트 색이라 별도 project css 가 없다(= DS 기본).
+// NudgeEAP 는 base 가 cashwalk 로 바뀌면서 별도 델타(dist/nudge-eap.css)로 분리됐다.
 import tokensDistCss from "../../../packages/tokens/dist/tokens.css?raw";
+import nudgeEapDistCss from "../../../packages/tokens/dist/nudge-eap.css?raw";
 import trostDistCss from "../../../packages/tokens/dist/trost.css?raw";
 import genietDistCss from "../../../packages/tokens/dist/geniet.css?raw";
 import cashwalkBizDistCss from "../../../packages/tokens/dist/cashwalk-biz.css?raw";
@@ -38,10 +40,12 @@ function parseCssRootVars(raw: string): Record<string, string> {
 
 /** dist/{project}.css 에서 파싱한 시멘틱 토큰. tokens 패키지가 SSOT 인 부분. */
 const distVars: Record<string, Record<string, string>> = {
-  // NudgeEAP = base 토큰 전체. docs(개요)처럼 한 페이지에 여러 프로젝트가 동시에 렌더돼
+  // Cashwalk = base 토큰 전체. docs(개요)처럼 한 페이지에 여러 프로젝트가 동시에 렌더돼
   // :root 가 마지막 프로젝트로 오염돼도, 스토리 단위 wrapper 가 이 base 셋을 다시 깔아
-  // NudgeEAP 색을 복원하도록 명시적으로 넣는다. (비어 있으면 오염된 :root 를 그대로 상속)
-  "nudge-eap": parseCssRootVars(tokensDistCss),
+  // Cashwalk 색을 복원하도록 명시적으로 넣는다. (비어 있으면 오염된 :root 를 그대로 상속)
+  cashwalk: parseCssRootVars(tokensDistCss),
+  // NudgeEAP 델타(full override) — cashwalk base 위에 얹어 파란색 복원.
+  "nudge-eap": parseCssRootVars(nudgeEapDistCss),
   trost: parseCssRootVars(trostDistCss),
   geniet: parseCssRootVars(genietDistCss),
   "cashwalk-biz": parseCssRootVars(cashwalkBizDistCss),
@@ -60,10 +64,17 @@ export interface ProjectTheme {
 
 /** 프로젝트 메타만 정의 — cssVars 는 빈 객체 유지 (값 SSOT 는 packages/tokens/src/projects/*). */
 const _rawProjectThemes: Record<string, ProjectTheme> = {
+  cashwalk: {
+    name: "cashwalk",
+    label: "Cashwalk (캐시워크)",
+    description: "옐로우 시그니처 만보기 소비자앱 · DS 기본(base)",
+    cssVars: {},
+  },
   "nudge-eap": {
     name: "nudge-eap",
     label: "NudgeEAP",
-    description: "블루 기반 EAP 멘탈케어 플랫폼",
+    description: "블루 기반 EAP 멘탈케어 플랫폼 (옵트인 델타)",
+    cssImport: "nudge-eap",
     cssVars: {},
   },
   trost: {
@@ -115,5 +126,5 @@ export const projectThemes: Record<string, ProjectTheme> = Object.fromEntries(
   ]),
 );
 
-export const defaultProject = "nudge-eap";
+export const defaultProject = "cashwalk";
 export const projectKeys = Object.keys(projectThemes);

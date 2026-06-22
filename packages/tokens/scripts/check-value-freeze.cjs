@@ -10,6 +10,7 @@
 const fs = require("fs");
 const path = require("path");
 const { colors } = require("../dist/colors");
+const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 const { trostTheme } = require("../dist/projects/trost");
 const { genietTheme } = require("../dist/projects/geniet");
 const { cashwalkBizTheme } = require("../dist/projects/cashwalk-biz");
@@ -44,11 +45,14 @@ function parseSemantic(file) {
 }
 
 const TARGETS = [
-  { file: "tokens", cvar: colorVarMap(colors) },
+  // base(tokens.css) = cashwalk 색 → base ref 는 cashwalk 팔레트로 해석.
+  { file: "tokens", cvar: colorVarMap(colors, cashwalkTheme.palette) },
+  // NudgeEAP 는 이제 델타 css(nudge-eap.css) — base 팔레트(colors)로 해석.
+  { file: "nudge-eap", cvar: colorVarMap(colors, nudgeEapTheme.palette) },
   { file: "trost", cvar: colorVarMap(colors, trostTheme.palette) },
   { file: "geniet", cvar: colorVarMap(colors, genietTheme.palette) },
   { file: "cashwalk-biz", cvar: colorVarMap(colors, cashwalkBizTheme.palette) },
-  { file: "cashwalk", cvar: colorVarMap(colors, cashwalkTheme.palette) },
+  // cashwalk == base(tokens.css) — 별도 cashwalk.css emit 안 함(타깃 제거).
   { file: "teamwork", cvar: colorVarMap(colors, teamworkTheme.palette) },
   { file: "dongne-sanchaek", cvar: colorVarMap(colors, dongneSanchaekTheme.palette) },
   { file: "runmile", cvar: colorVarMap(colors, runmileTheme.palette) },

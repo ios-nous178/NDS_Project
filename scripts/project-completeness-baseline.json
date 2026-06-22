@@ -1,96 +1,6 @@
 {
-  "_comment": "check-project-completeness.mjs 의 waiver 목록 — base 시멘틱 leaf 의 프로젝트 미정의가 '의도된 base-fallback' 인 경우만 사유와 함께 등재한다. 사유 없는 silent fallback 은 게이트가 차단.",
+  "_comment": "check-project-completeness.mjs 의 waiver 목록 — base(=cashwalk) 시멘틱 leaf 의 프로젝트 미정의가 '의도된 base-fallback' 인 경우만 사유와 함께 등재한다. 사유 없는 silent fallback 은 게이트가 차단.",
   "entries": [
-    {
-      "project": "trost",
-      "key": "confirmCta.bg",
-      "reason": "base 가 var() late-bind (nudge-eap.semantic.ts:184) — 프로젝트 :root cascade 로 자기 project 색이 자동 적용. 명시 불필요"
-    },
-    {
-      "project": "trost",
-      "key": "confirmCta.hover",
-      "reason": "base var() late-bind — confirmCta.bg 와 동일"
-    },
-    {
-      "project": "trost",
-      "key": "confirmCta.active",
-      "reason": "base var() late-bind — confirmCta.bg 와 동일"
-    },
-    {
-      "project": "trost",
-      "key": "confirmCta.text",
-      "reason": "base var() late-bind — buttonText.default(트로스트=검정)가 자동 적용"
-    },
-    {
-      "project": "geniet",
-      "key": "confirmCta.bg",
-      "reason": "base 가 var() late-bind (nudge-eap.semantic.ts:184) — 프로젝트 :root cascade 로 자기 project 색이 자동 적용. 명시 불필요"
-    },
-    {
-      "project": "geniet",
-      "key": "confirmCta.hover",
-      "reason": "base var() late-bind — confirmCta.bg 와 동일"
-    },
-    {
-      "project": "geniet",
-      "key": "confirmCta.active",
-      "reason": "base var() late-bind — confirmCta.bg 와 동일"
-    },
-    {
-      "project": "geniet",
-      "key": "confirmCta.text",
-      "reason": "base var() late-bind — buttonText.default 가 자동 적용"
-    },
-    {
-      "project": "runmile",
-      "key": "confirmCta.bg",
-      "reason": "base 가 var() late-bind (nudge-eap.semantic.ts:184) — 프로젝트 :root cascade 로 자기 project 색이 자동 적용. 명시 불필요"
-    },
-    {
-      "project": "runmile",
-      "key": "confirmCta.hover",
-      "reason": "base var() late-bind — confirmCta.bg 와 동일"
-    },
-    {
-      "project": "runmile",
-      "key": "confirmCta.active",
-      "reason": "base var() late-bind — confirmCta.bg 와 동일"
-    },
-    {
-      "project": "runmile",
-      "key": "confirmCta.text",
-      "reason": "base var() late-bind — buttonText.default 가 자동 적용"
-    },
-    {
-      "project": "trost",
-      "key": "buttonBg.neutral.default",
-      "reason": "트로스트 Figma 버튼 가이드에 Solid/Neutral variant 부재 — base cool-gray 폴백 의도 (디자이너가 트로스트 Neutral 톤을 정의하면 명시 전환)"
-    },
-    {
-      "project": "trost",
-      "key": "buttonBg.neutral.hover",
-      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
-    },
-    {
-      "project": "trost",
-      "key": "buttonBg.neutral.disabled",
-      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
-    },
-    {
-      "project": "trost",
-      "key": "buttonText.neutral",
-      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
-    },
-    {
-      "project": "trost",
-      "key": "buttonText.neutralSolid",
-      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
-    },
-    {
-      "project": "trost",
-      "key": "buttonText.neutralDisabled",
-      "reason": "buttonBg.neutral.default 와 동일 — Neutral variant 부재"
-    },
     {
       "project": "cashwalk-biz",
       "key": "bg.overlaySubtle",
@@ -130,6 +40,36 @@
       "project": "geniet",
       "key": "bg.overlayStrong",
       "reason": "Dim 백드롭 Strong(α0.7)=범용 검정 — 의도적 base-fallback"
+    },
+    {
+      "project": "geniet",
+      "key": "fill.controlOn",
+      "reason": "base 가 var(--semantic-fill-brand-default) late-bind — 프로젝트가 fill.brand.default 를 덮으므로 자기 brand 색이 자동 적용. 의도적 base-fallback (옛 base 에서도 동일)."
+    },
+    {
+      "project": "cashwalk-biz",
+      "key": "fill.controlOn",
+      "reason": "base 가 var(--semantic-fill-brand-default) late-bind — 자기 brand 색 자동 적용. 의도적 base-fallback (옛 base 에서도 동일)."
+    },
+    {
+      "project": "runmile",
+      "key": "fill.controlOn",
+      "reason": "base 가 var(--semantic-fill-brand-default) late-bind — 자기 brand 색 자동 적용. 의도적 base-fallback (옛 base 에서도 동일)."
+    },
+    {
+      "project": "nudge-eap",
+      "key": "text.link.default",
+      "reason": "Text/Link 는 cashwalk(=base) 전용 슬롯. NudgeEAP 는 링크에 text.brand 사용 — base(cashwalk blue) 폴백 의도. 필요 시 명시 전환."
+    },
+    {
+      "project": "trost",
+      "key": "text.link.default",
+      "reason": "Text/Link 는 cashwalk(=base) 전용 슬롯. 트로스트는 링크에 text.point(indigo) 사용 — base 폴백 의도."
+    },
+    {
+      "project": "geniet",
+      "key": "text.link.default",
+      "reason": "Text/Link 는 cashwalk(=base) 전용 슬롯. 지니어트는 링크에 text.brand(teal) 사용 — base 폴백 의도."
     }
   ]
 }

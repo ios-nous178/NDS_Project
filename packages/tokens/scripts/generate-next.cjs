@@ -27,15 +27,21 @@ const { dongneSanchaekTheme } = require("../dist/projects/dongne-sanchaek");
 const { runmileTheme } = require("../dist/projects/runmile");
 
 const BRANDS = [
-  { mode: "nudge-eap", theme: nudgeEapTheme }, // base — palette=colors, semantic=full
+  { mode: "cashwalk", theme: cashwalkTheme }, // base — DS 기본(프로젝트 미설정). palette+semantic 이 base.
+  { mode: "nudge-eap", theme: nudgeEapTheme }, // 일반 브랜드 델타(옛 base — 이제 옵트인 파란색)
   { mode: "trost", theme: trostTheme },
   { mode: "geniet", theme: genietTheme },
   { mode: "cashwalk-biz", theme: cashwalkBizTheme },
-  { mode: "cashwalk", theme: cashwalkTheme },
   { mode: "teamwork", theme: teamworkTheme }, // cashwalk 형제 — cornflower accent
   { mode: "dongne-sanchaek", theme: dongneSanchaekTheme }, // cashwalk 형제 — indigo accent
   { mode: "runmile", theme: runmileTheme },
 ];
+
+// base mode — cashwalk 가 DS base(프로젝트 미설정 기본). 옛 base(nudge-eap) 는 일반 브랜드 델타로 강등.
+// base 색 팔레트 = atomic colors ∪ cashwalk 팔레트(공유 family 는 cashwalk 가 덮음).
+const BASE_MODE = "cashwalk";
+const baseTheme = cashwalkTheme;
+const basePalette = { ...colors, ...cashwalkTheme.palette };
 
 function camelToKebab(s) {
   return s.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
@@ -85,18 +91,18 @@ function semanticCssLines(tree) {
 const nextDir = path.join(__dirname, "..", "dist", "next");
 fs.mkdirSync(nextDir, { recursive: true });
 
-// base: tokens.css = color primitives + base semantic
+// base: tokens.css = color primitives + base semantic (= cashwalk)
 {
   const lines = [":root {", "  /* ── Color primitives (atomic) ── */"];
-  lines.push(...paletteCssLines(colors));
+  lines.push(...paletteCssLines(basePalette));
   lines.push("", "  /* ── Semantic (alias → primitive via var()) ── */");
-  lines.push(...semanticCssLines(nudgeEapTheme.semantic));
+  lines.push(...semanticCssLines(baseTheme.semantic));
   lines.push("}");
   fs.writeFileSync(path.join(nextDir, "tokens.css"), lines.join("\n") + "\n");
 }
 // brands: {brand}.css = brand palette + brand semantic override (cascade over tokens.css)
 for (const { mode, theme } of BRANDS) {
-  if (mode === "nudge-eap") continue;
+  if (mode === BASE_MODE) continue;
   const lines = [":root {", "  /* ── Palette ── */"];
   lines.push(...paletteCssLines(theme.palette));
   lines.push("", "  /* ── Semantic override (alias → primitive via var()) ── */");
@@ -107,7 +113,7 @@ for (const { mode, theme } of BRANDS) {
 
 // ─── DTCG (base) ────────────────────────────────────────
 const dtcg = { color: {}, semantic: {} };
-for (const [family, scale] of Object.entries(colors)) {
+for (const [family, scale] of Object.entries(basePalette)) {
   dtcg.color[family] = {};
   for (const [stop, value] of Object.entries(scale)) {
     dtcg.color[family][stop] = { $value: value, $type: "color" };
@@ -122,7 +128,7 @@ for (const [family, scale] of Object.entries(colors)) {
       walkDtcg(value, node[key]);
     }
   }
-})(nudgeEapTheme.semantic, dtcg.semantic);
+})(baseTheme.semantic, dtcg.semantic);
 fs.writeFileSync(path.join(nextDir, "tokens.dtcg.json"), JSON.stringify(dtcg, null, 2) + "\n");
 
 // ─── figma-variables.json (semantic = brand=mode, alias-by-name) ─────────────
@@ -182,7 +188,7 @@ const variables = {};
 const allNames = new Set();
 const perMode = {};
 for (const { mode, theme } of BRANDS) {
-  const merged = deepMerge(nudgeEapTheme.semantic, mode === "nudge-eap" ? {} : theme.semantic);
+  const merged = deepMerge(baseTheme.semantic, mode === BASE_MODE ? {} : theme.semantic);
   perMode[mode] = flattenSemantic(merged, "", {});
   Object.keys(perMode[mode]).forEach((n) => allNames.add(n));
   primitives[mode] = buildPrims(theme.palette);
@@ -218,7 +224,7 @@ const orderByBase = (names, baseKeys, catOrder) => {
       a.localeCompare(b),
   );
 };
-for (const name of orderByBase(allNames, Object.keys(perMode["nudge-eap"]), SEM_CAT_ORDER)) {
+for (const name of orderByBase(allNames, Object.keys(perMode[BASE_MODE]), SEM_CAT_ORDER)) {
   const valuesByMode = {};
   for (const { mode } of BRANDS) {
     const leaf = perMode[mode][name];
@@ -258,11 +264,11 @@ function dimMap(theme) {
   return out;
 }
 const dimByMode = {};
-for (const { mode, theme } of BRANDS) dimByMode[mode] = dimMap(mode === "nudge-eap" ? null : theme);
+for (const { mode, theme } of BRANDS) dimByMode[mode] = dimMap(mode === BASE_MODE ? null : theme);
 const dimNames = new Set();
 for (const m of Object.values(dimByMode)) for (const n of Object.keys(m)) dimNames.add(n);
 const dimVariables = {};
-for (const name of orderByBase(dimNames, Object.keys(dimByMode["nudge-eap"]))) {
+for (const name of orderByBase(dimNames, Object.keys(dimByMode[BASE_MODE]))) {
   const vbm = {};
   for (const { mode } of BRANDS)
     if (dimByMode[mode][name] != null) vbm[mode] = { value: dimByMode[mode][name] };
@@ -285,11 +291,11 @@ function semDimMap(theme) {
 }
 const semDimByMode = {};
 for (const { mode, theme } of BRANDS)
-  semDimByMode[mode] = semDimMap(mode === "nudge-eap" ? null : theme);
+  semDimByMode[mode] = semDimMap(mode === BASE_MODE ? null : theme);
 const semDimNames = new Set();
 for (const m of Object.values(semDimByMode)) for (const n of Object.keys(m)) semDimNames.add(n);
 const semDimVariables = {};
-for (const name of orderByBase(semDimNames, Object.keys(semDimByMode["nudge-eap"]))) {
+for (const name of orderByBase(semDimNames, Object.keys(semDimByMode[BASE_MODE]))) {
   const vbm = {};
   for (const { mode } of BRANDS) {
     const leaf = semDimByMode[mode][name];
@@ -311,7 +317,7 @@ const elevByMode = {};
 for (const { mode, theme } of BRANDS)
   elevByMode[mode] = {
     ...baseShadow,
-    ...((mode !== "nudge-eap" && theme.elevation && theme.elevation.shadow) || {}),
+    ...((mode !== BASE_MODE && theme.elevation && theme.elevation.shadow) || {}),
   };
 const elevNames = new Set();
 for (const m of Object.values(elevByMode)) for (const n of Object.keys(m)) elevNames.add(n);
@@ -329,7 +335,7 @@ const figma = {
   $comment:
     "P2 v1 intermediate. semantic=brand=mode, alias=variable name(컬렉션 미지정). " +
     "브랜드별 Primitive 컬렉션 분할·Figma ID 해석·alias→VARIABLE_ALIAS 변환은 P4 업로드 단계. " +
-    "alias 'family/stop' 는 각 브랜드 mode=Primitive/{Brand}(nudge-eap 포함) 로 해석. " +
+    "alias 'family/stop' 는 각 브랜드 mode=Primitive/{Brand}(cashwalk=base 포함) 로 해석. " +
     "family 순서: common → gray/coolGray → 표준컬러 → 브랜드 고유색.",
   primitives,
   semantic: { modes: BRANDS.map((b) => b.mode), variables },
@@ -340,7 +346,7 @@ const figma = {
 };
 fs.writeFileSync(path.join(nextDir, "figma-variables.json"), JSON.stringify(figma, null, 2) + "\n");
 
-const brandCss = BRANDS.filter((b) => b.mode !== "nudge-eap").map((b) => `${b.mode}.css`);
+const brandCss = BRANDS.filter((b) => b.mode !== BASE_MODE).map((b) => `${b.mode}.css`);
 console.log(
   `Generated dist/next/{tokens.css, ${brandCss.join(", ")}, tokens.dtcg.json, figma-variables.json}`,
 );

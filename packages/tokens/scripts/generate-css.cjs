@@ -3,17 +3,24 @@
  * Run after tsc: node scripts/generate-css.cjs
  *
  * Outputs:
- *   dist/tokens.css   — NudgeEAP 기본 토큰
+ *   dist/tokens.css   — base 토큰 (= Cashwalk 소비자앱 색. 프로젝트 미설정 시 기본)
+ *   dist/nudge-eap.css — NudgeEAP 오버라이드 토큰 (옵트인 — 파란색 복원)
  *   dist/trost.css    — Trost 프로젝트 오버라이드 토큰
  *   dist/geniet.css   — Geniet 프로젝트 오버라이드 토큰
  *   dist/cashwalk-biz.css — CashwalkBiz 프로젝트 오버라이드 토큰
+ *   (cashwalk.css 는 emit 안 함 — cashwalk == base)
  */
 const fs = require("fs");
 const path = require("path");
 
 const { colors } = require("../dist/colors");
 const { isRef } = require("../dist/ref.js");
-const { nudgeEapSemantic } = require("../dist/projects/nudge-eap.semantic.js");
+// base = Cashwalk (소비자앱). `dist/tokens.css` (:root) 가 cashwalk 팔레트+시멘틱으로 emit 된다.
+// NudgeEAP 는 `dist/nudge-eap.css` 델타로 분리(옵트인). 비색상(typography/spacing/…)은 base 유지.
+const { cashwalkTheme, cashwalkSemantic } = require("../dist/projects/cashwalk.js");
+// base 팔레트 = atomic colors ∪ cashwalk 팔레트 (cashwalk 가 공유 family[gray/yellow/red/blue/green] 를
+// 덮고, base 는 coolGray/pink/orange/purple/teal atomic 전체도 계속 emit).
+const basePalette = { ...colors, ...cashwalkTheme.palette };
 
 /**
  * reference-carrying 토큰(`ref("color.{family}.{stop}")`) 해석용 레지스트리.
@@ -40,7 +47,8 @@ function makeResolveRef(registry) {
     return v;
   };
 }
-const resolveBaseRef = makeResolveRef(buildColorRegistry(colors));
+// base ref 해석기 — cashwalk 팔레트가 공유 family 를 덮는다(base = cashwalk 색).
+const resolveBaseRef = makeResolveRef(buildColorRegistry(colors, cashwalkTheme.palette));
 const {
   spacing,
   gap,
@@ -128,22 +136,24 @@ function fontFamilyKeyToFigma(key) {
   return key;
 }
 
-// ─── NudgeEAP tokens.css ────────────────────────────────
+// ─── base tokens.css (= Cashwalk 색) ────────────────────
 
+// nudgeEapTheme — base 비색상 기본값(components: chart/rating/toast/tooltip) 소스 +
+// nudge-eap.css 델타 emit 용. (색은 cashwalk 가 base, 비색상은 EAP=DS 중립 기본 유지.)
 const { nudgeEapTheme } = require("../dist/projects/nudge-eap");
 
 function generateBaseTokens() {
   const lines = [":root {"];
 
-  // Atomic palette → `--color-{group}-{stop}`
-  flattenPaletteVars(colors, "", lines);
+  // Atomic palette → `--color-{group}-{stop}` (base = colors ∪ cashwalk 팔레트)
+  flattenPaletteVars(basePalette, "", lines);
 
-  // Semantic — 1:1 Figma SemanticColorGuide (171:6675) mirror.
+  // Semantic — base = Cashwalk SemanticColorGuide (676:3643). role-based 트리.
   // BG / Text / Button{BG,Text,Border} / Input / Icon / Border / Fill +
   // DS extension (bg-disabled). emit: `--semantic-{group}-{role}-{variant}` (kebab).
   lines.push("");
-  lines.push("  /* ── Semantic (role-based, Figma SemanticColorGuide 171:6675) ── */");
-  flattenRoleSemanticVars(nudgeEapSemantic, "", lines, resolveBaseRef);
+  lines.push("  /* ── Semantic (role-based, Cashwalk SemanticColorGuide 676:3643) ── */");
+  flattenRoleSemanticVars(cashwalkSemantic, "", lines, resolveBaseRef);
 
   // Spacing — Primitive Scale (Figma · SpacingGuide, 4pt grid)
   lines.push("");
@@ -507,6 +517,15 @@ const tokensPath = path.join(distDir, "tokens.css");
 fs.writeFileSync(tokensPath, generateBaseTokens());
 console.log(`Generated ${tokensPath}`);
 
+// NudgeEAP — base 가 cashwalk 로 바뀌면서 별도 델타로 분리(옵트인 `@nudge-design/tokens/css/nudge-eap`).
+// full EAP semantic 을 override 로 emit → 적용 시 EAP 파란색 복원.
+const nudgeEapPath = path.join(distDir, "nudge-eap.css");
+fs.writeFileSync(
+  nudgeEapPath,
+  generateProjectTokens({ theme: nudgeEapTheme, title: "nudge-eap", cssImport: "nudge-eap" }),
+);
+console.log(`Generated ${nudgeEapPath}`);
+
 const trostPath = path.join(distDir, "trost.css");
 const { trostTheme } = require("../dist/projects/trost");
 fs.writeFileSync(
@@ -543,13 +562,8 @@ fs.writeFileSync(
 );
 console.log(`Generated ${runmilePath}`);
 
-const cashwalkPath = path.join(distDir, "cashwalk.css");
-const { cashwalkTheme } = require("../dist/projects/cashwalk");
-fs.writeFileSync(
-  cashwalkPath,
-  generateProjectTokens({ theme: cashwalkTheme, title: "cashwalk", cssImport: "cashwalk" }),
-);
-console.log(`Generated ${cashwalkPath}`);
+// cashwalk.css 는 emit 하지 않는다 — cashwalk 가 곧 base(`tokens.css`)다.
+// `@nudge-design/tokens/css/cashwalk` export 는 package.json 에서 tokens.css 로 alias.
 
 // cashwalk accent 형제 — 팔레트는 cashwalk 와 공유, brand 색만 cornflower/indigo 로 스왑.
 const teamworkPath = path.join(distDir, "teamwork.css");

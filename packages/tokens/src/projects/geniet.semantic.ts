@@ -1,9 +1,9 @@
 /**
  * Geniet Semantic Colors — Figma role-based 트리의 Partial override.
  *
- * Geniet 가 NudgeEAP base(projects/nudge-eap.semantic.ts) 와 다른 부분만 명시.
+ * Geniet 가 base(=cashwalk, projects/cashwalk.semantic.ts) 와 다른 부분만 명시.
  * generate-css.cjs 가 이 트리를 `dist/geniet.css` 의 `--semantic-*` 변수로 emit.
- * CSS cascade 에 의해 NudgeEAP base 의 같은 변수를 덮어쓴다.
+ * CSS cascade 에 의해 base 의 같은 변수를 덮어쓴다.
  *
  * 누락된 키는 base 값이 그대로 유지된다.
  *
@@ -164,6 +164,14 @@ export const genietSemantic = {
     helpertextSuccess: ref("color.teal.600"), // #00A8AC
     helpertextError: ref("color.red.600"), // #FF3258
     helpertextDisabled: ref("color.gray.400"), // #CCCCCC
+  },
+  // Modal/Popup confirm(주 액션) — base 가 cashwalk 검정으로 바뀌었으므로, 자기 brand 색 confirm 을
+  // 유지하려면 late-bind 를 명시한다(프로젝트 :root 가 --semantic-bg-brand-default 등을 덮음).
+  confirmCta: {
+    bg: "var(--semantic-bg-brand-default)",
+    hover: "var(--semantic-fill-brand-hover)",
+    active: "var(--semantic-text-brand-strong)",
+    text: "var(--semantic-button-text-default)",
   },
 } as const;
 

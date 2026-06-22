@@ -6,9 +6,9 @@
  *   · Action = Black(neutral 900/800) — 다크 액션/inverse 표면.
  *   · Point  = Indigo(#4968FF) — brand 와 별개의 2차 액센트(focus·강조).
  *
- * Trost 가 NudgeEAP base(projects/nudge-eap.semantic.ts) 와 다른 부분만 명시.
+ * Trost 가 base(=cashwalk, projects/cashwalk.semantic.ts) 와 다른 부분만 명시.
  * generate-css.js 가 이 트리를 `dist/trost.css` 의 `--semantic-*` 변수로 emit.
- * CSS cascade 에 의해 NudgeEAP base 의 같은 변수를 덮어쓴다.
+ * CSS cascade 에 의해 base(=cashwalk) 의 같은 변수를 덮어쓴다.
  *
  * 누락된 키는 base 값이 그대로 유지된다 (예: text.muted 가 없으면 NudgeEAP 의
  * `--semantic-text-muted-default` 가 그대로 적용).
@@ -30,7 +30,7 @@ export const trostSemantic = {
       info: ref("color.blue.50"), // #ECF5FF — info 는 blue (point 인디고와 분리)
       caution: "#FFF8E6", // 가이드 미수록 — 기존 유지
     },
-    // Bible 카드 등 실측 overlay 는 60% (`bg-black/60`). NudgeEAP base 는 40%.
+    // Bible 카드 등 실측 overlay 는 60% (`bg-black/60`). base(=cashwalk) 는 40%.
     overlay: "rgba(0, 0, 0, 0.6)",
     disabled: ref("color.gray.200"),
     // Point(액센트) 서피스 — 인디고. brand(노랑)와 별개의 2차 강조.
@@ -183,6 +183,14 @@ export const trostSemantic = {
     helpertextSuccess: ref("color.indigo.500"),
     helpertextError: ref("color.red.500"),
     helpertextDisabled: ref("color.gray.400"),
+  },
+  // Modal/Popup confirm(주 액션) — base 가 cashwalk 검정으로 바뀌었으므로, 자기 brand 색 confirm 을
+  // 유지하려면 late-bind 를 명시한다(프로젝트 :root 가 --semantic-bg-brand-default 등을 덮음).
+  confirmCta: {
+    bg: "var(--semantic-bg-brand-default)",
+    hover: "var(--semantic-fill-brand-hover)",
+    active: "var(--semantic-text-brand-strong)",
+    text: "var(--semantic-button-text-default)",
   },
 } as const;
 

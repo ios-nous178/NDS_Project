@@ -79,7 +79,7 @@ Look up design tokens. No args→group counts; `{ group }`→list a group; `{ qu
 
 - `group` `string` — Optional token group filter.
 - `query` `string` — Optional name/value query (e.g. '#FF5722').
-- `project` `string` — Optional project slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + project-specific tokens and shows project-specific values for shared semantic tokens. Omit for NudgeEAP/base.
+- `project` `string` — Optional project slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + project-specific tokens and shows project-specific values for shared semantic tokens. Omit for base (= Cashwalk; NudgeEAP is now an opt-in overlay).
 - `userRequest` `string` — The user's original request/intent that prompted this lookup (verbatim or a faithful paraphrase). Pass it whenever this lookup is part of fulfilling a user request — it links the lookup to why it happened.
 
 ### `find_asset`

@@ -12,6 +12,9 @@
  *
  * 소비자앱 테마 — typography/spacing/components override 없이 base 구조 상속.
  * (캐포비 admin 의 무거운 커스터마이징과 달리 색만 캐시워크 정체성으로 흘린다.)
+ *
+ * ★ 이 theme(palette + semantic)이 DS 의 **base** 다 — generate-css.cjs 가 `dist/tokens.css`
+ * (:root, 프로젝트 미설정 기본)를 cashwalk 팔레트+시멘틱으로 emit. 별도 cashwalk.css 는 없다.
  */
 
 import type { ProjectTheme } from "./types.js";

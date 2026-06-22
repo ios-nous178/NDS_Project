@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T18:06:08.876Z",
+  "generatedAt": "2026-06-22T00:18:19.506Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -8,6 +8,7 @@
       "peerDependencies": {},
       "cssExports": [
         "@nudge-design/tokens/css",
+        "@nudge-design/tokens/css/nudge-eap",
         "@nudge-design/tokens/css/trost",
         "@nudge-design/tokens/css/geniet",
         "@nudge-design/tokens/css/cashwalk-biz",
@@ -9024,29 +9025,23 @@
   "tokens": [
     {
       "name": "--color-blue-100",
-      "value": "#E3F2FC",
+      "value": "#E5F2FF",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#E5F2FF",
-        "cashwalk": "#E5F2FF",
-        "dongne-sanchaek": "#E5F2FF",
         "geniet": "#E4F5FF",
+        "nudge-eap": "#E3F2FC",
         "runmile": "#8DD0FF",
-        "teamwork": "#E5F2FF",
         "trost": "#D4E9FF"
       }
     },
     {
       "name": "--color-blue-200",
-      "value": "#91CAF6",
+      "value": "#B8DCFF",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#B8DCFF",
-        "cashwalk": "#B8DCFF",
-        "dongne-sanchaek": "#B8DCFF",
         "geniet": "#CFEDFF",
+        "nudge-eap": "#91CAF6",
         "runmile": "#56BDFF",
-        "teamwork": "#B8DCFF",
         "trost": "#ABD2FF"
       }
     },
@@ -9060,221 +9055,136 @@
     },
     {
       "name": "--color-blue-300",
-      "value": "#67B5F2",
+      "value": "#80BFFF",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#80BFFF",
-        "cashwalk": "#80BFFF",
-        "dongne-sanchaek": "#80BFFF",
         "geniet": "#A8DDFF",
+        "nudge-eap": "#67B5F2",
         "runmile": "#009EFF",
-        "teamwork": "#80BFFF",
         "trost": "#7DB7FF"
       }
     },
     {
       "name": "--color-blue-400",
-      "value": "#47A5F0",
+      "value": "#4BA1FF",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#4BA1FF",
-        "cashwalk": "#4BA1FF",
-        "dongne-sanchaek": "#4BA1FF",
         "geniet": "#62BEFA",
+        "nudge-eap": "#47A5F0",
         "runmile": "#008FFF",
-        "teamwork": "#4BA1FF",
         "trost": "#519DFF"
       }
     },
     {
       "name": "--color-blue-50",
-      "value": "#F1F8FD",
+      "value": "#F5FAFF",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#F5FAFF",
-        "cashwalk": "#F5FAFF",
-        "dongne-sanchaek": "#F5FAFF",
         "geniet": "#F0F9FF",
+        "nudge-eap": "#F1F8FD",
         "runmile": "#BBE2FF",
-        "teamwork": "#F5FAFF",
         "trost": "#ECF5FF"
       }
     },
     {
       "name": "--color-blue-500",
-      "value": "#2B96ED",
+      "value": "#007AFF",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#007AFF",
-        "cashwalk": "#007AFF",
-        "dongne-sanchaek": "#007AFF",
         "geniet": "#1FA3F9",
-        "runmile": "#007AFF",
-        "teamwork": "#007AFF",
+        "nudge-eap": "#2B96ED",
         "trost": "#2C91FF"
       }
     },
     {
       "name": "--color-blue-600",
-      "value": "#017EE4",
+      "value": "#006FE6",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#006FE6",
-        "cashwalk": "#006FE6",
-        "dongne-sanchaek": "#006FE6",
         "geniet": "#1488D3",
-        "teamwork": "#006FE6",
+        "nudge-eap": "#017EE4",
         "trost": "#1A78E5"
       }
     },
     {
       "name": "--color-blue-700",
-      "value": "#0E71CF",
+      "value": "#0058B8",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#0058B8",
-        "cashwalk": "#0058B8",
-        "dongne-sanchaek": "#0058B8",
         "geniet": "#0E6DAD",
-        "teamwork": "#0058B8",
+        "nudge-eap": "#0E71CF",
         "trost": "#105FB8"
       }
     },
     {
       "name": "--color-blue-800",
-      "value": "#1B65BA",
+      "value": "#00428C",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#00428C",
-        "cashwalk": "#00428C",
-        "dongne-sanchaek": "#00428C",
         "geniet": "#0A5287",
-        "teamwork": "#00428C",
+        "nudge-eap": "#1B65BA",
         "trost": "#074280"
       }
     },
     {
       "name": "--color-blue-900",
-      "value": "#0F52A0",
+      "value": "#002D60",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#002D60",
-        "cashwalk": "#002D60",
-        "dongne-sanchaek": "#002D60",
         "geniet": "#06375E",
-        "teamwork": "#002D60",
+        "nudge-eap": "#0F52A0",
         "trost": "#03284D"
       }
     },
     {
       "name": "--color-brown-100",
       "value": "#F2EAE8",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-200",
       "value": "#DCC9C6",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-300",
       "value": "#B89F9A",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-400",
       "value": "#87706B",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-50",
       "value": "#FAF5F4",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-500",
       "value": "#5E5050",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-600",
       "value": "#4F4242",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-700",
       "value": "#403535",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-800",
       "value": "#312828",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-brown-900",
       "value": "#221B1B",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-common-black",
@@ -9370,102 +9280,52 @@
     {
       "name": "--color-cornflower-100",
       "value": "#ECF2FE",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-200",
       "value": "#C9DAFB",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-300",
       "value": "#9EBCF8",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-400",
       "value": "#75A0F5",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-50",
       "value": "#F7FAFE",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-500",
       "value": "#3D79F1",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-600",
       "value": "#2B6EF7",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-700",
       "value": "#2C57AE",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-800",
       "value": "#224385",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-cornflower-900",
       "value": "#172E5B",
-      "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork"
-      ]
+      "group": "color"
     },
     {
       "name": "--color-gray-100",
@@ -9485,38 +9345,32 @@
     },
     {
       "name": "--color-gray-200",
-      "value": "#ECECEC",
+      "value": "#EEEEEE",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#EEEEEE",
-        "cashwalk": "#EEEEEE",
-        "dongne-sanchaek": "#EEEEEE",
-        "teamwork": "#EEEEEE",
+        "geniet": "#ECECEC",
+        "nudge-eap": "#ECECEC",
         "trost": "#E5E5E5"
       }
     },
     {
       "name": "--color-gray-300",
-      "value": "#D8D8D8",
+      "value": "#E7E7E7",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#E7E7E7",
-        "cashwalk": "#E7E7E7",
-        "dongne-sanchaek": "#E7E7E7",
         "geniet": "#DDDDDD",
-        "teamwork": "#E7E7E7"
+        "nudge-eap": "#D8D8D8",
+        "trost": "#D8D8D8"
       }
     },
     {
       "name": "--color-gray-400",
-      "value": "#C7C7C7",
+      "value": "#DDDDDD",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
         "geniet": "#CCCCCC",
-        "teamwork": "#DDDDDD"
+        "nudge-eap": "#C7C7C7",
+        "trost": "#C7C7C7"
       }
     },
     {
@@ -9526,25 +9380,21 @@
     },
     {
       "name": "--color-gray-500",
-      "value": "#999999",
+      "value": "#BBBBBB",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#BBBBBB",
-        "cashwalk": "#BBBBBB",
-        "dongne-sanchaek": "#BBBBBB",
-        "teamwork": "#BBBBBB",
+        "geniet": "#999999",
+        "nudge-eap": "#999999",
         "trost": "#979797"
       }
     },
     {
       "name": "--color-gray-600",
-      "value": "#777777",
+      "value": "#999999",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#999999",
-        "cashwalk": "#999999",
-        "dongne-sanchaek": "#999999",
-        "teamwork": "#999999",
+        "geniet": "#777777",
+        "nudge-eap": "#777777",
         "trost": "#7D7D7D"
       }
     },
@@ -9559,15 +9409,10 @@
     },
     {
       "name": "--color-gray-800",
-      "value": "#383838",
+      "value": "#333333",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
-        "geniet": "#333333",
-        "teamwork": "#333333",
-        "trost": "#333333"
+        "nudge-eap": "#383838"
       }
     },
     {
@@ -9588,29 +9433,23 @@
     },
     {
       "name": "--color-green-100",
-      "value": "#AAE3D7",
+      "value": "#C7F0D8",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#C7F0D8",
-        "cashwalk": "#C7F0D8",
-        "dongne-sanchaek": "#C7F0D8",
         "geniet": "#DBF8EA",
+        "nudge-eap": "#AAE3D7",
         "runmile": "#C0EDCD",
-        "teamwork": "#C7F0D8",
         "trost": "#C4F0E0"
       }
     },
     {
       "name": "--color-green-200",
-      "value": "#6FD2BD",
+      "value": "#8CE0B0",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#8CE0B0",
-        "cashwalk": "#8CE0B0",
-        "dongne-sanchaek": "#8CE0B0",
         "geniet": "#BFEFD8",
+        "nudge-eap": "#6FD2BD",
         "runmile": "#95E1AD",
-        "teamwork": "#8CE0B0",
         "trost": "#94E2C3"
       }
     },
@@ -9624,109 +9463,85 @@
     },
     {
       "name": "--color-green-300",
-      "value": "#13BFA2",
+      "value": "#4DD089",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#4DD089",
-        "cashwalk": "#4DD089",
-        "dongne-sanchaek": "#4DD089",
         "geniet": "#8AE0BA",
+        "nudge-eap": "#13BFA2",
         "runmile": "#62D68A",
-        "teamwork": "#4DD089",
         "trost": "#5CD2A0"
       }
     },
     {
       "name": "--color-green-400",
-      "value": "#00A07C",
+      "value": "#1ACC6E",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#1ACC6E",
-        "cashwalk": "#1ACC6E",
-        "dongne-sanchaek": "#1ACC6E",
         "geniet": "#55D695",
+        "nudge-eap": "#00A07C",
         "runmile": "#2ECC70",
-        "teamwork": "#1ACC6E",
         "trost": "#2BC489"
       }
     },
     {
       "name": "--color-green-50",
-      "value": "#E5F7F4",
+      "value": "#E5F8EE",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#E5F8EE",
-        "cashwalk": "#E5F8EE",
-        "dongne-sanchaek": "#E5F8EE",
         "geniet": "#F1FBF6",
+        "nudge-eap": "#E5F7F4",
         "runmile": "#E5F8EB",
-        "teamwork": "#E5F8EE",
         "trost": "#E5F9F1"
       }
     },
     {
       "name": "--color-green-500",
-      "value": "#008260",
+      "value": "#00CC5B",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#00CC5B",
-        "cashwalk": "#00CC5B",
-        "dongne-sanchaek": "#00CC5B",
         "geniet": "#49CA89",
+        "nudge-eap": "#008260",
         "runmile": "#00C255",
-        "teamwork": "#00CC5B",
         "trost": "#00BC78"
       }
     },
     {
       "name": "--color-green-600",
-      "value": "#006B50",
+      "value": "#00B350",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#00B350",
-        "cashwalk": "#00B350",
-        "dongne-sanchaek": "#00B350",
         "geniet": "#18B264",
-        "teamwork": "#00B350",
+        "nudge-eap": "#006B50",
         "trost": "#00A06A"
       }
     },
     {
       "name": "--color-green-700",
-      "value": "#005640",
+      "value": "#009240",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#009240",
-        "cashwalk": "#009240",
-        "dongne-sanchaek": "#009240",
         "geniet": "#149354",
-        "teamwork": "#009240",
+        "nudge-eap": "#005640",
         "trost": "#008055"
       }
     },
     {
       "name": "--color-green-800",
-      "value": "#003F2E",
+      "value": "#007030",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#007030",
-        "cashwalk": "#007030",
-        "dongne-sanchaek": "#007030",
         "geniet": "#0F7440",
-        "teamwork": "#007030",
+        "nudge-eap": "#003F2E",
         "trost": "#005A3C"
       }
     },
     {
       "name": "--color-green-900",
-      "value": "#002B1E",
+      "value": "#004D20",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#004D20",
-        "cashwalk": "#004D20",
-        "dongne-sanchaek": "#004D20",
         "geniet": "#0A5630",
-        "teamwork": "#004D20",
+        "nudge-eap": "#002B1E",
         "trost": "#00362B"
       }
     },
@@ -9734,12 +9549,6 @@
       "name": "--color-indigo-100",
       "value": "#CED8FD",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#EDF0FF"
       }
@@ -9748,12 +9557,6 @@
       "name": "--color-indigo-200",
       "value": "#A9B8FA",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#C9D3FF"
       }
@@ -9762,12 +9565,6 @@
       "name": "--color-indigo-300",
       "value": "#8599F8",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#A3B3FF"
       }
@@ -9776,12 +9573,6 @@
       "name": "--color-indigo-400",
       "value": "#6079F6",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#7589FF"
       }
@@ -9790,12 +9581,6 @@
       "name": "--color-indigo-50",
       "value": "#F2F7FF",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#F6F7FF"
       }
@@ -9804,12 +9589,6 @@
       "name": "--color-indigo-500",
       "value": "#3B45D9",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#4968FF"
       }
@@ -9818,12 +9597,6 @@
       "name": "--color-indigo-600",
       "value": "#2C34B3",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#3050E5"
       }
@@ -9832,12 +9605,6 @@
       "name": "--color-indigo-700",
       "value": "#1D248C",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#2138B8"
       }
@@ -9846,12 +9613,6 @@
       "name": "--color-indigo-800",
       "value": "#1D248C",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#152582"
       }
@@ -9860,12 +9621,6 @@
       "name": "--color-indigo-900",
       "value": "#0E1366",
       "group": "color",
-      "projects": [
-        "cashwalk",
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "#0A1352"
       }
@@ -10100,29 +9855,23 @@
     },
     {
       "name": "--color-red-100",
-      "value": "#FFA98C",
+      "value": "#FFECEC",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFECEC",
-        "cashwalk": "#FFECEC",
-        "dongne-sanchaek": "#FFECEC",
         "geniet": "#FFEBEE",
+        "nudge-eap": "#FFA98C",
         "runmile": "#FFE4E4",
-        "teamwork": "#FFECEC",
         "trost": "#FFDDD0"
       }
     },
     {
       "name": "--color-red-200",
-      "value": "#FF875D",
+      "value": "#FFCDCD",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFCDCD",
-        "cashwalk": "#FFCDCD",
-        "dongne-sanchaek": "#FFCDCD",
         "geniet": "#FFCDD4",
+        "nudge-eap": "#FF875D",
         "runmile": "#FFC2C3",
-        "teamwork": "#FFCDCD",
         "trost": "#FFBFA5"
       }
     },
@@ -10136,109 +9885,86 @@
     },
     {
       "name": "--color-red-300",
-      "value": "#FF6B35",
+      "value": "#FF9A9A",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FF9A9A",
-        "cashwalk": "#FF9A9A",
-        "dongne-sanchaek": "#FF9A9A",
         "geniet": "#FFA0AA",
+        "nudge-eap": "#FF6B35",
         "runmile": "#FF8B8D",
-        "teamwork": "#FF9A9A",
         "trost": "#FF9C72"
       }
     },
     {
       "name": "--color-red-400",
-      "value": "#FF4E0C",
+      "value": "#FF7070",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FF7070",
-        "cashwalk": "#FF7070",
-        "dongne-sanchaek": "#FF7070",
         "geniet": "#FF8192",
+        "nudge-eap": "#FF4E0C",
         "runmile": "#FF575A",
-        "teamwork": "#FF7070",
         "trost": "#FF6E37"
       }
     },
     {
       "name": "--color-red-50",
-      "value": "#FEE9E6",
+      "value": "#FFF5F5",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFF5F5",
-        "cashwalk": "#FFF5F5",
-        "dongne-sanchaek": "#FFF5F5",
         "geniet": "#FFF0F2",
+        "nudge-eap": "#FEE9E6",
         "runmile": "#FFF1F1",
-        "teamwork": "#FFF5F5",
         "trost": "#FFF1EC"
       }
     },
     {
       "name": "--color-red-500",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "color",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF6177",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
     {
       "name": "--color-red-600",
-      "value": "#EA3C00",
+      "value": "#E83030",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#E83030",
-        "cashwalk": "#E83030",
-        "dongne-sanchaek": "#E83030",
         "geniet": "#FF3258",
-        "teamwork": "#E83030",
+        "nudge-eap": "#EA3C00",
         "trost": "#E62F00"
       }
     },
     {
       "name": "--color-red-700",
-      "value": "#E33800",
+      "value": "#C42020",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#C42020",
-        "cashwalk": "#C42020",
-        "dongne-sanchaek": "#C42020",
         "geniet": "#D9263F",
-        "teamwork": "#C42020",
+        "nudge-eap": "#E33800",
         "trost": "#B82500"
       }
     },
     {
       "name": "--color-red-800",
-      "value": "#CB2700",
+      "value": "#A01414",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#A01414",
-        "cashwalk": "#A01414",
-        "dongne-sanchaek": "#A01414",
         "geniet": "#B41C2F",
-        "teamwork": "#A01414",
+        "nudge-eap": "#CB2700",
         "trost": "#801A00"
       }
     },
     {
       "name": "--color-red-900",
-      "value": "#A01C00",
+      "value": "#7A0A0A",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#7A0A0A",
-        "cashwalk": "#7A0A0A",
-        "dongne-sanchaek": "#7A0A0A",
         "geniet": "#8C0F1E",
-        "teamwork": "#7A0A0A",
+        "nudge-eap": "#A01C00",
         "trost": "#4D1000"
       }
     },
@@ -10324,29 +10050,23 @@
     },
     {
       "name": "--color-yellow-100",
-      "value": "#FFEDB3",
+      "value": "#FFFAE5",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFFAE5",
-        "cashwalk": "#FFFAE5",
-        "dongne-sanchaek": "#FFFAE5",
         "geniet": "#FFF8DF",
+        "nudge-eap": "#FFEDB3",
         "runmile": "#FFF3CC",
-        "teamwork": "#FFFAE5",
         "trost": "#FFFDD9"
       }
     },
     {
       "name": "--color-yellow-200",
-      "value": "#FFE282",
+      "value": "#FFF0AC",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFF0AC",
-        "cashwalk": "#FFF0AC",
-        "dongne-sanchaek": "#FFF0AC",
         "geniet": "#FFF3D0",
+        "nudge-eap": "#FFE282",
         "runmile": "#FFEA99",
-        "teamwork": "#FFF0AC",
         "trost": "#FFF8B8"
       }
     },
@@ -10360,109 +10080,85 @@
     },
     {
       "name": "--color-yellow-300",
-      "value": "#FFD84F",
+      "value": "#FFE673",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFE673",
-        "cashwalk": "#FFE673",
-        "dongne-sanchaek": "#FFE673",
         "geniet": "#FFE489",
+        "nudge-eap": "#FFD84F",
         "runmile": "#FFDF66",
-        "teamwork": "#FFE673",
         "trost": "#FFF785"
       }
     },
     {
       "name": "--color-yellow-400",
-      "value": "#FFCD27",
+      "value": "#FFDC39",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFDC39",
-        "cashwalk": "#FFDC39",
-        "dongne-sanchaek": "#FFDC39",
         "geniet": "#FFD54C",
+        "nudge-eap": "#FFCD27",
         "runmile": "#FFD233",
-        "teamwork": "#FFDC39",
         "trost": "#FFF552"
       }
     },
     {
       "name": "--color-yellow-50",
-      "value": "#FFFAE8",
+      "value": "#FFFEF5",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFFEF5",
-        "cashwalk": "#FFFEF5",
-        "dongne-sanchaek": "#FFFEF5",
         "geniet": "#FFFBE6",
+        "nudge-eap": "#FFFAE8",
         "runmile": "#FFF8E5",
-        "teamwork": "#FFFEF5",
         "trost": "#FFFFEE"
       }
     },
     {
       "name": "--color-yellow-500",
-      "value": "#FFC303",
+      "value": "#FFD200",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFD200",
-        "cashwalk": "#FFD200",
-        "dongne-sanchaek": "#FFD200",
         "geniet": "#FFB700",
+        "nudge-eap": "#FFC303",
         "runmile": "#FFC400",
-        "teamwork": "#FFD200",
         "trost": "#FFF42E"
       }
     },
     {
       "name": "--color-yellow-600",
-      "value": "#FFA100",
+      "value": "#FFC400",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FFC400",
-        "cashwalk": "#FFC400",
-        "dongne-sanchaek": "#FFC400",
         "geniet": "#FFA500",
-        "teamwork": "#FFC400",
+        "nudge-eap": "#FFA100",
         "trost": "#E5D820"
       }
     },
     {
       "name": "--color-yellow-700",
-      "value": "#E08200",
+      "value": "#FEAF01",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FEAF01",
-        "cashwalk": "#FEAF01",
-        "dongne-sanchaek": "#FEAF01",
         "geniet": "#CC8400",
-        "teamwork": "#FEAF01",
+        "nudge-eap": "#E08200",
         "trost": "#B8AC15"
       }
     },
     {
       "name": "--color-yellow-800",
-      "value": "#C06800",
+      "value": "#FD9B02",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FD9B02",
-        "cashwalk": "#FD9B02",
-        "dongne-sanchaek": "#FD9B02",
         "geniet": "#996300",
-        "teamwork": "#FD9B02",
+        "nudge-eap": "#C06800",
         "trost": "#807800"
       }
     },
     {
       "name": "--color-yellow-900",
-      "value": "#9B5000",
+      "value": "#FC8703",
       "group": "color",
       "projectValues": {
-        "cashwalk-biz": "#FC8703",
-        "cashwalk": "#FC8703",
-        "dongne-sanchaek": "#FC8703",
         "geniet": "#664200",
-        "teamwork": "#FC8703",
+        "nudge-eap": "#9B5000",
         "trost": "#4D4800"
       }
     },
@@ -12485,13 +12181,12 @@
     },
     {
       "name": "--semantic-bg-brand-default",
-      "value": "#2B96ED",
+      "value": "#FFD200",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFD200",
-        "cashwalk": "#FFD200",
         "dongne-sanchaek": "#3B45D9",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
         "teamwork": "#3D79F1",
         "trost": "#FFF42E"
@@ -12499,13 +12194,12 @@
     },
     {
       "name": "--semantic-bg-brand-subtle",
-      "value": "#F1F8FD",
+      "value": "#FFFAE5",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFAE5",
-        "cashwalk": "#FFFAE5",
         "dongne-sanchaek": "#CED8FD",
         "geniet": "#F2FAFA",
+        "nudge-eap": "#F1F8FD",
         "runmile": "#FFF0ED",
         "teamwork": "#ECF2FE",
         "trost": "#FFFDD9"
@@ -12513,14 +12207,12 @@
     },
     {
       "name": "--semantic-bg-disabled",
-      "value": "#ECECEC",
+      "value": "#EEEEEE",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#EEEEEE",
-        "cashwalk": "#EEEEEE",
-        "dongne-sanchaek": "#EEEEEE",
+        "geniet": "#ECECEC",
+        "nudge-eap": "#ECECEC",
         "runmile": "#F2F4F6",
-        "teamwork": "#EEEEEE",
         "trost": "#E5E5E5"
       }
     },
@@ -12535,39 +12227,37 @@
     },
     {
       "name": "--semantic-bg-overlay",
-      "value": "rgba(0,0,0,0.4)",
+      "value": "rgba(0, 0, 0, 0.4)",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "rgba(0, 0, 0, 0.4)",
-        "cashwalk": "rgba(0, 0, 0, 0.4)",
-        "dongne-sanchaek": "rgba(0, 0, 0, 0.4)",
-        "geniet": "rgba(0, 0, 0, 0.4)",
+        "nudge-eap": "rgba(0,0,0,0.4)",
         "runmile": "rgba(0, 0, 0, 0.5)",
-        "teamwork": "rgba(0, 0, 0, 0.4)",
         "trost": "rgba(0, 0, 0, 0.6)"
       }
     },
     {
       "name": "--semantic-bg-overlay-strong",
-      "value": "rgba(0,0,0,0.7)",
-      "group": "semantic"
+      "value": "rgba(0, 0, 0, 0.7)",
+      "group": "semantic",
+      "projectValues": {
+        "nudge-eap": "rgba(0,0,0,0.7)"
+      }
     },
     {
       "name": "--semantic-bg-overlay-subtle",
-      "value": "rgba(0,0,0,0.2)",
-      "group": "semantic"
+      "value": "rgba(0, 0, 0, 0.2)",
+      "group": "semantic",
+      "projectValues": {
+        "nudge-eap": "rgba(0,0,0,0.2)"
+      }
     },
     {
       "name": "--semantic-bg-page-default",
-      "value": "#F8F9FB",
+      "value": "#FAFAFA",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FAFAFA",
-        "cashwalk": "#FAFAFA",
-        "dongne-sanchaek": "#FAFAFA",
-        "geniet": "#FAFAFA",
+        "nudge-eap": "#F8F9FB",
         "runmile": "#FFFFFF",
-        "teamwork": "#FAFAFA",
         "trost": "#FFFFFF"
       }
     },
@@ -12597,71 +12287,55 @@
     },
     {
       "name": "--semantic-bg-section-default",
-      "value": "#F3F4F6",
+      "value": "#F5F5F5",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#F5F5F5",
-        "cashwalk": "#F5F5F5",
-        "dongne-sanchaek": "#F5F5F5",
-        "geniet": "#F5F5F5",
+        "nudge-eap": "#F3F4F6",
         "runmile": "#F2F4F6",
-        "teamwork": "#F5F5F5",
         "trost": "#F4F5F7"
       }
     },
     {
       "name": "--semantic-bg-status-caution",
-      "value": "#FFFAE8",
+      "value": "#FFFAE5",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFAE5",
-        "cashwalk": "#FFFAE5",
-        "dongne-sanchaek": "#FFFAE5",
         "geniet": "#FFFBE6",
+        "nudge-eap": "#FFFAE8",
         "runmile": "#FFF3CC",
-        "teamwork": "#FFFAE5",
         "trost": "#FFF8E6"
       }
     },
     {
       "name": "--semantic-bg-status-error",
-      "value": "#FEE9E6",
+      "value": "#FFF5F5",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFF5F5",
-        "cashwalk": "#FFF5F5",
-        "dongne-sanchaek": "#FFF5F5",
         "geniet": "#FFF0F2",
+        "nudge-eap": "#FEE9E6",
         "runmile": "#FFE4E4",
-        "teamwork": "#FFF5F5",
         "trost": "#FFF1EC"
       }
     },
     {
       "name": "--semantic-bg-status-info",
-      "value": "#E3F2FC",
+      "value": "#FFFAE5",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFAE5",
-        "cashwalk": "#FFFAE5",
-        "dongne-sanchaek": "#FFFAE5",
         "geniet": "#F0F9FF",
+        "nudge-eap": "#E3F2FC",
         "runmile": "#8DD0FF",
-        "teamwork": "#FFFAE5",
         "trost": "#ECF5FF"
       }
     },
     {
       "name": "--semantic-bg-status-success",
-      "value": "#E5F7F4",
+      "value": "#E5F8EE",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#E5F8EE",
-        "cashwalk": "#E5F8EE",
-        "dongne-sanchaek": "#E5F8EE",
         "geniet": "#F1FBF6",
+        "nudge-eap": "#E5F7F4",
         "runmile": "#C0EDCD",
-        "teamwork": "#E5F8EE",
         "trost": "#E5F9F1"
       }
     },
@@ -12680,13 +12354,12 @@
     },
     {
       "name": "--semantic-border-brand-default",
-      "value": "#2B96ED",
+      "value": "#FFD200",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFD200",
-        "cashwalk": "#FFD200",
         "dongne-sanchaek": "#3B45D9",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
         "teamwork": "#3D79F1",
         "trost": "#FFF42E"
@@ -12694,40 +12367,33 @@
     },
     {
       "name": "--semantic-border-brand-disabled",
-      "value": "#9CA2AE",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
-        "geniet": "#DDDDDD",
+        "nudge-eap": "#9CA2AE",
         "runmile": "#E5E8EB",
-        "teamwork": "#DDDDDD",
         "trost": "#D8D8D8"
       }
     },
     {
       "name": "--semantic-border-disabled-default",
-      "value": "#ECECEC",
+      "value": "#EEEEEE",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#EEEEEE",
-        "cashwalk": "#EEEEEE",
-        "dongne-sanchaek": "#EEEEEE",
+        "geniet": "#ECECEC",
+        "nudge-eap": "#ECECEC",
         "runmile": "#E5E8EB",
-        "teamwork": "#EEEEEE",
         "trost": "#F2F2F2"
       }
     },
     {
       "name": "--semantic-border-focus-default",
-      "value": "#2B96ED",
+      "value": "#FFD200",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFD200",
-        "cashwalk": "#FFD200",
         "dongne-sanchaek": "#3B45D9",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#007AFF",
         "teamwork": "#3D79F1",
         "trost": "#4968FF"
@@ -12735,14 +12401,12 @@
     },
     {
       "name": "--semantic-border-normal-default",
-      "value": "#ECECEC",
+      "value": "#EEEEEE",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#EEEEEE",
-        "cashwalk": "#EEEEEE",
-        "dongne-sanchaek": "#EEEEEE",
+        "geniet": "#ECECEC",
+        "nudge-eap": "#ECECEC",
         "runmile": "#E5E8EB",
-        "teamwork": "#EEEEEE",
         "trost": "#E5E5E5"
       }
     },
@@ -12756,29 +12420,24 @@
     },
     {
       "name": "--semantic-border-status-caution",
-      "value": "#FFC303",
+      "value": "#FD9B02",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FD9B02",
-        "cashwalk": "#FD9B02",
-        "dongne-sanchaek": "#FD9B02",
         "geniet": "#FFB700",
+        "nudge-eap": "#FFC303",
         "runmile": "#FFC400",
-        "teamwork": "#FD9B02",
         "trost": "#FF9D00"
       }
     },
     {
       "name": "--semantic-border-status-error",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "semantic",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF3258",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
@@ -12796,14 +12455,12 @@
     },
     {
       "name": "--semantic-border-strong-default",
-      "value": "#999999",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
+        "geniet": "#999999",
+        "nudge-eap": "#999999",
         "runmile": "#4E5968",
-        "teamwork": "#DDDDDD",
         "trost": "#C7C7C7"
       }
     },
@@ -12818,13 +12475,12 @@
     },
     {
       "name": "--semantic-button-bg-default",
-      "value": "#2B96ED",
+      "value": "#FFD200",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFD200",
-        "cashwalk": "#FFD200",
         "dongne-sanchaek": "#3B45D9",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
         "teamwork": "#3D79F1",
         "trost": "#FFF42E"
@@ -12832,27 +12488,22 @@
     },
     {
       "name": "--semantic-button-bg-disabled",
-      "value": "#9CA2AE",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
-        "geniet": "#DDDDDD",
+        "nudge-eap": "#9CA2AE",
         "runmile": "#E5E8EB",
-        "teamwork": "#DDDDDD",
         "trost": "#D8D8D8"
       }
     },
     {
       "name": "--semantic-button-bg-hover",
-      "value": "#017EE4",
+      "value": "#FFC400",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFC400",
-        "cashwalk": "#FFC400",
         "dongne-sanchaek": "#2C34B3",
         "geniet": "#008286",
+        "nudge-eap": "#017EE4",
         "runmile": "#FF805C",
         "teamwork": "#2B6EF7",
         "trost": "#E5D820"
@@ -12860,44 +12511,33 @@
     },
     {
       "name": "--semantic-button-bg-neutral-default",
-      "value": "#9CA2AE",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#ECECEC",
+        "nudge-eap": "#9CA2AE",
         "runmile": "#221E1F",
-        "teamwork": "#111111",
         "trost": "#1A1A1A"
       }
     },
     {
       "name": "--semantic-button-bg-neutral-disabled",
-      "value": "#F5F5F5",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
-        "geniet": "#DDDDDD",
+        "nudge-eap": "#F5F5F5",
         "runmile": "#E5E8EB",
-        "teamwork": "#DDDDDD",
         "trost": "#D8D8D8"
       }
     },
     {
       "name": "--semantic-button-bg-neutral-hover",
-      "value": "#7E8593",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
         "geniet": "#F5F5F5",
-        "runmile": "#333D4B",
-        "teamwork": "#333333",
-        "trost": "#333333"
+        "nudge-eap": "#7E8593",
+        "runmile": "#333D4B"
       }
     },
     {
@@ -12912,13 +12552,12 @@
     },
     {
       "name": "--semantic-button-bg-outlined-hover",
-      "value": "#F1F8FD",
+      "value": "#FFFEF5",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFEF5",
-        "cashwalk": "#FFFEF5",
         "dongne-sanchaek": "#F2F7FF",
         "geniet": "#F2FAFA",
+        "nudge-eap": "#F1F8FD",
         "runmile": "#FFF0ED",
         "teamwork": "#F7FAFE",
         "trost": "#FFFDD9"
@@ -12926,13 +12565,12 @@
     },
     {
       "name": "--semantic-button-bg-pressed",
-      "value": "#0E71CF",
+      "value": "#FEAF01",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FEAF01",
-        "cashwalk": "#FEAF01",
         "dongne-sanchaek": "#1D248C",
         "geniet": "#005A5C",
+        "nudge-eap": "#0E71CF",
         "runmile": "#D33E20",
         "teamwork": "#2C57AE",
         "trost": "#B8AC15"
@@ -12940,177 +12578,146 @@
     },
     {
       "name": "--semantic-button-bg-secondary-default",
-      "value": "#F1F8FD",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#F2FAFA",
+        "nudge-eap": "#F1F8FD",
         "runmile": "#221E1F",
-        "teamwork": "#111111",
         "trost": "#EDF0FF"
       }
     },
     {
       "name": "--semantic-button-bg-secondary-disabled",
-      "value": "#E6E7EB",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
         "geniet": "#ECECEC",
+        "nudge-eap": "#E6E7EB",
         "runmile": "#E5E8EB",
-        "teamwork": "#DDDDDD",
         "trost": "#E5E5E5"
       }
     },
     {
       "name": "--semantic-button-bg-secondary-hover",
-      "value": "#E3F2FC",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
         "geniet": "#ECF5F9",
+        "nudge-eap": "#E3F2FC",
         "runmile": "#333D4B",
-        "teamwork": "#333333",
         "trost": "#C9D3FF"
       }
     },
     {
       "name": "--semantic-button-border-neutral-default",
-      "value": "#D8D8D8",
+      "value": "#E7E7E7",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#E7E7E7",
-        "cashwalk": "#E7E7E7",
-        "dongne-sanchaek": "#E7E7E7",
         "geniet": "#DDDDDD",
+        "nudge-eap": "#D8D8D8",
         "runmile": "#D1D6DB",
-        "teamwork": "#E7E7E7",
         "trost": "#E5E5E5"
       }
     },
     {
       "name": "--semantic-button-border-neutral-disabled",
-      "value": "#ECECEC",
+      "value": "#E7E7E7",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#E7E7E7",
-        "cashwalk": "#E7E7E7",
-        "dongne-sanchaek": "#E7E7E7",
+        "geniet": "#ECECEC",
+        "nudge-eap": "#ECECEC",
         "runmile": "#D1D6DB",
-        "teamwork": "#E7E7E7",
         "trost": "#E5E5E5"
       }
     },
     {
       "name": "--semantic-button-border-outlined-default",
-      "value": "#2B96ED",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
-        "teamwork": "#111111",
         "trost": "#FFF42E"
       }
     },
     {
       "name": "--semantic-button-border-outlined-disabled",
-      "value": "#9CA2AE",
+      "value": "#E7E7E7",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#E7E7E7",
-        "cashwalk": "#E7E7E7",
-        "dongne-sanchaek": "#E7E7E7",
         "geniet": "#DDDDDD",
+        "nudge-eap": "#9CA2AE",
         "runmile": "#E5E8EB",
-        "teamwork": "#E7E7E7",
         "trost": "#D8D8D8"
       }
     },
     {
       "name": "--semantic-button-border-outlined-hover",
-      "value": "#2B96ED",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#008286",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF805C",
-        "teamwork": "#111111",
         "trost": "#FFF42E"
       }
     },
     {
       "name": "--semantic-button-text-brand",
-      "value": "#2B96ED",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
-        "teamwork": "#111111",
         "trost": "#FF9D00"
       }
     },
     {
       "name": "--semantic-button-text-default",
-      "value": "#FFFFFF",
+      "value": "#000000",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#000000",
-        "cashwalk": "#000000",
+        "dongne-sanchaek": "#FFFFFF",
+        "geniet": "#FFFFFF",
+        "nudge-eap": "#FFFFFF",
+        "runmile": "#FFFFFF",
+        "teamwork": "#FFFFFF",
         "trost": "#333333"
       }
     },
     {
       "name": "--semantic-button-text-disabled",
-      "value": "#9CA2AE",
+      "value": "#FFFFFF",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFFFF",
-        "cashwalk": "#FFFFFF",
-        "dongne-sanchaek": "#FFFFFF",
         "geniet": "#999999",
+        "nudge-eap": "#9CA2AE",
         "runmile": "#B0B8C1",
-        "teamwork": "#FFFFFF",
         "trost": "#979797"
       }
     },
     {
       "name": "--semantic-button-text-neutral",
-      "value": "#383838",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#555555",
+        "nudge-eap": "#383838",
         "runmile": "#4E5968",
-        "teamwork": "#111111",
         "trost": "#333333"
       }
     },
     {
       "name": "--semantic-button-text-neutral-disabled",
-      "value": "#999999",
+      "value": "#BBBBBB",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#BBBBBB",
-        "cashwalk": "#BBBBBB",
-        "dongne-sanchaek": "#BBBBBB",
+        "geniet": "#999999",
+        "nudge-eap": "#999999",
         "runmile": "#8B95A1",
-        "teamwork": "#BBBBBB",
         "trost": "#979797"
       }
     },
@@ -13124,85 +12731,77 @@
     },
     {
       "name": "--semantic-button-text-secondary-default",
-      "value": "#2B96ED",
+      "value": "#FFFFFF",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFFFF",
-        "cashwalk": "#FFFFFF",
-        "dongne-sanchaek": "#FFFFFF",
         "geniet": "#00A8AC",
-        "runmile": "#FFFFFF",
-        "teamwork": "#FFFFFF",
+        "nudge-eap": "#2B96ED",
         "trost": "#4968FF"
       }
     },
     {
       "name": "--semantic-button-text-secondary-disabled",
-      "value": "#9CA2AE",
+      "value": "#FFFFFF",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFFFF",
-        "cashwalk": "#FFFFFF",
-        "dongne-sanchaek": "#FFFFFF",
         "geniet": "#999999",
+        "nudge-eap": "#9CA2AE",
         "runmile": "#B0B8C1",
-        "teamwork": "#FFFFFF",
         "trost": "#979797"
       }
     },
     {
       "name": "--semantic-confirm-cta-active",
-      "value": "var(--semantic-text-brand-strong)",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
-        "teamwork": "#333333"
+        "geniet": "var(--semantic-text-brand-strong)",
+        "nudge-eap": "var(--semantic-text-brand-strong)",
+        "runmile": "var(--semantic-text-brand-strong)",
+        "trost": "var(--semantic-text-brand-strong)"
       }
     },
     {
       "name": "--semantic-confirm-cta-bg",
-      "value": "var(--semantic-bg-brand-default)",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
-        "teamwork": "#111111"
+        "geniet": "var(--semantic-bg-brand-default)",
+        "nudge-eap": "var(--semantic-bg-brand-default)",
+        "runmile": "var(--semantic-bg-brand-default)",
+        "trost": "var(--semantic-bg-brand-default)"
       }
     },
     {
       "name": "--semantic-confirm-cta-hover",
-      "value": "var(--semantic-fill-brand-hover)",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
-        "teamwork": "#333333"
+        "geniet": "var(--semantic-fill-brand-hover)",
+        "nudge-eap": "var(--semantic-fill-brand-hover)",
+        "runmile": "var(--semantic-fill-brand-hover)",
+        "trost": "var(--semantic-fill-brand-hover)"
       }
     },
     {
       "name": "--semantic-confirm-cta-text",
-      "value": "var(--semantic-button-text-default)",
+      "value": "#FFFFFF",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFFFFF",
-        "cashwalk": "#FFFFFF",
-        "dongne-sanchaek": "#FFFFFF",
-        "teamwork": "#FFFFFF"
+        "geniet": "var(--semantic-button-text-default)",
+        "nudge-eap": "var(--semantic-button-text-default)",
+        "runmile": "var(--semantic-button-text-default)",
+        "trost": "var(--semantic-button-text-default)"
       }
     },
     {
       "name": "--semantic-fill-brand-default",
-      "value": "#2B96ED",
+      "value": "#FFD200",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFD200",
-        "cashwalk": "#FFD200",
         "dongne-sanchaek": "#3B45D9",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
         "teamwork": "#3D79F1",
         "trost": "#FFF42E"
@@ -13210,26 +12809,23 @@
     },
     {
       "name": "--semantic-fill-brand-disabled",
-      "value": "#D8D8D8",
+      "value": "#E7E7E7",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#E7E7E7",
-        "cashwalk": "#E7E7E7",
-        "dongne-sanchaek": "#E7E7E7",
         "geniet": "#DDDDDD",
+        "nudge-eap": "#D8D8D8",
         "runmile": "#E5E8EB",
-        "teamwork": "#E7E7E7"
+        "trost": "#D8D8D8"
       }
     },
     {
       "name": "--semantic-fill-brand-hover",
-      "value": "#017EE4",
+      "value": "#FFC400",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FFC400",
-        "cashwalk": "#FFC400",
         "dongne-sanchaek": "#2C34B3",
         "geniet": "#008286",
+        "nudge-eap": "#017EE4",
         "runmile": "#E84A28",
         "teamwork": "#2B6EF7",
         "trost": "#E5D820"
@@ -13237,13 +12833,12 @@
     },
     {
       "name": "--semantic-fill-brand-pressed",
-      "value": "#0E71CF",
+      "value": "#FEAF01",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FEAF01",
-        "cashwalk": "#FEAF01",
         "dongne-sanchaek": "#1D248C",
         "geniet": "#005A5C",
+        "nudge-eap": "#0E71CF",
         "runmile": "#D33E20",
         "teamwork": "#2C57AE",
         "trost": "#B8AC15"
@@ -13276,16 +12871,11 @@
     },
     {
       "name": "--semantic-fill-neutral-default",
-      "value": "#383838",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
-        "geniet": "#333333",
-        "runmile": "#333D4B",
-        "teamwork": "#333333",
-        "trost": "#333333"
+        "nudge-eap": "#383838",
+        "runmile": "#333D4B"
       }
     },
     {
@@ -13331,29 +12921,24 @@
     },
     {
       "name": "--semantic-fill-status-caution",
-      "value": "#FFC303",
+      "value": "#FD9B02",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FD9B02",
-        "cashwalk": "#FD9B02",
-        "dongne-sanchaek": "#FD9B02",
         "geniet": "#FFB700",
+        "nudge-eap": "#FFC303",
         "runmile": "#FFC400",
-        "teamwork": "#FD9B02",
         "trost": "#FF9D00"
       }
     },
     {
       "name": "--semantic-fill-status-error",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "semantic",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF3258",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
@@ -13460,13 +13045,12 @@
     },
     {
       "name": "--semantic-icon-brand-default",
-      "value": "#2B96ED",
+      "value": "#FEAF01",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FEAF01",
-        "cashwalk": "#FEAF01",
         "dongne-sanchaek": "#1D248C",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
         "teamwork": "#2C57AE",
         "trost": "#FF9D00"
@@ -13474,15 +13058,13 @@
     },
     {
       "name": "--semantic-icon-disabled-default",
-      "value": "#C7C7C7",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
         "geniet": "#CCCCCC",
+        "nudge-eap": "#C7C7C7",
         "runmile": "#B0B8C1",
-        "teamwork": "#DDDDDD"
+        "trost": "#C7C7C7"
       }
     },
     {
@@ -13530,58 +13112,46 @@
     },
     {
       "name": "--semantic-icon-status-caution",
-      "value": "#FFC303",
+      "value": "#FEAF01",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FEAF01",
-        "cashwalk": "#FEAF01",
-        "dongne-sanchaek": "#FEAF01",
         "geniet": "#FFB700",
+        "nudge-eap": "#FFC303",
         "runmile": "#F39E00",
-        "teamwork": "#FEAF01",
         "trost": "#FF9D00"
       }
     },
     {
       "name": "--semantic-icon-status-error",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "semantic",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF3258",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
     {
       "name": "--semantic-icon-status-success",
-      "value": "#13BFA2",
+      "value": "#00CC5B",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#00CC5B",
-        "cashwalk": "#00CC5B",
-        "dongne-sanchaek": "#00CC5B",
         "geniet": "#18B264",
+        "nudge-eap": "#13BFA2",
         "runmile": "#00C255",
-        "teamwork": "#00CC5B",
         "trost": "#00A06A"
       }
     },
     {
       "name": "--semantic-icon-strong-default",
-      "value": "#383838",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
         "geniet": "#111111",
-        "runmile": "#221E1F",
-        "teamwork": "#333333",
-        "trost": "#333333"
+        "nudge-eap": "#383838",
+        "runmile": "#221E1F"
       }
     },
     {
@@ -13612,137 +13182,113 @@
     },
     {
       "name": "--semantic-input-border-default",
-      "value": "#D8D8D8",
+      "value": "#EEEEEE",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#EEEEEE",
-        "cashwalk": "#EEEEEE",
-        "dongne-sanchaek": "#EEEEEE",
         "geniet": "#DDDDDD",
+        "nudge-eap": "#D8D8D8",
         "runmile": "#D1D6DB",
-        "teamwork": "#EEEEEE",
         "trost": "#E5E5E5"
       }
     },
     {
       "name": "--semantic-input-border-disabled",
-      "value": "#D8D8D8",
+      "value": "#EEEEEE",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#EEEEEE",
-        "cashwalk": "#EEEEEE",
-        "dongne-sanchaek": "#EEEEEE",
         "geniet": "#DDDDDD",
+        "nudge-eap": "#D8D8D8",
         "runmile": "#E5E8EB",
-        "teamwork": "#EEEEEE",
         "trost": "#E5E5E5"
       }
     },
     {
       "name": "--semantic-input-border-error",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "semantic",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF3258",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
     {
       "name": "--semantic-input-border-focus",
-      "value": "#2B96ED",
+      "value": "#111111",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#111111",
-        "cashwalk": "#111111",
-        "dongne-sanchaek": "#111111",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#221E1F",
-        "teamwork": "#111111",
         "trost": "#4968FF"
       }
     },
     {
       "name": "--semantic-input-border-hover",
-      "value": "#C7C7C7",
+      "value": "#E7E7E7",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#E7E7E7",
-        "cashwalk": "#E7E7E7",
-        "dongne-sanchaek": "#E7E7E7",
         "geniet": "#CCCCCC",
+        "nudge-eap": "#C7C7C7",
         "runmile": "#B0B8C1",
-        "teamwork": "#E7E7E7"
+        "trost": "#C7C7C7"
       }
     },
     {
       "name": "--semantic-input-helpertext-default",
-      "value": "#999999",
+      "value": "#666666",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#666666",
-        "cashwalk": "#666666",
-        "dongne-sanchaek": "#666666",
+        "geniet": "#999999",
+        "nudge-eap": "#999999",
         "runmile": "#6B7684",
-        "teamwork": "#666666",
         "trost": "#979797"
       }
     },
     {
       "name": "--semantic-input-helpertext-disabled",
-      "value": "#C7C7C7",
+      "value": "#DDDDDD",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#DDDDDD",
-        "cashwalk": "#DDDDDD",
-        "dongne-sanchaek": "#DDDDDD",
         "geniet": "#CCCCCC",
+        "nudge-eap": "#C7C7C7",
         "runmile": "#D1D6DB",
-        "teamwork": "#DDDDDD"
+        "trost": "#C7C7C7"
       }
     },
     {
       "name": "--semantic-input-helpertext-error",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "semantic",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF3258",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
     {
       "name": "--semantic-input-helpertext-success",
-      "value": "#2B96ED",
+      "value": "#00B350",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#00B350",
-        "cashwalk": "#00B350",
-        "dongne-sanchaek": "#00B350",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#00C255",
-        "teamwork": "#00B350",
         "trost": "#4968FF"
       }
     },
     {
       "name": "--semantic-input-placeholder",
-      "value": "#999999",
+      "value": "#BBBBBB",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#BBBBBB",
-        "cashwalk": "#BBBBBB",
-        "dongne-sanchaek": "#BBBBBB",
+        "geniet": "#999999",
+        "nudge-eap": "#999999",
         "runmile": "#8B95A1",
-        "teamwork": "#BBBBBB",
         "trost": "#979797"
       }
     },
@@ -13838,13 +13384,12 @@
     },
     {
       "name": "--semantic-text-brand-default",
-      "value": "#2B96ED",
+      "value": "#FD9B02",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FD9B02",
-        "cashwalk": "#FD9B02",
         "dongne-sanchaek": "#1D248C",
         "geniet": "#00A8AC",
+        "nudge-eap": "#2B96ED",
         "runmile": "#FF5B37",
         "teamwork": "#224385",
         "trost": "#FF9D00"
@@ -13852,13 +13397,12 @@
     },
     {
       "name": "--semantic-text-brand-strong",
-      "value": "#1B65BA",
+      "value": "#FD9B02",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FD9B02",
-        "cashwalk": "#FD9B02",
         "dongne-sanchaek": "#1D248C",
         "geniet": "#008286",
+        "nudge-eap": "#1B65BA",
         "runmile": "#FF5B37",
         "teamwork": "#224385",
         "trost": "#FF9D00"
@@ -13866,15 +13410,13 @@
     },
     {
       "name": "--semantic-text-disabled-default",
-      "value": "#C7C7C7",
+      "value": "#BBBBBB",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#BBBBBB",
-        "cashwalk": "#BBBBBB",
-        "dongne-sanchaek": "#BBBBBB",
         "geniet": "#CCCCCC",
+        "nudge-eap": "#C7C7C7",
         "runmile": "#B0B8C1",
-        "teamwork": "#BBBBBB"
+        "trost": "#C7C7C7"
       }
     },
     {
@@ -13886,13 +13428,6 @@
       "name": "--semantic-text-link-default",
       "value": "#007AFF",
       "group": "semantic",
-      "projects": [
-        "cashwalk",
-        "cashwalk-biz",
-        "dongne-sanchaek",
-        "runmile",
-        "teamwork"
-      ],
       "projectValues": {
         "dongne-sanchaek": "#3B45D9",
         "teamwork": "#3D79F1"
@@ -13900,28 +13435,22 @@
     },
     {
       "name": "--semantic-text-muted-default",
-      "value": "#999999",
+      "value": "#BBBBBB",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#BBBBBB",
-        "cashwalk": "#BBBBBB",
-        "dongne-sanchaek": "#BBBBBB",
+        "geniet": "#999999",
+        "nudge-eap": "#999999",
         "runmile": "#6B7684",
-        "teamwork": "#BBBBBB",
         "trost": "#C7C7C7"
       }
     },
     {
       "name": "--semantic-text-normal-default",
-      "value": "#383838",
+      "value": "#333333",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#333333",
-        "cashwalk": "#333333",
-        "dongne-sanchaek": "#333333",
-        "geniet": "#333333",
+        "nudge-eap": "#383838",
         "runmile": "#333D4B",
-        "teamwork": "#333333",
         "trost": "#606060"
       }
     },
@@ -13955,57 +13484,46 @@
     },
     {
       "name": "--semantic-text-status-caution",
-      "value": "#FFA100",
+      "value": "#FD9B02",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#FD9B02",
-        "cashwalk": "#FD9B02",
-        "dongne-sanchaek": "#FD9B02",
         "geniet": "#FFB700",
+        "nudge-eap": "#FFA100",
         "runmile": "#F39E00",
-        "teamwork": "#FD9B02",
         "trost": "#FF9D00"
       }
     },
     {
       "name": "--semantic-text-status-error",
-      "value": "#F13F00",
+      "value": "#FF4141",
       "group": "semantic",
       "projectValues": {
         "cashwalk-biz": "#FC3500",
-        "cashwalk": "#FF4141",
-        "dongne-sanchaek": "#FF4141",
         "geniet": "#FF3258",
+        "nudge-eap": "#F13F00",
         "runmile": "#FF2428",
-        "teamwork": "#FF4141",
         "trost": "#FF4111"
       }
     },
     {
       "name": "--semantic-text-status-info",
-      "value": "#017EE4",
+      "value": "#006FE6",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#006FE6",
-        "cashwalk": "#006FE6",
-        "dongne-sanchaek": "#006FE6",
         "geniet": "#1488D3",
+        "nudge-eap": "#017EE4",
         "runmile": "#007AFF",
-        "teamwork": "#006FE6",
         "trost": "#1A78E5"
       }
     },
     {
       "name": "--semantic-text-status-success",
-      "value": "#00A07C",
+      "value": "#00B350",
       "group": "semantic",
       "projectValues": {
-        "cashwalk-biz": "#00B350",
-        "cashwalk": "#00B350",
-        "dongne-sanchaek": "#00B350",
         "geniet": "#18B264",
+        "nudge-eap": "#00A07C",
         "runmile": "#00C255",
-        "teamwork": "#00B350",
         "trost": "#00A06A"
       }
     },
@@ -14038,7 +13556,6 @@
       "value": "0px 1px 4px rgba(0, 0, 0, 0.08)",
       "group": "shadow",
       "projectValues": {
-        "cashwalk": "0px 1px 3px rgba(0, 0, 0, 0.08)",
         "dongne-sanchaek": "0px 1px 3px rgba(0, 0, 0, 0.08)",
         "geniet": "0 2px 6px rgba(221, 221, 221, 0.6)",
         "runmile": "0 1px 4px rgba(0, 0, 0, 0.1)",
@@ -14051,7 +13568,6 @@
       "value": "0px 4px 12px rgba(0, 0, 0, 0.10)",
       "group": "shadow",
       "projectValues": {
-        "cashwalk": "0px 2px 8px rgba(0, 0, 0, 0.1)",
         "dongne-sanchaek": "0px 2px 8px rgba(0, 0, 0, 0.1)",
         "geniet": "0 3px 15px rgba(0, 0, 0, 0.1)",
         "runmile": "0 1px 4px 2px rgba(0, 0, 0, 0.03)",
@@ -14064,7 +13580,6 @@
       "value": "0px 8px 24px rgba(0, 0, 0, 0.12)",
       "group": "shadow",
       "projectValues": {
-        "cashwalk": "0px 6px 16px rgba(0, 0, 0, 0.12)",
         "dongne-sanchaek": "0px 6px 16px rgba(0, 0, 0, 0.12)",
         "geniet": "0 12px 32px rgba(0, 0, 0, 0.16)",
         "runmile": "0 4px 13px rgba(0, 0, 0, 0.06)",
@@ -14077,7 +13592,6 @@
       "value": "0px 12px 32px rgba(0, 0, 0, 0.16)",
       "group": "shadow",
       "projects": [
-        "cashwalk",
         "dongne-sanchaek",
         "teamwork",
         "trost"
@@ -14570,7 +14084,7 @@
         "Pretendard"
       ],
       "designMdRelPath": "projects/nudge-eap/DESIGN.md",
-      "cssImport": "@nudge-design/tokens/css",
+      "cssImport": "@nudge-design/tokens/css/nudge-eap",
       "jsExport": "@nudge-design/tokens/projects",
       "ready": true
     },

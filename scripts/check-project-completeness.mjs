@@ -2,7 +2,7 @@
 /**
  * 하드 게이트 — 프로젝트 시멘틱 완전성 검사.
  *
- * base(nudgeEapSemantic)의 leaf 토큰은 각 프로젝트 시멘틱(*.semantic.ts)에
+ * base(cashwalkSemantic)의 leaf 토큰은 각 프로젝트 시멘틱(*.semantic.ts)에
  * **명시적으로** 정의돼 있거나, scripts/project-completeness-baseline.json 에
  * 사유와 함께 waiver 로 등재돼야 한다. 등재 없는 누락 = silent base-fallback
  * (프로젝트 화면에 base 파랑이 새는 "캐포비 노랑 모달" 클래스 버그의 구조적 원인)
@@ -26,7 +26,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distProjects = path.join(root, "packages/tokens/dist/projects");
 const baselinePath = path.join(root, "scripts/project-completeness-baseline.json");
 
-if (!fs.existsSync(path.join(distProjects, "nudge-eap.semantic.js"))) {
+if (!fs.existsSync(path.join(distProjects, "cashwalk.semantic.js"))) {
   console.error(
     "[check-project-completeness] ✗ packages/tokens/dist 가 없습니다. " +
       "'pnpm build --filter @nudge-design/tokens' 후 다시 실행하세요.",
@@ -34,10 +34,19 @@ if (!fs.existsSync(path.join(distProjects, "nudge-eap.semantic.js"))) {
   process.exit(1);
 }
 
-const { nudgeEapSemantic } = require(path.join(distProjects, "nudge-eap.semantic.js"));
+// base = cashwalk(소비자앱). 프로젝트가 cover 해야 할 leaf 기준 집합.
+// NudgeEAP 는 옛 base 였지만 이제 일반 프로젝트 델타 → PROJECTS 에 포함해 함께 검사.
+const { cashwalkSemantic } = require(path.join(distProjects, "cashwalk.semantic.js"));
 const PROJECTS = [
+  {
+    slug: "nudge-eap",
+    semantic: require(path.join(distProjects, "nudge-eap.semantic.js")).nudgeEapSemantic,
+  },
   { slug: "trost", semantic: require(path.join(distProjects, "trost.semantic.js")).trostSemantic },
-  { slug: "geniet", semantic: require(path.join(distProjects, "geniet.semantic.js")).genietSemantic },
+  {
+    slug: "geniet",
+    semantic: require(path.join(distProjects, "geniet.semantic.js")).genietSemantic,
+  },
   {
     slug: "cashwalk-biz",
     semantic: require(path.join(distProjects, "cashwalk-biz.semantic.js")).cashwalkBizSemantic,
@@ -63,13 +72,17 @@ const THEMES = [
 function flattenLeaves(obj, prefix = "", into = new Map()) {
   for (const [key, value] of Object.entries(obj)) {
     const p = prefix ? `${prefix}.${key}` : key;
-    if (value !== null && typeof value === "object") flattenLeaves(value, p, into);
+    // ref("color.x.y") 는 `{ $ref }` 객체 — leaf 로 취급(재귀 금지). 같은 논리 토큰을
+    // base 가 ref() 로, 프로젝트가 `var(--semantic-…)` 문자열로 정의해도 키가 동일하게
+    // (`group.role.variant`) 잡혀 표현 차이로 인한 false-positive 누락을 막는다.
+    if (value !== null && typeof value === "object" && !("$ref" in value))
+      flattenLeaves(value, p, into);
     else into.set(p, value);
   }
   return into;
 }
 
-const baseLeaves = flattenLeaves(nudgeEapSemantic);
+const baseLeaves = flattenLeaves(cashwalkSemantic);
 
 /** waiver baseline — { project, key, reason } 목록 */
 const baseline = fs.existsSync(baselinePath)

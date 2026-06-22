@@ -38,8 +38,8 @@ const RUNTIME_ENTRY = path.join(HTML_PKG, "dist/runtime.js");
 const STYLES_CSS = path.join(HTML_PKG, "dist/styles.css");
 const OUT = path.join(HTML_PKG, "dist/standalone");
 
-/** base 토큰 CSS 만 쓰는 프로젝트(별도 delta 없음). catalog 의 cssImport==="@nudge-design/tokens/css". */
-const BASE_ONLY_PROJECT = "nudge-eap";
+/** base 토큰 CSS(tokens.css = cashwalk 색) 만 쓰는 프로젝트(별도 delta 없음). cashwalk == base. */
+const BASE_ONLY_PROJECT = "cashwalk";
 
 /**
  * minimal reset — vanilla HTML 워크플로우. tokens.css 이후, styles.css 이전 cascade 전제.

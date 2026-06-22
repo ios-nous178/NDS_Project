@@ -30,7 +30,14 @@ const TOOLS = [
         },
         assetKind: {
           type: "string",
-          enum: ["logos", "snsLogos", "profileImages", "illustrations", "stateImages", "marathonEvents"],
+          enum: [
+            "logos",
+            "snsLogos",
+            "profileImages",
+            "illustrations",
+            "stateImages",
+            "marathonEvents",
+          ],
           description:
             "[project lookup only] Fetch one detailed asset list. Omit for summary-only project metadata.",
         },
@@ -159,7 +166,7 @@ const TOOLS = [
         project: {
           type: "string",
           description:
-            "Optional project slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + project-specific tokens and shows project-specific values for shared semantic tokens. Omit for NudgeEAP/base.",
+            "Optional project slug (e.g. 'geniet', 'cashpobi', 'cashwalk-biz', 'trost', 'runmile', 'moneple'). Restricts results to shared + project-specific tokens and shows project-specific values for shared semantic tokens. Omit for base (= Cashwalk; NudgeEAP is now an opt-in overlay).",
         },
         userRequest: {
           type: "string",
@@ -703,7 +710,10 @@ const TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        screen: { type: "string", description: "평가 대상 목업 파일/화면명 (예: dist/index.html)." },
+        screen: {
+          type: "string",
+          description: "평가 대상 목업 파일/화면명 (예: dist/index.html).",
+        },
         scoreOverall: { type: "number", description: "직전 빌드/검증의 객관 품질 점수(overall)." },
         project: { type: "string", description: "프로젝트 슬러그 (예: 'cashwalk-biz')." },
       },

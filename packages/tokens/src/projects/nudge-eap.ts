@@ -1,10 +1,12 @@
 /**
- * NudgeEAP Brand Theme — base brand.
+ * NudgeEAP Brand Theme — 옵트인 오버레이(옛 base).
  *
- * NudgeEAP 는 DS 의 default. `dist/tokens.css` (프로젝트 무관 base CSS) 가
- * 이 theme 의 `semantic` 으로 emit 된다. 다른 프로젝트(Trost / Geniet) 는
- * projects/{brand}.semantic.ts 에서 partial override 를 명시하고,
- * `dist/{brand}.css` cascade 로 base 변수를 덮어쓴다.
+ * 과거엔 DS 의 base 였으나, base 가 Cashwalk 로 바뀌면서 NudgeEAP 는 일반 프로젝트
+ * 오버레이(`dist/nudge-eap.css`)로 분리됐다. 소비처가 `@nudge-design/tokens/css/nudge-eap`
+ * 를 base(`tokens.css`) 위에 얹으면 EAP 파란색이 복원된다(full semantic override).
+ *
+ * 단, base 의 **비색상 기본값**(components: chart/rating/toast/tooltip 등 프로젝트 무관 슬롯)
+ * 은 여전히 이 theme 에서 가져온다 — generate-css.cjs 가 base 비색상 소스로 참조한다.
  *
  * 구성:
  *   - nudge-eap.semantic.ts : Figma SemanticColorGuide 1:1 미러 (full definition)

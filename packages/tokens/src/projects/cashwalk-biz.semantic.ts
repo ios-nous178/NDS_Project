@@ -3,9 +3,9 @@
  *
  * SSOT: Figma 캐포비 Library / SemanticColorGuide (3222:458)
  *
- * CashwalkBiz(캐시워크 포 비지니스) 가 NudgeEAP base 와 다른 부분만 명시.
+ * CashwalkBiz(캐시워크 포 비지니스) 가 base(=cashwalk) 와 다른 부분만 명시.
  * generate-css.js 가 이 트리를 `dist/cashwalk-biz.css` 의 `--semantic-*` 변수로 emit.
- * CSS cascade 에 의해 NudgeEAP base 의 같은 변수를 덮어쓴다. 누락 키는 base 유지.
+ * CSS cascade 에 의해 base 의 같은 변수를 덮어쓴다. 누락 키는 base 유지.
  *
  * 캐포비 가이드 특이점 (다른 프로젝트 대비):
  *   1. **Input focus = Neutral/900 (검정)** — 다른 프로젝트는 brand 색을 focus 에 쓰지만
