@@ -28,7 +28,6 @@ import {
   teal,
 } from "../colors.js";
 import { fontFamily, typeScale } from "../typography.js";
-import { radius } from "../spacing.js";
 import { shadow, zIndex } from "../elevation.js";
 import { nudgeEapSemantic } from "./nudge-eap.semantic.js";
 
@@ -56,9 +55,8 @@ export const nudgeEapTheme: ProjectTheme = {
     fontFamily,
     typeScale,
   },
-  spacing: {
-    radius,
-  },
+  // spacing override 없음 — radius/stroke/spacing 전부 base 단일 스케일(전 서비스 공통).
+  // (옛 spacing:{radius} 는 base 와 값 동일한 중복 재emit 이라 제거 — 다른 4개 프로젝트와 정합.)
   elevation: {
     shadow,
     zIndex,

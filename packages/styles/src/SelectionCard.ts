@@ -32,7 +32,7 @@ export const selectionCardStyles = `
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-card);
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.normal};
+    border: var(--stroke-default) solid ${cv.borderRole.normal};
     border-radius: ${radius[12]}px;
     cursor: pointer;
     transition: border-color ${transition.default}, background-color ${transition.default};
@@ -79,7 +79,7 @@ export const selectionCardStyles = `
     width: 20px;
     height: 20px;
     border-radius: var(--nds-selection-card-indicator-radius, 9999px);
-    border: var(--stroke-bold) solid ${cv.borderRole.normal};
+    border: var(--stroke-focus) solid ${cv.borderRole.normal};
     background: ${cv.surface.default};
     flex-shrink: 0;
     margin-top: 2px;

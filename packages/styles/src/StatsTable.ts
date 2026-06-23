@@ -28,7 +28,7 @@ export const statsTableStyles = `
     font-weight: ${fontWeight.medium};
     text-align: left;
     padding: 14px 16px;
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     white-space: nowrap;
   }
 
@@ -36,14 +36,14 @@ export const statsTableStyles = `
     padding: 14px 16px;
     text-align: left;
     vertical-align: middle;
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     font-variant-numeric: tabular-nums;
   }
 
   /* 컬럼 구분선 (subtle) — 마지막 열 제외 */
   :where(.${ST_CLASS} th:not(:last-child)),
   :where(.${ST_CLASS} td:not(:last-child)) {
-    border-right: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-right: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   /* 합계/요약 행 — 전체 셀 Bold + 강조색 */

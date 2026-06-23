@@ -31,7 +31,7 @@ export const articleStyles = `
     flex-direction: column;
     gap: ${spacing[8]}px;
     padding-bottom: ${spacing[16]}px;
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
   :where(.${AR_TITLE_CLASS}) {
     margin: 0;
@@ -128,7 +128,7 @@ export const articleStyles = `
   :where(.${AR_BODY_CLASS}) hr {
     margin: ${spacing[20]}px 0;
     border: 0;
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   :where(.${AR_BODY_CLASS}) table {
@@ -140,7 +140,7 @@ export const articleStyles = `
   :where(.${AR_BODY_CLASS}) th,
   :where(.${AR_BODY_CLASS}) td {
     padding: var(--semantic-inset-chip) ${spacing[10]}px;
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     text-align: left;
   }
   :where(.${AR_BODY_CLASS}) th {
@@ -155,7 +155,7 @@ export const articleStyles = `
     flex-direction: column;
     gap: var(--semantic-gap-tight);
     padding-top: ${spacing[16]}px;
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
   :where(.${AR_ATTACHMENTS_LABEL_CLASS}) {
     font-size: ${typeScale.caption1.fontSize}px;
@@ -170,6 +170,6 @@ export const articleStyles = `
     align-items: center;
     gap: var(--semantic-gap-comfortable);
     padding-top: ${spacing[16]}px;
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 `;

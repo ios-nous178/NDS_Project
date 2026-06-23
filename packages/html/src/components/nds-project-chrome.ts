@@ -882,7 +882,7 @@ function renderNudgeEAPHeader(
       display: block;
       width: 100%;
       background: ${cv.surface.default};
-      border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
       box-sizing: border-box;
       position: relative;
     }
@@ -964,7 +964,7 @@ function renderNudgeEAPHeader(
       font-size: ${typeScale.body1.fontSize}px;
       line-height: ${typeScale.body1.lineHeight}px;
       font-weight: ${fontWeight.bold};
-      border: var(--stroke-thin) solid ${cv.borderRole.brand};
+      border: var(--stroke-default) solid ${cv.borderRole.brand};
       border-radius: ${radius[8]}px;
       text-decoration: none;
       cursor: pointer;
@@ -1048,8 +1048,8 @@ function renderGenietHeader(
     .nds-project-geniet__menu-header-rail {
       width: 100%;
       margin-top: ${g.pcGap}px;
-      border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
-      border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
+      border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
       background: ${cv.surface.default};
       box-sizing: border-box;
     }
@@ -1080,7 +1080,7 @@ function renderGenietHeader(
       align-items: center;
       width: ${g.pcSearchInputWidth}px;
       height: ${g.pcSearchHeight}px;
-      border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border: var(--stroke-default) solid ${cv.borderRole.subtle};
       border-radius: 999px;
       padding: 0 ${spacing[48]}px 0 ${spacing[20]}px;
       background: ${cv.surface.default};
@@ -1186,7 +1186,7 @@ function renderGenietHeader(
       height: 100%;
       min-width: 160px;
       padding: 0 15px;
-      border-right: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border-right: var(--stroke-default) solid ${cv.borderRole.subtle};
       box-sizing: border-box;
       color: ${cv.textRole.strong};
       text-decoration: none;
@@ -1256,7 +1256,7 @@ function renderGenietHeader(
      * 구분되는 accent 컬러라 시멘틱 토큰 대신 hex 로 못박는다 (React AppBar 와 동일). */
     .nds-project-geniet__cta-pill[data-tone="outline"] {
       background: ${cv.surface.default};
-      border: var(--stroke-thin) solid #dce9ff;
+      border: var(--stroke-default) solid #dce9ff;
       color: #1677ff;
     }
     /* 친구초대 이벤트 — 연한 하늘 배경 + 파란 텍스트. */
@@ -1274,7 +1274,7 @@ function renderGenietHeader(
       height: ${g.mobileHeight}px;
       display: flex;
       flex-direction: column;
-      border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     }
     .nds-project-geniet__mo-row1 {
       display: flex;
@@ -1303,7 +1303,7 @@ function renderGenietHeader(
       gap: ${spacing[2]}px;
       height: 30px;
       padding: 5px ${spacing[8]}px;
-      border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border: var(--stroke-default) solid ${cv.borderRole.subtle};
       border-radius: 20px;
       background: ${cv.surface.default};
       color: ${cv.textRole.normal};
@@ -1503,7 +1503,7 @@ function renderTrostHeader(
         padding: 0 16px;
         box-sizing: border-box;
         background: ${TC_BG};
-        border-bottom: var(--stroke-thin) solid ${TC_BORDER_SUBTLE};
+        border-bottom: var(--stroke-default) solid ${TC_BORDER_SUBTLE};
         font-family: ${TC_FONT};
       }
       .nds-project-trost-webview__back {
@@ -1579,7 +1579,7 @@ function renderTrostHeader(
         width: 100%;
         box-sizing: border-box;
         background: ${TC_BG};
-        border-bottom: var(--stroke-thin) solid ${TC_BORDER_SUBTLE};
+        border-bottom: var(--stroke-default) solid ${TC_BORDER_SUBTLE};
         font-family: ${TC_FONT};
       }
       .nds-project-trost-mobile__row1 {
@@ -1638,7 +1638,7 @@ function renderTrostHeader(
         align-items: center;
         width: 100%;
         height: 44px;
-        border: var(--stroke-thin) solid ${TC_BORDER_SUBTLE};
+        border: var(--stroke-default) solid ${TC_BORDER_SUBTLE};
         border-radius: 12px;
         padding: 0 40px 0 16px;
         background: ${TC_BG};
@@ -1706,7 +1706,7 @@ function renderTrostHeader(
     .nds-project-trost-web__utility {
       width: 100%;
       padding: 20px 0;
-      border-bottom: var(--stroke-thin) solid #ececec;
+      border-bottom: var(--stroke-default) solid #ececec;
       background: ${TC_BG};
     }
     .nds-project-trost-web__utility-inner {
@@ -1745,7 +1745,7 @@ function renderTrostHeader(
     .nds-project-trost-web__search input {
       width: ${t.searchInputWidth}px;
       height: 48px;
-      border: var(--stroke-bold) solid #ffcc00;
+      border: var(--stroke-focus) solid #ffcc00;
       outline: none;
       border-radius: 9999px;
       padding: 13px 36px 13px 20px;
@@ -1794,7 +1794,7 @@ function renderTrostHeader(
       height: 44px;
       padding: 11px 16px;
       border-radius: 12px;
-      border: var(--stroke-thin) solid #d8d8d8;
+      border: var(--stroke-default) solid #d8d8d8;
       background: ${TC_BG};
       font-size: 15px;
       line-height: 22px;
@@ -1809,7 +1809,7 @@ function renderTrostHeader(
     .nds-project-trost-web__tabnav {
       width: 100%;
       height: 70px;
-      border-bottom: var(--stroke-thin) solid #ececec;
+      border-bottom: var(--stroke-default) solid #ececec;
       background: ${TC_BG};
     }
     .nds-project-trost-web__tabnav-inner {
@@ -1924,7 +1924,7 @@ function renderCashwalkBizHeader(
       display: block;
       width: 100%;
       background: ${cv.surface.default};
-      border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+      border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
       box-sizing: border-box;
     }
     .nds-project-cashwalk-biz__inner {
@@ -2133,7 +2133,7 @@ function renderRunmileHeader(
       width: 100%;
       height: 80px;
       background: ${C_WHITE};
-      border-bottom: var(--stroke-thin) solid ${C_BORDER};
+      border-bottom: var(--stroke-default) solid ${C_BORDER};
       box-sizing: border-box;
     }
     .nds-project-runmile-web__inner {
@@ -2187,7 +2187,7 @@ function renderRunmileHeader(
       align-items: center;
       width: 430px;
       height: 48px;
-      border: var(--stroke-bold) solid ${C_CORAL_FILL};
+      border: var(--stroke-focus) solid ${C_CORAL_FILL};
       border-radius: 100px;
       box-sizing: border-box;
       padding: 0 14px 0 18px;
@@ -2724,7 +2724,7 @@ const sidebarStyles = `
     flex-shrink: 0;
     width: var(--nds-sidebar-width);
     background: var(--nds-sidebar-bg);
-    border-right: var(--stroke-thin) solid var(--nds-sidebar-border-color);
+    border-right: var(--stroke-default) solid var(--nds-sidebar-border-color);
     font-family: ${fontFamily.web};
     color: var(--nds-sidebar-text);
     box-sizing: border-box;
@@ -2775,7 +2775,7 @@ const sidebarStyles = `
   :where(.${SB_SECTION_CLASS}) {
     padding: ${spacing[28]}px 0; display: flex; flex-direction: column; gap: ${spacing[8]}px;
   }
-  :where(.${SB_SECTION_CLASS} + .${SB_SECTION_CLASS}) { border-top: var(--stroke-thin) solid var(--nds-sidebar-border-color); }
+  :where(.${SB_SECTION_CLASS} + .${SB_SECTION_CLASS}) { border-top: var(--stroke-default) solid var(--nds-sidebar-border-color); }
   :where(.${SB_SECTION_LABEL_CLASS}) {
     padding: 0 ${spacing[10]}px 0 ${spacing[20]}px; margin: 0;
     font-size: 14px; line-height: 20px; font-weight: ${fontWeight.medium};
@@ -2916,7 +2916,7 @@ const sidebarStyles = `
   :where(.${SB_ACTION_CLASS}) {
     display: inline-flex; align-items: center; justify-content: center;
     height: 40px; padding: 0 ${spacing[16]}px; border-radius: 10px;
-    border: var(--stroke-thin) solid transparent; box-sizing: border-box;
+    border: var(--stroke-default) solid transparent; box-sizing: border-box;
     font-family: inherit; font-size: 14px; font-weight: ${fontWeight.semibold}; line-height: 1;
     text-decoration: none; cursor: pointer;
     transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;

@@ -76,7 +76,7 @@ export const tabsStyles = `
     /* line variant 스트립은 투명 — 회색 페이지(예: 캐포비 admin #FAFAFA) 위에 떠 보이도록.
        흰 배경이 필요하면 부모(카드/섹션)가 칠한다. (구 기본값 cv.surface.default 흰색 → 투명) */
     background: transparent;
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   :where(.${TAB_LIST_CLASS}[data-variant="line"] .${TAB_TRIGGER_CLASS}) {

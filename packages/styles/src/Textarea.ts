@@ -32,7 +32,7 @@ export const textareaStyles = `
     flex-direction: column;
     width: 100%;
     padding: var(--semantic-inset-input) var(--nds-textarea-padding-x, var(--semantic-inset-card));
-    border: var(--stroke-thin) solid var(--nds-textarea-border-color, ${cv.input.borderDefault});
+    border: var(--stroke-default) solid var(--nds-textarea-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-textarea-radius, ${radius[8]}px);
     background: var(--nds-textarea-background, ${cv.input.bg});
     box-sizing: border-box;

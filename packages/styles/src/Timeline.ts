@@ -94,7 +94,7 @@ export const timelineStyles = `
     border-radius: 9999px;
     background: ${cv.surface.section};
     color: ${cv.textRole.subtle};
-    border: var(--stroke-bold) solid ${cv.borderRole.normal};
+    border: var(--stroke-focus) solid ${cv.borderRole.normal};
     font-size: 11px;
     font-weight: ${fontWeight.bold};
     transition: background-color 200ms, color 200ms, border-color 200ms;

@@ -29,7 +29,7 @@ export const bottomNavStyles = `
     width: 100%;
     height: var(--nds-bottomnav-height, ${sizing.bottomBar.height}px);
     background: var(--nds-bottomnav-bg, ${cv.surface.default});
-    border-top: var(--stroke-thin) solid var(--nds-bottomnav-border-color, ${cv.borderRole.subtle});
+    border-top: var(--stroke-default) solid var(--nds-bottomnav-border-color, ${cv.borderRole.subtle});
     /* chrome 색 격리 — 외부 페이지 color(body{color:#333})가 currentColor SVG 로 새어
        비활성 아이콘이 검게 나오던 버그 방지. 아이템이 active/inactive 로 다시 덮는다. */
     color: var(--nds-bottomnav-inactive-color, ${cv.textRole.subtle});

@@ -31,7 +31,7 @@ export const popularPostsStyles = `
     box-sizing: border-box;
     padding: ${spacing[20]}px;
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     font-family: ${fontFamily.web};
   }

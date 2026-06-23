@@ -39,7 +39,7 @@ export const aiStyles = `
     align-items: center;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-card);
-    border: var(--stroke-thin) solid ${cv.input.borderDefault};
+    border: var(--stroke-default) solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     transition: border-color ${transition.default};
@@ -85,7 +85,7 @@ export const aiStyles = `
   :where(.${AI_PRESET_CLASS}) {
     height: 36px;
     padding: 0 var(--semantic-inset-input);
-    border: var(--stroke-thin) solid ${cv.borderRole.normal};
+    border: var(--stroke-default) solid ${cv.borderRole.normal};
     border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     color: ${cv.textRole.normal};

@@ -24,7 +24,7 @@ export const addButtonStyles = `
     min-height: ${sizing.button.lg}px;
     padding: 0 ${spacing[16]}px;
     background: ${cv.surface.subtle};
-    border: var(--stroke-thin) dashed ${cv.borderRole.strong};
+    border: var(--stroke-default) dashed ${cv.borderRole.strong};
     border-radius: ${radius[8]}px;
     color: ${cv.textRole.strong};
     font-family: ${fontFamily.web};

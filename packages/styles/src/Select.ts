@@ -51,7 +51,7 @@ export const selectStyles = `
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
-    border: var(--stroke-thin) solid var(--nds-select-border-color, ${cv.input.borderDefault});
+    border: var(--stroke-default) solid var(--nds-select-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-select-radius, ${radius[8]}px);
     background: var(--nds-select-background, ${cv.input.bg});
     cursor: pointer;
@@ -119,7 +119,7 @@ export const selectStyles = `
     overflow-y: auto;
     padding: var(--nds-select-dropdown-padding, 0);
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -137,7 +137,7 @@ export const selectStyles = `
     gap: var(--semantic-gap-tight);
     flex-shrink: 0;
     padding: var(--semantic-inset-input);
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     background: ${cv.surface.default};
   }
 

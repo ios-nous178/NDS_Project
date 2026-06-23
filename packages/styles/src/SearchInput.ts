@@ -35,7 +35,7 @@ export const searchInputStyles = `
        nds-input/nds-select 와 높이가 어긋남(회귀: 캐포비 리스트 검색). */
     min-height: var(--nds-search-input-height, var(--nds-input-height, ${sizing.input.default}px));
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: var(--stroke-thin) solid var(--nds-search-input-border-color, var(--nds-input-border-color, ${cv.input.borderDefault}));
+    border: var(--stroke-default) solid var(--nds-search-input-border-color, var(--nds-input-border-color, ${cv.input.borderDefault}));
     border-radius: var(--nds-search-input-radius, var(--nds-input-radius, ${radius[8]}px));
     background: var(--nds-search-input-background, var(--nds-input-background, ${cv.input.bg}));
     box-sizing: border-box;

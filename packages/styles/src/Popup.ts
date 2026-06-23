@@ -166,7 +166,7 @@ export const popupStyles = `
   :where([data-project="cashwalk-biz"] .${POPUP_BTN_CLASS}) {
     min-height: 44px;
     padding: ${spacing[12]}px ${spacing[18]}px;
-    border: var(--stroke-thin) solid transparent;
+    border: var(--stroke-default) solid transparent;
     border-radius: 9999px;
     font-size: ${typeScale.body3.fontSize}px;
     line-height: ${typeScale.body3.lineHeight}px;

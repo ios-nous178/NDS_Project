@@ -37,14 +37,14 @@ export const listStyles = `
 
   :where(.${LIST_ROOT_CLASS}[data-variant="card"]) {
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     overflow: hidden;
   }
 
   :where(.${LIST_ROOT_CLASS}[data-variant="card"] .${LIST_ITEM_CLASS} + .${LIST_ITEM_CLASS}),
   :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_ITEM_CLASS} + .${LIST_ITEM_CLASS}) {
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   /* ── header/footer 슬롯 (presentation li — 리스트 아이템 아님) ── */
@@ -76,7 +76,7 @@ export const listStyles = `
   :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_HEADER_CLASS} + .${LIST_ITEM_CLASS}),
   :where(.${LIST_ROOT_CLASS}[data-variant="card"] .${LIST_ITEM_CLASS} + .${LIST_FOOTER_CLASS}),
   :where(.${LIST_ROOT_CLASS}[data-variant="divided"] .${LIST_ITEM_CLASS} + .${LIST_FOOTER_CLASS}) {
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   /* 밀도 = min-height floor (sizing.listRow). 짧은 행은 이 높이로 맞추고, leading(Avatar 48 ·
@@ -255,7 +255,7 @@ export const listStyles = `
     /* text-only 기본 인셋 = 좌 padding(16). leading 이 있으면 아래 룰이 덮어 늘린다. */
     left: var(--nds-list-divider-inset, var(--semantic-inset-card));
     right: 0;
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
   /* leading 폭별 인셋: 16 + leading + gap(12). 행이 leading 슬롯의 실제 폭을 모르므로
      layout 별 표준 leading(avatar 48 / thumbnail mobile 72·pc 80)로 슬롯 기본값을 준다. */

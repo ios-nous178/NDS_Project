@@ -51,8 +51,10 @@ export const inset = {
 } as const;
 
 export const radius = {
+  "0": 0,
   2: 2,
   4: 4,
+  6: 6,
   8: 8,
   10: 10,
   12: 12,
@@ -64,9 +66,8 @@ export const radius = {
 
 export const stroke = {
   none: 0,
-  thin: 1,
-  medium: 1.5,
-  bold: 2,
+  default: 1,
+  focus: 2,
 } as const;
 
 export const sizing = {

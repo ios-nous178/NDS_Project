@@ -27,7 +27,7 @@ export const buttonStyles = `
     min-height: var(--nds-button-height, 48px);
     padding: 0 var(--nds-button-padding-x, var(--semantic-inset-card));
     border-radius: var(--nds-button-radius, ${radius[8]}px);
-    border: var(--stroke-thin) solid var(--nds-button-border-color, transparent);
+    border: var(--stroke-default) solid var(--nds-button-border-color, transparent);
     background: var(--nds-button-background, ${cv.button.bgDefault});
     color: var(--nds-button-text-color, ${cv.button.textDefault});
     font-family: var(--nds-button-font-family, ${fontFamily.web});

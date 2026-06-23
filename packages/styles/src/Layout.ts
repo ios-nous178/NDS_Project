@@ -79,7 +79,7 @@ export const shellStyles = `
     top: 0;
     z-index: 5;
     background: ${cv.surface.default};
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.normal};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.normal};
     padding: var(--nds-shell-topbar-padding, 20px 32px);
     display: flex;
     align-items: center;
@@ -119,7 +119,7 @@ export const shellStyles = `
   /* tabs slot — topbar 바로 아래 sticky 탭 영역 (선택) */
   :where(.${SHELL_TABS_CLASS}) {
     background: ${cv.surface.default};
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.normal};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.normal};
     padding: 0 var(--nds-shell-content-padding-x, 32px);
   }
 
@@ -158,7 +158,7 @@ const SECTION_BODY_CLASS = `${SECTION_CLASS}__body`;
 export const sectionStyles = `
   :where(.${SECTION_CLASS}) {
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.normal};
+    border: var(--stroke-default) solid ${cv.borderRole.normal};
     border-radius: var(--nds-section-radius, ${radius[12]}px);
     overflow: hidden;
     font-family: ${fontFamily.web};
@@ -207,7 +207,7 @@ export const formRowStyles = `
     align-items: flex-start;
     gap: var(--nds-form-row-gap, ${spacing[20]}px);
     padding: ${spacing[20]}px 0;
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
   }
 

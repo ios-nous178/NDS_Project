@@ -63,7 +63,7 @@ export const headerStyles = `
   /* variant 차이 = background(transparent 만 투명) + border-bottom(compact 만 subtle 1px) */
   :where(.${HEADER_CLASS}[data-variant="compact"]) {
     --nds-header-variant-background: ${cv.surface.default};
-    --nds-header-variant-border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    --nds-header-variant-border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   :where(.${HEADER_CLASS}[data-variant="webview"]) {
@@ -145,7 +145,7 @@ export const headerStyles = `
     align-items: center;
     width: var(--nds-header-search-width, 400px);
     height: var(--nds-header-search-height, 48px);
-    border: var(--nds-header-search-border-width, var(--stroke-bold)) solid var(--nds-header-search-border-color, ${cv.borderRole.normal});
+    border: var(--nds-header-search-border-width, var(--stroke-focus)) solid var(--nds-header-search-border-color, ${cv.borderRole.normal});
     border-radius: var(--nds-header-search-radius, 24px);
     padding: 0 var(--nds-header-search-pr, 36px) 0 var(--nds-header-search-pl, var(--semantic-inset-card-large));
     font-size: var(--nds-header-search-font-size, ${typeScale.body2.fontSize}px);
@@ -233,7 +233,7 @@ export const headerStyles = `
     width: 100%;
     height: var(--nds-header-height, 80px);
     background: ${cv.surface.default};
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     font-family: ${fontFamily.web};
     box-sizing: border-box;
     z-index: var(--nds-header-z-index, ${zIndex.appBar});
@@ -368,7 +368,7 @@ export const headerStyles = `
     font-size: ${typeScale.body1.fontSize}px;
     line-height: ${typeScale.body1.lineHeight}px;
     font-weight: ${fontWeight.bold};
-    border: var(--stroke-thin) solid ${cv.borderRole.brand};
+    border: var(--stroke-default) solid ${cv.borderRole.brand};
     border-radius: ${radius[8]}px;
     cursor: pointer;
     text-decoration: none;

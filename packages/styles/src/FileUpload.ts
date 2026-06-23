@@ -42,7 +42,7 @@ export const fileUploadStyles = `
     gap: var(--semantic-gap-default);
     padding: var(--semantic-inset-modal) var(--semantic-inset-card-large);
     background: ${cv.surface.page};
-    border: var(--stroke-medium) dashed ${cv.borderRole.normal};
+    border: var(--stroke-default) dashed ${cv.borderRole.normal};
     border-radius: ${radius[12]}px;
     cursor: pointer;
     transition: background-color ${transition.default}, border-color ${transition.default};
@@ -111,7 +111,7 @@ export const fileUploadStyles = `
     gap: var(--semantic-gap-default);
     padding: var(--semantic-inset-chip) var(--semantic-inset-input);
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
   }
 

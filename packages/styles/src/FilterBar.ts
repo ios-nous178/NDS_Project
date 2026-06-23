@@ -34,7 +34,7 @@ export const fbStyles = `
     height: 32px;
     padding: 0 var(--semantic-inset-input);
     border-radius: 9999px;
-    border: var(--stroke-thin) solid ${cv.borderRole.normal};
+    border: var(--stroke-default) solid ${cv.borderRole.normal};
     background: ${cv.surface.default};
     color: ${cv.textRole.normal};
     font-family: inherit;

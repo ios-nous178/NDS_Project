@@ -297,11 +297,14 @@ function generateElevation() {
     shadowKeys.includes("2") &&
     shadowKeys.includes("3")
   ) {
+    // Figma Elevation(67:56) 4단계: none(0)·card(1)·dropdown(2)·popover(3)·modal(4).
+    // subtle/overlay 는 card/dropdown 의 레거시 별칭(소비처 호환 유지).
     lines.push("export const elevationLevel = {");
     lines.push('  none: shadow["0"],');
     lines.push('  subtle: shadow["1"],');
     lines.push('  overlay: shadow["2"],');
-    lines.push('  modal: shadow["3"],');
+    lines.push('  popover: shadow["3"],');
+    lines.push('  modal: shadow["4"],');
     lines.push("} as const;\n");
 
     lines.push("export type ShadowLevel = keyof typeof shadow;");

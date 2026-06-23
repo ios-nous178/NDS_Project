@@ -31,6 +31,7 @@ export const typographyStyles = `
   :where(.nds-text-headline3) { font-size: ${typeScale.headline3.fontSize}px; line-height: ${typeScale.headline3.lineHeight}px; }
   :where(.nds-text-headline4) { font-size: ${typeScale.headline4.fontSize}px; line-height: ${typeScale.headline4.lineHeight}px; }
   :where(.nds-text-headline5) { font-size: ${typeScale.headline5.fontSize}px; line-height: ${typeScale.headline5.lineHeight}px; }
+  :where(.nds-text-headline6) { font-size: ${typeScale.headline6.fontSize}px; line-height: ${typeScale.headline6.lineHeight}px; }
   :where(.nds-text-body1) { font-size: ${typeScale.body1.fontSize}px; line-height: ${typeScale.body1.lineHeight}px; }
   :where(.nds-text-body2) { font-size: ${typeScale.body2.fontSize}px; line-height: ${typeScale.body2.lineHeight}px; }
   :where(.nds-text-body3) { font-size: ${typeScale.body3.fontSize}px; line-height: ${typeScale.body3.lineHeight}px; }

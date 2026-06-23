@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-22T00:18:19.506Z",
+  "generatedAt": "2026-06-23T23:28:22.993Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -10277,32 +10277,41 @@
     },
     {
       "name": "--font-headline-3",
-      "value": "24px/32px",
+      "value": "26px/36px",
       "group": "font",
       "projectValues": {
         "cashwalk-biz": "20px/28px",
+        "geniet": "24px/32px",
         "runmile": "18px/24px",
         "trost": "22px/30px"
       }
     },
     {
       "name": "--font-headline-4",
-      "value": "20px/28px",
+      "value": "24px/32px",
       "group": "font",
       "projectValues": {
         "cashwalk-biz": "18px/26px",
+        "geniet": "20px/28px",
         "runmile": "16px/24px",
         "trost": "20px/30px"
       }
     },
     {
       "name": "--font-headline-5",
-      "value": "18px/26px",
+      "value": "20px/28px",
       "group": "font",
       "projectValues": {
         "cashwalk-biz": "16px/24px",
-        "runmile": "15px/22px"
+        "geniet": "18px/26px",
+        "runmile": "15px/22px",
+        "trost": "18px/26px"
       }
+    },
+    {
+      "name": "--font-headline-6",
+      "value": "18px/26px",
+      "group": "font"
     },
     {
       "name": "--font-label",
@@ -10390,31 +10399,41 @@
     },
     {
       "name": "--font-size-headline-3",
-      "value": "24px",
+      "value": "26px",
       "group": "font",
       "projectValues": {
         "cashwalk-biz": "20px",
+        "geniet": "24px",
         "runmile": "18px",
         "trost": "22px"
       }
     },
     {
       "name": "--font-size-headline-4",
-      "value": "20px",
+      "value": "24px",
       "group": "font",
       "projectValues": {
         "cashwalk-biz": "18px",
-        "runmile": "16px"
+        "geniet": "20px",
+        "runmile": "16px",
+        "trost": "20px"
       }
     },
     {
       "name": "--font-size-headline-5",
-      "value": "18px",
+      "value": "20px",
       "group": "font",
       "projectValues": {
         "cashwalk-biz": "16px",
-        "runmile": "15px"
+        "geniet": "18px",
+        "runmile": "15px",
+        "trost": "18px"
       }
+    },
+    {
+      "name": "--font-size-headline-6",
+      "value": "18px",
+      "group": "font"
     },
     {
       "name": "--font-size-label",
@@ -10600,32 +10619,41 @@
     },
     {
       "name": "--line-height-headline-3",
-      "value": "32px",
+      "value": "36px",
       "group": "line",
       "projectValues": {
         "cashwalk-biz": "28px",
+        "geniet": "32px",
         "runmile": "24px",
         "trost": "30px"
       }
     },
     {
       "name": "--line-height-headline-4",
-      "value": "28px",
+      "value": "32px",
       "group": "line",
       "projectValues": {
         "cashwalk-biz": "26px",
+        "geniet": "28px",
         "runmile": "24px",
         "trost": "30px"
       }
     },
     {
       "name": "--line-height-headline-5",
-      "value": "26px",
+      "value": "28px",
       "group": "line",
       "projectValues": {
         "cashwalk-biz": "24px",
-        "runmile": "22px"
+        "geniet": "26px",
+        "runmile": "22px",
+        "trost": "26px"
       }
+    },
+    {
+      "name": "--line-height-headline-6",
+      "value": "26px",
+      "group": "line"
     },
     {
       "name": "--line-height-label",
@@ -12135,6 +12163,11 @@
       ]
     },
     {
+      "name": "--radius-0",
+      "value": "0px",
+      "group": "radius"
+    },
+    {
       "name": "--radius-10",
       "value": "10px",
       "group": "radius"
@@ -12167,6 +12200,11 @@
     {
       "name": "--radius-4",
       "value": "4px",
+      "group": "radius"
+    },
+    {
+      "name": "--radius-6",
+      "value": "6px",
       "group": "radius"
     },
     {
@@ -13553,37 +13591,31 @@
     },
     {
       "name": "--shadow-1",
-      "value": "0px 1px 4px rgba(0, 0, 0, 0.08)",
+      "value": "0px 1px 3px rgba(0, 0, 0, 0.08)",
       "group": "shadow",
       "projectValues": {
-        "dongne-sanchaek": "0px 1px 3px rgba(0, 0, 0, 0.08)",
         "geniet": "0 2px 6px rgba(221, 221, 221, 0.6)",
         "runmile": "0 1px 4px rgba(0, 0, 0, 0.1)",
-        "teamwork": "0px 1px 3px rgba(0, 0, 0, 0.08)",
         "trost": "0 1px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 1px 0 rgba(0, 0, 0, 0.04)"
       }
     },
     {
       "name": "--shadow-2",
-      "value": "0px 4px 12px rgba(0, 0, 0, 0.10)",
+      "value": "0px 2px 8px rgba(0, 0, 0, 0.10)",
       "group": "shadow",
       "projectValues": {
-        "dongne-sanchaek": "0px 2px 8px rgba(0, 0, 0, 0.1)",
         "geniet": "0 3px 15px rgba(0, 0, 0, 0.1)",
         "runmile": "0 1px 4px 2px rgba(0, 0, 0, 0.03)",
-        "teamwork": "0px 2px 8px rgba(0, 0, 0, 0.1)",
         "trost": "0 2px 4px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)"
       }
     },
     {
       "name": "--shadow-3",
-      "value": "0px 8px 24px rgba(0, 0, 0, 0.12)",
+      "value": "0px 6px 16px rgba(0, 0, 0, 0.12)",
       "group": "shadow",
       "projectValues": {
-        "dongne-sanchaek": "0px 6px 16px rgba(0, 0, 0, 0.12)",
         "geniet": "0 12px 32px rgba(0, 0, 0, 0.16)",
         "runmile": "0 4px 13px rgba(0, 0, 0, 0.06)",
-        "teamwork": "0px 6px 16px rgba(0, 0, 0, 0.12)",
         "trost": "0 4px 12px 0 rgba(0, 0, 0, 0.12), 0 2px 4px 0 rgba(0, 0, 0, 0.06)"
       }
     },
@@ -13591,11 +13623,6 @@
       "name": "--shadow-4",
       "value": "0px 12px 32px rgba(0, 0, 0, 0.16)",
       "group": "shadow",
-      "projects": [
-        "dongne-sanchaek",
-        "teamwork",
-        "trost"
-      ],
       "projectValues": {
         "trost": "0 8px 24px 0 rgba(0, 0, 0, 0.16), 0 4px 8px 0 rgba(0, 0, 0, 0.08)"
       }
@@ -13607,11 +13634,6 @@
       "projects": [
         "trost"
       ]
-    },
-    {
-      "name": "--shadow-e2",
-      "value": "0px 2px 4px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.04)",
-      "group": "shadow"
     },
     {
       "name": "--size-appBar-height",
@@ -13879,23 +13901,18 @@
       "group": "spacing"
     },
     {
-      "name": "--stroke-bold",
-      "value": "2px",
+      "name": "--stroke-default",
+      "value": "1px",
       "group": "stroke"
     },
     {
-      "name": "--stroke-medium",
-      "value": "1.5px",
+      "name": "--stroke-focus",
+      "value": "2px",
       "group": "stroke"
     },
     {
       "name": "--stroke-none",
       "value": "0px",
-      "group": "stroke"
-    },
-    {
-      "name": "--stroke-thin",
-      "value": "1px",
       "group": "stroke"
     },
     {

@@ -3,14 +3,15 @@ import { shadow, elevationLevel, zIndex } from "@nudge-design/tokens";
 import React from "react";
 
 /* ─────────────────────────────────────────────────────────────
- * Figma 가이드: ElevationGuide (node 556:2)
- *  - 4 Levels (E0 ~ E3). Shadow는 "떠있음"을 표현하는 수단.
+ * Figma 가이드: 캐시워크 Library / Elevation (node 67:56)
+ *  - 4단계 단일 drop-shadow (E1~E4) + E0 None. opacity 8→16% 점증.
+ *  - 단계 = 1 Card · 2 Dropdown · 3 Popover · 4 Modal.
  *  - 기본 UI는 Border, Shadow는 다른 요소 위에 올라가는 경우에만.
  * ───────────────────────────────────────────────────────────── */
 
 interface LevelDef {
-  level: "E0" | "E1" | "E2" | "E3";
-  key: "0" | "1" | "2" | "3";
+  level: "E0" | "E1" | "E2" | "E3" | "E4";
+  key: "0" | "1" | "2" | "3" | "4";
   alias: keyof typeof elevationLevel;
   name: string;
   cssVar: string;
@@ -22,33 +23,41 @@ const LEVELS: LevelDef[] = [
     level: "E0",
     key: "0",
     alias: "none",
-    name: "기본 (Base)",
+    name: "기본 (None)",
     cssVar: "var(--shadow-0)",
-    usage: "페이지 · Section · 기본 Card",
+    usage: "페이지 · Section · 플랫 Card",
   },
   {
     level: "E1",
     key: "1",
     alias: "subtle",
-    name: "부유 (Subtle)",
+    name: "카드 (Card)",
     cssVar: "var(--shadow-1)",
-    usage: "Card Hover · Sticky Header · Pinned Row",
+    usage: "기본 Card · Sticky Header · Pinned Row",
   },
   {
     level: "E2",
     key: "2",
     alias: "overlay",
-    name: "오버레이 (Overlay)",
+    name: "드롭다운 (Dropdown)",
     cssVar: "var(--shadow-2)",
-    usage: "Dropdown · Popover · Tooltip · Datepicker",
+    usage: "Dropdown · Select · Datepicker · 플로팅 메뉴",
   },
   {
     level: "E3",
     key: "3",
-    alias: "modal",
-    name: "최상위 (Modal)",
+    alias: "popover",
+    name: "팝오버 (Popover)",
     cssVar: "var(--shadow-3)",
-    usage: "Modal · Dialog · Bottom Sheet · Toast",
+    usage: "Popover · Confirm Dialog · Tooltip",
+  },
+  {
+    level: "E4",
+    key: "4",
+    alias: "modal",
+    name: "모달 (Modal)",
+    cssVar: "var(--shadow-4)",
+    usage: "Modal · Dialog · Drawer",
   },
 ];
 
@@ -240,10 +249,10 @@ function DoDontBlock() {
         </div>
         <ul style={{ fontSize: 13, lineHeight: 1.7, color: "#383838", margin: 0, paddingLeft: 18 }}>
           <li>기본 카드·컨테이너 구분은 1px border로 처리</li>
-          <li>Dropdown·Popover는 반드시 var(--shadow-2)</li>
-          <li>Modal·Dialog는 반드시 var(--shadow-3)</li>
+          <li>Dropdown·Select는 반드시 var(--shadow-2)</li>
+          <li>Popover·Confirm은 var(--shadow-3), Modal·Drawer는 var(--shadow-4)</li>
           <li>동일 역할 컴포넌트는 항상 동일 Elevation Level</li>
-          <li>Tooltip에 border + var(--shadow-2) 조합</li>
+          <li>Tooltip에 border + var(--shadow-3) 조합</li>
           <li>Sticky Header는 스크롤 시에만 var(--shadow-1) 활성화</li>
         </ul>
       </div>
@@ -262,7 +271,7 @@ function DoDontBlock() {
           <li>장식 목적의 과도한 shadow (버튼·텍스트·아이콘)</li>
           <li>동일 화면에 서로 다른 Elevation 혼재</li>
           <li>Shadow만으로 Border 없이 Card 경계 표현</li>
-          <li>E3 초과 레벨을 임의로 생성</li>
+          <li>E4 초과 레벨을 임의로 생성</li>
           <li>모든 컴포넌트에 shadow를 default로 적용</li>
         </ul>
       </div>

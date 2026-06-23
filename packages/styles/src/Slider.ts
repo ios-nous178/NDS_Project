@@ -80,7 +80,7 @@ export const sliderStyles = `
     height: 24px;
     border-radius: ${radius.full}px;
     background: ${cv.surface.default};
-    border: var(--stroke-bold) solid ${cv.borderRole.brand};
+    border: var(--stroke-focus) solid ${cv.borderRole.brand};
     box-shadow: ${shadow["1"]};
     cursor: pointer;
     transition: transform ${transition.default};
@@ -91,7 +91,7 @@ export const sliderStyles = `
     height: 24px;
     border-radius: ${radius.full}px;
     background: ${cv.surface.default};
-    border: var(--stroke-bold) solid ${cv.borderRole.brand};
+    border: var(--stroke-focus) solid ${cv.borderRole.brand};
     box-shadow: ${shadow["1"]};
     cursor: pointer;
   }

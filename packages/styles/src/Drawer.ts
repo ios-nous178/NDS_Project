@@ -56,7 +56,7 @@ export const drawerStyles = `
     max-width: 100vw;
     height: 100%;
     background: ${cv.surface.default};
-    box-shadow: ${shadow["3"]};
+    box-shadow: ${shadow["4"]};
     box-sizing: border-box;
   }
 
@@ -82,7 +82,7 @@ export const drawerStyles = `
     justify-content: space-between;
     gap: var(--semantic-gap-comfortable);
     padding: var(--semantic-inset-card-large) var(--semantic-inset-card-large) var(--semantic-inset-card);
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   :where(.${DR_HEADER_CLASS}[data-empty="true"]) {
@@ -141,7 +141,7 @@ export const drawerStyles = `
     display: flex;
     gap: var(--semantic-gap-default);
     padding: var(--semantic-inset-card) var(--semantic-inset-card-large);
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 
   @keyframes nds-drawer-fade-in {

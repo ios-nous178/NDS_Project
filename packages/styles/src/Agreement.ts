@@ -88,7 +88,7 @@ export const agreementStyles = `
     flex-shrink: 0;
     width: var(--nds-checkbox-size, 18px);
     height: var(--nds-checkbox-size, 18px);
-    border: var(--stroke-medium) solid ${cv.borderRole.normal};
+    border: var(--stroke-default) solid ${cv.borderRole.normal};
     border-radius: ${radius[4]}px;
     background: ${cv.surface.default};
     color: ${cv.button.textDefault};

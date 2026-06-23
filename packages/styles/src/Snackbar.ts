@@ -30,7 +30,7 @@ export const snackbarStyles = `
     border-radius: var(--nds-snackbar-radius, ${radius[8]}px);
     background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, var(--semantic-bg-section-default)));
     color: var(--nds-snackbar-fg, var(--semantic-text-normal-default));
-    border: var(--stroke-thin) solid var(--nds-snackbar-border, transparent);
+    border: var(--stroke-default) solid var(--nds-snackbar-border, transparent);
     box-shadow: var(--nds-snackbar-shadow, none);
     font-family: ${fontFamily.web};
     width: var(--nds-snackbar-width, auto);

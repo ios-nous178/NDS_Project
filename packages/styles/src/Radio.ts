@@ -48,7 +48,7 @@ export const radioStyles = `
     width: var(--nds-radio-size, 20px);
     height: var(--nds-radio-size, 20px);
     margin-top: 1px;
-    border: var(--stroke-bold) solid ${cv.borderRole.normal};
+    border: var(--stroke-focus) solid ${cv.borderRole.normal};
     border-radius: ${radius.full}px;
     background: ${cv.surface.default};
     transition: border-color ${transition.default}, background-color ${transition.default};

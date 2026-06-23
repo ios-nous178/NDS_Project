@@ -53,7 +53,7 @@ export const tpStyles = `
     gap: var(--semantic-gap-default);
     height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 ${spacing[8]}px 0 var(--semantic-inset-card);
-    border: var(--stroke-thin) solid ${cv.input.borderDefault};
+    border: var(--stroke-default) solid ${cv.input.borderDefault};
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     transition: border-color ${transition.default};
@@ -145,7 +145,7 @@ export const tpStyles = `
   :where(.${TP_PANEL_CLASS}) {
     position: fixed;
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -172,7 +172,7 @@ export const tpStyles = `
     justify-content: center;
     height: 28px;
     margin-bottom: ${spacing[4]}px;
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     font-size: ${typeScale.caption1.fontSize}px;
     line-height: ${typeScale.caption1.lineHeight}px;
     font-weight: ${fontWeight.medium};

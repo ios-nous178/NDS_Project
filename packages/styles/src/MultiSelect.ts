@@ -47,7 +47,7 @@ export const multiSelectStyles = `
     width: 100%;
     min-height: var(--nds-select-height, ${sizing.input.default}px);
     padding: 0 var(--semantic-inset-input);
-    border: var(--stroke-thin) solid ${cv.input.borderDefault};
+    border: var(--stroke-default) solid ${cv.input.borderDefault};
     border-radius: var(--nds-select-radius, ${radius[8]}px);
     background: ${cv.input.bg};
     cursor: pointer;
@@ -99,7 +99,7 @@ export const multiSelectStyles = `
     width: max-content;
     max-width: 392px;
     background: ${cv.surface.default};
-    border: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border: var(--stroke-default) solid ${cv.borderRole.subtle};
     border-radius: ${radius[8]}px;
     box-shadow: ${shadow["2"]};
     z-index: ${zIndex.dropdown};
@@ -113,7 +113,7 @@ export const multiSelectStyles = `
      Figma 4123-1406: 검색행 64h(py8 px16) + TextInput 48h radius. ── */
   :where(.${MS_SEARCH_CLASS}) {
     padding: ${spacing[8]}px ${spacing[16]}px;
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     box-sizing: border-box;
   }
   :where(.${MS_SEARCH_CLASS} .nds-search-input__root) { width: 100%; }
@@ -126,7 +126,7 @@ export const multiSelectStyles = `
     width: 100%;
     padding: ${spacing[12]}px ${spacing[16]}px;
     background: ${cv.surface.subtle};
-    border-bottom: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-bottom: var(--stroke-default) solid ${cv.borderRole.subtle};
     box-sizing: border-box;
   }
   :where(.${MS_SELECT_ALL_CLASS} .nds-checkbox__root) { flex: 1; align-items: center; }
@@ -190,6 +190,6 @@ export const multiSelectStyles = `
     justify-content: flex-end;
     gap: var(--semantic-gap-tight);
     padding: ${spacing[10]}px ${spacing[16]}px;
-    border-top: var(--stroke-thin) solid ${cv.borderRole.subtle};
+    border-top: var(--stroke-default) solid ${cv.borderRole.subtle};
   }
 `;

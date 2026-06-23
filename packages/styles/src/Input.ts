@@ -59,7 +59,7 @@ export const inputStyles = `
     width: 100%;
     min-height: var(--nds-input-height, ${sizing.input.default}px);
     padding: 0 var(--nds-input-padding-x, var(--semantic-inset-card));
-    border: var(--stroke-thin) solid var(--nds-input-border-color, ${cv.input.borderDefault});
+    border: var(--stroke-default) solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: var(--nds-input-radius, ${radius[8]}px);
     background: var(--nds-input-background, ${cv.input.bg});
     box-sizing: border-box;
@@ -77,7 +77,7 @@ export const inputStyles = `
   :where(.${INPUT_ROOT_CLASS}[data-variant="line"]) :where(.${INPUT_WRAPPER_CLASS}),
   :where([data-project="runmile"] .${INPUT_ROOT_CLASS}:not([data-variant="box"])) :where(.${INPUT_WRAPPER_CLASS}) {
     border: none;
-    border-bottom: var(--stroke-thin) solid var(--nds-input-border-color, ${cv.input.borderDefault});
+    border-bottom: var(--stroke-default) solid var(--nds-input-border-color, ${cv.input.borderDefault});
     border-radius: 0;
     padding-left: 0;
     padding-right: 0;
