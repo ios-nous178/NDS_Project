@@ -64,6 +64,26 @@ const DATA_URI_BY_FILENAME: Record<string, string> = {
   "project/runmile/logos/runmile-logo-black.svg": defaults.RUNMILE_LOGO_BLACK_DATA_URI,
   "project/runmile/logos/runmile-logo-gray700.svg": defaults.RUNMILE_LOGO_GRAY700_DATA_URI,
   "project/runmile/logos/runmile-logo-white.svg": defaults.RUNMILE_LOGO_WHITE_DATA_URI,
+
+  // Cashwalk 소비자앱 로고 가이드 (Figma 140:56) — 13 SVG.
+  "project/cashwalk/logos/cashwalk-horizontal.svg": defaults.CASHWALK_HORIZONTAL_DATA_URI,
+  "project/cashwalk/logos/cashwalk-horizontal-black.svg":
+    defaults.CASHWALK_HORIZONTAL_BLACK_DATA_URI,
+  "project/cashwalk/logos/cashwalk-horizontal-white.svg":
+    defaults.CASHWALK_HORIZONTAL_WHITE_DATA_URI,
+  "project/cashwalk/logos/cashwalk-horizontal-compact.svg":
+    defaults.CASHWALK_HORIZONTAL_COMPACT_DATA_URI,
+  "project/cashwalk/logos/cashwalk-horizontal-compact-black.svg":
+    defaults.CASHWALK_HORIZONTAL_COMPACT_BLACK_DATA_URI,
+  "project/cashwalk/logos/cashwalk-horizontal-compact-white.svg":
+    defaults.CASHWALK_HORIZONTAL_COMPACT_WHITE_DATA_URI,
+  "project/cashwalk/logos/cashwalk-vertical.svg": defaults.CASHWALK_VERTICAL_DATA_URI,
+  "project/cashwalk/logos/cashwalk-vertical-black.svg": defaults.CASHWALK_VERTICAL_BLACK_DATA_URI,
+  "project/cashwalk/logos/cashwalk-vertical-white.svg": defaults.CASHWALK_VERTICAL_WHITE_DATA_URI,
+  "project/cashwalk/logos/cashwalk-symbol.svg": defaults.CASHWALK_SYMBOL_DATA_URI,
+  "project/cashwalk/logos/cashwalk-symbol-black.svg": defaults.CASHWALK_SYMBOL_BLACK_DATA_URI,
+  "project/cashwalk/logos/cashwalk-symbol-white.svg": defaults.CASHWALK_SYMBOL_WHITE_DATA_URI,
+  "project/cashwalk/logos/cashwalk-shoe-icon.svg": defaults.CASHWALK_SHOE_ICON_DATA_URI,
 };
 
 function augment(meta: ProjectLogoMeta): ProjectLogo {
@@ -85,6 +105,7 @@ export const PROJECT_LOGOS: Record<ProjectSlug, ProjectLogoSet> = {
   "nudge-eap": augmentSet(PROJECT_LOGO_METADATA["nudge-eap"]),
   "cashwalk-biz": augmentSet(PROJECT_LOGO_METADATA["cashwalk-biz"]),
   runmile: augmentSet(PROJECT_LOGO_METADATA.runmile),
+  cashwalk: augmentSet(PROJECT_LOGO_METADATA.cashwalk),
 };
 
 /** 한 프로젝트의 보유 로고 전체 (variant → ProjectLogo). */
