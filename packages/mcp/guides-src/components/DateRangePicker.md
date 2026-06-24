@@ -14,6 +14,7 @@
 - 프리셋은 defaultRangePresets로 빠른 것 3개 제공 (7일/30일/이번 달). 검사·리포트마다 다른 기본값이 필요하면 직접 정의.
 - presets[].range는 함수 — 호출 시점의 "오늘"을 기준으로 계산하기 위함. 객체 리터럴로 박지 말 것.
 - 선택 불가 날짜는 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다.
+- **캘린더 패널은 `document.body` 로 portal 된다** — `overflow:hidden` 조상(아코디언·모달 본문·필터 패널) 안에 둬도 패널이 잘리지 않는다. 조상의 overflow 를 풀 필요 없음. 특정 컨테이너로 portal 하려면 React `portalContainer`, HTML `portal-container`(셀렉터 문자열) 사용.
 
 ## recommended
 

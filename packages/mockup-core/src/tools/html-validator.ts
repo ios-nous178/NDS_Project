@@ -536,7 +536,10 @@ function isNonInlinableImgRef(rawUrl: string): boolean {
   return !INLINABLE_IMG_PREFIXES.some((p) => url.startsWith(p));
 }
 
-function resolveDocumentProject($: cheerio.CheerioAPI, declaredProject?: string): string | undefined {
+function resolveDocumentProject(
+  $: cheerio.CheerioAPI,
+  declaredProject?: string,
+): string | undefined {
   const classProject = ($("body").attr("class") ?? "").match(/\bproject-([a-z0-9-]+)\b/i)?.[1];
   return (
     canonicalProjectSlug(declaredProject) ??
@@ -667,7 +670,11 @@ function checkStyleString(
  * 허용: --nds-* / --semantic-* 커스텀 프로퍼티(슬롯·토큰 전달), display(:contents / :none 등 의도적 토글).
  * 제외 태그: display:contents 를 안 쓰는 소수 컴포넌트.
  */
-const HOST_CONTENTS_EXEMPT_TAGS = new Set(["nds-project-chrome", "nds-input-group", "nds-inspector"]);
+const HOST_CONTENTS_EXEMPT_TAGS = new Set([
+  "nds-project-chrome",
+  "nds-input-group",
+  "nds-inspector",
+]);
 const HOST_DROPPED_PROP =
   /^(?:margin|padding|width|height|min-width|max-width|min-height|max-height|flex|align-self|justify-self|gap|row-gap|column-gap|background|border|box-shadow|position|top|right|bottom|left|transform|overflow)(?:-[a-z]+)*$/;
 
@@ -681,6 +688,49 @@ function ndsHostBoxStyleProps(tag: string, style: string): string[] {
     if (HOST_DROPPED_PROP.test(prop) && !found.includes(prop)) found.push(prop);
   }
   return found;
+}
+
+const POS_ABS_RE = /position\s*:\s*(?:absolute|fixed)\b/i;
+
+/**
+ * <style> 안에서 position:absolute|fixed 를 set 하는 규칙의 '주체(subject)' class/id 토큰 집합.
+ * nds-* 호스트(display:contents)가 이런 클래스를 달면 positioning 이 죽고 내부 요소가 부모 좌상단으로
+ * 흘러나온다(모달 닫기 X 가 좌상단에 뜬 근본 원인). 인라인 style 은 ndsHostBoxStyleProps 가 잡고,
+ * 이건 '클래스/id 로 받은' 케이스를 잡는다.
+ */
+function collectPositionedSelectorTokens(styleText: string): Set<string> {
+  const out = new Set<string>();
+  if (!styleText) return out;
+  const ruleRe = /([^{}]+)\{([^{}]*)\}/g;
+  let m: RegExpExecArray | null;
+  while ((m = ruleRe.exec(styleText))) {
+    if (!POS_ABS_RE.test(m[2])) continue;
+    for (const sel of m[1].split(",")) {
+      // 주체 = 결합자(space > + ~)로 끊은 마지막 컴파운드만 — 후손 셀렉터의 조상까지 잡지 않게.
+      const subject =
+        sel
+          .trim()
+          .split(/[\s>+~]+/)
+          .pop() ?? "";
+      const tokenRe = /([.#][A-Za-z0-9_-]+)/g;
+      let t: RegExpExecArray | null;
+      while ((t = tokenRe.exec(subject))) out.add(t[1]);
+    }
+  }
+  return out;
+}
+
+/** nds-* 호스트가 position:absolute|fixed 클래스/id 를 달았는지 → 매칭 토큰(없으면 null). */
+function ndsHostPositionedSelector(
+  tokens: Set<string>,
+  attrs: Record<string, string>,
+): string | null {
+  if (tokens.size === 0) return null;
+  for (const c of (attrs.class ?? "").split(/\s+/).filter(Boolean)) {
+    if (tokens.has(`.${c}`)) return `.${c}`;
+  }
+  if (attrs.id && tokens.has(`#${attrs.id}`)) return `#${attrs.id}`;
+  return null;
 }
 
 function escapeRegExp(value: string): string {
@@ -863,6 +913,10 @@ export function validateHtmlSource(
     }
   }
 
+  // nds-* 호스트가 '클래스/id 로' position:absolute|fixed 를 받은 케이스(display:contents 풋건)용 —
+  // <style> 한 번만 스캔해 주체 토큰 집합을 만든다(요소마다 재파싱 방지).
+  const positionedSelectorTokens = collectPositionedSelectorTokens(collectStyleText(source));
+
   // 모든 element 순회 — style / class / svg / native button 검사
   $("*").each((_idx, el) => {
     if (el.type !== "tag") return;
@@ -933,6 +987,23 @@ export function validateHtmlSource(
           detail: `<${tag}> 호스트에 ${droppedProps.join(" / ")} — display:contents 라 무시됨`,
           suggestion:
             "nds-* 호스트는 display:contents 라 박스 스타일이 안 먹는다. 일반 <div> 로 감싸 wrapper 에 주거나(간격), 부모 컨테이너를 flex/grid 로 만들어 gap(var(--semantic-gap-*))으로 띄울 것. 호스트엔 --nds-*/--semantic-* 변수만 허용. get_guide({ topic: 'pattern:host-spacing' }).",
+        });
+      }
+    }
+
+    // 1-ter. nds-* 호스트가 position:absolute|fixed 를 '클래스/id' 로 받은 경우(인라인이 아닌 <style> 규칙).
+    //   display:contents 라 positioning 이 죽고 내부 요소가 부모 좌상단으로 흘러나온다 — 모달 닫기 X 가
+    //   좌상단에 뜬 근본 원인. positioned <div> 로 감싸고 nds-* 는 그 안에 둘 것.
+    if (tag.startsWith("nds-") && !HOST_CONTENTS_EXEMPT_TAGS.has(tag)) {
+      const posSel = ndsHostPositionedSelector(positionedSelectorTokens, attrs);
+      if (posSel) {
+        violations.push({
+          rule: "nds-host-box-style",
+          line,
+          selector,
+          detail: `<${tag}> 호스트가 ${posSel} 로 position(absolute/fixed) — display:contents 라 무시되고 내부 요소가 흘러나온다`,
+          suggestion:
+            "nds-* 호스트는 display:contents 라 position 이 안 먹는다. positioned <div> 로 감싸 wrapper 에 position/top/right 를 주고 nds-* 는 그 안에 둘 것(모달 닫기 버튼 등). get_guide({ topic: 'pattern:host-spacing' }).",
         });
       }
     }
@@ -1450,7 +1521,8 @@ export function validateHtmlSource(
   //   프로젝트 컨텍스트(<html data-project> 또는 nds-project-* chrome 사용)가 있는데
   //   base nds-header 에 GNB 자식(logo/menu/auth)을 직접 박았으면 nds-project-header 로 유도.
   const hasDataProject = $("html[data-project], body[data-project]").length > 0;
-  const hasProjectChrome = $("nds-project-header, nds-project-footer, nds-project-bottom-nav").length > 0;
+  const hasProjectChrome =
+    $("nds-project-header, nds-project-footer, nds-project-bottom-nav").length > 0;
   if (hasDataProject || hasProjectChrome) {
     $("nds-header").each((_i, el) => {
       if (el.type !== "tag") return;
@@ -1479,8 +1551,7 @@ export function validateHtmlSource(
   //   text-logo 차단(cashwalk-biz-onboarding-no-gnb)을 모든 프로젝트 admin 셸 사이드바로 일반화.
   {
     const shellChrome = $(".nds-shell__sidebar, .nds-shell__topbar, nds-sidebar");
-    const hasProperLogo =
-      $("nds-sidebar[project]").length > 0 || $("nds-project-logo").length > 0;
+    const hasProperLogo = $("nds-sidebar[project]").length > 0 || $("nds-project-logo").length > 0;
     if (shellChrome.length > 0 && !hasProperLogo) {
       // 계정/아바타 영역의 data img 오탐 제외 (로고가 아님)
       const avatarSel =
@@ -1499,8 +1570,7 @@ export function validateHtmlSource(
       });
       const offenderNode = imgLogo.get(0) ?? textLogo.get(0);
       if (offenderNode) {
-        const offset =
-          (offenderNode as unknown as { startIndex?: number }).startIndex ?? 0;
+        const offset = (offenderNode as unknown as { startIndex?: number }).startIndex ?? 0;
         const isDataUri = /^data:image/i.test($(offenderNode).attr("src") ?? "");
         violations.push({
           rule: "admin-sidebar-logo-not-component",

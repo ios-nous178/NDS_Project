@@ -168,10 +168,16 @@ export const MOCKUP_FRAME_JS = `
       tabsModeBtn.toggleAttribute('data-active', mode === 'tabs');
       gridModeBtn.toggleAttribute('data-active', mode === 'grid');
     }
-    function activate(idx){
+    function activate(idx, silent){
       for(var j=0;j<screens.length;j++){
         screens[j].toggleAttribute('data-active', j === idx);
         tabs[j].toggleAttribute('data-active', j === idx);
+      }
+      // 시나리오 보드의 '지금 보는 화면'이 탭 전환을 따라오도록 알림.
+      // from:'switcher' 로 자기 이벤트를 구분해 역방향 리스너와의 무한루프를 막는다.
+      if(!silent){
+        var key = screens[idx] && screens[idx].getAttribute('data-screen');
+        if(key) document.dispatchEvent(new CustomEvent('nds-scenario-nav',{detail:{screen:key,from:'switcher'}}));
       }
     }
     function mkMode(text, mode){
@@ -200,8 +206,19 @@ export const MOCKUP_FRAME_JS = `
     modeWrap.appendChild(gridModeBtn);
 
     canvas.insertBefore(bar, canvas.firstChild);
-    activate(0);
+    activate(0, true);
     setMode(canvas.getAttribute('data-mode') === 'grid' ? 'grid' : 'tabs');
+
+    // 역방향: 시나리오 보드(또는 외부)가 nds-scenario-nav 를 쏘면 해당 화면 탭을 활성화 →
+    // 보드 단계 클릭으로도 실제 화면이 전환된다(tabs 모드 가시성은 .mockup-screen[data-active] 가 좌우).
+    // 이로써 보드↔스위처가 한 이벤트로 양방향 동기화 — 목업별 브릿지 스크립트가 불필요.
+    document.addEventListener('nds-scenario-nav', function(e){
+      var key = e.detail && e.detail.screen;
+      if(!key || (e.detail && e.detail.from === 'switcher')) return; // 자기가 쏜 이벤트는 무시(루프 방지)
+      for(var j=0;j<screens.length;j++){
+        if(screens[j].getAttribute('data-screen') === key){ setMode('tabs'); activate(j, true); return; }
+      }
+    });
   }
   function run(){
     var list = document.querySelectorAll('.mockup-canvas');
@@ -334,7 +351,8 @@ export function loadStandaloneAssets(project?: string): StandaloneAssets {
   // requested/recognized 는 호출별로 달라지므로 캐시 본문(runtime/css)만 재사용하고 매번 덧씌운다.
   if (hit) return { ...hit, requested, recognized };
 
-  const cssPieces = manifest.projects[resolvedProject] ?? manifest.projects[manifest.baseOnlyProject];
+  const cssPieces =
+    manifest.projects[resolvedProject] ?? manifest.projects[manifest.baseOnlyProject];
   const css =
     cssPieces.map((file) => fs.readFileSync(path.join(dir, file), "utf-8")).join("\n") +
     // 목업 전용 디바이스 프레임 — 단일 파일 빌드·미리보기 양쪽에 항상 동봉(옵트인 클래스).

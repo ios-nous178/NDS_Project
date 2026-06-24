@@ -64,9 +64,7 @@ export interface ScenarioData {
  * 순수 정규식 — cheerio 없이 build/preview 양쪽에서 쓴다.
  */
 export function parseScenarioFromHtml(html: string): ScenarioData | null {
-  const m = html.match(
-    /<script\b[^>]*\bdata-nds-scenario\b[^>]*>([\s\S]*?)<\/script>/i,
-  );
+  const m = html.match(/<script\b[^>]*\bdata-nds-scenario\b[^>]*>([\s\S]*?)<\/script>/i);
   if (!m) return null;
   let parsed: unknown;
   try {
@@ -169,7 +167,9 @@ export function renderScenarioBoard(): string {
     `aria-label="시나리오 보드 토글" title="시나리오 보드 토글">` +
     `<span data-ndssb="toggle-ic" aria-hidden="true">›</span><span data-ndssb="toggle-tx">가이드</span></button>`;
 
-  return style + panel + toggle + `<script ${SCENARIO_BOARD_MARKER}="driver">${SCENARIO_DRIVER}</script>`;
+  return (
+    style + panel + toggle + `<script ${SCENARIO_BOARD_MARKER}="driver">${SCENARIO_DRIVER}</script>`
+  );
   // 주: 클래스 prefix 는 `ndssb`(=`nds-` 미시작) — validator 의 unknown-nds-class 오탐 회피.
 }
 
@@ -254,9 +254,11 @@ const SCENARIO_DRIVER = `(function(){
   function sync(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;renderScreen(currentKey());});}
 
   // [data-screen] 가시성 변화를 관찰해 라이브 싱크.
+  // data-active 도 관찰 — 멀티스크린 스위처(.mockup-screen[data-active])는 탭 전환 시
+  // hidden/style 이 아니라 data-active 만 토글하므로, 빠지면 보드가 탭을 안 따라간다.
   var mo=new MutationObserver(sync);
   document.querySelectorAll("[data-screen]").forEach(function(el){
-    mo.observe(el,{attributes:true,attributeFilter:["hidden","style","class"]});
+    mo.observe(el,{attributes:true,attributeFilter:["hidden","style","class","data-active"]});
   });
   document.addEventListener("nds-scenario-nav",sync);
 

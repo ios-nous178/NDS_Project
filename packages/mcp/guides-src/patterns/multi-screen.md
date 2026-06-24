@@ -39,6 +39,7 @@ metrics:
 - 프로젝트 헤더는 프레임 안에서 `<nds-project-header project surface='web|mobile|webview'>` — surface 로 디바이스별 헤더(PC GNB / 모바일 컴팩트 / 웹뷰 뒤로가기)가 자동 분기. base `<nds-header>` 손수 조립 금지.
 - 프레임/스위처(.mockup-canvas · .mockup-screen)는 목업 전용으로 빌드가 자동 inline — `<style>` 에 `.screen{width:…}` 나 미디어쿼리 토글을 직접 쓰지 말 것(클래스만 사용).
 - 단일 화면 목업이면 `.mockup-screen` 하나(또는 캔버스 없이 `<main>` 하나)로 충분 — 탭은 화면이 2개 이상일 때만 자동 생성.
+- **시나리오 보드 연동은 `data-screen` 하나면 자동·양방향** — 각 `.mockup-screen` 에 `data-screen="<key>"`(시나리오 JSON 의 screen 키와 일치)를 달면, 상단 탭 전환 → 보드 '지금 보는 화면'이 따라오고, 보드 플로우 단계 클릭 → 실제 화면이 전환된다. 스위처와 보드가 `nds-scenario-nav` 이벤트로 자동 동기화하므로 **MutationObserver·이벤트 브릿지 스크립트를 손으로 끼우지 말 것**(빌드가 처리).
 
 ## avoid
 
@@ -47,3 +48,4 @@ metrics:
 - @media 로 모바일/웹 헤더를 display 토글 (동시 비교 불가)
 - base <nds-header> + nds-header-logo/menu 손수 조립으로 프로젝트 GNB 흉내
 - 디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)
+- 보드↔스위처 동기화를 위해 MutationObserver/`nds-scenario-nav` 브릿지 스크립트를 손으로 추가 (`data-screen` 만 달면 빌드가 양방향 처리 — 브릿지는 중복·드리프트 원인)
