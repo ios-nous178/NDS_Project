@@ -81,30 +81,10 @@ export const genietTheme: ProjectTheme = {
     },
   },
   spacing: {
-    // Gap — 요소 간 거리(itemSpacing), 의도 기반. SSOT: Figma 지니어트 Library / Spacing (3034:2).
-    // base 대비: default 10→8 (가장 빈번한 표준 간격), section 40 신규.
-    gap: {
-      tight: 4, // Chip·Badge·Icon+Text 등 매우 가까운 그룹
-      default: 8, // 표준 컴포넌트 내부 — 가장 빈번 ★ (base 10 → 8)
-      comfortable: 12, // 폼 필드·세그먼트·의미 단위 그룹
-      loose: 16, // 컴포넌트↔컴포넌트·카드 내 위계
-      wide: 24, // 큰 영역↔큰 영역·폼 그룹 간
-      section: 40, // Section↔Section·페이지 블록 분리 (신규)
-    },
-    // Inset — 내부 여백(padding), 사용처 기반. SSOT: 같은 가이드.
-    // base 대비: chip 8→6, button 14 / section 32 신규.
-    inset: {
-      chip: 6, // Chip·Badge·작은 Tag 내부 (base 8 → 6)
-      input: 12, // Input·Dropdown 좌우 padding
-      button: 14, // Button 상하 padding (신규)
-      card: 16, // Card·Toast·일반 컨테이너
-      "card-large": 20, // 큰 Card·Hero 카드
-      modal: 24, // Modal·Bottom Sheet·Drawer
-      section: 32, // 페이지 Section·큰 영역 padding (신규)
-    },
-    // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
-    // Section/Container 가이드(1385:13): PC max-width 1280 · side padding 40, Mobile 16.
-    // (side padding 40 = base desktop.minMargin, mobile margin 16 = base — contentWidth만 1200→1280.)
+    // Gap·Inset 은 캐시워크 SpacingGuide(361:1328) 공통 사용 — 프로젝트 override 제거.
+    //   (옛 지니어트 가이드 3034:2 의 default 8·chip 6 + 미사용 section/button 토큰 폐지
+    //    → base 캐시워크 값 default 10·chip 8 로 통일. radius·stroke 도 base 공통.)
+    // Section/Container 가이드(1385:13): PC max-width 만 1280 — 구조적 레이아웃이라 유지(스페이싱 스케일 아님).
     grid: {
       desktop: { contentWidth: 1280 },
     },

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T23:28:22.993Z",
+  "generatedAt": "2026-06-24T07:15:34.557Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -13004,11 +13004,7 @@
     {
       "name": "--semantic-gap-default",
       "value": "10px",
-      "group": "semantic",
-      "projectValues": {
-        "geniet": "8px",
-        "trost": "8px"
-      }
+      "group": "semantic"
     },
     {
       "name": "--semantic-gap-label",
@@ -13019,15 +13015,6 @@
       "name": "--semantic-gap-loose",
       "value": "16px",
       "group": "semantic"
-    },
-    {
-      "name": "--semantic-gap-section",
-      "value": "40px",
-      "group": "semantic",
-      "projects": [
-        "geniet",
-        "trost"
-      ]
     },
     {
       "name": "--semantic-gap-tight",
@@ -13361,15 +13348,6 @@
       "group": "semantic"
     },
     {
-      "name": "--semantic-inset-button",
-      "value": "14px",
-      "group": "semantic",
-      "projects": [
-        "geniet",
-        "trost"
-      ]
-    },
-    {
       "name": "--semantic-inset-card",
       "value": "16px",
       "group": "semantic"
@@ -13382,11 +13360,7 @@
     {
       "name": "--semantic-inset-chip",
       "value": "8px",
-      "group": "semantic",
-      "projectValues": {
-        "geniet": "6px",
-        "trost": "6px"
-      }
+      "group": "semantic"
     },
     {
       "name": "--semantic-inset-input",
@@ -13397,28 +13371,6 @@
       "name": "--semantic-inset-modal",
       "value": "24px",
       "group": "semantic"
-    },
-    {
-      "name": "--semantic-inset-page",
-      "value": "48px",
-      "group": "semantic",
-      "projects": [
-        "cashwalk-biz"
-      ]
-    },
-    {
-      "name": "--semantic-inset-section",
-      "value": "30px",
-      "group": "semantic",
-      "projects": [
-        "cashwalk-biz",
-        "geniet",
-        "trost"
-      ],
-      "projectValues": {
-        "geniet": "32px",
-        "trost": "32px"
-      }
     },
     {
       "name": "--semantic-text-brand-default",

@@ -83,18 +83,9 @@ export const cashwalkBizTheme: ProjectTheme = {
     },
   },
   spacing: {
-    // 숫자 spacing 스케일은 base 단일 스케일(공통) 사용 — radius 와 동일하게 프로젝트 override 없음.
-    // (값이 base 와 동일했고, 캐포비 전용으로 얹던 56/64 는 소비 0 이라 제거. runmile/geniet/trost 와 동일 정책.)
-    // Inset 7 tokens — Figma SpacingGuide. input inset 은 12px (base 와 동일).
-    inset: {
-      chip: 8,
-      input: 12,
-      card: 16,
-      "card-large": 20,
-      modal: 24,
-      section: 30, // 신규
-      page: 48, // 신규
-    },
+    // Primitive·Gap·Inset 은 캐시워크 SpacingGuide(361:1328) 공통 사용 — 프로젝트 override 없음.
+    //   (옛 inset override 는 chip8~modal24 가 base 와 동일(중복)했고 section30/page48 은 소비 0 이라 제거.)
+    // gapTitle 만 예외 유지 — caPOBi 헤딩 타입스케일(h1 32px…)에 결합돼 base(h4 6 등)와 다름.
     // Gap/Title — Figma SpacingGuide. typeScale 매핑(Heading1=headline1, ...) 과 정합.
     gapTitle: {
       h1: 20, // 32px Heading1 다음
