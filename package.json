@@ -34,6 +34,7 @@
     "sync:mcpb-version": "node scripts/sync-mcpb-version.mjs",
     "lint:mcpb-version": "node scripts/sync-mcpb-version.mjs --check",
     "publish:assets-s3": "node scripts/publish-assets-s3.mjs",
+    "publish:mcp-s3": "node scripts/publish-mcp-s3.mjs",
     "lint:mcp-catalog": "node scripts/check-mcp-catalog.mjs",
     "lint:mirror-parity": "node scripts/check-mirror-parity.mjs",
     "lint:style-token-parity": "node scripts/check-style-token-parity.mjs",

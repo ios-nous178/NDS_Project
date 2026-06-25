@@ -1,0 +1,77 @@
+name: Publish MCP to S3
+
+# main 에 push 될 때마다 (버전·태그와 무관하게) MCP 본체를 에셋 S3 에 발행한다.
+# bootstrap.mjs 가 buildId(=git sha)로 content-addressing 하므로, 버전을 안 올려도
+# 새 빌드가 새 경로에 올라가고 version.json 이 그걸 가리킨다 → 사용자는 다음 실행에 반영.
+#
+# 공식 버전 릴리즈(GitHub Release + Slack)는 release-mcpb.yml 이 따로 담당.
+# AWS Secret/Variable 이 없으면 발행 단계는 자동 skip.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/mcp/manifest.json"
+      - "packages/mcp/src/**"
+      - "packages/mcp/bootstrap.mjs"
+      - "packages/mcp/install.sh"
+      - "packages/mcp/scripts/**"
+      - "scripts/pack-mcpb.mjs"
+      - "scripts/publish-mcp-s3.mjs"
+      - "packages/tokens/src/**"
+      - "packages/react/src/**"
+      - "packages/icons/svg/**"
+  workflow_dispatch:
+
+# 연속 push 시 이전 발행은 취소(마지막 것만). version.json 을 맨 마지막에 올리므로
+# 중간 취소돼도 포인터는 이전 본체를 가리켜 안전하다.
+concurrency:
+  group: publish-mcp-s3
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # AWS OIDC role assume
+      contents: read
+    env:
+      # 둘 중 하나라도 비어 있으면 발행 단계 자동 skip.
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      S3_BUCKET: ${{ vars.NUDGE_DS_ASSET_S3_BUCKET }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 9.6.0
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build + pack mcpb
+        run: pnpm pack:mcpb
+
+      - name: Smoke test bundle
+        run: pnpm smoke:mcpb
+
+      - name: Configure AWS credentials
+        if: env.AWS_ROLE_ARN != '' && env.S3_BUCKET != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'ap-northeast-2' }}
+
+      - name: Publish MCP bundle to S3
+        if: env.AWS_ROLE_ARN != '' && env.S3_BUCKET != ''
+        env:
+          NUDGE_DS_ASSET_S3_BUCKET: ${{ env.S3_BUCKET }}
+          NUDGE_DS_ASSET_CDN_ORIGIN: ${{ vars.NUDGE_DS_ASSET_CDN_ORIGIN }}
+          NUDGE_DS_BUILD_ID: ${{ github.sha }}
+        run: node scripts/publish-mcp-s3.mjs --apply

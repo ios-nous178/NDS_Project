@@ -227,9 +227,9 @@ function compareSemver(a: string, b: string): number {
 }
 
 /**
- * GitHub Releases API 를 직접 찔러서 새 mcpb 가 나왔는지 확인.
- * Claude Desktop 의 자동 polling 이 동작하지 않더라도, 사용자가 채팅에서
- * "최신 버전 있어?" 라고 물으면 이 도구가 결과를 돌려준다.
+ * 새 버전이 나왔는지 확인. 레포가 프라이빗이라 GitHub Release API 는 403 이므로,
+ * 부트스트랩과 동일하게 S3 의 version.json(에셋 버킷, nds-assets/mcp/version.json)을 본다.
+ * 실제 업데이트는 부트스트랩이 자동 처리하므로 이 도구는 "재시작하면 적용됨" 안내가 핵심.
  */
 export async function checkMcpUpdate(): Promise<{
   installed: string | null;
@@ -260,26 +260,16 @@ export async function checkMcpUpdate(): Promise<{
     };
   }
 
-  // "https://github.com/owner/repo" 또는 "...repo.git" 모두 허용
-  const match = repoUrl.match(/github\.com[/:]([^/]+)\/([^/.]+)(?:\.git)?\/?$/);
-  if (!match) {
-    return {
-      installed,
-      latest: null,
-      upToDate: false,
-      repositoryUrl: repoUrl,
-      downloadUrl: null,
-      releaseUrl: null,
-      howToUpdate: [],
-      error: `repository.url 형식을 해석할 수 없습니다: ${repoUrl}`,
-    };
-  }
-  const [, owner, repo] = match;
-
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+  // 프라이빗 레포라 GitHub Release API 는 403 → 부트스트랩과 동일하게 S3 version.json 을 본다.
+  const origin = (
+    process.env.NUDGE_DS_ASSET_CDN_ORIGIN ||
+    process.env.NUDGE_DS_CDN_ORIGIN ||
+    "https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com"
+  ).replace(/\/+$/, "");
+  const versionUrl = process.env.NUDGE_DS_UPDATE_URL || `${origin}/nds-assets/mcp/version.json`;
   try {
-    const res = await fetch(apiUrl, {
-      headers: { Accept: "application/vnd.github+json", "User-Agent": "nudge-mcp" },
+    const res = await fetch(versionUrl, {
+      headers: { Accept: "application/json", "User-Agent": "nudge-mcp" },
     });
     if (!res.ok) {
       return {
@@ -290,21 +280,16 @@ export async function checkMcpUpdate(): Promise<{
         downloadUrl: null,
         releaseUrl: null,
         howToUpdate: [],
-        error: `GitHub API ${res.status}: ${res.statusText}. private repo 이거나 아직 Release 가 없을 수 있습니다.`,
+        error: `업데이트 서버 응답 ${res.status}: ${res.statusText}. 아직 첫 발행 전이거나 네트워크 문제일 수 있습니다.`,
       };
     }
     const data = (await res.json()) as {
-      tag_name?: string;
-      name?: string;
-      html_url?: string;
-      assets?: Array<{ name?: string; browser_download_url?: string }>;
+      version?: string;
+      bundleUrl?: string;
     };
-    const latest = (data.tag_name ?? data.name ?? "").replace(/^v/, "") || null;
-    const releaseUrl = data.html_url ?? `${repoUrl}/releases/latest`;
-    const mcpbAsset = data.assets?.find((a) => a.name?.endsWith(".mcpb"));
-    const downloadUrl =
-      mcpbAsset?.browser_download_url ??
-      `${repoUrl}/releases/latest/download/${mcpbManifest?.name ?? "nudge-ds"}.mcpb`;
+    const latest = (data.version ?? "").replace(/^v/, "") || null;
+    const releaseUrl = versionUrl;
+    const downloadUrl = data.bundleUrl ?? null;
 
     if (!latest) {
       return {
@@ -323,11 +308,10 @@ export async function checkMcpUpdate(): Promise<{
     const howToUpdate = upToDate
       ? []
       : [
-          "1. Claude Desktop → Settings → Extensions 에서 nudge-ds 옆 Update 버튼이 활성화되어 있으면 클릭하세요.",
-          "2. Update 버튼이 안 보이면 아래 링크에서 .mcpb 를 직접 받아 더블클릭하세요:",
-          `   ${downloadUrl}`,
-          "3. Claude Desktop 을 ⌘Q 로 완전 종료 후 다시 켜야 새 MCP 가 적용됩니다.",
-          "4. **외부 mockup 프로젝트도 DS 패키지를 재설치하세요** — tarball 파일명에 버전이 박혀 보통은 npm cache miss 가 자동 발생하지만, 안전을 위해 get_setup({ step: 'install' }) 호출 후 응답의 `recommendedCommand` (rm -rf node_modules/@nudge* && npm install ...) 를 그대로 실행하세요.",
+          "이 MCP 는 자기갱신됩니다 — 최신 본체는 백그라운드로 이미 받아졌거나 다음 실행 때 받아집니다.",
+          "1. Claude Desktop 은 ⌘Q 로 완전 종료 후 다시 켜기 / 터미널 Claude Code 는 세션 재시작.",
+          "2. 재시작하면 새 버전이 자동 적용됩니다 (.mcpb 재설치·재다운로드 불필요).",
+          "3. **외부 mockup 프로젝트는 DS 패키지를 재설치하세요** — get_setup({ step: 'install' }) 응답의 `recommendedCommand` (rm -rf node_modules/@nudge* && npm install ...) 를 실행하세요.",
         ];
 
     return {
@@ -456,7 +440,9 @@ export function getMainTsxImports(args: { project?: string }) {
         `프로젝트 '${resolved.project.slug}' 는 공통 토큰 CSS가 기본값입니다. 별도 프로젝트 CSS import가 필요 없습니다.`,
       );
     } else if (resolved.ok && resolved.project?.cssImport) {
-      lines.push(`import "${resolved.project.cssImport}";  // 프로젝트 토큰 (${resolved.project.slug})`);
+      lines.push(
+        `import "${resolved.project.cssImport}";  // 프로젝트 토큰 (${resolved.project.slug})`,
+      );
     } else if (resolved.ok && resolved.project && !resolved.project.cssImport) {
       lines.push(`// '${resolved.project.slug}' 프로젝트는 토큰 CSS export가 준비되지 않았습니다.`);
       notes.push(
@@ -551,7 +537,9 @@ export function getHtmlEntryImports(args: { project?: string }) {
         `프로젝트 '${resolved.project.slug}' 는 공통 토큰 CSS가 기본값입니다. 별도 프로젝트 CSS import가 필요 없습니다.`,
       );
     } else if (resolved.ok && resolved.project?.cssImport) {
-      lines.push(`import "${resolved.project.cssImport}";  // 프로젝트 토큰 (${resolved.project.slug})`);
+      lines.push(
+        `import "${resolved.project.cssImport}";  // 프로젝트 토큰 (${resolved.project.slug})`,
+      );
     } else if (resolved.ok && resolved.project && !resolved.project.cssImport) {
       lines.push(`// '${resolved.project.slug}' 프로젝트는 토큰 CSS export가 준비되지 않았습니다.`);
       notes.push(
@@ -694,7 +682,9 @@ function getSetupInstructionsHtml(args: { project?: string; tgzDir?: string }) {
       "[bad] source=<figma-url-or-image-name> caption=<what to avoid>\n",
     note:
       "프롬프트에 이미지/Figma 링크/스크린샷이 이미 있어도 코드 작성 전에 항상 사용자에게 확인 질문(레퍼런스+영역 함께): " +
-      '"' + VISUAL_REFERENCE_QUESTION + '" ' +
+      '"' +
+      VISUAL_REFERENCE_QUESTION +
+      '" ' +
       "또한 파일 생성/수정 전 현재 워크스페이스를 얕게 보고, 같은 PRD/같은 화면으로 보이는 작업폴더가 명백히 있으면 반드시 " +
       '"동일한 기획으로 보이는 작업폴더가 있는데, 새 버전(v2)으로 만들까요?" 라고 묻고 답변 전 기존 폴더를 수정하지 않는다. 억지로 찾지는 말 것. ' +
       "references.md 또는 .references/ 가 없으면 build_singlefile_html 이 missing-visual-references 로 빌드를 차단한다.",
@@ -1196,7 +1186,7 @@ export function getSetupInstructions(args: {
     _advisory:
       "이 셋업은 사용자 앱(Trost/Geniet/NudgeEAP) 화면용입니다. " +
       "사내 백오피스(어드민/CMS/운영툴) 화면이면 'intent: \"backoffice\"' 옵션을 넘겨 antd 기반 셋업으로 전환하세요. " +
-      `외부 제공(b2b) 어드민은 ${DS_ADMIN_PROJECTS.join("/")} 만 지원 — 'intent: \"admin\", project: \"<slug>\"' 로 DS(html) 셋업.`,
+      `외부 제공(b2b) 어드민은 ${DS_ADMIN_PROJECTS.join("/")} 만 지원 — 'intent: "admin", project: "<slug>"' 로 DS(html) 셋업.`,
     summary: {
       tgzDir,
       requiredPackages: REQUIRED_PACKAGES,
@@ -1354,9 +1344,7 @@ export function getProjectInfo(args: { project: string; assetKind?: ProjectAsset
               minSize: "디지털 높이 ≥16px (16px 이하는 가독성 저하). 인쇄 ≥8mm.",
               clearSpace: "로고 사방에 로고 높이의 50% 이상 여백 (예: 20px 로고 → 10px 마진).",
               background: (() => {
-                const inverse = logoVariants.filter((v) =>
-                  ["white", "mono", "enMono"].includes(v),
-                );
+                const inverse = logoVariants.filter((v) => ["white", "mono", "enMono"].includes(v));
                 return inverse.length > 0
                   ? `배경 밝기로 색을 고른다: 밝은 배경=검정/기본 변종, 어두운 배경=반전 변종(${inverse.join("/")}). getProjectLogo("${slug}", "${inverse[0]}").`
                   : "밝은 배경 위 기본(검정) 변종으로 사용. 어두운 배경용 반전 변종은 아직 미등록 — 어두운 배경 위 검정 로고(저대비)는 피한다.";

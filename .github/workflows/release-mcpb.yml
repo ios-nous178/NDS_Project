@@ -20,6 +20,7 @@ on:
       # mcpb 자체 (매니페스트 · MCP 서버 · 패킹 스크립트)
       - "packages/mcp/manifest.json"
       - "packages/mcp/src/**"
+      - "packages/mcp/bootstrap.mjs"
       - "packages/mcp/scripts/**"
       - "scripts/pack-mcpb.mjs"
       # 번들에 포함되는 DS 소스 (토큰 · 컴포넌트 · 아이콘)
@@ -121,6 +122,9 @@ jobs:
           cp dist-mcpb/nudge-ds.mcpb \
              dist-mcpb/nudge-ds-v${{ steps.meta.outputs.version }}.mcpb
           ls -lh dist-mcpb/
+
+      # 참고: S3 본체 발행은 별도 워크플로우(publish-mcp-s3.yml)가 main push 마다
+      # (버전과 무관하게) 처리한다. 이 릴리즈 워크플로우는 GitHub Release + Slack 만 담당.
 
       # git log 기반 변경사항을 한 번 추출해 두고 GitHub Release body 와 Slack
       # changelog 댓글이 같은 결과를 재사용한다. GitHub 의 generate-release-notes

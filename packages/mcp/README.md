@@ -11,19 +11,38 @@ Nudge Design System용 MCP(Model Context Protocol) 서버.
 ### A. Claude Desktop 에 `.mcpb` 더블클릭 설치 (권장)
 
 Claude Desktop 사용자에게 가장 쉬운 방법입니다. **Node.js 설치 필요 없습니다.**
-Claude Desktop 이 자체 Node 런타임을 내장하고, GitHub Release 의 새 버전이 나오면 자동으로
-업데이트 알림을 띄워줍니다.
+Claude Desktop 이 자체 Node 런타임을 내장합니다.
 
-1. GitHub Releases 에서 `nudge-ds.mcpb` 를 받습니다
-   → https://github.com/cashwalk/NudgeEAPDesignSystem/releases/latest
-2. 파일을 더블클릭하거나, Claude Desktop → Settings → Extensions → "Install from file" 로
-   불러옵니다.
-3. 이후 모든 워크스페이스에서 `nudge-ds` MCP 가 자동 활성화됩니다.
+1. `nudge-ds.mcpb` 를 받아 더블클릭하거나, Claude Desktop → Settings → Extensions →
+   "Install from file" 로 불러옵니다.
+2. 이후 모든 워크스페이스에서 `nudge-ds` MCP 가 자동 활성화됩니다.
 
-이 모드에서는 `get_setup({ step: "update" })` 가 "Settings → Extensions 에서 Update 버튼을 누르세요"
-안내를 반환합니다.
+**업데이트는 자동입니다.** `.mcpb` 안의 부트스트랩이 실행 때마다 S3 의 최신 본체를 확인해
+받아두고 다음 실행부터 적용합니다(레포가 프라이빗이라 GitHub 자동 알림은 동작하지 않으므로
+이 방식으로 우회). `.mcpb` 자체를 다시 설치할 필요는 거의 없고, 부트스트랩 로직이 바뀌는
+드문 경우에만 새 `.mcpb` 를 재설치하면 됩니다.
 
-### B. Codex 에 등록
+### B. Claude Code (터미널) 원클릭 설치
+
+터미널의 Claude Code 사용자는 아래 한 줄이면 됩니다(**Node.js 20+ 필요**).
+자기갱신 부트스트랩을 `~/.nudge-ds` 에 받아 `claude` 에 stdio MCP 로 등록합니다.
+
+```bash
+curl -fsSL https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com/nds-assets/mcp/install.sh | sh
+```
+
+이후 Claude Code 를 재시작하면 `nudge-ds` MCP 가 뜹니다. 실제 본체는 첫 실행 때 S3 에서
+받아오고, 이후 S3 가 갱신되면 다음 실행부터 자동 반영됩니다(재설치 불필요).
+
+수동으로 등록하려면(이미 부트스트랩을 받아둔 경우):
+
+```bash
+claude mcp add nudge-ds --scope user \
+  -e NUDGE_DS_INSTALL_MODE=mcpb \
+  -- node "$HOME/.nudge-ds/bootstrap.mjs"
+```
+
+### C. Codex 에 등록
 
 `.mcpb` 는 Claude Desktop Extension 번들입니다. Codex 앱/CLI/IDE 확장은 Claude Desktop 처럼
 `.mcpb` 파일을 더블클릭해서 전역 Extension 으로 설치하는 흐름을 사용하지 않습니다.
@@ -31,7 +50,9 @@ Codex 에서는 MCP 서버를 stdio 명령으로 등록해야 하며, 공식 경
 `~/.codex/config.toml` / 프로젝트 `.codex/config.toml` 설정입니다.
 
 즉 Codex 에서는 `nudge-ds.mcpb` 를 안정적인 로컬 폴더에 압축 해제한 뒤, 그 안의
-`dist/tools/server.mjs` 를 실행하도록 연결합니다. 이 방식은 레포 클론 없이 동작하지만,
+`bootstrap.mjs` 를 실행하도록 연결합니다. `bootstrap.mjs` 가 실제 엔트리로,
+실행 때마다 S3 의 최신 본체를 확인해 받아두므로(동봉된 `embedded/` 본체는 오프라인/첫 실행
+폴백) **한 번 등록하면 이후 업데이트는 자동**입니다. 이 방식은 레포 클론 없이 동작하지만,
 Claude Desktop 처럼 내장 Node 를 쓰지 않으므로 사용자 PC 에 Node.js 20+ 가 필요합니다.
 
 Codex Desktop 앱을 쓰는 비개발자라면 아래 요청을 그대로 붙여넣는 경로를 권장합니다.
@@ -51,17 +72,16 @@ MCP 등록을 처리하게 합니다. 이미 등록된 `nudge-ds` 가 있으면 
 - 글로벌 설정(~/.codex/config.toml)과 프로젝트 설정(.codex/config.toml)에 nudge-ds가 동시에 있으면
   프로젝트 설정의 중복 nudge-ds 항목을 제거하고 글로벌 설정 하나만 남겨줘. 다른 프로젝트별 MCP 설정은 건드리지 마.
 - mcpb는 ~/.nudge-ds/mcpb/nudge-ds 에 압축 해제해줘.
-- 압축 해제한 dist/tools/server.mjs 를 nudge-ds MCP 서버로 Codex에 등록해줘.
+- 압축 해제한 bootstrap.mjs 를 nudge-ds MCP 서버로 Codex에 등록해줘
+  (sidecar 경로는 bootstrap 이 알아서 잡으니 env 로 지정하지 마).
 - 필요한 env는 NUDGE_AGENT=codex, NUDGE_AGENT_SURFACE=cli,
-  NUDGE_DS_INSTALL_MODE=mcpb,
-  NUDGE_DS_STANDALONE_DIR=~/.nudge-ds/mcpb/nudge-ds/dist/standalone,
-  NUDGE_DS_ASSETS_DIR=~/.nudge-ds/mcpb/nudge-ds/dist/assets,
-  NUDGE_DS_ICONS_VANILLA=~/.nudge-ds/mcpb/nudge-ds/dist/icons/vanilla.js 로 설정해줘.
+  NUDGE_DS_INSTALL_MODE=mcpb 로 설정해줘.
 - 등록 후 Codex를 재시작해야 하면 알려줘.
 ```
 
-업데이트도 자동으로 내려오지 않습니다. 새 `nudge-ds.mcpb` 를 받으면 같은 요청을 다시 실행해
-압축 해제 폴더를 교체하고 Codex 세션을 재시작하세요.
+한 번 등록하면 업데이트는 자동입니다 — bootstrap 이 실행 때마다 S3 최신 본체를 받아
+다음 실행부터 적용합니다. `.mcpb` 자체(동봉 폴백 본체)를 갱신하고 싶을 때만 새 파일로
+압축 해제 폴더를 교체하세요.
 
 수동으로 등록하거나 업데이트해야 할 때는 같은 작업을 아래처럼 실행합니다.
 
@@ -77,15 +97,13 @@ mkdir -p "$BUNDLE_DIR"
 unzip -q "$HOME/Downloads/nudge-ds.mcpb" -d "$BUNDLE_DIR"
 
 # 2. 같은 이름의 사용자 등록이 있으면 제거 후 다시 등록
+#    (entry = bootstrap.mjs — sidecar 경로/자기갱신은 bootstrap 이 처리)
 codex mcp remove nudge-ds 2>/dev/null || true
 codex mcp add nudge-ds \
   --env NUDGE_AGENT=codex \
   --env NUDGE_AGENT_SURFACE=cli \
   --env NUDGE_DS_INSTALL_MODE=mcpb \
-  --env NUDGE_DS_STANDALONE_DIR="$BUNDLE_DIR/dist/standalone" \
-  --env NUDGE_DS_ASSETS_DIR="$BUNDLE_DIR/dist/assets" \
-  --env NUDGE_DS_ICONS_VANILLA="$BUNDLE_DIR/dist/icons/vanilla.js" \
-  -- node "$BUNDLE_DIR/dist/tools/server.mjs"
+  -- node "$BUNDLE_DIR/bootstrap.mjs"
 ```
 
 프로젝트 단위로 고정하려면 `.codex/config.toml` 에 직접 둡니다. 단, Codex 는 사용자 설정
@@ -98,15 +116,12 @@ codex mcp add nudge-ds \
 ```toml
 [mcp_servers.nudge-ds]
 command = "node"
-args = ["/Users/<you>/.nudge-ds/mcpb/nudge-ds/dist/tools/server.mjs"]
+args = ["/Users/<you>/.nudge-ds/mcpb/nudge-ds/bootstrap.mjs"]
 
 [mcp_servers.nudge-ds.env]
 NUDGE_AGENT = "codex"
 NUDGE_AGENT_SURFACE = "cli"
 NUDGE_DS_INSTALL_MODE = "mcpb"
-NUDGE_DS_STANDALONE_DIR = "/Users/<you>/.nudge-ds/mcpb/nudge-ds/dist/standalone"
-NUDGE_DS_ASSETS_DIR = "/Users/<you>/.nudge-ds/mcpb/nudge-ds/dist/assets"
-NUDGE_DS_ICONS_VANILLA = "/Users/<you>/.nudge-ds/mcpb/nudge-ds/dist/icons/vanilla.js"
 ```
 
 Codex 는 저장소 규칙을 `AGENTS.md` 에서 읽습니다. 외부 목업 프로젝트를 처음 셋업할 때는
@@ -116,7 +131,7 @@ Codex 는 저장소 규칙을 `AGENTS.md` 에서 읽습니다. 외부 목업 프
 참고: OpenAI Codex MCP 설정 문서
 <https://developers.openai.com/codex/mcp>
 
-### C. 개발 모드 (DS 레포를 클론해 직접 빌드)
+### D. 개발 모드 (DS 레포를 클론해 직접 빌드)
 
 DS 자체를 수정/개발할 때 사용합니다.
 

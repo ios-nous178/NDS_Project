@@ -33,9 +33,10 @@ if (!sourceMode) {
 }
 
 // source 모드: packages/mcp 의 tsc 산출물(dist/server.js)을 직접 실행한다.
-// bundle 모드: pack-mcpb 가 esbuild 로 만든 단일 파일(dist/tools/server.mjs).
-//   ← manifest.json 의 server.entry_point 와 동일해야 한다 (SSOT).
-const serverPath = path.join(runtimeDir, sourceMode ? "dist/server.js" : "dist/tools/server.mjs");
+// bundle 모드: pack-mcpb 가 만든 .mcpb 의 실제 엔트리 = bootstrap.mjs.
+//   bootstrap 은 S3 업데이트를 확인하지만, 여기선 NUDGE_DS_NO_UPDATE=1 로 끄고
+//   동봉 본체(embedded/)로 폴백시켜 네트워크 없이 production 진입 경로를 검증한다.
+const serverPath = path.join(runtimeDir, sourceMode ? "dist/server.js" : "bootstrap.mjs");
 
 if (!fs.existsSync(serverPath)) {
   console.error(`[smoke-mcpb] server not found: ${serverPath}`);
@@ -52,6 +53,14 @@ const child = spawn(process.execPath, [serverPath], {
   env: {
     ...process.env,
     NUDGE_DS_INSTALL_MODE: "mcpb",
+    ...(sourceMode
+      ? {}
+      : {
+          NUDGE_DS_NO_UPDATE: "1",
+          NUDGE_DS_EMBEDDED_DIR: path.join(runtimeDir, "embedded"),
+          // 캐시가 다른 테스트와 안 섞이게 격리.
+          NUDGE_DS_CACHE_DIR: path.join(runtimeDir, ".cache"),
+        }),
   },
   stdio: ["pipe", "pipe", "pipe"],
 });

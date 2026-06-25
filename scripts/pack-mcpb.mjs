@@ -152,18 +152,19 @@ if (reactComponentCount < MIN_REACT_COMPONENTS) {
 }
 
 removeIfExists(BUNDLE_DIR);
-ensureDir(path.join(BUNDLE_DIR, "dist/tools"));
+ensureDir(path.join(BUNDLE_DIR, "embedded/tools"));
 ensureDir(OUT_ROOT);
 
 // 1) esbuild 단일 파일 (workspace deps 포함 전부 인라인, node: 빌트인만 외부)
-console.log("[pack-mcpb] esbuild → dist/tools/server.mjs");
+//    본체는 embedded/ 아래에 둔다 — bootstrap.mjs 가 첫 실행/오프라인 폴백으로 쓰는 floor.
+console.log("[pack-mcpb] esbuild → embedded/tools/server.mjs");
 await build({
   entryPoints: [serverEntry],
   bundle: true,
   platform: "node",
   format: "esm",
   target: "node20",
-  outfile: path.join(BUNDLE_DIR, "dist/tools/server.mjs"),
+  outfile: path.join(BUNDLE_DIR, "embedded/tools/server.mjs"),
   // ESM 출력에서 번들된 CJS 의존성(cheerio→undici 등)이 쓰는 require 를 살린다.
   banner: {
     js: "import{createRequire as __nudgeCR}from'node:module';const require=__nudgeCR(import.meta.url);",
@@ -171,22 +172,46 @@ await build({
   logLevel: "warning",
 });
 
-// 2) 런타임 부속 자산 (server.mjs 의 __dirname/../* 로 resolve)
-copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "dist/manifest.json"));
-copyFile(path.join(MCP, "catalog.json"), path.join(BUNDLE_DIR, "dist/catalog.json"));
-copyDir(standaloneSrc, path.join(BUNDLE_DIR, "dist/standalone"));
-copyDir(assetsFilesSrc, path.join(BUNDLE_DIR, "dist/assets"));
-if (fs.existsSync(assetsManifestSrc)) copyFile(assetsManifestSrc, path.join(BUNDLE_DIR, "dist/assets/manifest.json"));
-copyFile(iconsVanillaSrc, path.join(BUNDLE_DIR, "dist/icons/vanilla.js"));
+// 2) 런타임 부속 자산 (server.mjs 의 __dirname/../* 로 resolve — 이제 embedded/ 기준)
+copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "embedded/manifest.json"));
+copyFile(path.join(MCP, "catalog.json"), path.join(BUNDLE_DIR, "embedded/catalog.json"));
+copyDir(standaloneSrc, path.join(BUNDLE_DIR, "embedded/standalone"));
+copyDir(assetsFilesSrc, path.join(BUNDLE_DIR, "embedded/assets"));
+if (fs.existsSync(assetsManifestSrc))
+  copyFile(assetsManifestSrc, path.join(BUNDLE_DIR, "embedded/assets/manifest.json"));
+copyFile(iconsVanillaSrc, path.join(BUNDLE_DIR, "embedded/icons/vanilla.js"));
 
 // 3) get_setup 가 외부 목업 프로젝트에 설치 안내하는 DS .tgz.
-//    server 는 mcpb 모드에서 __dirname/../local-packages (= dist/local-packages) 를 읽는다.
-copyDir(path.join(ROOT, "local-packages"), path.join(BUNDLE_DIR, "dist/local-packages"));
+//    server 는 mcpb 모드에서 __dirname/../local-packages (= embedded/local-packages) 를 읽는다.
+copyDir(path.join(ROOT, "local-packages"), path.join(BUNDLE_DIR, "embedded/local-packages"));
 
-// 4) Claude Desktop 이 확장을 인식하려면 manifest.json 이 번들 루트에 있어야 한다.
-copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "manifest.json"));
+// 4) 자기갱신 부트스트랩 — mcp_config 가 실행하는 진짜 엔트리.
+//    실행 때마다 S3 version.json 을 보고 최신 본체를 받아 embedded 대신 그걸로 띄운다.
+copyFile(path.join(MCP, "bootstrap.mjs"), path.join(BUNDLE_DIR, "bootstrap.mjs"));
 
-// 5) .mcpb 압축
+// 5) Claude Desktop 이 인식할 루트 manifest.json — SSOT(packages/mcp/manifest.json)에
+//    부트스트랩 엔트리/환경만 덧씌운 변환본. (원본 manifest 구조는 건드리지 않는다.)
+const rootManifest = {
+  ...mcpManifest,
+  server: {
+    ...mcpManifest.server,
+    entry_point: "bootstrap.mjs",
+    mcp_config: {
+      command: "node",
+      args: ["${__dirname}/bootstrap.mjs"],
+      env: {
+        NUDGE_DS_INSTALL_MODE: "mcpb",
+        // 부트스트랩이 즉시 폴백으로 쓰는 동봉 본체. 캐시에 최신이 있으면 그쪽이 우선.
+        NUDGE_DS_EMBEDDED_DIR: "${__dirname}/embedded",
+        NUDGE_DS_ASSET_VERSION:
+          mcpManifest.server?.mcp_config?.env?.NUDGE_DS_ASSET_VERSION ?? "0.0.2",
+      },
+    },
+  },
+};
+fs.writeFileSync(path.join(BUNDLE_DIR, "manifest.json"), JSON.stringify(rootManifest, null, 2));
+
+// 6) .mcpb 압축
 removeIfExists(MCPB_PATH);
 
 const mcpb = spawnSync("mcpb", ["pack", BUNDLE_DIR, MCPB_PATH], { stdio: "inherit" });
