@@ -198,7 +198,9 @@ async function checkAndInstallUpdate() {
   const tmpTar = path.join(VERSIONS_DIR, `dl-${key}-${process.pid}.tar.gz`);
   const tmpDir = path.join(VERSIONS_DIR, `${key}.tmp-${process.pid}`);
   try {
-    const buf = await downloadTo(bundleUrl, tmpTar, 30000);
+    // bundleUrl 이 상대경로면 version.json URL 기준으로 절대화(방어적).
+    const absBundleUrl = new URL(bundleUrl, UPDATE_URL).href;
+    const buf = await downloadTo(absBundleUrl, tmpTar, 30000);
     if (wantHash) {
       const got = sha256(buf);
       if (got !== wantHash) {

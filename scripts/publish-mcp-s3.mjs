@@ -37,10 +37,12 @@ const OUT_DIR = path.join(ROOT, "dist-mcpb");
 const apply = process.argv.includes("--apply");
 const bucket = valueOf("--bucket") ?? process.env.NUDGE_DS_ASSET_S3_BUCKET;
 const prefix = (valueOf("--prefix") ?? "nds-assets/mcp").replace(/^\/+|\/+$/g, "");
+// ⚠ `||` (not `??`): CI 는 미설정 변수를 빈 문자열로 넘기므로 빈 값도 폴백해야
+//    bundleUrl 이 상대경로가 되는 걸 막는다.
 const cdnOrigin = (
-  valueOf("--cdn-origin") ??
-  process.env.NUDGE_DS_ASSET_CDN_ORIGIN ??
-  process.env.NUDGE_DS_CDN_ORIGIN ??
+  valueOf("--cdn-origin") ||
+  process.env.NUDGE_DS_ASSET_CDN_ORIGIN ||
+  process.env.NUDGE_DS_CDN_ORIGIN ||
   "https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com"
 ).replace(/\/+$/g, "");
 
