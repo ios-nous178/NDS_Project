@@ -1,0 +1,65 @@
+name: Publish Assets to S3
+
+# DS 이미지 자산(@nudge-design/assets/dist/files)을 에셋 S3 nds-assets/assets/{version}/ 에 발행.
+# 버전은 immutable(같은 버전 재발행 불가)이라 자동(push)이 아니라 **수동 실행**으로 한다 —
+# assets 버전을 올렸을 때 Actions 탭에서 직접 돌린다.
+#
+# 발행 후 MCP 의 asset-inliner 가 이 S3 경로에서 이미지를 받아 base64 인라인한다
+# (→ .mcpb 번들에서 158MB assets 를 빼는 전제).
+#
+# AWS Secret/Variable 이 없으면 발행 단계는 자동 skip.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "release(버전 고정 immutable) / channel(assets-dev, 덮어쓰기)"
+        type: choice
+        options: [release, channel]
+        default: release
+
+concurrency:
+  group: publish-assets-s3
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # AWS OIDC role assume
+      contents: read
+    env:
+      AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      S3_BUCKET: ${{ vars.NUDGE_DS_ASSET_S3_BUCKET }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - uses: pnpm/action-setup@v5
+        with:
+          version: 9.6.0
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build assets
+        run: pnpm build --filter @nudge-design/assets
+
+      - name: Configure AWS credentials
+        if: env.AWS_ROLE_ARN != '' && env.S3_BUCKET != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'ap-northeast-2' }}
+
+      - name: Publish assets to S3
+        if: env.AWS_ROLE_ARN != '' && env.S3_BUCKET != ''
+        env:
+          NUDGE_DS_ASSET_S3_BUCKET: ${{ env.S3_BUCKET }}
+          NUDGE_DS_ASSET_CDN_ORIGIN: ${{ vars.NUDGE_DS_ASSET_CDN_ORIGIN }}
+        run: node scripts/publish-assets-s3.mjs --apply --mode=${{ inputs.mode }}
