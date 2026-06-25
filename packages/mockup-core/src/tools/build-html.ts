@@ -26,7 +26,7 @@ import {
   PROJECT_ALIASES,
 } from "./standalone-assets.js";
 import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
-import { inlineDsAssetReferences } from "./asset-inliner.js";
+import { inlineDsAssetReferences, prefetchDsAssets } from "./asset-inliner.js";
 import {
   countHtmlUsage,
   reportHtmlMockupUsage,
@@ -299,7 +299,7 @@ export async function buildSinglefileHtml(
   if (intent === "html") {
     // ── 무번들러 경로: prebuilt DS runtime/CSS 를 사용자 index.html 에 inline → 단일 파일.
     //    bare import / vite 불필요. 순수 cheerio 문자열 연산.
-    const inlined = buildHtmlSinglefileNoBundler(cwd, args.project, outputPath);
+    const inlined = await buildHtmlSinglefileNoBundler(cwd, args.project, outputPath);
     if (!inlined.ok) return { ...fail(inlined.error ?? "html inline build failed"), intent };
     assetsInlined = inlined.assetsInlined ?? 0;
     assetsMissing = inlined.assetsMissing ?? [];
@@ -469,7 +469,13 @@ export async function buildSinglefileHtml(
           },
         ],
         violationsByRule: [{ rule: "scenario-board-incomplete", count: 1, lines: [1] }],
-        summary: { flowSteps: 0, screensCovered: 0, screensMissing: 0, domMatched: 0, hasManifest: false },
+        summary: {
+          flowSteps: 0,
+          screensCovered: 0,
+          screensMissing: 0,
+          domMatched: 0,
+          hasManifest: false,
+        },
         note: "시나리오 보드 전용 검증입니다.",
       };
     }
@@ -492,14 +498,7 @@ export async function buildSinglefileHtml(
   // report 가 산출한 usage.meta(overall/adoption)를 그대로 사용 — 재집계 없이 시트와 동일 수치.
   // 순서가 핵심: 스탬프의 인라인 스타일/닫기 버튼이 usage 카운트·검증 위반을 오염시키면 안 된다.
   if (intent === "html") {
-    stampDsBar(
-      cwd,
-      outputPath,
-      args.appVersion,
-      args.dsVersion,
-      args.assetVersion,
-      report?.usage,
-    );
+    stampDsBar(cwd, outputPath, args.appVersion, args.dsVersion, args.assetVersion, report?.usage);
     // 시나리오 보드 셸 주입 — stamp 와 동일하게 validate·report 뒤에 박는다(주입된 패널의
     // 마크업·클래스가 usage 카운트·DS 검증을 오염시키지 않도록). 콘텐츠 JSON(data-nds-scenario)이
     // 있을 때만 박히며, 없으면 위 scenarioValidation 이 빌드를 차단한다.
@@ -668,11 +667,11 @@ export async function buildSinglefileHtml(
  *
  * 원본 index.html 은 변경하지 않는다(항상 source → fresh dist 라 멱등).
  */
-function buildHtmlSinglefileNoBundler(
+async function buildHtmlSinglefileNoBundler(
   cwd: string,
   argProject: string | undefined,
   outputPath: string,
-): {
+): Promise<{
   ok: boolean;
   error?: string;
   project?: string;
@@ -682,7 +681,7 @@ function buildHtmlSinglefileNoBundler(
   assetsBroken?: string[];
   /** 프로젝트를 명시했는데 미지 slug 라 base 로 폴백된 경우의 경고(조용한 블루 회귀 방지). */
   projectWarning?: string;
-} {
+}> {
   const sourcePath = path.join(cwd, "index.html");
   if (!fs.existsSync(sourcePath)) {
     return {
@@ -760,7 +759,10 @@ function buildHtmlSinglefileNoBundler(
   $("body").append(`<script>\n${safeJs}\n</script>`);
 
   // 4) DS 화면 자산(@nudge-design/assets/files/*) 참조를 실제 쓴 것만 base64 로 inline
-  //    → 외부 호스팅/S3 없이 단일 HTML 유지. 로고는 runtime 에 이미 base64 라 대상 아님.
+  //    → 단일 HTML 유지. 로고는 runtime 에 이미 base64 라 대상 아님.
+  //    자산은 번들에 없으므로(158MB 제거) 쓰는 것만 S3 에서 받아 로컬 캐시에 채운 뒤 인라인.
+  //    (dev 모노레포는 로컬 파일이 있어 prefetch 는 no-op)
+  await prefetchDsAssets($);
   const assetInline = inlineDsAssetReferences($);
 
   // 4-bis) inline 도 보존도 안 되는 로컬 이미지 경로 수집 → 깨질 참조 경고용.
@@ -847,7 +849,9 @@ export function inferWorkspaceProject(cwd: string): string | undefined {
 
   // ② 폴더명 prefix(예: cashwalk-biz-screen-7c4806). 정식 slug + 별칭 키 중 가장 긴 매칭 우선.
   const base = path.basename(cwd).toLowerCase();
-  const candidates = [...known, ...Object.keys(PROJECT_ALIASES)].sort((a, b) => b.length - a.length);
+  const candidates = [...known, ...Object.keys(PROJECT_ALIASES)].sort(
+    (a, b) => b.length - a.length,
+  );
   for (const cand of candidates) {
     if (base === cand || base.startsWith(`${cand}-`) || base.startsWith(`${cand}_`)) {
       const c = canonicalProjectSlug(cand);

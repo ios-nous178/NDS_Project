@@ -115,14 +115,9 @@ if (!fs.existsSync(path.join(standaloneSrc, "manifest.json"))) {
   );
   process.exit(1);
 }
-const assetsFilesSrc = path.join(ROOT, "packages/assets/dist/files");
-if (!fs.existsSync(assetsFilesSrc)) {
-  console.error(
-    `[pack-mcpb] ${path.relative(ROOT, assetsFilesSrc)} 없음 — ` +
-      `'pnpm build --filter @nudge-design/assets' 로 먼저 생성하세요.`,
-  );
-  process.exit(1);
-}
+// NOTE: DS 화면 이미지(packages/assets/dist/files ~158MB)는 더 이상 번들에 넣지 않는다.
+//   런타임에 asset-inliner 가 S3(nds-assets/assets/{version}/files/)에서 받아 인라인한다.
+//   (publish-assets-s3.yml 로 발행). 번들 크기 144MB → ~11MB.
 const iconsVanillaSrc = path.join(ROOT, "packages/icons/dist/vanilla.js");
 if (!fs.existsSync(iconsVanillaSrc)) {
   console.error(
@@ -131,7 +126,6 @@ if (!fs.existsSync(iconsVanillaSrc)) {
   );
   process.exit(1);
 }
-const assetsManifestSrc = path.join(ROOT, "packages/assets/dist/manifest.json");
 
 // ── DS 정합성 하드 게이트 — 깨진 .mcpb 발행 차단 ──────────────────────────────
 //   --no-build 경로(html build 가 안 돌아 registry 임베드 게이트가 안 뜀)와 일반 경로 모두에서
@@ -176,9 +170,7 @@ await build({
 copyFile(path.join(MCP, "manifest.json"), path.join(BUNDLE_DIR, "embedded/manifest.json"));
 copyFile(path.join(MCP, "catalog.json"), path.join(BUNDLE_DIR, "embedded/catalog.json"));
 copyDir(standaloneSrc, path.join(BUNDLE_DIR, "embedded/standalone"));
-copyDir(assetsFilesSrc, path.join(BUNDLE_DIR, "embedded/assets"));
-if (fs.existsSync(assetsManifestSrc))
-  copyFile(assetsManifestSrc, path.join(BUNDLE_DIR, "embedded/assets/manifest.json"));
+// 이미지 자산(embedded/assets)은 동봉하지 않음 — 런타임에 S3 에서 받는다(위 NOTE).
 copyFile(iconsVanillaSrc, path.join(BUNDLE_DIR, "embedded/icons/vanilla.js"));
 
 // 3) get_setup 가 외부 목업 프로젝트에 설치 안내하는 DS .tgz.

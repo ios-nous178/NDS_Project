@@ -131,6 +131,13 @@ const bundledAssetVersion =
   mcpbManifest?.asset_version ??
   undefined;
 
+// asset-inliner(mockup-core)는 자산을 번들하지 않고 S3 에서 받으므로 버전이 필요한데,
+// env 가 없는 실행 경로(터미널 install.sh 등)에서도 동작하도록 manifest 에서 읽은 버전을
+// process.env 에 주입한다(같은 프로세스의 인라이너가 읽음).
+if (bundledAssetVersion && !process.env.NUDGE_DS_ASSET_VERSION) {
+  process.env.NUDGE_DS_ASSET_VERSION = bundledAssetVersion;
+}
+
 // MCP가 실행되는 형태에 따라 "외부 자산이 어디 있느냐"가 달라진다.
 // 1) 개발 모드 (모노레포에서 직접 실행): 레포 루트가 있고 local-packages/*.tgz, projects/* 등을 참조 가능
 // 2) mcpb 번들 (Claude Desktop이 압축을 풀어 실행): 같은 디렉터리 안에 local-packages/만 동봉되어 있고
@@ -721,7 +728,9 @@ export function findAsset(args: {
 // export: find-slim.test.ts 의 응답 슬림(토큰 절감) 회귀 테스트용 (런타임 동작 변경 없음).
 export function findToken(args: { group?: string; query?: string; project?: string }) {
   const requestedProject = args.project?.trim().toLowerCase() || undefined;
-  const project = requestedProject ? (canonicalProjectSlug(requestedProject) ?? requestedProject) : undefined;
+  const project = requestedProject
+    ? (canonicalProjectSlug(requestedProject) ?? requestedProject)
+    : undefined;
   // project 필터:
   //  - 미지정 → base(shared, projects 필드 없음)만. 프로젝트 고유 토큰이 크로스프로젝트로
   //    새는 것을 막아 기존 nudge 워크플로우와 동일(예: teal 안 보임).
@@ -1116,7 +1125,13 @@ export const toolHandlers = {
     withVisualReferencePrompt(
       "find_asset",
       findAsset(
-        args as { query?: string; project?: string; category?: string; id?: string; limit?: number },
+        args as {
+          query?: string;
+          project?: string;
+          category?: string;
+          id?: string;
+          limit?: number;
+        },
       ),
     ),
   find_token: (args: ToolArgs) =>

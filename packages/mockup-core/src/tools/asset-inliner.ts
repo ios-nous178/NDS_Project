@@ -18,6 +18,7 @@
  *   ③ __dirname sidecar 후보               — bundle-mcp-desktop 이 dist/assets 로 복사한 경우
  */
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
@@ -42,18 +43,19 @@ function isUsableDir(dir: string | undefined): dir is string {
   return !!dir && fs.existsSync(dir) && fs.statSync(dir).isDirectory();
 }
 
-let cachedDir: string | null | undefined;
+let cachedLocalDir: string | null | undefined;
 
 /**
- * DS 자산 파일 루트(dist/files 또는 동봉 sidecar)를 해석. 못 찾으면 null
- * (인라인은 best-effort — 자산 디렉터리가 없다고 빌드를 깨지 않는다).
+ * 로컬 DS 자산 파일 루트(dist/files 또는 동봉 sidecar). 못 찾으면 null.
+ * dev 모노레포는 ②, 옛 desktop 번들은 ③ 로 잡힌다. mcpb/터미널은 자산을 번들하지
+ * 않으므로(158MB 제거) 여기선 null → S3 캐시(아래)로 폴백한다.
  */
-export function resolveAssetsFilesDir(): string | null {
-  if (cachedDir !== undefined) return cachedDir;
+function resolveLocalAssetsDir(): string | null {
+  if (cachedLocalDir !== undefined) return cachedLocalDir;
 
   // ① 명시 env override.
   const envDir = process.env.NUDGE_DS_ASSETS_DIR;
-  if (isUsableDir(envDir)) return (cachedDir = envDir);
+  if (isUsableDir(envDir)) return (cachedLocalDir = envDir);
 
   // ② node_modules resolve. createRequire 로 호출해 esbuild 가 정적 번들하지 않고
   //    런타임 resolve 로 남긴다. "./package.json"(전 조건 노출) → 형제 dist/files.
@@ -62,18 +64,96 @@ export function resolveAssetsFilesDir(): string | null {
     const req = createRequire(import.meta.url);
     const pkg = req.resolve("@nudge-design/assets/package.json");
     const dir = path.join(path.dirname(pkg), "dist", "files");
-    if (isUsableDir(dir)) return (cachedDir = dir);
+    if (isUsableDir(dir)) return (cachedLocalDir = dir);
   } catch {
     // resolve 실패는 ③ 으로.
   }
 
-  // ③ bundled single-file 의 sidecar 후보. desktop: dist/tools/server.mjs → ../assets.
+  // ③ 옛 bundled single-file 의 sidecar 후보. desktop: dist/tools/server.mjs → ../assets.
   for (const rel of ["../assets", "assets", "../../assets", "../../../assets"]) {
     const dir = path.resolve(here, rel);
-    if (isUsableDir(dir)) return (cachedDir = dir);
+    if (isUsableDir(dir)) return (cachedLocalDir = dir);
   }
 
-  return (cachedDir = null);
+  return (cachedLocalDir = null);
+}
+
+const ASSET_ORIGIN_DEFAULT = "https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com";
+function assetOrigin(): string {
+  return (
+    process.env.NUDGE_DS_ASSET_CDN_ORIGIN ||
+    process.env.NUDGE_DS_CDN_ORIGIN ||
+    ASSET_ORIGIN_DEFAULT
+  ).replace(/\/+$/, "");
+}
+function assetVersion(): string {
+  return (process.env.NUDGE_DS_ASSET_VERSION || "").trim();
+}
+/** S3 에서 받은 자산을 캐싱하는 로컬 디렉터리(버전별). 버전 미상이면 null. */
+function s3CacheDir(): string | null {
+  const v = assetVersion();
+  if (!v) return null;
+  const root =
+    process.env.NUDGE_DS_ASSET_CACHE_DIR || path.join(os.homedir(), ".nudge-ds", "assets");
+  return path.join(root, v, "files");
+}
+
+/**
+ * DS 자산 파일 루트. 로컬(dev) 우선, 없으면 S3 캐시 디렉터리(prefetch 가 채움).
+ * 인라이너(동기)는 여기서 읽는다 — prod 에선 prefetchDsAssets 가 먼저 채워야 한다.
+ */
+export function resolveAssetsFilesDir(): string | null {
+  const local = resolveLocalAssetsDir();
+  if (local) return local;
+  const cache = s3CacheDir();
+  return cache && isUsableDir(cache) ? cache : null;
+}
+
+/** DOM 에서 @nudge-design/assets/files/* 참조의 상대경로들을 수집. */
+function collectAssetRefs($: cheerio.CheerioAPI): Set<string> {
+  const refs = new Set<string>();
+  const add = (raw?: string | null) => {
+    if (!raw || !raw.includes(ASSET_REF_PREFIX)) return;
+    for (const m of raw.matchAll(/@nudge-design\/assets\/files\/([^\s'")]+)/g)) {
+      if (m[1] && !m[1].includes("..")) refs.add(m[1]);
+    }
+  };
+  $("[src]").each((_, el) => add($(el).attr("src")));
+  $("[srcset]").each((_, el) => add($(el).attr("srcset")));
+  $("[style]").each((_, el) => add($(el).attr("style")));
+  $("style").each((_, el) => add($(el).html()));
+  return refs;
+}
+
+/**
+ * 목업이 참조한 DS 자산 중 로컬에 없는 것을 S3(nds-assets/assets/{ver}/files/)에서 받아
+ * 로컬 캐시에 채운다. 이후 동기 인라이너가 캐시에서 읽어 base64 인라인 → 단일 HTML 유지.
+ * 자산을 번들에서 뺀 prod(mcpb/터미널)용. dev(로컬 파일 있음)·버전 미상이면 no-op.
+ * best-effort — 다운로드 실패는 조용히 두고(인라이너가 missing 으로 보고) 빌드는 안 깬다.
+ */
+export async function prefetchDsAssets($: cheerio.CheerioAPI): Promise<void> {
+  const cacheDir = s3CacheDir();
+  if (!cacheDir) return; // 버전 미상 → S3 fetch 불가(dev 로컬에 의존)
+  const refs = collectAssetRefs($);
+  if (refs.size === 0) return;
+  const local = resolveLocalAssetsDir();
+  const origin = assetOrigin();
+  const version = assetVersion();
+  for (const relPath of refs) {
+    if (local && fs.existsSync(path.join(local, relPath))) continue; // 로컬에 이미 있음
+    const dest = path.join(cacheDir, relPath);
+    if (fs.existsSync(dest)) continue; // 이미 캐시됨
+    const url = `${origin}/nds-assets/assets/${version}/files/${relPath}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const buf = Buffer.from(await res.arrayBuffer());
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.writeFileSync(dest, buf);
+    } catch {
+      /* best-effort — missing 은 인라이너가 보고 */
+    }
+  }
 }
 
 const fileCache = new Map<string, string | null>();
