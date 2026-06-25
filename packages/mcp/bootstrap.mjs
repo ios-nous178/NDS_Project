@@ -29,8 +29,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import crypto from "node:crypto";
-import { spawn, spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -231,25 +231,22 @@ async function checkAndInstallUpdate() {
   }
 }
 
-// 선택한 본체로 실제 MCP 서버를 띄우고, 그 프로세스를 그대로 위임(stdio 패스스루).
-function runServer(root) {
+// 선택한 본체의 MCP 서버를 **같은 프로세스에서** import 로 구동한다.
+// 자식 process spawn(process.execPath, …) 은 Claude Desktop 의 내장 런타임
+// (Electron-as-node 등)에서 execPath 가 일반 node 가 아니라 서버가 안 떴다.
+// import() 는 부트스트랩을 띄운 바로 그 런타임을 쓰므로 항상 호환된다.
+// (서버는 top-level 에서 StdioServerTransport 로 process.stdin/stdout 에 연결 →
+//  부트스트랩의 stdio 가 곧 MCP 채널. 부트스트랩은 stdout 을 절대 안 건드린다.)
+async function runServer(root) {
   const entry = serverEntry(root);
-  const env = {
-    ...process.env,
-    // 서버의 sidecar resolver 가 env 를 먼저 보므로, 선택된 본체 기준으로 다시 지정.
-    NUDGE_DS_STANDALONE_DIR: path.join(root, "standalone"),
-    NUDGE_DS_ASSETS_DIR: path.join(root, "assets"),
-    NUDGE_DS_ICONS_VANILLA: path.join(root, "icons", "vanilla.js"),
-  };
-  const child = spawn(process.execPath, [entry], { stdio: "inherit", env });
-  child.on("exit", (code, signal) => {
-    if (signal) process.kill(process.pid, signal);
-    else process.exit(code ?? 0);
-  });
-  // 부모로 오는 종료 시그널을 자식에게 전파.
-  for (const sig of ["SIGINT", "SIGTERM", "SIGHUP"]) {
-    process.on(sig, () => child.kill(sig));
-  }
+  // 서버의 sidecar resolver 가 env 를 먼저 보므로, 선택된 본체 기준으로 지정.
+  process.env.NUDGE_DS_STANDALONE_DIR = path.join(root, "standalone");
+  process.env.NUDGE_DS_ASSETS_DIR = path.join(root, "assets");
+  process.env.NUDGE_DS_ICONS_VANILLA = path.join(root, "icons", "vanilla.js");
+  // 서버는 isDirectRun(argv[1]==자기자신)일 때만 stdio 에 연결한다. import 로 구동하므로
+  // argv[1] 을 서버 경로로 맞춰 `node server.mjs` 직접 실행과 동일 상태를 만든다.
+  process.argv[1] = entry;
+  await import(pathToFileURL(entry).href);
 }
 
 // ── 엔트리 ───────────────────────────────────────────────────────────────────
@@ -260,8 +257,9 @@ async function main() {
   if (run) {
     // 즉시 실행 + 백그라운드 업데이트(다음 실행 반영). 시작 지연 0.
     log(`start ${run.version} (${run.source}); update check → ${UPDATE_URL}`);
-    runServer(run.root);
+    // 업데이트는 백그라운드(서버 구동을 막지 않음).
     checkAndInstallUpdate().catch((e) => log(`bg update error: ${e.message}`));
+    await runServer(run.root);
     return;
   }
 
@@ -273,7 +271,7 @@ async function main() {
     log("치명적: 실행할 본체를 확보하지 못함(네트워크/번들 확인 필요).");
     process.exit(1);
   }
-  runServer(root);
+  await runServer(root);
 }
 
 main().catch((e) => {
