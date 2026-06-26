@@ -5,7 +5,7 @@
 //   node scripts/validator-rule-report.mjs --stdout   → 마크다운을 stdout 으로만
 //   node scripts/validator-rule-report.mjs --json      → 구조화 JSON 으로
 //   node scripts/validator-rule-report.mjs --all       → error 룰까지 포함(기본은 warn/info 만)
-//   node scripts/validator-rule-report.mjs --check      → 맵↔레지스트리 드리프트만 검사(쓰기 없음, 드리프트면 exit 1)
+//   node scripts/validator-rule-report.mjs --check      → 맵↔레지스트리 드리프트 + 승격 거버넌스 검사(쓰기 없음, 위반이면 exit 1)
 //
 // 데이터 출처:
 //   RULE_META          = packages/mockup-core/dist/tools/html-validator.js (빌드본; 없으면 안내)
