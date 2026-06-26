@@ -22,7 +22,11 @@ import {
   DS_ADMIN_PROJECTS,
 } from "../guides.js";
 import { getProjectProfile } from "@nudge-design/tokens/project-profiles";
-import { SERVICE_OVERLAYS, listProjectVariants, type ProjectSlug } from "../guides/services/index.js";
+import {
+  SERVICE_OVERLAYS,
+  listProjectVariants,
+  type ProjectSlug,
+} from "../guides/services/index.js";
 import { mergeServiceOverlay } from "../guides/merge.js";
 import { markPrinciplesCalled } from "./session-state.js";
 import {
@@ -100,7 +104,12 @@ function parsePositiveInt(v: string | undefined): number | undefined {
 function buildLearnedPrinciples(
   cwdArg: string | undefined,
   projectArg: string | undefined,
-): { _advisory: string; project: string; threshold: number; principles: PromotedPrinciple[] } | null {
+): {
+  _advisory: string;
+  project: string;
+  threshold: number;
+  principles: PromotedPrinciple[];
+} | null {
   if (process.env.NUDGE_LEARNED_PRINCIPLES === "0") return null;
   const cwd = cwdArg ?? process.cwd();
   const project = canonicalProjectSlug(projectArg) ?? readProjectMarker(cwd);
@@ -265,7 +274,7 @@ const PRINCIPLES_DIGEST = [
   "Use semantic tokens; avoid raw hex/rgb and raw palette tokens.",
   "Use <nds-*> components before custom native controls/CSS lookalikes.",
   "Make every mockup responsive: fluid containers (max-width + padding, flex/grid wrap, min-width:0), no fixed-px-only layout, no horizontal scroll/overlap at ~360/~768.",
-  "Multi-column card layouts (home/gallery/grid screens): use <div class=\"nds-grid\" data-cols=\"2|3|4|auto\"> with nds-card cells — token gap + auto mobile 1-col fallback built in. Don't hand-roll display:grid. See get_guide({ topic: 'pattern:card-grid' }).",
+  'Multi-column card layouts (home/gallery/grid screens): use <div class="nds-grid" data-cols="2|3|4|auto"> with nds-card cells — token gap + auto mobile 1-col fallback built in. Don\'t hand-roll display:grid. See get_guide({ topic: \'pattern:card-grid\' }).',
 ];
 
 /**
@@ -298,7 +307,9 @@ export function getComponentGuide(name: string, target: GuideTarget = "html") {
   const standaloneAdvisory =
     guide.standalone === false
       ? "⚠ 합성 전용 — 단독 사용 금지. 부모 없이는 의미 없는 서브 컴포넌트입니다" +
-        (guide.composeWith?.length ? ` (반드시 ${guide.composeWith.join(" · ")} 와 합성해 사용).` : ".")
+        (guide.composeWith?.length
+          ? ` (반드시 ${guide.composeWith.join(" · ")} 와 합성해 사용).`
+          : ".")
       : undefined;
 
   if (target === "html") {
@@ -605,6 +616,12 @@ const ASPECT_TO_SECTIONS: Record<string, string[]> = {
   tone: ["projectTone"],
   "project-tone": ["projectTone"],
   voice: ["projectTone"],
+  principles: ["principles"],
+  why: ["principles"],
+  ux: ["principles"],
+  checklist: ["reviewChecklist"],
+  review: ["reviewChecklist"],
+  "review-checklist": ["reviewChecklist"],
   color: ["colors"],
   colors: ["colors"],
   colour: ["colors"],

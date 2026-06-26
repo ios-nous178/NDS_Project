@@ -643,6 +643,15 @@ export { COMPONENT_GUIDES, PATTERN_GUIDES } from "./guides.generated.js";
 
 export interface DesignPrinciples {
   projectTone: string;
+  /**
+   * 공통 UX 원칙 — "사용자가 어떤 경험을 해야 하는가(Why)". 컴포넌트/토큰이 *무엇을 쓸지*라면
+   * 이 원칙은 *왜 그렇게 써야 하는지*다. dos/donts(아래)는 이 원칙을 화면에서 지키는 How 의 상세.
+   * 일부 apply 항목은 validator 룰로 강제되며(승격 로그: scripts/validator-promotion-log.json),
+   * 차단 승격 후보는 docs/validator-rule-report.md 에서 원칙별로 추적한다.
+   */
+  principles: { n: string; title: string; why: string; apply: string[] }[];
+  /** 리뷰 체크리스트 — 각 항목 1개 검증 조건. tag: (UX) 전체 · (1)~(5) 원칙별 · (DS) 구현 단계. */
+  reviewChecklist: { tag: string; text: string }[];
   colors: Record<string, string>;
   typography: { family: string; weights: string[]; rules: string[] };
   spacing: { base: number; scale: number[]; rules: string[] };
@@ -656,6 +665,101 @@ export interface DesignPrinciples {
 export const DESIGN_PRINCIPLES: DesignPrinciples = {
   projectTone:
     "낮은 진입 장벽과 전문적 신뢰감을 주되, 흔한 SaaS/헬스케어 클리셰처럼 보이면 안 됩니다. Linear/Notion식 회색 카드 그리드, 스톡사진+파스텔 그라데이션, 모든 카드에 아이콘을 꽂는 대시보드 톤, 과한 감성 카피/일러스트 장식은 금지. Neutral surface와 텍스트 위계를 기본으로 두고 primary blue는 대표 CTA와 핵심 인터랙션에만 제한합니다.",
+  principles: [
+    {
+      n: "1",
+      title: "사용자는 목표를 쉽게 달성할 수 있어야 한다",
+      why: "사용자는 서비스의 핵심 목표에 집중할 수 있어야 한다. 불필요한 단계나 방해 요소 없이 원하는 결과에 도달해야 한다.",
+      apply: [
+        "핵심 행동을 명확히 드러낸다 — 목표로 가는 액션이 화면에서 가장 잘 보여야 한다(강조·위계는 원칙2).",
+        "불필요한 단계·입력을 최소화한다 — 선택지·강조 수를 줄이고, 많으면 단계로 나눈다.",
+        "다음 행동을 쉽게 이어가게 한다 — 핵심 정보(결과·다음 행동)를 위계 상위에 둔다.",
+        "방해 요소를 제거한다 — 불필요한 강조·장식 최소화.",
+      ],
+    },
+    {
+      n: "2",
+      title: "사용자는 다음 행동을 쉽게 이해할 수 있어야 한다",
+      why: "위계와 강조로 '지금 무엇을 해야 하는지'가 한눈에 보여야 한다. 강조가 없거나 여러 개로 경쟁하면 안 된다.",
+      apply: [
+        "Primary 는 판단 단위마다 1개만 둔다. 판단 단위 = 화면 · 모달 등 별도 레이어 · 반복 구조의 카드·행 · 목적이 다른 독립 섹션. 단위가 여럿이면 한 화면에 Primary 가 여러 개 보일 수 있다(같은 단위 안 2개 이상일 때만 위반). validator primary-cta-per-container(error).",
+        "강조 세기 순서: 핵심 전환 › 보조 › 취소·닫기.",
+        "대표색(Key)은 핵심 행동·선택·강조에만 — 카드 배경·반복 목록·장식 ❌.",
+        "카드 남용 ❌ — 카드는 독립 정보 묶음·액션·요약·공지에만. 단순 구분은 간격(spacing), 그림자·elevation 은 실제로 떠야 하는 것에만. 정당한 중첩은 data-nudge-allow='ux:p2-card-justified'. validator nested-card(error).",
+        "배지·칩은 본문·주요 액션보다 약하게 — ghost·soft·outline, 크기 본문 이하. 클릭 전환되는 주요 액션으로 ❌.",
+        "같은 역할 = 같은 컴포넌트·variant·모양.",
+        "누를 수 있는 요소는 hover/focus 로 신호한다.",
+      ],
+    },
+    {
+      n: "3",
+      title: "사용자는 현재 상태를 쉽게 이해할 수 있어야 한다",
+      why: "사용자가 현재 상태(로딩·완료·실패·빈 상태)를 항상 알 수 있어야 한다. 상태가 보이지 않으면 행동의 성공 여부를 확신하지 못한다.",
+      apply: [
+        "주요 행동·데이터 영역에 로딩·완료·실패 상태를 빠짐없이 정의한다.",
+        "Empty State — 데이터가 없으면 '무엇을 하면 되는지'를 안내한다.",
+        "상태색(성공·에러·주의·정보)은 상태 전달용으로만, 강조용 ❌ · 같은 의미 = 같은 색.",
+        "모션은 상태·관계 전달용으로만, 장식 ❌.",
+      ],
+    },
+    {
+      n: "4",
+      title: "사용자는 실수하기 전에 예방받아야 한다",
+      why: "사용자가 실수하기 전에 시스템이 미리 막아준다. 되돌리기 어려운 행동일수록 사전 안내·검증·확인이 필요하다.",
+      apply: [
+        "비활성(disabled)·실시간 검증·사전 안내로 잘못된 입력을 미리 막는다.",
+        "되돌리기 어려운 행동(삭제·탈퇴·중단)은 확인 단계(모달 등)와 함께 처리한다.",
+        "경고·위험이 화면의 목적일 때(예: 탈퇴·삭제 확인)는 상태색(에러)을 위계 1순위로 둘 수 있다(단, 1단위 1개 원칙 유지).",
+      ],
+    },
+    {
+      n: "5",
+      title: "사용자는 예측 가능한 경험을 제공받아야 한다",
+      why: "같은 역할의 기능은 어디서나 같은 방식으로 보이고 동작해, 사용자가 화면마다 새 규칙을 학습하지 않아도 되게 한다.",
+      apply: [
+        "같은 역할·위계의 요소는 어디서나 같은 컴포넌트·모양·크기로 통일.",
+        "같은 의미·기능은 같은 위치·패턴으로 배치해 매 화면 다시 학습하지 않게 한다.",
+        "같은 상황의 동작·전환·피드백은 항상 같게 — 예측 가능한 반응.",
+      ],
+    },
+  ],
+  reviewChecklist: [
+    { tag: "UX", text: "화면에서 시각적으로 가장 강한 요소가 핵심 행동(주요 CTA)이다." },
+    { tag: "UX", text: "라벨·위계만 보고 '지금 무엇을 할지'를 추측 없이 알 수 있다." },
+    { tag: "UX", text: "핵심 목표까지 불필요한 단계·입력·선택지가 없다." },
+    { tag: "1", text: "핵심 행동이 화면에서 가장 잘 보인다(방해 요소·과한 장식 없음)." },
+    {
+      tag: "2",
+      text: "한 판단 단위(화면·모달·반복 카드·독립 섹션) 안의 Primary 가 1개다 — 단위가 여럿이라 화면 전체에 여러 개인 것은 허용.",
+    },
+    {
+      tag: "2",
+      text: "대표색(Key)이 핵심 행동·선택·강조에만 쓰였다(카드 배경·반복 목록·장식엔 ❌).",
+    },
+    {
+      tag: "2",
+      text: "카드를 남용하지 않았다 — 단순 구분은 간격, 그림자·elevation 은 실제로 떠 있는 요소에만.",
+    },
+    { tag: "2", text: "배지·칩이 본문·주요 액션보다 약하다(ghost·soft·outline · 크기 본문 이하)." },
+    { tag: "2", text: "같은 역할의 요소를 같은 컴포넌트·variant·모양으로 표현했다." },
+    { tag: "3", text: "주요 행동·데이터 영역에 로딩·완료·실패 상태가 정의돼 있다." },
+    { tag: "3", text: "데이터가 없는 영역에 Empty State(다음 행동 안내)가 있다." },
+    {
+      tag: "3",
+      text: "상태색(성공·에러·주의·정보)을 의미대로만 썼다(강조용 ❌ · 같은 의미=같은 색).",
+    },
+    { tag: "4", text: "되돌리기 어려운 행동(삭제·탈퇴·중단)에 확인 단계(모달 등)가 있다." },
+    { tag: "4", text: "잘못된 입력을 disabled·실시간 검증·사전 안내로 막는다." },
+    { tag: "5", text: "같은 역할·위계 요소가 화면 전반에서 같은 모양·크기로 통일됐다." },
+    { tag: "5", text: "같은 의미·기능이 같은 위치·패턴으로 배치됐다." },
+    { tag: "5", text: "같은 상황의 동작·전환·피드백이 일관된다." },
+    {
+      tag: "DS",
+      text: "정의된 컴포넌트·토큰을 우선 사용했다 — 토큰은 강제, 없는 컴포넌트는 판단으로 추가 가능.",
+    },
+    { tag: "DS", text: "인라인 스타일·하드코딩한 색·간격·이모지 아이콘이 없다." },
+    { tag: "DS", text: "임의 width·padding 이 없고 그리드·간격 규칙을 지켰다." },
+  ],
   colors: {
     primary:
       "var(--semantic-bg-brand-default) — CTA, 활성, 핵심 인터랙티브. 화면당 가장 중요한 1개 액션만.",
@@ -707,8 +811,6 @@ export const DESIGN_PRINCIPLES: DesignPrinciples = {
   },
   dos: [
     "★ 선언된 표면(surface: admin/service)이 화면 이름 통념을 지배한다 — 작업 시작 시 표면부터 확정하고 모든 레이아웃을 거기 맞춘다. surface=admin 이면 '회원가입/로그인/온보딩'처럼 소비자 플로우를 연상시켜도 어드민 화면(admin-shell 사이드바+톱바, 또는 어드민 온보딩 중앙 카드)으로 만든다. 표면의 SSOT 는 brief/CLAUDE.md 선언 + nudge.surface 마커 — 화면 제목으로 추측하지 말 것.",
-    "Primary 색상은 화면당 가장 중요한 1개 액션에만 사용",
-    "강조 장치는 화면당 우선순위가 가장 높은 영역에 집중하고, 안내/보조 영역은 기본적으로 neutral surface를 사용",
     "텍스트 대비비 WCAG AA (4.5:1) 이상 유지",
     "터치 타겟은 최소 44px 보장",
     "★ 모든 목업은 반응형으로 — 고정폭 1개 화면으로 끝내지 말 것. 레이아웃은 고정 px 폭이 아니라 유연 컨테이너(max-width + 좌우 패딩, flex/grid + wrap, min-width:0)로 짜고, 좁은 화면(모바일 ~360, 태블릿 ~768)에서 가로 스크롤·요소 깨짐·겹침이 없어야 한다. 콘텐츠 폭은 Desktop center 1200 / Mobile 좌우 16. DataTable 은 responsive='cards', 컴포넌트의 size 분기(예: Tab size mobile/pc, ProjectFooter layout desktop/mobile)는 미디어쿼리/JS 로 전환. 입력 필드는 Field Width 6단계(고정 px) 안에서 반응형 컨테이너만 Full 100%. 다열(2열+) 그리드는 좁은 화면에서 1열 fallback 필수(@media max-width:768 → grid-template-columns:1fr 또는 flex-wrap) — 안 두면 모바일에서 카드가 짓눌려 글자가 세로로 쪼개진다. **시각 순서 = DOM 순서가 기본** — PC 다열을 만들려고 DOM 을 열 우선(1,6,2,7…)으로 깔지 말 것(모바일 1열에서 순서가 뒤섞인다). DOM 은 읽기 순서(1,2,3…)대로 두고, '좌열 1–5 / 우열 6–10' 같은 열 우선 배치는 grid-auto-flow:column + grid-template-rows 로 표현한다(그래야 모바일 1열에서도 1,2,3…10 순서가 유지된다). 모든 목업 <head> 엔 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> 필수 — 없으면 모바일이 데스크탑 폭으로 렌더돼 반응형(@media)이 전혀 안 먹는다(validator 의 missing-viewport-meta 로 검출).",
