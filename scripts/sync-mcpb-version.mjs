@@ -1,19 +1,25 @@
 #!/usr/bin/env node
 /**
- * sync-mcpb-version.mjs — DS 패키지 버전 → 파생 버전 미러 동기화
+ * sync-mcpb-version.mjs — 두 버전 트랙의 파생 미러 동기화
  *
- * DS 코드 패키지(@nudge-design/{react,tokens,styles,tailwind-preset,html}) 의 package.json
- * version 이 SSOT 이고, 다음 두 파생 미러를 같은 버전으로 맞춘다.
+ * 버전은 의도적으로 두 트랙으로 분리돼 있다 (decoupled):
+ *   • DS 트랙 (CalVer, 예 26.6.1) — @nudge-design/{react,tokens,styles,tailwind-preset,html}
+ *     이 SSOT. 릴리즈 기준(release-mcpb 가 DS 버전을 직접 읽어 tag 발행).
+ *   • MCP 트랙 (예 0.0.1)        — @nudge-design/mcp(package.json) 이 SSOT. MCP 도구 자체 버전.
  *
- *   1. packages/mcp/manifest.json   — release-mcpb 워크플로우가 release tag 로 사용
- *   2. 루트 package.json            — pack-local-packages.mjs 가 tarball 파일명에 박는 값
+ * 이 스크립트가 맞추는 파생 미러:
+ *   1. 루트 package.json            ← DS 버전 (pack-local-packages.mjs 가 tarball 파일명에 사용)
+ *   2. packages/mcp/manifest.json   ← @nudge-design/mcp 버전 (.mcpb 확장 표시 버전)
+ *      + manifest.server.mcp_config.env.NUDGE_DS_ASSET_VERSION ← @nudge-design/assets 버전
  *
- * `pnpm version-packages` (changeset version) 가 DS 패키지의 package.json 만
- * bump 하므로, 이 스크립트가 후속으로 미러들을 끌어올린다. 루트 미러까지 같이
- * 처리하지 않으면 pack-local-packages.mjs 가 stale 루트 version 으로 DS 4개
- * 패키지를 다운그레이드하는 사고가 재발한다.
+ * ⚠ manifest.json 은 더이상 DS 버전을 미러하지 않는다(과거엔 DS 와 lockstep 이었음).
+ *   릴리즈 tag 는 release-mcpb.yml 이 DS 패키지 버전을 직접 읽는다.
  *
- * 동기화 규칙: 4개 DS 패키지 중 semver 최댓값을 두 미러의 version 으로 채택.
+ * `pnpm version-packages` (changeset version) 가 패키지 package.json 만 bump 하므로,
+ * 이 스크립트가 후속으로 미러들을 끌어올린다. 루트 미러를 같이 처리하지 않으면
+ * pack-local-packages.mjs 가 stale 루트 version 으로 DS 패키지를 다운그레이드하는 사고가 재발한다.
+ *
+ * 동기화 규칙: 루트 ← DS 패키지 semver 최댓값, manifest ← @nudge-design/mcp 버전.
  *
  * Usage:
  *   node scripts/sync-mcpb-version.mjs           # write (default)
@@ -91,13 +97,21 @@ const targetVersion = maxEntry.version.raw;
 const manifest = readJson(MANIFEST_PATH);
 const rootPkg = readJson(ROOT_PKG_PATH);
 const assetPkg = readJson(ASSET_PKG_PATH);
+const mcpPkg = readJson(MCP_PKG_PATH);
 
 const mirrors = [
-  { label: "packages/mcp/manifest.json", path: MANIFEST_PATH, obj: manifest },
-  { label: "package.json (root)", path: ROOT_PKG_PATH, obj: rootPkg },
+  // 루트 ← DS 버전(CalVer). tarball 파일명 anchor.
+  { label: "package.json (root)", path: ROOT_PKG_PATH, obj: rootPkg, expected: targetVersion },
+  // manifest ← @nudge-design/mcp 버전(MCP 트랙, DS 와 디커플). .mcpb 확장 표시 버전.
+  {
+    label: "packages/mcp/manifest.json (← @nudge-design/mcp)",
+    path: MANIFEST_PATH,
+    obj: manifest,
+    expected: mcpPkg.version,
+  },
 ];
 
-const drift = mirrors.filter((m) => m.obj.version !== targetVersion);
+const drift = mirrors.filter((m) => m.obj.version !== m.expected);
 const manifestVersionFields = [
   {
     label: "packages/mcp/manifest.json server.mcp_config.env.NUDGE_DS_ASSET_VERSION",
@@ -115,17 +129,17 @@ const manifestFieldDrift = manifestVersionFields.filter((m) => m.get() !== m.exp
 
 if (drift.length === 0 && manifestFieldDrift.length === 0) {
   console.log(
-    `[sync-mcpb-version] all mirrors already at ${targetVersion}; assets=${assetPkg.version}`,
+    `[sync-mcpb-version] all mirrors in sync (root=${targetVersion}, manifest=${mcpPkg.version}, assets=${assetPkg.version})`,
   );
   process.exit(0);
 }
 
 if (mode === "check") {
   console.error(
-    `[sync-mcpb-version] mirror(s) out of sync (max DS package = ${maxEntry.name}@${targetVersion}):`,
+    `[sync-mcpb-version] mirror(s) out of sync (DS=${maxEntry.name}@${targetVersion}, mcp=${mcpPkg.version}):`,
   );
   for (const m of drift) {
-    console.error(`  - ${m.label}: have ${m.obj.version}, expected ${targetVersion}`);
+    console.error(`  - ${m.label}: have ${m.obj.version}, expected ${m.expected}`);
   }
   for (const m of manifestFieldDrift) {
     console.error(`  - ${m.label}: have ${m.get() ?? "(missing)"}, expected ${m.expected}`);
@@ -136,11 +150,9 @@ if (mode === "check") {
 
 for (const m of drift) {
   const before = m.obj.version;
-  m.obj.version = targetVersion;
+  m.obj.version = m.expected;
   writeJson(m.path, m.obj);
-  console.log(
-    `[sync-mcpb-version] ${m.label} ${before} → ${targetVersion} (anchor: ${maxEntry.name}@${targetVersion})`,
-  );
+  console.log(`[sync-mcpb-version] ${m.label} ${before} → ${m.expected}`);
 }
 
 if (manifestFieldDrift.length > 0) {
@@ -150,15 +162,4 @@ if (manifestFieldDrift.length > 0) {
     console.log(`[sync-mcpb-version] ${field.label} ${before ?? "(missing)"} → ${field.expected}`);
   }
   writeJson(MANIFEST_PATH, manifest);
-}
-
-// `@nudge-design/mcp` (내부 패키지) 의 package.json version 도 같이 맞춰주면
-// 외부 의존성/로그에서 일관성이 생기지만, 사용자가 의도적으로 분리해 두었으면
-// 건드리지 않는다. mcp 가 이미 같은 값이면 손대지 않음.
-const mcpPkg = readJson(MCP_PKG_PATH);
-if (mcpPkg.version !== targetVersion) {
-  console.warn(
-    `[sync-mcpb-version] note: packages/mcp/package.json is at ${mcpPkg.version} (manifest is at ${targetVersion}). ` +
-      `If you want them in lockstep, bump it manually or add a changeset for @nudge-design/mcp.`,
-  );
 }

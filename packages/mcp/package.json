@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/mcp",
-  "version": "0.0.4",
+  "version": "0.0.1",
   "description": "MCP server exposing the Nudge Design System (components, icons, tokens, mockup validator)",
   "type": "module",
   "bin": {

@@ -1,6 +1,6 @@
 ---
-"@nudge-design/react": minor
-"@nudge-design/html": minor
+"@nudge-design/react": patch
+"@nudge-design/html": patch
 "@nudge-design/tokens": patch
 "@nudge-design/mcp": patch
 ---

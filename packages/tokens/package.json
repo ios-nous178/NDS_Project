@@ -1,6 +1,6 @@
 {
   "name": "@nudge-design/tokens",
-  "version": "0.0.4",
+  "version": "26.6.1",
   "description": "Design tokens for Nudge Design System",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

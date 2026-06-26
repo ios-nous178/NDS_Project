@@ -174,7 +174,11 @@ background: var(--nds-snackbar-bg, var(--nds-snackbar-variant-bg, /* ③ */ ${cv
 
 릴리즈 전체 절차(changeset → `pnpm version-packages` → 비개발자 톤 `.release-notes/pending.md` → push)와 슬랙 공유용 톤 가이드는 **`/ds-release` 스킬**에 있습니다. 스캔용 핵심만:
 
-- **버전 SSOT** = DS 4개 패키지(`@nudge-design/{react,tokens,icons,tailwind-preset}`)의 `package.json`. 루트 `package.json`·`packages/mcp/manifest.json` 은 미러 — `sync-mcpb-version.mjs` 가 sync(CI `pnpm lint` 가 drift 차단).
-- 워크플로우 트리거 경로: `packages/{mcp,tokens,react}/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`. **`manifest.json` version 이 기존 tag 와 같으면 release skip** → version bump 자동 동기화가 핵심.
+- **버전 2트랙 (디커플)** — 의도적으로 분리돼 있다:
+  - **DS 트랙 = CalVer `연.월.배포`** (예 `26.6.1` = 2026년 6월 1번째 배포). SSOT = DS 패키지(`@nudge-design/{react,tokens,styles,tailwind-preset,html}`, icons 포함) `package.json`. **릴리즈 기준** — `release-mcpb.yml` 이 DS 버전을 직접 읽어 tag(`v26.6.1`) 발행. 루트 `package.json` 은 DS 버전 미러(tarball 파일명용).
+  - **MCP 트랙 = `@nudge-design/mcp` 버전** (예 `0.0.1`). `packages/mcp/manifest.json` 이 미러(.mcpb 확장 표시 버전). DS 와 무관하게 독립 bump.
+  - 미러 동기화/검증 = `sync-mcpb-version.mjs`(루트←DS, manifest←mcp, asset env←assets). CI `pnpm lint` 가 drift 차단.
+- **CalVer 운영 규칙 (★)**: changeset 은 **patch 만** 사용(= 그 달 배포 카운트 +1, `26.6.1→26.6.2`). minor/major 금지(월·연이 틀어짐). **월/연이 바뀌면 다음 첫 배포 전 `26.7.0` 등으로 수동 세팅** 후 patch 진행.
+- 워크플로우 트리거 경로: `packages/{mcp,tokens,react}/src/**`, `packages/icons/svg/**`, `packages/mcp/manifest.json`, **`packages/react/package.json`(DS 버전 bump 감지)**. **DS 버전 tag(`v<DS>`)가 이미 있으면 release skip** → version bump 자동 동기화가 핵심.
 - 가이드/원칙만 바꿔도 외부 전파 필요하면 `pnpm changeset` 으로 영향 패키지 골라 patch bump.
-- `@nudge-design/mcp`(내부)는 의도적으로 분리 — 함께 bump 하려면 changeset 에 명시.
+- `@nudge-design/mcp`(MCP 트랙)는 DS 와 분리 — 함께 bump 하려면 changeset 에 명시.
