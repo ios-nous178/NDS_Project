@@ -56,6 +56,16 @@ if (Get-Command codex -ErrorAction SilentlyContinue) {
   foreach ($n in ($LegacyNames + $Name)) {
     & codex mcp remove $n *> $null
   }
+  # claude 와 동일하게 codex 에도 단일 재등록 (codex 는 env 를 --env 로 받는 점만 다름).
+  & codex mcp add $Name `
+    --env NUDGE_DS_INSTALL_MODE=mcpb `
+    --env "NUDGE_DS_UPDATE_URL=$Origin/$Prefix/version.json" `
+    -- node "$Bootstrap" *> $null
+  if ($LASTEXITCODE -eq 0) {
+    Write-Host "[nudge-ds] OK codex 에도 등록했습니다. codex 재시작 후 반영됩니다."
+  } else {
+    Write-Warning "[nudge-ds] codex 등록은 건너뜀 (수동: codex mcp add $Name -- node `"$Bootstrap`")."
+  }
 }
 
 # 깨끗한 단일 재등록 (user scope · 현재 부트스트랩 경로/옵션으로).

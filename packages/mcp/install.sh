@@ -48,6 +48,16 @@ if command -v codex >/dev/null 2>&1; then
   for name in $LEGACY_NAMES "$NAME"; do
     codex mcp remove "$name" >/dev/null 2>&1 || true
   done
+  # claude 와 동일하게 codex 에도 단일 재등록 (codex 는 env 를 --env 로 받는 점만 다름).
+  # codex 미설치 환경은 위 guard 로 건너뛰고, 등록 실패해도 설치 전체를 막지 않는다.
+  if codex mcp add "$NAME" \
+       --env NUDGE_DS_INSTALL_MODE=mcpb \
+       --env "NUDGE_DS_UPDATE_URL=$ORIGIN/$PREFIX/version.json" \
+       -- node "$BOOTSTRAP" >/dev/null 2>&1; then
+    echo "[nudge-ds] ✓ codex 에도 등록했습니다. codex 재시작 후 반영됩니다."
+  else
+    echo "[nudge-ds] ⚠ codex 등록은 건너뜀 (수동: codex mcp add $NAME -- node \"$BOOTSTRAP\")." >&2
+  fi
 fi
 
 # 깨끗한 단일 재등록 (user scope · 현재 부트스트랩 경로/옵션으로).
