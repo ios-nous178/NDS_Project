@@ -27,6 +27,9 @@ docs/guide/ux-writing.md
 docs/guide/dark-patterns.md
 docs/guide/visual-antipatterns.md
 
+# validator-rule-report.mjs 가 찍는 검증 룰 리포트 — 위와 동일(compact 테이블 SSOT).
+docs/validator-rule-report.md
+
 # 가이드 본문 SSOT(.md) + 생성물 — build-guides.mjs 의 직렬화 포맷이 SSOT 다.
 # prettier 가 리스트/펜스/frontmatter 를 손대면 build-guides --check(lint:ssot)와
 # 무손실 왕복이 깨진다.
