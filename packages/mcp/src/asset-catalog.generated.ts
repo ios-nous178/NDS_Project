@@ -169,6 +169,187 @@ export const ASSET_CATALOG: AssetCatalogEntry[] = [
     ]
   },
   {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-horizontal",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-horizontal.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "horizontal"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-horizontal-black",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-horizontal-black.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "horizontal",
+      "black"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-horizontal-compact",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-horizontal-compact.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "horizontal",
+      "compact"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-horizontal-compact-black",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-horizontal-compact-black.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "horizontal",
+      "compact",
+      "black"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-horizontal-compact-white",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-horizontal-compact-white.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "horizontal",
+      "compact",
+      "white"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-horizontal-white",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-horizontal-white.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "horizontal",
+      "white"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-shoe-icon",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-shoe-icon.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "shoe",
+      "icon"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-symbol",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-symbol.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "symbol"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-symbol-black",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-symbol-black.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "symbol",
+      "black"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-symbol-white",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-symbol-white.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "symbol",
+      "white"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-vertical",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-vertical.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "vertical"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-vertical-black",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-vertical-black.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "vertical",
+      "black"
+    ]
+  },
+  {
+    "project": "cashwalk",
+    "scope": "project",
+    "category": "logos",
+    "id": "cashwalk-vertical-white",
+    "inlineRef": "@nudge-design/assets/files/project/cashwalk/logos/cashwalk-vertical-white.svg",
+    "mimeType": "image/svg+xml",
+    "search": [
+      "cashwalk",
+      "logos",
+      "vertical",
+      "white"
+    ]
+  },
+  {
     "project": "geniet",
     "scope": "project",
     "category": "images/category-heroes",
@@ -5575,6 +5756,9 @@ export const ASSET_CATALOG_SUMMARY: Record<string, Record<string, number>> = {
   "cashwalk-biz": {
     "illustrations": 5,
     "logos": 3
+  },
+  "cashwalk": {
+    "logos": 13
   },
   "geniet": {
     "images/category-heroes": 16,

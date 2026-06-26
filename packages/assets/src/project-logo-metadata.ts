@@ -8,7 +8,13 @@
  * dataUri 를 조합한다.
  */
 
-export type ProjectSlug = "trost" | "geniet" | "nudge-eap" | "cashwalk-biz" | "runmile";
+export type ProjectSlug =
+  | "trost"
+  | "geniet"
+  | "nudge-eap"
+  | "cashwalk-biz"
+  | "runmile"
+  | "cashwalk";
 
 export type LogoVariant =
   | "default"
@@ -23,6 +29,16 @@ export type LogoVariant =
   | "mono" // 단색 (보통 검정)
   | "muted" // 저강조 (보통 회색)
   | "white" // 흰색 (어두운 배경 위 — black 의 반전 변종)
+  // Cashwalk 로고 가이드 (Figma 140:56) — color × layout 매트릭스. Full Color = brown #605151.
+  // 메인 가로 = default(full)/mono(black)/white. 아래는 추가 layout 의 color 변종.
+  | "horizontalCompact" // 가로(짧은) Full — 작은 가로 영역
+  | "horizontalCompactMono" // 가로(짧은) Black
+  | "horizontalCompactWhite" // 가로(짧은) White
+  | "verticalMono" // 세로 Black
+  | "verticalWhite" // 세로 White
+  | "symbolMono" // 심볼 단독 Black
+  | "symbolWhite" // 심볼 단독 White
+  | "shoeIcon" // 신발 시그니처 아이콘 (brown on yellow #FFD200) — 앱 아이콘/일러스트 강조
   // NudgeEAP 공식 로고 가이드 (Figma Library MqR7O3uvBvH5tVngwzbqGH, 698:87)
   | "koHorizontal" // 심볼 + 한글 / 가로 — 국내 서비스·한국어 자료
   | "koEnHorizontal" // 심볼 + 한글+영문 / 가로 — 대표 로고
@@ -61,18 +77,39 @@ export const PROJECT_LOGO_METADATA: Record<ProjectSlug, ProjectLogoMetaSet> = {
   // DAIN 로고는 프로젝트 variant 가 아니라 별도 DAIN_LOGO 로 분리 (아래 참고).
   "nudge-eap": {
     default: { filename: "project/nudge-eap/logos/nudge-eap-logo.png", mimeType: "image/png" },
-    footer: { filename: "project/nudge-eap/logos/nudge-eap-logo-footer.png", mimeType: "image/png" },
+    footer: {
+      filename: "project/nudge-eap/logos/nudge-eap-logo-footer.png",
+      mimeType: "image/png",
+    },
     svg: { filename: "project/nudge-eap/logos/nudge-eap-logo.svg", mimeType: "image/svg+xml" },
-    koHorizontal: { filename: "project/nudge-eap/logos/nudge-eap-ko.svg", mimeType: "image/svg+xml" },
-    koEnHorizontal: { filename: "project/nudge-eap/logos/nudge-eap-koen.svg", mimeType: "image/svg+xml" },
-    enHorizontal: { filename: "project/nudge-eap/logos/nudge-eap-en.svg", mimeType: "image/svg+xml" },
-    enMono: { filename: "project/nudge-eap/logos/nudge-eap-en-dark.svg", mimeType: "image/svg+xml" },
+    koHorizontal: {
+      filename: "project/nudge-eap/logos/nudge-eap-ko.svg",
+      mimeType: "image/svg+xml",
+    },
+    koEnHorizontal: {
+      filename: "project/nudge-eap/logos/nudge-eap-koen.svg",
+      mimeType: "image/svg+xml",
+    },
+    enHorizontal: {
+      filename: "project/nudge-eap/logos/nudge-eap-en.svg",
+      mimeType: "image/svg+xml",
+    },
+    enMono: {
+      filename: "project/nudge-eap/logos/nudge-eap-en-dark.svg",
+      mimeType: "image/svg+xml",
+    },
     symbol: { filename: "project/nudge-eap/logos/nudge-eap-symbol.svg", mimeType: "image/svg+xml" },
   },
 
   "cashwalk-biz": {
-    vertical: { filename: "project/cashwalk-biz/logos/cashwalk-vertical.png", mimeType: "image/png" },
-    horizontal: { filename: "project/cashwalk-biz/logos/cashwalk-horizontal.png", mimeType: "image/png" },
+    vertical: {
+      filename: "project/cashwalk-biz/logos/cashwalk-vertical.png",
+      mimeType: "image/png",
+    },
+    horizontal: {
+      filename: "project/cashwalk-biz/logos/cashwalk-horizontal.png",
+      mimeType: "image/png",
+    },
     horizontalSvg: {
       filename: "project/cashwalk-biz/logos/cashwalk-for-business-horizontal.svg",
       mimeType: "image/svg+xml",
@@ -86,12 +123,72 @@ export const PROJECT_LOGO_METADATA: Record<ProjectSlug, ProjectLogoMetaSet> = {
   runmile: {
     default: { filename: "project/runmile/logos/runmile-logo.svg", mimeType: "image/svg+xml" },
     mono: { filename: "project/runmile/logos/runmile-logo-black.svg", mimeType: "image/svg+xml" },
-    muted: { filename: "project/runmile/logos/runmile-logo-gray700.svg", mimeType: "image/svg+xml" },
+    muted: {
+      filename: "project/runmile/logos/runmile-logo-gray700.svg",
+      mimeType: "image/svg+xml",
+    },
     white: { filename: "project/runmile/logos/runmile-logo-white.svg", mimeType: "image/svg+xml" },
+  },
+
+  // Cashwalk 소비자앱 로고 가이드 (Figma 140:56). Full Color = brown #605151 / mono = #111111 / white.
+  // 4 lockup(가로 긴/가로 짧은/세로/심볼) × 3 color + 신발 시그니처 아이콘 = 13 SVG.
+  // default = 메인 가로(긴) Full — 헤더/푸터 등 가로 폭 충분한 영역. 임의 회전·색변경·비율조정 금지.
+  cashwalk: {
+    default: {
+      filename: "project/cashwalk/logos/cashwalk-horizontal.svg",
+      mimeType: "image/svg+xml",
+    },
+    mono: {
+      filename: "project/cashwalk/logos/cashwalk-horizontal-black.svg",
+      mimeType: "image/svg+xml",
+    },
+    white: {
+      filename: "project/cashwalk/logos/cashwalk-horizontal-white.svg",
+      mimeType: "image/svg+xml",
+    },
+    horizontalCompact: {
+      filename: "project/cashwalk/logos/cashwalk-horizontal-compact.svg",
+      mimeType: "image/svg+xml",
+    },
+    horizontalCompactMono: {
+      filename: "project/cashwalk/logos/cashwalk-horizontal-compact-black.svg",
+      mimeType: "image/svg+xml",
+    },
+    horizontalCompactWhite: {
+      filename: "project/cashwalk/logos/cashwalk-horizontal-compact-white.svg",
+      mimeType: "image/svg+xml",
+    },
+    vertical: {
+      filename: "project/cashwalk/logos/cashwalk-vertical.svg",
+      mimeType: "image/svg+xml",
+    },
+    verticalMono: {
+      filename: "project/cashwalk/logos/cashwalk-vertical-black.svg",
+      mimeType: "image/svg+xml",
+    },
+    verticalWhite: {
+      filename: "project/cashwalk/logos/cashwalk-vertical-white.svg",
+      mimeType: "image/svg+xml",
+    },
+    symbol: { filename: "project/cashwalk/logos/cashwalk-symbol.svg", mimeType: "image/svg+xml" },
+    symbolMono: {
+      filename: "project/cashwalk/logos/cashwalk-symbol-black.svg",
+      mimeType: "image/svg+xml",
+    },
+    symbolWhite: {
+      filename: "project/cashwalk/logos/cashwalk-symbol-white.svg",
+      mimeType: "image/svg+xml",
+    },
+    shoeIcon: {
+      filename: "project/cashwalk/logos/cashwalk-shoe-icon.svg",
+      mimeType: "image/svg+xml",
+    },
   },
 };
 
-export const PROJECT_SLUGS: readonly ProjectSlug[] = Object.keys(PROJECT_LOGO_METADATA) as ProjectSlug[];
+export const PROJECT_SLUGS: readonly ProjectSlug[] = Object.keys(
+  PROJECT_LOGO_METADATA,
+) as ProjectSlug[];
 
 /**
  * DAIN 서브프로젝트 로고.
