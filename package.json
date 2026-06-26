@@ -24,6 +24,7 @@
     "generate:component-docs": "node scripts/generate-component-docs.mjs",
     "lint:component-docs": "node scripts/generate-component-docs.mjs --check",
     "report:component-docs": "node scripts/generate-component-docs.mjs --report",
+    "report:validator-rules": "node scripts/validator-rule-report.mjs",
     "generate:ssot": "turbo build --filter=@nudge-design/mcp^... --output-logs=errors-only && pnpm --filter @nudge-design/mcp build && pnpm generate:component-guides && pnpm generate:project-coverage && pnpm generate:icon-catalog && pnpm generate:guide-docs",
     "generate:mcp-tools": "node scripts/generate-mcp-tools-reference.mjs",
     "lint:mcp-tools": "node scripts/generate-mcp-tools-reference.mjs --check",
