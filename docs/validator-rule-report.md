@@ -6,32 +6,33 @@
 
 ## 요약
 
-- 대상 룰: **52개** (warn/info 만)
-- 🟢 승격후보(candidate): **29개** — 예외 없거나 정의됨, 바로 검토 가능
+- 대상 룰: **52개** (warn/info + 승격완료)
+- ✅ 승격완료(promoted, 차단 중): **3개** — `missing-viewport-meta`, `region-as-chip`, `nds-custom-element-content-mutation`
+- 🟢 승격후보(candidate): **26개** — 예외 없거나 정의됨, 바로 검토 가능
 - 🟡 예외선행(context): **7개** — 예외 케이스 데이터화 후 승격
 - ⚪ 현행유지(hold): **16개**
 
 ### 차단 안전성 (승격후보+예외선행 기준)
 
-- ✅ 차단 안전: **34개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.
+- ✅ 차단 안전: **31개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.
 - ⚠ waiver 필요: **2개** — explicit-waiver 예외라 차단 시 `data-nudge-allow` 사유 태그 운영 필요.
 
 ### 원칙별 분포
 
 | 원칙 | 룰 수 | 승격후보 | 예외선행 |
 | --- | ---: | ---: | ---: |
-| 원칙 1 | 2 | 1 | 0 |
+| 원칙 1 | 2 | 0 | 0 |
 | 원칙 2 | 17 | 13 | 0 |
 | 원칙 3 | 2 | 1 | 0 |
 | 원칙 4 | 6 | 5 | 0 |
-| 원칙 5 | 14 | 6 | 7 |
-| DS | 11 | 3 | 0 |
+| 원칙 5 | 14 | 5 | 7 |
+| DS | 11 | 2 | 0 |
 
 ## 원칙 1 · 사용자는 목표를 쉽게 달성할 수 있어야 한다
 
 | 룰 | 현재 | 승격 | UX영향 | 예외 케이스 | 차단안전성 | 근거 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `missing-viewport-meta` | warn · invariant | 🟢 승격후보 | high | — | 차단 가능(예외없음) | viewport 누락 → 모바일 짓눌림으로 목표 도달 방해. 기술적이나 UX 영향 큼. 보조 DS. |
+| `missing-viewport-meta` | error · invariant | ✅ 승격완료 | high | — | 차단 가능(예외없음) | viewport 누락 → 모바일 짓눌림으로 목표 도달 방해. 기술적이나 UX 영향 큼. 보조 DS. [승격 2026-06-26] |
 | `onboarding-back-button-inside-card` | warn · invariant | ⚪ 현행유지 | low | — | 차단 가능(예외없음) | 이전버튼 위치 — 흐름 경미. 현행 유지. |
 
 ## 원칙 2 · 사용자는 다음 행동을 쉽게 이해할 수 있어야 한다 (위계·강조)
@@ -78,8 +79,8 @@
 
 | 룰 | 현재 | 승격 | UX영향 | 예외 케이스 | 차단안전성 | 근거 |
 | --- | --- | --- | --- | --- | --- | --- |
+| `region-as-chip` | error · model-guard | ✅ 승격완료 | high | — | 차단 가능(예외없음) | 선택 결과를 Chip 으로(SelectionButton 혼동) — 같은 역할 다른 표현. 보조 원칙2. [승격 2026-06-26] |
 | `avoidable-reinvention` | warn · model-guard | 🟢 승격후보 | high | `ux:p5-no-ds-component` | 차단 안전(structural 자동면제) | DS 컴포넌트 재발명 — 없는 컴포넌트면 정당(예외). 데이터화 선행. |
-| `region-as-chip` | warn · model-guard | 🟢 승격후보 | high | — | 차단 가능(예외없음) | 선택 결과를 Chip 으로(SelectionButton 혼동) — 같은 역할 다른 표현. 보조 원칙2. |
 | `admin-sidebar-logo-not-component` | warn · model-guard | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 사이드바 로고를 컴포넌트 대신 텍스트/수동img — 일관성. |
 | `manual-project-header` | warn · model-guard | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 프로젝트 chrome 을 손수 조립 — 같은 헤더 다른 구현. 일관성 위반. |
 | `selected-item-row-duplicated` | warn · invariant | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 선택 결과 중복 행 — 일관/상태 정합. 보조 원칙3. |
@@ -97,7 +98,7 @@
 
 | 룰 | 현재 | 승격 | UX영향 | 예외 케이스 | 차단안전성 | 근거 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `nds-custom-element-content-mutation` | warn · model-guard | 🟢 승격후보 | high | — | 차단 가능(예외없음) | nds-* textContent 직접 대입 → 내부 렌더 소실(빈 박스). 회귀 다발, 승격 강력 후보. |
+| `nds-custom-element-content-mutation` | error · model-guard | ✅ 승격완료 | high | — | 차단 가능(예외없음) | nds-* textContent 직접 대입 → 내부 렌더 소실(빈 박스). 회귀 다발. [승격 2026-06-26] |
 | `nds-host-box-style` | warn · invariant | 🟢 승격후보 | med | — | 차단 가능(예외없음) | display:contents 호스트에 box 스타일 → 브라우저 드롭(여백 사라짐). 시각 버그 근본, 승격 검토. |
 | `non-inlinable-img-src` | warn · invariant | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 인라인 불가 이미지 경로 → 단일파일 빌드에서 깨짐. 빌드 무결성. |
 | `cashwalk-biz-sidebar-logout` | warn · project-policy | ⚪ 현행유지 | low | — | 차단 가능(예외없음) | 사이드바 로그아웃 누락 — 권고. |

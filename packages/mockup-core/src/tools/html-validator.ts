@@ -161,7 +161,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "service-surface-admin-shell": { severity: "warn", kind: "invariant" },
   // full 문서(<head> 존재)인데 <meta name="viewport"> 누락 — 모바일이 데스크탑 폭으로 렌더돼
   // 반응형(@media)이 안 먹고 카드/다열 그리드가 짓눌림(회고: 모바일 카드 4열 짓눌림·글자 세로 쪼개짐)
-  "missing-viewport-meta": { severity: "warn", kind: "invariant" },
+  // [승격 2026-06-26 warn→error] 원칙1 — 승격 로그: scripts/validator-promotion-log.json
+  "missing-viewport-meta": { severity: "error", kind: "invariant" },
   // 캐포비 어드민(surface=admin + project=cashwalk-biz)인데 5종 Page Pattern 중 하나를 선언 안 함 / 미지 값
   "cashwalk-biz-admin-page-pattern": { severity: "error", kind: "project-policy" },
   // 캐포비 어드민 onboarding 패턴인데 shell(사이드바/풀하이트 셸)이 있음 — 온보딩은 비로그인 진입 화면이라 shell 금지
@@ -219,7 +220,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "mojibake-encoding": { severity: "error", kind: "model-guard" },
   // 선택 결과(지역/카테고리/멤버 등)를 Chip 으로 인라인 표현 — SelectionButton 과 혼동 + 제거/개수
   // affordance 누락. SelectedItemsPanel + SelectedItemRow 로 그려야 함 (회귀: 캐포비 타겟팅 폼)
-  "region-as-chip": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙5 — 승격 로그: scripts/validator-promotion-log.json
+  "region-as-chip": { severity: "error", kind: "model-guard" },
   // SelectedItemsPanel 바로 아래 helper 텍스트를 sibling 으로 붙이면 패널과 helper 가 붙어 보임.
   // FormField helper 슬롯/속성으로 넣어 control gap 을 타게 해야 함 (회귀: 캐포비 타겟팅 폼).
   "selected-items-helper-outside-form-field": { severity: "error", kind: "invariant" },
@@ -238,7 +240,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "avoidable-reinvention": { severity: "warn", kind: "model-guard" },
   // <script> 에서 nds-* 호스트의 textContent/innerText/innerHTML 직접 대입 — 컴포넌트 내부 렌더가
   //   통째로 지워져 빈 박스/깨진 버튼이 됨(회귀: nds-button 라벨을 textContent 로 갈아끼움).
-  "nds-custom-element-content-mutation": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] DS 모델가드 — 승격 로그: scripts/validator-promotion-log.json
+  "nds-custom-element-content-mutation": { severity: "error", kind: "model-guard" },
   // 캐포비 admin 성별 타겟팅은 SelectionButtonGroup(전체/특정) + selection chip 묶음으로 고정.
   "cashwalk-biz-gender-selection-control": { severity: "warn", kind: "project-policy" },
   // 선택 결과 add 어포던스 중복(외부 추가 + 패널 '추가 선택') — 모달 1개로 통일해야 함.

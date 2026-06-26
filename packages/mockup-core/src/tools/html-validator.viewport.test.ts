@@ -22,11 +22,12 @@ const FULL_DOC_WITH_VIEWPORT = `<html><head>
 
 const FRAGMENT_NO_HEAD = `<section><div class="nds-container">홈</div></section>`;
 
-test("full 문서(<head>)인데 viewport meta 없음 → missing-viewport-meta warn", () => {
+test("full 문서(<head>)인데 viewport meta 없음 → missing-viewport-meta error", () => {
+  // [승격 2026-06-26 warn→error] 원칙1 — 승격 로그: scripts/validator-promotion-log.json
   const v = validateHtmlSource(FULL_DOC_NO_VIEWPORT);
   const hit = v.find((x) => x.rule === "missing-viewport-meta");
   assert.ok(hit, "missing-viewport-meta 위반이 있어야 함");
-  assert.equal(hit?.severity, "warn");
+  assert.equal(hit?.severity, "error");
 });
 
 test("viewport meta 가 있으면 위반 아님", () => {

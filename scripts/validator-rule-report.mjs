@@ -13,7 +13,7 @@
 //   EXCEPTION_REGISTRY = scripts/validator-exception-registry.mjs (예외 케이스 데이터 SSOT)
 // RULE_META 가 진리, 맵은 메타만 얹는다. 맵에 없는 warn/info 룰은 "미분류" 로 표면화한다.
 
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -49,6 +49,7 @@ async function loadRuleMeta() {
 }
 
 const PROMO_LABEL = {
+  promoted: "✅ 승격완료",
   candidate: "🟢 승격후보",
   context: "🟡 예외선행", // 예외 데이터화가 선행돼야 승격 가능
   hold: "⚪ 현행유지",
@@ -68,8 +69,9 @@ function readinessOf(exceptionId, EXCEPTION_REGISTRY) {
 function buildRows(RULE_META, PRINCIPLE_MAP, EXCEPTION_REGISTRY) {
   const rows = [];
   for (const [rule, meta] of Object.entries(RULE_META)) {
-    if (!INCLUDE_ALL && meta.severity === "error") continue;
     const m = PRINCIPLE_MAP[rule];
+    // warn/info 가 기본 대상. error 는 --all 이거나 PRINCIPLE_MAP 에서 promoted(승격 완료) 인 경우만 포함.
+    if (!INCLUDE_ALL && meta.severity === "error" && m?.promotion !== "promoted") continue;
     const exception = m?.exception ?? null;
     const ready = readinessOf(exception, EXCEPTION_REGISTRY);
     rows.push({
@@ -117,6 +119,45 @@ function checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY) {
   return problems;
 }
 
+// 승격 거버넌스 — warn→error 승격이 적격(검수·기록·정합)인지 강제한다.
+//   1) PRINCIPLE_MAP.promotion="promoted" ⟺ RULE_META.severity="error" (선언↔enforcement 정합)
+//   2) RULE_META 가 error 인데 PRINCIPLE_MAP 에 있고 promoted 아님 → 무단 승격(로그 없는 침묵 차단)
+//   3) promoted ⟹ 승격 로그에 항목 존재(누가·왜·근거)
+//   4) promoted 인데 예외(exception) 가 있으면 → detect/waiver 배선(WIRED) 전엔 승격 불가(오탐 방지)
+const WIRED_EXCEPTIONS = new Set(); // ③-b/c 에서 detect/waiver 배선되면 여기에 등록
+function checkGovernance(RULE_META, PRINCIPLE_MAP, PROMOTION_LOG) {
+  const problems = [];
+  const logged = new Set((PROMOTION_LOG.promotions ?? []).map((p) => p.rule));
+  for (const [rule, m] of Object.entries(PRINCIPLE_MAP)) {
+    const sev = RULE_META[rule]?.severity;
+    if (m.promotion === "promoted") {
+      if (sev !== "error")
+        problems.push(
+          `'${rule}' promoted 선언인데 RULE_META severity=${sev} (error 여야 함 — enforcement 미반영)`,
+        );
+      if (!logged.has(rule))
+        problems.push(`'${rule}' promoted 인데 승격 로그(validator-promotion-log.json) 항목 없음`);
+      if (m.exception && !WIRED_EXCEPTIONS.has(m.exception))
+        problems.push(
+          `'${rule}' promoted 인데 예외 '${m.exception}' detect/waiver 미배선 — 승격하면 오탐(③-b/c 선행 필요)`,
+        );
+    } else if (sev === "error") {
+      problems.push(
+        `'${rule}' severity=error 인데 promotion≠promoted — 무단 승격(승격 로그·promoted 표기 필요)`,
+      );
+    }
+  }
+  for (const p of PROMOTION_LOG.promotions ?? []) {
+    if (PRINCIPLE_MAP[p.rule]?.promotion !== "promoted")
+      problems.push(
+        `승격 로그의 '${p.rule}' 가 PRINCIPLE_MAP 에서 promoted 아님(로그↔선언 불일치)`,
+      );
+    if (RULE_META[p.rule]?.severity !== "error")
+      problems.push(`승격 로그의 '${p.rule}' RULE_META severity 가 error 아님`);
+  }
+  return problems;
+}
+
 const IMPACT_RANK = { high: 0, med: 1, low: 2, "-": 3 };
 
 function renderMarkdown(rows, EXCEPTION_REGISTRY) {
@@ -139,7 +180,13 @@ function renderMarkdown(rows, EXCEPTION_REGISTRY) {
   lines.push("");
   lines.push("## 요약");
   lines.push("");
-  lines.push(`- 대상 룰: **${total}개** ${INCLUDE_ALL ? "(error 포함)" : "(warn/info 만)"}`);
+  const promoted = rows.filter((r) => r.promotion === "promoted");
+  lines.push(
+    `- 대상 룰: **${total}개** ${INCLUDE_ALL ? "(error 포함)" : "(warn/info + 승격완료)"}`,
+  );
+  lines.push(
+    `- ✅ 승격완료(promoted, 차단 중): **${promoted.length}개** — ${promoted.map((r) => "`" + r.rule + "`").join(", ") || "없음"}`,
+  );
   lines.push(
     `- 🟢 승격후보(candidate): **${candidates.length}개** — 예외 없거나 정의됨, 바로 검토 가능`,
   );
@@ -177,10 +224,10 @@ function renderMarkdown(rows, EXCEPTION_REGISTRY) {
   for (const p of PRINCIPLE_ORDER) {
     const rs = byPrinciple.get(p);
     if (!rs?.length) continue;
+    const PROMO_RANK = { promoted: 0, candidate: 1, context: 2, hold: 3 };
     rs.sort(
       (a, b) =>
-        (a.promotion === "candidate" ? 0 : a.promotion === "context" ? 1 : 2) -
-          (b.promotion === "candidate" ? 0 : b.promotion === "context" ? 1 : 2) ||
+        (PROMO_RANK[a.promotion] ?? 9) - (PROMO_RANK[b.promotion] ?? 9) ||
         IMPACT_RANK[a.uxImpact] - IMPACT_RANK[b.uxImpact] ||
         a.rule.localeCompare(b.rule),
     );
@@ -230,15 +277,21 @@ const { PRINCIPLE_MAP } = await import(path.join(ROOT, "scripts/validator-princi
 const { EXCEPTION_REGISTRY } = await import(
   path.join(ROOT, "scripts/validator-exception-registry.mjs")
 );
+const PROMOTION_LOG = JSON.parse(
+  readFileSync(path.join(ROOT, "scripts/validator-promotion-log.json"), "utf8"),
+);
 
-// 맵↔레지스트리 드리프트 검사 (모든 모드에서 먼저)
-const problems = checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY);
+// 맵↔레지스트리 드리프트 + 승격 거버넌스 검사 (모든 모드에서 먼저)
+const problems = [
+  ...checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY),
+  ...checkGovernance(RULE_META, PRINCIPLE_MAP, PROMOTION_LOG),
+];
 if (problems.length) {
-  console.error("[validator-rule-report] ⚠ 맵↔예외 레지스트리 드리프트:");
+  console.error("[validator-rule-report] ⚠ 정합/거버넌스 위반:");
   for (const p of problems) console.error(`  - ${p}`);
   if (CHECK) process.exit(1);
 } else if (CHECK) {
-  console.log("[validator-rule-report] ✓ 맵↔예외 레지스트리 정합 (드리프트 0)");
+  console.log("[validator-rule-report] ✓ 맵↔레지스트리 정합 + 승격 거버넌스 통과");
 }
 if (CHECK) process.exit(problems.length ? 1 : 0);
 

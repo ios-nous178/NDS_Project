@@ -1,0 +1,45 @@
+{
+  "_doc": "warn→error 승격 감사 로그(SSOT). 검수 후 승격할 때마다 항목 추가. validator-rule-report.mjs --check 가 RULE_META.severity·PRINCIPLE_MAP.promotion 과 정합 강제. 한 룰=한 항목.",
+  "_schema": {
+    "rule": "RULE_META 룰 id",
+    "from": "이전 severity (warn|info)",
+    "to": "승격 severity (error)",
+    "date": "YYYY-MM-DD",
+    "principle": "관련 UX 원칙 또는 DS",
+    "reviewedBy": "검수자",
+    "rationale": "왜 차단으로 올리는가(검수 결정 근거)",
+    "evidence": "재발/오탐위험/근거"
+  },
+  "promotions": [
+    {
+      "rule": "missing-viewport-meta",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "1",
+      "reviewedBy": "jeongmin",
+      "rationale": "viewport 누락은 모바일이 데스크탑 폭으로 렌더돼 반응형이 전혀 안 먹어 목표 도달을 막는다(원칙1). 결정적 판정(head 존재 + viewport meta 부재)이라 오탐 0.",
+      "evidence": "회고 2026-06: 목업 카드 모바일 4열 짓눌림·글자 세로 쪼개짐. 예외 없음(exception=null). 전용 테스트 보유."
+    },
+    {
+      "rule": "region-as-chip",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "5",
+      "reviewedBy": "jeongmin",
+      "rationale": "선택 결과를 Chip 으로 표현하면 SelectionButton 과 혼동되고 제거/개수 affordance 가 빠진다 — 같은 역할 다른 표현(원칙5). 결정적 판정(지역 경로 든 nds-chip).",
+      "evidence": "회귀: 캐포비 타겟팅 폼. 예외 없음. 전용 테스트 보유."
+    },
+    {
+      "rule": "nds-custom-element-content-mutation",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "DS",
+      "reviewedBy": "jeongmin",
+      "rationale": "<script> 가 nds-* 호스트의 textContent/innerHTML 을 직접 대입하면 컴포넌트 내부 렌더가 통째로 지워져 빈 박스/깨진 버튼이 된다. 결정적 모델 가드, 다발 회귀.",
+      "evidence": "회귀: nds-button 라벨 textContent 갈아끼움. 예외 없음. 테스트 보유(presence 단언)."
+    }
+  ]
+}

@@ -142,9 +142,9 @@ export const PRINCIPLE_MAP = {
   "region-as-chip": {
     principle: "5",
     uxImpact: "high",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "선택 결과를 Chip 으로(SelectionButton 혼동) — 같은 역할 다른 표현. 보조 원칙2.",
+    note: "선택 결과를 Chip 으로(SelectionButton 혼동) — 같은 역할 다른 표현. 보조 원칙2. [승격 2026-06-26]",
   },
   "avoidable-reinvention": {
     principle: "5",
@@ -302,9 +302,9 @@ export const PRINCIPLE_MAP = {
   "missing-viewport-meta": {
     principle: "1",
     uxImpact: "high",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "viewport 누락 → 모바일 짓눌림으로 목표 도달 방해. 기술적이나 UX 영향 큼. 보조 DS.",
+    note: "viewport 누락 → 모바일 짓눌림으로 목표 도달 방해. 기술적이나 UX 영향 큼. 보조 DS. [승격 2026-06-26]",
   },
   "onboarding-back-button-inside-card": {
     principle: "1",
@@ -346,9 +346,9 @@ export const PRINCIPLE_MAP = {
   "nds-custom-element-content-mutation": {
     principle: "DS",
     uxImpact: "high",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "nds-* textContent 직접 대입 → 내부 렌더 소실(빈 박스). 회귀 다발, 승격 강력 후보.",
+    note: "nds-* textContent 직접 대입 → 내부 렌더 소실(빈 박스). 회귀 다발. [승격 2026-06-26]",
   },
   "raw-landmark": {
     principle: "DS",

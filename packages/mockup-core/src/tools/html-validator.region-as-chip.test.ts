@@ -33,11 +33,12 @@ const PLAIN_CHIPS = `<html data-project="cashwalk-biz"><body>
   <nds-chip>안드로이드</nds-chip>
 </body></html>`;
 
-test("지역 경로(>)가 든 nds-chip → region-as-chip warn", () => {
+test("지역 경로(>)가 든 nds-chip → region-as-chip error", () => {
+  // [승격 2026-06-26 warn→error] 원칙5 — 승격 로그: scripts/validator-promotion-log.json
   const v = validateHtmlSource(WRONG, { surface: "admin", project: "cashwalk-biz" });
   const hit = has(v, "region-as-chip");
   assert.ok(hit, "지역 경로 칩이면 위반이어야 함");
-  assert.equal(hit?.severity, "warn");
+  assert.equal(hit?.severity, "error");
 });
 
 test("캐포비 admin scope 밖 지역 경로 nds-chip 은 region-as-chip 위반 아님", () => {
