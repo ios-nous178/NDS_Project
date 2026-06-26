@@ -74,21 +74,10 @@ export const trostTheme: ProjectTheme = {
     },
   },
   spacing: {
-    // Semantic Gap (Figma 스페이싱 가이드 806:271) — base 와 다른 것만 override.
-    // (tight 4 · comfortable 12 · loose 16 · wide 24 · label 8 은 base 동일 → cascade)
-    gap: {
-      default: 8, // base 10 → 가이드 Gap/Default 8
-      section: 40, // 신규 — Gap/Section (페이지 내 섹션 간)
-    },
-    // Semantic Inset (가이드 806:271) — base 와 다른 것만 override.
-    // (input 12 · card 16 · card-large 20 · modal 24 는 base 동일 → cascade)
-    inset: {
-      chip: 6, // base 8 → 가이드 Inset/Chip 6
-      button: 14, // 신규 — Inset/Button (S/M 버튼 좌우)
-      section: 32, // 신규 — Inset/Section (페이지 섹션 외곽)
-    },
-    // radius 토큰 override 없음 — 숫자 단일 스케일(base) 사용. 곡률 차이는 --nds-{c}-radius 슬롯.
-    // Stroke override 없음 — stroke{none/thin/medium/bold} 브랜드 공통(base). borderWidth primitive 폐지.
+    // Gap·Inset 은 캐시워크 SpacingGuide(361:1328) 공통 사용 — 프로젝트 override 제거.
+    //   (옛 트로스트 가이드 806:271 의 default 8·chip 6 + 미사용 section/button 토큰 폐지
+    //    → base 캐시워크 값 default 10·chip 8 로 통일.)
+    // radius·stroke 도 base 단일 스케일 공통(override 없음).
   },
   elevation: {
     // Figma 엘리베이션 가이드(5036:108) — 6 Levels (E0~E5), 2겹 drop-shadow.
