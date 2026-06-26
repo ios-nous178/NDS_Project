@@ -41,11 +41,12 @@ const AVATAR_DATA_IMG = `<aside class="nds-shell__sidebar">
   <div class="account"><img src="data:image/png;base64,iVBORw0" alt="avatar" /></div>
 </aside>`;
 
-test("admin 셸 사이드바에 수동 base64 <img> 로고 → admin-sidebar-logo-not-component warn", () => {
+test("admin 셸 사이드바에 수동 base64 <img> 로고 → admin-sidebar-logo-not-component error", () => {
+  // [승격 2026-06-26 warn→error] 원칙5 — 승격 로그: scripts/validator-promotion-log.json
   const v = validateHtmlSource(MANUAL_BASE64_LOGO);
   const hit = v.find((x) => x.rule === RULE);
   assert.ok(hit, "수동 base64 로고는 위반이어야 함");
-  assert.equal(hit?.severity, "warn");
+  assert.equal(hit?.severity, "error");
 });
 
 test("admin 셸 사이드바에 텍스트 로고(.logo 박스) → 위반", () => {
@@ -58,20 +59,32 @@ test("admin 셸 사이드바에 텍스트 로고(.logo 박스) → 위반", () =
 
 test("<nds-sidebar project> 로 로고 자동 주입 → 위반 아님", () => {
   const v = validateHtmlSource(PROPER_SIDEBAR_PROJECT);
-  assert.equal(v.find((x) => x.rule === RULE), undefined);
+  assert.equal(
+    v.find((x) => x.rule === RULE),
+    undefined,
+  );
 });
 
 test("<nds-project-logo> 사용 → 위반 아님", () => {
   const v = validateHtmlSource(PROPER_PROJECT_LOGO);
-  assert.equal(v.find((x) => x.rule === RULE), undefined);
+  assert.equal(
+    v.find((x) => x.rule === RULE),
+    undefined,
+  );
 });
 
 test("사이드바 아이콘(inline SVG)만 있고 로고는 project 주입 → 위반 아님(오탐 방지)", () => {
   const v = validateHtmlSource(SIDEBAR_ICONS_ONLY);
-  assert.equal(v.find((x) => x.rule === RULE), undefined);
+  assert.equal(
+    v.find((x) => x.rule === RULE),
+    undefined,
+  );
 });
 
 test("계정/아바타 data img 는 로고 아님 → 위반 아님(오탐 방지)", () => {
   const v = validateHtmlSource(AVATAR_DATA_IMG);
-  assert.equal(v.find((x) => x.rule === RULE), undefined);
+  assert.equal(
+    v.find((x) => x.rule === RULE),
+    undefined,
+  );
 });

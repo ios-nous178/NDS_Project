@@ -120,13 +120,14 @@ test("nds-verification-code-input 을 쓰면 위반 아님", () => {
 
 // ─── 5) consent-raw-checkbox ───
 
-test("약관 동의를 raw 체크박스로 조립 → consent-raw-checkbox warn", () => {
+test("약관 동의를 raw 체크박스로 조립 → consent-raw-checkbox error", () => {
+  // [승격 2026-06-26 warn→error] 원칙4 — 승격 로그: scripts/validator-promotion-log.json
   const html = wrap(`
     <nds-project-logo project="cashwalk-biz"></nds-project-logo>
     <label><input type="checkbox" /> [필수] 이용약관에 동의합니다</label>`);
   const hit = has(html, "consent-raw-checkbox");
   assert.ok(hit, "약관 신호 + raw 체크박스면 위반이어야 함");
-  assert.equal(hit?.severity, "warn");
+  assert.equal(hit?.severity, "error");
 });
 
 test("nds-checkbox-group 으로 약관 동의를 만들면 위반 아님", () => {

@@ -154,7 +154,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // admin/CMS 셸 사이드바·톱바의 프로젝트 로고를 컴포넌트(nds-sidebar[project]/nds-project-logo) 대신
   // 텍스트 placeholder·수동 base64 <img> 로 손수 박음 (회고: 백오피스 CMS 로고를 에셋 패키지 두고
   // 텍스트→base64 추출 우회). 캐포비 온보딩 한정 text-logo 차단을 모든 프로젝트 admin 셸로 일반화.
-  "admin-sidebar-logo-not-component": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙5 — 예외없음·deterministic. 승격 로그: scripts/validator-promotion-log.json
+  "admin-sidebar-logo-not-component": { severity: "error", kind: "model-guard" },
   // 선언 표면=admin 인데 소비자 project chrome(header/footer/bottom-nav) 사용 (회고: 가입 admin 화면을 소비자 플로우로 오제작)
   "admin-surface-consumer-chrome": { severity: "error", kind: "invariant" },
   // 선언 표면=service 인데 어드민 사이드바(nds-sidebar) 사용 — 표면 불일치(역방향)
@@ -190,7 +191,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 인증번호 입력을 손으로 조립 — verification-code-input 미사용 (남은시간 타이머는 앱 합성 인라인)
   "verification-manual-assembly": { severity: "warn", kind: "model-guard" },
   // 약관 동의를 raw <input type=checkbox> 로 조립 — checkbox-group([필수]/[선택]·전체동의) 미사용
-  "consent-raw-checkbox": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙4 — 예외없음·deterministic. 승격 로그: scripts/validator-promotion-log.json
+  "consent-raw-checkbox": { severity: "error", kind: "model-guard" },
   // 캐포비 사이드바인데 로고 / 계정 블록(account slot) 누락 — 회귀 #1(로고+로그인영역 유실)
   "cashwalk-biz-sidebar-incomplete": { severity: "error", kind: "project-policy" },
   // 캐포비 사이드바인데 로그아웃(footer-actions) 누락 — 권고
@@ -230,12 +232,16 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // addEventListener/click/submit 연결 근거를 확인한다.
   "button-without-interaction": { severity: "error", kind: "invariant" },
   // 날짜/기간을 raw text input(placeholder 'YYYY-MM-DD')으로 구현 — DatePicker/DateRangePicker 미사용
-  "date-as-text-input": { severity: "warn", kind: "model-guard" },
-  "address-as-text-input": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙4 — 예외없음·deterministic(picker 사용 면제 가드). 승격 로그: scripts/validator-promotion-log.json
+  "date-as-text-input": { severity: "error", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙4 — 예외없음·deterministic(email/URL/계층select 오탐 가드). 승격 로그: scripts/validator-promotion-log.json
+  "address-as-text-input": { severity: "error", kind: "model-guard" },
   // 금액/수량을 일반 input 으로 구현 — AmountInput(콤마·단위·clamp) 미사용
-  "amount-as-text-input": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙4 — 예외없음·deterministic. 승격 로그: scripts/validator-promotion-log.json
+  "amount-as-text-input": { severity: "error", kind: "model-guard" },
   // 입력 필드 자리에 정적 숫자(콤마+단위)를 박음 — 폼 값인데 AmountInput 이 아님(회귀: 캐포비 '목표 참여자 수')
-  "amount-as-static-display": { severity: "warn", kind: "model-guard" },
+  // [승격 2026-06-26 warn→error] 원칙4 — 예외없음·deterministic(폼 컨텍스트 한정 가드). 승격 로그: scripts/validator-promotion-log.json
+  "amount-as-static-display": { severity: "error", kind: "model-guard" },
   // div+role/onclick 로 특정 DS 컴포넌트(파일업로드·페이지네이션·스텝퍼·검색)를 재발명 — dsRatio 만으론
   //   90%대로 통과해 invisible 하던 사각지대를 named warn 으로 표면화(회귀: 캐포비 자작 페이저·스텝바).
   "avoidable-reinvention": { severity: "warn", kind: "model-guard" },

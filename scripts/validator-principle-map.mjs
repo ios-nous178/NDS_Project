@@ -177,9 +177,9 @@ export const PRINCIPLE_MAP = {
   "admin-sidebar-logo-not-component": {
     principle: "5",
     uxImpact: "med",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "사이드바 로고를 컴포넌트 대신 텍스트/수동img — 일관성.",
+    note: "사이드바 로고를 컴포넌트 대신 텍스트/수동img — 일관성. deterministic. [승격 2026-06-26]",
   },
   "service-surface-admin-shell": {
     principle: "5",
@@ -242,30 +242,30 @@ export const PRINCIPLE_MAP = {
   "date-as-text-input": {
     principle: "4",
     uxImpact: "high",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "날짜를 raw text 로 — DatePicker 미사용. 잘못된 입력 예방 실패. 보조 원칙1(마찰).",
+    note: "날짜를 raw text 로 — DatePicker 미사용. deterministic(picker 사용 면제 가드). [승격 2026-06-26]",
   },
   "address-as-text-input": {
     principle: "4",
     uxImpact: "med",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "주소 raw text — AddressPicker 미사용.",
+    note: "주소 raw text — AddressPicker 미사용. deterministic(email/URL/계층select 오탐 가드). [승격 2026-06-26]",
   },
   "amount-as-text-input": {
     principle: "4",
     uxImpact: "med",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "금액 raw text — AmountInput(콤마·단위·clamp) 미사용.",
+    note: "금액 raw text — AmountInput(콤마·단위·clamp) 미사용. deterministic. [승격 2026-06-26]",
   },
   "amount-as-static-display": {
     principle: "4",
     uxImpact: "med",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "폼 값 자리에 정적 숫자 — 입력 불가.",
+    note: "폼 값 자리에 정적 숫자 — 입력 불가. deterministic(폼 컨텍스트 한정 가드). [승격 2026-06-26]",
   },
   "verification-manual-assembly": {
     principle: "4",
@@ -277,9 +277,9 @@ export const PRINCIPLE_MAP = {
   "consent-raw-checkbox": {
     principle: "4",
     uxImpact: "med",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: null,
-    note: "약관 동의 raw checkbox — checkbox-group(필수/선택/전체동의) 미사용.",
+    note: "약관 동의 raw checkbox — checkbox-group(필수/선택/전체동의) 미사용. deterministic. [승격 2026-06-26]",
   },
 
   // ── 원칙 3: 현재 상태를 쉽게 이해 — 로딩/완료/실패/Empty/상태색 ───────────────────────

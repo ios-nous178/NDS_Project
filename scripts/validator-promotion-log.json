@@ -80,6 +80,66 @@
       "reviewedBy": "jeongmin",
       "rationale": "캐포비 단일 버튼 모달은 우측 hug 검정 pill(full-width 금지) — 문서화된 회귀(타 화면 full-width 버튼 오용). 예외 ux:p5-modal-policy 는 getProjectProfile().modal.singleButtonLayout='hug-right' 로만 발화(정책 미선언 프로젝트는 애초에 안 잡힘) → 차단 안전(③-b 잔여).",
       "evidence": "container.ts modalPolicy 블록. deterministic(버튼 1개+full-width). 기존 테스트 3종(미정책 프로젝트 무위반 포함). 예외 WIRED."
+    },
+    {
+      "rule": "date-as-text-input",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "4",
+      "reviewedBy": "jeongmin",
+      "rationale": "날짜를 raw text 입력으로 받으면 잘못된 형식·범위를 막지 못한다(원칙4 실수 예방) — DatePicker/DateRangePicker 사용. 예외 없음, deterministic.",
+      "evidence": "input-misuse.test.ts: nds-date-range-picker 사용은 무위반(오탐 가드). presence 단언이라 테스트 변경 없음."
+    },
+    {
+      "rule": "address-as-text-input",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "4",
+      "reviewedBy": "jeongmin",
+      "rationale": "주소를 raw text 로 손조립하면 우편번호·도로명 검증을 놓친다 — AddressPicker 사용. deterministic.",
+      "evidence": "input-misuse.test.ts: '이메일 주소'·'사이트 주소(URL)'·계층 select 는 미발화(강한 오탐 가드). presence 단언."
+    },
+    {
+      "rule": "amount-as-text-input",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "4",
+      "reviewedBy": "jeongmin",
+      "rationale": "금액/수량을 일반 input 으로 받으면 콤마·단위·clamp 를 잃는다 — AmountInput 사용. deterministic.",
+      "evidence": "input-misuse.test.ts presence 단언. 오탐 가드 검증됨."
+    },
+    {
+      "rule": "amount-as-static-display",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "4",
+      "reviewedBy": "jeongmin",
+      "rationale": "폼 입력 필드 자리에 정적 숫자를 박으면 입력이 불가능하다(회귀: 캐포비 '목표 참여자 수'). 폼 컨텍스트 한정 가드로 대시보드 KPI 통계는 면제 → 차단 안전.",
+      "evidence": "input-misuse.test.ts: 대시보드 통계(폼 밖)는 무위반. deterministic."
+    },
+    {
+      "rule": "consent-raw-checkbox",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "4",
+      "reviewedBy": "jeongmin",
+      "rationale": "약관 동의를 raw <input type=checkbox> 로 조립하면 [필수]/[선택]·전체동의 구조를 잃는다 — checkbox-group 사용. deterministic(약관 신호 + raw 체크박스).",
+      "evidence": "onboarding-misuse.test.ts 테스트 severity warn→error 갱신."
+    },
+    {
+      "rule": "admin-sidebar-logo-not-component",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "5",
+      "reviewedBy": "jeongmin",
+      "rationale": "admin 셸 사이드바 로고를 컴포넌트 대신 텍스트/수동 base64 <img> 로 박으면 일관성·자산관리가 무너진다(원칙5) — nds-project-logo/nds-sidebar[project] 사용. deterministic.",
+      "evidence": "admin-logo.test.ts 테스트 severity warn→error 갱신."
     }
   ]
 }
