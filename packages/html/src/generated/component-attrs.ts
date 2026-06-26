@@ -244,7 +244,8 @@ export const COMPONENT_ATTRS = {
       "variant": [
         "solid",
         "soft",
-        "outlined"
+        "outlined",
+        "outlined-subtle"
       ],
       "size": [
         "xl",
@@ -258,7 +259,8 @@ export const COMPONENT_ATTRS = {
       "color": [
         "primary",
         "secondary",
-        "neutral"
+        "neutral",
+        "danger"
       ],
       "shape": [
         "default",

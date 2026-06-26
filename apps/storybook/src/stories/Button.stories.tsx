@@ -21,12 +21,12 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "radio",
-      options: ["solid", "soft", "outlined"],
+      options: ["solid", "soft", "outlined", "outlined-subtle"],
     },
     size: { control: "radio", options: ["xl", "lg", "md", "sm", "xs", "mini", "field"] },
     color: {
       control: "radio",
-      options: ["primary", "secondary", "neutral"],
+      options: ["primary", "secondary", "neutral", "danger"],
     },
     shape: { control: "radio", options: ["default", "pill"] },
     disabled: { control: "boolean" },
@@ -53,27 +53,38 @@ export const Overview: Story = {
   name: "Overview",
   tags: ["gallery"],
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)", alignItems: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--semantic-gap-comfortable)",
+        alignItems: "center",
+      }}
+    >
       <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
         <Button variant="solid">Solid</Button>
         <Button variant="outlined">Outlined</Button>
+        <Button variant="outlined-subtle">Outlined-Subtle</Button>
         <Button variant="soft">Soft</Button>
       </div>
       <div style={{ display: "flex", gap: "var(--semantic-gap-default)" }}>
         <Button color="primary">Primary</Button>
         <Button color="secondary">Secondary</Button>
         <Button color="neutral">Neutral</Button>
+        <Button color="danger" variant="outlined-subtle">
+          Danger
+        </Button>
       </div>
       {/* color × variant 전체 조합 — soft×neutral 처럼 조합마다 색이 달라지는 케이스까지 노출 */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "auto repeat(3, auto)",
+          gridTemplateColumns: "auto repeat(4, auto)",
           gap: "var(--semantic-gap-default)",
           alignItems: "center",
         }}
       >
-        {(["primary", "secondary", "neutral"] as const).map((color) => (
+        {(["primary", "secondary", "neutral", "danger"] as const).map((color) => (
           <React.Fragment key={color}>
             <span style={{ fontSize: 13, opacity: 0.6 }}>{color}</span>
             <Button color={color} variant="solid">
@@ -81,6 +92,9 @@ export const Overview: Story = {
             </Button>
             <Button color={color} variant="outlined">
               Outlined
+            </Button>
+            <Button color={color} variant="outlined-subtle">
+              Subtle
             </Button>
             <Button color={color} variant="soft">
               Soft
@@ -112,8 +126,22 @@ const SPEC_ROWS: Array<{
     gap: "var(--semantic-gap-default)",
   },
   { size: "md", height: "44px", font: "15 / 22px", paddingX: "24px", icon: "20px", gap: "8px" },
-  { size: "sm", height: "42px (Geniet 40)", font: "14 / 20px", paddingX: "16px", icon: "20px", gap: "8px" },
-  { size: "xs", height: "38px (Geniet 36)", font: "13 / 18px", paddingX: "16px", icon: "18px", gap: "6px" },
+  {
+    size: "sm",
+    height: "42px (Geniet 40)",
+    font: "14 / 20px",
+    paddingX: "16px",
+    icon: "20px",
+    gap: "8px",
+  },
+  {
+    size: "xs",
+    height: "38px (Geniet 36)",
+    font: "13 / 18px",
+    paddingX: "16px",
+    icon: "18px",
+    gap: "6px",
+  },
   { size: "mini", height: "32px", font: "13 / 18px", paddingX: "12px", icon: "16px", gap: "4px" },
   { size: "field", height: "48px", font: "15 / 22px", paddingX: "16px", icon: "20px", gap: "8px" },
 ];
@@ -632,7 +660,15 @@ export const TrostStyleMapping: Story = {
     },
   },
   render: () => (
-    <div data-project="trost" style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+    <div
+      data-project="trost"
+      style={{
+        display: "flex",
+        gap: "var(--semantic-gap-comfortable)",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
       <Button color="neutral" variant="solid">
         Primary (검정)
       </Button>
@@ -671,8 +707,18 @@ export const RunmileStyleMapping: Story = {
     },
   },
   render: () => (
-    <div data-project="runmile" style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}>
-      <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+    <div
+      data-project="runmile"
+      style={{ display: "flex", flexDirection: "column", gap: "var(--semantic-gap-comfortable)" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--semantic-gap-comfortable)",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <Button color="primary" variant="solid">
           Solid/Primary (주황)
         </Button>
@@ -690,7 +736,14 @@ export const RunmileStyleMapping: Story = {
         </Button>
       </div>
       {/* 5 size — Mini 40 / S 44 / M 48 / L 52 / XL 56 (런마일 project 높이 override) */}
-      <div style={{ display: "flex", gap: "var(--semantic-gap-comfortable)", alignItems: "center", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--semantic-gap-comfortable)",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <Button color="primary" variant="solid" size="mini">
           Mini 40
         </Button>

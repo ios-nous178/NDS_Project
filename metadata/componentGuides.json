@@ -498,14 +498,16 @@
         "primary/soft": "surface.brandSubtle 배경 + textRole.brand 텍스트 — 3차 액션 (Figma 라이브러리엔 별도 셀 없음). 색 값은 packages/tokens/src/projects/<project>.semantic.ts 토큰 SSOT 참조.",
         "secondary/solid": "var(--semantic-bg-brand-subtle) 배경 + var(--semantic-text-brand-default) 텍스트 — 카드/배경 위 강조 (default), hover=var(--semantic-fill-brand-hover)",
         "neutral/outlined": "흰 배경 + #D8D8D8 보더 + #383838 medium weight 텍스트 — 중립 액션. Figma는 M/S/XS 만 지원, disabled 없음",
-        "error/solid": "error fill + 흰 텍스트 — 파괴 액션 한정"
+        "neutral/outlined-subtle": "흰 배경 + 옅은 보더(borderRole.subtle) + neutral 텍스트 — 캐시워크 가이드(262:1815)의 주력 저강조 보조 액션(가장 낮은 강조)",
+        "danger/outlined-subtle": "흰 배경 + 옅은 보더 + var(--semantic-text-status-error) red 텍스트 — 저강조 위험 액션(삭제 보조 등). 캐시워크 가이드 인가 조합",
+        "danger/solid": "var(--semantic-fill-status-error) red fill + 흰 텍스트 — 파괴 액션 한정 (구 error/solid)"
       },
       "sizeMatrix": {
         "xl": "height 52 / px 16 / py 14 / 16·24 bold / icon 20 / gap 8",
         "lg": "height 48 / px 16 / py 12 / 16·24 bold / icon 20 / gap 8",
         "md": "height 44 / px 24 / py 11 / 15·22 bold / icon 20 / gap 8",
-        "sm": "height 42 / px 16 / py 11 / 14·20 bold / icon 20 / gap 8",
-        "xs": "height 38 / px 16 / py 10 / 13·18 bold / icon 18 / gap 6"
+        "sm": "height 40 / px 16 / py 11 / 14·20 bold / icon 20 / gap 8",
+        "xs": "height 36 / px 16 / py 10 / 13·18 bold / icon 18 / gap 6"
       },
       "stateMatrix": {
         "primary/solid/disabled": "bg #9CA2AE cool-gray + 흰 텍스트.",
@@ -519,7 +521,7 @@
             "xl": "height 56 (base 52 → 56) / px 16 / 16·24 bold / icon 20 / gap 8",
             "lg": "height 52 (base 48 → 52) / px 16 / 16·24 bold / icon 20 / gap 8",
             "md": "height 48 (base 44 → 48) / px 24 / 15·22 bold / icon 20 / gap 8",
-            "sm": "height 44 (base 42 → 44) / px 16 / 14·20 bold / icon 20 / gap 8",
+            "sm": "height 44 (base 40 → 44) / px 16 / 14·20 bold / icon 20 / gap 8",
             "mini": "height 40 (base 32 → 40) / px 12 / 13·18 bold / icon 16 / gap 4"
           },
           "dimensions": {
@@ -529,8 +531,8 @@
         },
         "cashwalk-biz": {
           "sizeMatrix": {
-            "sm": "height 40 (base 42 → 40) / 그 외 px/py/typography 는 base 동일",
-            "xs": "height 36 (base 38 → 36) / 그 외 px/py/typography 는 base 동일"
+            "sm": "height 40 — base 와 동일(캐시워크 ButtonGuide 262:1815 공통, 더 이상 override 아님)",
+            "xs": "height 36 — base 와 동일(캐시워크 ButtonGuide 262:1815 공통, 더 이상 override 아님)"
           },
           "stateMatrix": {
             "primary/solid/disabled": "bg #DDDDDD (atomic Neutral/400) + text #FFFFFF (Figma 3098:1079).",

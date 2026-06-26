@@ -10,12 +10,17 @@
 
 import { cv, fontWeight, radius, sizing, spacing, typeScale } from "@nudge-design/tokens";
 
-export type ButtonVariant = "solid" | "soft" | "outlined";
+export type ButtonVariant = "solid" | "soft" | "outlined" | "outlined-subtle";
 export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs" | "mini" | "field";
-export type ButtonColor = "primary" | "secondary" | "neutral";
+export type ButtonColor = "primary" | "secondary" | "neutral" | "danger";
 export type ButtonShape = "default" | "pill";
 
-export const BUTTON_VARIANTS: readonly ButtonVariant[] = ["solid", "soft", "outlined"] as const;
+export const BUTTON_VARIANTS: readonly ButtonVariant[] = [
+  "solid",
+  "soft",
+  "outlined",
+  "outlined-subtle",
+] as const;
 export const BUTTON_SIZES: readonly ButtonSize[] = [
   "xl",
   "lg",
@@ -25,7 +30,12 @@ export const BUTTON_SIZES: readonly ButtonSize[] = [
   "mini",
   "field",
 ] as const;
-export const BUTTON_COLORS: readonly ButtonColor[] = ["primary", "secondary", "neutral"] as const;
+export const BUTTON_COLORS: readonly ButtonColor[] = [
+  "primary",
+  "secondary",
+  "neutral",
+  "danger",
+] as const;
 export const BUTTON_SHAPES: readonly ButtonShape[] = ["default", "pill"] as const;
 
 export const SHAPE_RADIUS: Record<ButtonShape, string> = {
@@ -172,6 +182,24 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         border: cv.button.borderOutlinedHover,
       },
     },
+    // Outlined-Subtle/Primary — 캐시워크 가이드(262:1815): 옅은 외곽선(가장 낮은 강조). react Button 미러.
+    "outlined-subtle": {
+      enabled: {
+        background: cv.surface.default,
+        text: cv.button.textBrand,
+        border: cv.borderRole.subtle,
+      },
+      disabled: {
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
+      },
+      hover: {
+        background: cv.surface.subtle,
+        text: cv.button.textBrand,
+        border: cv.borderRole.subtle,
+      },
+    },
   },
   secondary: {
     solid: {
@@ -223,6 +251,24 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         background: cv.surface.subtle,
         text: cv.textRole.strong,
         border: cv.borderRole.normal,
+      },
+    },
+    // Outlined-Subtle/Secondary — 옅은 외곽선(가장 낮은 강조). react Button 미러.
+    "outlined-subtle": {
+      enabled: {
+        background: cv.surface.default,
+        text: cv.textRole.strong,
+        border: cv.borderRole.subtle,
+      },
+      disabled: {
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
+      },
+      hover: {
+        background: cv.surface.subtle,
+        text: cv.textRole.strong,
+        border: cv.borderRole.subtle,
       },
     },
   },
@@ -284,6 +330,99 @@ export const styleMap: Record<ButtonColor, Record<ButtonVariant, VariantStyleSet
         text: cv.button.textNeutral,
         border: cv.button.borderNeutral,
         fontWeight: fontWeight.medium,
+      },
+    },
+    // Outlined-Subtle/Neutral — 캐시워크 가이드(262:1815)의 주력 저강조 보조 버튼. react Button 미러.
+    "outlined-subtle": {
+      enabled: {
+        background: cv.surface.default,
+        text: cv.button.textNeutral,
+        border: cv.borderRole.subtle,
+        fontWeight: fontWeight.medium,
+      },
+      disabled: {
+        background: cv.surface.default,
+        text: cv.button.textNeutralDisabled,
+        border: cv.borderRole.subtle,
+        fontWeight: fontWeight.medium,
+      },
+      hover: {
+        background: cv.surface.subtle,
+        text: cv.button.textNeutral,
+        border: cv.borderRole.subtle,
+        fontWeight: fontWeight.medium,
+      },
+    },
+  },
+  // Danger tone (red) — 캐시워크 가이드(262:1815). 시멘틱 status-error 토큰. react Button 미러.
+  danger: {
+    solid: {
+      enabled: {
+        background: cv.fill.statusError,
+        text: cv.textRole.inverse,
+        border: cv.fill.statusError,
+      },
+      disabled: {
+        background: cv.button.bgDisabled,
+        text: cv.textRole.inverse,
+        border: cv.button.bgDisabled,
+      },
+      hover: {
+        background: cv.fill.statusError,
+        text: cv.textRole.inverse,
+        border: cv.fill.statusError,
+      },
+    },
+    soft: {
+      enabled: {
+        background: cv.surface.statusError,
+        text: cv.textRole.statusError,
+        border: cv.surface.statusError,
+      },
+      disabled: {
+        background: cv.borderRole.subtle,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
+      },
+      hover: {
+        background: cv.surface.statusError,
+        text: cv.textRole.statusError,
+        border: cv.surface.statusError,
+      },
+    },
+    outlined: {
+      enabled: {
+        background: cv.surface.default,
+        text: cv.textRole.statusError,
+        border: cv.borderRole.statusError,
+      },
+      disabled: {
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
+      },
+      hover: {
+        background: cv.surface.subtle,
+        text: cv.textRole.statusError,
+        border: cv.borderRole.statusError,
+      },
+    },
+    // 가이드 인가 조합 — 옅은 외곽 + red 텍스트(저강조 위험).
+    "outlined-subtle": {
+      enabled: {
+        background: cv.surface.default,
+        text: cv.textRole.statusError,
+        border: cv.borderRole.subtle,
+      },
+      disabled: {
+        background: cv.surface.default,
+        text: cv.textRole.muted,
+        border: cv.borderRole.subtle,
+      },
+      hover: {
+        background: cv.surface.subtle,
+        text: cv.textRole.statusError,
+        border: cv.borderRole.subtle,
       },
     },
   },

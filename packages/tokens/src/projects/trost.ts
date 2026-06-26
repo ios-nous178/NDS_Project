@@ -114,9 +114,8 @@ export const trostTheme: ProjectTheme = {
   // (기존에 storybook brand-themes.ts 에만 살던 값을 SSOT 로 회수 — 외부 소비자도 동일 적용)
   components: {
     input: { borderColor: trostGray[200], radius: 6 }, // 가이드 Input = Radius/Md 6
-    // Button — 가이드 Button(5043:108): Small 40 (base sm 42). Large 48·Medium 44 는 base 동일.
-    // 검정 Primary=color="neutral"(buttonBg.neutral), 노랑=color="primary", 블루=color="secondary".
-    button: { heightSm: 40 },
+    // Button — S/XS 높이는 캐시워크 ButtonGuide(262:1815) 공통(base sm40)으로 흡수 → override 제거.
+    //   검정 Primary=color="neutral"(buttonBg.neutral), 노랑=color="primary", 블루=color="secondary".
     // 카드 테두리 #E0E0E0 — neutral 스케일 밖 실측값 (200 #E5E5E5 / 300 #D8D8D8 사이)
     card: { radius: 8, borderColor: "#E0E0E0" }, // 가이드 Card = Radius/Lg 8
     modal: { radius: 16, padTop: 24 }, // 가이드 Modal(171:9899) = Radius/2xl 16 · 상단 패딩 24

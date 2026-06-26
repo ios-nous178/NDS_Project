@@ -240,7 +240,8 @@
       "variant": [
         "solid",
         "soft",
-        "outlined"
+        "outlined",
+        "outlined-subtle"
       ],
       "size": [
         "xl",
@@ -254,7 +255,8 @@
       "color": [
         "primary",
         "secondary",
-        "neutral"
+        "neutral",
+        "danger"
       ],
       "shape": [
         "default",

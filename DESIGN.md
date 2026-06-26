@@ -331,8 +331,8 @@ sizing:
     xl: 52px
     lg: 48px
     md: 44px
-    sm: 42px
-    xs: 38px
+    sm: 40px # 캐시워크 ButtonGuide(262:1815) S — 공통(구 42, geniet/trost override 흡수)
+    xs: 36px # 캐시워크 ButtonGuide(262:1815) XS — 공통(구 38, geniet override 흡수)
     mini: 32px # 아주 작은 인박·압축 영역 (지니어트 ButtonGuide 3047:1032)
     field: 48px # 폼 옆 버튼 — 인풋 행 높이(input.default 48)와 맞춤
   tabs:

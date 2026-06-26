@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T23:28:22.993Z",
+  "generatedAt": "2026-06-25T03:15:46.251Z",
   "packages": [
     {
       "name": "@nudge-design/tokens",
@@ -1137,7 +1137,8 @@
           "allowedValues": [
             "solid",
             "soft",
-            "outlined"
+            "outlined",
+            "outlined-subtle"
           ]
         },
         {
@@ -1161,7 +1162,8 @@
           "allowedValues": [
             "primary",
             "secondary",
-            "neutral"
+            "neutral",
+            "danger"
           ]
         },
         {
@@ -1205,7 +1207,8 @@
         "variant": [
           "solid",
           "soft",
-          "outlined"
+          "outlined",
+          "outlined-subtle"
         ],
         "size": [
           "xl",
@@ -1219,7 +1222,8 @@
         "color": [
           "primary",
           "secondary",
-          "neutral"
+          "neutral",
+          "danger"
         ]
       },
       "htmlObservedAttrs": [
@@ -10811,16 +10815,11 @@
     },
     {
       "name": "--nds-button-height-sm",
-      "value": "40px",
+      "value": "44px",
       "group": "nds",
       "projects": [
-        "geniet",
-        "runmile",
-        "trost"
-      ],
-      "projectValues": {
-        "runmile": "44px"
-      }
+        "runmile"
+      ]
     },
     {
       "name": "--nds-button-height-xl",
@@ -10828,14 +10827,6 @@
       "group": "nds",
       "projects": [
         "runmile"
-      ]
-    },
-    {
-      "name": "--nds-button-height-xs",
-      "value": "36px",
-      "group": "nds",
-      "projects": [
-        "geniet"
       ]
     },
     {
@@ -13667,7 +13658,7 @@
     },
     {
       "name": "--size-button-sm",
-      "value": "42px",
+      "value": "40px",
       "group": "size"
     },
     {
@@ -13677,7 +13668,7 @@
     },
     {
       "name": "--size-button-xs",
-      "value": "38px",
+      "value": "36px",
       "group": "size"
     },
     {
@@ -14552,7 +14543,8 @@
         "variant": [
           "solid",
           "soft",
-          "outlined"
+          "outlined",
+          "outlined-subtle"
         ],
         "size": [
           "xl",
@@ -14566,7 +14558,8 @@
         "color": [
           "primary",
           "secondary",
-          "neutral"
+          "neutral",
+          "danger"
         ]
       },
       "observedAttrs": [
