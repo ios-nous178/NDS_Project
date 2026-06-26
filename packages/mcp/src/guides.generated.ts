@@ -1046,7 +1046,8 @@ export const COMPONENT_GUIDES: Record<string, ComponentGuide> = {
       "시작/종료를 한 패널에서 차례로 선택 — 역순으로 고르면 자동 정렬된다.",
       "프리셋은 defaultRangePresets로 빠른 것 3개 제공 (7일/30일/이번 달). 검사·리포트마다 다른 기본값이 필요하면 직접 정의.",
       "presets[].range는 함수 — 호출 시점의 \"오늘\"을 기준으로 계산하기 위함. 객체 리터럴로 박지 말 것.",
-      "선택 불가 날짜는 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다."
+      "선택 불가 날짜는 React disabledDate, HTML disabled-dates(JSON 배열 또는 comma-separated ISO)로 막는다.",
+      "**캘린더 패널은 `document.body` 로 portal 된다** — `overflow:hidden` 조상(아코디언·모달 본문·필터 패널) 안에 둬도 패널이 잘리지 않는다. 조상의 overflow 를 풀 필요 없음. 특정 컨테이너로 portal 하려면 React `portalContainer`, HTML `portal-container`(셀렉터 문자열) 사용."
     ],
     "recommended": [
       "리포트 기간 필터: defaultRangePresets 그대로 사용",
@@ -4702,12 +4703,14 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "간격이 필요하면 컴포넌트를 일반 `<div>` 로 감싸고 그 wrapper 에 margin/padding 을 준다. 또는 부모 컨테이너를 flex/grid 로 만들고 부모의 `gap`(semantic-gap-*)으로 컴포넌트 사이를 띄운다 — wrapper 보다 부모 gap 이 우선.",
       "크기(width/height)가 필요해도 호스트가 아니라 wrapper 에 준다 (예: 폼 안에서 Select 를 240px 로 → `<div style=\"width:240px\"><nds-select …></nds-select></div>`).",
       "호스트에 줘도 되는 inline 스타일은 CSS 커스텀 프로퍼티뿐 — `--nds-*` / `--semantic-*` 변수(컴포넌트 슬롯·토큰 전달)와 `display: contents` 자신. 그 외 표준 박스 프로퍼티는 금지.",
+      "**positioning(absolute/fixed)도 호스트에 직접 주지 않는다** — `position` 도 드롭되는 프로퍼티라, 호스트에 `position:absolute` 를 주면(인라인이든 `.modal__close { position:absolute }` 같은 클래스든) positioning 이 죽고 내부 요소가 부모 좌상단으로 흘러나온다(모달 닫기 X 가 좌상단에 뜨는 전형 버그). **positioned `<div>` 로 감싸 그 wrapper 에 `position/top/right` 를 주고 `<nds-*>` 는 그 안에 둔다.** validator 가 인라인·클래스 두 경우 모두 잡는다.",
       "예외: `display: contents` 를 안 쓰는 소수 컴포넌트(project-chrome / input-group / inspector)는 호스트 스타일이 먹지만, 일관성을 위해 동일하게 wrapper 패턴을 권장."
     ],
     "avoid": [
       "<nds-selection-button-group style=\"margin-bottom:16px\"> — 호스트 margin 무시 → 하단 패널과 딱 붙음. wrapper div 로 감쌀 것.",
       "<nds-card style=\"padding:16px\"> — 호스트 padding 무시. 카드 내부 여백은 nds-card-body 가 처리.",
       "<nds-select style=\"width:240px\"> — 호스트 width 무시. wrapper div 에 width.",
+      "<nds-icon-button class=\"modal__close\"> + `.modal__close { position:absolute }` — 호스트 position 무시 → X 버튼이 모달 좌상단으로 흘러나옴. positioned `<div class=\"modal__close\">` 로 감싸고 그 안에 `<nds-icon-button>` 을 둔다.",
       "컴포넌트 사이 간격을 호스트 margin 으로 주려는 모든 시도 — 부모 gap 또는 wrapper 로."
     ]
   },
@@ -4800,7 +4803,8 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "모든 텍스트 앞에 icon 사용 — affordance 가 없는 장식",
       "colorful icon 과다 사용 / 의미 없는 emoji",
       "아이콘 스타일 혼용 (Line + Filled 가 같은 그룹에서 공존)",
-      "앞 우선순위의 아이콘을 확인하지 않고 자체 SVG 생성"
+      "앞 우선순위의 아이콘을 확인하지 않고 자체 SVG 생성",
+      "**`<path d=\"…\">` 글리프를 손으로 추정해 그리기** — 형태가 깨진/엉뚱한 아이콘이 된다(회귀: 필터 '초기화' 버튼에 깨진 path). 필요한 모양은 `find_icon({ query })` 로 먼저 찾고(예: reset/refresh/rotate → 정상 새로고침 글리프), 산출 SVG 를 그대로 쓴다. 정말 없을 때만 자체 작성."
     ]
   },
   "iconography": {
@@ -4882,14 +4886,16 @@ export const PATTERN_GUIDES: Record<string, PatternGuide> = {
       "화면 ≥2 → 런타임이 상단 전환 탭을 자동 생성(탭 라벨 = 각 스크린 `data-label`, 없으면 '화면 N'). 기본 모드 '탭'(한 번에 한 화면 — 미리보기 친화), 스위처의 '전체' 또는 `<div class=\"mockup-canvas\" data-mode=\"grid\">` 로 옆으로 나란히 비교.",
       "프로젝트 헤더는 프레임 안에서 `<nds-project-header project surface='web|mobile|webview'>` — surface 로 디바이스별 헤더(PC GNB / 모바일 컴팩트 / 웹뷰 뒤로가기)가 자동 분기. base `<nds-header>` 손수 조립 금지.",
       "프레임/스위처(.mockup-canvas · .mockup-screen)는 목업 전용으로 빌드가 자동 inline — `<style>` 에 `.screen{width:…}` 나 미디어쿼리 토글을 직접 쓰지 말 것(클래스만 사용).",
-      "단일 화면 목업이면 `.mockup-screen` 하나(또는 캔버스 없이 `<main>` 하나)로 충분 — 탭은 화면이 2개 이상일 때만 자동 생성."
+      "단일 화면 목업이면 `.mockup-screen` 하나(또는 캔버스 없이 `<main>` 하나)로 충분 — 탭은 화면이 2개 이상일 때만 자동 생성.",
+      "**시나리오 보드 연동은 `data-screen` 하나면 자동·양방향** — 각 `.mockup-screen` 에 `data-screen=\"<key>\"`(시나리오 JSON 의 screen 키와 일치)를 달면, 상단 탭 전환 → 보드 '지금 보는 화면'이 따라오고, 보드 플로우 단계 클릭 → 실제 화면이 전환된다. 스위처와 보드가 `nds-scenario-nav` 이벤트로 자동 동기화하므로 **MutationObserver·이벤트 브릿지 스크립트를 손으로 끼우지 말 것**(빌드가 처리)."
     ],
     "avoid": [
       "스크린 높이를 내용에 맡겨(min-height 없이) 화면마다 높이가 제각각",
       "각 스크린에 자체 헤더/푸터 없이 하나의 긴 페이지로 쌓기",
       "@media 로 모바일/웹 헤더를 display 토글 (동시 비교 불가)",
       "base <nds-header> + nds-header-logo/menu 손수 조립으로 프로젝트 GNB 흉내",
-      "디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)"
+      "디바이스 프레임 너비/높이를 <style> 에 손으로 재정의 (.mockup-screen[data-device] 프리셋 사용)",
+      "보드↔스위처 동기화를 위해 MutationObserver/`nds-scenario-nav` 브릿지 스크립트를 손으로 추가 (`data-screen` 만 달면 빌드가 양방향 처리 — 브릿지는 중복·드리프트 원인)"
     ]
   },
   "multi-step-form": {

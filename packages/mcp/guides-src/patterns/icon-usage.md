@@ -38,3 +38,4 @@ metrics:
 - colorful icon 과다 사용 / 의미 없는 emoji
 - 아이콘 스타일 혼용 (Line + Filled 가 같은 그룹에서 공존)
 - 앞 우선순위의 아이콘을 확인하지 않고 자체 SVG 생성
+- **`<path d="…">` 글리프를 손으로 추정해 그리기** — 형태가 깨진/엉뚱한 아이콘이 된다(회귀: 필터 '초기화' 버튼에 깨진 path). 필요한 모양은 `find_icon({ query })` 로 먼저 찾고(예: reset/refresh/rotate → 정상 새로고침 글리프), 산출 SVG 를 그대로 쓴다. 정말 없을 때만 자체 작성.
