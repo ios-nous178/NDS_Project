@@ -40,6 +40,16 @@
       "reviewedBy": "jeongmin",
       "rationale": "<script> 가 nds-* 호스트의 textContent/innerHTML 을 직접 대입하면 컴포넌트 내부 렌더가 통째로 지워져 빈 박스/깨진 버튼이 된다. 결정적 모델 가드, 다발 회귀.",
       "evidence": "회귀: nds-button 라벨 textContent 갈아끼움. 예외 없음. 테스트 보유(presence 단언)."
+    },
+    {
+      "rule": "primary-cta-per-container",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "2",
+      "reviewedBy": "jeongmin",
+      "rationale": "공통 UX 원칙2 핵심 — 한 판단 단위(Card/section/Modal/...) 안 Primary 는 1개. 예외 ux:p2-multi-judgment-unit(단위 여럿이면 화면에 여러 Primary 허용)을 detect 에 배선(③-b): 각 Primary 를 가장 가까운 컨테이너에만 귀속시켜 중첩 단위 오탐을 제거 → 차단 안전.",
+      "evidence": "container.ts CTA_CONTAINER_UNION closest 귀속. 신규 테스트 3종(중첩 단위 무위반 포함). 예외 WIRED 등록."
     }
   ]
 }

@@ -285,7 +285,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   "nested-card": { severity: "warn", kind: "invariant" },
   "card-badge-overuse": { severity: "warn", kind: "invariant" },
   "card-footer-button-overuse": { severity: "warn", kind: "invariant" },
-  "primary-cta-per-container": { severity: "warn", kind: "invariant" },
+  // [승격 2026-06-26 warn→error] 원칙2 — 예외 ux:p2-multi-judgment-unit 배선(컨테이너 귀속 카운트). 승격 로그: scripts/validator-promotion-log.json
+  "primary-cta-per-container": { severity: "error", kind: "invariant" },
   "primary-cta-overuse": { severity: "warn", kind: "invariant" },
   "chip-overuse": { severity: "warn", kind: "invariant" },
   "chip-as-entry-grid": { severity: "warn", kind: "model-guard" },

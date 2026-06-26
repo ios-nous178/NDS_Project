@@ -28,9 +28,9 @@ export const PRINCIPLE_MAP = {
   "primary-cta-per-container": {
     principle: "2",
     uxImpact: "high",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: "ux:p2-multi-judgment-unit",
-    note: "반복 카드·행 단위의 Primary 중복. 위와 동일 예외축(판단단위).",
+    note: "영역(Card/section/Modal/...) 단위 Primary 단일성. 예외 ux:p2-multi-judgment-unit 배선됨(가장 가까운 컨테이너 귀속 카운트 → 중첩 단위 오탐 없음). [승격 2026-06-26]",
   },
   "primary-color-role-overload": {
     principle: "2",

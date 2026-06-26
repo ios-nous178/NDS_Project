@@ -124,7 +124,11 @@ function checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY) {
 //   2) RULE_META 가 error 인데 PRINCIPLE_MAP 에 있고 promoted 아님 → 무단 승격(로그 없는 침묵 차단)
 //   3) promoted ⟹ 승격 로그에 항목 존재(누가·왜·근거)
 //   4) promoted 인데 예외(exception) 가 있으면 → detect/waiver 배선(WIRED) 전엔 승격 불가(오탐 방지)
-const WIRED_EXCEPTIONS = new Set(); // ③-b/c 에서 detect/waiver 배선되면 여기에 등록
+// ③-b/c 에서 detect/waiver 가 런타임 validator 에 배선된 예외만 등록 — promoted 룰이 이 예외를
+// 가지면 거버넌스 통과(오탐 방지 보장). 미등록 예외를 가진 채 승격하면 게이트가 차단.
+const WIRED_EXCEPTIONS = new Set([
+  "ux:p2-multi-judgment-unit", // container.ts — 가장 가까운 컨테이너 귀속 카운트(③-b)
+]);
 function checkGovernance(RULE_META, PRINCIPLE_MAP, PROMOTION_LOG) {
   const problems = [];
   const logged = new Set((PROMOTION_LOG.promotions ?? []).map((p) => p.rule));

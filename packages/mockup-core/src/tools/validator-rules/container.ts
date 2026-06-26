@@ -88,6 +88,11 @@ export function collectContainerViolations(
     { selector: "nds-drawer", label: "nds-drawer" },
     { selector: "dialog, [role='dialog']", label: "dialog" },
   ];
+  // 예외 ux:p2-multi-judgment-unit — Primary 1개 제한은 "같은 판단 단위" 안에서만.
+  //   단위 경계의 합집합. 중첩(예: <section> 안 카드들)일 때 각 Primary 는 가장 가까운
+  //   컨테이너(=그 단위)에만 귀속시켜, 단위가 여럿이면 화면에 Primary 여러 개를 허용한다.
+  //   (이 귀속 없이 후손 전수 카운트하면 단위 여럿을 한 단위로 합산해 오탐 — 회귀 방지)
+  const CTA_CONTAINER_UNION = ctaContainers.map((c) => c.selector).join(", ");
   for (const { selector: sel, label } of ctaContainers) {
     $(sel).each((_i, el) => {
       if (el.type !== "tag") return;
@@ -97,7 +102,9 @@ export function collectContainerViolations(
       const primarySolid = $(el)
         .find("nds-button")
         .toArray()
-        .filter((b) => isPrimarySolidButton(b as unknown as DomElement));
+        .filter((b) => isPrimarySolidButton(b as unknown as DomElement))
+        // 가장 가까운 컨테이너가 이 영역(el)인 Primary 만 — 중첩 하위 단위 것은 그 단위가 센다.
+        .filter((b) => $(b).closest(CTA_CONTAINER_UNION).get(0) === el);
       if (primarySolid.length > 1) {
         out.push({
           rule: "primary-cta-per-container",

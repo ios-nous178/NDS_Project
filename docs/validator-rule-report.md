@@ -7,14 +7,14 @@
 ## 요약
 
 - 대상 룰: **52개** (warn/info + 승격완료)
-- ✅ 승격완료(promoted, 차단 중): **3개** — `missing-viewport-meta`, `region-as-chip`, `nds-custom-element-content-mutation`
-- 🟢 승격후보(candidate): **26개** — 예외 없거나 정의됨, 바로 검토 가능
+- ✅ 승격완료(promoted, 차단 중): **4개** — `missing-viewport-meta`, `region-as-chip`, `nds-custom-element-content-mutation`, `primary-cta-per-container`
+- 🟢 승격후보(candidate): **25개** — 예외 없거나 정의됨, 바로 검토 가능
 - 🟡 예외선행(context): **7개** — 예외 케이스 데이터화 후 승격
 - ⚪ 현행유지(hold): **16개**
 
 ### 차단 안전성 (승격후보+예외선행 기준)
 
-- ✅ 차단 안전: **31개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.
+- ✅ 차단 안전: **30개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.
 - ⚠ waiver 필요: **2개** — explicit-waiver 예외라 차단 시 `data-nudge-allow` 사유 태그 운영 필요.
 
 ### 원칙별 분포
@@ -22,7 +22,7 @@
 | 원칙 | 룰 수 | 승격후보 | 예외선행 |
 | --- | ---: | ---: | ---: |
 | 원칙 1 | 2 | 0 | 0 |
-| 원칙 2 | 17 | 13 | 0 |
+| 원칙 2 | 17 | 12 | 0 |
 | 원칙 3 | 2 | 1 | 0 |
 | 원칙 4 | 6 | 5 | 0 |
 | 원칙 5 | 14 | 5 | 7 |
@@ -39,10 +39,10 @@
 
 | 룰 | 현재 | 승격 | UX영향 | 예외 케이스 | 차단안전성 | 근거 |
 | --- | --- | --- | --- | --- | --- | --- |
+| `primary-cta-per-container` | error · invariant | ✅ 승격완료 | high | `ux:p2-multi-judgment-unit` | 차단 안전(auto 자동면제) | 영역(Card/section/Modal/...) 단위 Primary 단일성. 예외 ux:p2-multi-judgment-unit 배선됨(가장 가까운 컨테이너 귀속 카운트 → 중첩 단위 오탐 없음). [승격 2026-06-26] |
 | `card-everything` | warn · invariant | 🟢 승격후보 | high | `ux:p2-card-justified` | waiver 필요(explicit) | 카드 남용. 단순 구분은 spacing. 정당한 카드(독립묶음·액션·요약·공지)는 예외. |
 | `primary-color-role-overload` | warn · invariant | 🟢 승격후보 | high | — | 차단 가능(예외없음) | 대표색(Key)을 카드배경·반복목록·장식에 사용. 원칙2 '대표색은 핵심 행동·선택·강조에만'. |
 | `primary-cta-overuse` | warn · invariant | 🟢 승격후보 | high | `ux:p2-multi-judgment-unit` | 차단 안전(auto 자동면제) | 원칙2 핵심 — 1 판단단위 1 Primary. 단위(화면/모달/반복카드/독립섹션)가 여럿이면 화면 전체 다수는 허용 → 예외 데이터화 선행. |
-| `primary-cta-per-container` | warn · invariant | 🟢 승격후보 | high | `ux:p2-multi-judgment-unit` | 차단 안전(auto 자동면제) | 반복 카드·행 단위의 Primary 중복. 위와 동일 예외축(판단단위). |
 | `project-bg-overuse` | warn · invariant | 🟢 승격후보 | high | — | 차단 가능(예외없음) | 프로젝트 키색을 배경 면적으로 남용 — primary-color-role-overload 와 한 묶음으로 검토. |
 | `visual-emphasis-overload` | warn · invariant | 🟢 승격후보 | high | — | 차단 가능(예외없음) | 강조 장치 경쟁 — 원칙2 '강조가 여러 개로 경쟁하면 안 된다' 직접 대응. |
 | `card-badge-overuse` | warn · invariant | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 배지가 본문/주요액션보다 강함 — 원칙2 '배지·칩은 약하게'. |
