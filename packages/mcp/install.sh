@@ -13,6 +13,10 @@ PREFIX="nds-assets/mcp"
 HOME_DIR="${NUDGE_DS_HOME:-$HOME/.nudge-ds}"
 BOOTSTRAP="$HOME_DIR/bootstrap.mjs"
 NAME="nudge-ds"
+# 과거 이름으로 등록돼 남아있을 수 있는 중복 서버(레거시). 새 이름이 더 생기면 여기만 추가.
+#   nudge-eap-ds        — 옛 외부 프로젝트 CLAUDE.md 템플릿이 안내하던 서버명
+#   nudge-design-system — 구 서버 id / enabledMcpjsonServers 잔재
+LEGACY_NAMES="nudge-eap-ds nudge-design-system"
 
 echo "[nudge-ds] 부트스트랩 다운로드 → $BOOTSTRAP"
 mkdir -p "$HOME_DIR"
@@ -30,8 +34,23 @@ if ! command -v claude >/dev/null 2>&1; then
   exit 0
 fi
 
-# 이미 등록돼 있으면 제거 후 재등록(경로/옵션 갱신).
-claude mcp remove "$NAME" --scope user >/dev/null 2>&1 || true
+# 정리 — 레거시 이름은 물론 현행 nudge-ds 도 제거한다.
+# 현행이 다른 경로(옛 dist/server.js 직접 등록·구 부트스트랩 경로)나 다른 scope 로
+# 깔려 있으면 user scope 재등록만으론 낡은 게 계속 이기므로(local>user), 전부 지운 뒤
+# 아래에서 단일 user scope 로 깨끗이 재등록한다. scope 를 몰라 local·user 둘 다 시도.
+# (project scope=.mcp.json 은 레포 커밋 설정이라 의도적으로 건드리지 않는다.)
+for name in $LEGACY_NAMES "$NAME"; do
+  for scope in local user; do
+    claude mcp remove "$name" --scope "$scope" >/dev/null 2>&1 || true
+  done
+done
+if command -v codex >/dev/null 2>&1; then
+  for name in $LEGACY_NAMES "$NAME"; do
+    codex mcp remove "$name" >/dev/null 2>&1 || true
+  done
+fi
+
+# 깨끗한 단일 재등록 (user scope · 현재 부트스트랩 경로/옵션으로).
 claude mcp add "$NAME" --scope user \
   -e NUDGE_DS_INSTALL_MODE=mcpb \
   -e "NUDGE_DS_UPDATE_URL=$ORIGIN/$PREFIX/version.json" \

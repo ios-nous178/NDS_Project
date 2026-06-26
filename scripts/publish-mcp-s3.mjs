@@ -55,8 +55,12 @@ assertExists(BODY_DIR, "dist-mcpb/nudge-ds/embedded");
 assertExists(serverEntry(BODY_DIR), "embedded/tools/server.mjs");
 const bootstrapSrc = path.join(MCP, "bootstrap.mjs");
 const installSrc = path.join(MCP, "install.sh");
+const installPs1Src = path.join(MCP, "install.ps1");
+const mcpbSrc = path.join(OUT_DIR, "nudge-ds.mcpb"); // Track A(데스크탑) 더블클릭 번들 — pack:mcpb 산출물
 assertExists(bootstrapSrc, "packages/mcp/bootstrap.mjs");
 assertExists(installSrc, "packages/mcp/install.sh");
+assertExists(installPs1Src, "packages/mcp/install.ps1");
+assertExists(mcpbSrc, "dist-mcpb/nudge-ds.mcpb");
 
 // ── 1) 본체 tar.gz + sha256 + buildId ─────────────────────────────────────────
 const tarPath = path.join(OUT_DIR, `nudge-ds-bundle.tar.gz`);
@@ -89,7 +93,9 @@ console.log(
 console.log(`  bundle : ${bundleUrl}`);
 console.log(`  sha256 : ${sha}`);
 console.log(`  pointer: ${cdnOrigin}/${prefix}/version.json`);
-console.log(`  install: ${cdnOrigin}/${prefix}/install.sh`);
+console.log(`  install (mac/linux): ${cdnOrigin}/${prefix}/install.sh`);
+console.log(`  install (windows):   ${cdnOrigin}/${prefix}/install.ps1`);
+console.log(`  desktop (.mcpb):     ${cdnOrigin}/${prefix}/nudge-ds-latest.mcpb`);
 
 // ── 3) 업로드 (immutable 본체 → 부속 → 마지막에 version.json flip) ────────────
 // content-addressed 라 같은 buildId 재실행이면 본체는 이미 있음 → 건너뛰고 포인터만 갱신(idempotent).
@@ -108,6 +114,16 @@ s3cp(bootstrapSrc, `s3://${bucket}/${prefix}/bootstrap.mjs`, {
 s3cp(installSrc, `s3://${bucket}/${prefix}/install.sh`, {
   cache: "no-cache",
   type: "text/x-shellscript",
+});
+s3cp(installPs1Src, `s3://${bucket}/${prefix}/install.ps1`, {
+  cache: "no-cache",
+  type: "text/plain; charset=utf-8",
+});
+// Track A(데스크탑) 안정 링크 — 비개발자가 "이 링크 받은 파일 더블클릭"만 하면 되도록
+// 버전과 무관한 고정 키로 항상 최신 .mcpb 를 가리킨다. no-cache 로 새 빌드 즉시 반영.
+s3cp(mcpbSrc, `s3://${bucket}/${prefix}/nudge-ds-latest.mcpb`, {
+  cache: "no-cache",
+  type: "application/octet-stream",
 });
 // version.json 은 본체가 다 올라간 뒤 마지막에 — 포인터가 가리키는 본체가 항상 존재하도록.
 s3cp(versionJsonPath, `s3://${bucket}/${prefix}/version.json`, {

@@ -13,8 +13,12 @@ Nudge Design System용 MCP(Model Context Protocol) 서버.
 Claude Desktop 사용자에게 가장 쉬운 방법입니다. **Node.js 설치 필요 없습니다.**
 Claude Desktop 이 자체 Node 런타임을 내장합니다.
 
-1. `nudge-ds.mcpb` 를 받아 더블클릭하거나, Claude Desktop → Settings → Extensions →
-   "Install from file" 로 불러옵니다.
+1. 아래 안정 링크에서 받은 `.mcpb` 를 더블클릭하거나, Claude Desktop → Settings →
+   Extensions → "Install from file" 로 불러옵니다. (이 링크는 버전과 무관하게 항상 최신을
+   가리키므로 비개발자에게는 "이 링크 받은 파일 더블클릭" 한 문장이면 됩니다.)
+   ```
+   https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com/nds-assets/mcp/nudge-ds-latest.mcpb
+   ```
 2. 이후 모든 워크스페이스에서 `nudge-ds` MCP 가 자동 활성화됩니다.
 
 **업데이트는 자동입니다.** `.mcpb` 안의 부트스트랩이 실행 때마다 S3 의 최신 본체를 확인해
@@ -24,15 +28,30 @@ Claude Desktop 이 자체 Node 런타임을 내장합니다.
 
 ### B. Claude Code (터미널) 원클릭 설치
 
-터미널의 Claude Code 사용자는 아래 한 줄이면 됩니다(**Node.js 20+ 필요**).
-자기갱신 부트스트랩을 `~/.nudge-ds` 에 받아 `claude` 에 stdio MCP 로 등록합니다.
+터미널의 Claude Code 사용자는 아래 한 줄이면 됩니다(**Node.js 20+ 필요** — `claude` CLI 가
+있으면 Node 도 이미 깔려 있습니다). 자기갱신 부트스트랩을 `~/.nudge-ds` 에 받아 `claude` 에
+stdio MCP 로 등록합니다. 이 한 줄은 터미널에 붙여도, Claude Code 채팅에 "이거 실행해줘"로
+붙여도 똑같이 동작합니다.
 
 ```bash
+# mac / linux
 curl -fsSL https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com/nds-assets/mcp/install.sh | sh
+```
+
+```powershell
+# windows (PowerShell)
+irm https://nudge-design-assets.s3.ap-northeast-2.amazonaws.com/nds-assets/mcp/install.ps1 | iex
 ```
 
 이후 Claude Code 를 재시작하면 `nudge-ds` MCP 가 뜹니다. 실제 본체는 첫 실행 때 S3 에서
 받아오고, 이후 S3 가 갱신되면 다음 실행부터 자동 반영됩니다(재설치 불필요).
+
+> **레거시 자동 정리** — 설치 스크립트는 등록 전에 과거 이름(`nudge-eap-ds`,
+> `nudge-design-system`)으로 깔린 중복 서버를 제거합니다. 또한 현행 `nudge-ds` 가 다른
+> 경로/scope 로 이미 등록돼 있어도(낡은 등록이 새 등록을 가리는 문제) `local`·`user` 양쪽에서
+> 지운 뒤 현재 부트스트랩 경로로 깨끗이 재등록합니다. (`codex` 가 있으면 그쪽 잔재도 정리.
+> 단 `.mcpb`로 Claude **Desktop** 에 깐 확장은 별도 클라이언트라 Desktop → Settings →
+> Extensions 에서 관리합니다.)
 
 수동으로 등록하려면(이미 부트스트랩을 받아둔 경우):
 

@@ -15,6 +15,7 @@ on:
       - "packages/mcp/src/**"
       - "packages/mcp/bootstrap.mjs"
       - "packages/mcp/install.sh"
+      - "packages/mcp/install.ps1"
       - "packages/mcp/scripts/**"
       - "scripts/pack-mcpb.mjs"
       - "scripts/publish-mcp-s3.mjs"
