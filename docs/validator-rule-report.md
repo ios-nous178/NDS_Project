@@ -7,14 +7,14 @@
 ## 요약
 
 - 대상 룰: **52개** (warn/info + 승격완료)
-- ✅ 승격완료(promoted, 차단 중): **6개** — `missing-viewport-meta`, `region-as-chip`, `nds-custom-element-content-mutation`, `project-denied-button-color`, `nested-card`, `primary-cta-per-container`
+- ✅ 승격완료(promoted, 차단 중): **7개** — `missing-viewport-meta`, `project-modal-single-button-fullwidth`, `region-as-chip`, `nds-custom-element-content-mutation`, `project-denied-button-color`, `nested-card`, `primary-cta-per-container`
 - 🟢 승격후보(candidate): **24개** — 예외 없거나 정의됨, 바로 검토 가능
-- 🟡 예외선행(context): **6개** — 예외 케이스 데이터화 후 승격
+- 🟡 예외선행(context): **5개** — 예외 케이스 데이터화 후 승격
 - ⚪ 현행유지(hold): **16개**
 
 ### 차단 안전성 (승격후보+예외선행 기준)
 
-- ✅ 차단 안전: **29개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.
+- ✅ 차단 안전: **28개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.
 - ⚠ waiver 필요: **1개** — explicit-waiver 예외라 차단 시 `data-nudge-allow` 사유 태그 운영 필요.
 
 ### 원칙별 분포
@@ -25,7 +25,7 @@
 | 원칙 2 | 17 | 11 | 0 |
 | 원칙 3 | 2 | 1 | 0 |
 | 원칙 4 | 6 | 5 | 0 |
-| 원칙 5 | 14 | 5 | 6 |
+| 원칙 5 | 14 | 5 | 5 |
 | DS | 11 | 2 | 0 |
 
 ## 원칙 1 · 사용자는 목표를 쉽게 달성할 수 있어야 한다
@@ -81,6 +81,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `region-as-chip` | error · model-guard | ✅ 승격완료 | high | — | 차단 가능(예외없음) | 선택 결과를 Chip 으로(SelectionButton 혼동) — 같은 역할 다른 표현. 보조 원칙2. [승격 2026-06-26] |
 | `project-denied-button-color` | error · project-policy | ✅ 승격완료 | med | `ux:p5-brand-cta-policy` | 차단 안전(policy 자동면제) | 프로젝트 금지 버튼색 — 프로필 deniedButtonColors 로 발화(예외 내재: 해당 프로젝트에 그 tone 자체가 없음). deterministic. [승격 2026-06-26] |
+| `project-modal-single-button-fullwidth` | error · project-policy | ✅ 승격완료 | med | `ux:p5-modal-policy` | 차단 안전(policy 자동면제) | 단일버튼 full-width — 프로필 modal.singleButtonLayout='hug-right' 로 발화(예외 내재). deterministic, 문서화된 회귀. [승격 2026-06-26] |
 | `avoidable-reinvention` | warn · model-guard | 🟢 승격후보 | high | `ux:p5-no-ds-component` | 차단 안전(structural 자동면제) | DS 컴포넌트 재발명 — 없는 컴포넌트면 정당(예외). 데이터화 선행. |
 | `admin-sidebar-logo-not-component` | warn · model-guard | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 사이드바 로고를 컴포넌트 대신 텍스트/수동img — 일관성. |
 | `manual-project-header` | warn · model-guard | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 프로젝트 chrome 을 손수 조립 — 같은 헤더 다른 구현. 일관성 위반. |
@@ -88,7 +89,6 @@
 | `selected-item-row-outside-panel` | warn · invariant | 🟢 승격후보 | med | — | 차단 가능(예외없음) | 행이 패널 밖 — 구조/일관성. 시각 깨짐 동반. |
 | `neutral-solid-cta` | warn · project-policy | 🟡 예외선행 | med | `ux:p5-brand-cta-policy` | 차단 안전(policy 자동면제) | 검정 solid CTA 브랜드별 상이(캐포비=neutral). 프로젝트 정책 예외 의존. |
 | `project-modal-footer-stacked` | warn · project-policy | 🟡 예외선행 | med | `ux:p5-modal-policy` | 차단 안전(policy 자동면제) | 모달 푸터 세로스택 — 프로젝트 모달 정책. |
-| `project-modal-single-button-fullwidth` | warn · project-policy | 🟡 예외선행 | med | `ux:p5-modal-policy` | 차단 안전(policy 자동면제) | 단일버튼 full-width — 캐포비 hug 정책 예외. |
 | `service-surface-admin-shell` | warn · invariant | 🟡 예외선행 | med | `ux:surface-declared` | 차단 안전(structural 자동면제) | 선언 표면과 셸 불일치 — surface 선언(데이터)에 의존. |
 | `cashwalk-biz-gender-selection-control` | warn · project-policy | 🟡 예외선행 | low | `ux:p5-brand-form-policy` | 차단 안전(policy 자동면제) | 프로젝트 전용 폼 컨트롤 — 정책 예외. |
 | `project-modal-footer-button-shape` | warn · project-policy | 🟡 예외선행 | low | `ux:p5-modal-policy` | 차단 안전(policy 자동면제) | 푸터 버튼 shape 불일치 — 모달 정책. |

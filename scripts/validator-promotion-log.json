@@ -70,6 +70,16 @@
       "reviewedBy": "jeongmin",
       "rationale": "프로젝트에 없는 버튼 tone 사용(예: 캐포비 secondary — ButtonGuide tone 은 Primary+Neutral뿐). 예외 ux:p5-brand-cta-policy 는 디텍터가 getProjectProfile().cta.deniedButtonColors 로 발화 자체가 정책위반이라 내재 — 면제 케이스는 애초에 발화 안 함 → 차단 안전(③-b 잔여).",
       "evidence": "html-validator.ts 7b 블록 프로필 denylist. deterministic. 예외 WIRED(neutral-solid-cta 도 같은 예외 honor)."
+    },
+    {
+      "rule": "project-modal-single-button-fullwidth",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "5",
+      "reviewedBy": "jeongmin",
+      "rationale": "캐포비 단일 버튼 모달은 우측 hug 검정 pill(full-width 금지) — 문서화된 회귀(타 화면 full-width 버튼 오용). 예외 ux:p5-modal-policy 는 getProjectProfile().modal.singleButtonLayout='hug-right' 로만 발화(정책 미선언 프로젝트는 애초에 안 잡힘) → 차단 안전(③-b 잔여).",
+      "evidence": "container.ts modalPolicy 블록. deterministic(버튼 1개+full-width). 기존 테스트 3종(미정책 프로젝트 무위반 포함). 예외 WIRED."
     }
   ]
 }

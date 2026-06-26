@@ -198,7 +198,8 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 사이드바가 풀하이트 셸(.nds-shell) 밖 — 100vh 가 화면을 못 채움(회귀: 높이 안 참)
   "cashwalk-biz-sidebar-shell": { severity: "error", kind: "project-policy" },
   // 캐포비 모달 단일 버튼은 우측 정렬 hug 검정 pill — full-width 금지(회귀: 퍼포멘토 등의 full-width 를 잘못 가져옴)
-  "project-modal-single-button-fullwidth": { severity: "warn", kind: "project-policy" },
+  // [승격 2026-06-26 warn→error] 원칙5 — 예외 ux:p5-modal-policy(프로필 modal.singleButtonLayout)로 발화=정책위반. 승격 로그: scripts/validator-promotion-log.json
+  "project-modal-single-button-fullwidth": { severity: "error", kind: "project-policy" },
   // 캐포비 확인/팝업 모달 footer 의 주 action 이 primary(노랑) — 색 생략 시 Button 기본값이 primary 라
   // 자동으로 노랑이 됨. 캐포비 확인 모달 주 action = 검정 CTA(color="neutral"). 5회+ 재발한 회귀의 근본.
   "project-modal-confirm-cta": { severity: "error", kind: "project-policy" },

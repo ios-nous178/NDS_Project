@@ -61,7 +61,8 @@ test("project-denied-button-color: denylist 미선언 프로젝트(trost)는 위
   );
 });
 
-test("project-modal-single-button-fullwidth: 캐포비 단일 버튼 모달의 full-width 는 warn 으로 잡는다", () => {
+test("project-modal-single-button-fullwidth: 캐포비 단일 버튼 모달의 full-width 는 error 로 잡는다", () => {
+  // [승격 2026-06-26 warn→error] 원칙5 — 승격 로그: scripts/validator-promotion-log.json
   const v = validateHtmlSource(
     `<html data-project="cashwalk-biz"><body>` +
       `<nds-modal open><p>저장되었습니다.</p><div slot="footer">` +
@@ -71,7 +72,7 @@ test("project-modal-single-button-fullwidth: 캐포비 단일 버튼 모달의 f
   );
   const hit = v.find((x) => x.rule === "project-modal-single-button-fullwidth");
   assert.ok(hit, "project-modal-single-button-fullwidth 위반이 있어야 함");
-  assert.equal(hit?.severity, "warn");
+  assert.equal(hit?.severity, "error");
 });
 
 test("project-modal-single-button-fullwidth: full-width 없는 단일 버튼(hug)은 위반이 아니다", () => {

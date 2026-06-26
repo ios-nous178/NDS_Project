@@ -205,9 +205,9 @@ export const PRINCIPLE_MAP = {
   "project-modal-single-button-fullwidth": {
     principle: "5",
     uxImpact: "med",
-    promotion: "context",
+    promotion: "promoted",
     exception: "ux:p5-modal-policy",
-    note: "단일버튼 full-width — 캐포비 hug 정책 예외.",
+    note: "단일버튼 full-width — 프로필 modal.singleButtonLayout='hug-right' 로 발화(예외 내재). deterministic, 문서화된 회귀. [승격 2026-06-26]",
   },
   "cashwalk-biz-gender-selection-control": {
     principle: "5",
