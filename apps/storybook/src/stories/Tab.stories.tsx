@@ -68,9 +68,7 @@ function ShowcaseSection({
       <header>
         <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>{title}</h3>
         {description && (
-          <p style={{ fontSize: 14, color: colors.gray[700], margin: "4px 0 0" }}>
-            {description}
-          </p>
+          <p style={{ fontSize: 14, color: colors.gray[700], margin: "4px 0 0" }}>{description}</p>
         )}
       </header>
       {children}
@@ -256,7 +254,7 @@ function OverviewCard({
         style={{
           alignSelf: "flex-start",
           padding: "3px var(--semantic-inset-chip)",
-          background: colors.common["00"],
+          background: colors.common.white,
           border: `1px solid ${colors.gray[200]}`,
           borderRadius: 999,
           fontSize: 12,
@@ -589,7 +587,7 @@ export const TrostColorAccent: Story = {
   parameters: { layout: "padded" },
   render: () => (
     <ShowcaseSection
-      title="Trost · tone=&quot;color&quot; = Point 인디고(#4968FF)"
+      title='Trost · tone="color" = Point 인디고(#4968FF)'
       description="트로스트 project 는 노랑(면적 채움 전용)이라 탭 활성 강조색은 --nds-tab-accent-* 슬롯을 거쳐 Point 인디고로 분리됩니다. Line=인디고 텍스트·인디케이터, Chip/Segment=인디고 채움(채움 위 텍스트는 흰색). 다른 프로젝트는 project 색으로 폴백합니다."
     >
       <TrostColorDemo />
@@ -616,7 +614,7 @@ function StateDemoFrame({
         flex: 1,
         minWidth: 0,
         padding: "var(--semantic-inset-card)",
-        background: colors.common["00"],
+        background: colors.common.white,
         border: `1px solid ${colors.gray[100]}`,
         borderRadius: 12,
         display: "flex",
@@ -705,7 +703,7 @@ function SpecTable({
         width: "100%",
         borderCollapse: "collapse",
         fontSize: 13,
-        background: colors.common["00"],
+        background: colors.common.white,
         border: `1px solid ${colors.gray[100]}`,
         borderRadius: 8,
         overflow: "hidden",
