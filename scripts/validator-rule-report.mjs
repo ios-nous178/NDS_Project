@@ -5,10 +5,12 @@
 //   node scripts/validator-rule-report.mjs --stdout   → 마크다운을 stdout 으로만
 //   node scripts/validator-rule-report.mjs --json      → 구조화 JSON 으로
 //   node scripts/validator-rule-report.mjs --all       → error 룰까지 포함(기본은 warn/info 만)
+//   node scripts/validator-rule-report.mjs --check      → 맵↔레지스트리 드리프트만 검사(쓰기 없음, 드리프트면 exit 1)
 //
 // 데이터 출처:
 //   RULE_META          = packages/mockup-core/dist/tools/html-validator.js (빌드본; 없으면 안내)
 //   PRINCIPLE_MAP      = scripts/validator-principle-map.mjs (원칙 매핑 SSOT, 1차 패스)
+//   EXCEPTION_REGISTRY = scripts/validator-exception-registry.mjs (예외 케이스 데이터 SSOT)
 // RULE_META 가 진리, 맵은 메타만 얹는다. 맵에 없는 warn/info 룰은 "미분류" 로 표면화한다.
 
 import { writeFileSync } from "node:fs";
@@ -18,6 +20,7 @@ import path from "node:path";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = new Set(process.argv.slice(2));
 const INCLUDE_ALL = args.has("--all");
+const CHECK = args.has("--check");
 
 const PRINCIPLE_TITLES = {
   1: "원칙 1 · 사용자는 목표를 쉽게 달성할 수 있어야 한다",
@@ -51,11 +54,24 @@ const PROMO_LABEL = {
   hold: "⚪ 현행유지",
 };
 
-function buildRows(RULE_META, PRINCIPLE_MAP) {
+// 차단 안전성 — 예외 evaluation 종류가 "차단 승격이 안전한가" 를 결정한다.
+const SAFE_EVAL = new Set(["auto", "structural", "policy"]); // validator/프로필이 자동 면제 → 차단 안전
+function readinessOf(exceptionId, EXCEPTION_REGISTRY) {
+  if (!exceptionId) return { label: "차단 가능(예외없음)", safe: true };
+  const e = EXCEPTION_REGISTRY[exceptionId];
+  if (!e) return { label: "⚠ 미정의 예외", safe: false };
+  if (SAFE_EVAL.has(e.evaluation))
+    return { label: `차단 안전(${e.evaluation} 자동면제)`, safe: true };
+  return { label: "waiver 필요(explicit)", safe: false };
+}
+
+function buildRows(RULE_META, PRINCIPLE_MAP, EXCEPTION_REGISTRY) {
   const rows = [];
   for (const [rule, meta] of Object.entries(RULE_META)) {
     if (!INCLUDE_ALL && meta.severity === "error") continue;
     const m = PRINCIPLE_MAP[rule];
+    const exception = m?.exception ?? null;
+    const ready = readinessOf(exception, EXCEPTION_REGISTRY);
     rows.push({
       rule,
       severity: meta.severity,
@@ -63,16 +79,47 @@ function buildRows(RULE_META, PRINCIPLE_MAP) {
       principle: m?.principle ?? "?",
       uxImpact: m?.uxImpact ?? "-",
       promotion: m?.promotion ?? "-",
-      exception: m?.exception ?? null,
+      exception,
+      evaluation: exception ? (EXCEPTION_REGISTRY[exception]?.evaluation ?? "?") : null,
+      readiness: ready.label,
       note: m?.note ?? "",
     });
   }
   return rows;
 }
 
+// 맵↔레지스트리 정합 — 맵이 참조하는 예외 id 는 모두 레지스트리에 있어야 하고,
+// 레지스트리의 모든 예외는 ≥1 룰이 참조해야 하며, appliesTo 가 실제 참조와 일치해야 한다.
+function checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY) {
+  const refs = new Map(); // exceptionId -> [ruleId...]
+  for (const [rule, m] of Object.entries(PRINCIPLE_MAP)) {
+    if (!m.exception) continue;
+    if (!refs.has(m.exception)) refs.set(m.exception, []);
+    refs.get(m.exception).push(rule);
+  }
+  const problems = [];
+  for (const [id, rules] of refs) {
+    if (!EXCEPTION_REGISTRY[id])
+      problems.push(`맵이 참조하는 예외 '${id}' 가 레지스트리에 없음 (${rules.join(", ")})`);
+  }
+  for (const [id, e] of Object.entries(EXCEPTION_REGISTRY)) {
+    const actual = (refs.get(id) ?? []).sort();
+    if (!actual.length) {
+      problems.push(`레지스트리 예외 '${id}' 를 참조하는 룰이 없음 (미사용)`);
+      continue;
+    }
+    const declared = [...(e.appliesTo ?? [])].sort();
+    if (JSON.stringify(actual) !== JSON.stringify(declared))
+      problems.push(
+        `'${id}' appliesTo 불일치 — 선언[${declared.join(", ")}] ≠ 실제[${actual.join(", ")}]`,
+      );
+  }
+  return problems;
+}
+
 const IMPACT_RANK = { high: 0, med: 1, low: 2, "-": 3 };
 
-function renderMarkdown(rows) {
+function renderMarkdown(rows, EXCEPTION_REGISTRY) {
   const byPrinciple = new Map(PRINCIPLE_ORDER.map((p) => [p, []]));
   for (const r of rows) (byPrinciple.get(r.principle) ?? byPrinciple.get("?")).push(r);
 
@@ -99,6 +146,18 @@ function renderMarkdown(rows) {
   lines.push(`- 🟡 예외선행(context): **${contextDep.length}개** — 예외 케이스 데이터화 후 승격`);
   lines.push(`- ⚪ 현행유지(hold): **${rows.filter((r) => r.promotion === "hold").length}개**`);
   if (untagged.length) lines.push(`- ⚠ 미분류: **${untagged.length}개** — PRINCIPLE_MAP 매핑 필요`);
+  lines.push("");
+  const promotable = rows.filter((r) => r.promotion === "candidate" || r.promotion === "context");
+  const safeNow = promotable.filter((r) => !r.exception || SAFE_EVAL.has(r.evaluation));
+  const needWaiver = promotable.filter((r) => r.exception && r.evaluation === "explicit-waiver");
+  lines.push("### 차단 안전성 (승격후보+예외선행 기준)");
+  lines.push("");
+  lines.push(
+    `- ✅ 차단 안전: **${safeNow.length}개** — 예외 없거나 auto/structural/policy 자동 면제. detect 배선만 하면 바로 error 승격 가능.`,
+  );
+  lines.push(
+    `- ⚠ waiver 필요: **${needWaiver.length}개** — explicit-waiver 예외라 차단 시 \`data-nudge-allow\` 사유 태그 운영 필요.`,
+  );
   lines.push("");
   lines.push("### 원칙별 분포");
   lines.push("");
@@ -127,38 +186,71 @@ function renderMarkdown(rows) {
     );
     lines.push(`## ${PRINCIPLE_TITLES[p]}`);
     lines.push("");
-    lines.push("| 룰 | 현재 | 승격 | UX영향 | 예외 케이스 | 근거 |");
-    lines.push("| --- | --- | --- | --- | --- | --- |");
+    lines.push("| 룰 | 현재 | 승격 | UX영향 | 예외 케이스 | 차단안전성 | 근거 |");
+    lines.push("| --- | --- | --- | --- | --- | --- | --- |");
     for (const r of rs) {
       lines.push(
-        `| \`${r.rule}\` | ${r.severity} · ${r.kind} | ${PROMO_LABEL[r.promotion] ?? "-"} | ${r.uxImpact} | ${r.exception ? "`" + r.exception + "`" : "—"} | ${r.note} |`,
+        `| \`${r.rule}\` | ${r.severity} · ${r.kind} | ${PROMO_LABEL[r.promotion] ?? "-"} | ${r.uxImpact} | ${r.exception ? "`" + r.exception + "`" : "—"} | ${r.readiness} | ${r.note} |`,
       );
     }
     lines.push("");
   }
 
+  lines.push("## 예외 레지스트리 (차단 승격의 전제)");
+  lines.push("");
+  lines.push(
+    "> SSOT: `scripts/validator-exception-registry.mjs`. `evaluation` 이 차단 안전성을 결정 — auto/structural/policy=validator·프로필 자동 면제(차단 안전), explicit-waiver=`data-nudge-allow` 사유 태그 필요(마찰).",
+  );
+  lines.push("");
+  lines.push("| 예외 id | 원칙 | evaluation | 면제 룰 | 허용 조건 |");
+  lines.push("| --- | --- | --- | --- | --- |");
+  for (const [id, e] of Object.entries(EXCEPTION_REGISTRY)) {
+    lines.push(
+      `| \`${id}\` | ${e.principle} | ${e.evaluation} | ${e.appliesTo.map((r) => "`" + r + "`").join(" ")} | ${e.policy} |`,
+    );
+  }
+  lines.push("");
+
   lines.push("## 다음 단계");
   lines.push("");
   lines.push(
-    "1. 🟢 승격후보 중 UX영향 high 부터 차단(error) 승격 검토 — 예외 없는 것은 바로, 있는 것은 예외 정의 확인.",
+    "1. **차단 안전(✅)** 룰: 예외의 `detect`(auto/structural/policy 면제 로직)를 validator 에 배선한 뒤 RULE_META severity 를 warn→error 로 승격. 예외 없는 것은 detect 불필요 → 바로 승격.",
   );
   lines.push(
-    "2. 🟡 예외선행은 `exception` id 의 예외 케이스를 공통 UX 문서 + waiver 레지스트리에 데이터로 정의한 뒤 승격.",
+    '2. **waiver 필요(⚠)** 룰: `data-nudge-allow="<예외id> — <사유>"` 토큰 파싱을 validator 에 배선(// allow-native 일반화)한 뒤 승격. 운영 마찰 있으니 신중.',
   );
-  lines.push("3. 승격 결정은 RULE_META 의 severity 를 warn→error 로 바꾸고, 승격 사유를 기록.");
+  lines.push(
+    "3. 승격은 RULE_META severity 변경 + 승격 사유 기록. 예외 detect/waiver 배선 = 다음 단계 ③(승격 게이트).",
+  );
   return lines.join("\n");
 }
 
 const RULE_META = await loadRuleMeta();
 const { PRINCIPLE_MAP } = await import(path.join(ROOT, "scripts/validator-principle-map.mjs"));
-const rows = buildRows(RULE_META, PRINCIPLE_MAP);
+const { EXCEPTION_REGISTRY } = await import(
+  path.join(ROOT, "scripts/validator-exception-registry.mjs")
+);
+
+// 맵↔레지스트리 드리프트 검사 (모든 모드에서 먼저)
+const problems = checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY);
+if (problems.length) {
+  console.error("[validator-rule-report] ⚠ 맵↔예외 레지스트리 드리프트:");
+  for (const p of problems) console.error(`  - ${p}`);
+  if (CHECK) process.exit(1);
+} else if (CHECK) {
+  console.log("[validator-rule-report] ✓ 맵↔예외 레지스트리 정합 (드리프트 0)");
+}
+if (CHECK) process.exit(problems.length ? 1 : 0);
+
+const rows = buildRows(RULE_META, PRINCIPLE_MAP, EXCEPTION_REGISTRY);
 
 if (args.has("--json")) {
   process.stdout.write(
-    JSON.stringify({ generatedFrom: "RULE_META×PRINCIPLE_MAP", rows }, null, 2) + "\n",
+    JSON.stringify({ generatedFrom: "RULE_META×PRINCIPLE_MAP×EXCEPTION_REGISTRY", rows }, null, 2) +
+      "\n",
   );
 } else {
-  const md = renderMarkdown(rows);
+  const md = renderMarkdown(rows, EXCEPTION_REGISTRY);
   if (args.has("--stdout")) {
     process.stdout.write(md + "\n");
   } else {
