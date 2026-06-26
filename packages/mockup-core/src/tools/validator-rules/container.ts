@@ -9,6 +9,7 @@ import {
   type DomElement,
   type HtmlViolation,
   describeElement,
+  hasWaiver,
   isPrimarySolidButton,
   lineNumberAt,
 } from "./types.js";
@@ -34,7 +35,8 @@ export function collectContainerViolations(
     const $el = $(el);
 
     const nestedCount = $el.find("nds-card").length;
-    if (nestedCount > 0) {
+    // 예외 ux:p2-card-justified — 의도된 정당한 중첩이면 외곽 카드에 data-nudge-allow 로 면제(③-c).
+    if (nestedCount > 0 && !hasWaiver(el as unknown as DomElement, "ux:p2-card-justified")) {
       out.push({
         rule: "nested-card",
         line,

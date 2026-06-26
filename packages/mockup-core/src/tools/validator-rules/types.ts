@@ -69,6 +69,31 @@ export function describeElement(el: DomElement): string {
   return s;
 }
 
+/**
+ * data-nudge-allow waiver — `// allow-native` 의 일반화(③-c). 위반 요소 또는 그 조상에
+ *   data-nudge-allow="<예외id> — <사유>"
+ * 가 있고 id 가 exceptionId 와 일치하면 면제(true). 여러 예외는 쉼표/줄바꿈 구분.
+ * 구분자는 em-dash(—) 또는 스페이스-하이픈-스페이스만 — 예외 id 자체가 콜론/하이픈을
+ * 포함(ux:p2-card-justified)하므로 그건 건드리지 않는다.
+ * 예외 케이스 SSOT: scripts/validator-exception-registry.mjs.
+ */
+export function hasWaiver(el: DomElement, exceptionId: string): boolean {
+  let node: { attribs?: Record<string, string>; parent?: unknown } | undefined = el;
+  while (node && typeof node === "object") {
+    const allow = node.attribs?.["data-nudge-allow"];
+    if (
+      allow &&
+      allow
+        .split(/[,\n]/)
+        .map((s) => s.split(/\s+[—-]\s+/)[0].trim())
+        .includes(exceptionId)
+    )
+      return true;
+    node = node.parent as typeof node | undefined;
+  }
+  return false;
+}
+
 const NON_SOLID_VARIANTS = new Set(["outlined", "soft", "text", "ghost"]);
 export function isPrimarySolidButton(el: DomElement): boolean {
   if (el.type !== "tag" || el.tagName?.toLowerCase() !== "nds-button") return false;

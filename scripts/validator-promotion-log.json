@@ -50,6 +50,26 @@
       "reviewedBy": "jeongmin",
       "rationale": "공통 UX 원칙2 핵심 — 한 판단 단위(Card/section/Modal/...) 안 Primary 는 1개. 예외 ux:p2-multi-judgment-unit(단위 여럿이면 화면에 여러 Primary 허용)을 detect 에 배선(③-b): 각 Primary 를 가장 가까운 컨테이너에만 귀속시켜 중첩 단위 오탐을 제거 → 차단 안전.",
       "evidence": "container.ts CTA_CONTAINER_UNION closest 귀속. 신규 테스트 3종(중첩 단위 무위반 포함). 예외 WIRED 등록."
+    },
+    {
+      "rule": "nested-card",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "2",
+      "reviewedBy": "jeongmin",
+      "rationale": "카드 안 카드는 정보 위계를 무너뜨린다(원칙2). deterministic(nds-card 후손에 nds-card). 예외 ux:p2-card-justified 를 data-nudge-allow waiver 로 배선(③-c) — 정당한 중첩은 외곽 카드에 사유 태그로 면제 → 차단 안전.",
+      "evidence": "container.ts hasWaiver 배선. 신규 테스트(중첩→error, waiver→면제). 예외 WIRED."
+    },
+    {
+      "rule": "project-denied-button-color",
+      "from": "warn",
+      "to": "error",
+      "date": "2026-06-26",
+      "principle": "5",
+      "reviewedBy": "jeongmin",
+      "rationale": "프로젝트에 없는 버튼 tone 사용(예: 캐포비 secondary — ButtonGuide tone 은 Primary+Neutral뿐). 예외 ux:p5-brand-cta-policy 는 디텍터가 getProjectProfile().cta.deniedButtonColors 로 발화 자체가 정책위반이라 내재 — 면제 케이스는 애초에 발화 안 함 → 차단 안전(③-b 잔여).",
+      "evidence": "html-validator.ts 7b 블록 프로필 denylist. deterministic. 예외 WIRED(neutral-solid-cta 도 같은 예외 honor)."
     }
   ]
 }

@@ -279,10 +279,12 @@ export const RULE_META: Record<string, { severity: HtmlViolationSeverity; kind: 
   // 컨테이너 / 카운팅
   "card-slot-double-padding": { severity: "warn", kind: "invariant" },
   "neutral-solid-cta": { severity: "warn", kind: "project-policy" },
-  "project-denied-button-color": { severity: "warn", kind: "project-policy" },
+  // [승격 2026-06-26 warn→error] 원칙5 — 예외 ux:p5-brand-cta-policy(프로필 deniedButtonColors)로 발화 자체가 정책위반. 승격 로그: scripts/validator-promotion-log.json
+  "project-denied-button-color": { severity: "error", kind: "project-policy" },
   // 캐포비 알림 SSOT 는 Snackbar(흰 카드·우측 상단·상태 칩·닫기 X). Toast 는 캐포비에서 미사용 — 전면 금지.
   "project-banned-notification": { severity: "error", kind: "project-policy" },
-  "nested-card": { severity: "warn", kind: "invariant" },
+  // [승격 2026-06-26 warn→error] 원칙2 — 예외 ux:p2-card-justified waiver 배선(data-nudge-allow). 승격 로그: scripts/validator-promotion-log.json
+  "nested-card": { severity: "error", kind: "invariant" },
   "card-badge-overuse": { severity: "warn", kind: "invariant" },
   "card-footer-button-overuse": { severity: "warn", kind: "invariant" },
   // [승격 2026-06-26 warn→error] 원칙2 — 예외 ux:p2-multi-judgment-unit 배선(컨테이너 귀속 카운트). 승격 로그: scripts/validator-promotion-log.json

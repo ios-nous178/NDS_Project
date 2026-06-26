@@ -128,6 +128,8 @@ function checkConsistency(PRINCIPLE_MAP, EXCEPTION_REGISTRY) {
 // 가지면 거버넌스 통과(오탐 방지 보장). 미등록 예외를 가진 채 승격하면 게이트가 차단.
 const WIRED_EXCEPTIONS = new Set([
   "ux:p2-multi-judgment-unit", // container.ts — 가장 가까운 컨테이너 귀속 카운트(③-b)
+  "ux:p2-card-justified", // container.ts·document-level.ts — data-nudge-allow waiver(③-c)
+  "ux:p5-brand-cta-policy", // container.ts — getProjectProfile cta.blackCta/deniedButtonColors(③-b 잔여, policy 내재)
 ]);
 function checkGovernance(RULE_META, PRINCIPLE_MAP, PROMOTION_LOG) {
   const problems = [];

@@ -9,6 +9,7 @@ import {
   type DomElement,
   type HtmlViolation,
   describeElement,
+  hasWaiver,
   isPrimarySolidButton,
   lineNumberAt,
 } from "./types.js";
@@ -68,7 +69,10 @@ export function collectDocumentLevelViolations(
     if (!looksGrid && iconChips < ENTRY_CHIP_MIN) return;
     out.push({
       rule: "chip-as-entry-grid",
-      line: lineNumberAt(source, (parentNode as unknown as { startIndex?: number }).startIndex ?? 0),
+      line: lineNumberAt(
+        source,
+        (parentNode as unknown as { startIndex?: number }).startIndex ?? 0,
+      ),
       selector: describeElement(parentNode as unknown as DomElement),
       detail: `<nds-chip> ${chips.length}개를 ${looksGrid ? "그리드" : "아이콘 타일"}로 나열했습니다 — '카테고리/고민 진입' 그리드를 chip 으로 만든 신호일 수 있습니다.`,
       suggestion:
@@ -272,7 +276,12 @@ export function collectDocumentLevelViolations(
   // (get_guide({ topic: 'pattern:card-grid' }).)
   const cardTotal = $("nds-card")
     .toArray()
-    .filter((c) => $(c).closest(".nds-grid").length === 0).length;
+    // 예외 ux:p2-card-justified — data-nudge-allow 로 정당화한 카드는 카운트에서 제외(③-c).
+    .filter(
+      (c) =>
+        $(c).closest(".nds-grid").length === 0 &&
+        !hasWaiver(c as unknown as DomElement, "ux:p2-card-justified"),
+    ).length;
   if (cardTotal >= 5 * screenCount) {
     out.push({
       rule: "card-everything",

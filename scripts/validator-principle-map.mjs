@@ -77,9 +77,9 @@ export const PRINCIPLE_MAP = {
   "nested-card": {
     principle: "2",
     uxImpact: "med",
-    promotion: "candidate",
+    promotion: "promoted",
     exception: "ux:p2-card-justified",
-    note: "카드 안 카드 — 위계 모호. card-everything 과 동일 예외축.",
+    note: "카드 안 카드 — 위계 모호. 예외 ux:p2-card-justified waiver 배선됨(외곽 카드 data-nudge-allow). deterministic. [승격 2026-06-26]",
   },
   "card-badge-overuse": {
     principle: "2",
@@ -163,9 +163,9 @@ export const PRINCIPLE_MAP = {
   "project-denied-button-color": {
     principle: "5",
     uxImpact: "med",
-    promotion: "context",
+    promotion: "promoted",
     exception: "ux:p5-brand-cta-policy",
-    note: "프로젝트 금지 버튼색 — 브랜드 정책 예외.",
+    note: "프로젝트 금지 버튼색 — 프로필 deniedButtonColors 로 발화(예외 내재: 해당 프로젝트에 그 tone 자체가 없음). deterministic. [승격 2026-06-26]",
   },
   "manual-project-header": {
     principle: "5",
